@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -80,7 +81,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IType findSupertype(IIpsProject ipsProject) throws CoreException {
+    public IType findSupertype(IIpsProject ipsProject) {
         return (IType)ipsProject.findIpsObject(getIpsObjectType(), supertype);
     }
 
@@ -90,7 +91,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public boolean hasExistingSupertype(IIpsProject ipsProject) throws CoreException {
+    public boolean hasExistingSupertype(IIpsProject ipsProject) {
         return findSupertype(ipsProject) != null;
     }
 
@@ -102,7 +103,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException {
+    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) {
         if (supertypeCandidate == null) {
             return false;
         }
@@ -119,7 +120,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException {
+    public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) {
         if (equals(candidate)) {
             return true;
         }
@@ -164,7 +165,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
+    public IAttribute findAttribute(String name, IIpsProject project) {
         AttributeFinder finder = new AttributeFinder(project, name);
         finder.start(this);
         return finder.attribute;
@@ -401,7 +402,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
+    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) {
         IType foundSupertype = findSupertype(ipsProject);
 
         if (foundSupertype == null) {
@@ -462,7 +463,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
+    public ITypeHierarchy getSupertypeHierarchy() {
         return TypeHierarchy.getSupertypeHierarchy(this);
     }
 
@@ -564,12 +565,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public int compareTo(Datatype o) {
-        return 0;
-    }
-
-    @Override
-    public String getJavaClassName() {
-        throw new UnsupportedOperationException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
+        return DatatypeComparator.doCompare(this, o);
     }
 
     @Override
@@ -739,7 +735,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                 }
                 IMethod overridingMethod;
                 try {
-                    overridingMethod = method.findOverridingMethod(Type.this, ipsProject);
+                    overridingMethod = method.findOverridingMethod(Type.this, getIpsProject());
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
@@ -806,7 +802,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     protected abstract static class AbstractAssociationFinder<T extends IAssociation> extends
-            TypeHierarchyVisitor<IType> {
+    TypeHierarchyVisitor<IType> {
 
         private List<T> associationsFound = new ArrayList<T>();
         private final boolean superTypeFirst;
@@ -903,7 +899,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         protected List<IAssociation> getAssociations(IType currentType) {
             try {
                 return ((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(associationTarget,
-                        associationType, ipsProject);
+                        associationType, getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

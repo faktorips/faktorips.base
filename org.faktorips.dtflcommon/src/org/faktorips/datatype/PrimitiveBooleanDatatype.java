@@ -36,11 +36,6 @@ public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
     }
 
     @Override
-    public String getJavaClassName() {
-        return "boolean"; //$NON-NLS-1$
-    }
-
-    @Override
     public Object getValue(String value) {
         return Boolean.valueOf(value);
     }

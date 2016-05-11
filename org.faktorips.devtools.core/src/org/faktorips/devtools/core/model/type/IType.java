@@ -118,9 +118,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The <tt>IIpsProject</tt> providing the object path that is used to search
      *            for the supertype.
      * 
-     * @throws CoreException If an error occurs while searching for the supertype.
      */
-    public boolean hasExistingSupertype(IIpsProject ipsProject) throws CoreException;
+    public boolean hasExistingSupertype(IIpsProject ipsProject);
 
     /**
      * Returns the type's supertype if the type is derived from a supertype and the supertype can be
@@ -130,9 +129,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching for the supertype.
      */
-    public IType findSupertype(IIpsProject ipsProject) throws CoreException;
+    public IType findSupertype(IIpsProject ipsProject);
 
     /**
      * Sets the type's supertype.
@@ -150,9 +148,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching the type hierarchy.
      */
-    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException;
+    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this type is a subtype of the given candidate, or if the
@@ -164,9 +161,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching the type hierarchy.
      */
-    public boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject) throws CoreException;
+    public boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject);
 
     /**
      * Returns the type's attributes.
@@ -210,9 +206,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      * @throws NullPointerException If <tt>project</tt> is <code>null</code>.
-     * @throws CoreException If an error occurs while searching.
      */
-    public IAttribute findAttribute(String name, IIpsProject ipsProject) throws CoreException;
+    public IAttribute findAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.
@@ -524,13 +519,13 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
     /**
      * Creates a new super type hierarchy for the type and returns it.
      */
-    public ITypeHierarchy getSupertypeHierarchy() throws CoreException;
+    public ITypeHierarchy getSupertypeHierarchy();
 
     /**
      * Returns an array of all attributes of all super types not yet overwritten by this component
      * type.
      */
-    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
+    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject);
 
     /**
      * Creates new association in this type that override the given association with type.

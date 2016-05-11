@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -42,16 +41,12 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
      *            belong to.
      */
     public SupertypeHierarchyPartsContentProvider(IIpsObject ipsObject) {
-        try {
-            supertypes = getSupertypes(ipsObject);
-            providedObjectParts = getAvailableParts(ipsObject);
-            reverseSupertypes();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        supertypes = getSupertypes(ipsObject);
+        providedObjectParts = getAvailableParts(ipsObject);
+        reverseSupertypes();
     }
 
-    protected abstract List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException;
+    protected abstract List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject);
 
     @Override
     public Object[] getChildren(Object parentElement) {

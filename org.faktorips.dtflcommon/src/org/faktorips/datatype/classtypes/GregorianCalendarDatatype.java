@@ -14,15 +14,15 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 import org.faktorips.values.DateUtil;
 
-public class GregorianCalendarDatatype extends ValueClassDatatype {
+public class GregorianCalendarDatatype extends ValueClassNameDatatype {
 
     private final boolean timeInfoIncluded;
 
     public GregorianCalendarDatatype(String name, boolean timeInfoIncluded) {
-        super(GregorianCalendar.class, name);
+        super(name);
         this.timeInfoIncluded = timeInfoIncluded;
     }
 

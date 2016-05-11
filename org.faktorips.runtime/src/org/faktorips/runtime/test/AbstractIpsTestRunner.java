@@ -45,9 +45,10 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * Counts all ips test cases in the given packages.<br>
      * The format of the input string is:<br>
      * 
-     * <pre>{packageName in repository1}{packageName in repository2}{...}
-     * 
      * <pre>
+     * {packageName in repository1}{packageName in repository2}{...}
+     * </pre>
+     * 
      * @throws Exception if an error occurs.
      */
     public int countTests(String names) throws Exception {
@@ -78,7 +79,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * Returns all stored repositories.<br>
      * If the repositories currently not exists in memory create the repositories first.<br>
      * The repository will be created by the to be implemented method:
-     * <code>createRepositories()<code>
+     * <code>createRepositories()</code>
      * 
      * @throws Exception if an error occurs.
      */
@@ -123,9 +124,10 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * Run the all ips test cases in the given packages.<br>
      * The format of the input string is:<br>
      * 
-     * <pre>{packageName in repository1}{packageName in repository2}{...}
-     * 
      * <pre>
+     * {packageName in repository1}{packageName in repository2}{...}
+     * </pre>
+     * 
      * @throws Exception if an error occurs.
      */
     public void run(String names) throws Exception {
@@ -139,9 +141,9 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * Returns a list of repository names from a given string of repositories.<br>
      * The format of the input string is:<br>
      * 
-     * <pre>{repositoryName1}{repositoryName2}{...}
-     * 
      * <pre>
+     * {repositoryName1}{repositoryName2}{...}
+     * </pre>
      */
     protected List<String> getRepositoryListFromInputString(String repositoryPackages) {
         return extractListFromString(repositoryPackages);

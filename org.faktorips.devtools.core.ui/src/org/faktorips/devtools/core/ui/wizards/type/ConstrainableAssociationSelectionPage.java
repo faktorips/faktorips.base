@@ -123,7 +123,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         }
 
         @Override
-        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) {
             IType cmptType = (IType)ipsObject;
             return cmptType.getSupertypeHierarchy().getAllSupertypes(cmptType);
         }

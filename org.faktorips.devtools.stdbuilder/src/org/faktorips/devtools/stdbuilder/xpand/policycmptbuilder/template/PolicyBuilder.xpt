@@ -1,0 +1,245 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyBuilderMethodNames»
+
+«DEFINE main FOR XPolicyBuilder»
+	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+		package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE-»
+		
+		/**
+		* «localizedJDoc("CLASS", policyName)»
+		*
+		* @generated
+		*/
+		public «EXPAND abstract» class «implClassName» «EXPAND extendSuperclass» {							
+			«EXPAND variableDeclaration-»
+			
+			«EXPAND constructors-»
+			
+			«EXPAND repositorySetter-»
+			
+			«EXPAND attributeSetter(this) FOREACH attributes»
+			«IF hasSupertype()-»
+				«EXPAND superAttributeSetter(this) FOREACH superAttributes»
+			«ENDIF-»
+			
+			«EXPAND getPolicy-»
+			«IF !hasSupertype()-»
+				«EXPAND getRuntimeRepository»
+			«ENDIF»
+			
+			«EXPAND getPolicyClass-»
+			
+			«IF !abstract-»
+				«EXPAND from-»
+			«ENDIF-»
+			
+			«EXPAND associationClass-»
+			
+			«EXPAND factoryClass-»
+		}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE abstract FOR XPolicyBuilder-» 
+	«IF abstract-» abstract «ENDIF-» 
+«ENDDEFINE»
+
+«DEFINE extendSuperclass FOR XPolicyBuilder-»
+	«IF hasSupertype()-»
+		extends «supertype.implClassName»
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM»  
+	The method generates the two variables that are needed in this class. They are:
+	1. The policy that is built by this class
+	2. The RuntimeRepository in which existing product components are living
+«ENDREM»
+«DEFINE variableDeclaration FOR XPolicyBuilder»
+	«IF !hasSupertype()-»
+		/**
+		* @generated
+		*/
+		private final «policyImplClassName» «field(variableName)»;	
+		
+		/**
+		*@generated
+		*/
+		private «IRuntimeRepository()» runtimeRepository;
+	«ENDIF-»
+«ENDDEFINE»
+	
+«REM» Internal constructors «ENDREM»
+«DEFINE constructors FOR XPolicyBuilder-»	
+	/**
+	* «localizedJDoc("CONSTRUCTOR_WITH_REPO", implClassName)»
+	* «localizedJDoc("CONSTRUCTOR_INTERNAL")»
+	*
+	* @generated
+	*/
+	protected «method(implClassName,policyImplClassName, "policy", IRuntimeRepository(), "runtimeRepository")»{
+		«IF hasSupertype()-»
+			super(policy, runtimeRepository);
+		«ELSE-»
+			this.«variableName» = policy;
+			this.runtimeRepository = runtimeRepository;
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+«DEFINE repositorySetter FOR XPolicyBuilder-»
+	/**
+	* @generated
+	*/
+	«IF hasSupertype()-»@Override«ENDIF-»
+	public «implClassName» setRepository(«IRuntimeRepository()» runtimeRepository) {
+		«IF hasSupertype()-»
+			super.setRepository(runtimeRepository);
+		«ELSE-»
+			this.runtimeRepository = runtimeRepository;
+		«ENDIF-»
+		return this;
+	}
+«ENDDEFINE»
+
+«REM»
+   This method generates the setter method for an attribute. The setter method of the policy is then called for the attribute.
+   Returns the builder.
+«ENDREM»
+«DEFINE attributeSetter(XPolicyBuilder builder) FOR XPolicyAttribute»
+	«IF !derived && !constant-»
+		/**
+		* «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+		*
+		* @generated
+		*/
+		«IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant-»@Override«ENDIF-»
+		public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
+			«builder.policyFieldName».«methodNameSetter»(«fieldName»);
+			return this;
+		}		
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM»
+	Generates setter for attributes of the supertypes in order to overwrite the return type
+«ENDREM»
+«DEFINE superAttributeSetter(XPolicyBuilder builder) FOR XPolicyAttribute»
+	«IF !derived && !constant-»
+		/**
+		* «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+		*
+		* @generated
+		*/
+		@Override
+		public «builder.implClassName» «method(fieldName, javaClassName, fieldName)-»{
+			«builder.policyFieldName».«methodNameSetter»(«fieldName»);
+			return this;
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE getPolicy FOR XPolicyBuilder»
+	/**
+	* «localizedJDoc("METHOD_GET_VALUE", policyName)»
+	*
+	* @generated
+	*/
+	«IF hasSupertype()-»@Override«ENDIF-»
+	public «policyPublishedInterfaceName» get() {
+		«IF hasSupertype()-»
+			return («policyPublishedInterfaceName») super.get();
+		«ELSE-»
+			return «policyFieldName»;
+		«ENDIF»
+	}
+«ENDDEFINE»
+
+«DEFINE getRuntimeRepository FOR XPolicyBuilder»
+	/**
+	* @generated
+	*/
+	public «IRuntimeRepository()» «getRepository()» {
+        return runtimeRepository;
+	}
+«ENDDEFINE»
+
+«DEFINE getPolicyClass FOR XPolicyBuilder»
+	/**
+	* «localizedJDoc("METHOD_GET_CLASS")»
+	*
+	* @generated
+	*/
+	public static Class<?> getPolicyClass() {
+		return «policyImplClassName».class;
+	}
+«ENDDEFINE»
+
+«REM»A static method to create builder from a policy instance«ENDREM»
+«DEFINE from FOR XPolicyBuilder»
+	/**
+	* «localizedJDoc("METHOD_FROM", name, policyName)»
+	*
+	* @generated
+	*/
+	public static «implClassName» «from()»(«policyPublishedInterfaceName» policy) {
+		return new «implClassName»(«castToImplementation(policyImplClassName)»policy, null);
+	}
+	
+	/**
+	* «localizedJDoc("METHOD_FROM_REPO", name, policyName)»
+	*
+	* @generated
+	*/
+	public static «implClassName» «from()»(«policyPublishedInterfaceName» policy, «IRuntimeRepository()» runtimeRepository) {
+		return new «implClassName»(«castToImplementation(policyImplClassName)»policy, runtimeRepository);
+	}
+«ENDDEFINE»
+	
+«DEFINE associationClass FOR XPolicyBuilder»
+	«IF builderAssociations.size > 0»
+		/**
+		* «localizedJDoc("METHOD_ASSOCIATION")»
+		*
+		* @generated
+		*/
+		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
+		public AssociationBuilder associate(){
+			return new AssociationBuilder(this);
+		}
+	«ENDIF»
+	«IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 -»
+		/**
+		* «localizedJDoc("METHOD_ASSOCIATIONS")»
+		*
+		* @generated
+		*/
+		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
+		public AssociationsBuilder associations(){
+			return new AssociationsBuilder(this);	
+		}
+	«ENDIF»
+	«EXPAND PolicyAssociationBuilder::main-»
+«ENDDEFINE» 
+
+«DEFINE factoryClass FOR XPolicyBuilder»
+	«IF !abstract && generatePublishedInterfaces-»
+		/**
+		* «localizedJDoc("CLASS_FACTORY", name)»
+		*
+		* @generated
+		*/
+		public static class Factory {
+			«EXPAND PolicyCmptCreateBuilder::with(false)-»	
+		}
+	«ENDIF-»
+«ENDDEFINE»

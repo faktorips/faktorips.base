@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -78,6 +80,8 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      */
     private Composite rootPane;
 
+    private final IPropertyVisibleController visibilityController;
+
     /**
      * Creates a {@link ProductCmptPropertySection} that can be expanded and collapsed by the user.
      * <p>
@@ -89,11 +93,12 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      * @param propertyValues list containing the property values to be displayed by this section
      */
     protected ProductCmptPropertySection(String id, List<IPropertyValue> propertyValues, Composite parent,
-            int layoutData, UIToolkit toolkit) {
+            int layoutData, UIToolkit toolkit, IPropertyVisibleController visibilityController) {
 
         super(id, parent, layoutData, toolkit);
 
         this.propertyValues = propertyValues;
+        this.visibilityController = visibilityController;
 
         setInitCollapsedIfNoContent(true);
     }
@@ -108,11 +113,12 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      * @param propertyValues list containing the property values to be displayed by this section
      */
     protected ProductCmptPropertySection(List<IPropertyValue> propertyValues, Composite parent, int style,
-            int layoutData, UIToolkit toolkit) {
+            int layoutData, UIToolkit toolkit, IPropertyVisibleController visibilityController) {
 
         super(parent, style, layoutData, toolkit);
 
         this.propertyValues = propertyValues;
+        this.visibilityController = visibilityController;
 
         setInitCollapsedIfNoContent(true);
     }
@@ -152,8 +158,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             addDisposeListener(new DisposeListener() {
                 @Override
                 public void widgetDisposed(DisposeEvent e) {
-                    IpsUIPlugin.getDefault().getPropertyVisibleController()
-                            .removePropertyControlMapping(ProductCmptPropertySection.this);
+                    visibilityController.removePropertyControlMapping(ProductCmptPropertySection.this);
                 }
             });
         } else {
@@ -175,8 +180,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
         EditPropertyValueComposite<?, ?> editComposite = createEditComposite(propertyValue, property);
 
         if (property != null) {
-            IpsUIPlugin.getDefault().getPropertyVisibleController()
-                    .addPropertyControlMapping(this, property, label, editComposite);
+            visibilityController.addPropertyControlMapping(this, property, label, editComposite);
         }
 
         verticallyAlignLabel(label, editComposite);
@@ -194,7 +198,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
     }
 
     private Control createLabel(IPropertyValue propertyValue, IProductCmptProperty property) {
-        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
+        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyValueType());
 
         Control label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
         // Use description of property as tooltip if available
@@ -207,7 +211,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
     private EditPropertyValueComposite<?, ?> createEditComposite(IPropertyValue propertyValue,
             IProductCmptProperty property) {
 
-        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
+        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyValueType());
         return propertyValueUI.createEditComposite(property, propertyValue, this, rootPane, getBindingContext(),
                 getToolkit());
     }
@@ -221,7 +225,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
              */
             ((GridData)label.getLayoutData()).verticalAlignment = SWT.TOP;
             int topOfControlToLabelPixels = editComposite.getFirstControlHeight()
-                    - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + editComposite.getFirstControlMarginHeight();
+                    - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
             ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
                     + topOfControlToLabelPixels / 2;
         }
@@ -353,17 +357,17 @@ public abstract class ProductCmptPropertySection extends IpsSection {
          * {@link ProductCmptPropertyType} or null if no {@link PropertyValueUI} exists for the
          * provided {@link ProductCmptPropertyType}.
          */
-        public static PropertyValueUI getValueByPropertyType(ProductCmptPropertyType propertyType) {
+        public static PropertyValueUI getValueByPropertyType(PropertyValueType propertyType) {
             switch (propertyType) {
-                case PRODUCT_CMPT_TYPE_ATTRIBUTE:
+                case ATTRIBUTE_VALUE:
                     return ATTRIBUTE_VALUE;
-                case VALIDATION_RULE:
+                case VALIDATION_RULE_CONFIG:
                     return VALIDATION_RULE_CONFIG;
-                case FORMULA_SIGNATURE_DEFINITION:
+                case FORMULA:
                     return FORMULA;
-                case TABLE_STRUCTURE_USAGE:
+                case TABLE_CONTENT_USAGE:
                     return TABLE_CONTENT_USAGE;
-                case POLICY_CMPT_TYPE_ATTRIBUTE:
+                case CONFIG_ELEMENT:
                     return CONFIG_ELEMENT;
             }
             return null;

@@ -67,15 +67,11 @@ public class XProductAssociation extends XAssociation {
 
     public String getMethodNameGetCardinalityFor() {
         String matchingSingularName;
-        try {
-            matchingSingularName = StringUtils.capitalize(getNameOfMatchingAssociation());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        matchingSingularName = StringUtils.capitalize(getNameOfMatchingAssociation());
         return getJavaNamingConvention().getGetterMethodName("CardinalityFor" + matchingSingularName);
     }
 
-    public String getNameOfMatchingAssociation() throws CoreException {
+    public String getNameOfMatchingAssociation() {
         return getAssociation().findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular();
     }
 
@@ -103,6 +99,42 @@ public class XProductAssociation extends XAssociation {
      */
     public String getJavadocKey(String prefix) {
         return prefix + (isOneToMany() ? "_MANY" : "_ONE");
+    }
+
+    protected XProductAssociation getSuperAssociationWithSameName() {
+        IProductCmptTypeAssociation superAssociationWithSameName = (IProductCmptTypeAssociation)getAssociation()
+                .findSuperAssociationWithSameName(getIpsProject());
+        if (superAssociationWithSameName != null) {
+            return getModelNode(superAssociationWithSameName, XProductAssociation.class);
+        } else {
+            return null;
+        }
+    }
+
+    public XProductCmptClass getTargetProductCmptClass() {
+        IProductCmptType proCmptType = getAssociation().findTargetProductCmptType(getIpsProject());
+        return getModelNode(proCmptType, XProductCmptClass.class);
+    }
+
+    public boolean isGenerateNewChildMethods() {
+        return isMasterToDetail() && !getTargetProductCmptClass().isAbstract() && !isDerivedUnion();
+    }
+
+    /**
+     * This method checks if any association of the super class has the same name as the given one.
+     * 
+     * @return true if '@Override is needed for the association, false is not.
+     */
+    public boolean isNeedOverrideForConstrainNewChildMethod() {
+        if (isConstrain()) {
+            if (getSuperAssociationWithSameName().isGenerateNewChildMethods()) {
+                return true;
+            } else {
+                return getSuperAssociationWithSameName().isNeedOverrideForConstrainNewChildMethod();
+            }
+        } else {
+            return false;
+        }
     }
 
     /**

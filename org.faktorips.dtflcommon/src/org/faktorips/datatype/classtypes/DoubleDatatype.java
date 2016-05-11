@@ -14,20 +14,16 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class DoubleDatatype extends ValueClassDatatype implements NumericDatatype {
+public class DoubleDatatype extends ValueClassNameDatatype implements NumericDatatype {
 
     public DoubleDatatype() {
-        super(Double.class);
-    }
-
-    public DoubleDatatype(String name) {
-        super(Double.class, name);
+        super(Double.class.getSimpleName());
     }
 
     @Override

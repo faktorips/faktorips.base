@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -27,23 +25,19 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotation
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
-        try {
-            JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-            if (generatorModelNode instanceof XPolicyAttribute) {
-                XPolicyAttribute xPolicyAttribute = (XPolicyAttribute)generatorModelNode;
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        if (generatorModelNode instanceof XPolicyAttribute) {
+            XPolicyAttribute xPolicyAttribute = (XPolicyAttribute)generatorModelNode;
 
-                IPolicyCmptTypeAttribute attribute = xPolicyAttribute.getAttribute();
+            IPolicyCmptTypeAttribute attribute = xPolicyAttribute.getAttribute();
 
-                String annotationParam = "name=\"" + attribute.getName() + "\"";
-                if (!attribute.findDatatype(attribute.getIpsProject()).isPrimitive()) {
-                    annotationParam += ",nillable=true";
-                }
-                builder.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
+            String annotationParam = "name=\"" + attribute.getName() + "\"";
+            if (!attribute.findDatatype(attribute.getIpsProject()).isPrimitive()) {
+                annotationParam += ",nillable=true";
             }
-            return builder.getFragment();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            builder.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
         }
+        return builder.getFragment();
     }
 
     @Override

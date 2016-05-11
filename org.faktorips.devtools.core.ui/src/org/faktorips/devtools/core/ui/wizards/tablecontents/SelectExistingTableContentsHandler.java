@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -83,12 +82,7 @@ public class SelectExistingTableContentsHandler extends AbstractAddTableContents
                     && IpsObjectType.TABLE_CONTENTS.equals(((IIpsSrcFile)element).getIpsObjectType())) {
                 IIpsSrcFile srcFile = (IIpsSrcFile)element;
                 String tableStructure;
-                try {
-                    tableStructure = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                    return false;
-                }
+                tableStructure = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
                 for (String structure : tableStructureUsage.getTableStructures()) {
                     if (tableStructure != null && tableStructure.equals(structure)) {
                         return true;

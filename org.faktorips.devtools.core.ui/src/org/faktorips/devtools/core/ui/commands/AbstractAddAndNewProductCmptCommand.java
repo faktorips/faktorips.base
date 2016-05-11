@@ -70,11 +70,7 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
         IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
 
         IProductCmptType productCmptType = null;
-        try {
-            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
         if (productCmptType == null) {
             return false;
         }
@@ -89,13 +85,7 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
             return false;
         }
 
-        IProductCmptType targetProductCmptType = null;
-        try {
-            targetProductCmptType = typeAssociation.findTargetProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        return targetProductCmptType != null;
+        return typeAssociation.findTargetProductCmptType(productCmpt.getIpsProject()) != null;
 
     }
 

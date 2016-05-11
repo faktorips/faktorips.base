@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -134,20 +133,18 @@ public class IpsSrcFileCollection {
      * @return the meta class name of the internal source file
      */
     private String getMetaClassName(IIpsSrcFile srcFile) {
-        try {
-            if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-                return srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-            } else if (srcFile.getIpsObjectType().equals(IpsObjectType.ENUM_CONTENT)) {
-                return srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
-            } else if (srcFile.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
-                return srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-            } else if (srcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE_TYPE)) {
-                return srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)
+                || srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE)) {
+            return srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.ENUM_CONTENT)) {
+            return srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
+        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
+            return srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE_TYPE)) {
+            return srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
+        } else {
+            return null;
         }
-        return null;
     }
 
     private class CollectionItem {

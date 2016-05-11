@@ -12,14 +12,13 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
-public interface IPropertyValueContainer extends IProductPartsContainer {
+public interface IPropertyValueContainer extends IProductPartsContainer, ITemplatedValueContainer {
 
     /**
      * Returns the property value for the given property or <code>null</code> if no value is defined
@@ -50,6 +49,16 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
      * Returns <code>null</code> if propertyName is <code>null</code>.
      */
     public IPropertyValue getPropertyValue(String propertyName);
+
+    /**
+     * Returns the property value for the given property name and type or {@code null} if no value
+     * is defined for this container. In this case
+     * {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)} returns a delta
+     * containing an entry for the missing property value.
+     * <p>
+     * Returns {@code null} if propertyName is {@code null}.
+     */
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type);
 
     /**
      * Returns all property values for the given type. Returns an empty array if type is
@@ -91,7 +100,7 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
     public String getProductCmptType();
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Finds the {@link IPolicyCmptType} this this property value container configures or returns
@@ -101,8 +110,10 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
      * @param ipsProject The {@link IIpsProject} used as base project to search
      * @return the {@link IPolicyCmptType} or null if no one was found or this container does not
      *         configure a {@link IPolicyCmptType}
-     * @throws CoreException in case of getting a core exception while searching the model
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
+
+    @Override
+    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
 
 }

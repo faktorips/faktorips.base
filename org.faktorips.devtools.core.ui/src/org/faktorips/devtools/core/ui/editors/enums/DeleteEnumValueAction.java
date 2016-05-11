@@ -35,7 +35,7 @@ import org.faktorips.util.ArgumentCheck;
 public class DeleteEnumValueAction extends Action {
 
     /** The name of the image for the action. */
-    private final String IMAGE_NAME = "DeleteRow.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME = "DeleteRow.gif"; //$NON-NLS-1$
 
     /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;

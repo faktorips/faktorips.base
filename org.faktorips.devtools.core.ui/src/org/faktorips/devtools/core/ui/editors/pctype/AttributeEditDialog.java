@@ -659,22 +659,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
                     IpsPlugin
-                            .getDefault()
-                            .getIpsModel()
-                            .executeModificationsWithSingleEvent(
-                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                    .getDefault()
+                    .getIpsModel()
+                    .executeModificationsWithSingleEvent(
+                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
-                                        @Override
-                                        protected boolean execute() throws CoreException {
-                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                            attribute.setModifier(overwrittenAttribute.getModifier());
-                                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
-                                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
-                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                            attribute.setCategory(overwrittenAttribute.getCategory());
-                                            return true;
-                                        }
-                                    });
+                                @Override
+                                protected boolean execute() throws CoreException {
+                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                    attribute.setModifier(overwrittenAttribute.getModifier());
+                                    attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                    attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                    attribute.setCategory(overwrittenAttribute.getCategory());
+                                    return true;
+                                }
+                            });
                 }
             }
 
@@ -685,7 +685,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     }
 
-    private void updateDefaultAndValueSet() throws CoreException {
+    private void updateDefaultAndValueSet() {
         ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
         boolean enabled = newDatatype != null;
         if (currentDatatype != null && currentDatatype.equals(newDatatype)) {
@@ -715,15 +715,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         if (valueSetSpecificationControl != null) {
             valueSetSpecificationControl
-                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+            .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                    : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }
 
     private boolean isOverwriteEvent(ContentChangeEvent event) {
-        return event.getPropertyChangeEvent() != null && attribute.equals(event.getPart()) && attribute.isOverwrite()
-                && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName());
+        return event.isAffected(attribute) && attribute.isOverwrite()
+                && event.isPropertyAffected(IAttribute.PROPERTY_OVERWRITES);
     }
 
     private void updateAllowedValueSetTypes() {
@@ -983,34 +983,30 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void enableOrDisableDatatypeDependingControls() {
-        try {
-            ValueDatatype datatype = attribute.findDatatype(ipsProject);
+        ValueDatatype datatype = attribute.findDatatype(ipsProject);
 
-            boolean hasDecimalPlaces = PersistenceUtil.isSupportingDecimalPlaces(datatype);
-            boolean hasLength = PersistenceUtil.isSupportingLenght(datatype);
-            boolean needsTemporalType = PersistenceUtil.isSupportingTemporalType(datatype);
-            boolean canBeNullable = true;
-            boolean canBeUnique = true;
+        boolean hasDecimalPlaces = PersistenceUtil.isSupportingDecimalPlaces(datatype);
+        boolean hasLength = PersistenceUtil.isSupportingLenght(datatype);
+        boolean needsTemporalType = PersistenceUtil.isSupportingTemporalType(datatype);
+        boolean canBeNullable = true;
+        boolean canBeUnique = true;
 
-            // if a column definition is given, then all properties are specified using the sql
-            // definition
-            if (StringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
-                hasDecimalPlaces = false;
-                hasLength = false;
-                needsTemporalType = false;
-                canBeNullable = false;
-                canBeUnique = false;
-            }
-
-            getToolkit().setDataChangeable(nullableCheckbox, canBeNullable);
-            getToolkit().setDataChangeable(uniqueCheckbox, canBeUnique);
-            getToolkit().setDataChangeable(precisionField.getControl(), hasDecimalPlaces);
-            getToolkit().setDataChangeable(scaleField.getControl(), hasDecimalPlaces);
-            getToolkit().setDataChangeable(sizeField.getControl(), hasLength);
-            getToolkit().setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        // if a column definition is given, then all properties are specified using the sql
+        // definition
+        if (StringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
+            hasDecimalPlaces = false;
+            hasLength = false;
+            needsTemporalType = false;
+            canBeNullable = false;
+            canBeUnique = false;
         }
+
+        getToolkit().setDataChangeable(nullableCheckbox, canBeNullable);
+        getToolkit().setDataChangeable(uniqueCheckbox, canBeUnique);
+        getToolkit().setDataChangeable(precisionField.getControl(), hasDecimalPlaces);
+        getToolkit().setDataChangeable(scaleField.getControl(), hasDecimalPlaces);
+        getToolkit().setDataChangeable(sizeField.getControl(), hasLength);
+        getToolkit().setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
     }
 
     @Override

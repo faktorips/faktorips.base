@@ -26,12 +26,10 @@ import org.faktorips.util.StringUtil;
 public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
 
     private String name;
-    private String javaClassName;
     private HashMap<String, PropertyDatatype> properties = new HashMap<String, PropertyDatatype>();
 
     public TestBeanDatatype(String javaClassName) {
         ArgumentCheck.notNull(javaClassName);
-        this.javaClassName = javaClassName;
         this.name = StringUtil.unqualifiedName(javaClassName);
     }
 
@@ -85,14 +83,6 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     @Override
     public boolean isValueDatatype() {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getJavaClassName() {
-        return javaClassName;
     }
 
 }

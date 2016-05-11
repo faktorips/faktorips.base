@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -33,9 +34,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * @since 3.8
  * @author widmaier
  */
-public interface IProductCmptLinkContainer extends IProductPartsContainer {
+public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemplatedValueContainer {
 
-    public final static String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this link container contains less relations of a
@@ -47,7 +48,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer {
      * cases the property part of the ObjectProperty is empty.
      * 
      */
-    public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
+    public static final String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this link container contains more relations of a
@@ -60,14 +61,14 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer {
      * cases the property part of the ObjectProperty is empty.
      * 
      */
-    public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
+    public static final String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that two or more relations of a specific type have the
      * same target.
      * 
      */
-    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
+    public static final String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if this container is responsible for the given association. For
@@ -174,5 +175,17 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer {
 
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+
+    @Override
+    public IProductCmptLinkContainer findTemplate(IIpsProject ipsProject);
+
+    /**
+     * Removes all links whose
+     * {@link org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus
+     * TemplateValueStatus} is
+     * {@link org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus#UNDEFINED
+     * UNDEFINED}
+     */
+    public void removeUndefinedLinks();
 
 }

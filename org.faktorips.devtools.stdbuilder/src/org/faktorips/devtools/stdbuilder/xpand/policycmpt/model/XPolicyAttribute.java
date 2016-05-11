@@ -456,7 +456,7 @@ public class XPolicyAttribute extends XAttribute {
         } else if (isValueSetEnum()) {
             String[] valueIds;
             boolean containsNull;
-            if ((getAttribute()).getValueSet() instanceof IEnumValueSet) {
+            if ((getAttribute()).getValueSet().isEnum()) {
                 IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
                 valueIds = set.getValues();
                 containsNull = !getDatatype().isPrimitive() && set.isContainsNull();

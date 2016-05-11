@@ -408,11 +408,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     private ValueDatatype findDatatype() {
-        try {
-            return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
     }
 
     private void updateConcreteValueSetCheckboxDataChangeableState() {
@@ -503,15 +499,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         public ValueDatatype getValueDatatype() {
-            try {
-                ValueDatatype datatype = getValueSetOwner().findValueDatatype(getIpsProject());
-                if (datatype == null) {
-                    return Datatype.STRING;
-                }
-                return datatype;
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            ValueDatatype datatype = getValueSetOwner().findValueDatatype(getIpsProject());
+            if (datatype == null) {
+                return Datatype.STRING;
             }
+            return datatype;
         }
 
         @Override

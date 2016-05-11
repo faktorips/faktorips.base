@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="%label"
-      version="3.16.2.qualifier"
+      version="3.17.1.qualifier"
       provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -267,6 +267,13 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
 
    <plugin
          id="opencsv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.collections"
          download-size="0"
          install-size="0"
          version="0.0.0"

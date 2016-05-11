@@ -44,10 +44,7 @@ getTargetId() :
 
 getCardinality() :
 	"getCardinality()";
-	
-createPolicyComponent() :
-	"createPolicyComponent()";
-	
+
 // ---------------------------------
 // Methods in IProductComponent
 // ---------------------------------
@@ -58,6 +55,9 @@ getId() :
 getRepository() :
 	"getRepository()";
 	
+createPolicyComponent() :
+	"createPolicyComponent()";
+
 isChangingOverTime() :
 	"isChangingOverTime()";	
 
@@ -104,7 +104,7 @@ getLinks() :
 
 getProductComponent() :
 	"getProductComponent()";
-	
+		
 getProductCmptGeneration() :
 	"getProductCmptGeneration()";
 
@@ -143,6 +143,10 @@ validateDependants(String argument1, String argument2):
 // ---------------------------------
 // Methods in IRuntimeRepository
 // ---------------------------------
+
+putProductComponent(String param):
+	"putProductComponent(" + param + ")";
+
 
 isModifiable() :
 	"isModifiable()";

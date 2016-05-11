@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
 
 /**
  * Properties of the IPS project. The IPS project can't keep the properties itself, as it is a
@@ -684,4 +685,25 @@ public interface IIpsProjectProperties {
      * @see #isChangingOverTimeDefaultEnabled()
      */
     void setChangingOverTimeDefault(boolean enabled);
+
+    /**
+     * Returns the threshold used to find a common property value when inferring a template.
+     */
+    Decimal getInferredTemplatePropertyValueThreshold();
+
+    /**
+     * @see #getInferredTemplatePropertyValueThreshold()
+     */
+    void setInferredTemplatePropertyValueThreshold(Decimal inferredTemplatePropertyValueThreshold);
+
+    /**
+     * Returns the threshold used to find a common link when inferring a template.
+     */
+    Decimal getInferredTemplateLinkThreshold();
+
+    /**
+     * @see #getInferredTemplateLinkThreshold()
+     */
+    void setInferredTemplateLinkThreshold(Decimal inferredTemplateLinkThreshold);
+
 }

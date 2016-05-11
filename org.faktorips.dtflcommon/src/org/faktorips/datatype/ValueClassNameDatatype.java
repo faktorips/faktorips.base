@@ -11,7 +11,6 @@
 package org.faktorips.datatype;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.faktorips.util.StringUtil;
 import org.faktorips.values.NullObjectSupport;
 
 /**
@@ -22,16 +21,10 @@ import org.faktorips.values.NullObjectSupport;
  */
 public abstract class ValueClassNameDatatype extends AbstractDatatype implements ValueDatatype {
 
-    private String javaClassName;
     private String name;
 
-    public ValueClassNameDatatype(String javaClassName, String name) {
-        this.javaClassName = javaClassName;
+    public ValueClassNameDatatype(String name) {
         this.name = name;
-    }
-
-    public ValueClassNameDatatype(String javaClassName) {
-        this(javaClassName, StringUtil.unqualifiedName(javaClassName));
     }
 
     @Override
@@ -77,11 +70,6 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
     @Override
     public ValueDatatype getWrapperType() {
         return null;
-    }
-
-    @Override
-    public String getJavaClassName() {
-        return javaClassName;
     }
 
     /**
@@ -147,6 +135,9 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison of values"); //$NON-NLS-1$
+        }
+        if (areValuesEqual(valueA, valueB)) {
+            return 0;
         }
         @SuppressWarnings("unchecked")
         Comparable<Object> valA = (Comparable<Object>)getValue(valueA);

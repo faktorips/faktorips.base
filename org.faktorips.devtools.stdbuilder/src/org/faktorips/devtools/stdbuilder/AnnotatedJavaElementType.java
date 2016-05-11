@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.IIpsElement;
  */
 public enum AnnotatedJavaElementType {
 
+    PRODUCT_CMPT_IMPL_CLASS,
+
     POLICY_CMPT_IMPL_CLASS,
 
     POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD,

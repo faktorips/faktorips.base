@@ -27,7 +27,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -210,15 +209,11 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
             @Override
             protected IIpsObject findSupertype(IIpsObject currentObject, IIpsProject ipsProject) {
-                try {
-                    if (currentObject instanceof IType) {
-                        return ((IType)currentObject).findSupertype(ipsProject);
-                    }
-                    if (currentObject instanceof IEnumType) {
-                        return ((IEnumType)currentObject).findSuperEnumType(ipsProject);
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                if (currentObject instanceof IType) {
+                    return ((IType)currentObject).findSupertype(ipsProject);
+                }
+                if (currentObject instanceof IEnumType) {
+                    return ((IEnumType)currentObject).findSuperEnumType(ipsProject);
                 }
                 throw new RuntimeException("Illegal type, " + currentObject + " must be of type IType or IEnumType"); //$NON-NLS-1$ //$NON-NLS-2$
             }

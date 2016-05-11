@@ -11,10 +11,8 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -158,8 +156,8 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
             messageList
                     .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                            Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
-                            Message.WARNING));
+                    Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
+                    Message.WARNING));
         }
         return messageList;
     }
@@ -168,16 +166,12 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         MessageList result = new MessageList();
         if (getPmo().getAddToProductCmptGeneration() != null && getPmo().getAddToProductCmptGeneration() != null) {
             IProductCmptTypeAssociation addToAssociation = getPmo().getAddToAssociation();
-            try {
-                IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(getPmo()
-                        .getIpsProject());
-                if (!getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
-                    result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
-                            Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
-                                    .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(getPmo()
+                    .getIpsProject());
+            if (!getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
+                result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
+                        Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
+                                .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
             }
         }
         return result;

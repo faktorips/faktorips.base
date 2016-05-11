@@ -62,13 +62,15 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
     }
 
     /**
-     * Getting the ProductCmptType of an {@link IpsSrcFile} if the file is of this type.
+     * Getting the IProductCmpt of an {@link IpsSrcFile} if the file is of type
+     * {@link IpsObjectType#PRODUCT_CMPT} or {@link IpsObjectType#PRODUCT_TEMPLATE}.
      */
     protected IProductCmpt adaptToProductCmpt(IIpsSrcFile file) {
         if (file == null) {
             return null;
         }
-        if (file.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+        IpsObjectType fileObjectType = file.getIpsObjectType();
+        if (IpsObjectType.PRODUCT_CMPT.equals(fileObjectType) || IpsObjectType.PRODUCT_TEMPLATE.equals(fileObjectType)) {
             try {
                 return (IProductCmpt)file.getIpsObject();
             } catch (CoreRuntimeException e) {

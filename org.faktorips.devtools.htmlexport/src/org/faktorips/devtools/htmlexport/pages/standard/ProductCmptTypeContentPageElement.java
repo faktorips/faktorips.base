@@ -120,21 +120,13 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         super.addStructureData();
 
         IPolicyCmptType to = null;
-        try {
-            to = getDocumentedIpsObject().getIpsProject().findPolicyCmptType(
-                    getDocumentedIpsObject().getPolicyCmptType());
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR,
-                            "Error getting PolicyCmptType of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
-            return;
-        }
+        to = getDocumentedIpsObject().getIpsProject().findPolicyCmptType(getDocumentedIpsObject().getPolicyCmptType());
 
         if (to == null) {
             addPageElements(TextPageElement
                     .createParagraph(
                             IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                            + ": " + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_none), getContext())); //$NON-NLS-1$
+                                    + ": " + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_none), getContext())); //$NON-NLS-1$
             return;
         }
 
@@ -142,7 +134,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                 WrapperType.BLOCK,
                 getContext(),
                 new IPageElement[] {
-                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": ", getContext()), new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
+                    new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": ", getContext()), new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
 
     }
 
@@ -172,7 +164,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_formulaName));
             addHeadlineAndColumnLayout(headline,
                     getContext()
-                            .getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),
+                    .getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),
                     Style.CENTER);
             return headline;
         }

@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -74,6 +75,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype) {
         LinkedHashMap<String, String> optionsMap = initOptions(valueSet, datatype);
         RadioButtonGroup<String> radioButtonGroup = toolkit.createRadioButtonGroup(parent, optionsMap);
+        radioButtonGroup.getComposite().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         if (valueSet != null) {
             registerUpdateListener(valueSet.getValueSetOwner(), datatype, radioButtonGroup);
         }
@@ -135,7 +137,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             RadioButtonGroup<String> radioButtonGroup,
             String valueId) {
         Button buttonForId = radioButtonGroup.getRadioButton(valueId);
-        if (buttonForId != null) {
+        if (buttonForId != null && !buttonForId.isDisposed()) {
             buttonForId.setEnabled(valueSetContainsId(valueSet, valueId));
         }
     }

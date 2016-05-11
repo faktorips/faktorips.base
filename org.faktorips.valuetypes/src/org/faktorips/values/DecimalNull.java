@@ -223,7 +223,13 @@ public class DecimalNull extends Decimal implements NullObject {
 
     @Override
     public int compareTo(Decimal d) {
-        throw newNullPointerException();
+        if (d == null) {
+            throw newNullPointerException();
+        }
+        if (d.isNull()) {
+            return 0;
+        }
+        return -1;
     }
 
     @Override

@@ -129,7 +129,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     @Override
     protected void objectHasChanged(PropertyChangeEvent propertyChangeEvent) {
-        objectHasChanged();
+        ContentChangeEvent event = ContentChangeEvent.newPartChangedEvent(this, propertyChangeEvent);
+        objectHasChanged(event);
     }
 
     @Override

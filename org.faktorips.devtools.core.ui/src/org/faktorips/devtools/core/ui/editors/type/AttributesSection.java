@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 
 import java.util.EnumSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -144,12 +143,8 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
                 }
 
                 IAttribute attribute = (IAttribute)selected;
-                try {
-                    Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
-                    return datatype instanceof EnumTypeDatatypeAdapter;
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
+                return datatype instanceof EnumTypeDatatypeAdapter;
             }
 
             @Override
@@ -160,14 +155,10 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
                 }
 
                 IAttribute attribute = (IAttribute)selected;
-                try {
-                    Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
-                    if (datatype instanceof EnumTypeDatatypeAdapter) {
-                        EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)datatype;
-                        IpsUIPlugin.getDefault().openEditor(enumDatatype.getEnumValueContainer());
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
+                Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
+                if (datatype instanceof EnumTypeDatatypeAdapter) {
+                    EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)datatype;
+                    IpsUIPlugin.getDefault().openEditor(enumDatatype.getEnumValueContainer());
                 }
             }
 

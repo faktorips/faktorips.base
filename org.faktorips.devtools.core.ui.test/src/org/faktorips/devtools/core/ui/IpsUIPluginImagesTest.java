@@ -28,9 +28,17 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.After;
 import org.junit.Test;
 
 public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
+
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        IpsUIPlugin.getImageHandling().dispose();
+    }
 
     @Test
     public void testCreateImageDescriptor() {
@@ -43,7 +51,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRegisterAndDisposeImage() {
-        String name = "TestCase.gif";
+        String name = "TestImage.gif";
         ImageDescriptor expDescriptor = ImageDescriptor.createFromFile(this.getClass(), name);
         Image expImage = IpsUIPlugin.getImageHandling().createImage(expDescriptor);
         assertEquals(expImage, IpsUIPlugin.getImageHandling().getImage(expDescriptor));
@@ -81,7 +89,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testResourceHandling() {
-        String name = "TestCase.gif";
+        String name = "TestImage.gif";
         ImageDescriptor descriptor = ImageDescriptor.createFromFile(this.getClass(), name);
         ResourceManager rmA = new LocalResourceManager(JFaceResources.getResources());
         Image imageA = (Image)rmA.get(descriptor);

@@ -36,6 +36,16 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
     }
 
     @Override
+    public DatatypeHelper getWrapperTypeHelper() {
+        return DatatypeHelper.INTEGER;
+    }
+
+    @Override
+    public String getJavaClassName() {
+        return Integer.TYPE.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         return new JavaCodeFragment(value);
     }

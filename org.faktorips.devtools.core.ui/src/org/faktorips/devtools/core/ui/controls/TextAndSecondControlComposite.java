@@ -83,8 +83,8 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
     }
 
     /**
-     * Removes the margin from the inner composite. Can be used to reduce the size
-     * of the second control.
+     * Removes the margin from the inner composite. Can be used to reduce the size of the second
+     * control.
      */
     protected void removeMargins() {
         if (innerComposite != null) {
@@ -100,6 +100,7 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
 
     @Override
     public void setEnabled(boolean value) {
+        super.setEnabled(value);
         text.setEnabled(value);
         secondControl.setEnabled(value);
     }

@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -87,12 +86,12 @@ public class AssociationNodeGeneratorTest {
     }
 
     private void setUpBuilderSet() {
-        when(builderSet.getJavaClassName(any(Datatype.class), eq(true))).thenCallRealMethod();
+        when(builderSet.getJavaClassName(target, true)).thenReturn("Coverage");
+        when(builderSet.getJavaClassName(elementDatatype, true)).thenReturn("Policy");
     }
 
     private void setUpMockAssociation() throws CoreException {
         when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(target.getJavaClassName()).thenReturn("Coverage");
     }
 
     private void setUpCompilationResult() {
@@ -104,7 +103,6 @@ public class AssociationNodeGeneratorTest {
     private void configureCompilatioResultWithListDatatype() {
         when(contextCompilationResult.getDatatype()).thenReturn(listDatatype);
         when(listDatatype.getBasicDatatype()).thenReturn(elementDatatype);
-        when(elementDatatype.getJavaClassName()).thenReturn("Policy");
     }
 
     private void setUpSpyGenerator() {

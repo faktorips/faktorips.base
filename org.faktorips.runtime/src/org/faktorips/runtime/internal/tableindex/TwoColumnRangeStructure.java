@@ -34,7 +34,6 @@ import java.util.TreeMap;
  * <li>keys 25, 50 and all in between will yield {"BBB"} respectively</li>
  * <li>keys outside these ranges, e.g. 0 or 100 will return an {@link EmptySearchStructure}.</li>
  * </ul>
- * </ul>
  * <p>
  * Overlapping ranges: In a {@link TwoColumnRangeStructure} by calling
  * <code>put(0, 100, "AAA")</code> and <code>put(50, 200, "BBB")</code>, two ranges are defined.

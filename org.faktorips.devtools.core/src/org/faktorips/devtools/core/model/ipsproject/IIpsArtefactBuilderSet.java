@@ -22,8 +22,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.IpsBuilder;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
@@ -122,15 +120,6 @@ public interface IIpsArtefactBuilderSet {
      */
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression expression,
             ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException;
-
-    /**
-     * Returns the data type helper for the provided {@link IEnumType}. <code>IEnumType</code>
-     * implements the {@link Datatype} interface and this method provides the datatype helper for
-     * it. The data type helper of an <code>IEnumType</code> depends on the
-     * {@link IIpsArtefactBuilderSet} since it determines the full qualified class name of the
-     * generated data type class.
-     */
-    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter);
 
     /**
      * Returns the file that contain the runtime repository toc file. Note that the file might not
@@ -301,4 +290,9 @@ public interface IIpsArtefactBuilderSet {
     @SuppressWarnings("javadoc")
     public void clean(IProgressMonitor monitor);
 
+    /**
+     * Returns the data type helper for the given data type. Returns {@code null} if there is no
+     * helper for the given data type in this builder set.
+     */
+    public DatatypeHelper getDatatypeHelper(Datatype datatype);
 }

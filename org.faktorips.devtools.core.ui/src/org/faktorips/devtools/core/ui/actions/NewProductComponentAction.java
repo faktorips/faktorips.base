@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction;
 
@@ -22,18 +23,26 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWiza
  */
 public class NewProductComponentAction extends Action {
 
-    private IWorkbenchWindow window;
+    private final IWorkbenchWindow window;
+    private final boolean template;
 
-    public NewProductComponentAction(IWorkbenchWindow window) {
+    public NewProductComponentAction(IWorkbenchWindow window, boolean template) {
         super();
         this.window = window;
-        setText(Messages.NewProductComponentAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
+        this.template = template;
+        if (template) {
+            setText(IpsObjectType.PRODUCT_TEMPLATE.getDisplayName());
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductTemplateWizard.gif")); //$NON-NLS-1$
+        } else {
+            setText(IpsObjectType.PRODUCT_CMPT.getDisplayName());
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
+        }
     }
 
     @Override
     public void run() {
         OpenNewProductCmptWizardAction o = new OpenNewProductCmptWizardAction();
+        o.setTemplate(template);
         o.init(window);
         o.run(this);
     }

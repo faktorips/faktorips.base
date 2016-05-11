@@ -13,24 +13,31 @@ package org.faktorips.datatype;
 /**
  * A datatype that represents a Java class representing a value, for example java.lang.String.
  * 
- * @author Jan Ortmann
+ * @deprecated since 3.17 the datatype does not need to know its java class name. All concerns of
+ *             the generated code are part of the corresponding datatype helper. You could simply
+ *             use the supertype {@link ValueClassNameDatatype} to have the same functionality.
+ * 
  */
+@Deprecated
 public abstract class ValueClassDatatype extends ValueClassNameDatatype {
 
-    private Class<?> clazz;
-
+    /**
+     * Creates a new instance using the given type. The name is provided from the given class name.
+     * 
+     * @param clazz The java class that should be represented by this datatype
+     */
     public ValueClassDatatype(Class<?> clazz) {
-        super(clazz.getName());
-        this.clazz = clazz;
+        super(clazz.getSimpleName());
     }
 
+    /**
+     * Creates a new instance using the given class and name.
+     * 
+     * @param clazz The java class that should be represented by this datatype
+     * @param name The name of the datatype
+     */
     public ValueClassDatatype(Class<?> clazz, String name) {
-        super(clazz.getName(), name);
-        this.clazz = clazz;
-    }
-
-    public Class<?> getJavaClass() {
-        return clazz;
+        super(name);
     }
 
 }

@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for stdbuilder ui
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.ui.test
-Bundle-Version: 3.16.2.qualifier
+Bundle-Version: 3.17.1.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Fragment-Host: org.faktorips.devtools.stdbuilder.ui;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.mockito.mockito-all;bundle-version="1.8.5"
-Import-Package: org.junit;version="4.5.0",
- org.junit.matchers;version="4.5.0",
- org.junit.runner;version="4.5.0"
+Import-Package: org.junit;version="4.7.0",
+ org.junit.matchers;version="4.7.0",
+ org.junit.runner;version="4.7.0"

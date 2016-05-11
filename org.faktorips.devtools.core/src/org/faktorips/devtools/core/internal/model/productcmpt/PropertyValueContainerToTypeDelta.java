@@ -14,14 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingTemplateLinkEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MultilingualMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.RemovedTemplateLinkEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
@@ -37,6 +43,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -76,6 +83,9 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
         createEntriesForProperties();
         createEntriesForLinks();
+        if (getLinkContainer().isUsingTemplate()) {
+            createEntriesForTemplateLinks();
+        }
         createAdditionalEntriesAndChildren();
     }
 
@@ -92,6 +102,39 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 addEntry(entry);
             }
         }
+    }
+
+    public void createEntriesForTemplateLinks() {
+        IProductCmptLinkContainer templateContainer = getLinkContainer().findTemplate(getIpsProject());
+        if (templateContainer == null) {
+            return;
+        }
+        for (IProductCmptLink templateLink : templateContainer.getLinksAsList()) {
+            if (isLinkAbsent(templateLink, getLinkContainer())) {
+                addEntry(new MissingTemplateLinkEntry(templateLink, getLinkContainer()));
+            }
+        }
+        for (IProductCmptLink link : getLinkContainer().getLinksAsList()) {
+            if (link.getTemplateValueStatus() != TemplateValueStatus.DEFINED && isLinkAbsent(link, templateContainer)) {
+                addEntry(new RemovedTemplateLinkEntry(link));
+            }
+        }
+    }
+
+    private boolean isLinkAbsent(final IProductCmptLink templateLink, IProductCmptLinkContainer container) {
+        return templateLink.getTemplateValueStatus() != TemplateValueStatus.UNDEFINED
+                && matchingLinkIsMissing(templateLink, container);
+    }
+
+    private boolean matchingLinkIsMissing(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
+        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()),
+                new Predicate<IProductCmptLink>() {
+
+            @Override
+            public boolean apply(IProductCmptLink link) {
+                return link != null && ObjectUtils.equals(linkToFind.getTarget(), link.getTarget());
+            }
+        });
     }
 
     protected IProductCmptLinkContainer getLinkContainer() {
@@ -111,7 +154,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
      */
     protected abstract void createAdditionalEntriesAndChildren() throws CoreException;
 
-    private void createEntriesForProperties() throws CoreException {
+    private void createEntriesForProperties() {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
             Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .findProductCmptPropertyMap(propertyType, getIpsProject());
@@ -138,9 +181,10 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
-            ProductCmptPropertyType propertyType) throws CoreException {
+            ProductCmptPropertyType propertyType) {
 
-        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueClass());
+        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueType()
+                .getInterfaceClass());
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {
@@ -177,7 +221,8 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
-        if (attribute.getValueSet().isUnrestricted()) {
+        if (attribute.getValueSet().isUnrestricted()
+                || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }
         if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {
@@ -187,7 +232,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     /* private */void checkForValueMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
-        if (attribute.isMultiValueAttribute() != (value.getValueHolder() instanceof MultiValueHolder)) {
+        if (attribute.isMultiValueAttribute() != (value.getValueHolder().isMultiValue())) {
             addEntry(new ValueHolderMismatchEntry(value, attribute));
         }
     }

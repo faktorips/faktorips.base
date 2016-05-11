@@ -29,7 +29,7 @@ public class ExistsTest extends FunctionAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
         registerFunction(new Exists("EXISTS", ""));
     }
 
@@ -38,7 +38,7 @@ public class ExistsTest extends FunctionAbstractTest {
      * datatype is the expected one.
      */
     private void compileSuccessfull(String expression) throws Exception {
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }

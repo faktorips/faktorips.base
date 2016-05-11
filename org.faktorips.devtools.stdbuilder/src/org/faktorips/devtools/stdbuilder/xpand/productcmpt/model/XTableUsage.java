@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -57,12 +55,8 @@ public class XTableUsage extends AbstractGeneratorModelNode {
         } else {
             String tableStructureName = getTableStructureUsage().getTableStructures()[0];
             ITableStructure tableStructure;
-            try {
-                tableStructure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
-                        tableStructureName);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            tableStructure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
+                    tableStructureName);
             XTable xTable = getModelNode(tableStructure, XTable.class);
             return xTable.getSimpleName(BuilderAspect.IMPLEMENTATION);
         }

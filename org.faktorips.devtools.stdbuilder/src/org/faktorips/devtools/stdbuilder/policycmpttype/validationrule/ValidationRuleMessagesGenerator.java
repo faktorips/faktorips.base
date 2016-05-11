@@ -65,7 +65,7 @@ public class ValidationRuleMessagesGenerator {
             if (!file.exists()) {
                 file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
                 file.setDerived(builder.buildsDerivedArtefacts()
-                        && builder.getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+                        && builder.getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             }
             storeMessagesToFile(file, getValidationMessages(), comment);
             return true;

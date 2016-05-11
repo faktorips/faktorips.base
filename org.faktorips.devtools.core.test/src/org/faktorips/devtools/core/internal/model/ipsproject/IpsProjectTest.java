@@ -10,7 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,7 +22,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -54,10 +56,9 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsFeatureVersionManager;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
-import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -102,6 +103,8 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.util.Tree;
+import org.faktorips.devtools.core.util.Tree.Node;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -135,9 +138,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
 
         baseProject = (IpsProject)this.newIpsProject();
-        IIpsProjectProperties props = baseProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { "Integer" });
-        baseProject.setProperties(props);
+        setPredefinedDatatypesUsed(baseProject, "Integer");
     }
 
     @Test
@@ -752,22 +753,42 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDatatypeHelper() throws Exception {
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName() });
-        ipsProject.setProperties(props);
+    public void testGetDatatypeHelper_DelegatesToBuilderSet() throws CoreException {
+        // no helper registered in builder set
+        assertNull(ipsProject.getDatatypeHelper(Datatype.MONEY));
+
+        // register helper
+        setPredefinedDatatypesUsed(ipsProject, Datatype.DECIMAL.getQualifiedName());
+        TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        builderSet.testObjectsMap.put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
+
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
-        assertEquals(DecimalHelper.class, helper.getClass());
-        helper = ipsProject.getDatatypeHelper(new ArrayOfValueDatatype(Datatype.DECIMAL, 1));
         assertNotNull(helper);
-        assertEquals(ArrayOfValueDatatypeHelper.class, helper.getClass());
+        assertEquals(DecimalHelper.class, helper.getClass());
 
-        helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
-        assertNull(helper);
+        // still no helper registered
+        assertNull(ipsProject.getDatatypeHelper(Datatype.MONEY));
+    }
 
-        createRefProject();
-        helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
-        assertEquals(MoneyHelper.class, helper.getClass());
+    @Test
+    public void testGetDatatypeHelper_DelegatesToReferencedProjects() throws Exception {
+        // no referenced project present, no helper is found
+        IIpsProject referencingProject = newIpsProject();
+        assertNull(referencingProject.getDatatypeHelper(Datatype.DECIMAL));
+
+        // create a referenced project with a data type helper
+        setPredefinedDatatypesUsed(ipsProject, Datatype.DECIMAL.getQualifiedName());
+        TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        builderSet.testObjectsMap.put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
+        createProjectReference(referencingProject, ipsProject);
+
+        // precondition: helper is found in referenced project
+        assertNotNull(ipsProject.getDatatypeHelper(Datatype.DECIMAL));
+
+        // referenced project exists, helper should be found in project
+        DatatypeHelper helper = referencingProject.getDatatypeHelper(Datatype.DECIMAL);
+        assertNotNull(helper);
+        assertEquals(DecimalHelper.class, helper.getClass());
     }
 
     @Test
@@ -815,7 +836,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(messageListDatatype, types[1]);
         assertEquals(pcType1, types[2]);
 
-        // setup dependency to other project, these datatypes of the refenreced project must also be
+        // setup dependency to other project, these datatypes of the referenced project must also be
         // included.
         IIpsProject refProject = createRefProject();
         pack = refProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("");
@@ -827,7 +848,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(3, types.length);
         assertEquals(Datatype.DECIMAL, types[0]);
         assertEquals(Datatype.MONEY, types[1]);
-        assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
+        assertEquals(TestEnumType.class.getSimpleName(), types[2].getName());
 
         // only value types, void included
         types = ipsProject.findDatatypes(true, true);
@@ -835,7 +856,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.VOID, types[0]);
         assertEquals(Datatype.DECIMAL, types[1]);
         assertEquals(Datatype.MONEY, types[2]);
-        assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
+        assertEquals(TestEnumType.class.getSimpleName(), types[3].getName());
 
         // all types, void not included
         types = ipsProject.findDatatypes(false, false);
@@ -843,7 +864,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.DECIMAL, types[0]);
         assertEquals(messageListDatatype, types[1]);
         assertEquals(Datatype.MONEY, types[2]);
-        assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
+        assertEquals(TestEnumType.class.getSimpleName(), types[3].getName());
         assertEquals(pcType1, types[4]);
         assertEquals(pcType2, types[5]);
 
@@ -854,7 +875,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.DECIMAL, types[1]);
         assertEquals(messageListDatatype, types[2]);
         assertEquals(Datatype.MONEY, types[3]);
-        assertEquals(TestEnumType.class.getName(), types[4].getJavaClassName());
+        assertEquals(TestEnumType.class.getSimpleName(), types[4].getName());
         assertEquals(pcType1, types[5]);
         assertEquals(pcType2, types[6]);
     }
@@ -942,16 +963,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      */
     private IIpsProject createRefProject() throws Exception {
         IIpsProject refProject = newIpsProject("RefProject");
-        IIpsProjectProperties props = refProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
-                Datatype.MONEY.getQualifiedName() });
-        refProject.setProperties(props);
+        setPredefinedDatatypesUsed(refProject, Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName());
 
         newDefinedEnumDatatype(refProject, new Class[] { TestEnumType.class });
         // set the reference from the ips project to the referenced project
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newIpsProjectRefEntry(refProject);
-        ipsProject.setIpsObjectPath(path);
+        createProjectReference(ipsProject, refProject);
         return refProject;
     }
 
@@ -1732,6 +1748,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 return true;
             }
 
+            @Override
+            public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+                return null;
+            }
+
         };
         projectABuilderSet.setId("projectABuilderSet");
         projectABuilderSet.setIpsProject(ipsProject);
@@ -1782,6 +1803,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             @Override
             public boolean isGeneratePublishedInterfaces() {
                 return true;
+            }
+
+            @Override
+            public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+                return null;
             }
 
         };
@@ -2356,6 +2382,114 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
 
         assertTrue(markerEnums.isEmpty());
+    }
+
+    private void setPredefinedDatatypesUsed(IIpsProject project, String... datatypes) throws CoreException {
+        IIpsProjectProperties props = project.getProperties();
+        props.setPredefinedDatatypesUsed(datatypes);
+        project.setProperties(props);
+    }
+
+    private void createProjectReference(IIpsProject from, IIpsProject to) throws CoreException {
+        IIpsObjectPath path = from.getIpsObjectPath();
+        path.newIpsProjectRefEntry(to);
+        from.setIpsObjectPath(path);
+    }
+
+    @Test
+    public void testFindAllProductTemplates_NoTemplateExists() throws CoreException {
+        IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
+        IProductCmptType subType = newProductCmptType(baseType, "subType");
+
+        assertThat(ipsProject.findAllProductTemplates(baseType, true).isEmpty(), is(true));
+        assertThat(ipsProject.findAllProductTemplates(baseType, false).isEmpty(), is(true));
+        assertThat(ipsProject.findAllProductTemplates(subType, true).isEmpty(), is(true));
+        assertThat(ipsProject.findAllProductTemplates(subType, false).isEmpty(), is(true));
+    }
+
+    @Test
+    public void testFindAllProductTemplates_TemplatesExist() throws CoreException {
+        IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
+        IProductCmptType subType = newProductCmptType(baseType, "subType");
+        IIpsSrcFile baseTemplate = newProductTemplate(baseType, "baseTemplate").getIpsSrcFile();
+        IIpsSrcFile subTemplate = newProductTemplate(subType, "subTemplate").getIpsSrcFile();
+
+        assertThat(ipsProject.findAllProductTemplates(baseType, true), hasItems(baseTemplate, subTemplate));
+        assertThat(ipsProject.findAllProductTemplates(baseType, false), hasItem(baseTemplate));
+        assertThat(ipsProject.findAllProductTemplates(subType, true), hasItems(subTemplate));
+        assertThat(ipsProject.findAllProductTemplates(subType, false), hasItems(subTemplate));
+    }
+
+    @Test
+    public void testFindAllProductTemplates_TemplateExistsInReferencedProject() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(true);
+
+        IProductCmptType type = newProductCmptType(baseProject, "type");
+        IIpsSrcFile template = newProductTemplate(type, "template").getIpsSrcFile();
+        assertThat(ipsProject.findAllProductTemplates(type, false), hasItem(template));
+    }
+
+    @Test
+    public void testFindTemplateHierarchy_EmptyHierarchy() throws CoreException {
+        assertThat(ipsProject.findTemplateHierarchy(null).isEmpty(), is(true));
+        assertThat(ipsProject.findTemplateHierarchy(newProductCmpt(baseProject, "p")).isEmpty(), is(true));
+    }
+
+    @Test
+    public void testFindTemplateHierarchy_DirectReferences() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(true);
+        IProductCmpt t1 = newProductTemplate(baseProject, "Template-1");
+        IProductCmpt t2 = newProductTemplate(ipsProject, "Template-2");
+        IProductCmpt p1 = newProductCmpt(baseProject, "Product-1");
+        IProductCmpt p2 = newProductCmpt(ipsProject, "Product-2");
+        IProductCmpt p3 = newProductCmpt(ipsProject, "Product-3");
+
+        p1.setTemplate(t1.getQualifiedName());
+        p2.setTemplate(t1.getQualifiedName());
+        t2.setTemplate(t1.getQualifiedName());
+        p3.setTemplate("other Template");
+
+        Tree<IIpsSrcFile> t2Hierarchy = ipsProject.findTemplateHierarchy(t2);
+        assertThat(t2Hierarchy.isEmpty(), is(false));
+        assertThat(t2Hierarchy.getRoot().getElement(), is(t2.getIpsSrcFile()));
+        assertThat(t2Hierarchy.getRoot().getChildren().isEmpty(), is(true));
+
+        Tree<IIpsSrcFile> t1Hierarchy = ipsProject.findTemplateHierarchy(t1);
+        assertThat(t1Hierarchy.isEmpty(), is(false));
+        assertThat(t1Hierarchy.getRoot().getElement(), is(t1.getIpsSrcFile()));
+        assertThat(t1Hierarchy.getRoot().getChildren().size(), is(3));
+
+        assertThat(t1Hierarchy.getAllElements(), hasItems(p1.getIpsSrcFile(), p2.getIpsSrcFile(), t2.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testFindTemplateHierarchy_IndirectReference() throws CoreException {
+        makeIpsProjectDependOnBaseProject();
+        IProductCmpt t1 = newProductTemplate(baseProject, "Template-1");
+        IProductCmpt t2 = newProductTemplate(baseProject, "Template-2");
+        IProductCmpt t3 = newProductTemplate(ipsProject, "Template-3");
+        IProductCmpt p = newProductCmpt(ipsProject, "Product");
+
+        t2.setTemplate(t1.getQualifiedName());
+        t3.setTemplate(t2.getQualifiedName());
+        p.setTemplate(t3.getQualifiedName());
+
+        Tree<IIpsSrcFile> hierarchy = baseProject.findTemplateHierarchy(t1);
+        Node<IIpsSrcFile> root = hierarchy.getRoot();
+        assertThat(root.getElement(), is(t1.getIpsSrcFile()));
+        assertThat(root.getChildren().size(), is(1));
+
+        Node<IIpsSrcFile> t2Node = root.getChildren().get(0);
+        assertThat(t2Node.getElement(), is(t2.getIpsSrcFile()));
+        assertThat(t2Node.getChildren().size(), is(1));
+
+        Node<IIpsSrcFile> t3Node = t2Node.getChildren().get(0);
+        assertThat(t3Node.getElement(), is(t3.getIpsSrcFile()));
+        assertThat(t3Node.getChildren().size(), is(1));
+
+        Node<IIpsSrcFile> pNode = t3Node.getChildren().get(0);
+        assertThat(pNode.getElement(), is(p.getIpsSrcFile()));
+        assertThat(pNode.getChildren().isEmpty(), is(true));
     }
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {

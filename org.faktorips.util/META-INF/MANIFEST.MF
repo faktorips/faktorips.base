@@ -2,10 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Util
 Bundle-SymbolicName: org.faktorips.util
-Bundle-Version: 3.16.2.qualifier
+Bundle-Version: 3.17.1.qualifier
 Bundle-Vendor: Faktor Zehn AG
-Export-Package: org.faktorips.util,org.faktorips.util.memento,org.fakt
- orips.util.message
+Export-Package: org.faktorips.util,
+ org.faktorips.util.collections,
+ org.faktorips.util.functional,
+ org.faktorips.util.memento,
+ org.faktorips.util.message
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

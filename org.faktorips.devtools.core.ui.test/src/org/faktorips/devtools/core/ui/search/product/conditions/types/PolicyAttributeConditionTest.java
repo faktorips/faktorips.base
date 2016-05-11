@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.junit.Before;
@@ -135,7 +136,7 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
 
         IOperandProvider operandProvider = condition.createOperandProvider(attribut);
 
-        RangeValueSet foundRangeSet = (RangeValueSet)operandProvider.getSearchOperand(generation);
+        IRangeValueSet foundRangeSet = (IRangeValueSet)operandProvider.getSearchOperand(generation);
 
         assertNotNull(foundRangeSet);
 

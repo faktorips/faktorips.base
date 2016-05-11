@@ -23,7 +23,8 @@ public class BaseJodaDatatypeHelperTest {
 
     @Test
     public void testValueOfExpression() {
-        BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper("myParseMethod");
+        BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper(
+                LocalDateHelper.ORG_JODA_TIME_LOCAL_DATE, "myParseMethod");
         JavaCodeFragment valueOfExpression = baseJodaDatatypeHelper.valueOfExpression("myExpression");
         assertTrue(valueOfExpression.getImportDeclaration().isCovered(
                 BaseJodaDatatypeHelper.ORG_FAKTORIPS_UTIL_JODA_UTIL));
@@ -34,7 +35,8 @@ public class BaseJodaDatatypeHelperTest {
 
     @Test
     public void testNewInstance() {
-        BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper("myParseMethod");
+        BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper(
+                LocalDateHelper.ORG_JODA_TIME_LOCAL_DATE, "myParseMethod");
         JavaCodeFragment newInstance = baseJodaDatatypeHelper.newInstance("myExpression");
         assertTrue(newInstance.getImportDeclaration().isCovered(BaseJodaDatatypeHelper.ORG_FAKTORIPS_UTIL_JODA_UTIL));
         assertEquals("JodaUtil.myParseMethod(\"myExpression\")", newInstance.getSourcecode());
@@ -42,13 +44,15 @@ public class BaseJodaDatatypeHelperTest {
 
     @Test
     public void testNewInstance_Null() {
-        JavaCodeFragment newInstance = new BaseJodaDatatypeHelper("myParseMethod").newInstance(null);
+        JavaCodeFragment newInstance = new BaseJodaDatatypeHelper(LocalDateHelper.ORG_JODA_TIME_LOCAL_DATE,
+                "myParseMethod").newInstance(null);
         assertEquals("null", newInstance.getSourcecode());
     }
 
     @Test
     public void testNewInstance_EmptyString() {
-        JavaCodeFragment newInstance = new BaseJodaDatatypeHelper("myParseMethod").newInstance("");
+        JavaCodeFragment newInstance = new BaseJodaDatatypeHelper(LocalDateHelper.ORG_JODA_TIME_LOCAL_DATE,
+                "myParseMethod").newInstance("");
         assertEquals("null", newInstance.getSourcecode());
     }
 

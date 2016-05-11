@@ -41,6 +41,11 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return GregorianCalendar.class.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();

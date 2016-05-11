@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ClassToInstancesMap;
@@ -53,7 +54,8 @@ public class PropertyValueCollection {
         if (property == null) {
             return null;
         }
-        return getPropertyValue(property.getProductCmptPropertyType().getValueClass(), property.getPropertyName());
+        return getPropertyValue(property.getProductCmptPropertyType().getValueType().getInterfaceClass(),
+                property.getPropertyName());
     }
 
     /**
@@ -89,7 +91,7 @@ public class PropertyValueCollection {
      *         given Property name is <code>null</code> or if no property with the indicated name
      *         could be found.
      */
-    public IPropertyValue getPropertyValue(String propertyName) {
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName) {
         List<IPropertyValue> allValues = getAllPropertyValues();
         return getPropertyValueFromList(allValues, propertyName);
     }
@@ -102,13 +104,16 @@ public class PropertyValueCollection {
      * @param propertyName the name of the property
      * @return the first element with the given name in the list.
      */
-    private static IPropertyValue getPropertyValueFromList(List<? extends IPropertyValue> valueList, String propertyName) {
+    private static <T extends IPropertyValue> T getPropertyValueFromList(List<IPropertyValue> valueList,
+            String propertyName) {
         if (propertyName == null || valueList == null) {
             return null;
         }
         for (IPropertyValue value : valueList) {
             if (propertyName.equals(value.getPropertyName())) {
-                return value;
+                @SuppressWarnings("unchecked")
+                T castedValue = (T)value;
+                return castedValue;
             }
         }
         return null;
@@ -133,9 +138,9 @@ public class PropertyValueCollection {
      *         {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
      */
     public IPropertyValue newPropertyValue(IPropertyValueContainer container, String xmlTagName, String partId) {
-        ProductCmptPropertyType propertyType = ProductCmptPropertyType.getTypeForXmlTag(xmlTagName);
+        PropertyValueType propertyType = PropertyValueType.getTypeForXmlTag(xmlTagName);
         if (propertyType != null) {
-            IPropertyValue newPropertyValue = newPropertyValue(container, partId, propertyType.getValueClass());
+            IPropertyValue newPropertyValue = newPropertyValue(container, partId, propertyType.getInterfaceClass());
             return newPropertyValue;
         }
         return null;
@@ -171,7 +176,8 @@ public class PropertyValueCollection {
     public IPropertyValue newPropertyValue(IPropertyValueContainer container,
             IProductCmptProperty property,
             String partId) {
-        return newPropertyValue(container, property, partId, property.getProductCmptPropertyType().getValueClass());
+        return newPropertyValue(container, property, partId, property.getProductCmptPropertyType().getValueType()
+                .getInterfaceClass());
     }
 
     /**
@@ -190,7 +196,7 @@ public class PropertyValueCollection {
             IProductCmptProperty property,
             String partId,
             Class<T> clazz) {
-        T propertyValue = ProductCmptPropertyType.createPropertyValue(container, property, partId, clazz);
+        T propertyValue = PropertyValueType.createPropertyValue(container, property, partId, clazz);
         addPropertyValue(propertyValue);
         return propertyValue;
     }
@@ -202,7 +208,7 @@ public class PropertyValueCollection {
      * @param value the value to be added
      */
     public boolean addPropertyValue(IPropertyValue value) {
-        return classToInstancesMap.putWithRuntimeCheck(value.getPropertyType().getValueClass(), value) != null;
+        return classToInstancesMap.putWithRuntimeCheck(value.getPropertyValueType().getInterfaceClass(), value) != null;
     }
 
     /**
@@ -213,7 +219,7 @@ public class PropertyValueCollection {
      *         otherwise.
      */
     public boolean removePropertyValue(IPropertyValue value) {
-        boolean removed = classToInstancesMap.remove(value.getPropertyType().getValueClass(), value);
+        boolean removed = classToInstancesMap.remove(value.getPropertyValueType().getInterfaceClass(), value);
         return removed;
     }
 

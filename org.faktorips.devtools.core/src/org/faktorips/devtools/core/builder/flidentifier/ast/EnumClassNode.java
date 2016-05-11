@@ -69,11 +69,6 @@ public class EnumClassNode extends IdentifierNode {
             return false;
         }
 
-        @Override
-        public String getJavaClassName() {
-            return Class.class.getName();
-        }
-
         public EnumDatatype getEnumDatatype() {
             return enumDatatype;
         }

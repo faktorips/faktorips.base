@@ -483,6 +483,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Decimal d) {
+        if (d.isNull()) {
+            return 1;
+        }
         return value.compareTo(d.value);
     }
 

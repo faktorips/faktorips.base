@@ -2,8 +2,9 @@
 «IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
-
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template»
 
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::INTERFACE)-»
@@ -21,6 +22,13 @@
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
 		«ENDIF-»
 		{
+			«IF generatePolicyBuilder && !abstract-»
+				/**
+				* @generated
+				*/
+				public final static «policyBuilderModelNode.factoryImplClassName» BUILD = new «policyBuilderModelNode.factoryImplClassName»();	
+			«ENDIF-»
+						
 			«EXPAND PolicyCmptAssociation::constants FOREACH associations»
 			«EXPAND ValidationRule::constants FOREACH validationRules»
 			
@@ -55,6 +63,10 @@
 			«ENDIF-»
 			
 			«EXPAND Methods::method FOREACH methods-»
+			
+			«IF generatePolicyBuilder && !abstract-»
+				«EXPAND PolicyCmptCreateBuilder::builder FOR policyBuilderModelNode-»
+			«ENDIF-»
 		}
 	«ENDFILE»
 «ENDDEFINE»

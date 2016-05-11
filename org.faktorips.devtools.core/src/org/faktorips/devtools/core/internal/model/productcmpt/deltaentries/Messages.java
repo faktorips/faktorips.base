@@ -24,6 +24,10 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String DeletedTemplateLinkEntry_removeInheritedTemplateLink;
+
+    public static String DeletedTemplateLinkEntry_removeUndefinedTemplateLink;
+
     public static String HiddenAttributeMismatchEntry_desc;
 
     public static String LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt;
@@ -33,6 +37,8 @@ public class Messages extends NLS {
     public static String LinkChangingOverTimeMismatchEntry_Description_RemoveOnly;
 
     public static String MissingPropertyValueEntry_valueTransferedInformation;
+
+    public static String MissingTemplateLinkEntry_missingTemplateLink;
 
     public static String PropertyTypeMismatchEntry_desc;
 

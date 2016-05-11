@@ -10,17 +10,31 @@
 
 package org.faktorips.devtools.core.ui.util;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.junit.Test;
 
 /**
@@ -41,6 +55,10 @@ public class TypedSelectionTest {
     private static final String WRONG_ELEMENT_IN_SELECTION = "Wrong element in selection."; //$NON-NLS-1$
     /** Error message. */
     private static final String WRONG_VALID_STATE_EVALUATION = "Wrong valid state evaluation."; //$NON-NLS-1$
+    /** Error message. */
+    private static final String UNEXPECTED_ELEMENT_IN_SELECTION = "Unexpected element in selection."; //$NON-NLS-1$
+    /** Error message. */
+    private static final String NO_ELEMENT_IN_SELECTION = "No element in selection."; //$NON-NLS-1$
     /** Long value used in the tests. */
     private static final Long LONG_VALUE = Long.valueOf(121212);
     /** Integer value used in the tests. */
@@ -176,7 +194,8 @@ public class TypedSelectionTest {
      */
     @Test
     public void testNullValidator() {
-        TypedSelection<Object> validator = TypedSelection.createNullValidator();
+        TypedSelection<Object> validator = TypedSelection.create(Object.class,
+                new StructuredSelection(Collections.emptyList()));
 
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
     }
@@ -269,6 +288,30 @@ public class TypedSelectionTest {
                 TypedSelection.convertSingleElement(String.class, selection));
     }
 
+    @Test
+    public void testSingleElement() {
+        ISelection emptySelection = new StructuredSelection(Collections.emptyList());
+        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(String.class, emptySelection)
+                .isPresent());
+        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(Integer.class, emptySelection)
+                .isPresent());
+
+        StructuredSelection singleSelection = new StructuredSelection(Arrays.asList(TEST_STRING));
+
+        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(Integer.class, singleSelection)
+                .isPresent());
+        assertTrue(NO_ELEMENT_IN_SELECTION, TypedSelection.singleElement(String.class, singleSelection).isPresent());
+        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING,
+                TypedSelection.singleElement(String.class, singleSelection).get());
+
+        StructuredSelection multiSelection = new StructuredSelection(Arrays.asList(TEST_STRING, TEST_STRING));
+
+        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(Integer.class, multiSelection)
+                .isPresent());
+        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(String.class, multiSelection)
+                .isPresent());
+    }
+
     /**
      * Checks whether we throw an exception if the converted selection is empty.
      */
@@ -349,4 +392,35 @@ public class TypedSelectionTest {
         }
         assertTrue(NO_EXCEPTION_ON_WRONG_TYPE, isThrown);
     }
+
+    /**
+     * Checks whether typed selection tries to adapt the selected element to the specified type
+     * using {@link IWorkbenchAdapter}.
+     */
+    @Test
+    public void testAdaptation() {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, withSettings().extraInterfaces(IAdaptable.class));
+        IProductCmpt prodCmpt = mock(IProductCmpt.class);
+        when(ipsSrcFile.getAdapter(IProductCmpt.class)).thenReturn(prodCmpt);
+
+        StructuredSelection selection = new StructuredSelection(Lists.newArrayList(ipsSrcFile));
+        TypedSelection<IProductCmpt> typedSelection = TypedSelection.<IProductCmpt> create(IProductCmpt.class,
+                selection);
+        assertThat(typedSelection.getElement(), is(prodCmpt));
+    }
+
+    /**
+     * Checks whether typed selection tries to adapt the selected element to the specified type
+     * using {@link IWorkbenchAdapter}.
+     */
+    @Test
+    public void testAdaptation_withInvalidAdaptable() {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, withSettings().extraInterfaces(IAdaptable.class));
+
+        StructuredSelection selection = new StructuredSelection(Lists.newArrayList(ipsSrcFile));
+        TypedSelection<IProductCmpt> typedSelection = TypedSelection.<IProductCmpt> create(IProductCmpt.class,
+                selection);
+        assertThat(typedSelection.isValid(), is(false));
+    }
+
 }

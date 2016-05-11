@@ -108,13 +108,13 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private static final int MAX_START_TIME_INTERVAL = 5000;
 
+    /** Shared instance of the test runner */
+    private static final IpsTestRunner IPS_TEST_RUNNER = new IpsTestRunner();
+
     static {
         TRACE_IPS_TEST_RUNNER = Boolean
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
     }
-
-    /** Shared instance of the test runner */
-    private static IpsTestRunner ipsTestRunner;
 
     private int port;
     private IIpsProject ipsProject;
@@ -166,10 +166,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Returns the shared instance.
      */
     public static IpsTestRunner getDefault() {
-        if (ipsTestRunner == null) {
-            ipsTestRunner = new IpsTestRunner();
-        }
-        return ipsTestRunner;
+        return IPS_TEST_RUNNER;
     }
 
     /**
@@ -439,7 +436,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 confName = StringUtil.unqualifiedName(testName);
             }
         }
-        confName = manager.generateUniqueLaunchConfigurationNameFrom(confName);
+        confName = manager.generateLaunchConfigurationName(confName);
 
         ILaunchConfigurationType configType = getLaunchConfigType();
         trace("Create jobLaunch configuration: " + confName); //$NON-NLS-1$

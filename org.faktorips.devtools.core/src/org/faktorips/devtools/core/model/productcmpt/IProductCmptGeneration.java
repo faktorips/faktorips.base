@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,58 +31,10 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public static final String MSGCODE_PREFIX = "PRODUCTCMPTGEN-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the generation contains less relations of a specific
-     * relation type than required by the relation type. E.g. a motor product must contain at least
-     * one relation to a collision coverage component, but it does not.
-     * <p>
-     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
-     * The first one contains the generation and the second one the relation type as string. In both
-     * cases the property part of the ObjectProperty is empty.
-     * 
-     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_NOT_ENOUGH_RELATIONS}
-     *             instead.
-     */
-    @Deprecated
-    public static final String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the generation contains more relations of a specific
-     * relation type than specified by the relation type. E.g. a motor product can contain at most
-     * one relation to a collision coverage component, but contains two (or more) relations to
-     * collision coverage components.
-     * <p>
-     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
-     * The first one contains the generation and the second one the relation type as string. In both
-     * cases the property part of the ObjectProperty is empty.
-     * 
-     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_TOO_MANY_RELATIONS}
-     *             instead.
-     */
-    @Deprecated
-    public static final String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that two or more relations of a specific type have the
-     * same target.
-     * 
-     * @deprecated As of 3.8. Use
-     *             {@link IProductCmptLinkContainer#MSGCODE_DUPLICATE_RELATION_TARGET} instead.
-     */
-    @Deprecated
-    public static final String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the template for the product this generation is for
      * could not be found.
      */
     public static final String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the product component type for this generation
-     * contains an attribute, method or tableStructureUsage that has no corresponding property
-     * configured in this generation.
-     */
-    public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
 
     /**
      * Validation message code to identify the message that informs about a link to a product
@@ -104,13 +55,12 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * @param ipsProject The IPS project which search path is used to search the type.
      * 
      * @return The product component type this product component generation is based on or
-     *         <code>null</code> if the product component type can't be found.
+     *         {@code null} if the product component type can't be found.
      * 
-     * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
+     * @throws NullPointerException if ipsProject is {@code null}.
      */
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns the number of attribute values defined in the generation.
@@ -124,9 +74,9 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IAttributeValue[] getAttributeValues();
 
     /**
-     * Returns the attribute value for the given attribute name. Returns <code>null</code> if this
-     * container has no value for the given attribute. Returns <code>null</code> if attribute is
-     * <code>null</code>.
+     * Returns the attribute value for the given attribute name. Returns {@code null} if this
+     * container has no value for the given attribute. Returns {@code null} if attribute is
+     * {@code null}.
      */
     public IAttributeValue getAttributeValue(String attribute);
 
@@ -137,8 +87,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Creates a new attribute value for the given product component attribute and sets the value to
-     * the default value defined in the attribute. If attribute is <code>null</code> the value is
-     * still created but no reference to the attribute is set.
+     * the default value defined in the attribute. If attribute is {@code null} the value is still
+     * created but no reference to the attribute is set.
      */
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute);
 
@@ -157,7 +107,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Returns the configuration element that corresponds to the attribute with the given name.
-     * Returns <code>null</code> if no such element exists.
+     * Returns {@code null} if no such element exists.
      */
     public IConfigElement getConfigElement(String attributeName);
 
@@ -167,9 +117,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IConfigElement newConfigElement();
 
     /**
-     * Creates a new configuration element for the given attribute. If attribute is
-     * <code>null</code> no reference to an attribute is set, but the new config element is still
-     * created.
+     * Creates a new configuration element for the given attribute. If attribute is {@code null} no
+     * reference to an attribute is set, but the new config element is still created.
      */
     public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute);
 
@@ -239,8 +188,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IFormula[] getFormulas();
 
     /**
-     * Returns the formula with given name or <code>null</code> if no such formula is found. Returns
-     * <code>null</code> if formulaName is <code>null</code>.
+     * Returns the formula with given name or {@code null} if no such formula is found. Returns
+     * {@code null</code> if formulaName is <code>null}.
      */
     public IFormula getFormula(String formulaName);
 
@@ -250,8 +199,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IFormula newFormula();
 
     /**
-     * Creates a new formula based on the given signature. If signature is <code>null</code> the
-     * formula is still created, but no reference to a signature is set.
+     * Creates a new formula based on the given signature. If signature is {@code null} the formula
+     * is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);
 
@@ -263,7 +212,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Returns the validation with the given name if defined in this generation. Returns <null> no
-     * validation rule with the given name can be found or if the given name is <code>null</code>.
+     * validation rule with the given name can be found or if the given name is {@code null}.
      */
     public IValidationRuleConfig getValidationRuleConfig(String validationRuleName);
 
@@ -275,8 +224,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Creates a new validation rule that configures the given {@link IValidationRule}. If signature
-     * is <code>null</code> the validation rule configuration is still created, but no reference to
-     * an {@link IValidationRule} is set.
+     * is {@code null} the validation rule configuration is still created, but no reference to an
+     * {@link IValidationRule} is set.
      */
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
 
@@ -285,5 +234,19 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * component and this product component generation.
      */
     public <T extends IPropertyValue> List<T> getPropertyValuesIncludingProductCmpt(Class<T> type);
+
+    /**
+     * Returns the generation of the template that is used by this generation if this generation's
+     * product component has specified a template. Returns {@code null} if no template is specified
+     * or the specified template was not found.
+     * 
+     * @see IProductCmpt#getTemplate()
+     * @see IProductCmpt#setTemplate(String)
+     * 
+     * @param ipsProject The project that should be used to search for the template
+     * @return The generation of the specified template of this generation
+     */
+    @Override
+    IProductCmptGeneration findTemplate(IIpsProject ipsProject);
 
 }

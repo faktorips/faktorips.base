@@ -40,27 +40,26 @@ public interface IDeltaComputationOptions {
      * c1,and c2 are unchanged except for their position.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are
-     * computed. position 0: version A:c0, version B:c0 => empty delta position 1: version A:c1,
-     * version B:cNew => changed position 2: version A:c2, version B:c1 => changed position 3:
-     * version A:none, version B:c2 => added
+     * computed. position 0: version A:c0, version B:c0 ⇒ empty delta position 1: version A:c1,
+     * version B:cNew ⇒ changed position 2: version A:c2, version B:c1 ⇒ changed position 3: version
+     * A:none, version B:c2 ⇒ added
      * <p>
      * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are
-     * computed. c0: version A:position 0, version B:position 0 => empty delta c1: version
-     * A:position 1, version B:position 2 => moved c2: version A:position 2, version B:position 3 =>
-     * moved cNew: version A:position none, version B:position 1 => added
+     * computed. c0: version A:position 0, version B:position 0 ⇒ empty delta c1: version A:position
+     * 1, version B:position 2 ⇒ moved c2: version A:position 2, version B:position 3 ⇒ moved cNew:
+     * version A:position none, version B:position 1 ⇒ added
      * <p>
      * <p>
      * 2. Example for a 1-many association:<br>
      * Same scenario as above, but now c1 is removed and no coverage is added.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are
-     * computed. position 0: version A:c0, version B:c0 => empty delta position 1: version A:c1,
-     * version B:v2 => changed position 2: version A:c2, version B:none => removed
+     * computed. position 0: version A:c0, version B:c0 ⇒ empty delta position 1: version A:c1,
+     * version B:v2 ⇒ changed position 2: version A:c2, version B:none ⇒ removed
      * <p>
      * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are
-     * computed. c0: version A:position 0, version B:position 0 => empty delta c1: version
-     * A:position 1, version B:position none => removed c2: version A:position 2, version B:position
-     * 1 => moved
+     * computed. c0: version A:position 0, version B:position 0 ⇒ empty delta c1: version A:position
+     * 1, version B:position none ⇒ removed c2: version A:position 2, version B:position 1 ⇒ moved
      * <p>
      * <p>
      * Example for a 1-1 association:<br>

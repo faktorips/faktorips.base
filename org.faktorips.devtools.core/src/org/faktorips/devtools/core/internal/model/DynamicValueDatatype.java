@@ -34,74 +34,6 @@ import org.w3c.dom.Element;
  */
 public class DynamicValueDatatype extends GenericValueDatatype {
 
-    public final static DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {
-        DynamicValueDatatype datatype = null;
-        String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
-            datatype = new DynamicValueDatatype(ipsProject);
-        } else {
-            DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(ipsProject);
-            enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
-            enumDatatype.setGetNameMethodName(element.getAttribute("getNameMethod")); //$NON-NLS-1$
-            String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
-            enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false : Boolean.valueOf(isSupporting)
-                    .booleanValue());
-            datatype = enumDatatype;
-        }
-        // note: up to version 2.1 it was valueClass, since then it is javaClass
-        String javaClass = element.getAttribute("valueClass"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(javaClass)) {
-            javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
-        }
-        datatype.setAdaptedClassName(javaClass);
-        datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
-        if (element.hasAttribute("valueOfMethod")) { //$NON-NLS-1$
-            datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
-        } else {
-            datatype.setValueOfMethodName(null);
-        }
-        if (element.hasAttribute("isParsableMethod")) {//$NON-NLS-1$
-            datatype.setIsParsableMethodName(element.getAttribute("isParsableMethod")); //$NON-NLS-1$
-        } else {
-            datatype.setIsParsableMethodName(null);
-        }
-        if (element.hasAttribute("valueToStringMethod")) {//$NON-NLS-1$
-            datatype.setToStringMethodName(element.getAttribute("valueToStringMethod")); //$NON-NLS-1$
-        } else {
-            datatype.setToStringMethodName(null);
-        }
-        Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId"); //$NON-NLS-1$
-        if (nullObjectEl == null) {
-            datatype.setNullObjectDefined(false);
-            datatype.setNullObjectId(null);
-        } else {
-            datatype.setNullObjectDefined(true);
-            datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId")); //$NON-NLS-1$
-        }
-        return datatype;
-    }
-
-    public void writeToXml(Element element) {
-        if (getAdaptedClassName() != null) {
-            element.setAttribute("javaClass", getAdaptedClassName()); //$NON-NLS-1$
-        }
-        if (getQualifiedName() != null) {
-            element.setAttribute("id", getQualifiedName()); //$NON-NLS-1$
-        }
-        if (getValueOfMethodName() != null) {
-            element.setAttribute("valueOfMethod", getValueOfMethodName()); //$NON-NLS-1$
-        }
-        if (getIsParsableMethodName() != null) {
-            element.setAttribute("isParsableMethod", getIsParsableMethodName()); //$NON-NLS-1$
-        }
-        if (getToStringMethodName() != null) {
-            element.setAttribute("valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
-        }
-        if (hasNullObject()) {
-            ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId"); //$NON-NLS-1$
-        }
-    }
-
     private IIpsProject ipsProject;
     private ClassLoaderProvider classLoaderProvider = null;
     private IClasspathContentsChangeListener listener = null;
@@ -153,6 +85,74 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             }
         }
         return adaptedClass;
+    }
+
+    public void writeToXml(Element element) {
+        if (getAdaptedClassName() != null) {
+            element.setAttribute("javaClass", getAdaptedClassName()); //$NON-NLS-1$
+        }
+        if (getQualifiedName() != null) {
+            element.setAttribute("id", getQualifiedName()); //$NON-NLS-1$
+        }
+        if (getValueOfMethodName() != null) {
+            element.setAttribute("valueOfMethod", getValueOfMethodName()); //$NON-NLS-1$
+        }
+        if (getIsParsableMethodName() != null) {
+            element.setAttribute("isParsableMethod", getIsParsableMethodName()); //$NON-NLS-1$
+        }
+        if (getToStringMethodName() != null) {
+            element.setAttribute("valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
+        }
+        if (hasNullObject()) {
+            ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId"); //$NON-NLS-1$
+        }
+    }
+
+    public static final DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {
+        DynamicValueDatatype datatype = null;
+        String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
+        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
+            datatype = new DynamicValueDatatype(ipsProject);
+        } else {
+            DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(ipsProject);
+            enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
+            enumDatatype.setGetNameMethodName(element.getAttribute("getNameMethod")); //$NON-NLS-1$
+            String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
+            enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false : Boolean.valueOf(isSupporting)
+                    .booleanValue());
+            datatype = enumDatatype;
+        }
+        // note: up to version 2.1 it was valueClass, since then it is javaClass
+        String javaClass = element.getAttribute("valueClass"); //$NON-NLS-1$
+        if (StringUtils.isEmpty(javaClass)) {
+            javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
+        }
+        datatype.setAdaptedClassName(javaClass);
+        datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
+        if (element.hasAttribute("valueOfMethod")) { //$NON-NLS-1$
+            datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
+        } else {
+            datatype.setValueOfMethodName(null);
+        }
+        if (element.hasAttribute("isParsableMethod")) {//$NON-NLS-1$
+            datatype.setIsParsableMethodName(element.getAttribute("isParsableMethod")); //$NON-NLS-1$
+        } else {
+            datatype.setIsParsableMethodName(null);
+        }
+        if (element.hasAttribute("valueToStringMethod")) {//$NON-NLS-1$
+            datatype.setToStringMethodName(element.getAttribute("valueToStringMethod")); //$NON-NLS-1$
+        } else {
+            datatype.setToStringMethodName(null);
+        }
+        Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId"); //$NON-NLS-1$
+        if (nullObjectEl == null) {
+            datatype.setNullObjectDefined(false);
+            datatype.setNullObjectId(null);
+        } else {
+            datatype.setNullObjectDefined(true);
+            datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId")); //$NON-NLS-1$
+        }
+        return datatype;
     }
 
     class Listener implements IClasspathContentsChangeListener {

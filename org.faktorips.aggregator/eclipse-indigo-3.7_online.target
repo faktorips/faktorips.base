@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Galileo)" sequenceNumber="111">
+<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Indigo)" sequenceNumber="111">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.egit.feature.group" version="1.3.0.201202151440-r"/>
@@ -23,8 +23,8 @@
 <repository location="https://update.faktorzehn.org/p2repositories/modeling/emft/mwe/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="com.faktorzehn.bundles.feature.feature.group" version="0.0.0"/>
-<repository location="https://update.faktorzehn.org/p2repositories/thirdparty/"/>
+<unit id="de.faktorzehn.thirdparty.libs.feature.group" version="0.0.0"/>
+<repository location="https://drone.faktorzehn.de/p2/thirdparty-1.0"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rcp.source.feature.group" version="3.7.2.v20120120-1424-9DB5FmnFq5JCf1UA38R-kz0S0272"/>
@@ -36,7 +36,4 @@
 <repository location="https://update.faktorzehn.org/p2repositories/indigo"/>
 </location>
 </locations>
-<launcherArgs>
-<vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -XX:MaxPermSize=256m</vmArgs>
-</launcherArgs>
 </target>

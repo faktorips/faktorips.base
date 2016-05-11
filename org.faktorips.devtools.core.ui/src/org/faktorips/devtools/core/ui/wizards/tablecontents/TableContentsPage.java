@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import java.beans.PropertyChangeEvent;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -64,8 +64,8 @@ public class TableContentsPage extends WizardPage {
 
         toolkit.createHorizonzalLine(composite);
 
-        structureSelectionComposite = new TypeSelectionComposite(composite, toolkit, pmo,
-                NewTableContentsPMO.PROPERTY_SELECTED_STRUCTURE);
+        structureSelectionComposite = new TypeSelectionComposite(composite, toolkit, bindingContext, pmo,
+                NewTableContentsPMO.PROPERTY_SELECTED_STRUCTURE, pmo.getStructuresList());
         structureSelectionComposite.setTitle(Messages.TableContentsPage_labelStructure);
 
         toolkit.createHorizonzalLine(composite);
@@ -86,7 +86,7 @@ public class TableContentsPage extends WizardPage {
     void bindControls() {
         uiUpdater = new TableContentsPageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
-        uiUpdater.updateStructuresList();
+        structureSelectionComposite.addDoubleClickListener(new DoubleClickListener(this));
 
         IpsProjectRefField ipsProjectRefField = new IpsProjectRefField(ipsProjectRefControl);
         bindingContext.bindContent(ipsProjectRefField, pmo, NewTableContentsPMO.PROPERTY_IPS_PROJECT);
@@ -122,43 +122,27 @@ public class TableContentsPage extends WizardPage {
             this.pmo = pmo;
         }
 
-        /**
-         * @return Returns the pmo.
-         */
-        public NewTableContentsPMO getPmo() {
-            return pmo;
-        }
-
-        /**
-         * @return Returns the productCmptPage.
-         */
-        @Override
-        public TableContentsPage getPage() {
-            return (TableContentsPage)super.getPage();
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if (NewTableContentsPMO.PROPERTY_IPS_PROJECT.equals(evt.getPropertyName())) {
-                updateStructuresList();
-            }
-            super.propertyChange(evt);
-        }
-
-        public void updateStructuresList() {
-            getPage().structureSelectionComposite.setListInput(getPmo().getStructuresList());
-        }
-
-        @Override
-        public void updateUI() {
-            super.updateUI();
-            updateStructuresList();
-        }
-
         @Override
         protected MessageList validatePage() {
             MessageList messageList = pmo.getValidator().validateTableContents();
             return messageList;
+        }
+    }
+
+    private static class DoubleClickListener implements IDoubleClickListener {
+
+        private final TableContentsPage page;
+
+        public DoubleClickListener(TableContentsPage page) {
+            this.page = page;
+        }
+
+        @Override
+        public void doubleClick(DoubleClickEvent event) {
+            if (page.canFlipToNextPage()) {
+                page.getWizard().getContainer().showPage(page.getNextPage());
+            }
+
         }
     }
 

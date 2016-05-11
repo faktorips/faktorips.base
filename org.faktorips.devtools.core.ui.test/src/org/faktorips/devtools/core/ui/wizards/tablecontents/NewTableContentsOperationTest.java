@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -60,10 +61,16 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     public void setUp() throws CoreException {
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
 
         tableContents = newTableContents(ipsProject, "TestTableContent");
         tableContents.getIpsSrcFile().save(true, null);
+    }
+
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
     }
 
     @Test

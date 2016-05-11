@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
+import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -60,22 +62,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         public InternalLabelProvider() {
         }
 
-        private String getCardinalitiesFromPolicy(IProductCmptTypeAssociation association) {
-            String policyCardinalityString = ""; //$NON-NLS-1$
-            try {
-                IPolicyCmptTypeAssociation policyAssociation = association
-                        .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
-                if (policyAssociation != null) {
-                    policyCardinalityString = StringUtil.getRangeString(false, policyAssociation.getMinCardinality(),
-                            policyAssociation.getMaxCardinality(), 0);
-                }
-            } catch (CoreException e) {
-                // Ignore, because in this case we simply do not show any cardinality
-                // information.
-            }
-            return policyCardinalityString;
-        }
-
         @Override
         public String getText(Object element) {
             if (element instanceof ILinkSectionViewItem) {
@@ -94,14 +80,37 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
         @Override
         public StyledString getStyledText(Object element) {
-            StyledString styledString = new StyledString(getText(element));
             if (element instanceof AssociationViewItem) {
-                AssociationViewItem associationViewItem = (AssociationViewItem)element;
-                IProductCmptTypeAssociation association = associationViewItem.getAssociation();
-                styledString.append(new StyledString(getCardinalitiesFromPolicy(association),
-                        StyledString.COUNTER_STYLER));
+                return getAssociationViewItemStyledText((AssociationViewItem)element);
             }
-            return styledString;
+            if (element instanceof LinkViewItem) {
+                return getLinkViewItemStyledString((LinkViewItem)element);
+            }
+            return new StyledString(getText(element));
+        }
+
+        private StyledString getAssociationViewItemStyledText(AssociationViewItem associationViewItem) {
+            String cardinality = getCardinalitiesFromPolicy(associationViewItem.getAssociation());
+            StyledString cardinalityStyledString = new StyledString(cardinality, IpsStyler.MODEL_CARDINALITY_STYLER);
+            StyledString nameStyledString = new StyledString(getText(associationViewItem));
+            return nameStyledString.append(cardinalityStyledString);
+        }
+
+        private String getCardinalitiesFromPolicy(IProductCmptTypeAssociation association) {
+            IPolicyCmptTypeAssociation policyAssociation = association
+                    .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
+            if (policyAssociation == null) {
+                return StringUtils.EMPTY;
+            } else {
+                return StringUtil.BLANK
+                        + StringUtil.getRangeString(policyAssociation.getMinCardinality(),
+                                policyAssociation.getMaxCardinality());
+            }
+        }
+
+        private StyledString getLinkViewItemStyledString(LinkViewItem linkViewItem) {
+            return new LinkViewItemLabelStyler(linkViewItem).getStyledLabel();
         }
     }
+
 }

@@ -236,7 +236,7 @@ public class TestCaseTypeSection extends IpsSection {
 
             toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelPolicyCmptType);
             attributesPolicyCmptType = toolkit.createText(attributesDetails);
-            toolkit.setDataChangeable(attributesPolicyCmptType, false);
+            toolkit.setEnabled(attributesPolicyCmptType, false);
 
             toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelDescription);
             toolkit.createVerticalSpacer(attributesDetails, 1);
@@ -1307,7 +1307,7 @@ public class TestCaseTypeSection extends IpsSection {
         updateDetailButtonStatus(null);
         Collection<AttributeDetails> allAttributeDetails = objectCache.getAllAttributeDetails();
         for (AttributeDetails details : allAttributeDetails) {
-            toolkit.setDataChangeable(details.attributesPolicyCmptType, false);
+            toolkit.setEnabled(details.attributesPolicyCmptType, false);
         }
     }
 

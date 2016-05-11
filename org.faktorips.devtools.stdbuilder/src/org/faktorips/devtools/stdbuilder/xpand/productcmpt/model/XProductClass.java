@@ -95,7 +95,7 @@ public abstract class XProductClass extends XType {
         }
     }
 
-    private Set<XProductAttribute> filterAttributes(Set<XProductAttribute> xAttributes) {
+    protected Set<XProductAttribute> filterAttributes(Set<XProductAttribute> xAttributes) {
         LinkedHashSet<XProductAttribute> result = new LinkedHashSet<XProductAttribute>(xAttributes);
         for (Iterator<XProductAttribute> iterator = result.iterator(); iterator.hasNext();) {
             XProductAttribute xProductAttribute = iterator.next();
@@ -272,12 +272,7 @@ public abstract class XProductClass extends XType {
     }
 
     public XPolicyCmptClass getPolicyCmptClass() {
-        IPolicyCmptType policyCmptType;
-        try {
-            policyCmptType = getType().findPolicyCmptType(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
         if (policyCmptType == null) {
             throw new NullPointerException("No policy found for " + getName());
         }
@@ -399,6 +394,14 @@ public abstract class XProductClass extends XType {
             }
         }
         return false;
+    }
+
+    public String getBuilderImplClassName() {
+        return addImport(getQualifiedName(BuilderAspect.IMPLEMENTATION) + "Builder");
+    }
+
+    public String getBuilderClassName() {
+        return getIpsObjectPartContainer().getName() + "Builder";
     }
 
 }

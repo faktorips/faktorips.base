@@ -51,10 +51,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -62,7 +59,9 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
+import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
@@ -159,11 +158,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map<String, Datatype> datatypes = null;
 
     /**
-     * A map containing a code generation helper (value) per datatype (key)
-     */
-    private Map<Datatype, DatatypeHelper> datatypeHelpersMap = null;
-
-    /**
      * A map containing the project for every name.
      */
     private Map<String, IpsProject> projectMap = new ConcurrentHashMap<String, IpsProject>();
@@ -219,6 +213,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         List<IpsObjectType> types = new ArrayList<IpsObjectType>();
         types.add(IpsObjectType.PRODUCT_CMPT);
+        types.add(IpsObjectType.PRODUCT_TEMPLATE);
         types.add(IpsObjectType.TEST_CASE);
         types.add(IpsObjectType.POLICY_CMPT_TYPE);
         types.add(IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -296,7 +291,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getWorkspace().addResourceChangeListener(
                 this,
                 IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE
-                | IResourceChangeEvent.PRE_REFRESH);
+                        | IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -304,7 +299,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException {
+    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) {
 
         runAndQueueChangeEvents(action, getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, monitor);
     }
@@ -313,10 +308,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public void runAndQueueChangeEvents(IWorkspaceRunnable action,
             ISchedulingRule rule,
             int flags,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) {
 
         if (changeListeners.isEmpty() && modificationStatusChangeListeners.isEmpty()) {
-            getWorkspace().run(action, rule, flags, monitor);
+            try {
+                getWorkspace().run(action, rule, flags, monitor);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                throw new CoreRuntimeException(e);
+            }
             return;
         }
         List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
@@ -340,7 +340,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         addModifcationStatusChangeListener(batchModifiyListener);
 
         try {
-            getWorkspace().run(action, rule, flags, monitor);
+            runSafe(action, rule, flags, monitor, modifiedSrcFiles);
         } finally {
             // restore change listeners
             removeChangeListener(batchListener);
@@ -359,6 +359,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
 
+    }
+
+    protected void runSafe(IWorkspaceRunnable action,
+            ISchedulingRule rule,
+            int flags,
+            IProgressMonitor monitor,
+            final Set<IIpsSrcFile> modifiedSrcFiles) {
+        try {
+            getWorkspace().run(action, rule, flags, monitor);
+        } catch (CoreException e) {
+            for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+                ipsSrcFile.discardChanges();
+            }
+        } catch (CoreRuntimeException e) {
+            for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+                ipsSrcFile.discardChanges();
+            }
+        }
     }
 
     @Override
@@ -773,7 +791,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IpsProjectData ipsProjectData = getIpsProjectData(project);
         LinkedHashMap<String, Datatype> projectTypes = ipsProjectData.getProjectDatatypesMap();
-        Map<ValueDatatype, DatatypeHelper> projectHelperMap = ipsProjectData.getProjectDatatypeHelpersMap();
 
         IIpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
@@ -783,21 +800,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 continue;
             }
             projectTypes.put(datatypeId, datatype);
-            if (datatype.isValueDatatype()) {
-                ValueDatatype valueDatatype = (ValueDatatype)datatype;
-                DatatypeHelper helper = datatypeHelpersMap.get(valueDatatype);
-                if (helper != null) {
-                    projectHelperMap.put(valueDatatype, helper);
-                }
-            }
         }
         List<Datatype> definedDatatypes = props.getDefinedDatatypes();
         for (Datatype datatype : definedDatatypes) {
             projectTypes.put(datatype.getQualifiedName(), datatype);
-            if (datatype instanceof GenericValueDatatype) {
-                GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
-                projectHelperMap.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
-            }
         }
     }
 
@@ -911,20 +917,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
         return graphs.toArray(new DependencyGraph[graphs.size()]);
-    }
-
-    /**
-     * Returns the datatype helper for the given value datatype or <code>null</code> if no helper is
-     * defined for the value datatype.
-     */
-    public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
-        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Map<ValueDatatype, DatatypeHelper> map = getIpsProjectData(ipsProject).getProjectDatatypeHelpersMap();
-        if (map.isEmpty()) {
-            initDatatypesDefinedInProjectProperties(ipsProject);
-            map = getIpsProjectData(ipsProject).getProjectDatatypeHelpersMap();
-        }
-        return map.get(datatype);
     }
 
     /**
@@ -1157,7 +1149,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private void initDatatypesDefinedViaExtension() {
         datatypes = new HashMap<String, Datatype>();
-        datatypeHelpersMap = new HashMap<Datatype, DatatypeHelper>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
@@ -1179,41 +1170,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void createDatatypeDefinition(IExtension extension) {
-        IConfigurationElement[] configElements = extension.getConfigurationElements();
-        for (int i = 0; i < configElements.length; i++) {
-            if (!"datatypeDefinition".equalsIgnoreCase(configElements[i].getName())) { //$NON-NLS-1$
-                String text = "Illegal datatype definition " + extension.getUniqueIdentifier()//$NON-NLS-1$
-                        + ". Expected Config Element <datatypeDefinition> was " //$NON-NLS-1$
-                        + configElements[i].getName();
-                IpsPlugin.log(new IpsStatus(text));
-                continue;
+        for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+            DatatypeDefinition definition = new DatatypeDefinition(extension, configElement);
+            if (definition.hasDatatype()) {
+                datatypes.put(definition.getDatatype().getQualifiedName(), definition.getDatatype());
             }
-            Object datatypeObj = ExtensionPoints.createExecutableExtension(extension, configElements[i],
-                    "datatypeClass", Datatype.class); //$NON-NLS-1$
-            if (datatypeObj == null) {
-                continue;
-            }
-            Datatype datatype = (Datatype)datatypeObj;
-            datatypes.put(datatype.getQualifiedName(), datatype);
-            Object dtHelperObj = ExtensionPoints.createExecutableExtension(extension, configElements[i],
-                    "helperClass", DatatypeHelper.class); //$NON-NLS-1$
-            if (dtHelperObj == null) {
-                continue;
-            }
-            DatatypeHelper dtHelper = (DatatypeHelper)dtHelperObj;
-            dtHelper.setDatatype(datatype);
-            datatypeHelpersMap.put(datatype, dtHelper);
         }
-    }
-
-    /**
-     * Adds the datatype helper and it's datatype to the available once. For testing purposes.
-     * During normal execution the available datatypes are discovered by extension point lookup.
-     */
-    public void addDatatypeHelper(DatatypeHelper helper) {
-        Datatype datatype = helper.getDatatype();
-        datatypes.put(datatype.getQualifiedName(), datatype);
-        datatypeHelpersMap.put(helper.getDatatype(), helper);
     }
 
     @Override
@@ -1264,7 +1226,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                                                                                              .size()];
+                .size()];
         int i = 0;
         for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
                 .hasNext();) {
@@ -1538,7 +1500,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
             System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
                     new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
-                    Thread.currentThread().getName() }));
+                            Thread.currentThread().getName() }));
         }
     }
 
@@ -1777,8 +1739,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     listener.modificationStatusHasChanged(event);
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
                         System.out
-                        .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                + listener);
+                                .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
+                                        + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {
@@ -1804,21 +1766,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             if (previousEvent == null) {
                 newEvent = event;
             } else {
-                newEvent = mergeChangeEvent(event, previousEvent);
+                newEvent = ContentChangeEvent.mergeChangeEvents(event, previousEvent);
             }
             changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
         }
 
-        private ContentChangeEvent mergeChangeEvent(ContentChangeEvent ce1, ContentChangeEvent ce2) {
-            if (ce1.getEventType() == ce2.getEventType()) {
-                if (ce1.getPart() != null && ce1.getPart().equals(ce2.getPart())) {
-                    // same event type and part, thus no new event type needed
-                    return ce1;
-                }
-            }
-            // different event types, return WholeContentChangedEvent
-            return ContentChangeEvent.newWholeContentChangedEvent(ce1.getIpsSrcFile());
-        }
     }
 
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {

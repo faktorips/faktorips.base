@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * A class that provides the
- * {@link ExpressionXMLBuilderHelper#addCompiledFormulaExpressions(Document, List, NodeList, MultiStatus)}
+ * {@link ExpressionXMLBuilderHelper#addCompiledFormulaExpressions(Document, List, List, MultiStatus)}
  * method for {@link AbstractXmlFileBuilder}s handling {@link IExpression}s.
  * 
  * @author schwering
@@ -81,11 +81,10 @@ public class ExpressionXMLBuilderHelper {
      */
     public void addCompiledFormulaExpressions(Document document,
             List<? extends IExpression> formulas,
-            NodeList formulaElements,
+            List<Element> formulaElements,
             MultiStatus buildStatus) {
         Map<String, IExpression> formulaMap = getFormulas(formulas);
-        for (int formulaIndex = 0; formulaIndex < formulaElements.getLength(); formulaIndex++) {
-            Element formulaElement = (Element)formulaElements.item(formulaIndex);
+        for (Element formulaElement : formulaElements) {
             if (formulaElement != null) {
                 String attribute = formulaElement.getAttribute(IExpression.PROPERTY_FORMULA_SIGNATURE_NAME);
                 IFormula formula = (IFormula)formulaMap.get(attribute);

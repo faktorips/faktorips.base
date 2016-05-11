@@ -46,10 +46,10 @@ public class SumList extends AbstractListFunction {
     }
 
     @Override
-    protected JavaCodeFragment generateReturnFallBackValueCall() {
+    protected JavaCodeFragment generateReturnFallBackValueCall(Datatype datatype) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("return ");
-        fragment.append(getCompiler().getDatatypeHelper(getDatatype()).newInstance("0"));
+        fragment.append(getDatatypeHelper(datatype).newInstance("0"));
         return fragment;
     }
 
@@ -57,6 +57,6 @@ public class SumList extends AbstractListFunction {
     protected CompilationResult<JavaCodeFragment> generateFunctionCall(CompilationResultImpl argument1,
             CompilationResultImpl argument2) {
         return new CompilationResultImpl(getCompiler().getBinaryOperation("+", argument1, argument2).getCodeFragment(),
-                getDatatype());
+                argument1.getDatatype());
     }
 }

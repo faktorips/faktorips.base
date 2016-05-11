@@ -10,32 +10,21 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
-import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
-import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
-import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConfig;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.value.IValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
 
 /**
  * Specifies the different types of product component properties.
@@ -61,43 +50,7 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this {@link ProductCmptPropertyType} can be safely casted to
      * {@link IAttributeValue}.
      */
-    PRODUCT_CMPT_TYPE_ATTRIBUTE("productCmptTypeAttribute", Messages.ProductCmptPropertyType_productAttribute) { //$NON-NLS-1$
-
-        @Override
-        public IAttributeValue createPropertyValue(IPropertyValueContainer container,
-                IProductCmptProperty property,
-                String partId) {
-
-            AttributeValue attributeValue = new AttributeValue(container, partId,
-                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
-
-            final IValue<?> defaultValue;
-            if (attribute != null) {
-                defaultValue = ValueFactory.createValue(attribute.isMultilingual(), attribute.getDefaultValue());
-            } else {
-                defaultValue = ValueFactory.createStringValue(null);
-            }
-            AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
-            IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultValue);
-            attributeValue.setValueHolderInternal(valueHolder);
-            return attributeValue;
-        }
-
-        @Override
-        public Class<? extends IPropertyValue> getValueClass() {
-            return IAttributeValue.class;
-        }
-
-        @Override
-        public Class<? extends IpsObjectPart> getValueImplementationClass() {
-            return AttributeValue.class;
-        }
-
-        @Override
-        public String getValueXmlTagName() {
-            return AttributeValue.TAG_NAME;
-        }
+    PRODUCT_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_productAttribute, PropertyValueType.ATTRIBUTE_VALUE) {
 
     },
 
@@ -110,32 +63,8 @@ public enum ProductCmptPropertyType {
      * <p>
      * An {@link IPropertyValue} with this type can be safely casted to {@link ITableContentUsage}.
      */
-    TABLE_STRUCTURE_USAGE("tableStructureUsage", Messages.ProductCmptPropertyType_tableUsage) { //$NON-NLS-1$
+    TABLE_STRUCTURE_USAGE(Messages.ProductCmptPropertyType_tableUsage, PropertyValueType.TABLE_CONTENT_USAGE) {
 
-        @Override
-        public ITableContentUsage createPropertyValue(IPropertyValueContainer container,
-                IProductCmptProperty property,
-                String partId) {
-
-            ITableContentUsage tableUsage = new TableContentUsage(container, partId,
-                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            return tableUsage;
-        }
-
-        @Override
-        public Class<? extends IPropertyValue> getValueClass() {
-            return ITableContentUsage.class;
-        }
-
-        @Override
-        public Class<? extends IpsObjectPart> getValueImplementationClass() {
-            return TableContentUsage.class;
-        }
-
-        @Override
-        public String getValueXmlTagName() {
-            return TableContentUsage.TAG_NAME;
-        }
     },
 
     /**
@@ -147,31 +76,8 @@ public enum ProductCmptPropertyType {
      * <p>
      * An {@link IPropertyValue} with this type can be safely casted to {@link IFormula}.
      */
-    FORMULA_SIGNATURE_DEFINITION("formulaSignatureDefinition", Messages.ProductCmptPropertyType_fomula) { //$NON-NLS-1$
+    FORMULA_SIGNATURE_DEFINITION(Messages.ProductCmptPropertyType_fomula, PropertyValueType.FORMULA) {
 
-        @Override
-        public IFormula createPropertyValue(IPropertyValueContainer container,
-                IProductCmptProperty property,
-                String partId) {
-
-            IFormula formula = new Formula(container, partId, property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            return formula;
-        }
-
-        @Override
-        public Class<? extends IPropertyValue> getValueClass() {
-            return IFormula.class;
-        }
-
-        @Override
-        public Class<? extends IpsObjectPart> getValueImplementationClass() {
-            return Formula.class;
-        }
-
-        @Override
-        public String getValueXmlTagName() {
-            return Formula.TAG_NAME;
-        }
     },
 
     /**
@@ -183,45 +89,9 @@ public enum ProductCmptPropertyType {
      * <p>
      * An {@link IPropertyValue} with this type can be safely casted to {@link IConfigElement}.
      */
-    POLICY_CMPT_TYPE_ATTRIBUTE("policyCmptTypeAttribute", Messages.ProductCmptPropertyType_defaultValueAndValueSet) { //$NON-NLS-1$
+    POLICY_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_defaultValueAndValueSet,
+            PropertyValueType.CONFIG_ELEMENT) {
 
-        @Override
-        public IConfigElement createPropertyValue(IPropertyValueContainer container,
-                IProductCmptProperty property,
-                String partId) {
-
-            IConfigElement configElement = new ConfigElement(container, partId,
-                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)property;
-            if (attribute != null) {
-                configElement.setPolicyCmptTypeAttribute(attribute.getName());
-                configElement.setValue(attribute.getDefaultValue());
-                configElement.setValueSetCopy(attribute.getValueSet());
-                if (Datatype.BOOLEAN.getQualifiedName().equals(attribute.getDatatype())
-                        || Datatype.PRIMITIVE_BOOLEAN.getQualifiedName().equals(attribute.getDatatype())) {
-                    // Special case (FIPS-1344): For boolean values, we only support
-                    // enum value sets, because unrestricted value sets do not yield
-                    // any benefit.
-                    configElement.convertValueSetToEnumType();
-                }
-            }
-            return configElement;
-        }
-
-        @Override
-        public Class<? extends IPropertyValue> getValueClass() {
-            return IConfigElement.class;
-        }
-
-        @Override
-        public Class<? extends IpsObjectPart> getValueImplementationClass() {
-            return ConfigElement.class;
-        }
-
-        @Override
-        public String getValueXmlTagName() {
-            return ConfigElement.TAG_NAME;
-        }
     },
 
     /**
@@ -233,46 +103,17 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this type can be safely casted to
      * {@link IValidationRuleConfig}.
      */
-    VALIDATION_RULE("validationRule", Messages.ProductCmptPropertyType_ValidationRule) { //$NON-NLS-1$
-
-        @Override
-        public IValidationRuleConfig createPropertyValue(IPropertyValueContainer container,
-                IProductCmptProperty property,
-                String partId) {
-
-            IValidationRuleConfig ruleConfig = new ValidationRuleConfig(container, partId,
-                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            IValidationRule rule = (IValidationRule)property;
-            if (rule != null) {
-                ruleConfig.setActive(rule.isActivatedByDefault());
-            }
-            return ruleConfig;
-        }
-
-        @Override
-        public Class<? extends IPropertyValue> getValueClass() {
-            return IValidationRuleConfig.class;
-        }
-
-        @Override
-        public Class<? extends IpsObjectPart> getValueImplementationClass() {
-            return ValidationRuleConfig.class;
-        }
-
-        @Override
-        public String getValueXmlTagName() {
-            return ValidationRuleConfig.TAG_NAME;
-        }
+    VALIDATION_RULE(Messages.ProductCmptPropertyType_ValidationRule, PropertyValueType.VALIDATION_RULE_CONFIG) {
 
     };
 
-    private final String id;
-
     private final String name;
 
-    private ProductCmptPropertyType(String id, String name) {
-        this.id = id;
+    private final PropertyValueType valueType;
+
+    private ProductCmptPropertyType(String name, PropertyValueType valueType) {
         this.name = name;
+        this.valueType = valueType;
     }
 
     /**
@@ -282,127 +123,13 @@ public enum ProductCmptPropertyType {
         return name;
     }
 
-    /**
-     * Returns the id of this property type.
-     */
-    public String getId() {
-        return id;
+    public PropertyValueType getValueType() {
+        return valueType;
     }
 
-    /**
-     * Creates an {@link IPropertyValue} for this property type.
-     * <p>
-     * If you have the concrete class of the {@link IPropertyValue} you want to create, use the
-     * typesafe method
-     * {@link #createPropertyValue(IPropertyValueContainer, IProductCmptProperty, String, Class)}
-     * 
-     * @param container The {@link IPropertyValueContainer} the new part is created for
-     * @param property The {@link IProductCmptProperty} a new value is created for
-     * @param partId The new parts's id
-     */
-    public abstract IPropertyValue createPropertyValue(IPropertyValueContainer container,
-            IProductCmptProperty property,
-            String partId);
-
-    /**
-     * Returns the class of the {@link IPropertyValue} represented by this
-     * {@link ProductCmptPropertyType}.
-     */
-    public abstract Class<? extends IPropertyValue> getValueClass();
-
-    /**
-     * Returns the class of the default implementation corresponding to the {@link IPropertyValue}
-     * represented by this {@link ProductCmptPropertyType}.
-     */
-    public abstract Class<? extends IpsObjectPart> getValueImplementationClass();
-
-    /**
-     * Returns the XML tag for {@link IPropertyValue} of this {@link ProductCmptPropertyType}.
-     */
-    public abstract String getValueXmlTagName();
-
-    /**
-     * Searches and returns a {@link ProductCmptPropertyType} that can create IPS object parts for
-     * the given class.
-     * <p>
-     * This method also takes subclasses into account. For example, calling this method with
-     * {@code AttributeValue.class} will return {@link #PRODUCT_CMPT_TYPE_ATTRIBUTE} even though
-     * it's value class is {@link IAttributeValue}.
-     * <p>
-     * However, if the given class is not part of the {@link IPropertyValue} hierarchy, this method
-     * returns null.
-     * 
-     * @param partType The class a {@link ProductCmptPropertyType} is searched for
-     */
-    public static ProductCmptPropertyType getTypeForValueClass(Class<? extends IIpsObjectPart> partType) {
-        for (ProductCmptPropertyType type : values()) {
-            if (type.getValueClass().isAssignableFrom(partType)) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Searches and returns a {@link ProductCmptPropertyType} that can create IPS object parts for
-     * the given XML tag name.
-     * <p>
-     * Returns null if no appropriate property type is found.
-     * 
-     * @param xmlTagName The XML tag name a {@link ProductCmptPropertyType} is searched for
-     */
-    public static ProductCmptPropertyType getTypeForXmlTag(String xmlTagName) {
-        for (ProductCmptPropertyType type : values()) {
-            if (type.getValueXmlTagName().equals(xmlTagName)) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Creates and returns a concrete {@link IPropertyValue} of the given property type.
-     * <p>
-     * This method does <strong>not</strong> add the created property value to the given container
-     * but only using this information for setting the parent!
-     * <p>
-     * If the given {@link IProductCmptProperty} parameter is null, you have to specify the concrete
-     * type to be created by setting the correct type parameter. If the parameter is not null, the
-     * concrete type is obtained from this parameter and the caller has to ensure that the given
-     * type is the same as the type obtained from the {@link IProductCmptProperty}'s type.
-     * 
-     * @param container The container that is used as parent object, the created element is
-     *            <strong>not</strong> added to it
-     * @param productCmptProperty The {@link IProductCmptProperty} that may be set in the new value
-     *            if it is not null
-     * @param partId The part id of the generated {@link IPropertyValue}
-     * @param type The class that specifies the type of the created element
-     */
-    public static <T extends IPropertyValue> T createPropertyValue(IPropertyValueContainer container,
-            IProductCmptProperty productCmptProperty,
-            String partId,
-            Class<T> type) {
-
-        @SuppressWarnings("unchecked")
-        // The enum could not be specialized with generics but the implementation is type safe
-        T propertyValue = (T)ProductCmptPropertyType.getTypeForValueClass(type).createPropertyValue(container,
-                productCmptProperty, partId);
-        return propertyValue;
-    }
-
-    /**
-     * Returns the property type corresponding to the provided id or null if no corresponding
-     * property type can be found.
-     * 
-     * @param id The id whose corresponding property type to search for
-     */
-    public static ProductCmptPropertyType getValueById(String id) {
-        for (ProductCmptPropertyType propertyType : values()) {
-            if (propertyType.getId().equals(id)) {
-                return propertyType;
-            }
-        }
-        return null;
+    public boolean isMatchingPropertyValue(String propertyName, IPropertyValue propertyValue) {
+        return this == propertyValue.getProductCmptPropertyType()
+                && ObjectUtils.equals(propertyName, propertyValue.getPropertyName());
     }
 
 }

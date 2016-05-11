@@ -24,30 +24,20 @@ import org.faktorips.values.InternationalString;
  */
 public class InternationalStringDatatype extends AbstractDatatype implements ValueDatatype {
 
-    private final Class<? extends InternationalString> wrappedClass;
-
     /**
-     * Creates a new instance of {@link InternationalStringDatatype} and specifies whether to use
-     * the interface {@link InternationalString} or the implementation
-     * {@link DefaultInternationalString} as wrapped class.
-     * 
+     * Creates a new instance of {@link InternationalStringDatatype}.
      */
-    public InternationalStringDatatype(boolean useInterface) {
-        if (useInterface) {
-            wrappedClass = InternationalString.class;
-        } else {
-            wrappedClass = DefaultInternationalString.class;
-        }
+    public InternationalStringDatatype() {
     }
 
     @Override
     public String getName() {
-        return wrappedClass.getName();
+        return "InternationalString"; //$NON-NLS-1$
     }
 
     @Override
     public String getQualifiedName() {
-        return getJavaClassName();
+        return getName();
     }
 
     @Override
@@ -63,11 +53,6 @@ public class InternationalStringDatatype extends AbstractDatatype implements Val
     @Override
     public boolean isValueDatatype() {
         return true;
-    }
-
-    @Override
-    public String getJavaClassName() {
-        return wrappedClass.getCanonicalName();
     }
 
     @Override

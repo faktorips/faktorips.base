@@ -42,7 +42,7 @@ public class LessThanOrEqualTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testDecimalInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("6.9 <= WHOLENUMBER(7.1)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7.0 <= WHOLENUMBER(7.1)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7.1 <= WHOLENUMBER(7.1)", Boolean.FALSE, Datatype.BOOLEAN);
@@ -50,7 +50,7 @@ public class LessThanOrEqualTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntegerDecimal() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(7.1) <= 7.1", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7.1) <= 7.0", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7.1) <= 6.9", Boolean.FALSE, Datatype.BOOLEAN);
@@ -65,7 +65,7 @@ public class LessThanOrEqualTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("7 <= WHOLENUMBER(8)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 <= WHOLENUMBER(7)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 <= WHOLENUMBER(6)", Boolean.FALSE, Datatype.BOOLEAN);
@@ -73,7 +73,7 @@ public class LessThanOrEqualTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntegerInt() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(7) <= 8", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7) <= 7", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7) <= 6", Boolean.FALSE, Datatype.BOOLEAN);
@@ -81,7 +81,7 @@ public class LessThanOrEqualTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntegerInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(7) <= WHOLENUMBER(8)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7) <= WHOLENUMBER(7)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7) <= WHOLENUMBER(6)", Boolean.FALSE, Datatype.BOOLEAN);

@@ -12,14 +12,14 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import com.google.common.base.Function;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -70,17 +70,23 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
+        EditField<?> valueSetEditField;
         if (isBooleanDatatype()) {
-            createValueSetEditFieldForBoolean(editFields);
+            valueSetEditField = createValueSetEditFieldForBoolean();
         } else {
-            createValueSetField(editFields);
+            valueSetEditField = createValueSetField();
         }
-        createDefaultValueEditField(editFields);
+        editFields.add(valueSetEditField);
+        createTemplateStatusButton(valueSetEditField);
+        EditField<String> defaultValueEditField = createDefaultValueEditField();
+        // TODO FIPS-4556 just fill grid cell as long we do not have templates for default values
+        getToolkit().createHorizontalSpacer(this, 0);
+        editFields.add(defaultValueEditField);
         createEditFieldsForExtensionProperties();
         addOverlaysToEditFields(editFields);
     }
 
-    private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
+    private EditField<String> createDefaultValueEditField() {
         createLabel(Messages.ConfigElementEditComposite_defaultValue);
 
         ValueDatatype datatype = getProperty() == null ? null : findDatatypeForDefaultValueEditField();
@@ -91,30 +97,14 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
                 .getValueSet(), getPropertyValue().getIpsProject());
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
         return editField;
     }
 
     private ValueDatatype findDatatypeForDefaultValueEditField() {
         ValueDatatype datatype = null;
-        try {
-            datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
-        } catch (CoreException e) {
-            // Exception while searching for datatype, log exception and use String as default
-            IpsPlugin.log(e);
-            datatype = Datatype.STRING;
-        }
+        datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
         return datatype;
-    }
-
-    private boolean isRangeValueEditFieldsRequired() {
-        IPolicyCmptTypeAttribute property = getProperty();
-        if (property == null) {
-            return getPropertyValue().getValueSet().isRange();
-        } else {
-            return property.getValueSet().isRange() && getPropertyValue().getValueSet().isRange();
-        }
     }
 
     private boolean isBooleanDatatype() {
@@ -123,28 +113,28 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
-    private void createValueSetEditFieldForBoolean(List<EditField<?>> editFields) {
+    private BooleanValueSetField createValueSetEditFieldForBoolean() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
-        booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
-        editFields.add(field);
 
         getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+
+        return field;
     }
 
-    private void createValueSetField(List<EditField<?>> editFields) {
+    private ConfigElementField createValueSetField() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
-        valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
         ConfigElementField editField = new ConfigElementField(getPropertyValue(), valueSetControl);
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+
+        return editField;
     }
 
     /**
@@ -169,15 +159,15 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         }
     }
 
-    @Override
-    protected int getFirstControlMarginHeight() {
-        return isRangeValueEditFieldsRequired() ? 4 : 0;
-    }
-
     public void setEnumValueSetProvider(IEnumValueSetProvider enumValueSetProvider) {
         // anyValueSetControl might be null in case of a Range ValueSet
         if (valueSetControl != null) {
             valueSetControl.setEnumValueSetProvider(enumValueSetProvider);
         }
+    }
+
+    @Override
+    protected Function<IConfigElement, String> getToolTipFormatter() {
+        return PropertyValueFormatter.CONFIG_ELEMENT;
     }
 }

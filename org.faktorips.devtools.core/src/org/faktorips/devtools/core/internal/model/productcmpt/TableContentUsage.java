@@ -10,23 +10,26 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -38,7 +41,7 @@ import org.w3c.dom.Element;
  * 
  * @author Thorsten Guenther
  */
-public class TableContentUsage extends AtomicIpsObjectPart implements ITableContentUsage {
+public class TableContentUsage extends AbstractSimplePropertyValue implements ITableContentUsage {
 
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE;
     /**
@@ -51,22 +54,16 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
      */
     private String structureUsage = ""; //$NON-NLS-1$
 
-    public TableContentUsage() {
-        super();
-    }
+    private final TemplateValueSettings templateValueSettings;
 
     public TableContentUsage(IPropertyValueContainer parent, String id) {
-        super(parent, id);
+        this(parent, id, ""); //$NON-NLS-1$
     }
 
     public TableContentUsage(IPropertyValueContainer parent, String id, String structureUsage) {
         super(parent, id);
         this.structureUsage = structureUsage;
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -80,13 +77,13 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.TABLE_CONTENT_USAGE;
     }
 
     @Override
     public String getPropertyValue() {
-        return tableContentName;
+        return getTableContentName();
     }
 
     /**
@@ -111,7 +108,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return getPropertyValueContainer().getProductCmpt();
     }
 
-    private IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
+    private IProductCmptType getProductCmptType(IIpsProject ipsProject) {
         return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
@@ -144,17 +141,36 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public String getTableContentName() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateTableContentName();
+        }
+
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return ""; //$NON-NLS-1$
+        }
+
         return tableContentName;
+    }
+
+    private String findTemplateTableContentName() {
+        ITableContentUsage templateContentUsage = findTemplateProperty(getIpsProject());
+        if (templateContentUsage == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return tableContentName;
+        }
+        return templateContentUsage.getTableContentName();
     }
 
     @Override
     public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException {
-        return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
+        return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, getTableContentName());
     }
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        String tableContentNameToValidate = getTableContentName();
         IProductCmptType type = getProductCmptType(ipsProject);
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TYPE, Messages.TableContentUsage_msgNoType, Message.WARNING, this));
@@ -167,23 +183,31 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
             list.add(new Message(MSGCODE_UNKNOWN_STRUCTURE_USAGE, text, Message.ERROR, this, PROPERTY_STRUCTURE_USAGE));
             return;
         }
-
+        list.add(templateValueSettings.validate(this, ipsProject));
         ITableContents content = null;
-        if (tableContentName != null) {
+        if (tableContentNameToValidate != null) {
             content = findTableContents(ipsProject);
         }
         if (content == null) {
-            if (StringUtils.isNotEmpty(tableContentName) || (tsu.isMandatoryTableContent())) {
-                String text = NLS.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentName);
+            if (!isNullContentAllowed(tsu)) {
+                String text = NLS.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentNameToValidate);
                 list.add(new Message(MSGCODE_UNKNOWN_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
             }
             return;
         }
         String usedStructure = content.getTableStructure();
         if (!tsu.isUsed(usedStructure)) {
-            String[] params = { tableContentName, usedStructure, structureUsage };
+            String[] params = { tableContentNameToValidate, usedStructure, structureUsage };
             String text = NLS.bind(Messages.TableContentUsage_msgInvalidTableContent, params);
             list.add(new Message(MSGCODE_INVALID_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
+        }
+    }
+
+    private boolean isNullContentAllowed(ITableStructureUsage tsu) {
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return true;
+        } else {
+            return StringUtils.isEmpty(getTableContentName()) && !tsu.isMandatoryTableContent();
         }
     }
 
@@ -192,13 +216,15 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         super.initPropertiesFromXml(element, id);
         structureUsage = element.getAttribute(PROPERTY_STRUCTURE_USAGE);
         tableContentName = ValueToXmlHelper.getValueFromElement(element, "TableContentName"); //$NON-NLS-1$
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_STRUCTURE_USAGE, structureUsage);
-        ValueToXmlHelper.addValueToElement(tableContentName, element, "TableContentName"); //$NON-NLS-1$
+        ValueToXmlHelper.addValueToElement(getTableContentName(), element, "TableContentName"); //$NON-NLS-1$
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
@@ -227,4 +253,25 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return StringUtils.capitalize(structureUsage);
     }
 
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // Copy table name values from template (if present)
+            this.tableContentName = getTableContentName();
+        }
+        TemplateValueStatus oldStatus = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldStatus, newStatus));
+
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public ITableContentUsage findTemplateProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.findTemplateValue(this, ITableContentUsage.class);
+    }
 }

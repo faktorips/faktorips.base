@@ -11,9 +11,10 @@
 package org.faktorips.codegen.dthelpers;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,22 +28,29 @@ public class ListOfValueDatatypeHelperTest {
     @Mock
     private ValueDatatype elementDatatype;
 
+    @Mock
+    private DatatypeHelper elementDatatypeHelper;
+
+    @Mock
+    private PrimitiveDatatypeHelper primitiveElementDatatypeHelper;
+
     private ListOfValueDatatypeHelper listOfValueDatatypeHelper;
 
     @Before
     public void createListOfValueDatatypeHelper() throws Exception {
-        listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(elementDatatype);
+        when(elementDatatypeHelper.getDatatype()).thenReturn(elementDatatype);
+        listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(elementDatatypeHelper);
     }
 
     @Test
     public void testNewInstance() {
-        when(elementDatatype.getJavaClassName()).thenReturn("Integer");
+        when(elementDatatypeHelper.getJavaClassName()).thenReturn("Integer");
         assertEquals("new ArrayList<Integer>(xxx)", listOfValueDatatypeHelper.newInstance("xxx").getSourcecode());
     }
 
     @Test
     public void testValueOfExpression() {
-        when(elementDatatype.getJavaClassName()).thenReturn("Integer");
+        when(elementDatatypeHelper.getJavaClassName()).thenReturn("Integer");
 
         assertEquals("new ArrayList<Integer>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
                 .getSourcecode());
@@ -50,13 +58,11 @@ public class ListOfValueDatatypeHelperTest {
 
     @Test
     public void testValueOfExpressionPrimitiveElementDatatype() {
-        ValueDatatype wrapperDatatype = mock(ValueDatatype.class);
-        when(elementDatatype.getJavaClassName()).thenReturn("int");
         when(elementDatatype.isPrimitive()).thenReturn(true);
-        when(elementDatatype.getWrapperType()).thenReturn(wrapperDatatype);
-        when(wrapperDatatype.getJavaClassName()).thenReturn("Integer");
-        // need to recreate the helper because the datatype isPrimitive has changed
-        listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(elementDatatype);
+        when(primitiveElementDatatypeHelper.getDatatype()).thenReturn(elementDatatype);
+        when(primitiveElementDatatypeHelper.getJavaClassName()).thenReturn("int");
+        when(primitiveElementDatatypeHelper.getWrapperTypeHelper()).thenReturn(DatatypeHelper.INTEGER);
+        listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(primitiveElementDatatypeHelper);
 
         assertEquals("new ArrayList<Integer>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
                 .getSourcecode());

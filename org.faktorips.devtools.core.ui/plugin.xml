@@ -95,6 +95,14 @@
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
             visible="false">
          <action
+               class="org.faktorips.devtools.core.ui.wizards.productrelease.ShowReleaserBuilderWizardAction"
+               icon="icons/DeploymentAction.gif"
+               id="org.faktorips.devtools.core.ui.wizards.productrelease.ShowReleaserBuilderWizardAction"
+               label="Build Release"
+               style="push"
+               toolbarPath="org.faktorips.devtools">
+         </action>
+         <action
                class="org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardAction"
                icon="icons/NewTestCase.gif"
                id="org.faktorips.devtools.actions.OpenNewTestCaseWizardAction"
@@ -126,12 +134,12 @@
                tooltip="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.tooltip">
          </action>
          <action
-               class="org.faktorips.devtools.core.ui.wizards.productrelease.ShowReleaserBuilderWizardAction"
-               icon="icons/DeploymentAction.gif"
-               id="org.faktorips.devtools.core.ui.wizards.productrelease.ShowReleaserBuilderWizardAction"
-               label="Build Release"
-               style="push"
-               toolbarPath="org.faktorips.devtools">
+               class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
+               icon="icons/NewProductTemplateWizard.gif"
+               id="org.faktorips.devtools.actions.OpenNewProductTemplateWizardAction"
+               label="%org.faktorips.devtools.actions.OpenNewProductTemplateWizardAction.label"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.actions.OpenNewProductTemplateWizardAction.tooltip">
          </action>
       </actionSet>
       <actionSet
@@ -347,6 +355,34 @@
             id="org.faktorips.devtools.core.ui.command.newProductCmpt"
             name="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.label"
             defaultHandler="org.faktorips.devtools.core.ui.commands.NewProductCmptHandler">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.productcreate"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.InferTemplateHandler"
+            description="%org.faktorips.devtools.core.ui.command.inferTemplate.description"
+            id="org.faktorips.devtools.core.ui.command.inferTemplate"
+            name="%org.faktorips.devtools.core.ui.command.inferTemplate.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SwitchTemplatePropertyValueHandler"
+            description="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.description"
+            id="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
+            name="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SetInheritedTemplateValueStatusHandler"
+            description="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.description"
+            id="org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus"
+            name="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SetDefinedTemplateValueStatusHandler"
+            description="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.description"
+            id="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
+            name="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name">
       </command>
    </extension>
    <extension
@@ -826,6 +862,15 @@
              id="productCmptEditor"
              name="%productCmptEditor">
       	</editor>
+      	<editor
+             class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
+             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
+             default="true"
+             extensions="ipstemplate"
+             icon="icons/ProductTemplate.gif"
+             id="productTemplateEditor"
+             name="%productTemplateEditor">
+      	</editor>
        <editor
              class="org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor"
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
@@ -914,9 +959,18 @@
             icon="icons/NewProductCmptWizard.gif"
             id="newProductCmptWizard"
             name="%NewProductCmptWizard.name">
-    	   <description>%NewProductCmptWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+            <description>%NewProductCmptWizard.description</description>
+            <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductTemplateWizard"
+            icon="icons/NewProductTemplateWizard.gif"
+            id="newProductTemplateWizard"
+            name="%NewProductTemplateWizard.name">
+            <description>%NewProductTemplateWizard.description</description>
+            <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.enumcontent.NewEnumContentWizard"
@@ -1187,6 +1241,15 @@
             icon="icons/ModelStructure.gif"
             id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
             name="%IpsModelStructureTitle"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageViewPart"
+            icon="icons/TemplateUsage.gif"
+            id="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"
+            name="%TemplatePropertyUsageViewTitle"
             restorable="true">
       </view>
    </extension>
@@ -2146,6 +2209,11 @@
                      operator="and">
                   <adapt
                         type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                     <not>
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
+                        </test>
+                     </not>
                   </adapt>
                </iterate>
             </with>
@@ -2181,6 +2249,11 @@
                      operator="and">
                   <adapt
                         type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                     <not>
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
+                        </test>
+                     </not>
                   </adapt>
                </iterate>
             </with>
@@ -2349,13 +2422,63 @@
             class="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             id="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             namespace="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
-            properties="allowGenerations"
+            properties="allowGenerations,isProductTemplate"
             type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
       </propertyTester>
    </extension>
    
       <extension
             point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.leftTree?after=open">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="navigate"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
+               label="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.description">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.rightTree?after=open">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="navigate"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
+               label="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.description">
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus"
+               label="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.description">
+         </command>
+      </menuContribution>
       <menuContribution
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
          <command
@@ -2456,8 +2579,9 @@
                  visible="true">
 		         </separator>
 		         <command
-		               commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
-		               style="push">
+                 commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+                 icon="icons/Reference.gif"
+                 style="push">
               <visibleWhen
                     checkEnabled="true">
               </visibleWhen>
@@ -2489,6 +2613,14 @@
                  visible="true">
            </separator>
             </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.search.ui.views.SearchView?after=additions">
+            <!-- Same menu in search view as in package explorer. Just reference the same menu id! -->
+            <menu
+                  id="faktorIPSMenu"
+                  label="Faktor-IPS"
+                  mnemonic="s" />
       </menuContribution>
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=fips.goto">
@@ -2580,6 +2712,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+               icon="icons/Reference.gif"
                label="%SearchReferencesAction_name"
                style="push"
                tooltip="%SearchReferencesAction_description">
@@ -2950,6 +3083,9 @@
          <ControlFactory
                class="org.faktorips.devtools.core.ui.controlfactories.TimeControlFactory">
          </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.MonthDayControlFactory">
+         </ControlFactory>
       </extension>
 
 	<!-- Extension Points Model Search -->
@@ -3091,6 +3227,12 @@
                class="org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormatFactory">
             <datatype
                   class="org.faktorips.datatype.EnumDatatype">
+            </datatype>
+         </inputformat>
+         <inputformat
+               class="org.faktorips.devtools.core.ui.inputformat.MonthDayISOStringFormatFactory">
+            <datatype
+                  class="org.faktorips.datatype.joda.MonthDayDatatype">
             </datatype>
          </inputformat>     
                   

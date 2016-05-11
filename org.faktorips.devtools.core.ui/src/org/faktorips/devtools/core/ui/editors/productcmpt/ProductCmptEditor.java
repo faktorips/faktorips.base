@@ -38,6 +38,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
+import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
+import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
 
@@ -56,6 +59,24 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private static final String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     private GenerationPropertiesPage generationPropertiesPage;
+
+    private final IPropertyVisibleController visibilityController = new PropertyVisibleController();
+
+    public ProductCmptEditor() {
+        initVisibilityController();
+    }
+
+    private void initVisibilityController() {
+        List<IProductCmptPropertyFilter> filters = IpsUIPlugin.getDefault().getPropertyVisibilityFilters();
+        visibilityController.addFilters(filters);
+        visibilityController.setRefreshCallback(new Runnable() {
+
+            @Override
+            public void run() {
+                refreshIncludingStructuralChanges();
+            }
+        });
+    }
 
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException {
@@ -100,25 +121,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
-        try {
-            checkMissingType();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        checkMissingType();
         super.checkForInconsistenciesToModel();
         if (TRACE) {
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
     }
 
-    private void checkMissingType() throws CoreException {
-        // open the select template dialog if the template is missing and the data is changeable
+    private void checkMissingType() {
+        // open the select type dialog if the type is missing and the data is changeable
         if (getProductCmpt().findProductCmptType(getIpsProject()) == null && super.computeDataChangeableState()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !getSettings().getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
-            String msg = NLS
-                    .bind(Messages.ProductCmptEditor_msgTemplateNotFound, getProductCmpt().getProductCmptType());
-            SetTemplateDialog d = new SetTemplateDialog(getProductCmpt(), getSite().getShell(), msg);
+            String msg = NLS.bind(Messages.ProductCmptEditor_msgTypeNotFound, getProductCmpt().getProductCmptType());
+            SetProductCmptTypeDialog d = new SetProductCmptTypeDialog(getProductCmpt(), getSite().getShell(), msg);
             int rc = d.open();
             if (rc == Window.CANCEL) {
                 getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
@@ -135,13 +151,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
         }
         String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getProductCmpt());
-        return localizedCaption + ": " + getProductCmpt().getName(); //$NON-NLS-1$
+        String name = getProductCmpt().getName();
+        if (getProductCmpt().isProductTemplate()) {
+            return NLS.bind(Messages.ProductCmptEditor_templateTitle, localizedCaption, name);
+        } else {
+            return NLS.bind(Messages.ProductCmptEditor_productCmptTitle, localizedCaption, name);
+        }
     }
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
-        if (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)) {
+        if (isStructuralChangeEvent(event)) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.syncExec(new Runnable() {
 
@@ -151,6 +172,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                 }
             });
         }
+    }
+
+    protected boolean isStructuralChangeEvent(ContentChangeEvent event) {
+        return event.isAffected(getIpsObject())
+                && (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE) || event
+                        .isPropertyAffected(IProductCmpt.PROPERTY_TEMPLATE));
     }
 
     private boolean isGenerationAdded(ContentChangeEvent event) {
@@ -173,6 +200,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             if (getGenerationPropertiesPage() != null) {
                 generationPropertiesPage.rebuildInclStructuralChanges();
             }
+            // Refreshes the visible controller by application start
+            getVisibilityController().updateUI(false);
             refresh();
         }
     }
@@ -182,12 +211,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (!super.computeDataChangeableState()) {
             return false;
         }
-        try {
-            return getProductCmpt().findProductCmptType(getIpsProject()) != null;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return false;
-        }
+        return getProductCmpt().findProductCmptType(getIpsProject()) != null;
     }
 
     /**
@@ -316,6 +340,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                 return null;
             }
         }
+    }
+
+    public IPropertyVisibleController getVisibilityController() {
+        return visibilityController;
     }
 
 }

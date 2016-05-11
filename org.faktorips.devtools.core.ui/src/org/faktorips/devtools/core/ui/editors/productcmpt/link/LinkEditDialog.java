@@ -90,12 +90,7 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         targetControl.setProductCmptsToExclude(toExclude);
 
         boolean cardinalityEnabled;
-        try {
-            cardinalityEnabled = link.constrainsPolicyCmptTypeAssociation(link.getIpsProject());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            cardinalityEnabled = false;
-        }
+        cardinalityEnabled = link.constrainsPolicyCmptTypeAssociation(link.getIpsProject());
 
         getToolkit().createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMin);
         Text minCardinalityText = getToolkit().createText(workArea);

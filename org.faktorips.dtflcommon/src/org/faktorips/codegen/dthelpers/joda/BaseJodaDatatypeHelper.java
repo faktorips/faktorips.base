@@ -9,21 +9,34 @@
  *******************************************************************************/
 package org.faktorips.codegen.dthelpers.joda;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
+import org.faktorips.codegen.dthelpers.AbstractTimeHelper;
+import org.faktorips.datatype.Datatype;
 
 /**
  * Base class for Joda-Time {@link DatatypeHelper} implementations
  */
-public class BaseJodaDatatypeHelper extends AbstractDatatypeHelper {
+public class BaseJodaDatatypeHelper extends AbstractTimeHelper {
 
     public static final String ORG_FAKTORIPS_UTIL_JODA_UTIL = "org.faktorips.util.JodaUtil"; //$NON-NLS-1$
-    private String parseMethod;
+    private final String parseMethod;
+    private final String className;
 
-    public BaseJodaDatatypeHelper(String parseMethod) {
+    public BaseJodaDatatypeHelper(Datatype datatype, String className, String parseMethod) {
+        super(datatype);
+        this.className = className;
         this.parseMethod = parseMethod;
+    }
+
+    public BaseJodaDatatypeHelper(String className, String parseMethod) {
+        this.className = className;
+        this.parseMethod = parseMethod;
+    }
+
+    @Override
+    public String getJavaClassName() {
+        return className;
     }
 
     @Override
@@ -36,16 +49,6 @@ public class BaseJodaDatatypeHelper extends AbstractDatatypeHelper {
         code.append(expression);
         code.append(')');
         return code;
-    }
-
-    @Override
-    public JavaCodeFragment newInstance(String value) {
-        if (StringUtils.isEmpty(value)) {
-            return nullExpression();
-        }
-        StringBuffer buf = new StringBuffer();
-        buf.append('"').append(value).append('"');
-        return valueOfExpression(buf.toString());
     }
 
     @Override

@@ -48,7 +48,7 @@ public abstract class Association extends TypePart implements IAssociation {
     private String targetRoleSingular = ""; //$NON-NLS-1$
     private String targetRolePlural = ""; //$NON-NLS-1$
     private int minCardinality = 0;
-    private int maxCardinality = Integer.MAX_VALUE;
+    private int maxCardinality = CARDINALITY_MANY;
     private String subsettedDerivedUnion = ""; //$NON-NLS-1$
     private boolean derivedUnion = false;
     private boolean constrain = false;
@@ -675,12 +675,12 @@ public abstract class Association extends TypePart implements IAssociation {
                     continue;
                 }
                 try {
-                    IType derivedUnionTarget = association.findTarget(ipsProject);
+                    IType derivedUnionTarget = association.findTarget(getIpsProject());
                     if (derivedUnionTarget == null) {
                         continue;
                     }
 
-                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
+                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, getIpsProject())) {
                         candidates.add(association);
                     }
                 } catch (CoreException e) {

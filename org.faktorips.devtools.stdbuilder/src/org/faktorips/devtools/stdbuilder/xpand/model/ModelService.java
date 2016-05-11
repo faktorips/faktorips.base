@@ -61,7 +61,7 @@ public class ModelService {
             generatorModelNodes.put(ipsObjectPartContainer, nodes);
         }
         for (AbstractGeneratorModelNode generatorModelNode : nodes) {
-            if (nodeClass.isAssignableFrom(generatorModelNode.getClass())) {
+            if (nodeClass.equals(generatorModelNode.getClass())) {
                 @SuppressWarnings("unchecked")
                 // valid cast because checked before
                 T castedGeneratorModelNode = (T)generatorModelNode;

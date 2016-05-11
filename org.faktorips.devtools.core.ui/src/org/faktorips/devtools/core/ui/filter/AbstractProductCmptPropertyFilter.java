@@ -23,11 +23,14 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * conditions change.
  * 
  * @since 3.6
+ * @deprecated as of 3.17. Filters no longer have a reference to a controller. Thus this base class
+ *             is no longer required.
  * 
  * @author Alexander Weickmann
  * 
  * @see IProductCmptPropertyFilter
  */
+@Deprecated
 public abstract class AbstractProductCmptPropertyFilter implements IProductCmptPropertyFilter {
 
     private IPropertyVisibleController controller;
@@ -39,7 +42,7 @@ public abstract class AbstractProductCmptPropertyFilter implements IProductCmptP
 
     @Override
     public final void notifyController() {
-        controller.updateUI();
+        controller.updateUI(false);
     }
 
 }

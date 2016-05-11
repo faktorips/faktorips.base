@@ -29,6 +29,7 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
+import org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.model.XPolicyBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
@@ -281,7 +282,7 @@ public class XPolicyCmptClass extends XType {
      * derived-union-subset, the original detail to master derived union is determined and added to
      * the result.
      */
-    protected Set<XDetailToMasterDerivedUnionAssociation> findDetailToMasterDerivedUnionAssociations(Collection<XPolicyAssociation> associations) {
+    protected Set<XDetailToMasterDerivedUnionAssociation> findDetailToMasterDerivedUnionAssociations(Collection<? extends XPolicyAssociation> associations) {
         Set<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
         for (XPolicyAssociation association : associations) {
             if (!association.isDerived()) {
@@ -577,5 +578,9 @@ public class XPolicyCmptClass extends XType {
      */
     public boolean isGenerateGenerationAccessMethods() {
         return getProductCmptType().isChangingOverTime();
+    }
+
+    public XPolicyBuilder getPolicyBuilderModelNode() {
+        return getModelNode(getIpsObjectPartContainer(), XPolicyBuilder.class);
     }
 }

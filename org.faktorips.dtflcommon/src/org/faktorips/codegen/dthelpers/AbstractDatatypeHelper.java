@@ -28,7 +28,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     private Datatype datatype;
 
     /**
-     * Constructs a new helper.
+     * Constructs a new helper without initializing the datatype.
      */
     public AbstractDatatypeHelper() {
         // Provides default constructor
@@ -97,11 +97,6 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     }
 
     @Override
-    public String getJavaClassName() {
-        return datatype.getJavaClassName();
-    }
-
-    @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return null;
     }
@@ -130,10 +125,10 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * Java 5 code sample
      * 
      * <pre>
-     *  (EnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
+     *  (IEnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
      *      true, 
      *      GeneratedGender.getGeneratedGender(null),
-     *      GeneratedGender.getGeneratedGender(new Integer(1)), 
+     *      GeneratedGender.getGeneratedGender(new Integer(1)),
      *      GeneratedGender.getGeneratedGender(new Integer(2)));
      * </pre>
      */

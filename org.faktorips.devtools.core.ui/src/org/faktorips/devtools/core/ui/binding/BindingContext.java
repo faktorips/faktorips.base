@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.google.common.base.Predicate;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -97,7 +99,7 @@ public class BindingContext {
      * listener for changes and focus losts. Instance of an inner class is used to avoid poluting
      * this class' interface.
      */
-    private final Listener listener = new Listener();
+    private final Listener listener;
 
     /** list of mappings between edit fields and properties of model objects. */
     private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
@@ -113,6 +115,17 @@ public class BindingContext {
     private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<ControlPropertyBinding>();
 
     private final Set<String> ignoredMessageCodes = new HashSet<String>(2);
+
+    public BindingContext() {
+        this.listener = new Listener();
+    }
+
+    /**
+     * Constructor for tests
+     */
+    protected BindingContext(Listener listener) {
+        this.listener = listener;
+    }
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
@@ -367,7 +380,7 @@ public class BindingContext {
         if (!expectedType.isAssignableFrom(property.getPropertyType())) {
             throw new IllegalArgumentException(
                     "Expected property " + property.getName() + " to be of type " + expectedType //$NON-NLS-1$ //$NON-NLS-2$
-                            + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
+                    + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
         }
     }
 
@@ -382,7 +395,7 @@ public class BindingContext {
 
         throw new IllegalArgumentException(
                 "Property " + property.getName() + " is of type " + property.getPropertyType() //$NON-NLS-1$ //$NON-NLS-2$
-                        + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
+                + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
     }
 
     /**
@@ -430,6 +443,23 @@ public class BindingContext {
      */
     public void bindEnabled(Control control, Object object, String property, Object expectedValue) {
         add(new EnableBinding(control, object, property, expectedValue));
+    }
+
+    /**
+     * Binds the control's enabled property to the given part container's property. Uses a
+     * {@link Predicate} to check whether the control should be enabled or disabled
+     * 
+     * @param control The control which enabled property is bound
+     * @param object The object the control is bound to
+     * @param property The name of the object's property the control is bound to.
+     * @param enabledPredicate A predicate that gets the property from the object and returns
+     *            <code>true</code> if the control should be enabled.
+     * 
+     * @throws IllegalArgumentException if the object's property is not of type boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public void bindEnabled(Control control, Object object, String property, Predicate<Object> enabledPredicate) {
+        add(new EnableBinding(control, object, property, enabledPredicate));
     }
 
     /**
@@ -709,7 +739,7 @@ public class BindingContext {
                     binding.updateUI(propertyName);
                 }
             } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
+                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding, e)); //$NON-NLS-1$
             }
         }
     }
@@ -806,7 +836,8 @@ public class BindingContext {
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
-    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
+    protected class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener,
+    PropertyChangeListener {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
@@ -834,17 +865,20 @@ public class BindingContext {
         }
 
         @Override
-        public void contentsChanged(ContentChangeEvent event) {
+        public void contentsChanged(final ContentChangeEvent event) {
+            // No need of running in Display Thread because the IpsModel already handles it
             for (FieldPropertyMapping<?> mapping : mappings) {
                 IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
                 if (mappedPart != null) {
-                    if (event.isAffected(mappedPart)) {
-                        try {
-                            mapping.setControlValue();
-                        } catch (Exception ex) {
-                            IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                    + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                        }
+                    try {
+                        // FIPS-4837: Don't check if mappedPart is actually affected by the event.
+                        // An update might be required anyhow (e.g. if a template changed and a
+                        // product component based on the template needs to be refreshed) and the
+                        // performance penalty is negligible
+                        mapping.setControlValue();
+                    } catch (Exception ex) {
+                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                     }
                 } else {
                     mapping.setControlValue();

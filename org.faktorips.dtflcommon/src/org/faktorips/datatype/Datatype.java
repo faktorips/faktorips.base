@@ -17,7 +17,6 @@ import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.datatype.classtypes.LongDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
@@ -42,80 +41,68 @@ public interface Datatype extends Comparable<Datatype> {
     /**
      * Datatype Void.
      */
-    public final static Datatype VOID = new Void();
+    public static final Void VOID = new Void();
 
     /**
      * Datatype representing {@link java.lang.Boolean}.
      */
-    public final static ValueDatatype BOOLEAN = new BooleanDatatype();
+    public static final BooleanDatatype BOOLEAN = new BooleanDatatype();
 
     /**
      * Datatype representing {@link Decimal}.
      */
-    public final static ValueDatatype DECIMAL = new DecimalDatatype();
+    public static final DecimalDatatype DECIMAL = new DecimalDatatype();
 
     /**
      * Datatype representing {@link BigDecimal}.
      */
-    public static final ValueDatatype BIG_DECIMAL = new BigDecimalDatatype();
+    public static final BigDecimalDatatype BIG_DECIMAL = new BigDecimalDatatype();
 
     /**
      * Datatype representing {@link java.lang.Double}.
      */
-    public static final ValueDatatype DOUBLE = new DoubleDatatype();
+    public static final DoubleDatatype DOUBLE = new DoubleDatatype();
 
     /**
      * Datatype representing {@link Integer}.
      */
-    public final static ValueDatatype INTEGER = new IntegerDatatype();
+    public static final IntegerDatatype INTEGER = new IntegerDatatype();
 
     /**
      * Datatype representing {@link Long}.
      */
-    public final static ValueDatatype LONG = new LongDatatype();
+    public static final LongDatatype LONG = new LongDatatype();
 
     /**
      * Datatype representing {@link Money}.
      */
-    public final static ValueDatatype MONEY = new MoneyDatatype();
+    public static final MoneyDatatype MONEY = new MoneyDatatype();
 
     /**
      * Datatype representing the primitive <code>boolean</code>.
      */
-    public final static ValueDatatype PRIMITIVE_BOOLEAN = new PrimitiveBooleanDatatype();
+    public static final PrimitiveBooleanDatatype PRIMITIVE_BOOLEAN = new PrimitiveBooleanDatatype();
 
     /**
      * Datatype representing the primitive <code>int</code>.
      */
-    public final static ValueDatatype PRIMITIVE_INT = new PrimitiveIntegerDatatype();
+    public static final PrimitiveIntegerDatatype PRIMITIVE_INT = new PrimitiveIntegerDatatype();
 
     /**
      * Datatype representing the primitive <code>long</code>.
      */
-    public final static ValueDatatype PRIMITIVE_LONG = new PrimitiveLongDatatype();
+    public static final PrimitiveLongDatatype PRIMITIVE_LONG = new PrimitiveLongDatatype();
 
     /**
      * Datatype representing <code>java.lang.String</code>
      */
-    public final static ValueDatatype STRING = new StringDatatype();
+    public static final StringDatatype STRING = new StringDatatype();
 
     /**
      * Datatype representing <code>java.util.GregorianCalendar</code>. Note that in Faktor-IPS
      * values of that datatype only contain the information about the date, not the time.
-     * <p>
-     * We have to solve the problem, that conceptually we have more like three datatypes for date,
-     * time and datetime, but in Java it is messed up with the gregorian calendar.
      */
-    public final static ValueDatatype GREGORIAN_CALENDAR = new GregorianCalendarAsDateDatatype();
-
-    /**
-     * Datatype representing <code>java.util.GregorianCalendar</code> with only the date information
-     * (year, month, date) used.
-     * 
-     * @see GregorianCalendarDatatype
-     */
-    @Deprecated
-    public final static ValueDatatype GREGORIAN_CALENDAR_DATE = new GregorianCalendarDatatype("Date", false); //$NON-NLS-1$
+    public static final GregorianCalendarAsDateDatatype GREGORIAN_CALENDAR = new GregorianCalendarAsDateDatatype();
 
     /**
      * Returns the datatype's name.
@@ -157,11 +144,6 @@ public interface Datatype extends Comparable<Datatype> {
      * instance be be casted to {@link EnumDatatype}. Returns <code>false</code> otherwise.
      */
     public boolean isEnum();
-
-    /**
-     * Returns the qualified Java class name that values of this datatype are instances of.
-     */
-    public String getJavaClassName();
 
     /**
      * Returns <code>true</code> if the datatype has a special instance representing

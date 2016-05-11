@@ -13,11 +13,13 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
@@ -43,14 +45,18 @@ public class LinkViewItem extends PlatformObject implements ILinkSectionViewItem
     public Image getImage() {
         IProductCmpt product;
         try {
-            Image image;
+            ImageDescriptor imageDescriptor;
             product = link.findTarget(link.getIpsProject());
             if (product == null) {
-                image = IpsUIPlugin.getImageHandling().getDefaultImage(ProductCmpt.class);
+                imageDescriptor = IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmpt.class);
             } else {
-                image = IpsUIPlugin.getImageHandling().getImage(product);
+                imageDescriptor = IpsUIPlugin.getImageHandling().getImageDescriptor(product);
             }
-            return image;
+            if (link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+                return IpsUIPlugin.getImageHandling().getDisabledSharedImage(imageDescriptor);
+            } else {
+                return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

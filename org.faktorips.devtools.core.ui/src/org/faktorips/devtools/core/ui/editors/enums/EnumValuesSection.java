@@ -54,7 +54,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -581,7 +581,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     private void contentsChangedUpdateLiteralNameColumn(ContentChangeEvent event) {
-        IIpsObjectPart part = event.getPart();
+        IIpsObjectPartContainer part = event.getPart();
         if (part instanceof IEnumAttributeValue) {
             IEnumAttributeValue changedAttributeValue = (IEnumAttributeValue)part;
             IEnumAttribute changedEnumAttribute;

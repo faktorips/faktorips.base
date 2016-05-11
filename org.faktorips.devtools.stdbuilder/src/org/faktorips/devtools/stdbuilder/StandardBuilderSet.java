@@ -21,12 +21,18 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
@@ -35,11 +41,14 @@ import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
+import org.faktorips.devtools.core.internal.model.datatype.DatatypeHelperFactoryDefinition;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -47,6 +56,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -194,6 +204,15 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
+    /**
+     * Configuration property that defines whether and which builder classes should be generated.
+     */
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR = "builderClasses";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_NONE = "None";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_ALL = "All";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY = "Policies only";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT = "Products only";
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;
@@ -203,6 +222,22 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     private Map<String, IPersistenceProvider> allSupportedPersistenceProvider;
 
     private final String version;
+
+    /**
+     * Registry for looking up helpers for data types.
+     * <p>
+     * Note that the registry is initialized when the IPS project is set (i.e. when
+     * {@link #setIpsProject(IIpsProject)} is invoked).
+     */
+    private DatatypeHelperRegistry datatypeHelperRegistry;
+
+    /**
+     * Registry for looking up helper factories for data types.
+     * <p>
+     * Note that the registry is initialized when the IPS project is set (i.e. when
+     * {@link #setIpsProject(IIpsProject)} is invoked).
+     */
+    private DatatypeHelperFactoryRegistry datatypeHelperFactoryRegistry;
 
     public StandardBuilderSet() {
         version = "3.0.0"; //$NON-NLS-1$
@@ -397,11 +432,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         return builders;
     }
 
-    @Override
-    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
-        return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), datatypeAdapter);
-    }
-
     /**
      * Returns the standard builder plugin version in the format [major.minor.micro]. The version
      * qualifier is not included in the version string.
@@ -504,23 +534,23 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public String getJavaClassName(Datatype datatype, boolean interfaces) {
         if (datatype instanceof IPolicyCmptType) {
-            return getJavaClassNameForPolicyCmptType(datatype, interfaces);
+            return getJavaClassNameForPolicyCmptType((IPolicyCmptType)datatype, interfaces);
         } else if (datatype instanceof IProductCmptType) {
-            return getJavaClassNameForProductCmptType(datatype, interfaces);
+            return getJavaClassNameForProductCmptType((IProductCmptType)datatype, interfaces);
         } else {
-            return datatype.getJavaClassName();
+            return getDatatypeHelper(datatype).getJavaClassName();
         }
     }
 
-    private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean interfaces) {
-        return getJavaClassName((IPolicyCmptType)datatype, interfaces, XPolicyCmptClass.class);
+    private String getJavaClassNameForPolicyCmptType(IPolicyCmptType type, boolean interfaces) {
+        return getJavaClassName(type, interfaces, XPolicyCmptClass.class);
     }
 
-    private String getJavaClassNameForProductCmptType(Datatype datatype, boolean interfaces) {
-        if (((IProductCmptType)datatype).isChangingOverTime()) {
-            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptGenerationClass.class);
+    private String getJavaClassNameForProductCmptType(IProductCmptType type, boolean interfaces) {
+        if (type.isChangingOverTime()) {
+            return getJavaClassName(type, interfaces, XProductCmptGenerationClass.class);
         } else {
-            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptClass.class);
+            return getJavaClassName(type, interfaces, XProductCmptClass.class);
         }
     }
 
@@ -644,4 +674,135 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             return this == XML || this == Both;
         }
     }
+
+    @Override
+    public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+        if (datatype instanceof EnumTypeDatatypeAdapter) {
+            return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), (EnumTypeDatatypeAdapter)datatype);
+        }
+
+        if (datatypeHelperFactoryRegistry.hasFactory(datatype)) {
+            DatatypeHelperFactory factory = datatypeHelperFactoryRegistry.getFactory(datatype);
+            return factory.createDatatypeHelper(datatype, getIpsProject());
+        }
+
+        return datatypeHelperRegistry.getDatatypeHelper(datatype);
+    }
+
+    @Override
+    public void setIpsProject(IIpsProject ipsProject) {
+        super.setIpsProject(ipsProject);
+        synchronized (ipsProject) {
+            datatypeHelperRegistry = new DatatypeHelperRegistry(getIpsProject());
+            datatypeHelperFactoryRegistry = new DatatypeHelperFactoryRegistry();
+        }
+    }
+
+    /** Registry for looking up the {@link DatatypeHelper} for a {@link Datatype}. */
+    private static class DatatypeHelperRegistry {
+
+        /** Name of the extension point used to register data types and helpers. */
+        private static final String DATATYPE_DEFINITION_EXTENSION_POINT = "datatypeDefinition";
+
+        private Map<Datatype, DatatypeHelper> helperMap = new HashMap<Datatype, DatatypeHelper>();
+
+        public DatatypeHelperRegistry(IIpsProject ipsProject) {
+            super();
+            initialize(ipsProject);
+        }
+
+        /**
+         * Returns the helper registered for the given data type or {@code null} if no helper is
+         * registered for that type.
+         */
+        public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+            return helperMap.get(datatype);
+        }
+
+        /**
+         * Initializes the registered helpers using (all) the helpers provided via the
+         * {@link #DATATYPE_DEFINITION_EXTENSION_POINT extension point} and the data type defined in
+         * the given projects.
+         */
+        private void initialize(IIpsProject ipsProject) {
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint point = registry
+                    .getExtensionPoint(IpsPlugin.PLUGIN_ID, DATATYPE_DEFINITION_EXTENSION_POINT);
+            IExtension[] extensions = point.getExtensions();
+
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    registerHelper(new DatatypeDefinition(extension, configElement));
+                }
+            }
+
+            List<Datatype> definedDatatypes = ipsProject.getProperties().getDefinedDatatypes();
+            for (Datatype datatype : definedDatatypes) {
+                if (datatype instanceof GenericValueDatatype) {
+                    GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                    registerHelper(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
+                }
+            }
+        }
+
+        private void registerHelper(DatatypeDefinition definition) {
+            if (definition.hasDatatype() && definition.hasHelper()) {
+                helperMap.put(definition.getDatatype(), definition.getHelper());
+            }
+        }
+
+        private void registerHelper(Datatype datatype, DatatypeHelper helper) {
+            helperMap.put(datatype, helper);
+        }
+    }
+
+    /** Registry for looking up the {@link DatatypeHelperFactory} for a {@link Datatype}. */
+    private static class DatatypeHelperFactoryRegistry {
+
+        /** Name of the extension point used to register data types and helpers. */
+        private static final String DATATYPE_HELPER_FACTORY_EXTENSION_POINT = "datatypeHelperFactory";
+
+        private Map<Datatype, DatatypeHelperFactory> factoryMap = new HashMap<Datatype, DatatypeHelperFactory>();
+
+        public DatatypeHelperFactoryRegistry() {
+            super();
+            initialize();
+        }
+
+        /**
+         * Returns the helper registered for the given data type or {@code null} if no helper is
+         * registered for that type.
+         */
+        public DatatypeHelperFactory getFactory(Datatype datatype) {
+            return factoryMap.get(datatype);
+        }
+
+        public boolean hasFactory(Datatype d) {
+            return factoryMap.containsKey(d);
+        }
+
+        /**
+         * Initializes the registered factories using (all) the helpers provided via the
+         * {@link #DATATYPE_HELPER_FACTORY_EXTENSION_POINT extension point} and the data type
+         * defined in the given projects.
+         */
+        private void initialize() {
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
+                    DATATYPE_HELPER_FACTORY_EXTENSION_POINT);
+            IExtension[] extensions = point.getExtensions();
+
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    registerHelper(new DatatypeHelperFactoryDefinition(extension, configElement));
+                }
+            }
+        }
+
+        private void registerHelper(DatatypeHelperFactoryDefinition definition) {
+            factoryMap.put(definition.getDatatype(), definition.getFactory());
+        }
+
+    }
+
 }

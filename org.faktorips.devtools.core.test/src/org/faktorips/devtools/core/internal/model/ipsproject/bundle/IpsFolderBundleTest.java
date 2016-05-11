@@ -24,7 +24,6 @@ import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsFolderBundle;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsFolderBundle.IOFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;

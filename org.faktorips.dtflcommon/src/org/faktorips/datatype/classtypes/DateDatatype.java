@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 import org.faktorips.values.DateUtil;
 
 /**
@@ -23,7 +23,7 @@ import org.faktorips.values.DateUtil;
  * 
  * @author Peter Erzberger
  */
-public class DateDatatype extends ValueClassDatatype {
+public class DateDatatype extends ValueClassNameDatatype {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
 
@@ -33,14 +33,7 @@ public class DateDatatype extends ValueClassDatatype {
      * Creates a new DateDatatype where the name is the short class name.
      */
     public DateDatatype() {
-        super(Date.class);
-    }
-
-    /**
-     * Creates a new DateDatatype with the specified name.
-     */
-    public DateDatatype(String name) {
-        super(Date.class, name);
+        super(Date.class.getSimpleName());
     }
 
     @Override

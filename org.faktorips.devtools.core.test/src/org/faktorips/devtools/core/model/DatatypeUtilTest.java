@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.model;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,6 +30,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DatatypeUtilTest {
 
+    private static final String NULL_VALUE = "NULL_VALUE";
+
     @Mock
     private IEnumContent enumContent;
 
@@ -39,6 +43,9 @@ public class DatatypeUtilTest {
 
     @Mock
     private IIpsProject ipsProject;
+
+    @Mock
+    private ValueDatatype valueDatatype;
 
     private EnumTypeDatatypeAdapter enumDatatype;
 
@@ -78,6 +85,30 @@ public class DatatypeUtilTest {
         assertFalse(DatatypeUtil.isCovariant(null, enumDatatype));
         assertFalse(DatatypeUtil.isCovariant(superenumDatatype, null));
         assertFalse(DatatypeUtil.isCovariant(null, null));
+    }
+
+    @Test
+    public void testIsNullValue() throws Exception {
+        when(valueDatatype.isNull(NULL_VALUE)).thenReturn(true);
+
+        assertThat(DatatypeUtil.isNullValue(valueDatatype, null), is(true));
+        assertThat(DatatypeUtil.isNullValue(valueDatatype, NULL_VALUE), is(true));
+        assertThat(DatatypeUtil.isNullValue(valueDatatype, "abc"), is(false));
+        assertThat(DatatypeUtil.isNullValue(valueDatatype, ""), is(false));
+        assertThat(DatatypeUtil.isNullValue(valueDatatype, "<null>"), is(false));
+    }
+
+    @Test
+    public void testIsNonNullValue() throws Exception {
+        when(valueDatatype.isNull(NULL_VALUE)).thenReturn(true);
+
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, (String)null), is(false));
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, "", "abc", NULL_VALUE), is(false));
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, "asd", "", null, "123"), is(false));
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, NULL_VALUE), is(false));
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, "abc"), is(true));
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, ""), is(true));
+        assertThat(DatatypeUtil.isNonNull(valueDatatype, "<null>"), is(true));
     }
 
 }

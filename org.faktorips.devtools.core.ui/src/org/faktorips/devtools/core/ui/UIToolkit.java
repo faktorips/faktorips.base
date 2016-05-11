@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
@@ -80,6 +82,7 @@ public class UIToolkit {
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
     private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$
     private static final String DATA_CHANGEABLE = "dataChangeable"; //$NON-NLS-1$
+    private static final String ENABLED = "enabled"; //$NON-NLS-1$
 
     private static final int FOREGROUND_COLOR_DISABLED = SWT.COLOR_DARK_GRAY;
     private static final int FOREGROUND_COLOR_ENABLED = SWT.COLOR_LIST_FOREGROUND;
@@ -101,7 +104,7 @@ public class UIToolkit {
      * adjusted as well.
      */
     public void setDataChangeable(Control c, boolean changeable) {
-        if (c == null) {
+        if (c == null || !isMarkedAsEnabled(c)) {
             return;
         }
         if (c instanceof IDataChangeableReadWriteAccess) {
@@ -109,13 +112,15 @@ public class UIToolkit {
             return;
         }
         c.setData(DATA_CHANGEABLE, changeable);
+        updateEnabledState(c, changeable);
+        // note: this has to be the last if statement as other controls might derive from
+        // composite
+        setDataChangeableChildren(c, changeable);
+    }
+
+    private void updateEnabledState(Control c, boolean changeable) {
         if (c instanceof Text) {
-            ((Text)c).setEditable(changeable);
-            setForegroundColor(c, changeable);
-            if (formToolkit == null) {
-                // grayed text background only in dialogs
-                setBackgroundColor(c, changeable);
-            }
+            setEnabled((Text)c, changeable);
             return;
         }
         if (c instanceof Label) {
@@ -128,22 +133,10 @@ public class UIToolkit {
         if (c instanceof Group) {
             setForegroundColor(c, changeable);
         }
-        if (isDataChangeableRelevant(c)) {
-            setControlChangeable(c, changeable);
+        if (isEnabledRelevant(c)) {
+            setControlEnabled(c, changeable);
             return;
         }
-        // note: this has to be the last if statement as other controls might derive from
-        // composite
-        setDataChangeableChildren(c, changeable);
-    }
-
-    private static boolean isDataChangeableRelevant(Control c) {
-        return c instanceof Checkbox || c instanceof Combo || c instanceof Button;
-    }
-
-    private void setControlChangeable(Control c, boolean changeable) {
-        c.setEnabled(changeable);
-        setTooltipIfNecessary(c, changeable);
     }
 
     /**
@@ -178,7 +171,7 @@ public class UIToolkit {
      *         (by checking {@link Text#getEditable()} but disabled by checking
      *         {@link Text#isEnabled()}.
      */
-    public static boolean isDataChangeable(Control c) {
+    public boolean isDataChangeable(Control c) {
         if (c == null) {
             return false;
         } else if (c instanceof IDataChangeableReadAccess) {
@@ -186,6 +179,72 @@ public class UIToolkit {
         }
         Object dataChangeable = c.getData(DATA_CHANGEABLE);
         return dataChangeable instanceof Boolean ? Boolean.TRUE.equals(dataChangeable) : true;
+    }
+
+    /**
+     * Setting the enabled state of a control and all its child controls recursively. In contrast to
+     * normal SWT enabled state, we do not set Text controls to enabled=false because we'd like to
+     * select and copy text also in disabled text controls.
+     * 
+     * @param c The control that should be set to enabled or disabled
+     * @param enabled <code>true</code> to mark the control as enabled, <code>false</code> to
+     *            disable.
+     */
+    public void setEnabled(Control c, boolean enabled) {
+        if (c == null || isEnabled(c) == enabled) {
+            return;
+        }
+        c.setData(ENABLED, enabled);
+        updateEnabledState(c, enabled);
+        setEnabledChildren(c, enabled);
+    }
+
+    /**
+     * Setting a text control to enabled by changing the editable state and changing the text color
+     * to the disabled color. In contrast to real disabling the text stay selectable and better
+     * readable.
+     */
+    public void setEnabled(Text text, boolean enabled) {
+        text.setEditable(enabled);
+        setForegroundColor(text, enabled);
+        if (formToolkit == null) {
+            // grayed text background only in dialogs
+            setBackgroundColor(text, enabled);
+        }
+    }
+
+    private static boolean isEnabledRelevant(Control c) {
+        return c instanceof Checkbox || c instanceof Combo || c instanceof Button || c instanceof ToolBar;
+    }
+
+    private void setControlEnabled(Control c, boolean changeable) {
+        c.setEnabled(changeable);
+        setTooltipIfNecessary(c, changeable);
+    }
+
+    private void setEnabledChildren(Control c, boolean changeable) {
+        if (c instanceof Composite) {
+            Control[] children = ((Composite)c).getChildren();
+            for (Control element : children) {
+                setEnabled(element, changeable);
+            }
+        }
+    }
+
+    public boolean isEnabled(Control c) {
+        if (c != null && !c.isDisposed()) {
+            return c.isEnabled() && isMarkedAsEnabled(c);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isMarkedAsEnabled(Control c) {
+        if (c != null && !c.isDisposed()) {
+            return BooleanUtils.isNotFalse((Boolean)c.getData(ENABLED));
+        } else {
+            return false;
+        }
     }
 
     private void setForegroundColor(Control control, boolean changeable) {

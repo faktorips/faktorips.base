@@ -10,9 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -536,5 +540,39 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     public void testSize() {
         setUpCollectionWithLinks();
         assertEquals(5, linkCollection.size());
+    }
+
+    @Test
+    public void testRemoveUndefinedLinks() {
+        setUpCollectionWithLinks();
+        when(link1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        when(link2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        when(link3.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
+        when(link4.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+
+        linkCollection.removeUndefinedLinks();
+        assertThat(linkCollection.size(), is(3));
+        assertThat(linkCollection.getLinks(), hasItems(link2, link3, link5));
+    }
+
+    @Test
+    public void testRemoveUndefinedLinks_NoLinks() {
+        assertThat(linkCollection.size(), is(0));
+        linkCollection.removeUndefinedLinks();
+        assertThat(linkCollection.size(), is(0));
+    }
+
+    @Test
+    public void testRemoveUndefinedLinks_NoUndefinedLinks() {
+        setUpCollectionWithLinks();
+        when(link1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        when(link2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        when(link3.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        when(link4.getTemplateValueStatus()).thenReturn(null);
+        when(link5.getTemplateValueStatus()).thenReturn(null);
+
+        linkCollection.removeUndefinedLinks();
+        assertThat(linkCollection.size(), is(5));
+        assertThat(linkCollection.getLinks(), hasItems(link1, link2, link3, link4, link5));
     }
 }

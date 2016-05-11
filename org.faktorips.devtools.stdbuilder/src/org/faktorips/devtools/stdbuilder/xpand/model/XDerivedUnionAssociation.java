@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -99,15 +97,11 @@ public class XDerivedUnionAssociation extends XAssociation {
         if (getTypeOfAssociation().equals(xType.getType())) {
             return false;
         }
-        try {
-            IType supertype = xType.getType().findSupertype(xType.getIpsProject());
-            FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
-                    getAssociation(), xType.getIpsProject());
-            findSubsetOfDerivedUnionVisitor.start(supertype);
-            return findSubsetOfDerivedUnionVisitor.isSubsetFound();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IType supertype = xType.getType().findSupertype(xType.getIpsProject());
+        FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
+                getAssociation(), xType.getIpsProject());
+        findSubsetOfDerivedUnionVisitor.start(supertype);
+        return findSubsetOfDerivedUnionVisitor.isSubsetFound();
     }
 
     /**

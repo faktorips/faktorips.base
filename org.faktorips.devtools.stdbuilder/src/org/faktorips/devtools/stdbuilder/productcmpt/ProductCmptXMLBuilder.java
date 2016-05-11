@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -81,7 +83,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             Element root = productCmpt.toXml(document);
 
             writeValidFrom(productCmpt, root);
-            updateTargetRuntimeId(productCmpt, root);
+            updateLinks(productCmpt, root);
             updateGenerations(productCmpt, document, root);
             compileFormulas(productCmpt, document, root);
             build(ipsSrcFile, root);
@@ -96,7 +98,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     private void updateGenerations(IProductCmpt productCmpt, Document document, Element root) {
-        NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
+        List<Element> generationNodes = getElements(root, IIpsObjectGeneration.TAG_NAME);
         if (productCmpt.allowGenerations()) {
             updateTargetAndCompileFormulaInGenerations(productCmpt, document, generationNodes);
         } else {
@@ -106,24 +108,44 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     private void updateTargetAndCompileFormulaInGenerations(IProductCmpt productCmpt,
             Document document,
-            NodeList generationNodes) {
+            List<Element> generationNodes) {
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        for (int i = 0; i < generations.length && i < generationNodes.getLength(); i++) {
+        for (int i = 0; i < generations.length && i < generationNodes.size(); i++) {
             IProductCmptGeneration generation = (IProductCmptGeneration)generations[i];
-            Element generationElement = (Element)generationNodes.item(i);
+            Element generationElement = generationNodes.get(i);
 
-            updateTargetRuntimeId(generation, generationElement);
+            updateLinks(generation, generationElement);
             compileFormulas(generation, document, generationElement);
         }
     }
 
-    private void updateTargetRuntimeId(IProductCmptLinkContainer linkContainer, Element linkContainerElement) {
-        List<Element> linkElements = getLinkElements(linkContainerElement);
+    /**
+     * Updates the link elements in the given parent element using the {@code IProductCmptLink}
+     * objects from the given container.
+     * <ul>
+     * <li>link elements with the template value status {@code UNDEFINED} are removed from the
+     * parent element</li>
+     * <li>in the remaining link elements, the {@code targetRuntimeId} attribute is set to the
+     * runtime id of the {@code IProductCmpt} in the corresponding {@code IProductCmptLink}</li>
+     * </ul>
+     * 
+     * @param linkContainer the container with the product component links to obtain runtime ids
+     *            from
+     * @param linkContainerElement the parent element of which the link elements are children
+     */
+    private void updateLinks(IProductCmptLinkContainer linkContainer, Element linkContainerElement) {
+        List<Element> linkElements = getElements(linkContainerElement, IProductCmptLink.TAG_NAME);
         List<IProductCmptLink> links = linkContainer.getLinksAsList();
         for (int i = 0; i < links.size(); i++) {
-            Element linkXmlElement = linkElements.get(i);
-            linkXmlElement.setAttribute(XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(links.get(i)));
+            IProductCmptLink link = links.get(i);
+            Element linkElement = linkElements.get(i);
+            if (link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+                linkContainerElement.removeChild(linkElement);
+            } else {
+                linkElement.setAttribute(XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(links.get(i)));
+            }
         }
+
     }
 
     /**
@@ -137,13 +159,16 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
      * @return the list of all found link elements
      * @since 3.8 with the introduction of static associations.
      */
-    private List<Element> getLinkElements(Element prodCmptElement) {
+    private List<Element> getElements(Element prodCmptElement, String tagName) {
         List<Element> linkElements = new ArrayList<Element>();
         NodeList nodeList = prodCmptElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            if (node instanceof Element && ((Element)node).getNodeName().equals(IProductCmptLink.TAG_NAME)) {
-                linkElements.add((Element)nodeList.item(i));
+            if (node instanceof Element) {
+                Element element = (Element)node;
+                if (StringUtils.equals(element.getNodeName(), tagName)) {
+                    linkElements.add(element);
+                }
             }
         }
         return linkElements;
@@ -164,7 +189,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     private void compileFormulas(IPropertyValueContainer propertyValueContainer, Document document, Element node) {
         if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
             List<IFormula> formulas = propertyValueContainer.getPropertyValues(IFormula.class);
-            NodeList formulaElements = node.getElementsByTagName(Formula.TAG_NAME);
+            List<Element> formulaElements = getElements(node, Formula.TAG_NAME);
             expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements, buildStatus);
         }
     }
@@ -173,9 +198,9 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
      * For compatibility reasons we have still one generation also if the product component type
      * does not support generations. For the runtime XML we want to remove this dummy generation.
      */
-    private void removeDummyGeneration(Element root, NodeList generationNodes) {
-        for (int i = 0; i < generationNodes.getLength(); i++) {
-            root.removeChild(generationNodes.item(i));
+    private void removeDummyGeneration(Element root, List<Element> generationNodes) {
+        for (Element element : generationNodes) {
+            root.removeChild(element);
         }
     }
 

@@ -23,8 +23,8 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
 /**
  * Base implementation of {@link IProductCmptPropertyFilter} that simplifies the implementation of
- * filters. Furthermore, this class is responsible to make sure to call {@link #notifyController()}
- * as soon as the filtering conditions change.
+ * filters. Automatically updates the visibility filters on the currently active editor when the
+ * perspective changes.
  * <p>
  * <strong>Subclassing:</strong><br>
  * Subclasses must implement the {@link #isFiltered(IProductCmptProperty)} method to indicate
@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
  * 
  * @see IProductCmptPropertyFilter
  */
-public abstract class AbstractPerspectiveChangeFilter extends AbstractProductCmptPropertyFilter {
+public abstract class AbstractPerspectiveChangeFilter implements IProductCmptPropertyFilter {
 
     private final LocalWindowListener localWindowListener;
 
@@ -47,7 +47,7 @@ public abstract class AbstractPerspectiveChangeFilter extends AbstractProductCmp
      * Adds a listener to the workbench that manages the {@link LocalWindowListener}
      */
     private LocalWindowListener addWindowListener() {
-        LocalWindowListener listener = new LocalWindowListener(this);
+        LocalWindowListener listener = new LocalWindowListener();
         IpsUIPlugin.getDefault().getWorkbench().addWindowListener(listener);
         return listener;
     }
@@ -64,9 +64,8 @@ public abstract class AbstractPerspectiveChangeFilter extends AbstractProductCmp
 
         private final PerspectiveActivatedOrDeactivatedListener perspectiveActivatedOrDeactivatedListener;
 
-        public LocalWindowListener(AbstractPerspectiveChangeFilter abstractPropertyFilter) {
-            perspectiveActivatedOrDeactivatedListener = new PerspectiveActivatedOrDeactivatedListener(
-                    abstractPropertyFilter);
+        public LocalWindowListener() {
+            perspectiveActivatedOrDeactivatedListener = new PerspectiveActivatedOrDeactivatedListener();
         }
 
         @Override
@@ -106,11 +105,9 @@ public abstract class AbstractPerspectiveChangeFilter extends AbstractProductCmp
          * last open perspective upon activating another perspective.
          */
         private Boolean perspectiveOpen;
-        private final AbstractPerspectiveChangeFilter filter;
         private String perspectiveId;
 
-        public PerspectiveActivatedOrDeactivatedListener(AbstractPerspectiveChangeFilter abstractPropertyFilter) {
-            this.filter = abstractPropertyFilter;
+        public PerspectiveActivatedOrDeactivatedListener() {
         }
 
         @Override
@@ -124,8 +121,6 @@ public abstract class AbstractPerspectiveChangeFilter extends AbstractProductCmp
              * previous perspective was the target perspective.
              */
             if (triggerNotify) {
-                filter.notifyController();
-
                 /*
                  * If the product component editor is opened, it's layout must be refreshed to
                  * reflect the changed filtering status.
@@ -138,6 +133,7 @@ public abstract class AbstractPerspectiveChangeFilter extends AbstractProductCmp
         }
 
         private void refreshProductCmptEditor(ProductCmptEditor pcEditor) {
+            pcEditor.getVisibilityController().updateUI(true);
             IManagedForm form = pcEditor.getActiveIpsObjectEditorPage().getManagedForm();
             if (form != null) {
                 form.reflow(true);

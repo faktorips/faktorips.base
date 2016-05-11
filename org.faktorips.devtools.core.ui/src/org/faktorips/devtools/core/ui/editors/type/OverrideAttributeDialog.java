@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -53,15 +52,11 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
         @Override
         public List<? extends IIpsObjectPart> getAvailableParts(IIpsObject ipsObject) {
             IType cmptType = (IType)ipsObject;
-            try {
-                return cmptType.findOverrideAttributeCandidates(cmptType.getIpsProject());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return cmptType.findOverrideAttributeCandidates(cmptType.getIpsProject());
         }
 
         @Override
-        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) {
             IType cmptType = (IType)ipsObject;
             return cmptType.getSupertypeHierarchy().getAllSupertypes(cmptType);
         }

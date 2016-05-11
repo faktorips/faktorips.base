@@ -1,26 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="153">
+<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="205">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.faktorips.deploydependencies.feature.group" version="1.0.0"/>
-<repository location="https://update.faktorzehn.org/p2repositories/faktorips/deploy"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.faktorzehn.bundles.feature.feature.group" version="1.0.0.201408140927"/>
-<repository location="http://update.faktorzehn.org/p2repositories/thirdparty"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jdt.feature.group" version="3.10.0.v20140925-0400"/>
-<unit id="org.eclipse.cvs.feature.group" version="1.4.100.v20140925-0400"/>
-<unit id="org.eclipse.xpand.sdk.feature.group" version="2.0.0.v201406030414"/>
-<unit id="org.eclipse.gef.feature.group" version="3.9.101.201408150207"/>
-<unit id="org.eclipse.pde.feature.group" version="3.10.0.v20140925-0400"/>
-<unit id="org.eclipse.m2e.feature.feature.group" version="1.5.0.20140606-0033"/>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.core.runtime.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.cvs.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.team.svn.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.jgit.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.xpand.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.gef.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.m2e.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.m2e.sdk.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.common_core.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.common_ui.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.xml_core.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.server_adapters.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.server_core.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.server_ui.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.common.project.facet.core" version="0.0.0"/>
 <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/releases/luna/"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.mwe.core.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.0.200.v20140512-1802"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ecf.provider.generic.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.xsd.feature.group" version="2.10.0.v20140519-0339"/>
+<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
+<unit id="com.google.guava" version="15.0.0.v201403281430"/>
+<unit id="com.google.inject" version="0.0.0"/>
+<unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.uml2.feature.group" version="0.0.0"/>
+<repository location="https://update.faktorzehn.org/p2repositories/luna/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.faktorzehn.thirdparty.libs.feature.group" version="0.0.0"/>
+<repository location="https://drone.faktorzehn.de/p2/thirdparty-1.0"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="4.4.0.v20140623020002"/>
+<repository location="https://update.faktorzehn.org/p2repositories/babel-luna/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="4.1.3.I20150214-1700"/>
+<unit id="org.polarion.eclipse.team.svn.connector.svnkit17.feature.group" version="4.1.3.I20150214-1700"/>
+<repository location="http://community.polarion.com/projects/subversive/download/eclipse/4.0/luna-site/"/>
 </location>
 </locations>
+<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 <launcherArgs>
 <vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -XX:MaxPermSize=256m</vmArgs>
 </launcherArgs>

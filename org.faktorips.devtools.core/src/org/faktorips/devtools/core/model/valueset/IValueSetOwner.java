@@ -62,6 +62,6 @@ public interface IValueSetOwner extends IIpsObjectPart {
      * @param ipsProject The project which IPS object path is used to search the data type. This is
      *            not necessarily the project this value set owner is part of.
      */
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
 }

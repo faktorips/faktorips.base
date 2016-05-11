@@ -37,7 +37,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Creates a new type hierarchy containing all the given type's supertypes. Subtypes are not
      * resolved.
      */
-    public final static TypeHierarchy getSupertypeHierarchy(IType pcType) throws CoreException {
+    public final static TypeHierarchy getSupertypeHierarchy(IType pcType) {
         IIpsProject project = pcType.getIpsProject();
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         List<IType> subtypes = new ArrayList<IType>();

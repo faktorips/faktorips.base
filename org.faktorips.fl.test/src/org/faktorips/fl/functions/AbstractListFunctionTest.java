@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -41,12 +42,15 @@ public class AbstractListFunctionTest {
 
     private AbstractListFunction abstractListFunction;
 
+    @Mock
+    private DatatypeHelper datatypeHelper;
+
     @Before
     public void setUp() {
         abstractListFunction = new AbstractListFunction("myFunction", "", FunctionSignatures.MinList) {
 
             @Override
-            protected JavaCodeFragment generateReturnFallBackValueCall() {
+            protected JavaCodeFragment generateReturnFallBackValueCall(Datatype datatype) {
                 return new JavaCodeFragment();
             }
         };
@@ -76,7 +80,8 @@ public class AbstractListFunctionTest {
     }
 
     private AbstractCompilationResult<JavaCodeFragment> mockDelegateFunction(CompilationResult<JavaCodeFragment> delegateResult) {
-        when(datatype.getJavaClassName()).thenReturn("MyJavaClass");
+        when(compiler.getDatatypeHelper(datatype)).thenReturn(datatypeHelper);
+        when(datatypeHelper.getJavaClassName()).thenReturn("MyJavaClass");
         AbstractCompilationResult<JavaCodeFragment> listArgument = mock(CompilationResultImpl.class);
         ListOfTypeDatatype listDatatype = new ListOfTypeDatatype(datatype);
         when(listArgument.getDatatype()).thenReturn(listDatatype);

@@ -12,10 +12,6 @@ package org.faktorips.devtools.core.ui.forms;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
@@ -34,6 +30,7 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSuppo
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsWorkspacePreferences;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
@@ -85,6 +82,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     private CopyOnWriteArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
     private Composite clientComposite;
+
+    private final IpsWorkspacePreferences preferences = new IpsWorkspacePreferences();
 
     /**
      * Creates a new {@link IpsSection} with the style
@@ -237,10 +236,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * Initializes the expanded state from the preferences.
      */
     protected void initExpandedState() {
-        IPreferencesService preferencesService = Platform.getPreferencesService();
-        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-        String preferenceId = id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED;
-        boolean expanded = preferencesService.getBoolean(pluginId, preferenceId, true, null);
+        boolean expanded = preferences.getBoolean(id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED, true);
         setExpanded(expanded);
     }
 
@@ -257,11 +253,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
             @Override
             public void expansionStateChanged(ExpansionEvent e) {
-                String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-                IEclipsePreferences node = new InstanceScope().getNode(pluginId);
-                String preferenceId = id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED;
                 boolean expanded = e.getState();
-                node.putBoolean(preferenceId, expanded);
+                preferences.putBoolean(id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED, expanded);
                 relayoutSection(expanded);
             }
 

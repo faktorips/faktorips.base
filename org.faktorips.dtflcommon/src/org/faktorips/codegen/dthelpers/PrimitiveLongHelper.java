@@ -36,6 +36,16 @@ public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
     }
 
     @Override
+    public DatatypeHelper getWrapperTypeHelper() {
+        return DatatypeHelper.LONG;
+    }
+
+    @Override
+    public String getJavaClassName() {
+        return Long.TYPE.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         return new JavaCodeFragment(value);
     }

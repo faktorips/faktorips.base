@@ -18,14 +18,10 @@ import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
 import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
 import org.faktorips.codegen.conversion.DecimalToDoubleCg;
 import org.faktorips.codegen.conversion.DoubleToDecimalCg;
-import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateCg;
-import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateTimeCg;
 import org.faktorips.codegen.conversion.IntegerToBigDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToLongCg;
 import org.faktorips.codegen.conversion.IntegerToPrimitiveIntCg;
-import org.faktorips.codegen.conversion.LocalDateTimeToGregorianCalendarCg;
-import org.faktorips.codegen.conversion.LocalDateToGregorianCalendarCg;
 import org.faktorips.codegen.conversion.LongToBigDecimalCg;
 import org.faktorips.codegen.conversion.LongToDecimalCg;
 import org.faktorips.codegen.conversion.LongToIntegerCg;
@@ -39,6 +35,8 @@ import org.faktorips.codegen.conversion.PrimitiveIntToPrimitiveLongCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToBigDecimalCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToLongCg;
 import org.faktorips.codegen.conversion.PrimitiveLongToPrimitiveIntCg;
+import org.faktorips.codegen.conversion.joda.LocalDateTimeToGregorianCalendarCg;
+import org.faktorips.codegen.conversion.joda.LocalDateToGregorianCalendarCg;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
@@ -92,8 +90,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         ccg.add(new DecimalToDoubleCg());
         ccg.add(new LocalDateToGregorianCalendarCg());
         ccg.add(new LocalDateTimeToGregorianCalendarCg());
-        ccg.add(new GregorianCalendarToLocalDateCg());
-        ccg.add(new GregorianCalendarToLocalDateTimeCg());
         return ccg;
     }
 

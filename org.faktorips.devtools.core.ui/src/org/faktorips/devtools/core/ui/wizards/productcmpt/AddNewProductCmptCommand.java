@@ -124,18 +124,14 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
             IProductCmptTypeAssociation association,
             IProductCmpt targetProductCmpt,
             Shell shell) {
-        try {
-            IProductCmptType targetProductCmptType = association.findTargetProductCmptType(sourceGeneration
-                    .getIpsProject());
-            NewProductCmptWizard newProductCmptWizard = new NewProductCmptWizard();
-            newProductCmptWizard.initDefaults(sourceGeneration.getIpsSrcFile().getIpsPackageFragment(),
-                    targetProductCmptType, targetProductCmpt);
-            newProductCmptWizard.setAddToAssociation(sourceGeneration, association);
-            WizardDialog dialog = new WizardDialog(shell, newProductCmptWizard);
-            dialog.open();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptType targetProductCmptType = association
+                .findTargetProductCmptType(sourceGeneration.getIpsProject());
+        NewProductWizard newProductCmptWizard = new NewProductCmptWizard();
+        newProductCmptWizard.initDefaults(sourceGeneration.getIpsSrcFile().getIpsPackageFragment(),
+                targetProductCmptType, targetProductCmpt);
+        newProductCmptWizard.setAddToAssociation(sourceGeneration, association);
+        WizardDialog dialog = new WizardDialog(shell, newProductCmptWizard);
+        dialog.open();
     }
 
     private IProductCmptGeneration getGenerationFromActiveEditor(IEditorPart activeEditor) {

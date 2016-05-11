@@ -979,7 +979,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getCustomRuntimeObject(Class<T> type, String id) but searches only in this repository
+     * Same as {@link #getCustomRuntimeObject(Class, String)} but searches only in this repository
      * and not the ones this repository depends on.
      */
     protected abstract <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName);

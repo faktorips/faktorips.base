@@ -14,11 +14,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
@@ -61,11 +58,6 @@ public class IpsProjectData {
      * a map containing a set of datatypes.
      */
     private final LinkedHashMap<String, Datatype> projectDatatypesMap = new LinkedHashMap<String, Datatype>();
-
-    /**
-     * A map contain the datatypes as keys and the datatype helper as values.
-     */
-    private final Map<ValueDatatype, DatatypeHelper> projectDatatypeHelpersMap = new ConcurrentHashMap<ValueDatatype, DatatypeHelper>();
 
     private IVersionProvider<?> versionFormat;
 
@@ -145,10 +137,6 @@ public class IpsProjectData {
 
     public LinkedHashMap<String, Datatype> getProjectDatatypesMap() {
         return projectDatatypesMap;
-    }
-
-    public Map<ValueDatatype, DatatypeHelper> getProjectDatatypeHelpersMap() {
-        return projectDatatypeHelpersMap;
     }
 
     public IVersionProvider<?> getVersionProvider() {

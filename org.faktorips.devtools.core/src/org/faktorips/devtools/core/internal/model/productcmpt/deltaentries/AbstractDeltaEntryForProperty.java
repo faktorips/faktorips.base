@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 
 /**
  * 
@@ -34,7 +35,7 @@ public abstract class AbstractDeltaEntryForProperty implements IDeltaEntryForPro
 
     @Override
     public String toString() {
-        return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -50,8 +51,8 @@ public abstract class AbstractDeltaEntryForProperty implements IDeltaEntryForPro
      * This implementation returns the property type received by the property value.
      */
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return propertyValue.getPropertyType();
+    public PropertyValueType getPropertyType() {
+        return propertyValue.getPropertyValueType();
     }
 
     /**
@@ -62,6 +63,11 @@ public abstract class AbstractDeltaEntryForProperty implements IDeltaEntryForPro
     @Override
     public String getPropertyName() {
         return getPropertyValue().getPropertyName();
+    }
+
+    @Override
+    public Class<? extends IpsObjectPart> getPartType() {
+        return getPropertyType().getImplementationClass();
     }
 
 }

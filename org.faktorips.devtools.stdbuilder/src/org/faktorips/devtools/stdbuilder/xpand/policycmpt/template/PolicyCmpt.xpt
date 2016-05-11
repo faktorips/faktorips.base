@@ -5,6 +5,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -47,7 +48,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		«IF generateSerializablePolicyCmptsSupport-»
 			/**
 			 * @generated
-	 		 */
+			 */
 			private static final long serialVersionUID = 1L;
 		«ENDIF-»
 		
@@ -64,10 +65,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 * «localizedJDoc("PRODUCTCONFIGURATION_FIELD")»
 			 *  
 			 * @generated
-	 		 */
-	 		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD)-» 
-    		private final «ProductConfiguration()» productConfiguration;
-    	«ENDIF»			
+			 */
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD)-»
+			private «ProductConfiguration()» productConfiguration;
+		«ENDIF»
 		
 		«EXPAND PolicyCmptAssociation::field FOREACH associations-»
 		
@@ -114,8 +115,6 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			«EXPAND getAndSetProductComponent FOR productCmptNode-»
 			«IF generateGenerationAccessMethods»
 				«EXPAND getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
-			«ELSE-»
-				«EXPAND getProductComponentGenerationUnsupported FOR productCmptGenerationNode-»
 			«ENDIF-»		
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		«ENDIF-»
@@ -130,6 +129,12 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		«EXPAND ValidationRule::validationRuleMethods FOREACH validationRules-»
 		
+		«IF generatePolicyBuilder && !abstract-»
+			«EXPAND PolicyCmptCreateBuilder::builder FOR policyBuilderModelNode-»
+			«IF !generatePublishedInterfaces-»
+				«EXPAND PolicyCmptCreateBuilder::with(true) FOR policyBuilderModelNode-»
+			«ENDIF-»
+		«ENDIF-»
 		}
 	«ENDFILE»
 «ENDDEFINE»
@@ -320,20 +325,6 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 	productConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
 			 }
 		 «ENDIF-»
-«ENDDEFINE»
-
-«DEFINE getProductComponentGenerationUnsupported FOR XProductCmptGenerationClass-»
-		«IF !genInterface() && policyCmptClass.firstConfigurableInHierarchy-»
-			 /**
-			  * {@inheritDoc}
-			  * 
-			  * @generated
-			  */
-			 @Override
-			 public «IProductComponentGeneration()» «getProductCmptGeneration()» {
-			 	throw new UnsupportedOperationException();
-			 }
-		«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»

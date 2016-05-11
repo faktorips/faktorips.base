@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
@@ -41,8 +42,7 @@ public class SumListTest {
     @Mock
     private JavaExprCompiler compiler;
 
-    @Mock
-    private DatatypeHelper helper;
+    private DatatypeHelper helper = new DecimalHelper();
 
     @Test(expected = IllegalArgumentException.class)
     public void testCompile_NumberOfArgumentsZero() {
@@ -66,9 +66,7 @@ public class SumListTest {
         doReturn(fragment).when(sumList).generateFunctionCall(arg1Result, arg2Result);
 
         doReturn(compiler).when(sumList).getCompiler();
-        doReturn(Datatype.DECIMAL).when(sumList).getDatatype();
-        when(sumList.getCompiler().getDatatypeHelper(sumList.getDatatype())).thenReturn(helper);
-        when(helper.newInstance("0")).thenReturn(new JavaCodeFragment("Decimal.valueOf(0)"));
+        when(sumList.getCompiler().getDatatypeHelper(Datatype.DECIMAL)).thenReturn(helper);
 
         CompilationResultImpl[] argument = new CompilationResultImpl[] { argumentCompilationResult };
 
@@ -76,7 +74,7 @@ public class SumListTest {
         assertNotNull(compile);
 
         assertEquals(
-                "new FunctionWithListAsArgumentHelper<Decimal>(){\n@Override public Decimal getPreliminaryResult(Decimal currentResult, Decimal nextValue){return currentResult.add(nextValue);}\n@Override public Decimal getFallBackValue(){return Decimal.valueOf(0);}}.getResult(valueList)",
+                "new FunctionWithListAsArgumentHelper<Decimal>(){\n@Override public Decimal getPreliminaryResult(Decimal currentResult, Decimal nextValue){return currentResult.add(nextValue);}\n@Override public Decimal getFallBackValue(){return Decimal.valueOf(\"0\");}}.getResult(valueList)",
                 compile.getCodeFragment().getSourcecode());
     }
 

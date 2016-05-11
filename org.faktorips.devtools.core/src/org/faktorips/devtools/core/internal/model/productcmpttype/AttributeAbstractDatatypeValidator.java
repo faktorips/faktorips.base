@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -37,7 +36,7 @@ public class AttributeAbstractDatatypeValidator {
         this.ipsProject = ipsProject;
     }
 
-    public void validateNotAbstractDatatype(MessageList list) throws CoreException {
+    public void validateNotAbstractDatatype(MessageList list) {
         ValueDatatype datatype = attribute.findDatatype(ipsProject);
         if (datatype != null && datatype.isAbstract()) {
             String text = NLS.bind(Messages.ProductCmptType_error_abstractDatatypeInAttribute, attribute.getName());

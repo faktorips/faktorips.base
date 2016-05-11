@@ -116,12 +116,29 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
         int startIndex = sb.length();
         sb.append(getContentString());
+
+        initAttributes(partContainer, sb, offset, startIndex);
+        initConfigElements(partContainer, sb, offset, startIndex);
+        initFormulas(partContainer, sb, offset, startIndex);
+        initLinks(partContainer, sb, offset, startIndex);
+        initTableUsages(partContainer, sb, offset, startIndex);
+        initRules(partContainer, sb, offset, startIndex);
+        if (getIpsElement() instanceof IProductCmpt) {
+            // call this method recursively for all generations in a product component
+            List<ProductCmptCompareItem> genItems = getCompareItemsOfClass(children, IProductCmptGeneration.class);
+            for (ProductCmptCompareItem genItem : genItems) {
+                sb.append(NEWLINE);
+                genItem.initPropertyValueContainerContentString((IPropertyValueContainer)genItem.getIpsElement(), sb,
+                        sb.length() - startIndex + offset);
+            }
+        }
+        setRange(offset, sb.length() - startIndex);
+        return sb.length() - startIndex;
+
+    }
+
+    private void initAttributes(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
         List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
-        List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(children, IConfigElement.class);
-        List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(children, IFormula.class);
-        List<ProductCmptCompareItem> links = getCompareItemsOfClass(children, IProductCmptLink.class);
-        List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
-        List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getAttributeListHeader(partContainer));
@@ -130,6 +147,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 attribute.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
+    }
+
+    private void initConfigElements(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+        List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(children, IConfigElement.class);
         if (!configElements.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getConfigElementListHeader(partContainer));
@@ -138,6 +159,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 configElement.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
+    }
+
+    private void initFormulas(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+        List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(children, IFormula.class);
         if (!formulas.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getFormulaListHeader(partContainer));
@@ -146,6 +171,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 formula.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
+    }
+
+    private void initLinks(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+        List<ProductCmptCompareItem> links = getCompareItemsOfClass(children, IProductCmptLink.class);
         if (!links.isEmpty()) {
             sb.append(NEWLINE);
             String linksHeader = getLinkListHeader(partContainer);
@@ -163,6 +192,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 }
             }
         }
+    }
+
+    private void initTableUsages(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+        List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
         if (!tableUsages.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getTableUsageListHeader(partContainer));
@@ -171,6 +204,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 tableUsage.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
+    }
+
+    private void initRules(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+        List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
         if (!rules.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getRuleListHeader(partContainer));
@@ -179,18 +216,6 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 rule.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
-        if (getIpsElement() instanceof IProductCmpt) {
-            // call this method recursively for all generations in a product component
-            List<ProductCmptCompareItem> genItems = getCompareItemsOfClass(children, IProductCmptGeneration.class);
-            for (ProductCmptCompareItem genItem : genItems) {
-                sb.append(NEWLINE);
-                genItem.initPropertyValueContainerContentString((IPropertyValueContainer)genItem.getIpsElement(), sb,
-                        sb.length() - startIndex + offset);
-            }
-        }
-        setRange(offset, sb.length() - startIndex);
-        return sb.length() - startIndex;
-
     }
 
     protected void conditionalAppendGenerationDateAndTab(IProductPartsContainer valueContainer, StringBuffer sb) {
@@ -336,15 +361,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append('[')
                     .append(rel.getMinCardinality())
                     .append("..").append(rel.getMaxCardinality()).append(COMMA).append(BLANK).append(rel.getDefaultCardinality()).append(']'); //$NON-NLS-1$
-            if (rel.isMandatory()) {
-                sb.append('(')
-                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory)
-                        .append(')');
-            } else if (rel.isOptional()) {
-                sb.append('(')
-                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelOptional)
-                        .append(')');
-            }
+            sb.append(getMandatoryOrOptional(rel));
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
             conditionalAppendGenerationDateAndTab(configElement.getPropertyValueContainer(), sb);
@@ -386,17 +403,29 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
             sb.append(QUOTE).append(product.getName()).append(QUOTE).append(NEWLINE);
             sb.append(TAB)
-                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_type)
                     .append(COLON_BLANK);
             sb.append(QUOTE).append(product.getProductCmptType()).append(QUOTE).append(NEWLINE);
             sb.append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
                     .append(COLON_BLANK);
             sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);
-        } else if (getIpsElement() instanceof IIpsSrcFile) {
-            // no text for srcfile
         }
         return sb.toString();
+    }
+
+    private StringBuffer getMandatoryOrOptional(IProductCmptLink rel) {
+        StringBuffer sb = new StringBuffer();
+        if (rel.isMandatory()) {
+            sb.append('(')
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory)
+                    .append(')');
+        } else if (rel.isOptional()) {
+            sb.append('(')
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelOptional)
+                    .append(')');
+        }
+        return sb;
     }
 
     /**
@@ -414,49 +443,59 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     protected String initName() {
         StringBuffer sb = new StringBuffer();
         if (getIpsElement() != null) {
-            if (getIpsElement() instanceof IProductCmptLink) {
-                IProductCmptLink link = (IProductCmptLink)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
-                        .append(link.getAssociation()).append(QUOTE);
-            } else if (getIpsElement() instanceof IAttributeValue) {
-                IAttributeValue attrValue = (IAttributeValue)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
-                        .append(attrValue.getPropertyName()).append(QUOTE);
-            } else if (getIpsElement() instanceof IConfigElement) {
-                IConfigElement configElement = (IConfigElement)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK).append(QUOTE)
-                        .append(configElement.getPropertyName()).append(QUOTE);
-            } else if (getIpsElement() instanceof IFormula) {
-                IFormula formula = (IFormula)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)
-                        .append(formula.getPropertyName()).append(QUOTE);
-            } else if (getIpsElement() instanceof ITableContentUsage) {
-                ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_TableContentsLabel).append(COLON_BLANK).append(QUOTE)
-                        .append(tableUsage.getPropertyName()).append(QUOTE);
-            } else if (getIpsElement() instanceof IValidationRuleConfig) {
-                IValidationRuleConfig vRuleConfig = (IValidationRuleConfig)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_RuleLabel).append(COLON_BLANK).append(QUOTE)
-                        .append(vRuleConfig.getPropertyName()).append(QUOTE);
-            } else if (getIpsElement() instanceof IIpsObjectGeneration) {
-                IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-                sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE)
-                        .append(getGenerationDateText(gen)).append(QUOTE);
-            } else if (getIpsElement() instanceof IProductCmpt) {
-                IProductCmpt product = (IProductCmpt)getIpsElement();
-                sb.append(product.getName());
-            } else if (getIpsElement() instanceof IIpsSrcFile) {
-                IIpsSrcFile srcFile = (IIpsSrcFile)getIpsElement();
-                IFile file = srcFile.getCorrespondingFile();
-                if (file != null) {
-                    sb.append(Messages.ProductCmptCompareItem_SourceFile).append(COLON_BLANK);
-                    sb.append(QUOTE).append(file.getName()).append(QUOTE);
-                } else {
-                    sb.append(Messages.ProductCmptCompareItem_SourceFile);
-                }
-            }
+            initNameIntenal(sb);
         }
         return sb.toString();
+    }
+
+    private void initNameIntenal(StringBuffer sb) {
+        if (getIpsElement() instanceof IProductCmptLink) {
+            IProductCmptLink link = (IProductCmptLink)getIpsElement();
+            sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
+                    .append(link.getAssociation()).append(QUOTE);
+        } else if (getIpsElement() instanceof IAttributeValue) {
+            IAttributeValue attrValue = (IAttributeValue)getIpsElement();
+            sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
+                    .append(attrValue.getPropertyName()).append(QUOTE);
+        } else if (getIpsElement() instanceof IConfigElement) {
+            IConfigElement configElement = (IConfigElement)getIpsElement();
+            sb.append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK).append(QUOTE)
+                    .append(configElement.getPropertyName()).append(QUOTE);
+        } else if (getIpsElement() instanceof IFormula) {
+            IFormula formula = (IFormula)getIpsElement();
+            sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)
+                    .append(formula.getPropertyName()).append(QUOTE);
+        } else if (getIpsElement() instanceof ITableContentUsage) {
+            ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
+            sb.append(Messages.ProductCmptCompareItem_TableContentsLabel).append(COLON_BLANK).append(QUOTE)
+                    .append(tableUsage.getPropertyName()).append(QUOTE);
+        } else if (getIpsElement() instanceof IValidationRuleConfig) {
+            IValidationRuleConfig vRuleConfig = (IValidationRuleConfig)getIpsElement();
+            sb.append(Messages.ProductCmptCompareItem_RuleLabel).append(COLON_BLANK).append(QUOTE)
+                    .append(vRuleConfig.getPropertyName()).append(QUOTE);
+        } else if (getIpsElement() instanceof IIpsObjectGeneration) {
+            IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
+            sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE)
+                    .append(getGenerationDateText(gen)).append(QUOTE);
+        } else if (getIpsElement() instanceof IProductCmpt) {
+            IProductCmpt product = (IProductCmpt)getIpsElement();
+            sb.append(product.getName());
+        } else if (getIpsElement() instanceof IIpsSrcFile) {
+            IIpsSrcFile srcFile = (IIpsSrcFile)getIpsElement();
+            sb.append(getFileName(srcFile));
+        }
+    }
+
+    private StringBuffer getFileName(IIpsSrcFile srcFile) {
+        StringBuffer sb = new StringBuffer();
+        IFile file = srcFile.getCorrespondingFile();
+        if (file != null) {
+            sb.append(Messages.ProductCmptCompareItem_SourceFile).append(COLON_BLANK);
+            sb.append(QUOTE).append(file.getName()).append(QUOTE);
+        } else {
+            sb.append(Messages.ProductCmptCompareItem_SourceFile);
+        }
+        return sb;
     }
 
     /**

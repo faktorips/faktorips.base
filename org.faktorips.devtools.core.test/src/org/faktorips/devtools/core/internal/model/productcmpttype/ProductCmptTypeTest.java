@@ -577,7 +577,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperty_ByTypeAndName() throws CoreException {
+    public void testFindProductCmptProperty_ByTypeAndName() {
         // attributes
         IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
@@ -648,7 +648,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperty_ByName() throws CoreException {
+    public void testFindProductCmptProperty_ByName() {
         List<IProductCmptProperty> props = productCmptType.findProductCmptProperties(true, ipsProject);
         assertEquals(0, props.size());
 
@@ -781,7 +781,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindFormulaSignature() throws CoreException {
+    public void testFindFormulaSignature() {
         IProductCmptTypeMethod method1 = superSuperProductCmptType.newProductCmptTypeMethod();
         method1.setFormulaSignatureDefinition(true);
         method1.setFormulaName("Premium Calculation");
@@ -880,7 +880,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindSupertype() throws CoreException {
+    public void testFindSupertype() {
         assertEquals(superProductCmptType, productCmptType.findSupertype(ipsProject));
         assertNull(superSuperProductCmptType.findSupertype(ipsProject));
         productCmptType.setSupertype("unknownType");
@@ -888,7 +888,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindTableStructureUsageInSupertypeHierarchy() throws CoreException {
+    public void testFindTableStructureUsageInSupertypeHierarchy() {
         assertNull(superSuperProductCmptType.findTableStructureUsage(null, ipsProject));
         assertNull(superSuperProductCmptType.findTableStructureUsage("someRole", ipsProject));
 
@@ -924,7 +924,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindPolicyCmptType() throws CoreException {
+    public void testFindPolicyCmptType() {
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType("");
         assertNull(productCmptType.findPolicyCmptType(ipsProject));
@@ -1556,7 +1556,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperties() throws CoreException {
+    public void testFindProductCmptProperties() {
         IProductCmptProperty productAttribute = createProductAttributeProperty(productCmptType, "productAttribute");
         IProductCmptProperty formulaSignature = createFormulaSignatureProperty(productCmptType, "formula");
         IProductCmptProperty tsu = createTableStructureUsageProperty(productCmptType, "tsu");
@@ -1573,7 +1573,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperties_SearchForSpecificPropertyType() throws CoreException {
+    public void testFindProductCmptProperties_SearchForSpecificPropertyType() {
         createProductAttributeProperty(productCmptType, "productAttribute");
         createTableStructureUsageProperty(productCmptType, "tsu");
         createPolicyAttributeProperty(policyCmptType, "policyAttribute");
@@ -1587,7 +1587,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperties_SearchSupertypeHierarchy() throws CoreException {
+    public void testFindProductCmptProperties_SearchSupertypeHierarchy() {
         IProductCmptProperty productAttribute = createProductAttributeProperty(superProductCmptType, "productAttribute");
         IProductCmptProperty formulaSignature = createFormulaSignatureProperty(superProductCmptType, "formula");
         IProductCmptProperty tsu = createTableStructureUsageProperty(superProductCmptType, "tsu");
@@ -1604,7 +1604,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperties_DoNotSearchSupertypeHierarchy() throws CoreException {
+    public void testFindProductCmptProperties_DoNotSearchSupertypeHierarchy() {
         createProductAttributeProperty(superProductCmptType, "productAttribute");
         createFormulaSignatureProperty(superProductCmptType, "formula");
         createTableStructureUsageProperty(superProductCmptType, "tsu");
@@ -1620,7 +1620,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperties_IgnoreNonProductRelevantProperties() throws CoreException {
+    public void testFindProductCmptProperties_IgnoreNonProductRelevantProperties() {
         productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);
         policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptType.newRule();

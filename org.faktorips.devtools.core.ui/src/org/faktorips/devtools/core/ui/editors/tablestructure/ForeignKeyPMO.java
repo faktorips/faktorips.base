@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -55,16 +53,12 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
 
     public IIndex[] getAvailableUniqueKeys() {
         IIpsObject ipsObject;
-        try {
-            ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
-            if (ipsObject != null && ipsObject instanceof TableStructure) {
-                TableStructure tableStructure = (TableStructure)ipsObject;
-                return tableStructure.getUniqueKeys();
-            }
-            return EMPTY_ARRAY;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
+        if (ipsObject != null && ipsObject instanceof TableStructure) {
+            TableStructure tableStructure = (TableStructure)ipsObject;
+            return tableStructure.getUniqueKeys();
         }
+        return EMPTY_ARRAY;
     }
 
 }

@@ -13,6 +13,7 @@ package org.faktorips.datatype;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -382,15 +383,16 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return true;
     }
 
-    @Override
+    /**
+     * Returns the java class that is represented by this generic datatype
+     */
     public String getJavaClassName() {
         return getAdaptedClass().getName();
     }
 
-    // TODO pk: this cannot be right
     @Override
     public int compareTo(Datatype o) {
-        return 0;
+        return DatatypeComparator.doCompare(this, o);
     }
 
     @Override

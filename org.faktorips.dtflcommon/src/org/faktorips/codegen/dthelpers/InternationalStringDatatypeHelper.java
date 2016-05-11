@@ -13,16 +13,30 @@ package org.faktorips.codegen.dthelpers;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.InternationalStringDatatype;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 
 public class InternationalStringDatatypeHelper extends AbstractDatatypeHelper {
 
+    private boolean useInterface;
+
     public InternationalStringDatatypeHelper(boolean useInterface) {
-        super(new InternationalStringDatatype(useInterface));
+        super(new InternationalStringDatatype());
+        this.useInterface = useInterface;
     }
 
     @Override
     public Datatype getDatatype() {
         return super.getDatatype();
+    }
+
+    @Override
+    public String getJavaClassName() {
+        if (useInterface) {
+            return InternationalString.class.getName();
+        } else {
+            return DefaultInternationalString.class.getName();
+        }
     }
 
     @Override

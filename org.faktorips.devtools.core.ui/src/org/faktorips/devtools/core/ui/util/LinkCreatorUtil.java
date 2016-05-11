@@ -80,7 +80,7 @@ public class LinkCreatorUtil {
 
     protected boolean processProductCmptReference(List<IProductCmpt> draggedCmpts,
             IProductCmptReference target,
-            boolean createLinks) throws CoreException {
+            boolean createLinks) {
         IpsUIPlugin.getDefault();
         if (!IpsUIPlugin.isEditable(target.getProductCmpt().getIpsSrcFile())) {
             return false;

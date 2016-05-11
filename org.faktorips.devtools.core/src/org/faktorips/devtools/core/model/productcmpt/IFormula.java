@@ -41,4 +41,13 @@ public interface IFormula extends IPropertyValue, IExpression {
     @Override
     public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject);
 
+    /**
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code IFormula}.
+     * 
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
+     */
+    @Override
+    public IFormula findTemplateProperty(IIpsProject ipsProject);
+
 }

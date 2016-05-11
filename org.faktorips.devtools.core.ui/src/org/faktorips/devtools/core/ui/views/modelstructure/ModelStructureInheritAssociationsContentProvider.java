@@ -145,7 +145,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         if (rootElements.isEmpty()
                 && association == ToChildAssociationType.SUPERTYPE
                 && !element.getAssociations(AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL)
-                        .isEmpty()) {
+                .isEmpty()) {
             rootElements.add(element);
         }
 
@@ -169,16 +169,11 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         List<IType> rootCandidates = new ArrayList<IType>();
 
         for (IType projectType : projectSpecificITypes) {
-            try {
-                IType supertype = projectType.findSupertype(project);
+            IType supertype = projectType.findSupertype(project);
 
-                if ((supertype == null || !supertype.getIpsProject().equals(project))
-                        && !isAssociated(projectType, projectSpecificITypes, allComponentITypes, project,
-                                ASSOCIATION_TYPES)) {
-                    rootCandidates.add(projectType);
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if ((supertype == null || !supertype.getIpsProject().equals(project))
+                    && !isAssociated(projectType, projectSpecificITypes, allComponentITypes, project, ASSOCIATION_TYPES)) {
+                rootCandidates.add(projectType);
             }
         }
 

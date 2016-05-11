@@ -127,7 +127,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return generationBuilder.getQualifiedClassName(generation);
     }
 
-    private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) throws CoreException {
+    private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) {
         if (!isContainingAvailableFormula(container)) {
             return false;
         }

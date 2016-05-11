@@ -71,7 +71,8 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
                 }
 
             } else if (getAssociation() instanceof IProductCmptTypeAssociation) {
-                productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+                productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT,
+                        IpsObjectType.PRODUCT_TEMPLATE);
                 for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
                     result.add(ipsSrcFile);
                 }

@@ -21,7 +21,7 @@ public class AndTest extends FunctionAbstractTest {
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new And("AND", ""));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
     }
 
     @Test

@@ -74,11 +74,6 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
     }
 
     @Override
-    public String getJavaClassName() {
-        return null;
-    }
-
-    @Override
     public boolean isSupportingNames() {
         return true;
     }

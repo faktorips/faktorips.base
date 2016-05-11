@@ -1,0 +1,280 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyBuilderMethodNames»
+
+«DEFINE main FOR XProductBuilder»	
+	«IF builderAssociations.size > 0-»
+		/**
+		* «localizedJDoc("CLASS_BUILDER")»
+		*
+		* @generated
+		*/
+		public static class AssociationBuilder «EXPAND extendSuperclassAssociation» {	
+		
+			«EXPAND productBuilderField»
+			
+			«EXPAND constructorWithProductBuilder(false)»
+			
+			«EXPAND associationEvaluation(this) FOREACH builderAssociations»
+
+			«EXPAND get»
+			
+			«EXPAND getCurrentGeneration»
+			
+			«EXPAND getRepository»
+		}
+	«ENDIF-»
+
+	«IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 -»
+		/**
+		* «localizedJDoc("CLASS_BUILDER_MULTI")»
+		*
+		* @generated
+		*/
+		public static class AssociationsBuilder «EXPAND extendSuperclassAssociations»{
+			
+			«EXPAND productBuilderField»
+			
+			«EXPAND constructorWithProductBuilder(true)»
+			
+			«EXPAND associationsEvaluation(this, false) FOREACH builderAssociations»
+			«EXPAND associationsEvaluation(this, true) FOREACH superBuilderAssociations»
+			
+			/**
+			* @generated
+			*/
+			«overrideAnnotationIf(hasSuperAssociationBuilder())-»
+			public «implClassName» done() {
+				«IF hasSuperAssociationBuilder()-»
+					return («implClassName») super.done();
+				«ELSE-»
+					return productBuilder;
+				«ENDIF-»
+			}
+	
+			«EXPAND get»
+				
+			«EXPAND getCurrentGeneration»
+			
+			«EXPAND getRepository»
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«REM» Adds the extension of the super class of the policy «ENDREM»
+«DEFINE extendSuperclassAssociation FOR XProductBuilder-»
+	«IF hasSuperAssociationBuilder()-»
+		extends «superBuilderForAssociationBuilder.implClassName».AssociationBuilder
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM» Adds the extension of the super class of the policy «ENDREM»
+«DEFINE extendSuperclassAssociations FOR XProductBuilder-»
+	«IF hasSuperAssociationBuilder()-»
+		extends «supertype.implClassName».AssociationsBuilder
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM»
+	An association can have up to 4 association setters.
+«ENDREM»
+
+«DEFINE associationEvaluation(XProductBuilder builder) FOR XProductBuilderAssociation»
+	«REM» for generic subtype «ENDREM»
+	«EXPAND associationSetterWithType(builder, this, false, false) FOR targetBuilderClass»	
+	
+	«IF !targetBuilderClass.abstract-»		
+		«EXPAND associationSetter(builder, this, false, false) FOR targetBuilderClass»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE associationsEvaluation(XProductBuilder builder, boolean super) FOR XProductBuilderAssociation»
+	
+	«EXPAND standardAssociationSetter(builder, this, super) FOR targetBuilderClass-»
+	
+	«EXPAND associationSetterWithType(builder, this, true, super) FOR targetBuilderClass»	
+	
+	«IF !targetBuilderClass.abstract-»		
+		«EXPAND associationSetter(builder, this, true, super) FOR targetBuilderClass»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE standardAssociationSetter(XProductBuilder builder, XProductBuilderAssociation association, boolean super) FOR XProductBuilder»
+	/**
+	* «localizedJDoc("METHOD_ASS_STD", productName, association.name)»
+	*
+	* @generated
+	*/
+	«IF super-»@Override«ENDIF»
+	public AssociationsBuilder «association.method(association.methodName, productPublishedInterfaceName, "targetProduct")»{
+		«IF super-»
+			super.«association.methodName»(targetProduct);
+		«ELSE-»
+			«EXPAND getProdOrGen(builder, association.changingOverTime)».«association.methodNameSetOrAdd»(targetProduct);
+		«ENDIF-»
+		return this;
+	}
+«ENDDEFINE»
+
+«DEFINE associationSetterWithType(XProductBuilder builder, XProductBuilderAssociation association, boolean multi, boolean super) FOR XProductBuilder-»	
+	/**
+	* «localizedJDoc("METHOD_ASS_TYPE_PROD", productName, association.name)»
+	*
+	* @generated
+	*/
+	«IF super-»@Override«ENDIF-»
+	public «EXPAND returnType(multi, true)» «association.methodName»(«EXPAND targetBuilderType(multi)» targetBuilder) {
+		«IF super-»
+			super.«association.methodName»(targetBuilder);
+		«ELSE-»
+			«EXPAND getProdOrGen(builder, association.changingOverTime)».«association.methodNameSetOrAdd»(targetBuilder.get());
+		«ENDIF-»
+		return «EXPAND returnValue(multi)»;
+	}
+«ENDDEFINE»
+
+«DEFINE getProdOrGen(XProductBuilder builder, boolean changingOverTime) FOR XProductBuilder-»	
+  	«IF changingOverTime-»
+  		«castToImplementation(builder.prodGenImplClassName, "getCurrentGeneration()")»
+  	«ELSE-»
+  		«castToImplementation(builder.productImplClassName, "get()")»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE associationSetter(XProductBuilder builder, XProductBuilderAssociation association, boolean multi, boolean super) FOR XProductBuilder-»
+		/**
+		* «localizedJDoc("METHOD_ASS_PROD", productName, association.name)»
+		*
+		* @generated
+		*/
+		«IF super || (association.needOverrideForConstrainNewChildMethod)-» @Override «ENDIF-»
+		public «EXPAND returnType(multi, false)» «association.method(association.methodName, "String", "productCmptId")» {
+			«IF super-»
+				super.«association.methodName»(productCmptId);
+				return this;
+			«ELSE-»
+				«IF generatePublishedInterfaces-»
+		    		«implClassName» targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId);
+		    	«ELSE-»
+		    		«implClassName» targetBuilder = «productImplClassName».with(«getRepository()», productCmptId);
+		    	«ENDIF-»
+		    	«EXPAND getProdOrGen(builder, association.changingOverTime)».«association.methodNameSetOrAdd»(targetBuilder.get());
+		    	return «EXPAND returnValue(multi)»;
+		    «ENDIF-»
+	    }
+	    
+		/**
+		* «localizedJDoc("METHOD_ASS_IDS", productName, association.name)»
+		*
+		* @generated
+		*/		
+		«IF super || (association.needOverrideForConstrainNewChildMethod)-» @Override «ENDIF-»
+		public «EXPAND returnType(multi, false)» «association.method(association.methodName,"String","id","String","kindId","String","versionId")»{	
+			«IF super-»
+				super.«association.methodName»(id, kindId, versionId);
+				return this;
+			«ELSE-»
+				«IF generatePublishedInterfaces-»
+					«implClassName» targetBuilder = new «factoryImplClassName»().with(«getRepository()», id, kindId, versionId);
+				«ELSE-»	
+					«implClassName» targetBuilder = «productImplClassName».with(«getRepository()», id, kindId, versionId);
+				«ENDIF-»			
+				«EXPAND getProdOrGen(builder, association.changingOverTime)».«association.methodNameSetOrAdd»(targetBuilder.get());
+				return «EXPAND returnValue(multi)»;
+			«ENDIF-»
+		}
+«ENDDEFINE»
+
+«DEFINE returnType(boolean multi, boolean gen) FOR XProductBuilder-»
+	«IF multi» AssociationsBuilder
+	«ELSEIF gen-»<T extends «implClassName»> T
+	«ELSE»«implClassName»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE targetBuilderClass(boolean multi) FOR XProductBuilder-»
+	«IF multi-»Class<? extends «implClassName»>
+	«ELSE»Class<T>
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE targetBuilderType(boolean multi) FOR XProductBuilder-»
+	«IF multi-»«implClassName»
+	«ELSE»T
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE returnValue(boolean multi) FOR XProductBuilder-»
+	«IF multi-» this
+	«ELSE-»	targetBuilder
+	«ENDIF-»	
+«ENDDEFINE»
+
+«DEFINE productBuilderField FOR XProductBuilder-»
+	«IF !hasSuperAssociationBuilder()-»
+		/**
+		* @generated
+		*/
+		private «implClassName» productBuilder;
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE constructorWithProductBuilder(boolean multi) FOR XProductBuilder-»
+	/**
+	* @generated
+	*/
+	protected Association«IF multi-»s«ENDIF-»Builder(«implClassName» productBuilder){
+		«IF hasSuperAssociationBuilder()-»
+			super(productBuilder);
+		«ELSE-»
+			this.productBuilder = productBuilder;
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+«DEFINE get FOR XProductBuilder-»
+	/**
+	* @generated
+	*/
+	«IF hasSuperAssociationBuilder()»@Override«ENDIF-»
+	public «productPublishedInterfaceName» get() {
+		«IF hasSuperAssociationBuilder()-»
+			return («productPublishedInterfaceName») super.get();
+		«ELSE-»
+			return productBuilder.get();
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+«DEFINE getCurrentGeneration FOR XProductBuilder-»
+	«IF changingOverTime-»
+		/**
+		* @generated
+		*/
+		«IF hasSuperAssociationBuilder()»@Override«ENDIF-»
+		protected «prodGenPublishedInterfaceName» getCurrentGeneration() {
+			«IF hasSuperAssociationBuilder()-»
+				return («prodGenPublishedInterfaceName») super.getCurrentGeneration();
+			«ELSE-»
+				return productBuilder.getCurrentGeneration();
+			«ENDIF-»
+		}
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getRepository FOR XProductBuilder-»
+	«IF !hasSuperAssociationBuilder()»
+	/**
+	* @generated
+	*/
+	protected «InMemoryRuntimeRepository()» «getRepository()» {
+		return productBuilder.«getRepository()»;
+	}
+	«ENDIF-»
+«ENDDEFINE»

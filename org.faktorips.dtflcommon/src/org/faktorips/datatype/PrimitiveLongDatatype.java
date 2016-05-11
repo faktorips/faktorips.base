@@ -31,11 +31,6 @@ public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements 
     }
 
     @Override
-    public String getJavaClassName() {
-        return "long"; //$NON-NLS-1$
-    }
-
-    @Override
     public String getDefaultValue() {
         return "0"; //$NON-NLS-1$
     }

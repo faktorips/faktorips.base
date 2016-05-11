@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -30,7 +29,7 @@ public class IpsObjectField extends TextButtonField {
      * Returns the datatype if possible, or null if the current value in the control does not
      * specifiy a datatype.
      */
-    public IIpsObject getIpsObject(IIpsProject project, IpsObjectType type) throws CoreException {
+    public IIpsObject getIpsObject(IIpsProject project, IpsObjectType type) {
         return project.findIpsObject(type, getText());
     }
 

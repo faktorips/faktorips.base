@@ -12,10 +12,13 @@ package org.faktorips.util;
 
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.Test;
 
 public class ArgumentCheckTest {
-	
+
     @Test
     public void testIsSubclassOf() {
         ArgumentCheck.isSubclassOf(String.class, String.class);
@@ -74,6 +77,30 @@ public class ArgumentCheckTest {
 
         // expected to pass
         ArgumentCheck.notNull(ids, this);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAtLeast_SizeTooSmallWithEmptyCollection() {
+        ArgumentCheck.atLeast(Collections.emptyList(), 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAtLeast_SizeTooSmallWithNonEmptyCollection() {
+        ArgumentCheck.atLeast(Arrays.asList("A", "B"), 3);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testAtLeast_NullCollection() {
+        ArgumentCheck.atLeast(null, 0);
+    }
+
+    @Test
+    public void testAtLeast() {
+        // No asserts needed, exception is thrown if check fails
+        ArgumentCheck.atLeast(Collections.emptyList(), 0);
+        ArgumentCheck.atLeast(Arrays.asList("A"), 1);
+        ArgumentCheck.atLeast(Arrays.asList("A", "B"), 1);
+        ArgumentCheck.atLeast(Arrays.asList("A", "B"), 2);
     }
 
 }

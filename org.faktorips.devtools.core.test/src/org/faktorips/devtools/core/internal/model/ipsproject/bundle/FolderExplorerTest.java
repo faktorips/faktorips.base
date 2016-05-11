@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.FolderExplorer;
 import org.junit.Before;
 import org.junit.Test;
 

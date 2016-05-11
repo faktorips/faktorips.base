@@ -24,19 +24,19 @@ public class EqualsPrimitiveTypePrimitiveTypeTest extends JavaExprCompilerAbstra
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
     }
 
     @Test
     public void testSuccessfull_int() throws Exception {
-        compiler.setBinaryOperations(toArray(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT)));
+        getCompiler().setBinaryOperations(toArray(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT)));
         execAndTestSuccessfull("1=2", false);
         execAndTestSuccessfull("1=1", true);
     }
 
     @Test
     public void testSuccessfull_boolean() throws Exception {
-        compiler.setBinaryOperations(toArray(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN)));
+        getCompiler().setBinaryOperations(toArray(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN)));
         execAndTestSuccessfull("true=true", true);
         execAndTestSuccessfull("false=true", false);
     }

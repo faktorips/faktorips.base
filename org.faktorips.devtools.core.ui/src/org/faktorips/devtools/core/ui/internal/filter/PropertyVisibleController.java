@@ -13,11 +13,11 @@ package org.faktorips.devtools.core.ui.internal.filter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
@@ -39,6 +39,8 @@ public class PropertyVisibleController implements IPropertyVisibleController {
 
     private final Set<IProductCmptPropertyFilter> filters = new HashSet<IProductCmptPropertyFilter>();
 
+    private Runnable refreshCallback;
+
     /**
      * {@inheritDoc}
      * <p>
@@ -50,14 +52,13 @@ public class PropertyVisibleController implements IPropertyVisibleController {
      * If at least one {@link IProductCmptPropertyFilter product component property filter} returns
      * {@code true}, the controls are made invisible. If all {@link IProductCmptPropertyFilter
      * product component property filters} return {@code false}, the control is made visible.
-     * <p>
-     * Finally, {@link Composite#layout()} is called on the parents of the controls in order to
-     * adapt the layout with respect to the new conditions.
      */
     @Override
-    public void updateUI() {
+    public void updateUI(boolean refresh) {
         updateControlVisibility();
-        relayoutParents();
+        if (refresh) {
+            refreshCallback.run();
+        }
     }
 
     private void updateControlVisibility() {
@@ -76,22 +77,6 @@ public class PropertyVisibleController implements IPropertyVisibleController {
                 Object layoutData = control.getLayoutData();
                 ((GridData)layoutData).exclude = filtered;
             }
-        }
-    }
-
-    private void relayoutParents() {
-        Set<Composite> parents = new HashSet<Composite>();
-        for (Control containerControl : propertyControlMappings.keySet()) {
-            for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
-                for (Control control : propertyControlMappings.get(containerControl).get(property)) {
-                    if (!control.isDisposed()) {
-                        parents.add(control.getParent());
-                    }
-                }
-            }
-        }
-        for (Composite parent : parents) {
-            parent.layout();
         }
     }
 
@@ -154,6 +139,18 @@ public class PropertyVisibleController implements IPropertyVisibleController {
             }
         }
         return false;
+    }
+
+    @Override
+    public void addFilters(List<IProductCmptPropertyFilter> filters) {
+        for (IProductCmptPropertyFilter filter : filters) {
+            addFilter(filter);
+        }
+    }
+
+    @Override
+    public void setRefreshCallback(Runnable refreshCallback) {
+        this.refreshCallback = refreshCallback;
     }
 
 }

@@ -15,15 +15,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -48,43 +44,6 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         super.setUp();
         genderAdapter = new EnumTypeDatatypeAdapter(genderEnumType, null);
         paymentModeAdapter = new EnumTypeDatatypeAdapter(paymentMode, null);
-    }
-
-    @Test
-    public void testGetJavaClassName() throws Exception {
-        IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setExtensible(false);
-        enumType.newEnumLiteralNameAttribute();
-
-        IEnumAttribute id = enumType.newEnumAttribute();
-        id.setName("id");
-        id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setUnique(true);
-        id.setIdentifier(true);
-
-        IEnumAttribute name = enumType.newEnumAttribute();
-        name.setName("name");
-        name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUnique(true);
-        name.setUsedAsNameInFaktorIpsUi(true);
-
-        IEnumValue enumValue = enumType.newEnumValue();
-        List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue(new StringValue("a"));
-        values.get(1).setValue(new StringValue("an"));
-        values.get(2).setValue(new StringValue("AN"));
-        EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
-
-        String expected = "expectedJavaClassName";
-
-        TestIpsArtefactBuilderSet testArtefactBuilderSetSpy = (TestIpsArtefactBuilderSet)ipsProject
-                .getIpsArtefactBuilderSet();
-        DatatypeHelper datatypeHelperMock = mock(DatatypeHelper.class);
-        when(datatypeHelperMock.getJavaClassName()).thenReturn(expected);
-
-        testArtefactBuilderSetSpy.testObjectsMap.put(adapter, datatypeHelperMock);
-
-        assertEquals(expected, adapter.getJavaClassName());
     }
 
     @Test

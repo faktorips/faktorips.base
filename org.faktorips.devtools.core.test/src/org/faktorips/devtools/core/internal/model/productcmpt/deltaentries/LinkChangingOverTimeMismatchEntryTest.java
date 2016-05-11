@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,9 +38,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class LinkChangingOverTimeMismatchEntryTest {
 
     @Mock
-    IIpsProject ipsProject;
+    private IIpsProject ipsProject;
     @Mock
-    IProductCmptType type;
+    private IProductCmptType type;
     @Mock
     private IProductCmptGeneration gen1;
     @Mock
@@ -96,26 +94,16 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(type.findAssociation("staticAssoc1", ipsProject)).thenReturn(staticAssoc1);
         when(type.findAssociation("staticAssoc2", ipsProject)).thenReturn(staticAssoc2);
 
-        when(link1.getAssociation()).thenReturn("assoc1");
-        when(link1.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(link2.getAssociation()).thenReturn("assoc2");
-        when(link2.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(linkA.getAssociation()).thenReturn("assoc1");
-        when(linkA.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(linkB.getAssociation()).thenReturn("assoc2");
-        when(linkB.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(linkLatest1.getAssociation()).thenReturn("assoc1");
-        when(linkLatest1.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(linkLatest2.getAssociation()).thenReturn("assoc2");
-        when(linkLatest2.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(linkLatest3.getAssociation()).thenReturn("assoc2");
-        when(linkLatest2.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(staticLink1.getAssociation()).thenReturn("staticAssoc1");
-        when(staticLink1.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(staticLink2.getAssociation()).thenReturn("staticAssoc1");
-        when(staticLink2.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(staticLink3.getAssociation()).thenReturn("staticAssoc2");
-        when(staticLink3.findTarget(any(IIpsProject.class))).thenReturn(target);
+        setUpLink(link1, "assoc1");
+        setUpLink(link2, "assoc2");
+        setUpLink(linkA, "assoc1");
+        setUpLink(linkB, "assoc2");
+        setUpLink(linkLatest1, "assoc1");
+        setUpLink(linkLatest2, "assoc2");
+        setUpLink(linkLatest3, "assoc2");
+        setUpLink(staticLink1, "staticAssoc1");
+        setUpLink(staticLink2, "staticAssoc1");
+        setUpLink(staticLink3, "staticAssoc2");
 
         when(gen1.getProductCmpt()).thenReturn(prodCmpt);
         when(gen2.getProductCmpt()).thenReturn(prodCmpt);
@@ -127,6 +115,12 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(assoc2.isChangingOverTime()).thenReturn(true);
         when(staticAssoc1.isChangingOverTime()).thenReturn(false);
         when(staticAssoc2.isChangingOverTime()).thenReturn(false);
+    }
+
+    private void setUpLink(IProductCmptLink link, String association) throws CoreException {
+        when(link.getAssociation()).thenReturn(association);
+        when(link.getTarget()).thenReturn("targetName");
+        when(link.findTarget(any(IIpsProject.class))).thenReturn(target);
     }
 
     private void setUpGenerationOrder() {
@@ -198,31 +192,4 @@ public class LinkChangingOverTimeMismatchEntryTest {
         verify(staticLink1).delete();
     }
 
-    @Test
-    public void testIsMovingLinkFrom_prodCmpt() {
-        when(staticAssoc1.isChangingOverTime()).thenReturn(true);
-        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(staticAssoc1, staticLink1);
-        assertTrue(entry.isMovingLink());
-    }
-
-    @Test
-    public void testIsMovingLinkFrom_oldGeneration1() {
-        when(assoc1.isChangingOverTime()).thenReturn(false);
-        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc1, link1);
-        assertFalse(entry.isMovingLink());
-    }
-
-    @Test
-    public void testIsMovingLinkFrom_oldGeneration2() {
-        when(assoc2.isChangingOverTime()).thenReturn(false);
-        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc2, linkB);
-        assertFalse(entry.isMovingLink());
-    }
-
-    @Test
-    public void testIsMovingLinkFrom_latestGeneration() {
-        when(assoc2.isChangingOverTime()).thenReturn(false);
-        LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc2, linkLatest2);
-        assertTrue(entry.isMovingLink());
-    }
 }

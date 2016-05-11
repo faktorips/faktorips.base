@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -63,7 +63,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
         try {
             result.add(getIpsSrcFile());
-            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_TEMPLATE);
             for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
                 result.add(ipsSrcFile);
             }
@@ -124,7 +124,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwriting attributes of
      * the sub type hierarchy.
      */
-    private void updateSubHierarchyAttributes() throws CoreException {
+    private void updateSubHierarchyAttributes() {
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             IType cmptType = (IType)ipsSrcFile.getIpsObject();
 
@@ -185,7 +185,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * <p>
      * Only applicable to <tt>IProductCmptTypeAttribute</tt>s.
      */
-    private void updateProductCmptAttributeValueReferences() throws CoreException {
+    private void updateProductCmptAttributeValueReferences() {
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
@@ -197,14 +197,20 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             if (!(referencedProductCmptType.isSubtypeOrSameType(getType(), productCmpt.getIpsProject()))) {
                 continue;
             }
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-                IAttributeValue attributeValue = generation.getAttributeValue(getOriginalName());
+            for (IPropertyValueContainer container : getPropertyValueContainers(productCmpt)) {
+                IAttributeValue attributeValue = (IAttributeValue)container.getPropertyValue(getOriginalName());
                 if (attributeValue != null) {
                     attributeValue.setAttribute(getNewName());
                 }
             }
         }
+    }
+
+    private List<IPropertyValueContainer> getPropertyValueContainers(IProductCmpt productCmpt) {
+        ArrayList<IPropertyValueContainer> result = new ArrayList<IPropertyValueContainer>(
+                productCmpt.getProductCmptGenerations());
+        result.add(productCmpt);
+        return result;
     }
 
     /**
@@ -252,9 +258,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                     .isSubtypeOrSameType(configuringProductCmptType, productCmpt.getIpsProject()))) {
                 continue;
             }
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
-                IConfigElement configElement = generation.getConfigElement(getOriginalName());
+            for (IPropertyValueContainer container : getPropertyValueContainers(productCmpt)) {
+                IConfigElement configElement = (IConfigElement)container.getPropertyValue(getOriginalName());
                 if (configElement != null) {
                     configElement.setPolicyCmptTypeAttribute(getNewName());
                 }

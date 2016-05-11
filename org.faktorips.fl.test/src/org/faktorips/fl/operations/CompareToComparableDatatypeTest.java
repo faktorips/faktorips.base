@@ -9,18 +9,19 @@
  *******************************************************************************/
 package org.faktorips.fl.operations;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
-import org.faktorips.fl.functions.joda.Date;
+import org.faktorips.fl.functions.date.Date;
 import org.junit.Test;
 
 public class CompareToComparableDatatypeTest extends FunctionAbstractTest {
@@ -32,6 +33,7 @@ public class CompareToComparableDatatypeTest extends FunctionAbstractTest {
         super.setUp();
         date = new Date("DATE", "");
         registerFunction(date);
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new LocalDateHelper());
     }
 
     @Test
@@ -75,9 +77,10 @@ public class CompareToComparableDatatypeTest extends FunctionAbstractTest {
     }
 
     private CompilationResult<JavaCodeFragment> getCompileResult(String operator) {
-        compiler.setBinaryOperations(toArray(new CompareToComparableDatatype(operator, LocalDateDatatype.DATATYPE)));
-        CompilationResult<JavaCodeFragment> compile = compiler.compile("DATE(2014; 02; 01)" + operator
-                + "DATE(2014; 02; 08)");
+        getCompiler().setBinaryOperations(
+                toArray(new CompareToComparableDatatype(operator, LocalDateDatatype.DATATYPE)));
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "DATE(2014; 02; 01)" + operator + "DATE(2014; 02; 08)");
         return compile;
     }
 }

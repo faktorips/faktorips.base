@@ -11,12 +11,12 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
@@ -26,9 +26,8 @@ import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
-import org.faktorips.util.message.Message;
+import org.faktorips.util.collections.ListComparator;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -85,11 +84,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         values = defaultValue;
     }
 
-    @Override
-    public IAttributeValue getParent() {
-        return (IAttributeValue)super.getParent();
-    }
-
     /**
      * Returns {@link AttributeValueType#MULTI_VALUE}
      */
@@ -105,6 +99,9 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     @Override
     public List<SingleValueHolder> getValue() {
+        if (values == null) {
+            return Collections.emptyList();
+        }
         return new ArrayList<SingleValueHolder>(values);
     }
 
@@ -148,46 +145,18 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
-        MessageList messageList = new MessageList();
-        if (values == null) {
-            return messageList;
-        }
-        Set<SingleValueHolder> duplicateValueHolders = getDuplicateValueHolders();
-        for (SingleValueHolder duplicateValueHolder : duplicateValueHolders) {
-            messageList.add(Message.newError(MSGCODE_CONTAINS_DUPLICATE_VALUE,
-                    Messages.MultiValueHolder_DuplicateValueMessageText, duplicateValueHolder, PROPERTY_VALUE));
-        }
-        for (SingleValueHolder valueHolder : values) {
-            messageList.add(valueHolder.validate(ipsProject));
-        }
-        if (messageList.containsErrorMsg()) {
-            ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
-                    new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
-                    new ObjectProperty(this, PROPERTY_VALUE) };
-            messageList
-                    .add(new Message(MSGCODE_CONTAINS_INVALID_VALUE,
-                            Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, Message.ERROR,
-                            invalidObjectProperties));
-        }
-        return messageList;
-    }
-
-    private Set<SingleValueHolder> getDuplicateValueHolders() {
-        Set<SingleValueHolder> duplicates = new HashSet<SingleValueHolder>();
-        Set<SingleValueHolder> processedValues = new HashSet<SingleValueHolder>();
-        for (SingleValueHolder element : values) {
-            if (processedValues.contains(element)) {
-                duplicates.add(element);
-            } else {
-                processedValues.add(element);
-            }
-        }
-        return duplicates;
+        return new MultiValueHolderValidator(this, getParent(), ipsProject).validate();
     }
 
     @Override
     public int compareTo(IValueHolder<List<SingleValueHolder>> o) {
-        return 0;
+        if (o == null) {
+            return 1;
+        } else {
+            @SuppressWarnings("unchecked")
+            Comparator<SingleValueHolder> naturalComparator = ComparatorUtils.naturalComparator();
+            return ListComparator.listComparator(naturalComparator).compare(values, o.getValue());
+        }
     }
 
     /**
@@ -239,16 +208,17 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         }
     }
 
+    @Override
+    public boolean isMultiValue() {
+        return true;
+    }
+
     private ValueType getValueTypeForNoEntries() {
-        try {
-            IProductCmptTypeAttribute attribute = getParent().findAttribute(getIpsProject());
-            if (attribute != null) {
-                return getValueTypeFromAttribute(attribute);
-            } else {
-                return ValueType.STRING;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptTypeAttribute attribute = getParent().findAttribute(getIpsProject());
+        if (attribute != null) {
+            return getValueTypeFromAttribute(attribute);
+        } else {
+            return ValueType.STRING;
         }
     }
 
@@ -265,10 +235,14 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     }
 
     @Override
+    protected MultiValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
+        return new MultiValueHolderValidator(this, parent, ipsProject);
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
         result = prime * result + ((values == null) ? 0 : values.hashCode());
         return result;
     }
@@ -285,13 +259,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
             return false;
         }
         MultiValueHolder other = (MultiValueHolder)obj;
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
         if (values == null) {
             if (other.values != null) {
                 return false;

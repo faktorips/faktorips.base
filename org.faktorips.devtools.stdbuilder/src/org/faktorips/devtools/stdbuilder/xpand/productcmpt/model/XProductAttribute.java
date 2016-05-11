@@ -16,8 +16,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.InternationalStringDatatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -58,9 +56,9 @@ public class XProductAttribute extends XAttribute {
     public DatatypeHelper getDatatypeHelper() {
         if (isMultiValue()) {
             if (isMultilingual()) {
-                return new ListOfValueDatatypeHelper(new InternationalStringDatatype(false));
+                return new ListOfValueDatatypeHelper(new InternationalStringDatatypeHelper(false));
             } else {
-                return new ListOfValueDatatypeHelper((ValueDatatype)super.getDatatypeHelper().getDatatype());
+                return new ListOfValueDatatypeHelper(super.getDatatypeHelper());
             }
         } else {
             if (isMultilingual()) {
@@ -69,6 +67,10 @@ public class XProductAttribute extends XAttribute {
                 return super.getDatatypeHelper();
             }
         }
+    }
+
+    public String addImport() {
+        return addImport(getQualifiedJavaClassName());
     }
 
     @Override

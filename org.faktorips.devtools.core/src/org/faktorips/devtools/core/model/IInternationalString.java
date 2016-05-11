@@ -25,7 +25,7 @@ import org.faktorips.values.LocalizedString;
  * 
  * @author dirmeier
  */
-public interface IInternationalString extends XmlSupport {
+public interface IInternationalString extends XmlSupport, Comparable<IInternationalString> {
 
     /**
      * Getting the {@link LocalizedString} for the specified locale. Returns a new

@@ -137,7 +137,7 @@ public class AbstractAddAndNewProductCmptCommandTest {
     }
 
     @Test
-    public void testIsValidAssociationNameIProductCmptTypeNull() throws CoreException {
+    public void testIsValidAssociationNameIProductCmptTypeNull() {
 
         IWorkbenchPage workbenchPage = testInit();
         ProductCmptEditor productCmptEditor = mock(ProductCmptEditor.class);

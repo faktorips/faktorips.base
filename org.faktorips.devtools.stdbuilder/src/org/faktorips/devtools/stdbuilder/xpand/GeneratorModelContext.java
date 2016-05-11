@@ -373,4 +373,18 @@ public class GeneratorModelContext {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
     }
+
+    public boolean isGeneratePolicyBuilder() {
+        String propertyValue = getConfig().getPropertyValueAsString(
+                StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
+        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue) || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY
+                .equals(propertyValue));
+    }
+
+    public boolean isGenerateProductBuilder() {
+        String propertyValue = getConfig().getPropertyValueAsString(
+                StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
+        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue) || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT
+                .equals(propertyValue));
+    }
 }

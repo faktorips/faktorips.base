@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -75,7 +76,8 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     @Override
     protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(Messages.NewProductCmptWizard_title, 5);
+        monitor.beginTask(NLS.bind(Messages.NewProductCmptWizard_title, getPmo().getIpsObjectType().getDisplayName()),
+                5);
 
         try {
             createIpsPackageFragmentIfNonExistent(monitor);
@@ -141,9 +143,9 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
     protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException;
 
     /**
-     * <strong>Subclassing:</strong><br>
      * This method may put the new {@link IIpsSrcFile} in context to other objects. It is called
-     * after the source file has been created and saved.
+     * after the source file has been created and saved. All touched source files including the
+     * given one needs to be saved by this operation!
      * 
      * @param ipsSrcFile the newly created source file
      * @param monitor progress monitor to show progress with
@@ -159,7 +161,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
     /**
      * Returns the {@link PresentationModelObject} that configures this operation.
      */
-    protected final PMO getPmo() {
+    protected PMO getPmo() {
         return pmo;
     }
 

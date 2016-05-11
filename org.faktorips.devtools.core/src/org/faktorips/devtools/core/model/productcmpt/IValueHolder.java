@@ -32,13 +32,13 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
     public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
-     * Returning the {@link IIpsObjectPart} of which this value holder is a child of. Every value
-     * holder need to have a parent {@link IIpsObjectPart}. If anything within the value holder
+     * Returning the {@link IAttributeValue} of which this value holder is a child of. Every value
+     * holder need to have a parent {@link IAttributeValue}. If anything within the value holder
      * changes, the change event is propagated to this part.
      * 
      * @return The parent {@link IIpsObjectPart}
      */
-    public IIpsObjectPart getParent();
+    public IAttributeValue getParent();
 
     /**
      * Returning a string representation of the value.
@@ -93,4 +93,23 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * kind of {@link IValue}.
      */
     ValueType getValueType();
+
+    /**
+     * Basically there are two different kinds of value holder: multi value holder and single value
+     * holder. This method returns <code>true</code> if this value holder is a multi value holder.
+     * It does not say anything about the concrete implementation so do not use for instance-of
+     * check!
+     * 
+     * @return Returns <code>true</code> if the value holder has multiple values
+     */
+    public boolean isMultiValue();
+
+    /**
+     * Creates a new {@link IValueHolder} by copying this value holder. The new value holder gets
+     * the specified parent.
+     * 
+     * @return A new value holder with the same content as this value holder
+     */
+    public IValueHolder<?> copy(IAttributeValue parent);
+
 }

@@ -55,7 +55,7 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
             return -1;
         }
         if ((element1 instanceof IPropertyValue) && (element2 instanceof IPropertyValue)) {
-            return ((IPropertyValue)element1).getPropertyType().compareTo(((IPropertyValue)element2).getPropertyType());
+            return ((IPropertyValue)element1).getPropertyValueType().compareTo(((IPropertyValue)element2).getPropertyValueType());
         }
         if (element1 instanceof IProductCmptLink && element2 instanceof IProductCmptLink) {
             return 0;

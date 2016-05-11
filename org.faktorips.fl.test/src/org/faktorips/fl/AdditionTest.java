@@ -38,13 +38,13 @@ public class AdditionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testDecimalInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("3.5 + WHOLENUMBER(7.1)", Decimal.valueOf("10.5"), Datatype.DECIMAL);
     }
 
     @Test
     public void testIntegerDecimal() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(7.1) + 3.5", Decimal.valueOf("10.5"), Datatype.DECIMAL);
     }
 
@@ -55,19 +55,19 @@ public class AdditionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("7 + WHOLENUMBER(3)", new Integer(10), Datatype.INTEGER);
     }
 
     @Test
     public void testIntegerInt() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(3) + 7", new Integer(10), Datatype.INTEGER);
     }
 
     @Test
     public void testIntegerInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(7) + WHOLENUMBER(3)", new Integer(10), Datatype.INTEGER);
     }
 

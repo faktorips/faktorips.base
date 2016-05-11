@@ -67,11 +67,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
             getContainer().run(true, true, new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
-                    } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
-                    }
+                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
                 }
             });
         } catch (Exception e) {

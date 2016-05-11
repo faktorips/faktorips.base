@@ -48,7 +48,8 @@ public interface IModelObjectDelta {
      * the ordered list of objects has been changed. This type of delta is only returned if the
      * computation method is {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT}.
      * <p>
-     * Note that an object can be moved and changed! In this case getKind() returns MOVED & CHANGED.
+     * Note that an object can be moved and changed! In this case getKind() returns
+     * {@code MOVED & CHANGED}.
      */
     public static final int MOVED = 4;
 
@@ -64,7 +65,8 @@ public interface IModelObjectDelta {
      * changed, the type of change is further specified with the following constants. Note that
      * these constants are bit masks as more than one type of change can occur.
      * <p>
-     * Note that an object can be moved and changed! In this case getKind() returns MOVED & CHANGED.
+     * Note that an object can be moved and changed! In this case getKind() returns
+     * {@code MOVED & CHANGED}.
      * 
      * @see #STRUCTURE_CHANGED
      * @see #PROPERTY_CHANGED

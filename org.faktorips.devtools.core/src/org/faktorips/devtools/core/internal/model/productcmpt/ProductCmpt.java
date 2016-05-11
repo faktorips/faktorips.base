@@ -20,15 +20,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.RemoveTemplateOperation;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -42,10 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -56,6 +55,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -82,21 +82,27 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
             linkCollection);
 
+    private final IpsObjectType ipsObjectType;
+
     private String productCmptType = ""; //$NON-NLS-1$
 
     private String runtimeId = ""; //$NON-NLS-1$
 
+    private String template = null;
+
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
+        this.ipsObjectType = file.getIpsObjectType();
     }
 
     public ProductCmpt() {
         super();
+        ipsObjectType = IpsObjectType.PRODUCT_CMPT;
     }
 
     @Override
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.PRODUCT_CMPT;
+        return ipsObjectType;
     }
 
     @Override
@@ -139,7 +145,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) {
         IProductCmptType foundProductCmptType = findProductCmptType(ipsProject);
         if (foundProductCmptType == null) {
             return null;
@@ -160,8 +166,48 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return ipsProject.findProductCmptType(productCmptType);
+    }
+
+    @Override
+    public boolean isUsingTemplate() {
+        return StringUtils.isNotEmpty(getTemplate());
+    }
+
+    @Override
+    public String getTemplate() {
+        return template;
+    }
+
+    @Override
+    public void setTemplate(String newTemplate) {
+        if (ObjectUtils.notEqual(newTemplate, template)) {
+            resetTemplateStatus();
+        }
+        String oldTemplate = template;
+        this.template = newTemplate;
+        valueChanged(oldTemplate, template, IProductCmpt.PROPERTY_TEMPLATE);
+    }
+
+    @Override
+    public void resetTemplateStatus() {
+        if (isUsingTemplate()) {
+            try {
+                getEnclosingResource().getWorkspace().run(new RemoveTemplateOperation(this), new NullProgressMonitor());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+    }
+
+    @Override
+    public IProductCmpt findTemplate(IIpsProject ipsProject) {
+        if (isUsingTemplate()) {
+            return ipsProject.findProductTemplate(template);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -185,13 +231,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return;
         }
         validateName(list, ipsProject);
-        validateRuntimeId(list, ipsProject);
+        if (isProductTemplate()) {
+            TemplateValidations.validateTemplateCycle(this, list, ipsProject);
+        } else {
+            validateRuntimeId(list, ipsProject);
+        }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
+        ProductCmptValidations.validateTemplate(this, type, list, ipsProject);
     }
 
-    private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type)
-            throws CoreException {
+    private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {
         Message message = TypeValidations.validateTypeHierachy(type, ipsProject);
         if (message != null) {
             String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
@@ -230,27 +280,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
-        IDeltaEntry[] entries = delta.getEntries();
-        for (IDeltaEntry entry : entries) {
-            validateNotConfiguredProperties(list, entry);
-            validateInvalidGenerations(list, entry);
-        }
-    }
-
-    private void validateNotConfiguredProperties(MessageList list, IDeltaEntry entry) {
-        if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-            String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
-                    ((IDeltaEntryForProperty)entry).getDescription());
-            list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
-        }
-    }
-
-    private void validateInvalidGenerations(MessageList list, IDeltaEntry entry) {
-        if (entry.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
-            String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
-            list.add(new Message(MSGCODE_INVALID_GENERATIONS, text, Message.WARNING, this));
+        if (containsDifferenceToModel(ipsProject)) {
+            list.newError(MSGCODE_DIFFERENCES_TO_MODEL, Messages.ProductCmpt_Error_DifferencesToModel0, this);
         }
     }
 
@@ -274,6 +305,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                     new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE));
             dependencySet.add(dependency);
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
+        }
+        if (isUsingTemplate()) {
+            IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                    new QualifiedNameType(template, IpsObjectType.PRODUCT_TEMPLATE));
+            dependencySet.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_TEMPLATE);
         }
 
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencySet, details);
@@ -332,6 +369,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
+        element.setAttribute(PROPERTY_TEMPLATE, template);
     }
 
     @Override
@@ -339,6 +377,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.initPropertiesFromXml(element, id);
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
+        template = element.getAttribute(PROPERTY_TEMPLATE);
     }
 
     /**
@@ -443,6 +482,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         return propertyValueCollection.getPropertyValue(propertyName);
+    }
+
+    @Override
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
+        return propertyValueCollection.getPropertyValue(type, propertyName);
     }
 
     @Override
@@ -762,11 +806,23 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     @Override
     public boolean allowGenerations() {
-        try {
-            IProductCmptType productComponentType = findProductCmptType(getIpsProject());
-            return productComponentType == null ? true : productComponentType.isChangingOverTime();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptType productComponentType = findProductCmptType(getIpsProject());
+        return productComponentType == null ? true : productComponentType.isChangingOverTime();
     }
+
+    @Override
+    public boolean isProductTemplate() {
+        return getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
+    }
+
+    @Override
+    public boolean isPartOfTemplateHierarchy() {
+        return isProductTemplate() || isUsingTemplate();
+    }
+
+    @Override
+    public void removeUndefinedLinks() {
+        linkCollection.removeUndefinedLinks();
+    }
+
 }

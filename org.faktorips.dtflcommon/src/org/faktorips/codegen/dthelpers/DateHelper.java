@@ -39,6 +39,11 @@ public class DateHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return Date.class.getName();
+    }
+
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (StringUtils.isEmpty(expression)) {
             return nullExpression();

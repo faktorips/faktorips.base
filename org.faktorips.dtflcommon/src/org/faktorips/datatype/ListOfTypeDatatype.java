@@ -10,8 +10,6 @@
 
 package org.faktorips.datatype;
 
-import java.util.List;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.util.ArgumentCheck;
@@ -72,7 +70,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
 
     @Override
     public String getQualifiedName() {
-        return getJavaClassName();
+        return getName();
     }
 
     @Override
@@ -93,26 +91,6 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     @Override
     public boolean isValueDatatype() {
         return true;
-    }
-
-    @Override
-    public String getJavaClassName() {
-        StringBuffer buffer = new StringBuffer(List.class.getName());
-        buffer.append('<');
-        appendBasicJavaName(buffer);
-        buffer.append('>');
-        return buffer.toString();
-    }
-
-    /**
-     * 
-     */
-    private void appendBasicJavaName(StringBuffer buffer) {
-        try {
-            buffer.append(basicType.getJavaClassName());
-        } catch (UnsupportedOperationException e) {
-            buffer.append(basicType.getName());
-        }
     }
 
     @Override

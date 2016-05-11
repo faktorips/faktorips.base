@@ -15,14 +15,14 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 class TestContentsChangeListener implements ContentsChangeListener {
 
-    private List<IIpsObjectPart> ipsParts = new ArrayList<IIpsObjectPart>();
+    private List<IIpsObjectPartContainer> ipsParts = new ArrayList<IIpsObjectPartContainer>();
     private List<Integer> eventTypes = new ArrayList<Integer>();
 
-    public List<IIpsObjectPart> getIpsObjectParts() {
+    public List<IIpsObjectPartContainer> getIpsObjectParts() {
         return ipsParts;
     }
 

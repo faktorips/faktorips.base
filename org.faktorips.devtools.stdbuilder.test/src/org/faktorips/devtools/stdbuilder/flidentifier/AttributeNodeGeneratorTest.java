@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -81,7 +80,7 @@ public class AttributeNodeGeneratorTest {
         attributeNodeGenerator = new AttributeNodeGenerator(factory, expression, builderSet);
     }
 
-    private void createAttributeNode(boolean isDefault) throws CoreException {
+    private void createAttributeNode(boolean isDefault) {
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         attributeNode = createAttributeNode(isDefault, false);
         when(contextCompilationResult.getDatatype()).thenReturn(Datatype.INTEGER);
@@ -209,7 +208,6 @@ public class AttributeNodeGeneratorTest {
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
         when(listofTypeDatatype.getBasicDatatype()).thenReturn(type);
-        when(type.getJavaClassName()).thenReturn("HausratVertrag");
         when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
         XPolicyAttribute xPolicyAttribute = mock(XPolicyAttribute.class);
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getWohnflaeche");
@@ -235,7 +233,6 @@ public class AttributeNodeGeneratorTest {
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
         when(listofTypeDatatype.getBasicDatatype()).thenReturn(type);
-        when(type.getJavaClassName()).thenReturn("HausratVertrag");
         when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
         XPolicyAttribute xPolicyAttribute = mock(XPolicyAttribute.class);
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getWohnflaeche");
@@ -264,11 +261,11 @@ public class AttributeNodeGeneratorTest {
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
         return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, 0), ipsProject)
-                .createAttributeNode(attribute, defaultAccess, listOfType);
+        .createAttributeNode(attribute, defaultAccess, listOfType);
     }
 
     @Test
-    public void testGetParameterAttributGetterNameNotChangingOverTime() throws CoreException {
+    public void testGetParameterAttributGetterNameNotChangingOverTime() {
         XPolicyCmptClass xPolicyCmptClass = initMocksForTestgetParameterAttributeGetterName(false);
         when(xPolicyCmptClass.getMethodNameGetProductCmpt()).thenReturn("getPolicyProdCmpt");
 
@@ -281,7 +278,7 @@ public class AttributeNodeGeneratorTest {
     }
 
     @Test
-    public void testGetParameterAttributeGetterNameChangingOverTime() throws CoreException {
+    public void testGetParameterAttributeGetterNameChangingOverTime() {
         XPolicyCmptClass xPolicyCmptClass = initMocksForTestgetParameterAttributeGetterName(true);
         when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getMethodPolicyProdCmptGen");
 
@@ -293,8 +290,7 @@ public class AttributeNodeGeneratorTest {
                 .contains(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()));
     }
 
-    private XPolicyCmptClass initMocksForTestgetParameterAttributeGetterName(boolean isChangingOverTime)
-            throws CoreException {
+    private XPolicyCmptClass initMocksForTestgetParameterAttributeGetterName(boolean isChangingOverTime) {
         attribute = mock(IProductCmptTypeAttribute.class);
         createAttributeNode(false);
 
