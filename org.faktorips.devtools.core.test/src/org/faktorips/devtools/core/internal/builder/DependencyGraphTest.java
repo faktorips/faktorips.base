@@ -59,16 +59,11 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
-        a = newPolicyCmptType(root, "A");
-        b = newPolicyCmptType(root, "B");
-        c = newPolicyCmptType(root, "C");
-        d = newPolicyCmptType(root, "D");
-        e = newPolicyCmptType(root, "E");
-        a.setProductCmptType("");
-        b.setProductCmptType("");
-        c.setProductCmptType("");
-        d.setProductCmptType("");
-        e.setProductCmptType("");
+        a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
+        d = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "D");
+        e = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "E");
 
         enum1 = newEnumType(root, "AnEnum1");
         enum1.setExtensible(false);

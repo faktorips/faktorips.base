@@ -69,7 +69,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         ipsRenameProcessor.setNewName("otherAttribute");
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
     }
 
     @Test

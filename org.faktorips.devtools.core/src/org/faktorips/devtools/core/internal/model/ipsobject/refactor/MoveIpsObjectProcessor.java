@@ -41,7 +41,6 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor implements II
     public MoveIpsObjectProcessor(IIpsObject toBeMoved) {
         super(toBeMoved, toBeMoved.getIpsPackageFragment());
         renameMoveHelper = new MoveRenameIpsObjectHelper(toBeMoved);
-        renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
     @Override

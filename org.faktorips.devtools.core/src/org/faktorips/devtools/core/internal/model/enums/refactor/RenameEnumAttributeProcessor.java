@@ -39,13 +39,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
 
     public RenameEnumAttributeProcessor(IEnumAttribute enumAttribute) {
         super(enumAttribute, enumAttribute.getName());
-
-        /*
-         * Refactoring the current default value provider attribute makes it necessary to ignore
-         * this validation.
-         */
-        getIgnoredValidationMessageCodes()
-                .add(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST);
     }
 
     private IIpsSrcFile getIpsSrcFile() {

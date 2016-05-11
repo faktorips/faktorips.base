@@ -104,9 +104,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
 
-        productCmptType = newProductCmptType(ipsProject, "ProdType");
-        policyCmptType = newPolicyCmptType(ipsProject, "PolType");
-        policyCmptType.setProductCmptType("ProdType");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "PolType", "ProdType");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         attr1 = new ProductCmptTypeAttribute(productCmptType, "IDAttr1");
         attr1.setName("TypeAttr1");
         attr2 = new ProductCmptTypeAttribute(productCmptType, "IDAttr2");
@@ -881,37 +880,37 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testNewPropertyValue() throws Exception {
         assertEquals(0,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(attr1);
         assertEquals(1,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(attr2);
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
 
         productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), ""));
         assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
                 .size());
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         assertEquals(1,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueClass())
-                        .size());
+                .size());
     }
 
     @Test

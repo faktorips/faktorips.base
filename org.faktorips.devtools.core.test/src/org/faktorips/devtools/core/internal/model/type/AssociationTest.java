@@ -719,8 +719,10 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         constrains_sourceClass.setProductCmptType(constrains_sourceProductClass.getQualifiedName());
         constrains_sourceProductClass.setPolicyCmptType(constrains_sourceClass.getQualifiedName());
+        constrains_sourceProductClass.setConfigurationForPolicyCmptType(true);
         constrains_targetClass.setProductCmptType(constrains_targetProductClass.getQualifiedName());
         constrains_targetProductClass.setPolicyCmptType(constrains_targetClass.getQualifiedName());
+        constrains_targetProductClass.setConfigurationForPolicyCmptType(true);
 
         constrains_subSourceProductClass = newProductCmptType(ipsProject, "SubProductA");
         constrains_subSourceProductClass.setSupertype(constrains_sourceProductClass.getQualifiedName());
@@ -734,8 +736,10 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         constrains_subSourceClass.setProductCmptType(constrains_subSourceProductClass.getQualifiedName());
         constrains_subSourceProductClass.setPolicyCmptType(constrains_subSourceClass.getQualifiedName());
+        constrains_subSourceProductClass.setConfigurationForPolicyCmptType(true);
         constrains_subTargetClass.setProductCmptType(constrains_subTargetProductClass.getQualifiedName());
         constrains_subTargetProductClass.setPolicyCmptType(constrains_subTargetClass.getQualifiedName());
+        constrains_subTargetProductClass.setConfigurationForPolicyCmptType(true);
     }
 
     @Test

@@ -79,7 +79,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         RefactoringStatus status = ipsMoveProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
 
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
     }
 
     @Test

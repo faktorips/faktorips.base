@@ -95,8 +95,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        productCmptType = newProductCmptType(ipsProject, "test.Product");
-        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        productCmptType = newProductCmptType(ipsProject, "test.Product", policyCmptType);
 
         IProductCmpt cmpt = newProductCmpt(productIpsProject, "test.Product");
         cmpt.setProductCmptType(productCmptType.getQualifiedName());

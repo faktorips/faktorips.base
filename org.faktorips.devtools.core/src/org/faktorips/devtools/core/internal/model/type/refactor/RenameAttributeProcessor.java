@@ -56,12 +56,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute, attribute.getName());
-        addIgnoredValidationMessageCodes();
-    }
-
-    private void addIgnoredValidationMessageCodes() {
-        getIgnoredValidationMessageCodes().add(IValidationRule.MSGCODE_UNDEFINED_ATTRIBUTE);
-        getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE);
     }
 
     @Override

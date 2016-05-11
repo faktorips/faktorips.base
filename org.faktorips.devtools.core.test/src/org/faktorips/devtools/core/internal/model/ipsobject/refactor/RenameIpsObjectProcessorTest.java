@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -62,7 +64,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
 
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
     }
 
     @Test
@@ -74,7 +76,23 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
 
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
+    }
+
+    @Test
+    public void testCheckFinalConditionsInvalidTypeName_NoChangesPersist() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+
+        assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
+        IpsRenameProcessor ipsRenameProcessor = new RenameIpsObjectProcessor(policyCmptType);
+        ipsRenameProcessor.setNewName("$§§  $");
+
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+
+        assertTrue(status.hasError());
+        assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
     }
 
     @Test

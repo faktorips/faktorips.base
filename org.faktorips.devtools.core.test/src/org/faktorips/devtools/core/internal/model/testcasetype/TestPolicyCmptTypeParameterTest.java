@@ -23,7 +23,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -624,23 +623,14 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         private ITestPolicyCmptTypeParameter childParameter;
 
         public void init(IIpsProject project) throws CoreException {
-            policy = newPolicyCmptType(project, "Policy");
-            policy.setConfigurableByProductCmptType(true);
-            ProductCmptType productCmptTypePolicy = newProductCmptType(project, "PolicyType");
-            policy.setProductCmptType(productCmptTypePolicy.getQualifiedName());
-            productCmptTypePolicy.setPolicyCmptType(policy.getQualifiedName());
+            policy = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
+            IProductCmptType productCmptTypePolicy = policy.findProductCmptType(project);
 
-            coverage = newPolicyCmptType(project, "Coverage");
-            coverage.setConfigurableByProductCmptType(true);
-            ProductCmptType productCmptTypeCoverage = newProductCmptType(project, "CoverageType");
-            coverage.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
-            productCmptTypeCoverage.setPolicyCmptType(coverage.getQualifiedName());
+            coverage = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");
+            IProductCmptType productCmptTypeCoverage = coverage.findProductCmptType(project);
 
-            subCoverage = newPolicyCmptType(project, "SubCoverage");
-            coverage.setConfigurableByProductCmptType(true);
-            ProductCmptType productCmptTypeSubCoverage = newProductCmptType(project, "SubCoverageType");
-            subCoverage.setProductCmptType(productCmptTypeSubCoverage.getQualifiedName());
-            productCmptTypeSubCoverage.setPolicyCmptType(subCoverage.getQualifiedName());
+            subCoverage = newPolicyAndProductCmptType(project, "SubCoverage", "SubCoverageType");
+            IProductCmptType productCmptTypeSubCoverage = subCoverage.findProductCmptType(project);
             subCoverage.setSupertype(coverage.getQualifiedName());
             productCmptTypeSubCoverage.setSupertype(productCmptTypeCoverage.getQualifiedName());
 

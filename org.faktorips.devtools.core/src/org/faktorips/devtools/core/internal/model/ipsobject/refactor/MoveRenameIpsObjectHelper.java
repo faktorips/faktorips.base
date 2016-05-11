@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,7 +27,6 @@ import org.faktorips.devtools.core.builder.IJavaBuilderSet;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -36,14 +34,8 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.util.RefactorUtil;
@@ -73,30 +65,6 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
     public MoveRenameIpsObjectHelper(IIpsObject toBeRefactored) {
         ArgumentCheck.notNull(new Object[] { toBeRefactored });
         this.toBeRefactored = toBeRefactored;
-    }
-
-    /**
-     * Adds message codes to the set of ignored validation message codes that must be ignored by the
-     * "Rename Type" and "Move Type" refactorings.
-     * <p>
-     * For example: The configuring {@link IProductCmptType} / configured {@link IPolicyCmptType}
-     * does not reference the copy of the <tt>IType</tt> that is created during the refactoring so
-     * this must be ignored during refactoring validation.
-     */
-    public void addIgnoredValidationMessageCodes(Set<String> ignoredValidationMessageCodes) {
-        ignoredValidationMessageCodes.add(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE);
-        ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
-        ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET);
-        ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);
-        ignoredValidationMessageCodes.add(IProductCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);
-        ignoredValidationMessageCodes.add(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST);
-        ignoredValidationMessageCodes.add(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE);
-        ignoredValidationMessageCodes.add(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION);
-        ignoredValidationMessageCodes.add(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT);
-        ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_UNKNWON_TARGET);
-        ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_INVALID_TARGET);
-        ignoredValidationMessageCodes.add("KorrespondenzenExtensionPropertyDefinition-FalscherProduktBaustein"); //$NON-NLS-1$
-        // TODO diesen miesen Hack entfernen wenn FIPS-965 behoben ist.
     }
 
     /**

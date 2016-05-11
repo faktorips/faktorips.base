@@ -49,9 +49,6 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     public RenameAssociationProcessor(IAssociation association) {
         super(association, association.getName(), association.getTargetRolePlural());
 
-        getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
-        getIgnoredValidationMessageCodes().add(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND);
-
         derivedUnionSubsets = new HashSet<IAssociation>();
     }
 

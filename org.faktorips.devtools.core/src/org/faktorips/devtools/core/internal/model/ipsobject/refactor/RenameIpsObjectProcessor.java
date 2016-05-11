@@ -42,7 +42,6 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor implement
     public RenameIpsObjectProcessor(IIpsObject toBeRenamed) {
         super(toBeRenamed, toBeRenamed.getName());
         renameMoveHelper = new MoveRenameIpsObjectHelper(toBeRenamed);
-        renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
     @Override

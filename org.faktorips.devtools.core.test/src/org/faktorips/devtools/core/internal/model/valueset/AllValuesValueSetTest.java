@@ -62,8 +62,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
 
-        IProductCmptType productType = newProductCmptType(ipsProject, "test.Product");
-        productType.setPolicyCmptType(policy.getQualifiedName());
+        IProductCmptType productType = newProductCmptType(ipsProject, "test.Product", policy);
 
         IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
         cmpt.setProductCmptType(productType.getQualifiedName());

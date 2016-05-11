@@ -47,9 +47,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     /** The {@link IIpsElement} to be refactored. */
     private final IIpsElement ipsElement;
 
-    /** Set containing all message codes that will be ignored during final condition checking. */
-    private final Set<String> ignoredValidationMessageCodes;
-
     /**
      * @param ipsElement {@link IIpsElement} to be refactored
      * 
@@ -60,7 +57,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         ArgumentCheck.notNull(ipsElement);
 
         this.ipsElement = ipsElement;
-        ignoredValidationMessageCodes = new HashSet<String>();
     }
 
     /**
@@ -151,9 +147,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * Adds an entry to the provided {@link RefactoringStatus} for every messages contained in the
      * provided {@link MessageList}.
      * <p>
-     * Excluded are validation message codes that are ignored by the refactoring processor.
-     * 
-     * @see #getIgnoredValidationMessageCodes()
      * 
      * @param validationMessageList {@link MessageList} from which messages shall be added to the
      *            {@link RefactoringStatus}
@@ -165,12 +158,9 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         ArgumentCheck.notNull(new Object[] { validationMessageList, status });
 
         for (Message message : validationMessageList) {
-            if (isMessageCodeIgnored(message.getCode())) {
-                continue;
-            }
             switch (message.getSeverity()) {
                 case Message.ERROR:
-                    status.addFatalError(message.getText());
+                    status.addError(message.getText());
                     break;
                 case Message.WARNING:
                     status.addWarning(message.getText());
@@ -180,15 +170,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
                     break;
             }
         }
-    }
-
-    private boolean isMessageCodeIgnored(String messageCode) {
-        for (String currentMessageCode : ignoredValidationMessageCodes) {
-            if (currentMessageCode.equals(messageCode)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -254,14 +235,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     protected final IIpsProject getIpsProject() {
         return getIpsElement().getIpsProject();
-    }
-
-    /**
-     * Returns the set containing all validation message codes that will be ignored during final
-     * condition checking.
-     */
-    public final Set<String> getIgnoredValidationMessageCodes() {
-        return ignoredValidationMessageCodes;
     }
 
     @Override
