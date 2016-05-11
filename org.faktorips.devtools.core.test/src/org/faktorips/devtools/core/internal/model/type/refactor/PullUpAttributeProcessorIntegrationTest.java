@@ -31,7 +31,7 @@ public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactor
 
         RefactoringStatus status = performPullUpRefactoring(policyCmptTypeAttribute, superPolicyCmptType);
 
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
     }
 
     @Test

@@ -52,10 +52,15 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getValidationRule());
-        addAffectedSrcFiles(modificationSet);
-        updateValidationRuleInProductCmpts();
-        updateValidationRuleInTestCases();
-        updateValidationRuleName();
+        try {
+            addAffectedSrcFiles(modificationSet);
+            updateValidationRuleInProductCmpts();
+            updateValidationRuleInTestCases();
+            updateValidationRuleName();
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
+        }
         return modificationSet;
     }
 

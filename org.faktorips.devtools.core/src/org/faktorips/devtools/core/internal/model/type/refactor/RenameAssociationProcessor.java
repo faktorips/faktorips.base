@@ -49,9 +49,6 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     public RenameAssociationProcessor(IAssociation association) {
         super(association, association.getName(), association.getTargetRolePlural());
 
-        getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
-        getIgnoredValidationMessageCodes().add(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND);
-
         derivedUnionSubsets = new HashSet<IAssociation>();
     }
 
@@ -127,19 +124,27 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
-            updateInverseAssociation();
-            updateTestCaseTypeParameters();
-        } else {
-            updateProductCmptLinks();
-        }
-        if (getAssociation().isDerivedUnion()) {
-            updateDerivedUnionSubsets();
-        }
+        try {
+            addAffectedSrcFiles(modificationSet);
+            if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
+                updateInverseAssociation();
+                updateTestCaseTypeParameters();
+            } else {
+                updateProductCmptLinks();
+            }
+            if (getAssociation().isDerivedUnion()) {
+                updateDerivedUnionSubsets();
+            }
 
-        updateTargetRoleSingular();
-        updateTargetRolePlural();
+            updateTargetRoleSingular();
+            updateTargetRolePlural();
+        } catch (CoreException e) {
+            modificationSet.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
+        }
         return modificationSet;
     }
 

@@ -11,35 +11,35 @@
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.builder.IJavaBuilderSet;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -51,7 +51,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public final class MoveRenameIpsObjectHelper {
+public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectProcessor {
 
     private final IIpsObject toBeRefactored;
 
@@ -59,36 +59,14 @@ public final class MoveRenameIpsObjectHelper {
 
     private Map<IDependency, IIpsProject> dependencyToProject;
 
+    private List<IJavaElement> targetJavaElements;
+
     /**
      * @throws NullPointerException If the provided {@link IIpsObject} is null
      */
     public MoveRenameIpsObjectHelper(IIpsObject toBeRefactored) {
         ArgumentCheck.notNull(new Object[] { toBeRefactored });
         this.toBeRefactored = toBeRefactored;
-    }
-
-    /**
-     * Adds message codes to the set of ignored validation message codes that must be ignored by the
-     * "Rename Type" and "Move Type" refactorings.
-     * <p>
-     * For example: The configuring {@link IProductCmptType} / configured {@link IPolicyCmptType}
-     * does not reference the copy of the <tt>IType</tt> that is created during the refactoring so
-     * this must be ignored during refactoring validation.
-     */
-    public void addIgnoredValidationMessageCodes(Set<String> ignoredValidationMessageCodes) {
-        ignoredValidationMessageCodes.add(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE);
-        ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
-        ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET);
-        ignoredValidationMessageCodes.add(IPolicyCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);
-        ignoredValidationMessageCodes.add(IProductCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);
-        ignoredValidationMessageCodes.add(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST);
-        ignoredValidationMessageCodes.add(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE);
-        ignoredValidationMessageCodes.add(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION);
-        ignoredValidationMessageCodes.add(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT);
-        ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_UNKNWON_TARGET);
-        ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_INVALID_TARGET);
-        ignoredValidationMessageCodes.add("KorrespondenzenExtensionPropertyDefinition-FalscherProduktBaustein"); //$NON-NLS-1$
-        // TODO diesen miesen Hack entfernen wenn FIPS-965 behoben ist.
     }
 
     /**
@@ -133,11 +111,9 @@ public final class MoveRenameIpsObjectHelper {
      * Returns the list of validation messages that should be added to the return status by the
      * calling refactoring processor.
      */
-    public MessageList checkFinalConditionsThis(IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
+    public MessageList checkFinalConditionsThis(IpsRefactoringProcessor ipsRefactoringProcessor,
             RefactoringStatus status,
-            IProgressMonitor pm) throws CoreException {
-
+            IProgressMonitor pm) {
         IIpsSrcFile originalFile = toBeRefactored.getIpsSrcFile();
         if (isSourceFilesSavedRequired() && originalFile.isDirty()) {
             String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileDirty,
@@ -145,19 +121,24 @@ public final class MoveRenameIpsObjectHelper {
             status.addFatalError(text);
             return new MessageList();
         }
-        IIpsSrcFile targetFile = null;
+        IpsRefactoringModificationSet modificationSet = null;
         try {
-            targetFile = RefactorUtil.moveIpsSrcFile(originalFile, targetIpsPackageFragment, newName, pm);
+            modificationSet = ipsRefactoringProcessor.refactorIpsModel(pm);
+            IIpsObjectPartContainer refactoredTarget = (IIpsObjectPartContainer)modificationSet.getTargetElement();
+
+            rememberTargetJavaElementsForRefactoringParticipants(refactoredTarget);
 
             // Perform validation on target file.
-            IIpsObject copiedIpsObject = targetFile.getIpsObject();
-            MessageList validationMessageList = copiedIpsObject.validate(copiedIpsObject.getIpsProject());
+            MessageList validationMessageList = refactoredTarget.validate(refactoredTarget.getIpsProject());
 
             return validationMessageList;
             // CSOFF: IllegalCatch
-            // Need to catch RuntimeException to get really every exception and set corresponding
+            // Need to catch Exception to get really every exception and set corresponding
             // fatal error status
-        } catch (RuntimeException e) {
+        } catch (CoreException e) {
+            addExceptionStatus(status, e.getStatus());
+            return new MessageList();
+        } catch (Exception e) {
             if (e.getLocalizedMessage() != null) {
                 status.addFatalError(e.getLocalizedMessage());
             } else {
@@ -166,10 +147,40 @@ public final class MoveRenameIpsObjectHelper {
             return new MessageList();
             // CSON: IllegalCatch
         } finally {
-            if (targetFile != null) {
-                RefactorUtil.moveIpsSrcFile(targetFile, originalFile.getIpsPackageFragment(),
-                        originalFile.getIpsObjectName(), pm);
+            if (modificationSet != null) {
+                modificationSet.undo();
             }
+        }
+    }
+
+    private void addExceptionStatus(RefactoringStatus status, IStatus exceptionStatus) {
+        if (exceptionStatus != null) {
+            int severity = exceptionStatus.getSeverity();
+            switch (severity) {
+                case IStatus.ERROR:
+                    status.addFatalError(exceptionStatus.getMessage());
+                    break;
+                case IStatus.WARNING:
+                    status.addWarning(exceptionStatus.getMessage());
+                    break;
+                case IStatus.INFO:
+                    status.addInfo(exceptionStatus.getMessage());
+                    break;
+
+                default:
+                    break;
+            }
+            for (IStatus childStatus : exceptionStatus.getChildren()) {
+                addExceptionStatus(status, childStatus);
+            }
+        }
+    }
+
+    private void rememberTargetJavaElementsForRefactoringParticipants(IIpsObjectPartContainer copiedIpsObject) {
+        IIpsArtefactBuilderSet ipsArtefactBuilderSet = copiedIpsObject.getIpsProject().getIpsArtefactBuilderSet();
+        if (ipsArtefactBuilderSet instanceof IJavaBuilderSet) {
+            IJavaBuilderSet javaBuilderSet = (IJavaBuilderSet)ipsArtefactBuilderSet;
+            this.targetJavaElements = javaBuilderSet.getGeneratedJavaElements(copiedIpsObject);
         }
     }
 
@@ -178,20 +189,30 @@ public final class MoveRenameIpsObjectHelper {
             boolean adaptRuntimeId,
             IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(toBeRefactored);
-        modifications.append(updateDependencies(targetIpsPackageFragment, newName));
-        modifications.addRenameModification(toBeRefactored.getIpsSrcFile(), targetIpsPackageFragment
-                .getIpsSrcFile((RefactorUtil.getTargetFileName(toBeRefactored.getIpsSrcFile(), newName))));
-        IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
-        modifications.setTargetElement(targetSrcFile.getIpsObject());
+        try {
+            modifications.append(updateDependencies(targetIpsPackageFragment, newName));
+            modifications.addRenameModification(
+                    toBeRefactored.getIpsSrcFile(),
+                    targetIpsPackageFragment.getIpsSrcFile((RefactorUtil.getTargetFileName(
+                            toBeRefactored.getIpsSrcFile(), newName))));
+            IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
+            modifications.setTargetElement(targetSrcFile.getIpsObject());
 
-        if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
-            IIpsProject ipsProject = productCmpt.getIpsProject();
-            IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
-            String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
-            ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
+            if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
+                IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
+                IIpsProject ipsProject = productCmpt.getIpsProject();
+                IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
+                String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
+                ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
+            }
+            return modifications;
+        } catch (CoreException e) {
+            modifications.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modifications.undo();
+            throw e;
         }
-        return modifications;
     }
 
     private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment,
@@ -287,6 +308,15 @@ public final class MoveRenameIpsObjectHelper {
         for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
             dependencies.add(dependency);
             dependencyToProject.put(dependency, project);
+        }
+    }
+
+    @Override
+    public List<IJavaElement> getTargetJavaElements() {
+        if (targetJavaElements != null) {
+            return targetJavaElements;
+        } else {
+            return Collections.emptyList();
         }
     }
 

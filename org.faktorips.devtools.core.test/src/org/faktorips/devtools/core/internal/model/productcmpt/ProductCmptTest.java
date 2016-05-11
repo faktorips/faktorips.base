@@ -113,10 +113,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
 
-        productCmptType = newProductCmptType(ipsProject, "ProdType");
-        policyCmptType = newPolicyCmptType(ipsProject, "PolType");
-        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
-        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "PolType", "ProdType");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         attr1 = new ProductCmptTypeAttribute(productCmptType, "IDAttr1");
         attr1.setName("TypeAttr1");
         attr2 = new ProductCmptTypeAttribute(productCmptType, "IDAttr2");
@@ -1000,7 +998,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPropertyValue() {
+    public void testNewPropertyValue() throws Exception {
         assertEquals(0, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValue(attr1);
         assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());

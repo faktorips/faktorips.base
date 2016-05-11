@@ -74,16 +74,12 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         project = newIpsProject("TestProject");
 
         // PolicyCmptType1 and ProductCmptType1
-        PolicyCmptType type1 = newPolicyCmptType(project, "PolicyCmptType1");
-        IProductCmptType productCmptType1 = newProductCmptType(project, "ProductCmptType1");
-        productCmptType1.setPolicyCmptType(type1.getQualifiedName());
-        type1.setProductCmptType(productCmptType1.getQualifiedName());
+        PolicyCmptType type1 = newPolicyAndProductCmptType(project, "PolicyCmptType1", "ProductCmptType1");
+        IProductCmptType productCmptType1 = type1.findProductCmptType(project);
 
         // PolicyCmptType2 and ProductCmptType2
-        PolicyCmptType type2 = newPolicyCmptType(project, "PolicyCmptType2");
-        IProductCmptType productCmptType2 = newProductCmptType(project, "ProductCmptType2");
-        productCmptType2.setPolicyCmptType(type2.getQualifiedName());
-        type2.setProductCmptType(productCmptType2.getQualifiedName());
+        PolicyCmptType type2 = newPolicyAndProductCmptType(project, "PolicyCmptType2", "ProductCmptType2");
+        IProductCmptType productCmptType2 = type2.findProductCmptType(project);
 
         // PolicyCmptType3
         PolicyCmptType type3 = newPolicyCmptType(project, "PolicyCmptType3");
@@ -713,17 +709,11 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         private ITestPolicyCmptTypeParameter childParameter;
 
         public void init(IIpsProject project) throws CoreException {
-            policy = newPolicyCmptType(project, "Policy");
-            policy.setConfigurableByProductCmptType(true);
-            productCmptTypePolicy = newProductCmptType(project, "PolicyType");
-            policy.setProductCmptType(productCmptTypePolicy.getQualifiedName());
-            productCmptTypePolicy.setPolicyCmptType(policy.getQualifiedName());
+            policy = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
+            productCmptTypePolicy = (ProductCmptType)policy.findProductCmptType(project);
 
-            coverage = newPolicyCmptType(project, "Coverage");
-            coverage.setConfigurableByProductCmptType(true);
-            productCmptTypeCoverage = newProductCmptType(project, "CoverageType");
-            coverage.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
-            productCmptTypeCoverage.setPolicyCmptType(coverage.getQualifiedName());
+            coverage = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");
+            productCmptTypeCoverage = (ProductCmptType)coverage.findProductCmptType(project);
 
             coverages = policy.newPolicyCmptTypeAssociation();
             coverages.setTarget(coverage.getQualifiedName());

@@ -11,17 +11,19 @@
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -29,7 +31,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
+public final class RenameIpsObjectProcessor extends IpsRenameProcessor implements IIpsMoveRenameIpsObjectProcessor {
 
     /**
      * A helper providing functionality shared between the "Rename IPS Object" and "Move IPS Object"
@@ -40,7 +42,6 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     public RenameIpsObjectProcessor(IIpsObject toBeRenamed) {
         super(toBeRenamed, toBeRenamed.getName());
         renameMoveHelper = new MoveRenameIpsObjectHelper(toBeRenamed);
-        renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 
     @Override
@@ -59,9 +60,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
             CheckConditionsContext context) throws CoreException {
-
-        MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(getIpsObject()
-                .getIpsPackageFragment(), getNewName(), status, pm);
+        MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(this, status, pm);
         addValidationMessagesToStatus(validationMessageList, status);
     }
 
@@ -88,6 +87,11 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     @Override
     public String getProcessorName() {
         return Messages.RenameIpsObjectProcessor_processorName;
+    }
+
+    @Override
+    public List<IJavaElement> getTargetJavaElements() {
+        return renameMoveHelper.getTargetJavaElements();
     }
 
 }

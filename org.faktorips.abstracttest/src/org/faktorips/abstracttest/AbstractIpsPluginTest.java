@@ -509,7 +509,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 if (createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
                     ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
                     ((IPolicyCmptType)ipsObject).setProductCmptType(qualifiedName + "ProductCmpt");
-                    newProductCmptType(root, qualifiedName + "ProductCmpt");
+                    ProductCmptType productCmptType = newProductCmptType(root, qualifiedName + "ProductCmpt");
+                    productCmptType.setConfigurationForPolicyCmptType(true);
+                    productCmptType.setPolicyCmptType(qualifiedName);
                 } else if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
                     ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
                 }
@@ -683,6 +685,33 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new product component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
+     * Creates the product component type's default categories if they have not yet been created.
+     * Sets the product component type to configure the given policy component type.
+     */
+    protected ProductCmptType newProductCmptType(IIpsProject ipsProject,
+            String qualifiedName,
+            String policyCmptTypeQualifiedName) throws CoreException {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, qualifiedName, true);
+        newProductCmptType.setConfigurationForPolicyCmptType(true);
+        newProductCmptType.setPolicyCmptType(policyCmptTypeQualifiedName);
+        return newProductCmptType;
+    }
+
+    /**
+     * Creates a new product component type in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exist.
+     * Creates the product component type's default categories if they have not yet been created.
+     * Sets the product component type to configure the given policy component type.
+     */
+    protected ProductCmptType newProductCmptType(IIpsProject ipsProject,
+            String qualifiedName,
+            IPolicyCmptType policyCmptType) throws CoreException {
+        return newProductCmptType(ipsProject, qualifiedName, policyCmptType.getQualifiedName());
+    }
+
+    /**
+     * Creates a new product component type in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      * 
      * @param createDefaultCategories <code>true</code> if default categories should be created.
      *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type
@@ -693,6 +722,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             boolean createDefaultCategories) throws CoreException {
         ProductCmptType productCmptType = (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE,
                 qualifiedName);
+        productCmptType.setConfigurationForPolicyCmptType(false);
         if (createDefaultCategories) {
             createDefaultCategoriesForProductCmptTypeAsNecessary(productCmptType);
         }
@@ -705,9 +735,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
             throws CoreException {
-
         ProductCmptType productCmptType = (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE,
                 qualifiedName);
+        productCmptType.setConfigurationForPolicyCmptType(false);
         createDefaultCategoriesForProductCmptTypeAsNecessary(productCmptType);
         return productCmptType;
     }

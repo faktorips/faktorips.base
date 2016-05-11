@@ -999,6 +999,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptType aProductType = a.findProductCmptType(ipsProject);
         IProductCmptType bProductType = b.findProductCmptType(ipsProject);
 
+        aProductType.setPolicyCmptType(null);
+
         List<IDependency> dependencies = Arrays.asList(aProductType.dependsOn());
         assertEquals(1, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),

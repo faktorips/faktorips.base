@@ -238,8 +238,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddPolicyAndProductAttributes_ProdCmptType() throws CoreException {
-        ProductCmptType productCmptType = newProductCmptType(ipsProject, "prodCmptType");
-        productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "prodCmptType", policyCmptTypeA);
         productCmptType.newProductCmptTypeAttribute(ID);
         policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
         validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);

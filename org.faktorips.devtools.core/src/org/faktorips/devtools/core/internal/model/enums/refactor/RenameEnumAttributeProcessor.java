@@ -39,13 +39,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
 
     public RenameEnumAttributeProcessor(IEnumAttribute enumAttribute) {
         super(enumAttribute, enumAttribute.getName());
-
-        /*
-         * Refactoring the current default value provider attribute makes it necessary to ignore
-         * this validation.
-         */
-        getIgnoredValidationMessageCodes()
-                .add(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST);
     }
 
     private IIpsSrcFile getIpsSrcFile() {
@@ -82,16 +75,24 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        updateSubclassReferences();
-        if (!(getEnumType().isAbstract())) {
-            if (getEnumType().isInextensibleEnum()) {
-                updateLiteralNameReference();
-            } else {
-                updateEnumContentReference();
+        try {
+            addAffectedSrcFiles(modificationSet);
+            updateSubclassReferences();
+            if (!(getEnumType().isAbstract())) {
+                if (getEnumType().isInextensibleEnum()) {
+                    updateLiteralNameReference();
+                } else {
+                    updateEnumContentReference();
+                }
             }
+            updateEnumAttributeName();
+        } catch (CoreException e) {
+            modificationSet.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
         }
-        updateEnumAttributeName();
         return modificationSet;
     }
 

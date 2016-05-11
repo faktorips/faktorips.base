@@ -67,6 +67,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
 
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy");
         productType.setPolicyCmptType(policyType.getQualifiedName());
+        productType.setConfigurationForPolicyCmptType(true);
         policyType.setProductCmptType(productType.getQualifiedName());
 
         IPolicyCmptTypeAssociation policyTypeAssociation = policyType.newPolicyCmptTypeAssociation();
@@ -82,6 +83,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         detailToMasterAssoc.setTarget(coverage.getQualifiedName());
 
         coverageType.setPolicyCmptType(coverage.getQualifiedName());
+        coverageType.setConfigurationForPolicyCmptType(true);
         assertEquals(policyTypeAssociation, association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         IProductCmptTypeAssociation association2 = productType.newProductCmptTypeAssociation();
@@ -141,9 +143,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     public void shouldNotFindMatchingAssociationForDifferingHierarchy() throws Exception {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "MyProduct");
         IProductCmptType product = policy.findProductCmptType(ipsProject);
-        ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct");
+        ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct", policy);
         subProduct.setSupertype(product.getQualifiedName());
-        subProduct.setPolicyCmptType(policy.getQualifiedName());
 
         PolicyCmptType cover = newPolicyAndProductCmptType(ipsProject, "Coverage", "MyCoverageType");
         IProductCmptType coverType = cover.findProductCmptType(ipsProject);
@@ -538,25 +539,29 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         association.setChangingOverTime(false);
 
         MessageList ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productType.setChangingOverTime(true);
         association.setChangingOverTime(true);
 
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productType.setChangingOverTime(false);
         association.setChangingOverTime(false);
 
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         association.setChangingOverTime(false);
         association.setChangingOverTime(true);
 
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test

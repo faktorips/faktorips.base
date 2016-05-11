@@ -56,12 +56,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute, attribute.getName());
-        addIgnoredValidationMessageCodes();
-    }
-
-    private void addIgnoredValidationMessageCodes() {
-        getIgnoredValidationMessageCodes().add(IValidationRule.MSGCODE_UNDEFINED_ATTRIBUTE);
-        getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE);
     }
 
     @Override
@@ -104,17 +98,25 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        if (getAttribute() instanceof IProductCmptTypeAttribute) {
-            updateProductCmptAttributeValueReferences();
-        } else {
-            updateValidationRule();
-            updateProductCmptConfigElementReferences();
-            updateTestCaseTypeReferences();
+        try {
+            addAffectedSrcFiles(modificationSet);
+            if (getAttribute() instanceof IProductCmptTypeAttribute) {
+                updateProductCmptAttributeValueReferences();
+            } else {
+                updateValidationRule();
+                updateProductCmptConfigElementReferences();
+                updateTestCaseTypeReferences();
+            }
+            updateSuperHierarchyAttributes();
+            updateSubHierarchyAttributes();
+            updateAttributeName();
+        } catch (CoreException e) {
+            modificationSet.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
         }
-        updateSuperHierarchyAttributes();
-        updateSubHierarchyAttributes();
-        updateAttributeName();
         return modificationSet;
     }
 

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -50,10 +51,15 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        IAttribute newAttribute = pullUpAttribute();
-        modificationSet.setTargetElement(newAttribute);
-        deleteOriginalAttribute();
+        try {
+            addAffectedSrcFiles(modificationSet);
+            IAttribute newAttribute = pullUpAttribute();
+            modificationSet.setTargetElement(newAttribute);
+            deleteOriginalAttribute();
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
+        }
         return modificationSet;
     }
 

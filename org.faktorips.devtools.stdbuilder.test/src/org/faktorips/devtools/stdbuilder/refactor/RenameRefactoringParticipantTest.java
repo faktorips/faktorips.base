@@ -17,7 +17,9 @@ import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam
 import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.getGenerationConceptNameAbbreviation;
 import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.getJavaType;
 import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.getPublishedInterfaceName;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -228,6 +230,21 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         checkJavaSourceFilesPolicyCmptType("", "Policy", "", "RenamedPolicy");
         PolicyCmptTypeExpectations expectations = new PolicyCmptTypeExpectations(productCmptType);
         expectations.check("Policy", "RenamedPolicy");
+        assertThat(productCmptType.getPolicyCmptType(), is("RenamedPolicy"));
+    }
+
+    @Test
+    public void testRenamePolicyCmptType_illegalName() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+
+        saveIpsSrcFile(policyCmptType);
+        saveIpsSrcFile(productCmptType);
+        performFullBuild(ipsProject);
+
+        performRenameRefactoring(policyCmptType, "?$. Foo");
+
+        assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
     }
 
     @Test

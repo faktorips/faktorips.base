@@ -62,6 +62,7 @@ public final class MoveRenamePackageHelper {
             moveRenamePackageFragement(targetPackageFragement, getResultingPackageName(targetPackageFragement),
                     modificationSet, pm);
         } catch (CoreException e) {
+            modificationSet.undo();
             throw new CoreRuntimeException(e);
         }
         return modificationSet;
@@ -75,6 +76,7 @@ public final class MoveRenamePackageHelper {
         try {
             moveRenamePackageFragement(originalPackageFragment, newName, modificationSet, pm);
         } catch (CoreException e) {
+            modificationSet.undo();
             throw new CoreRuntimeException(e);
         }
         return modificationSet;

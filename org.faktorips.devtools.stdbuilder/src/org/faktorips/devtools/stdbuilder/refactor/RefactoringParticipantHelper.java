@@ -31,7 +31,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.faktorips.devtools.core.builder.IJavaBuilderSet;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -234,26 +236,17 @@ public abstract class RefactoringParticipantHelper {
         IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsObjectPartContainer.getIpsProject()
                 .getIpsArtefactBuilderSet();
-        if (!(ipsArtefactBuilderSet instanceof StandardBuilderSet)) {
+        if (!(ipsArtefactBuilderSet instanceof IJavaBuilderSet)) {
             return false;
         }
+        IJavaBuilderSet javaBuilderSet = (IJavaBuilderSet)ipsArtefactBuilderSet;
 
-        StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
-        boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, standardBuilderSet);
-        if (success) {
-            try {
-                IpsRefactoringModificationSet modificationSet = processor.refactorIpsModel(new NullProgressMonitor());
-                success = initializeTargetJavaElements((IIpsObjectPartContainer)modificationSet.getTargetElement(),
-                        standardBuilderSet);
-                modificationSet.undo();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
+        initializeOriginalJavaElements(ipsObjectPartContainer, javaBuilderSet);
+        initializeTargetJavaElements(processor, javaBuilderSet);
 
         initializeOriginalJavaMembersByType();
 
-        return success;
+        return true;
     }
 
     private void initializeOriginalJavaMembersByType() {
@@ -305,28 +298,35 @@ public abstract class RefactoringParticipantHelper {
      * This implementation asks the builder set for the generated elements of the given
      * {@link IIpsObjectPartContainer}. This behavior may be overwritten by subclasses.
      */
-    private boolean initializeOriginalJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-            StandardBuilderSet builderSet) {
+    private void initializeOriginalJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+            IJavaBuilderSet builderSet) {
         originalJavaElements = initializeJavaElements(ipsObjectPartContainer, builderSet);
-        return true;
     }
 
     /**
-     * Subclass implementation responsible for initializing the {@link IJavaElement}s that will be
-     * generated for the {@link IIpsObjectPartContainer} after the refactoring has finished.
-     * 
-     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to be refactored
-     * @param builderSet A reference to the {@link StandardBuilderSet} to ask for generated Java
-     *            elements
+     * Initialize the Java elements that will be generated after the current refactoring.
      */
-    private boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-            StandardBuilderSet builderSet) {
-        targetJavaElements = initializeJavaElements(ipsObjectPartContainer, builderSet);
-        return true;
+    private void initializeTargetJavaElements(IpsRefactoringProcessor processor, IJavaBuilderSet javaBuilderSet) {
+        if (processor instanceof IIpsMoveRenameIpsObjectProcessor) {
+            targetJavaElements = ((IIpsMoveRenameIpsObjectProcessor)processor).getTargetJavaElements();
+        } else {
+            IpsRefactoringModificationSet modificationSet = null;
+            try {
+                modificationSet = processor.refactorIpsModel(new NullProgressMonitor());
+                targetJavaElements = initializeJavaElements(
+                        (IIpsObjectPartContainer)modificationSet.getTargetElement(), javaBuilderSet);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            } finally {
+                if (modificationSet != null) {
+                    modificationSet.undo();
+                }
+            }
+        }
     }
 
     protected List<IJavaElement> initializeJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
-            StandardBuilderSet builderSet) {
+            IJavaBuilderSet builderSet) {
         return builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
     }
 
