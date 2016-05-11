@@ -86,12 +86,28 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
 
         assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
         IpsRenameProcessor ipsRenameProcessor = new RenameIpsObjectProcessor(policyCmptType);
-        ipsRenameProcessor.setNewName("$§§  $");
+        ipsRenameProcessor.setNewName("§$ Foo");
 
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
 
         assertTrue(status.hasError());
+        assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
+    }
+
+    @Test
+    public void testCheckFinalConditionsIllegalTypeName_NoChangesPersist() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+
+        assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
+        IpsRenameProcessor ipsRenameProcessor = new RenameIpsObjectProcessor(policyCmptType);
+        ipsRenameProcessor.setNewName("?/\0");
+
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+
+        assertTrue(status.hasFatalError());
         assertThat(productCmptType.getPolicyCmptType(), is("Policy"));
     }
 

@@ -75,16 +75,24 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        updateSubclassReferences();
-        if (!(getEnumType().isAbstract())) {
-            if (getEnumType().isInextensibleEnum()) {
-                updateLiteralNameReference();
-            } else {
-                updateEnumContentReference();
+        try {
+            addAffectedSrcFiles(modificationSet);
+            updateSubclassReferences();
+            if (!(getEnumType().isAbstract())) {
+                if (getEnumType().isInextensibleEnum()) {
+                    updateLiteralNameReference();
+                } else {
+                    updateEnumContentReference();
+                }
             }
+            updateEnumAttributeName();
+        } catch (CoreException e) {
+            modificationSet.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
         }
-        updateEnumAttributeName();
         return modificationSet;
     }
 

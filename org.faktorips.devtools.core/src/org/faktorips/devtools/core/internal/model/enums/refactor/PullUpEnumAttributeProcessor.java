@@ -69,13 +69,20 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
+        try {
+            addAffectedSrcFiles(modificationSet);
 
-        IEnumAttribute newEnumAttr = pullUpEnumAttribute();
-        modificationSet.setTargetElement(newEnumAttr);
-        markeOriginalEnumAttributeInherited();
-        inheritEnumAttributeInSubclassesOfTarget();
-
+            IEnumAttribute newEnumAttr = pullUpEnumAttribute();
+            modificationSet.setTargetElement(newEnumAttr);
+            markeOriginalEnumAttributeInherited();
+            inheritEnumAttributeInSubclassesOfTarget();
+        } catch (CoreException e) {
+            modificationSet.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
+        }
         return modificationSet;
     }
 

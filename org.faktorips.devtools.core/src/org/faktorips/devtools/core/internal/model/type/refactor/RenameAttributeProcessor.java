@@ -98,17 +98,25 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     @Override
     public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        if (getAttribute() instanceof IProductCmptTypeAttribute) {
-            updateProductCmptAttributeValueReferences();
-        } else {
-            updateValidationRule();
-            updateProductCmptConfigElementReferences();
-            updateTestCaseTypeReferences();
+        try {
+            addAffectedSrcFiles(modificationSet);
+            if (getAttribute() instanceof IProductCmptTypeAttribute) {
+                updateProductCmptAttributeValueReferences();
+            } else {
+                updateValidationRule();
+                updateProductCmptConfigElementReferences();
+                updateTestCaseTypeReferences();
+            }
+            updateSuperHierarchyAttributes();
+            updateSubHierarchyAttributes();
+            updateAttributeName();
+        } catch (CoreException e) {
+            modificationSet.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
         }
-        updateSuperHierarchyAttributes();
-        updateSubHierarchyAttributes();
-        updateAttributeName();
         return modificationSet;
     }
 

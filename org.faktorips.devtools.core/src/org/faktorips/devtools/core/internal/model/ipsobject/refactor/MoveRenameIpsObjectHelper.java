@@ -18,12 +18,14 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.builder.IJavaBuilderSet;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -133,6 +135,9 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             // CSOFF: IllegalCatch
             // Need to catch Exception to get really every exception and set corresponding
             // fatal error status
+        } catch (CoreException e) {
+            addExceptionStatus(status, e.getStatus());
+            return new MessageList();
         } catch (Exception e) {
             if (e.getLocalizedMessage() != null) {
                 status.addFatalError(e.getLocalizedMessage());
@@ -144,6 +149,29 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
         } finally {
             if (modificationSet != null) {
                 modificationSet.undo();
+            }
+        }
+    }
+
+    private void addExceptionStatus(RefactoringStatus status, IStatus exceptionStatus) {
+        if (exceptionStatus != null) {
+            int severity = exceptionStatus.getSeverity();
+            switch (severity) {
+                case IStatus.ERROR:
+                    status.addFatalError(exceptionStatus.getMessage());
+                    break;
+                case IStatus.WARNING:
+                    status.addWarning(exceptionStatus.getMessage());
+                    break;
+                case IStatus.INFO:
+                    status.addInfo(exceptionStatus.getMessage());
+                    break;
+
+                default:
+                    break;
+            }
+            for (IStatus childStatus : exceptionStatus.getChildren()) {
+                addExceptionStatus(status, childStatus);
             }
         }
     }
@@ -161,20 +189,30 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             boolean adaptRuntimeId,
             IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(toBeRefactored);
-        modifications.append(updateDependencies(targetIpsPackageFragment, newName));
-        modifications.addRenameModification(toBeRefactored.getIpsSrcFile(), targetIpsPackageFragment
-                .getIpsSrcFile((RefactorUtil.getTargetFileName(toBeRefactored.getIpsSrcFile(), newName))));
-        IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
-        modifications.setTargetElement(targetSrcFile.getIpsObject());
+        try {
+            modifications.append(updateDependencies(targetIpsPackageFragment, newName));
+            modifications.addRenameModification(
+                    toBeRefactored.getIpsSrcFile(),
+                    targetIpsPackageFragment.getIpsSrcFile((RefactorUtil.getTargetFileName(
+                            toBeRefactored.getIpsSrcFile(), newName))));
+            IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
+            modifications.setTargetElement(targetSrcFile.getIpsObject());
 
-        if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
-            IIpsProject ipsProject = productCmpt.getIpsProject();
-            IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
-            String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
-            ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
+            if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
+                IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
+                IIpsProject ipsProject = productCmpt.getIpsProject();
+                IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
+                String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
+                ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
+            }
+            return modifications;
+        } catch (CoreException e) {
+            modifications.undo();
+            throw e;
+        } catch (CoreRuntimeException e) {
+            modifications.undo();
+            throw e;
         }
-        return modifications;
     }
 
     private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment,

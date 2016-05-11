@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -47,10 +48,15 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
-        addAffectedSrcFiles(modificationSet);
-        getEnumLiteralNameAttributeValue().setValue(ValueFactory.createStringValue(getNewName()));
+        try {
+            addAffectedSrcFiles(modificationSet);
+            getEnumLiteralNameAttributeValue().setValue(ValueFactory.createStringValue(getNewName()));
+        } catch (CoreRuntimeException e) {
+            modificationSet.undo();
+            throw e;
+        }
         return modificationSet;
     }
 
