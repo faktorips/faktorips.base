@@ -179,13 +179,14 @@
 					throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_REPOSITORY")»");
 				}
 				«implClassName» targetBuilder = null;
-				«IF builder.hasMethodGetEffectiveFrom()-»
+				
+				«IF productCmptNode.changingOverTime && builder.hasMethodGetEffectiveFrom()-»
 					if(get().getEffectiveFromAsCalendar() != null){
-					«IF generatePublishedInterfaces-»
-						targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId, get().getEffectiveFromAsCalendar());
-					«ELSE-»
-						targetBuilder = «policyImplClassName».with(«getRepository()», productCmptId, get().getEffectiveFromAsCalendar());
-					«ENDIF-»
+						«IF generatePublishedInterfaces-»
+							targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId, get().getEffectiveFromAsCalendar());
+						«ELSE-»
+							targetBuilder = «policyImplClassName».with(«getRepository()», productCmptId, get().getEffectiveFromAsCalendar());
+						«ENDIF-»
 					} else{
 						«IF generatePublishedInterfaces-»
 							targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId);
