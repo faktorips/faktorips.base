@@ -19,6 +19,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 *
 * @generated
 */
+«getAnnotations(AnnotatedJavaElementType::TABLE_CLASS)»
 public class «name» extends «Table_(tableRowName)»{
 
 	«EXPAND fields FOREACH indexModelNodes»

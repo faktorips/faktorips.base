@@ -14,6 +14,7 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.internal.toc,
  org.faktorips.runtime.jaxb,
  org.faktorips.runtime.modeltype,
+ org.faktorips.runtime.modeltype.annotation,
  org.faktorips.runtime.productdataprovider,
  org.faktorips.runtime.test,
  org.faktorips.runtime.util

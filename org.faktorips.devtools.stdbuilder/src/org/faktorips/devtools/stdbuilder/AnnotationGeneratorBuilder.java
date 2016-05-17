@@ -32,7 +32,9 @@ public class AnnotationGeneratorBuilder {
                 // Jaxb support
                 new PolicyCmptImplClassJaxbAnnGenFactory(),
                 // since version java doc
-                new SinceVersionJavaDocTagGenerator.Factory() };
+                new SinceVersionJavaDocTagGenerator.Factory(),
+                // annotations for tables and table rows
+                new TableAnnotationGeneratorFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

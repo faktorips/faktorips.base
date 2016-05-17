@@ -18,6 +18,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 *
 * @generated
 */
+«getAnnotations(AnnotatedJavaElementType::TABLE_ROW_CLASS)»
 public class «name» {
 	«EXPAND nullrowconstant»
 	«EXPAND attributes»
@@ -69,6 +70,7 @@ public «method(name, constructorParameters)»{
 	/**
 	* @generated
 	*/
+	«getAnnotations(AnnotatedJavaElementType::TABLE_ROW_CLASS_COLUMN_GETTER)»
 	public «datatypeName» «method(methodNameGetter)»{
 		return «attributeName»;
 	}

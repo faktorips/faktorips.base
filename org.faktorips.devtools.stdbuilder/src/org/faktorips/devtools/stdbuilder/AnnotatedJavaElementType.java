@@ -35,7 +35,11 @@ public enum AnnotatedJavaElementType {
 
     POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD,
 
-    TABLE_COLUMN_FIELD,
+    TABLE_CLASS,
+
+    TABLE_ROW_CLASS,
+
+    TABLE_ROW_CLASS_COLUMN_GETTER,
 
     /**
      * Using this type the annotation generator provides java doc tags for any {@link IIpsElement}.
