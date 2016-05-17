@@ -9,7 +9,7 @@
 	</properties>
 
 	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>3.16.2-SNAPSHOT</version>
+	<version>3.16.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
