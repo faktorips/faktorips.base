@@ -1,0 +1,248 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::table::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::table::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+
+«DEFINE main FOR XTable»
+«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+/**
+* «localizedJDoc("CLASS_DESCRIPTION")»
+*
+* @generated
+*/
+public class «name» extends «Table_(tableRowName)»{
+
+	«EXPAND fields FOREACH indexModelNodes»
+	
+	«EXPAND constructors»
+	«EXPAND addRow»  
+	
+	«EXPAND initKeyMaps»
+	
+	«IF singleContentTable -»
+		«EXPAND getInstanceForSingleContent»
+	«ENDIF-»
+	
+	«EXPAND getInstanceForMultipleContents»
+	«EXPAND getAllRows»
+	
+	«EXPAND findMethods(this) FOREACH indexModelNodes»
+	
+	«EXPAND HashKeyClass::main FOREACH columnKeyIndexModelNodes-»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE fields FOR XIndex-»
+	/**
+	* «localizedJDoc("FIELD_KEY_MAP")»
+	*
+	* @generated
+	*/
+	private «structureClass» «keySearchStructureName»;
+«ENDDEFINE»
+
+«DEFINE constructors FOR XTable»
+	/**
+	* «localizedJDoc("CONSTRUCTOR_DEFAULT")»
+	*
+	* @generated
+	*/
+	public «method(name)»{
+		super();
+	}
+	
+	/**
+	* «localizedJDoc("CONSTRUCTOR_WITH_ROWS")»
+	*
+	* @generated
+	*/
+	public «method(name, List_(tableRowName), " content")»{
+		super();
+		rows = new «ArrayList(tableRowName)»(content);
+		«init()»;		
+	}
+«ENDDEFINE»
+
+
+«DEFINE addRow FOR XTable»
+	/**
+	* «localizedJDoc("METHOD_ADD_ROW")»
+	*
+	* @generated
+	*/
+	@Override
+	protected void addRow(«List_("String")» values, «IRuntimeRepository()» productRepository) {
+		«IF validColumns.size > 0-»
+		String «FOREACH validColumns AS column ITERATOR i»columnValue = values.get(«i.counter0»);
+		«column.datatypeName» «column.attributeName» = columnValue == null ? «column.nullExpression» : 
+		«column.getNewInstanceFromExpression("columnValue", "productRepository")»;
+	    «ENDFOREACH-»
+	    «ENDIF-»
+	    rows.add(new «tableRowName» («columnNames»));
+	}
+«ENDDEFINE»
+
+
+«DEFINE initKeyMaps FOR XTable»
+	/**
+	* «localizedJDoc("METHOD_INIT_KEY_MAPS")»
+	*
+	* @generated
+	*/
+	@Override
+	protected final void «method("initKeyMaps")»{
+		«IF hasIndices()-»
+			«EXPAND keyMapInitialization(this) FOREACH indexModelNodes-»
+			for(«tableRowName» row : rows){
+				«EXPAND forLoop FOREACH indexModelNodes-»
+			}
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+«DEFINE keyMapInitialization(XTable table) FOR XIndex-»
+	«keySearchStructureName» = «structureClass.genericClass».«structureClass.paramsWithBracket()» create(«rangeStructureParameter»);
+«ENDDEFINE»
+
+ 
+«DEFINE forLoop FOR XIndex-»
+	«IF hasRangeKeysNotFirst() -»
+		«EXPAND createWith(this) FOREACH keyItemsForInitKeyMap-»
+	«ENDIF-»
+	«keySearchStructureName».put(
+		«IF firstKeyRange-»
+			«FOREACH columnsForFirstKey AS column-»
+				row.«column.methodNameGetter-»(),
+			«ENDFOREACH-»
+		«ELSE-»
+			new «classOrTypeName»(
+				«FOREACH columnKeys AS column ITERATOR i-»
+					row.«column.methodNameGetter-»()«IF i.counter0 < columnKeys.size-1-», «ENDIF-»
+				«ENDFOREACH-»
+			),
+		«ENDIF-»
+		«IF hasRangeKeysNotFirst()-»
+			«keyItemsForInitKeyMap.get(keyItemsForInitKeyMap.size - 1).searchStrucutreName»
+		«ELSE-»
+			«resultStructureClassName».createWith(row)
+		«ENDIF-»
+	);
+«ENDDEFINE»
+
+«DEFINE createWith(XIndex index) FOR XColumnRangeSearchStructure-»
+		«genericType» «searchStrucutreName» = «genericTypeClass».«genericTypeParams» createWith(
+		«IF (rangeStructureParameter.length > 0) -»
+			«rangeStructureParameter-», 
+		«ENDIF-»
+		«FOREACH columns AS column-»
+			row.«column.methodNameGetter-»(),
+		«ENDFOREACH-»
+		«IF prevSearchStructureName == ""-»
+			«index.resultStructureClassName-».createWith(row)
+		«ELSE-»
+			«prevSearchStructureName-»
+		«ENDIF-»
+	);
+«ENDDEFINE»
+
+«DEFINE getInstanceForSingleContent FOR XTable»
+	/**
+	* «localizedJDoc("METHOD_GET_INSTANCE")»
+	*
+	* @generated
+	*/
+	public static final «name» «method("getInstance", IRuntimeRepository(), "repository")»{
+		return repository.«getTable(name+".class")»;
+	}
+«ENDDEFINE»
+
+«DEFINE getInstanceForMultipleContents FOR XTable»
+	/**
+	* «localizedJDoc("METHOD_GET_INSTANCE")»
+	*
+	* @generated
+	*/
+	public static final «name» «method("getInstance", IRuntimeRepository(), "repository", "String", "qualifiedTableName")»{
+		return («name») repository.«getTable("qualifiedTableName")»;
+	}
+«ENDDEFINE»
+
+«DEFINE getAllRows FOR XTable»
+	/**
+	* «localizedJDoc("METHOD_GET_ALL_ROWS")»
+	*
+	* @generated
+	*/
+	public «List_(tableRowName)» «method("getAllRows")»{
+		return «Collections()».unmodifiableList(rows);
+	}
+«ENDDEFINE»
+
+«DEFINE findMethods(XTable table) FOR XIndex-»
+		«EXPAND findRow(table)»
+		«EXPAND findRowNullRowReturnedForEmtpyResult(table)»
+		«EXPAND findExistingRow(table)»	
+«ENDDEFINE»
+
+«DEFINE findRow (XTable table) FOR XIndex»
+	/**
+	* «IF uniqueKey»«localizedJDoc("METHOD_FIND_ROW")»«ELSE»«localizedJDoc("METHOD_FIND_ROWS")»«ENDIF»	
+	*
+	* @generated
+	*/
+	public «table.getMethodReturnTypeFindRow(this)» «method(table.getMethodNameFindRow(this), methodParametersFindRow)»{
+		«EXPAND findRowMethodPart FOR this-»«IF uniqueKey-».getUnique(null);
+		«ELSE-».get();
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+«DEFINE findRowNullRowReturnedForEmtpyResult(XTable table) FOR XIndex»
+	/**
+	* «localizedJDoc("METHOD_FIND_RETURN_NULL_ROW")»
+	*
+	* @generated
+	*/
+	«IF uniqueKey-»
+		public «table.tableRowName» «method(table.getMethodNameFindRowNullRowReturned(this), methodParametersFindRow)»{
+			«EXPAND findRowMethodPart FOR this-».getUnique(«table.tableRowName».NULL_ROW);
+		}
+	«ENDIF»
+«ENDDEFINE»
+	
+«DEFINE findExistingRow(XTable table) FOR XIndex»
+	/**
+	* «localizedJDoc("METHOD_FIND_EXISTING_ROW")»
+	*
+	* @return «localizedJDoc("METHOD_FIND_EXISTING_ROW_RETURN")»
+	* @throws «localizedJDoc("METHOD_FIND_EXISTING_ROW_THROW")»
+	*
+	* @generated
+	*/
+	«IF uniqueKey-»
+		public «table.tableRowName» «method(table.getMethodNameFindExistingRow(this), methodParametersFindRow)»{
+			try{
+				«EXPAND findRowMethodPart FOR this-».getUnique();
+			}catch («NoSuchElementException()» e) {
+				throw new «IllegalArgumentException()»(«findExistingRowExceptionMessage»);
+			}
+		}
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE findRowMethodPart FOR XIndex-»
+			return «keySearchStructureName-» 
+			«IF hasColumnKeys()-».get(new «classOrTypeName» («columnKeyNames»))
+			«ENDIF-»
+			«FOREACH rangeKeyNames AS rangeName-».get(«rangeName»)
+			«ENDFOREACH-»
+«ENDDEFINE»
