@@ -9,13 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.table.model.XColumn;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
 import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
 import org.faktorips.runtime.modeltype.annotation.TableStructureType;
@@ -38,14 +33,8 @@ public class TableClassAnnotationGenerator implements IAnnotationGenerator {
             tableStructureType += TableStructureType.MULTIPLE_CONTENTS.toString();
         }
 
-        List<String> columnNames = new ArrayList<String>();
-        for (XColumn column : table.getValidColumns()) {
-            columnNames.add("\"" + column.getName() + "\"");
-        }
-        String colNames = StringUtils.join(columnNames, ",");
-
         return new JavaCodeFragment("@" + table.addImport(IpsTableStructure.class) + "(type= " + tableStructureType
-                + ", columns = {" + colNames + "})");
+                + ")");
     }
 
     @Override
