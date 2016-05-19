@@ -10,6 +10,10 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * A collection of utility methods for Strings. We don't use a class library like apache-commons
  * here to minimize the dependencies for the generated code.
@@ -39,4 +43,41 @@ public class IpsStringUtils {
         return s == null || s.trim().isEmpty();
     }
 
+    /**
+     * Joins the elements of the provided Collection into a single String containing the provided
+     * elements with the given separator. No delimiter is added before or after the list.
+     * 
+     * @param collection the Collection of values to join together, may be null
+     * @param separator the separator to use, null treated as ""
+     * @return the joined String, null if the collection is null
+     */
+    public static final String join(Collection<?> collection, String separator) {
+        if (collection == null) {
+            return null;
+        } else {
+            Iterator<?> it = collection.iterator();
+            if (it == null) {
+                return null;
+            } else {
+                // 16 (default) may be too small
+                StringBuilder stringBuilder = new StringBuilder(256);
+                stringBuilder.append("");
+
+                if (it.hasNext()) {
+                    stringBuilder.append(it.next());
+                }
+
+                while (it.hasNext()) {
+                    stringBuilder.append(separator + it.next().toString());
+                }
+
+                return stringBuilder.toString();
+            }
+
+        }
+    }
+
+    public static final String join(Object[] objectArray, String separator) {
+        return join(Arrays.asList(objectArray), separator);
+    }
 }

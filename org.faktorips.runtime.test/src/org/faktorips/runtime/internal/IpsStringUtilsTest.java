@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -37,4 +38,18 @@ public class IpsStringUtilsTest {
         assertFalse(IpsStringUtils.isBlank(" a "));
     }
 
+    @Test
+    public void testJoinSingle() {
+        assertEquals("a", IpsStringUtils.join(new Object[] { "a" }, ", "));
+    }
+
+    @Test
+    public void testJoinMult() {
+        assertEquals("a, 3", IpsStringUtils.join(new Object[] { "a", 3 }, ", "));
+    }
+
+    @Test
+    public void testJoinEmpty() {
+        assertEquals("", IpsStringUtils.join(new Object[] {}, ", "));
+    }
 }
