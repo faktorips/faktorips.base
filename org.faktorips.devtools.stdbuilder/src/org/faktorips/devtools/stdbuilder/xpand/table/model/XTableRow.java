@@ -14,7 +14,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -26,8 +25,7 @@ public class XTableRow extends XTableStructure {
 
     private TableRowBuilderClassNameProvider nameProvider;
 
-    public XTableRow(ITableStructure row, GeneratorModelContext context, ModelService modelService)
-            throws CoreException {
+    public XTableRow(ITableStructure row, GeneratorModelContext context, ModelService modelService) {
         super(row, context, modelService);
         nameProvider = new TableRowBuilderClassNameProvider();
     }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -45,7 +44,7 @@ public class XTable extends XTableStructure {
     private static final String METHOD_NAME_ROW = "Row";
     private static final String METHOD_NAME_FIND_ROW = METHOD_NAME_FIND + METHOD_NAME_ROW;
 
-    public XTable(ITableStructure table, GeneratorModelContext context, ModelService modelService) throws CoreException {
+    public XTable(ITableStructure table, GeneratorModelContext context, ModelService modelService) {
         super(table, context, modelService);
     }
 
