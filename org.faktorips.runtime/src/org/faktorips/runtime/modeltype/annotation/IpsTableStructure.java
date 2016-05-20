@@ -17,4 +17,5 @@ public @interface IpsTableStructure {
 
     TableStructureType type();
 
+    String[] columns();
 }
