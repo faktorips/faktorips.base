@@ -16,10 +16,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.modeltype.annotation.IpsTableColumn;
 import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
 
+/**
+ * Description of one column of a runtime {@linkplain ITable table}.
+ */
 public class TableColumnModel {
 
     private String name;
@@ -32,10 +36,16 @@ public class TableColumnModel {
         this.getterMethod = getterMethod;
     }
 
+    /**
+     * @return the name of the column
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return the class for this column's values
+     */
     public Class<?> getDatatype() {
         return datatype;
     }
@@ -45,7 +55,7 @@ public class TableColumnModel {
     }
 
     /**
-     * @return value of this column in the given row
+     * @return the value of this column in the given row
      */
     public Object getValue(Object row) {
         try {

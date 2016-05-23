@@ -15,10 +15,14 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.faktorips.runtime.internal.Table;
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
 import org.faktorips.runtime.modeltype.annotation.TableStructureType;
 
+/**
+ * Description of a runtime {@linkplain ITable table's} name, {@linkplain TableStructureType type}
+ * and {@linkplain TableColumnModel columns}.
+ */
 public class TableModel {
 
     private String name;
@@ -26,7 +30,7 @@ public class TableModel {
     private LinkedHashMap<String, TableColumnModel> columnModels;
     private List<String> columnNames;
 
-    public TableModel(Class<? extends Table<?>> tableObjectClass) {
+    public TableModel(Class<? extends ITable> tableObjectClass) {
         this.name = tableObjectClass.getName();
 
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
@@ -54,7 +58,7 @@ public class TableModel {
     }
 
     /**
-     * @return columns of the table as TableColumnModel
+     * @return columns of the table as {@link TableColumnModel}
      */
     public List<TableColumnModel> getColumns() {
         return new ArrayList<TableColumnModel>(columnModels.values());
