@@ -37,8 +37,6 @@ public enum AnnotatedJavaElementType {
 
     TABLE_CLASS,
 
-    TABLE_ROW_CLASS,
-
     TABLE_ROW_CLASS_COLUMN_GETTER,
 
     /**

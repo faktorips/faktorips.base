@@ -190,9 +190,11 @@ public class «name» extends «Table_(tableRowName)»{
 «ENDDEFINE»
 
 «DEFINE findMethods(XTable table) FOR XIndex-»
-		«EXPAND findRow(table)»
+	«EXPAND findRow(table)»
+	«IF uniqueKey-»
 		«EXPAND findRowNullRowReturnedForEmtpyResult(table)»
 		«EXPAND findExistingRow(table)»	
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE findRow (XTable table) FOR XIndex»
@@ -214,11 +216,9 @@ public class «name» extends «Table_(tableRowName)»{
 	*
 	* @generated
 	*/
-	«IF uniqueKey-»
-		public «table.tableRowName» «method(table.getMethodNameFindRowNullRowReturned(this), methodParametersFindRow)»{
-			«EXPAND findRowMethodPart FOR this-».getUnique(«table.tableRowName».NULL_ROW);
-		}
-	«ENDIF»
+	public «table.tableRowName» «method(table.getMethodNameFindRowNullRowReturned(this), methodParametersFindRow)»{
+		«EXPAND findRowMethodPart FOR this-».getUnique(«table.tableRowName».NULL_ROW);
+	}
 «ENDDEFINE»
 	
 «DEFINE findExistingRow(XTable table) FOR XIndex»
@@ -230,15 +230,13 @@ public class «name» extends «Table_(tableRowName)»{
 	*
 	* @generated
 	*/
-	«IF uniqueKey-»
-		public «table.tableRowName» «method(table.getMethodNameFindExistingRow(this), methodParametersFindRow)»{
-			try{
-				«EXPAND findRowMethodPart FOR this-».getUnique();
-			}catch («NoSuchElementException()» e) {
-				throw new «IllegalArgumentException()»(«findExistingRowExceptionMessage»);
-			}
+	public «table.tableRowName» «method(table.getMethodNameFindExistingRow(this), methodParametersFindRow)»{
+		try{
+			«EXPAND findRowMethodPart FOR this-».getUnique();
+		}catch («NoSuchElementException()» e) {
+			throw new «IllegalArgumentException()»(«findExistingRowExceptionMessage»);
 		}
-	«ENDIF-»
+	}
 «ENDDEFINE»
 «DEFINE findRowMethodPart FOR XIndex-»
 			return «keySearchStructureName-» 

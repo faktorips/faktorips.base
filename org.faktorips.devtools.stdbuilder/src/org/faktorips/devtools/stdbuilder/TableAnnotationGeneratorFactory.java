@@ -22,8 +22,6 @@ public class TableAnnotationGeneratorFactory implements IAnnotationGeneratorFact
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         if (type == AnnotatedJavaElementType.TABLE_CLASS) {
             return new TableClassAnnotationGenerator();
-        } else if (type == AnnotatedJavaElementType.TABLE_ROW_CLASS) {
-            return new TableRowClassAnnotationGenerator();
         } else if (type == AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER) {
             return new TableRowClassColumnGetterAnnotationGenerator();
         } else {
