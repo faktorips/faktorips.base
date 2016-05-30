@@ -14,19 +14,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.model.table.TableColumnModel;
-
 /**
- * Preserves design time information about a table structure's column for runtime reference via
- * {@link TableColumnModel}.
+ * Preserves design time information about the implementation class of a published interface.
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface IpsTableColumn {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface IpsTypeInterface {
 
     /**
-     * The column's name.
+     * The class implementing this interface
      */
-    String name();
+    Class<?> implementation();
 
 }

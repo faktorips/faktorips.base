@@ -14,17 +14,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.model.table.TableModel;
-import org.faktorips.runtime.model.table.TableStructureType;
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.modeltype.internal.ModelType;
 
 /**
- * Preserves design time information about a table structure for runtime reference via
- * {@link TableModel}.
+ * Preserves design time information about a {@code IProductCmptType} for runtime reference via
+ * {@link ModelType}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface IpsTableStructure {
+public @interface IpsProductCmptType {
 
     /**
      * The qualified IPS object name.
@@ -32,13 +33,14 @@ public @interface IpsTableStructure {
     String name();
 
     /**
-     * Whether this table structure allows multiple contents.
+     * The {@link IConfigurableModelObject} configured by this {@link IProductComponent}
      */
-    TableStructureType type();
+    Class<? extends IConfigurableModelObject> configures();
 
     /**
-     * The names of the columns, in order. Additional information is available in
-     * {@link IpsTableColumn} annotations on the {@link ITable table's} row class.
+     * Whether the product component has {@link IProductComponentGeneration product component
+     * generations}.
      */
-    String[] columns();
+    boolean changingOverTime();
+
 }
