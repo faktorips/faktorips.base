@@ -13,7 +13,7 @@ public class ModelsTest {
         TableModel model = Models.getTableModel(TestTable.class);
 
         assertNotNull(model);
-        assertEquals("org.faktorips.runtime.internal.TestTable", model.getName());
+        assertEquals("tables.TestTable", model.getName());
     }
 
     @Test
@@ -21,6 +21,6 @@ public class ModelsTest {
         TableModel model = Models.getTableModel(new TestTable());
 
         assertNotNull(model);
-        assertEquals("org.faktorips.runtime.internal.TestTable", model.getName());
+        assertEquals("tables.TestTable", model.getName());
     }
 }

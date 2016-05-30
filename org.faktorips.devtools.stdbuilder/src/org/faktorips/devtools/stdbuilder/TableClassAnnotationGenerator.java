@@ -44,7 +44,8 @@ public class TableClassAnnotationGenerator implements IAnnotationGenerator {
         }
         String colNames = StringUtils.join(columnNames, ",");
 
-        return new JavaCodeFragment("@" + table.addImport(IpsTableStructure.class) + "(type= " + tableStructureType
+        return new JavaCodeFragment("@" + table.addImport(IpsTableStructure.class) + "(name = \""
+                + table.getIpsObjectPartContainer().getQualifiedName() + "\", type= " + tableStructureType
                 + ", columns = {" + colNames + "})");
     }
 

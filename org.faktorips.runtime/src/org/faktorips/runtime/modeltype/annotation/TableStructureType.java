@@ -9,7 +9,16 @@
  *******************************************************************************/
 package org.faktorips.runtime.modeltype.annotation;
 
+/**
+ * Runtime mirror for table structure types.
+ */
 public enum TableStructureType {
+    /**
+     * Single content - for this table structure only on table content is allowed.
+     */
     SINGLE_CONTENT,
+    /**
+     * Multiple contents - for this table structure one or more table contents are allowed.
+     */
     MULTIPLE_CONTENTS;
 }

@@ -31,10 +31,10 @@ public class TableModel {
     private List<String> columnNames;
 
     public TableModel(Class<? extends ITable> tableObjectClass) {
-        this.name = tableObjectClass.getName();
 
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
 
+        this.name = annotation.name();
         this.type = annotation.type();
         this.columnNames = Arrays.asList(annotation.columns());
 
@@ -44,7 +44,7 @@ public class TableModel {
     }
 
     /**
-     * @return qualified name of the table structure class
+     * @return qualified name of the IPS table structure.
      */
     public String getName() {
         return name;

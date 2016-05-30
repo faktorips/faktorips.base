@@ -12,9 +12,18 @@ package org.faktorips.runtime.modeltype.annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import org.faktorips.runtime.modeltype.TableColumnModel;
+
+/**
+ * Preserves design time information about a table structure's column for runtime reference via
+ * {@link TableColumnModel}.
+ */
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface IpsTableColumn {
 
+    /**
+     * The column's name.
+     */
     String name();
 
 }

@@ -22,7 +22,8 @@ import org.faktorips.values.Decimal;
  * 
  * @generated
  */
-@IpsTableStructure(type = TableStructureType.MULTIPLE_CONTENTS, columns = { "company", "gender", "rate" })
+@IpsTableStructure(name = "tables.TestTable", type = TableStructureType.MULTIPLE_CONTENTS, columns = { "company",
+        "gender", "rate" })
 public class TestTable extends Table<TestTableRow> {
 
     /**

@@ -26,7 +26,7 @@ public class TableModelTest {
 
     @Test
     public void testName() {
-        assertEquals("org.faktorips.runtime.internal.TestTable", tableModel.getName());
+        assertEquals("tables.TestTable", tableModel.getName());
     }
 
     @Test
