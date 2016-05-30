@@ -17,6 +17,7 @@ import java.util.Map;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnotationGeneratorFactory;
 
 public class AnnotationGeneratorBuilder {
 

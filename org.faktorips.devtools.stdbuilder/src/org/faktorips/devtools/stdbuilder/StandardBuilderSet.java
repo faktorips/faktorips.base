@@ -89,10 +89,10 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuild
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilderFactory;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilderFactory;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;

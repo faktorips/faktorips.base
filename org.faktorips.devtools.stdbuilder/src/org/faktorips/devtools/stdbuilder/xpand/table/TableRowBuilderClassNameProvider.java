@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.stdbuilder.xpand.tablebuilder;
+package org.faktorips.devtools.stdbuilder.xpand.table;
 
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;

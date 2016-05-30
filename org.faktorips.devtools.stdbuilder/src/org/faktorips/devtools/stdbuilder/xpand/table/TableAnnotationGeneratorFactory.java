@@ -7,9 +7,12 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.stdbuilder.xpand.table;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 
 public class TableAnnotationGeneratorFactory implements IAnnotationGeneratorFactory {
 
