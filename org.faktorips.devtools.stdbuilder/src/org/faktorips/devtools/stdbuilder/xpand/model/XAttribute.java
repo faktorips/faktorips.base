@@ -18,6 +18,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.util.StringUtil;
 
@@ -131,18 +132,10 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     protected String getNewInstanceFromExpression(DatatypeHelper datatypeHelper,
             String expression,
             String repositoryExpression) {
-        JavaCodeFragment fragment = datatypeHelper.newInstanceFromExpression(expression);
+        JavaCodeFragment fragment = DatatypeHelperUtil.getNewInstanceFromExpression(getDatatypeHelper(),
+                expression, repositoryExpression);
         addImport(fragment.getImportDeclaration());
-        String result = fragment.getSourcecode();
-        if (isDatatypeExtensibleEnum()) {
-            return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
-        } else {
-            return result;
-        }
-    }
-
-    public String getExpressionForEnumWithSeparatedContent(String repositoryExpression, String newInstanceExpression) {
-        return repositoryExpression + newInstanceExpression;
+        return fragment.getSourcecode();
     }
 
     /**

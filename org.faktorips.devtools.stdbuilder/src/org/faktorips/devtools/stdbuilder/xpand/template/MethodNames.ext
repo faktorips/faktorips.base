@@ -110,7 +110,7 @@ getProductCmptGeneration() :
 
 initialize():
 	"initialize()";
-
+	
 copyProductCmptAndGenerationInternal(String argument):
 	"copyProductCmptAndGenerationInternal("+argument+")";
 			
@@ -153,6 +153,9 @@ isModifiable() :
 
 getProductComponentGeneration(String idParam, String effectiveFromParam):
 	"getProductComponentGeneration(" + idParam + ", " + effectiveFromParam + ")";
+	
+getTable(String name) : 
+	"getTable(" + name + ")";
 
 // ---------------------------------
 // Methods in ValueToXmlHelper
@@ -260,3 +263,13 @@ accept(String argument):
 
 checkInstanceOf(String objectArg, String expectedClassName):
 	"checkInstanceOf(" + objectArg + ", " + expectedClassName + ".class)";
+	
+//----------------------------------
+// Method in ITable
+//----------------------------------
+
+init():
+	"init()";
+
+
+	

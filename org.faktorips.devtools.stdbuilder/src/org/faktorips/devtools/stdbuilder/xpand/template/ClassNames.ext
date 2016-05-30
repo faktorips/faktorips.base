@@ -184,6 +184,9 @@ LocalizedString(AbstractGeneratorModelNode this):
 DefaultInternationalString(AbstractGeneratorModelNode this):
 	addImport(DefaultInternationalString.name);
 
+Table_(AbstractGeneratorModelNode this, String genericType) :
+	addImport(Table.name) + "<" + genericType + ">";
+
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);
