@@ -9,20 +9,19 @@
  *******************************************************************************/
 package org.faktorips.runtime.modeltype;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.runtime.ITable;
 
 /**
- * Repository of Faktor-IPS model information. It's methods should be used to obtain model instances
- * from runtime classes or their instances instead of directly creating those models via their
- * constructors, as this class may cache the model information which might be expensive to obtain
- * again and again.
+ * Repository of Faktor-IPS model information. This class should be used to obtain model instances
+ * from runtime classes or their instances instead of using the constructors. By caching model
+ * information, this class operates more efficiently if model information is retrieved repeatedly.
  */
 public class Models {
 
-    private static final Map<Class<?>, TableModel> CACHE = new ConcurrentHashMap<Class<?>, TableModel>();
+    private static final Map<Class<?>, TableModel> TABLE_MODEL_CACHE = new HashMap<Class<?>, TableModel>();
 
     private Models() {
         // prevent default constructor
@@ -33,12 +32,15 @@ public class Models {
      * class.
      */
     public static TableModel getTableModel(Class<? extends ITable> tableObjectClass) {
-        TableModel tm = null;
-        if (CACHE.containsKey(tableObjectClass)) {
-            tm = CACHE.get(tableObjectClass);
-        } else {
-            tm = new TableModel(tableObjectClass);
-            CACHE.put(tableObjectClass, tm);
+        TableModel tm = TABLE_MODEL_CACHE.get(tableObjectClass);
+        if (tm == null) {
+            synchronized (TABLE_MODEL_CACHE) {
+                tm = TABLE_MODEL_CACHE.get(tableObjectClass);
+                if (tm == null) {
+                    tm = new TableModel(tableObjectClass);
+                    TABLE_MODEL_CACHE.put(tableObjectClass, tm);
+                }
+            }
         }
         return tm;
     }
