@@ -1,4 +1,4 @@
-package org.faktorips.runtime.modeltype;
+package org.faktorips.runtime.model.table;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,7 +10,8 @@ import java.util.List;
 
 import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.internal.TestTableRow;
-import org.faktorips.runtime.modeltype.annotation.TableStructureType;
+import org.faktorips.runtime.model.table.TableColumnModel;
+import org.faktorips.runtime.model.table.TableModel;
 import org.faktorips.values.Decimal;
 import org.junit.Before;
 import org.junit.Test;

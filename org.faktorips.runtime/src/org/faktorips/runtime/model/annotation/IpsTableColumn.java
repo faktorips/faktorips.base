@@ -7,18 +7,23 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.modeltype.annotation;
+package org.faktorips.runtime.model.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import org.faktorips.runtime.model.table.TableColumnModel;
 
 /**
- * Runtime mirror for table structure types.
+ * Preserves design time information about a table structure's column for runtime reference via
+ * {@link TableColumnModel}.
  */
-public enum TableStructureType {
+@Retention(value = RetentionPolicy.RUNTIME)
+public @interface IpsTableColumn {
+
     /**
-     * Single content - for this table structure only on table content is allowed.
+     * The column's name.
      */
-    SINGLE_CONTENT,
-    /**
-     * Multiple contents - for this table structure one or more table contents are allowed.
-     */
-    MULTIPLE_CONTENTS;
+    String name();
+
 }

@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
-import org.faktorips.runtime.modeltype.annotation.TableStructureType;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.table.TableStructureType;
 import org.faktorips.values.Decimal;
 
 /**

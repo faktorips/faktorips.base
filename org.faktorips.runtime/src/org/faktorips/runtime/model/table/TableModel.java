@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.modeltype;
+package org.faktorips.runtime.model.table;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -16,8 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
-import org.faktorips.runtime.modeltype.annotation.TableStructureType;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
 
 /**
  * Description of a runtime {@linkplain ITable table's} name, {@linkplain TableStructureType type}

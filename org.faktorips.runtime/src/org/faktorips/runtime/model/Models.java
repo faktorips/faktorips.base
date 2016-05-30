@@ -7,12 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.modeltype;
+package org.faktorips.runtime.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.model.table.TableModel;
 
 /**
  * Repository of Faktor-IPS model information. This class should be used to obtain model instances

@@ -17,8 +17,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XColumn;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
-import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
-import org.faktorips.runtime.modeltype.annotation.TableStructureType;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.table.TableStructureType;
 
 public class TableClassAnnotationGenerator implements IAnnotationGenerator {
 

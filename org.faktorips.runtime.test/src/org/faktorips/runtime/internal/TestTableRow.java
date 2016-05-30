@@ -7,7 +7,7 @@
  */
 package org.faktorips.runtime.internal;
 
-import org.faktorips.runtime.modeltype.annotation.IpsTableColumn;
+import org.faktorips.runtime.model.annotation.IpsTableColumn;
 import org.faktorips.values.Decimal;
 
 /**

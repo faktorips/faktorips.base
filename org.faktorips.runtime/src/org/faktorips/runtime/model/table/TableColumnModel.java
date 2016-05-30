@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.modeltype;
+package org.faktorips.runtime.model.table;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,8 +18,8 @@ import java.util.List;
 
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.modeltype.annotation.IpsTableColumn;
-import org.faktorips.runtime.modeltype.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.annotation.IpsTableColumn;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
 
 /**
  * Description of one column of a runtime {@linkplain ITable table}.

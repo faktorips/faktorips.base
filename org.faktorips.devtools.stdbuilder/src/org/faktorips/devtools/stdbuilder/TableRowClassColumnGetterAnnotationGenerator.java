@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XColumn;
-import org.faktorips.runtime.modeltype.annotation.IpsTableColumn;
+import org.faktorips.runtime.model.annotation.IpsTableColumn;
 
 public class TableRowClassColumnGetterAnnotationGenerator implements IAnnotationGenerator {
 

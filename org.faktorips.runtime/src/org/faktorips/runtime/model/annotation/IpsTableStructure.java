@@ -7,13 +7,14 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.modeltype.annotation;
+package org.faktorips.runtime.model.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.modeltype.TableModel;
+import org.faktorips.runtime.model.table.TableModel;
+import org.faktorips.runtime.model.table.TableStructureType;
 
 /**
  * Preserves design time information about a table structure for runtime reference via
