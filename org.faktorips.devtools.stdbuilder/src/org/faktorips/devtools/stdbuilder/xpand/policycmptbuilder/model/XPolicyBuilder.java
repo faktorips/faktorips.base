@@ -28,7 +28,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.XTypeBuilderClassNameProvider;
 
 public class XPolicyBuilder extends XPolicyCmptClass implements
-XPBuilder<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> {
+        XPBuilder<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> {
 
     private XTypeBuilderClassNameProvider nameProvider;
     private XPBuilderUtil<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> xpBuilderUtil;
@@ -157,10 +157,6 @@ XPBuilder<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> {
     @Override
     public XPolicyBuilder getSuperBuilderForAssociationBuilder() {
         return xpBuilderUtil.getSuperBuilderForAssociationBuilder();
-    }
-
-    public boolean hasMethodGetEffectiveFrom() {
-        return isConfigured() && (isFirstConfigurableInHierarchy() || isAggregateRoot());
     }
 
     /**

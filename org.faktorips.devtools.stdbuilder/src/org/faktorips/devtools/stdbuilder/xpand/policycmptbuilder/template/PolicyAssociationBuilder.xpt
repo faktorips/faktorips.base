@@ -85,12 +85,12 @@
 	If the target is in addition not abstract, a setter is generated to directly instanciate the target class.
 «ENDREM»
 
-«DEFINE associationEvaluation(XPolicyBuilder builder) FOR XPolicyBuilderAssociation»
+«DEFINE associationEvaluation(XPolicyBuilder sourceBuilder) FOR XPolicyBuilderAssociation»
 	«REM» for generic subtype «ENDREM»
-	«EXPAND associationSetterWithType(builder, this, false, false) FOR targetBuilderClass-»
+	«EXPAND associationSetterWithType(sourceBuilder, this, false, false) FOR targetBuilderClass-»
 
 	«IF !targetBuilderClass.abstract-»
-		«EXPAND associationSetter(builder, this, false, false) FOR targetBuilderClass-»
+		«EXPAND associationSetter(sourceBuilder, this, false, false) FOR targetBuilderClass-»
 	«ENDIF-»
 «ENDDEFINE»
 
@@ -123,7 +123,7 @@
 «ENDDEFINE»
 
 «REM» Association target setter for generic subtype of the target. see associationEvaluation. super:wether this is for inherited associations«ENDREM»
-«DEFINE associationSetterWithType(XPolicyBuilder builder, XPolicyBuilderAssociation association, boolean multi, boolean super) FOR XPolicyBuilder»
+«DEFINE associationSetterWithType(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation association, boolean multi, boolean super) FOR XPolicyBuilder»
 	/**
 	* «localizedJDoc("METHOD_ASS_TYPE", policyName,  association.name)»
 	*
@@ -141,7 +141,7 @@
 «ENDDEFINE»
 
 «REM» Create and set association target for non abstract targets «ENDREM»
-«DEFINE associationSetter(XPolicyBuilder builder, XPolicyBuilderAssociation association, boolean multi, boolean super) FOR XPolicyBuilder»
+«DEFINE associationSetter(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation association, boolean multi, boolean super) FOR XPolicyBuilder»
 	/**
 	* «localizedJDoc("METHOD_ASS", policyName, association.name)»
 	*
@@ -179,8 +179,7 @@
 					throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_REPOSITORY")»");
 				}
 				«implClassName» targetBuilder = null;
-				
-				«IF productCmptNode.changingOverTime && builder.hasMethodGetEffectiveFrom()-»
+				«IF sourceBuilder.configured && productCmptNode.changingOverTime-»
 					if(get().getEffectiveFromAsCalendar() != null){
 						«IF generatePublishedInterfaces-»
 							targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId, get().getEffectiveFromAsCalendar());
@@ -188,18 +187,14 @@
 							targetBuilder = «policyImplClassName».with(«getRepository()», productCmptId, get().getEffectiveFromAsCalendar());
 						«ENDIF-»
 					} else{
-						«IF generatePublishedInterfaces-»
-							targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId);
-						«ELSE-»
-							targetBuilder = «policyImplClassName».with(«getRepository()», productCmptId);
-						«ENDIF-»
-					}
-				«ELSE-»
+				«ENDIF-»
 					«IF generatePublishedInterfaces-»
 						targetBuilder = new «factoryImplClassName»().with(«getRepository()», productCmptId);
 					«ELSE-»
 						targetBuilder = «policyImplClassName».with(«getRepository()», productCmptId);
 					«ENDIF-»
+				«IF sourceBuilder.configured && productCmptNode.changingOverTime-»
+					}
 				«ENDIF-»
 				get().«association.methodNameSetOrAdd»(targetBuilder.get());
 				return «EXPAND returnValue(multi)»;
