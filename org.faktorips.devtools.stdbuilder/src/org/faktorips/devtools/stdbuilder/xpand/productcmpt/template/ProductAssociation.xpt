@@ -61,6 +61,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
+     «getInterfaceAnnotations(annotatedJavaElementTypeForGetter, genInterface())»
      «overrideAnnotationForConstainedAssociation()-»
    	«IF oneToMany-»
 	    public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»

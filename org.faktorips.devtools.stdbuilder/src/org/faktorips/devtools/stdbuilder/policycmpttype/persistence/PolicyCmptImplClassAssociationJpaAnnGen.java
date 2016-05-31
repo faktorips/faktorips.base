@@ -35,7 +35,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociati
 /**
  * This class generates JPA annotations for associations of policy component types.
  * 
- * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD
  * 
  * @author Roman Grutza
  */

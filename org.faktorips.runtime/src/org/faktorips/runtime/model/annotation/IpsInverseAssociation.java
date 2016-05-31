@@ -18,12 +18,12 @@ import java.lang.annotation.Target;
  * Marks an association that is the reverse of another association.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface IpsInverseAssociation {
 
     /**
      * The name used for a/the single target of the inverse association.
      */
-    String name();
+    String value();
 
 }

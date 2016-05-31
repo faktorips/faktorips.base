@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  * Marks an association that is a derived union.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface IpsDerivedUnion {
     // marker interface
 }

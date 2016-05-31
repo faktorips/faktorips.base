@@ -17,8 +17,10 @@ import java.util.Map;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.attribute.AttributeAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptAssociationAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptAssociationAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
 
@@ -38,7 +40,11 @@ public class AnnotationGeneratorBuilder {
                 // annotations for tables and table rows
                 new TableAnnGenFactory(),
                 // annotations for attributes
-                new AttributeAnnGenFactory() };
+                new AttributeAnnGenFactory(),
+                // annotations for policy associations
+                new PolicyCmptAssociationAnnGenFactory(),
+                // annotations for product associations
+                new ProductCmptAssociationAnnGenFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

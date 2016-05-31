@@ -21,7 +21,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociati
 /**
  * Generates JAXB annotations for policy component type associations
  * 
- * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD
  */
 public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotationGenerator {
 

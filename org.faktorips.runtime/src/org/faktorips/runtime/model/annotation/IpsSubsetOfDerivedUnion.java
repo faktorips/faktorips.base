@@ -18,12 +18,12 @@ import java.lang.annotation.Target;
  * Marks an association that is the subset of a {@link IpsDerivedUnion}.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface IpsSubsetOfDerivedUnion {
 
     /**
      * The name used for a/the single target of the derived union association.
      */
-    String name();
+    String value();
 
 }

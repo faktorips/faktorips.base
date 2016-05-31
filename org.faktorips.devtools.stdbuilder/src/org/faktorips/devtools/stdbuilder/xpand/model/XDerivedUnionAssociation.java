@@ -18,9 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
@@ -94,7 +96,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      *         false otherwise
      */
     public boolean isImplementedInSuperclass(XType xType) {
-        if (getTypeOfAssociation().equals(xType.getType())) {
+        if (getSourceType().equals(xType.getType())) {
             return false;
         }
         IType supertype = xType.getType().findSupertype(xType.getIpsProject());
@@ -130,11 +132,28 @@ public class XDerivedUnionAssociation extends XAssociation {
      * 
      */
     public boolean isProductCmptTypeAssociation() {
-        return getTypeOfAssociation() instanceof IProductCmptType;
+        return getSourceType() instanceof IProductCmptType;
     }
 
     public boolean needOverride(XType currentContextType) {
-        return (isImplementedInSuperclass(currentContextType) || getSourceType() != currentContextType);
+        return (isImplementedInSuperclass(currentContextType) || getSourceModelNode() != currentContextType);
+    }
+
+    @Override
+    protected Class<? extends XAssociation> getMatchingClass() {
+        return XDerivedUnionAssociation.class;
+    }
+
+    @Override
+    public AnnotatedJavaElementType getAnnotatedJavaElementTypeForGetter() {
+        if (getAssociation() instanceof IProductCmptTypeAssociation) {
+            return AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
+        } else if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
+            return AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
+        } else {
+            // should not occur
+            return null;
+        }
     }
 
     /**
@@ -173,5 +192,4 @@ public class XDerivedUnionAssociation extends XAssociation {
             return foundSubset;
         }
     }
-
 }

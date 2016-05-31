@@ -14,8 +14,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
  * Java element types that can be annotated.
- * 
- * @author Roman Grutza
  */
 public enum AnnotatedJavaElementType {
 
@@ -31,6 +29,13 @@ public enum AnnotatedJavaElementType {
 
     PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER,
 
+    /**
+     * Represents the declaration of association getter methods. The getters are either declared in
+     * the published interface or in the implementation class, in case no published interfaces are
+     * being generated.
+     */
+    PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+
     POLICY_CMPT_IMPL_CLASS,
 
     POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD,
@@ -43,9 +48,16 @@ public enum AnnotatedJavaElementType {
 
     POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD,
 
-    POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
+    POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD,
 
     POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD,
+
+    /**
+     * Represents the declaration of association getter methods. The getters are either declared in
+     * the published interface or in the implementation class, in case no published interfaces are
+     * being generated.
+     */
+    POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
 
     TABLE_CLASS,
 

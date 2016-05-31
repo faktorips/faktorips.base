@@ -22,7 +22,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
  * {@link IModelTypeAssociation}.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface IpsAssociation {
 
     /**
@@ -33,7 +33,7 @@ public @interface IpsAssociation {
     /**
      * The name used for multiple targets of the association.
      */
-    String pluralName();
+    String pluralName() default "";
 
     AssociationType type();
 
@@ -42,4 +42,13 @@ public @interface IpsAssociation {
      */
     Class<?> targetClass();
 
+    /**
+     * Minimal number of targets for this association
+     */
+    int min();
+
+    /**
+     * Maximal number of targets for this association
+     */
+    int max();
 }

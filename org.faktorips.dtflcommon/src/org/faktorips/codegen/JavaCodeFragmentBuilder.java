@@ -1119,10 +1119,27 @@ public class JavaCodeFragmentBuilder {
      * fragment (if needed).
      * 
      * @param annotation The annotation class
-     * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
-     *            empty String, paranthesis aren't added.
+     * @param params Parameters for the annotation without parenthesis. If <code>null</code> or an
+     *            empty String, parenthesis aren't added.
      */
     public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, String params) {
+        JavaCodeFragment paramsCodeFragment = new JavaCodeFragment();
+        if (StringUtils.isNotEmpty(params)) {
+            paramsCodeFragment.append(params);
+        }
+        return annotationLn(annotation, paramsCodeFragment);
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters and a line separator. '@' character and a
+     * line feed will be automatically added. Import statements are added automatically to the code
+     * fragment (if needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without parenthesis. If empty, parenthesis aren't
+     *            added.
+     */
+    public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, JavaCodeFragment params) {
         if (annotation == null) {
             return this;
         }
@@ -1220,19 +1237,27 @@ public class JavaCodeFragmentBuilder {
      * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
      *            empty String, paranthesis aren't added.
      */
-    public JavaCodeFragmentBuilder annotationLn(String annotation, String params) {
+    public JavaCodeFragmentBuilder annotationLn(String annotation, JavaCodeFragment params) {
         if (annotation == null) {
             return this;
         }
         fragment.append("@"); //$NON-NLS-1$
         fragment.appendClassName(annotation);
-        if (params != null && params.length() > 0) {
+        if (params != null && params.getSourcecode().length() > 0) {
             fragment.append('(');
             fragment.append(params);
             fragment.append(')');
         }
         fragment.appendln();
         return this;
+    }
+
+    public JavaCodeFragmentBuilder annotationLn(String annotation, String params) {
+        JavaCodeFragment paramsCodeFragment = new JavaCodeFragment();
+        if (StringUtils.isNotEmpty(params)) {
+            paramsCodeFragment.append(params);
+        }
+        return annotationLn(annotation, paramsCodeFragment);
     }
 
     /**

@@ -33,7 +33,7 @@ public class PolicyCmptImplClassJpaAnnGenFactory implements IAnnotationGenerator
                 return new PolicyCmptImplClassAttributeSetterJpaAnnGen();
             case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD:
                 return new PolicyCmptImplClassTransientFieldJpaAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION:
+            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD:
                 return new PolicyCmptImplClassAssociationJpaAnnGen();
             default:
                 return null;

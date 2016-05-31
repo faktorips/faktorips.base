@@ -33,7 +33,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
-			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD)-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 			«IF oneToMany-»
 				private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
@@ -46,7 +46,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated	 
 			 */
-			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD)-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 			private «targetClassName» «field(fieldName)»;
 		«ENDIF-»
@@ -92,6 +92,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
+	     «getInterfaceAnnotations(annotatedJavaElementTypeForGetter, genInterface())»
 	    «overrideAnnotationForConstainedAssociation()-»
 	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()-»;«ELSE-»
@@ -125,6 +126,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
+		    «getInterfaceAnnotations(annotatedJavaElementTypeForGetter, genInterface())»
 		    «overrideAnnotationForConstainedAssociation()-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»

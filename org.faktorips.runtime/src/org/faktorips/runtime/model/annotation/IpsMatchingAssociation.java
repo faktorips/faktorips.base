@@ -18,11 +18,12 @@ import java.lang.annotation.Target;
  * Links a policy/product association to it's matching product/policy association.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface IpsMatchingAssociation {
 
     /**
-     * Source class of the matching association
+     * The source class of the matching association. This may differ from the matching class of the
+     * source type.
      */
     Class<?> source();
 

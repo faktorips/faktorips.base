@@ -79,7 +79,7 @@ public class XDerivedUnionAssociationTest {
     @Test
     public void testIsImplementedInSuperclass_sameClass() throws Exception {
         IType type = mock(IType.class);
-        when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(type);
+        when(xDerivedUnionAssociation.getSourceType()).thenReturn(type);
         when(xType.getType()).thenReturn(type);
 
         assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
@@ -91,7 +91,7 @@ public class XDerivedUnionAssociationTest {
         when(xType.getIpsProject()).thenReturn(ipsProject);
 
         IType superType = mock(IType.class);
-        when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superType);
+        when(xDerivedUnionAssociation.getSourceType()).thenReturn(superType);
 
         IType type = mock(IType.class);
         when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
@@ -106,7 +106,7 @@ public class XDerivedUnionAssociationTest {
         when(xType.getIpsProject()).thenReturn(ipsProject);
 
         IType superType = mock(IType.class);
-        when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superType);
+        when(xDerivedUnionAssociation.getSourceType()).thenReturn(superType);
 
         IType type = mock(IType.class);
         when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
@@ -138,7 +138,7 @@ public class XDerivedUnionAssociationTest {
         IType superSuperType = mock(IType.class);
         IType superSuperSuperType = mock(IType.class);
 
-        when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superSuperSuperType);
+        when(xDerivedUnionAssociation.getSourceType()).thenReturn(superSuperSuperType);
 
         when(xType.getType()).thenReturn(type);
         when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
@@ -172,7 +172,7 @@ public class XDerivedUnionAssociationTest {
         IType superSuperType = mock(IType.class);
         IType superSuperSuperType = mock(IType.class);
 
-        when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superSuperSuperType);
+        when(xDerivedUnionAssociation.getSourceType()).thenReturn(superSuperSuperType);
 
         when(xType.getType()).thenReturn(type);
         when(type.findSupertype(ipsProject)).thenReturn(superType);

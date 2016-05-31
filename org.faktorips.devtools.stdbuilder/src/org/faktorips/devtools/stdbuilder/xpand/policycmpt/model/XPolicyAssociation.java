@@ -22,11 +22,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -47,7 +49,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociations() {
-        return getSubsettedDetailToMasterAssociationsInternal(new HashSet<String>(), getTypeOfAssociation());
+        return getSubsettedDetailToMasterAssociationsInternal(new HashSet<String>(), getSourceType());
     }
 
     private Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociationsInternal(Set<String> resultingNames,
@@ -88,9 +90,9 @@ public class XPolicyAssociation extends XAssociation {
                                 if (superAssociationWithSameName != null
                                         || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
                                     resultingAssociations
-                                    .addAll(detailToMasterDerivedUnion
-                                            .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
-                                                    currentType));
+                                            .addAll(detailToMasterDerivedUnion
+                                                    .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
+                                                            currentType));
                                 }
                             }
                         }
@@ -98,8 +100,7 @@ public class XPolicyAssociation extends XAssociation {
                 }
                 // This part handles the case that there is a derived union with the same name in
                 // super class that is not already part of the result.
-                if (currentType == getTypeOfAssociation() && !isSharedAssociation()
-                        && !resultingNames.contains(getName())) {
+                if (currentType == getSourceType() && !isSharedAssociation() && !resultingNames.contains(getName())) {
                     XPolicyAssociation superAssociationWithSameName = getSuperAssociationWithSameName();
                     if (superAssociationWithSameName != null) {
                         XPolicyAssociation inverseOfSuperAssociation = superAssociationWithSameName
@@ -370,7 +371,7 @@ public class XPolicyAssociation extends XAssociation {
             if (inverseAssoc != null) {
                 return getModelNode(inverseAssoc, XPolicyAssociation.class);
             } else {
-                throw new RuntimeException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
+                throw new NullPointerException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
                         getAssociation()));
             }
         } catch (CoreException e) {
@@ -614,4 +615,13 @@ public class XPolicyAssociation extends XAssociation {
         }
     }
 
+    @Override
+    protected Class<? extends XAssociation> getMatchingClass() {
+        return XProductAssociation.class;
+    }
+
+    @Override
+    public AnnotatedJavaElementType getAnnotatedJavaElementTypeForGetter() {
+        return AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
+    }
 }
