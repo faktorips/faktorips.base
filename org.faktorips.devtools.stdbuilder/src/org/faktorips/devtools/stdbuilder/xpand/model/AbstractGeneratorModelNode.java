@@ -310,7 +310,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(Class<?> clazz) {
-        getContext().addImport(clazz.getName());
+        getContext().addImport(clazz.getCanonicalName());
         return clazz.getSimpleName();
     }
 
@@ -653,6 +653,20 @@ public abstract class AbstractGeneratorModelNode {
             result.append(annotationFragment.getSourcecode()).append("\n");
         }
         return result.toString();
+    }
+
+    /**
+     * Returns all annotations like {@link #getAnnotations(AnnotatedJavaElementType)}, but only if
+     * currently an interface is generated ({@code isGeneratingInterface} is {@code true} or
+     * interfaces aren't generated at all( {@link #isGeneratePublishedInterfaces()} is {@code false}
+     * ).
+     */
+    public String getInterfaceAnnotations(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
+        if (isGeneratingInterface || !isGeneratePublishedInterfaces()) {
+            return getAnnotations(type);
+        } else {
+            return "";
+        }
     }
 
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {

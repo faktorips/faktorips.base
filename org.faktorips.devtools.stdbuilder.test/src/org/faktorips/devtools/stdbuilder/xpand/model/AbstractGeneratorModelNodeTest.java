@@ -68,6 +68,18 @@ public class AbstractGeneratorModelNodeTest {
     }
 
     @Test
+    public void addImportByClass() {
+        xClass.addImport(java.util.Map.class);
+        verify(modelContext).addImport("java.util.Map");
+    }
+
+    @Test
+    public void addImportByInternalClass() {
+        xClass.addImport(org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType.class);
+        verify(modelContext).addImport("org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType");
+    }
+
+    @Test
     public void testGetLocalizedComent() {
         xClass = spy(xClass);
         doReturn("GenericComment").when(xClass).getLocalizedText("key");

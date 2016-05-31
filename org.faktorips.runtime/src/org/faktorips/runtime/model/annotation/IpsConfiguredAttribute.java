@@ -21,7 +21,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute;
  * runtime reference via {@link IModelTypeAttribute}.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 public @interface IpsConfiguredAttribute {
 
     boolean changingOverTime();

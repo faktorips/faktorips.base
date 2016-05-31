@@ -43,6 +43,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
+	«getInterfaceAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_DEFAULT, genInterface())-»
 	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)-»
     public «javaClassName» «method(methodNameGetDefaultValue)»
     «IF genInterface()»;«ELSE-»
@@ -58,6 +59,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
+	«getInterfaceAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())-»
 	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)-»
     public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
     «IF genInterface()»;«ELSE-»

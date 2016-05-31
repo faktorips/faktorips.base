@@ -59,6 +59,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		«getInterfaceAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER, genInterface())-»
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
 		public «javaClassName» «method(methodNameGetter)»
 		«IF genInterface()-»;«ELSE-»
@@ -87,6 +88,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		«getInterfaceAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER, genInterface())-»
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)-»
 		public void «method(methodNameSetter, javaClassName, "newValue")»
 		«IF genInterface()-»;«ELSE-»
@@ -124,6 +126,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		«getInterfaceAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())-»
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)-»
 		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
 		«IF genInterface()-»;«ELSE-»

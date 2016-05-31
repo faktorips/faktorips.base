@@ -24,6 +24,6 @@ public @interface IpsDefaultValue {
     /**
      * The {@link IpsAttribute#name() attribute's name}.
      */
-    String name();
+    String value();
 
 }
