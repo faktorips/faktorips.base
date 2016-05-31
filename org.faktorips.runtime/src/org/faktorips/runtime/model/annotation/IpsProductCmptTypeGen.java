@@ -25,8 +25,8 @@ import org.faktorips.runtime.modeltype.internal.ModelType;
 public @interface IpsProductCmptTypeGen {
 
     /**
-     * The qualified IPS object name.
+     * The java source class of the product component type generation
      */
-    String name();
+    Class<?> value();
 
 }

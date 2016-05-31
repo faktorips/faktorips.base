@@ -14,18 +14,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.modeltype.internal.ModelType;
-
 /**
- * Preserves design time information about a {@code IPolicyCmptType} for runtime reference via
- * {@link ModelType}.
+ * Links a policy component type with the {@code IProductCmptType} that it is configured by.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface IpsPolicyCmptType {
+public @interface IpsConfiguredBy {
 
     /**
-     * The qualified IPS object name.
+     * Declaration class of the product component type that configures this policy component type.
+     * If a published interface is generated, the published interface class is returned. Else the
+     * implementation class is returned.
      */
-    String name();
+    Class<?> value();
+
 }

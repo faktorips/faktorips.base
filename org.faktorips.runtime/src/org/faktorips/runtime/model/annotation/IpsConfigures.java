@@ -15,15 +15,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Preserves design time information about the implementation class of a published interface.
+ * Links a {@code IProductCmptType} with the policy component type that it configures.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface IpsTypeInterface {
+public @interface IpsConfigures {
 
     /**
-     * The class implementing this interface
+     * The policy component type class that is configured by this product component type. If a
+     * published interface is generated, the published interface class is returned. Else the
+     * implementation class is returned.
      */
-    Class<?> implementation();
-
+    Class<?> value();
 }

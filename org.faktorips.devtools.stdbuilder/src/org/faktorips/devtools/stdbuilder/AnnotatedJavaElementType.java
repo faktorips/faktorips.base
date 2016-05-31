@@ -35,6 +35,10 @@ public enum AnnotatedJavaElementType {
      * being generated.
      */
     PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+    /**
+     * Represents the published interface if it is generated, else the implementation class.
+     */
+    PRODUCT_CMPT_DECLARATION_CLASS,
 
     POLICY_CMPT_IMPL_CLASS,
 
@@ -58,6 +62,17 @@ public enum AnnotatedJavaElementType {
      * being generated.
      */
     POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+
+    /**
+     * Represents the published interface if it is generated, else the implementation class.
+     */
+    POLICY_CMPT_DECLARATION_CLASS,
+
+    /**
+     * Represents the published interface only, and <em>never</em> the implementation class. Thus it
+     * is never used unless published interfaces are being generated.
+     */
+    PUBLISHED_INTERFACE_CLASS,
 
     TABLE_CLASS,
 
