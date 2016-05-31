@@ -188,7 +188,7 @@ public final class StdBuilderHelper {
      */
     public static DatatypeHelper getDatatypeHelperForValueSet(IIpsProject project, DatatypeHelper helper) {
         if (helper.getDatatype().isPrimitive()) {
-            return project.getDatatypeHelper((((ValueDatatype)helper.getDatatype()).getWrapperType()));
+            return project.getDatatypeHelper(((ValueDatatype)helper.getDatatype()).getWrapperType());
         }
         return helper;
     }
