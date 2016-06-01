@@ -22,7 +22,7 @@
 		«ENDIF-»
 		 * @generated
 		 */
-		«IF !productCmptType.changingOverTime-»
+	     «IF !productCmptType.changingOverTime-»
 		 @Deprecated
 		«ENDIF-» 
 		«getAnnotations(AnnotatedJavaElementType::PUBLISHED_INTERFACE_CLASS)»

@@ -54,7 +54,9 @@ public class AnnotationGeneratorBuilder {
                 // product component implementation classes
                 new ProductCmptDeclClassAnnGenFactory(),
                 // published interfaces
-                new PublishedInterfaceAnnGenFactory() };
+                new PublishedInterfaceAnnGenFactory(),
+                // extension properties
+                new ExtensionPropertyAnnGen.Factory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {
