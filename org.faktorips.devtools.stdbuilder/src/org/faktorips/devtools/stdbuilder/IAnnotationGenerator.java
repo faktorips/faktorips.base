@@ -21,13 +21,6 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 public interface IAnnotationGenerator {
 
     /**
-     * Returns the type of the Java Element that is being annotated. See
-     * {@link AnnotatedJavaElementType} for an enumeration of possible constructs that can be
-     * annotated.
-     */
-    public AnnotatedJavaElementType getAnnotatedJavaElementType();
-
-    /**
      * Creates the annotations for the given ipsElement.
      */
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode);

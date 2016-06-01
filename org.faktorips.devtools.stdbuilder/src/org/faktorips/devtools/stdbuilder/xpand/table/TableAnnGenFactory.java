@@ -14,7 +14,7 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 
-public class TableAnnotationGeneratorFactory implements IAnnotationGeneratorFactory {
+public class TableAnnGenFactory implements IAnnotationGeneratorFactory {
 
     @Override
     public boolean isRequiredFor(IIpsProject ipsProject) {
@@ -24,9 +24,9 @@ public class TableAnnotationGeneratorFactory implements IAnnotationGeneratorFact
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         if (type == AnnotatedJavaElementType.TABLE_CLASS) {
-            return new TableClassAnnotationGenerator();
+            return new TableClassAnnGen();
         } else if (type == AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER) {
-            return new TableRowClassColumnGetterAnnotationGenerator();
+            return new TableRowClassColumnGetterAnnGen();
         } else {
             return null;
         }

@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,12 +39,6 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
         ImportDeclaration importDeclaration = codeFragment.getImportDeclaration();
         assertTrue(importDeclaration.getImports().contains("org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter"));
 
-    }
-
-    @Test
-    public void testGetAnnotatedJavaElementType() throws Exception {
-        assertEquals(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD,
-                jaxbGen.getAnnotatedJavaElementType());
     }
 
     @Test

@@ -18,6 +18,11 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 
+/**
+ * Generates JAXB annotations for policy component type fields.
+ * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD
+ */
 public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotationGenerator {
 
     public PolicyCmptImplClassAttributeFieldJaxbGen() {
@@ -38,11 +43,6 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractAnnotation
             builder.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
         }
         return builder.getFragment();
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD;
     }
 
     @Override

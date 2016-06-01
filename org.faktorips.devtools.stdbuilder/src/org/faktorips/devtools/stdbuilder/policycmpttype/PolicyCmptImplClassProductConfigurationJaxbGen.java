@@ -17,6 +17,12 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter;
 
+/**
+ * Generates JAXB annotations for the product configuration field of policy component type
+ * implementations.
+ * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD
+ */
 public class PolicyCmptImplClassProductConfigurationJaxbGen extends AbstractAnnotationGenerator {
 
     public PolicyCmptImplClassProductConfigurationJaxbGen() {
@@ -30,11 +36,6 @@ public class PolicyCmptImplClassProductConfigurationJaxbGen extends AbstractAnno
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name = \"product-component.id\"");
         builder.addImport(ProductConfigurationXmlAdapter.class);
         return builder.getFragment();
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD;
     }
 
     @Override

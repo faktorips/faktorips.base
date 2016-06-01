@@ -30,11 +30,6 @@ public class SinceVersionJavaDocTagGeneratorTest {
     private SinceVersionJavaDocTagGenerator generator = new SinceVersionJavaDocTagGenerator();
 
     @Test
-    public void testGetAnnotatedJavaElementType() throws Exception {
-        assertEquals(AnnotatedJavaElementType.ELEMENT_JAVA_DOC, generator.getAnnotatedJavaElementType());
-    }
-
-    @Test
     public void testCreateAnnotation_withSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(true);
         when(modelNode.getSinceVersion()).thenReturn("1.2.3");

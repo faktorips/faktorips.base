@@ -18,6 +18,11 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 
+/**
+ * Generates JAXB annotations for policy component type associations
+ * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION
+ */
 public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotationGenerator {
 
     @Override
@@ -56,11 +61,6 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
             }
         }
         return builder.getFragment();
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
     }
 
     @Override

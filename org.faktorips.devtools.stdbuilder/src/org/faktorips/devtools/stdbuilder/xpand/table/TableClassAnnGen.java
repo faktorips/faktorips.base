@@ -22,12 +22,13 @@ import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.table.TableStructureType;
 
-public class TableClassAnnotationGenerator implements IAnnotationGenerator {
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.TABLE_CLASS;
-    }
+/**
+ * Generates annotations for the IPS meta model information to the generated implementation class of
+ * table structures.
+ * 
+ * @see AnnotatedJavaElementType#TABLE_CLASS
+ */
+public class TableClassAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {

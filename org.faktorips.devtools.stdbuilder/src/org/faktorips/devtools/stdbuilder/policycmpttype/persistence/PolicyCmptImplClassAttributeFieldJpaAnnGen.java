@@ -30,6 +30,8 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute
 /**
  * This class generates JPA annotations for fields derived from policy component type attributes.
  * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD
+ * 
  * @author Roman Grutza
  */
 public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -146,11 +148,6 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             JavaCodeFragment indexAnnotations = persistenceProvider.getIndexAnnotations(jpaAttributeInfo);
             fragment.append(indexAnnotations);
         }
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD;
     }
 
     @Override

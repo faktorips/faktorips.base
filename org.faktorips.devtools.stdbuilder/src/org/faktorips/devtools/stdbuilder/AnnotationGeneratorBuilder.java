@@ -17,7 +17,7 @@ import java.util.Map;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
 
@@ -35,7 +35,7 @@ public class AnnotationGeneratorBuilder {
                 // since version java doc
                 new SinceVersionJavaDocTagGenerator.Factory(),
                 // annotations for tables and table rows
-                new TableAnnotationGeneratorFactory() };
+                new TableAnnGenFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

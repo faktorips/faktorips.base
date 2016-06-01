@@ -16,12 +16,12 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XColumn;
 import org.faktorips.runtime.model.annotation.IpsTableColumn;
 
-public class TableRowClassColumnGetterAnnotationGenerator implements IAnnotationGenerator {
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER;
-    }
+/**
+ * Generates annotations for the IPS meta model information to the generated getters in table rows.
+ * 
+ * @see AnnotatedJavaElementType#TABLE_ROW_CLASS_COLUMN_GETTER
+ */
+public class TableRowClassColumnGetterAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {

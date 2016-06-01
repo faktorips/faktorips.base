@@ -18,6 +18,8 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 /**
  * This class generates JPA annotations for attribute setter methods on policy component types.
  * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER
+ * 
  * @author Roman Grutza
  */
 public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -25,11 +27,6 @@ public class PolicyCmptImplClassAttributeSetterJpaAnnGen extends AbstractJpaAnno
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         return newJavaCodeFragment();
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER;
     }
 
     @Override
