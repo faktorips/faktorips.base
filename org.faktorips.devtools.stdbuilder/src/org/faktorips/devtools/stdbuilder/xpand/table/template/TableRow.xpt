@@ -1,0 +1,86 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::table::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::table::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE main FOR XTableRow»
+«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+/**
+* «localizedJDoc("CLASS_DESCRIPTION")»
+*
+* @generated
+*/
+public class «name» {
+	«EXPAND nullrowconstant»
+	«EXPAND attributes»
+	«EXPAND constructors»
+	«EXPAND methods»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE nullrowconstant FOR XTableRow»
+	/**
+	* @generated
+	*/
+	public static final «name» NULL_ROW = new «name»(«nullExpressions»);
+«ENDDEFINE»
+
+«DEFINE attributes FOR XTableRow»
+	«EXPAND attribute FOREACH validColumns-»
+«ENDDEFINE»
+
+«DEFINE attribute FOR XColumn-»
+	«IF datatypeName != null-»
+		/**
+		* @generated
+		*/
+		private final «datatypeName» «attributeName»;
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE constructors FOR XTableRow»
+/**
+* «localizedJDoc("CONSTRUCTOR")»
+*
+* @generated
+*/
+public «method(name, constructorParameters)»{
+	«FOREACH constructorParameters AS param-»
+		this.«param.name» = «param.name»;
+	«ENDFOREACH-»
+}
+«ENDDEFINE»
+
+«DEFINE methods FOR XTableRow»
+	«EXPAND getterMethod FOREACH validColumns-»
+	«EXPAND toStringMethod-»
+«ENDDEFINE»
+
+«DEFINE getterMethod FOR XColumn-»
+	/**
+	* @generated
+	*/
+	«getAnnotations(AnnotatedJavaElementType::TABLE_ROW_CLASS_COLUMN_GETTER)»
+	public «datatypeName» «method(methodNameGetter)»{
+		return «attributeName»;
+	}
+«ENDDEFINE»
+
+«DEFINE toStringMethod FOR XTableRow-»
+	/**
+	* @generated
+	*/
+	«overrideAnnotationIf(true)-»
+	public String «method("toString")»{
+		return «attributeNames»;		
+	}
+«ENDDEFINE»

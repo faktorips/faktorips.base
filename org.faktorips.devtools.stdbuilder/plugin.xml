@@ -263,5 +263,4 @@
             class="org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.ProductBuilderFactory">
       </artefactBuilderFactory>
    </extension>
-
 </plugin>

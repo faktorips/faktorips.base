@@ -76,8 +76,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.Validatio
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
-import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
-import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -91,6 +89,10 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuild
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilderFactory;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -281,7 +283,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         ITableStructure tableStructure = fct.getTableStructure();
 
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
-        code.appendClassName(getTableImplBuilder().getQualifiedClassName(tableStructure.getIpsSrcFile()));
+        code.appendClassName(getTableBuilder().getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
@@ -346,12 +348,10 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                 false, this, generatorModelContext, modelService);
         builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION, productCmptGenerationClassBuilder);
 
-        // table structure builders
-        TableImplBuilder tableImplBuilder = new TableImplBuilder(this);
-        builders.put(BuilderKindIds.TABLE, tableImplBuilder);
-        TableRowBuilder tableRowBuilder = new TableRowBuilder(this);
+        IIpsArtefactBuilder tableBuilder = new TableBuilderFactory().createBuilder(this);
+        IIpsArtefactBuilder tableRowBuilder = new TableRowBuilderFactory().createBuilder(this);
+        builders.put(BuilderKindIds.TABLE, tableBuilder);
         builders.put(BuilderKindIds.TABLE_ROW, tableRowBuilder);
-        tableImplBuilder.setTableRowBuilder(tableRowBuilder);
 
         // table content builders
         builders.put(BuilderKindIds.TABLE_CONTENT, new TableContentBuilder(this));
@@ -632,8 +632,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 
-    public TableImplBuilder getTableImplBuilder() {
-        return getBuilderById(BuilderKindIds.TABLE, TableImplBuilder.class);
+    public TableBuilder getTableBuilder() {
+        return getBuilderById(BuilderKindIds.TABLE, TableBuilder.class);
     }
 
     public TableRowBuilder getTableRowBuilder() {

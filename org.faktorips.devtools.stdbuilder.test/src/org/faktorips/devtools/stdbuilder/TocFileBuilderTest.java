@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilder;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
@@ -49,7 +49,7 @@ import org.w3c.dom.Document;
  */
 public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
-    private TableImplBuilder tableImplBuilder;
+    private TableBuilder tableBuilder;
     private TocFileBuilder tocFileBuilder;
     private GregorianCalendar validFrom;
 
@@ -57,7 +57,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        tableImplBuilder = builderSet.getTableImplBuilder();
+        tableBuilder = builderSet.getTableBuilder();
         tocFileBuilder = builderSet.getBuilderById(BuilderKindIds.TOC_FILE, TocFileBuilder.class);
         validFrom = new GregorianCalendar();
     }
@@ -80,7 +80,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmpt_WithGeneration() throws CoreException {
+    public void testCreateTocEntryProductCmptWithGeneration() throws CoreException {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
@@ -95,7 +95,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmpt_WithoutGeneration() throws CoreException {
+    public void testCreateTocEntryProductCmptWithoutGeneration() throws CoreException {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         productCmptType.setChangingOverTime(false);
@@ -131,7 +131,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(table);
         assertEquals("motor.RateTable", entry.getIpsObjectId());
-        assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
+        assertEquals(tableBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry instanceof TableContentTocEntry);
     }
 

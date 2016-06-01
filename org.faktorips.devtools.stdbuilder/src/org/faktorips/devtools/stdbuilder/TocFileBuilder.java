@@ -409,7 +409,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         TableContentBuilder tableContentBuilder = getBuilderSet().getBuilderById(BuilderKindIds.TABLE_CONTENT,
                 TableContentBuilder.class);
         IPath xmlRelativeFile = tableContentBuilder.getXmlContentRelativeFile(tableContents.getIpsSrcFile());
-        String tableStructureName = getBuilderSet().getTableImplBuilder().getQualifiedClassName(
+        String tableStructureName = getBuilderSet().getTableBuilder().getQualifiedClassName(
                 tableStructure.getIpsSrcFile());
         TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(),
                 tableContents.getQualifiedName(), xmlRelativeFile.toString(), tableStructureName);
