@@ -1,0 +1,69 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+
+package org.faktorips.devtools.stdbuilder.labels;
+
+import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
+import org.faktorips.util.LocalizedStringsSet;
+
+public class LabelAndDescriptionPropertiesBuilder extends AbstractLocalizedPropertiesBuilder {
+
+    private static final String LABEL_AND_DESCRIPTIONS_SUFFIX = "-label-and-descriptions";
+
+    public LabelAndDescriptionPropertiesBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(LabelAndDescriptionPropertiesBuilder.class));
+    }
+
+    @Override
+    public String getName() {
+        return "LabelAndDescriptionPropertiesBuilder";
+    }
+
+    @Override
+    public void build(IIpsSrcFile ipsSrcFile) {
+        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getReadOnlyProperties()
+                .getSupportedLanguages()) {
+            LabelAndDescriptionGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile, supportedLanguage);
+            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+            messagesGenerator.generate(ipsObject);
+        }
+    }
+
+    @Override
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
+        return true;
+    }
+
+    @Override
+    protected LabelAndDescriptionGenerator getMessagesGenerator(IIpsSrcFile ipsSrcFile,
+            ISupportedLanguage supportedLanguage) {
+        return (LabelAndDescriptionGenerator)super.getMessagesGenerator(ipsSrcFile, supportedLanguage);
+    }
+
+    @Override
+    protected String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
+        String baseName = entry.getBasePackageNameForDerivedJavaClasses() + "." + entry.getIpsPackageFragmentRootName()
+                + LABEL_AND_DESCRIPTIONS_SUFFIX;
+        return baseName;
+    }
+
+    @Override
+    protected LabelAndDescriptionGenerator createNewMessageGenerator(IFile propertyFile,
+            ISupportedLanguage supportedLanguage) {
+        return new LabelAndDescriptionGenerator(propertyFile, supportedLanguage, this);
+    }
+
+}

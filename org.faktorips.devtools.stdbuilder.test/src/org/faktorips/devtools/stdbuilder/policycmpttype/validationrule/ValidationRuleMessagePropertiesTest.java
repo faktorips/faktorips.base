@@ -10,11 +10,13 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -76,12 +78,14 @@ public class ValidationRuleMessagePropertiesTest {
         mockRuleProperties(rule1, pcType1, RULE1);
         mockRuleProperties(rule2, pcType1, RULE2);
         mockRuleProperties(rule3, pcType2, RULE3);
-        ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties();
+        ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties(false);
         validationMessages.put(rule1, "123");
         validationMessages.put(rule2, "123");
         validationMessages.put(rule3, "312");
 
-        validationMessages.initMessagesForPcTypes();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        validationMessages.store(outputStream, "");
+        validationMessages.load(new ByteArrayInputStream(outputStream.toByteArray()));
 
         Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(QNAME1);
         assertEquals(2, rules.size());

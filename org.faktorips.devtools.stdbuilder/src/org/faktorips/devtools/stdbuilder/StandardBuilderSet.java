@@ -69,6 +69,7 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
+import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
@@ -388,6 +389,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptClassBuilder);
 
         builders.put(BuilderKindIds.VALIDATION_RULE_MESSAGES, new ValidationRuleMessagesPropertiesBuilder(this));
+        builders.put(BuilderKindIds.LABELS_AND_DESCRIPTIONS, new LabelAndDescriptionPropertiesBuilder(this));
 
         List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
         for (IIpsArtefactBuilder ipsArtefactBuilder : extendingBuilders) {
