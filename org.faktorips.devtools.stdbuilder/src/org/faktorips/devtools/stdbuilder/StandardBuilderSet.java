@@ -398,10 +398,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             builders.put(id, ipsArtefactBuilder);
         }
 
-        builders.put(BuilderKindIds.POLICY_CMPT_MODEL_TYPE, new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE,
-                this));
-        builders.put(BuilderKindIds.PRODUCT_CMPT_MODEL_TYPE, new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE,
-                this));
         tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
         return builders;

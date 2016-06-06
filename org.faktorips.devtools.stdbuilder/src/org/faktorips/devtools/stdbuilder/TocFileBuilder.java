@@ -474,7 +474,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         TocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
                 getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER, EnumXmlAdapterBuilder.class)
-                        .getQualifiedClassName(enumType));
+                .getQualifiedClassName(enumType));
         return entry;
     }
 
@@ -483,19 +483,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      */
     public TocEntryObject createTocEntry(IType type) throws CoreException {
         String javaImplClass;
-        IPath xmlResourceName;
-        // for model types, the qualified name is also the id.
         String id = type.getQualifiedName();
         if (type instanceof IPolicyCmptType) {
             javaImplClass = getBuilderSet().getPolicyCmptImplClassBuilder().getQualifiedClassName(type);
-            xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.POLICY_CMPT_MODEL_TYPE,
-                    ModelTypeXmlBuilder.class).getXmlContentRelativeFile(type.getIpsSrcFile());
-            return new PolicyCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName.toString(), javaImplClass);
+            return new PolicyCmptTypeTocEntry(id, type.getQualifiedName(), javaImplClass);
         } else if (type instanceof IProductCmptType) {
             javaImplClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(type);
-            xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.PRODUCT_CMPT_MODEL_TYPE,
-                    ModelTypeXmlBuilder.class).getXmlContentRelativeFile(type.getIpsSrcFile());
-            return new ProductCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName.toString(), javaImplClass);
+            return new ProductCmptTypeTocEntry(id, type.getQualifiedName(), javaImplClass);
         } else {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
         }

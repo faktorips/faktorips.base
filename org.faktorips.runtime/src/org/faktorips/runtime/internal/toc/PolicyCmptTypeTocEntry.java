@@ -19,9 +19,8 @@ public class PolicyCmptTypeTocEntry extends ModelTypeTocEntry {
 
     public static final String XML_TAG = "PolicyCmptType";
 
-    public PolicyCmptTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
-            String implementationClassName) {
-        super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
+    public PolicyCmptTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String implementationClassName) {
+        super(ipsObjectId, ipsObjectQualifiedName, implementationClassName);
     }
 
     @Override

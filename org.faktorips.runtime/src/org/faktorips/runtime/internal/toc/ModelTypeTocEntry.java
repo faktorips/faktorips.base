@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
+
 /**
  * This {@link TocEntryObject} represents an entry for model types
  * 
@@ -17,9 +19,7 @@ package org.faktorips.runtime.internal.toc;
  */
 public abstract class ModelTypeTocEntry extends TocEntryObject {
 
-    public ModelTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
-            String implementationClassName) {
-        super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
+    public ModelTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String implementationClassName) {
+        super(ipsObjectId, ipsObjectQualifiedName, IpsStringUtils.EMPTY, implementationClassName);
     }
-
 }

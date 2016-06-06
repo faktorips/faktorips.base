@@ -16,23 +16,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.faktorips.runtime.IRuntimeRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class AbstractModelElementTest {
 
-    @Mock
-    private IRuntimeRepository repository;
+    private static final String ANY_NAME = "any_name";
 
     private AbstractModelElement element;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        element = new TestModelElement(repository);
+        element = new TestModelElement(ANY_NAME);
     }
 
     @Test
@@ -61,10 +58,15 @@ public class AbstractModelElementTest {
         assertTrue(ids.contains("prop1"));
     }
 
+    @Test
+    public void testGetName() throws Exception {
+        assertEquals(ANY_NAME, element.getName());
+    }
+
     private static class TestModelElement extends AbstractModelElement {
 
-        public TestModelElement(IRuntimeRepository repository) {
-            super(repository);
+        public TestModelElement(String name) {
+            super(name);
         }
 
     }

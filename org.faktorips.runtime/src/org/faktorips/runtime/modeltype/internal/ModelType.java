@@ -16,13 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
@@ -40,11 +35,12 @@ public class ModelType extends AbstractModelElement implements IModelType {
     private List<IModelTypeAttribute> attributes = new ArrayList<IModelTypeAttribute>();
     private Map<String, IModelTypeAttribute> attributesByName = new HashMap<String, IModelTypeAttribute>();
 
-    private String className;
-    private String superTypeName;
+    private Class<?> implementationClass;
+    private Class<?> interfaceClass;
 
-    public ModelType(IRuntimeRepository repository) {
-        super(repository);
+    public ModelType(String name, Class<?> implementationClass) {
+        super(name);
+        this.implementationClass = implementationClass;
     }
 
     @Override
@@ -133,104 +129,26 @@ public class ModelType extends AbstractModelElement implements IModelType {
     }
 
     @Override
-    public Class<?> getJavaClass() throws ClassNotFoundException {
-        return loadClass(className);
+    public Class<?> getJavaClass() {
+        return implementationClass;
     }
 
     @Override
-    public Class<?> getJavaInterface() throws ClassNotFoundException {
-        String interfaceName = className.replace(".internal", "");
-        interfaceName = interfaceName.substring(0, interfaceName.lastIndexOf('.') + 1) + 'I'
-                + interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
-        return loadClass(interfaceName);
+    public Class<?> getJavaInterface() {
+        return interfaceClass;
     }
 
     @Override
     public IModelType getSuperType() {
-        if (superTypeName != null && superTypeName.length() > 0) {
-            Class<?> superclass = loadClass(superTypeName);
-            return getRepository().getModelType(superclass);
-        }
-        return null;
-    }
-
-    @Override
-    public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
-        super.initFromXml(parser);
-
-        for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(PROPERTY_CLASS)) {
-                this.className = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_SUPERTYPE)) {
-                this.superTypeName = parser.getAttributeValue(i);
-            }
-        }
-
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
-                        initExtPropertiesFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelTypeAttribute.XML_WRAPPER_TAG)) {
-                        initModelTypeAttributesFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
-                        initModelTypeAssociationsFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
-                        initDescriptionsFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
-                        initLabelsFromXml(parser);
-                    }
-                    break;
-            }
-        }
-    }
-
-    private void initModelTypeAttributesFromXml(XMLStreamReader parser) throws XMLStreamException {
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeAttribute.XML_TAG)) {
-                        IModelTypeAttribute attribute = new ModelTypeAttribute(this);
-                        attribute.initFromXml(parser);
-                        attributes.add(attribute);
-                        attributesByName.put(attribute.getName(), attribute);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeAttribute.XML_WRAPPER_TAG)) {
-                        return;
-                    }
-                    break;
-            }
-        }
-    }
-
-    private void initModelTypeAssociationsFromXml(XMLStreamReader parser) throws XMLStreamException {
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeAssociation.XML_TAG)) {
-                        IModelTypeAssociation association = new ModelTypeAssociation(this);
-                        association.initFromXml(parser);
-                        associations.add(association);
-                        associationsByName.put(association.getName(), association);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
-                        return;
-                    }
-                    break;
-            }
-        }
+        return Models.getModelType(implementationClass.getSuperclass());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());
-        if (superTypeName != null && superTypeName.length() > 0) {
+        if (getSuperType() != null) {
             sb.append(" extends ");
-            sb.append(superTypeName);
+            sb.append(getSuperType().getName());
         }
         return sb.toString();
     }

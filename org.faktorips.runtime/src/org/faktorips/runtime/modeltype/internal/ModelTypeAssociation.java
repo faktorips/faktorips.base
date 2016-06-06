@@ -20,13 +20,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
@@ -54,8 +50,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     private String getterName;
 
-    public ModelTypeAssociation(ModelType modelType) {
-        super(modelType.getRepository());
+    public ModelTypeAssociation(String name, ModelType modelType) {
+        super(name);
         this.modelType = modelType;
     }
 
@@ -92,11 +88,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     @Override
     public IModelType getTarget() throws ClassNotFoundException {
-        if (targetJavaClassName != null && targetJavaClassName.length() > 0) {
-            Class<?> targetClass = loadClass(targetJavaClassName);
-            return getRepository().getModelType(targetClass);
-        }
-        return null;
+        return Models.getModelType(targetJavaClassName);
     }
 
     @Override
@@ -144,132 +136,6 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     @Override
     public boolean isProductRelevant() {
         return isProductRelevant;
-    }
-
-    @Override
-    public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
-        super.initFromXml(parser);
-
-        for (int i = 0; i < parser.getAttributeCount(); i++) {
-            initAttributeValuesInternal(parser, i);
-        }
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
-                        initExtPropertiesFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
-                        initDescriptionsFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
-                        initLabelsFromXml(parser);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeAssociation.XML_TAG)) {
-                        return;
-                    }
-                    break;
-            }
-        }
-    }
-
-    private void initAttributeValuesInternal(XMLStreamReader parser, int index) {
-        initNamePluralInternal(parser, index);
-        initTargetJavaClassNameInternal(parser, index);
-        initMinCardinalityInternal(parser, index);
-        initMaxCardinalityInternal(parser, index);
-        initAssociationTypeInternal(parser, index);
-        initProduktRelevantInternal(parser, index);
-        initDerivedUnionInternal(parser, index);
-        initSubsetOfDerivedUnionInternal(parser, index);
-        initTargetRolePluralRequiredInternal(parser, index);
-        initInverseAssociationInternal(parser, index);
-        initMatchingAssociationNameInternal(parser, index);
-        initMatchingAssociationSourceInternal(parser, index);
-    }
-
-    private void initNamePluralInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(IModelTypeAssociation.PROPERTY_NAME_PLURAL)) {
-            namePlural = parser.getAttributeValue(index);
-            if (namePlural.length() == 0) {
-                namePlural = null;
-            }
-        }
-    }
-
-    private void initTargetJavaClassNameInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_TARGET)) {
-            targetJavaClassName = parser.getAttributeValue(index);
-        }
-    }
-
-    private void initMinCardinalityInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_MIN_CARDINALITY)) {
-            minCardinality = Integer.parseInt(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initMaxCardinalityInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_MAX_CARDINALITY)) {
-            maxCardinality = Integer.parseInt(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initAssociationTypeInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_ASSOCIATION_TYPE)) {
-            associationType = AssociationType.valueOf(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initProduktRelevantInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_PRODUCT_RELEVANT)) {
-            isProductRelevant = Boolean.valueOf(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initDerivedUnionInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_DERIVED_UNION)) {
-            isDerivedUnion = Boolean.valueOf(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initSubsetOfDerivedUnionInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_SUBSET_OF_A_DERIVED_UNION)) {
-            isSubsetOfADerivedUnion = Boolean.valueOf(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initTargetRolePluralRequiredInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_TARGET_ROLE_PLURAL_REQUIRED)) {
-            isTargetRolePluralRequired = Boolean.valueOf(parser.getAttributeValue(index));
-        }
-    }
-
-    private void initInverseAssociationInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_INVERSE_ASSOCIATION)) {
-            inverseAssociation = parser.getAttributeValue(index);
-        }
-    }
-
-    private void initMatchingAssociationNameInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_MATCHING_ASSOCIATION_NAME)) {
-            matchingAssociationName = parser.getAttributeValue(index);
-        }
-    }
-
-    private void initMatchingAssociationSourceInternal(XMLStreamReader parser, int index) {
-        if (parser.getAttributeLocalName(index).equals(PROPERTY_MATCHING_ASSOCIATION_SOURCE)) {
-            matchingAssociationSource = parser.getAttributeValue(index);
-        }
-    }
-
-    @Override
-    protected void initLabelFromXml(XMLStreamReader parser) {
-        super.initLabelFromXml(parser);
-        String localeCode = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_LOCALE);
-        Locale locale = IpsStringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
-        String value = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_PLURAL_VALUE);
-        pluralLabelsByLocale.put(locale, value);
     }
 
     @Override

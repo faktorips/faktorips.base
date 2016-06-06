@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -116,7 +117,15 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         assertEquals("test.Policy", entry.getIpsObjectQualifiedName());
         assertEquals("test.Policy", entry.getIpsObjectId());
         assertEquals("org.faktorips.sample.model.internal.test.Policy", entry.getImplementationClassName());
-        assertEquals("org/faktorips/sample/model/internal/test/Policy.xml", entry.getXmlResourceName());
+    }
+
+    @Test
+    public void testCreateTocEntryProductCmptType() throws CoreException {
+        ProductCmptType type = newProductCmptType(ipsProject, "test.Product");
+        TocEntryObject entry = tocFileBuilder.createTocEntry(type);
+        assertEquals("test.Product", entry.getIpsObjectQualifiedName());
+        assertEquals("test.Product", entry.getIpsObjectId());
+        assertEquals("org.faktorips.sample.model.internal.test.Product", entry.getImplementationClassName());
     }
 
     @Test

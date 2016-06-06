@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.model.table.TableModel;
+import org.faktorips.runtime.modeltype.IModelType;
 
 /**
  * Repository of Faktor-IPS model information. This class should be used to obtain model instances
@@ -29,8 +30,8 @@ public class Models {
     }
 
     /**
-     * Returns a {@link TableModel} describing the type and columns of the given {@link ITable}
-     * class.
+     * @return a {@link TableModel} describing the type and columns of the given {@link ITable}
+     *         class
      */
     public static TableModel getTableModel(Class<? extends ITable> tableObjectClass) {
         TableModel tm = TABLE_MODEL_CACHE.get(tableObjectClass);
@@ -47,9 +48,31 @@ public class Models {
     }
 
     /**
-     * Returns a {@link TableModel} describing the type and columns of the given {@link ITable}.
+     * @return a {@link TableModel} describing the type and columns of the given {@link ITable}
      */
     public static TableModel getTableModel(ITable table) {
         return getTableModel(table.getClass());
+    }
+
+    /**
+     * TODO
+     * 
+     * @param modelObjectClass The generated class of model type (interface or implementation)
+     * 
+     */
+    public static IModelType getModelType(Class<?> modelObjectClass) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * TODO
+     * 
+     * @param qualifiedName The qualified class name of the generated class of model type (interface
+     *            or implementation)
+     */
+    public static IModelType getModelType(String qualifiedName) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

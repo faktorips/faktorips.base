@@ -45,7 +45,9 @@ public abstract class TocEntry {
      * Adds this instance's property values to the xml element.
      */
     protected void addToXml(Element element) {
-        element.setAttribute(PROPERTY_XML_RESOURCE, xmlResourceName);
+        if (xmlResourceName != null && !xmlResourceName.isEmpty()) {
+            element.setAttribute(PROPERTY_XML_RESOURCE, xmlResourceName);
+        }
         element.setAttribute(PROPERTY_IMPLEMENTATION_CLASS, implementationClassName);
     }
 

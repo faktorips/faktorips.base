@@ -18,18 +18,6 @@ import org.faktorips.runtime.IModelObject;
  */
 public interface IModelTypeAttribute extends IModelElement {
 
-    public static final String XML_TAG = "ModelTypeAttribute";
-
-    public static final String XML_WRAPPER_TAG = "ModelTypeAttributes";
-
-    public static final String PROPERTY_DATATYPE = "datatype";
-
-    public static final String PROPERTY_VALUE_SET_TYPE = "valueSetType";
-
-    public static final String PROPERTY_ATTRIBUTE_TYPE = "attributeType";
-
-    public static final String PROPERTY_PRODUCT_RELEVANT = "isProductRelevant";
-
     /**
      * Returns the model type this attribute belongs to.
      */

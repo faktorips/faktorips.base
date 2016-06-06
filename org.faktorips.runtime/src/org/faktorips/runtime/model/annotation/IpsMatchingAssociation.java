@@ -22,6 +22,11 @@ import java.lang.annotation.Target;
 public @interface IpsMatchingAssociation {
 
     /**
+     * Source class of the matching association
+     */
+    Class<?> source();
+
+    /**
      * The name used for a/the single target of the matching association.
      */
     String name();
