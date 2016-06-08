@@ -46,7 +46,8 @@ public class AttributeDefaultValueAnnGenTest {
 
         JavaCodeFragment codeFragment = attributeDefaultValueAnnGen.createAnnotation(xProductAttribute);
 
-        assertThat(codeFragment.getSourcecode(), is(equalTo("@IpsDefaultValue(\"bar\")")));
+        assertThat(codeFragment.getSourcecode(),
+                is(equalTo("@IpsDefaultValue(\"bar\")" + System.getProperty("line.separator"))));
     }
 
     private XProductAttribute xProductAttribute(String name) {

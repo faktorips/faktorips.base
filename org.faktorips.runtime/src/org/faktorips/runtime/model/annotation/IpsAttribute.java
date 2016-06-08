@@ -23,7 +23,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
  * {@link IModelTypeAttribute}.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface IpsAttribute {
 
     String name();

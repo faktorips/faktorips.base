@@ -53,7 +53,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"foo\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.Enum)"))));
+                is(equalTo(("@IpsAttribute(name = \"foo\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.Enum)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -64,7 +65,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"foo\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.Range)"))));
+                is(equalTo(("@IpsAttribute(name = \"foo\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.Range)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -75,7 +77,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"foo\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)"))));
+                is(equalTo(("@IpsAttribute(name = \"foo\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -86,7 +89,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Enum)"))));
+                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Enum)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -97,7 +101,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Range)"))));
+                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Range)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -108,7 +113,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)"))));
+                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -119,7 +125,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)"))));
+                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -131,7 +138,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, valueSetType = ValueSetType.AllValues)"))));
+                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, valueSetType = ValueSetType.AllValues)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -143,7 +151,8 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.DERIVED_ON_THE_FLY, valueSetType = ValueSetType.AllValues)"))));
+                is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.DERIVED_ON_THE_FLY, valueSetType = ValueSetType.AllValues)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -158,7 +167,8 @@ public class AttributeGetterAnnGenTest {
         assertThat(
                 codeFragment.getSourcecode(),
                 is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)"
-                        + System.getProperty("line.separator") + "@IpsConfiguredAttribute(changingOverTime = false)"))));
+                        + System.getProperty("line.separator") + "@IpsConfiguredAttribute(changingOverTime = false)" + System
+                        .getProperty("line.separator")))));
     }
 
     @Test
@@ -173,7 +183,8 @@ public class AttributeGetterAnnGenTest {
         assertThat(
                 codeFragment.getSourcecode(),
                 is(equalTo(("@IpsAttribute(name = \"bar\", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)"
-                        + System.getProperty("line.separator") + "@IpsConfiguredAttribute(changingOverTime = true)"))));
+                        + System.getProperty("line.separator") + "@IpsConfiguredAttribute(changingOverTime = true)" + System
+                        .getProperty("line.separator")))));
     }
 
     private XPolicyAttribute xPolicyAttribute(String name, AttributeType attributeType, ValueSetType valueSetType) {

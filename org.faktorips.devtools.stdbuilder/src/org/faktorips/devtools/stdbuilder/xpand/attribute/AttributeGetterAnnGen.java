@@ -31,28 +31,31 @@ public class AttributeGetterAnnGen implements IAnnotationGenerator {
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
         XAttribute xAttribute = (XAttribute)modelNode;
         IAttribute attribute = xAttribute.getAttribute();
+
         JavaCodeFragmentBuilder annotationCode = new JavaCodeFragmentBuilder();
-        annotationCode.append("@");
-        annotationCode.appendClassName(IpsAttribute.class);
-        annotationCode.append("(name = \"");
-        annotationCode.append(attribute.getName());
-        annotationCode.append("\", type = ");
-        annotationCode.appendClassName(AttributeType.class);
-        annotationCode.append(".");
-        annotationCode.append(getAttributeType(attribute).name());
-        annotationCode.append(", valueSetType = ");
-        annotationCode.appendClassName(ValueSetType.class);
-        annotationCode.append(".");
-        annotationCode.append(getValueSetType(attribute).name());
-        annotationCode.append(")");
+
+        JavaCodeFragmentBuilder attributeAnnArg = new JavaCodeFragmentBuilder();
+        attributeAnnArg.append("name = \"");
+        attributeAnnArg.append(attribute.getName());
+        attributeAnnArg.append("\", type = ");
+        attributeAnnArg.appendClassName(AttributeType.class);
+        attributeAnnArg.append(".");
+        attributeAnnArg.append(getAttributeType(attribute).name());
+        attributeAnnArg.append(", valueSetType = ");
+        attributeAnnArg.appendClassName(ValueSetType.class);
+        attributeAnnArg.append(".");
+        attributeAnnArg.append(getValueSetType(attribute).name());
+
+        annotationCode.annotationLn(IpsAttribute.class, attributeAnnArg.getFragment());
+
         if (xAttribute instanceof XPolicyAttribute && ((XPolicyAttribute)xAttribute).isProductRelevant()) {
-            annotationCode.appendln();
-            annotationCode.append("@");
-            annotationCode.appendClassName(IpsConfiguredAttribute.class);
-            annotationCode.append("(changingOverTime = ");
-            annotationCode.append(Boolean.toString(xAttribute.isChangingOverTime()));
-            annotationCode.append(")");
+            JavaCodeFragmentBuilder configuredAttributeAnnArg = new JavaCodeFragmentBuilder();
+            configuredAttributeAnnArg.append("changingOverTime = ");
+            configuredAttributeAnnArg.append(Boolean.toString(xAttribute.isChangingOverTime()));
+
+            annotationCode.annotationLn(IpsConfiguredAttribute.class, configuredAttributeAnnArg.getFragment());
         }
+
         return annotationCode.getFragment();
     }
 

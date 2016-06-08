@@ -23,7 +23,8 @@ public class AttributeSetterAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        return new JavaCodeFragmentBuilder().annotation(IpsAttributeSetter.class, modelNode.getName()).getFragment();
+        return new JavaCodeFragmentBuilder().annotationLn(IpsAttributeSetter.class, "\"" + modelNode.getName() + "\"")
+                .getFragment();
     }
 
     @Override

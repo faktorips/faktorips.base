@@ -23,7 +23,8 @@ public class AttributeAllowedValuesAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        return new JavaCodeFragmentBuilder().annotation(IpsAllowedValues.class, modelNode.getName()).getFragment();
+        return new JavaCodeFragmentBuilder().annotationLn(IpsAllowedValues.class, "\"" + modelNode.getName() + "\"")
+                .getFragment();
     }
 
     @Override

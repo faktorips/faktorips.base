@@ -48,7 +48,8 @@ public class AttributeAllowedValuesAnnGenTest {
 
         JavaCodeFragment codeFragment = attributeAllowedValuesAnnGen.createAnnotation(xProductAttribute);
 
-        assertThat(codeFragment.getSourcecode(), is(equalTo("@IpsAllowedValues(\"foo\")")));
+        assertThat(codeFragment.getSourcecode(),
+                is(equalTo("@IpsAllowedValues(\"foo\")" + System.getProperty("line.separator"))));
     }
 
     @Test
@@ -57,7 +58,8 @@ public class AttributeAllowedValuesAnnGenTest {
 
         JavaCodeFragment codeFragment = attributeAllowedValuesAnnGen.createAnnotation(xPolicyAttribute);
 
-        assertThat(codeFragment.getSourcecode(), is(equalTo("@IpsAllowedValues(\"bar\")")));
+        assertThat(codeFragment.getSourcecode(),
+                is(equalTo("@IpsAllowedValues(\"bar\")" + System.getProperty("line.separator"))));
     }
 
     private XPolicyAttribute xPolicyAttribute(String name) {

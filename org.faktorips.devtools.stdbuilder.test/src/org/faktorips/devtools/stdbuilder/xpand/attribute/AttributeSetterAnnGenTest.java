@@ -40,7 +40,8 @@ public class AttributeSetterAnnGenTest {
 
         JavaCodeFragment codeFragment = attributeSetterAnnGen.createAnnotation(xProductAttribute);
 
-        assertThat(codeFragment.getSourcecode(), is(equalTo("@IpsAttributeSetter(\"foo\")")));
+        assertThat(codeFragment.getSourcecode(),
+                is(equalTo("@IpsAttributeSetter(\"foo\")" + System.getProperty("line.separator"))));
     }
 
     @Test
@@ -49,7 +50,8 @@ public class AttributeSetterAnnGenTest {
 
         JavaCodeFragment codeFragment = attributeSetterAnnGen.createAnnotation(xPolicyAttribute);
 
-        assertThat(codeFragment.getSourcecode(), is(equalTo("@IpsAttributeSetter(\"bar\")")));
+        assertThat(codeFragment.getSourcecode(),
+                is(equalTo("@IpsAttributeSetter(\"bar\")" + System.getProperty("line.separator"))));
     }
 
     private XPolicyAttribute xPolicyAttribute(String name) {
