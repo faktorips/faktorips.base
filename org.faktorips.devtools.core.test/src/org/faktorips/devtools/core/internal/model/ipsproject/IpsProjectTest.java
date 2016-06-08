@@ -1772,6 +1772,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         projectAIpsObjectPath.setOutputDefinedPerSrcFolder(false);
         // the DefaultBuilderSet uses this package name to determine the toc file name e.g. path
         projectAIpsObjectPath.setBasePackageNameForDerivedJavaClasses("org.faktorzehn.de");
+        projectAIpsObjectPath.setBasePackageNameForMergableJavaClasses("org.faktorzehn.de");
 
         IFolder outputFolderDerived = ipsProject.getProject().getFolder("derived");
         if (!outputFolderDerived.exists()) {
@@ -1834,6 +1835,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 .toArray(new IIpsObjectPathEntry[projectBIpsObjectPathEntries.size()]));
         projectBIpsObjectPath.setOutputDefinedPerSrcFolder(false);
         projectBIpsObjectPath.setBasePackageNameForDerivedJavaClasses("org.faktorzehn.de");
+        projectBIpsObjectPath.setBasePackageNameForMergableJavaClasses("org.faktorzehn.de");
+        ((IpsSrcFolderEntry)projectBIpsObjectPathEntries.get(0)).setUniqueQualifier("B");
 
         outputFolderDerived = ipsProjectB.getProject().getFolder("derived");
         if (!outputFolderDerived.exists()) {
@@ -1862,6 +1865,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject2.setIpsObjectPath(path);
+        updateSrcFolderEntryQalifiers(ipsProject2, "2");
 
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
@@ -1886,6 +1890,25 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
+    /**
+     * Sets the unique qualifier of all source folder entries in the given project to the given
+     * qualifiers (in order). Thus, if you'd like to set the two source folder entries of a project
+     * to different qualifiers, call this method with
+     * <code>setUniqueQualifier(prj, "qualifier1", "qualifier2")</code>.
+     */
+    public static void updateSrcFolderEntryQalifiers(IIpsProject prj, String... qualifiers) throws CoreException {
+        IIpsObjectPath path = prj.getIpsObjectPath();
+        IIpsObjectPathEntry[] entries = path.getEntries();
+        for (int i = 0; i < entries.length; i++) {
+            IIpsObjectPathEntry entry = entries[i];
+            if (entry instanceof IpsSrcFolderEntry) {
+                IpsSrcFolderEntry srcFolderEntry = (IpsSrcFolderEntry)entry;
+                srcFolderEntry.setUniqueQualifier(qualifiers[i]);
+            }
+        }
+        prj.setIpsObjectPath(path);
+    }
+
     @Test
     public void testValidateIpsObjectPathCycle_ProjectHasSelfReference() throws CoreException {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -1908,6 +1931,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject11 = this.newIpsProject("TestProject11");
         IIpsProject ipsProject12 = this.newIpsProject("TestProject12");
         IIpsProject ipsProject13 = this.newIpsProject("TestProject13");
+        updateSrcFolderEntryQalifiers(ipsProject11, "11");
+        updateSrcFolderEntryQalifiers(ipsProject12, "12");
+        updateSrcFolderEntryQalifiers(ipsProject13, "13");
 
         IIpsObjectPath path = ipsProject10.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject11);

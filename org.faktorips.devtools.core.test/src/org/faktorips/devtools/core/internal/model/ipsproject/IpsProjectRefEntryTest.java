@@ -107,6 +107,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         IIpsProject refProject = this.newIpsProject("TestProject2");
         path.newIpsProjectRefEntry(refProject);
         ipsProject.setProperties(props);
+        IpsProjectTest.updateSrcFolderEntryQalifiers(refProject, "2");
 
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.size());

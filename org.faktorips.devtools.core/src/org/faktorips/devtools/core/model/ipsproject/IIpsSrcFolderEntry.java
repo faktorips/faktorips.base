@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import org.eclipse.core.resources.IFolder;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathEntry;
 
 /**
  * An object path entry that defines a folder containing Faktor-IPS source files.
@@ -19,31 +20,17 @@ import org.eclipse.core.resources.IFolder;
  */
 public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
 
-    /**
-     * Message code constant to indicate the source folder must be a direct child of the project and
-     * it isn't.
-     */
-    public final static String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
+    public static final String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
 
-    /**
-     * Message code constant identifying the message of a validation rule.
-     */
-    public final static String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING = "OutputFolderMergableMissing"; //$NON-NLS-1$
+    public static final String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING = "OutputFolderMergableMissing"; //$NON-NLS-1$
 
-    /**
-     * Message code constant identifying the message of a validation rule.
-     */
-    public final static String MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST = "OutputFolderMergableDoesntExist"; //$NON-NLS-1$
+    public static final String MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST = "OutputFolderMergableDoesntExist"; //$NON-NLS-1$
 
-    /**
-     * Message code constant identifying the message of a validation rule.
-     */
-    public final static String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING = "OutputFolderDerivedMissing"; //$NON-NLS-1$
+    public static final String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING = "OutputFolderDerivedMissing"; //$NON-NLS-1$
 
-    /**
-     * Message code constant identifying the message of a validation rule.
-     */
-    public final static String MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST = "OutputFolderDeriveddDoesntExist"; //$NON-NLS-1$
+    public static final String MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST = "OutputFolderDeriveddDoesntExist"; //$NON-NLS-1$
+
+    public static final String MSGCODE_DUPLICATE_BASE_PACKAGE = "DuplicateBasePackage"; //$NON-NLS-1$
 
     /**
      * Returns the folder containing the IPS source files.
@@ -75,6 +62,15 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * otherwise the base package name defined in the object path is returned.
      */
     public String getBasePackageNameForMergableJavaClasses();
+
+    /**
+     * Returns a unique base package name for mergable artifacts. Unique means that this base
+     * package name should not be used by any other {@link IpsObjectPathEntry} in this or any
+     * dependent project. The unique base package is the package name returned by
+     * {@link #getBasePackageNameForMergableJavaClasses()} concatenated with the unique qualifier. A
+     * unique qualifier may be empty if the base package is already unique.
+     */
+    public String getUniqueBasePackageNameForMergableArtifacts();
 
     /**
      * Returns partial TOC resource name. The fully qualified TOC resource name is obtained by
@@ -139,6 +135,15 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * All generated Java types are contained in this package or one of the child packages.
      */
     public void setSpecificBasePackageNameForDerivedJavaClasses(String name);
+
+    /**
+     * Returns a unique base package name for derived artifacts. Unique means that this base package
+     * name should not be used by any other {@link IpsObjectPathEntry} in this or any dependent
+     * project. The unique base package is the package name returned by
+     * {@link #getBasePackageNameForDerivedJavaClasses()} concatenated with the unique qualifier. A
+     * unique qualifier may be empty if the base package is already unique.
+     */
+    public String getUniqueBasePackageNameForDerivedArtifacts();
 
     /**
      * @param validationMessagesBundle The validationMessagesBundle to set.

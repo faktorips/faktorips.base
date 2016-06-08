@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,8 @@ public class IpsObjectPathManifestReaderTest {
     private static final String MY_SRC_OUT = "mySrcOut";
 
     private static final String MY_RESOURCE_OUT = "myResourceOut";
+
+    private static final String MY_UNIQUE_QUALIFIER = "qualifier";
 
     @Mock
     private IpsBundleManifest bundleManifest;
@@ -68,12 +71,12 @@ public class IpsObjectPathManifestReaderTest {
     }
 
     @Before
-    public void createIpsObjectPathManifestReader() throws Exception {
+    public void createIpsObjectPathManifestReader() {
         objectPathReader = new IpsObjectPathManifestReader(bundleManifest, ipsProject);
     }
 
     @Test
-    public void testReadIpsObjectPath_emptyOnlyContainer() throws Exception {
+    public void testReadIpsObjectPath_emptyOnlyContainer() {
         mockObjectDirElements();
 
         IIpsObjectPath ipsObjectPath = objectPathReader.readIpsObjectPath();
@@ -82,7 +85,7 @@ public class IpsObjectPathManifestReaderTest {
     }
 
     @Test
-    public void testReadIpsObjectPath_minimalSettings() throws Exception {
+    public void testReadIpsObjectPath_minimalSettings() {
         mockObjectDirElements(MY_OBJECT_DIR);
 
         IIpsObjectPath ipsObjectPath = objectPathReader.readIpsObjectPath();
@@ -91,7 +94,7 @@ public class IpsObjectPathManifestReaderTest {
     }
 
     @Test
-    public void testReadIpsObjectPath_twoEntries() throws Exception {
+    public void testReadIpsObjectPath_twoEntries() {
         mockObjectDirElements(MY_OBJECT_DIR, MY_OBJECT_DIR);
 
         IIpsObjectPath ipsObjectPath = objectPathReader.readIpsObjectPath();
@@ -100,7 +103,35 @@ public class IpsObjectPathManifestReaderTest {
     }
 
     @Test
-    public void testReadIpsObjectPath_checkEntry() throws Exception {
+    public void testReadIpsObjectPath_checkEntry() {
+        ManifestElement[] objectDirElements = mockObjectDirElements(MY_OBJECT_DIR);
+        when(bundleManifest.getBasePackage(MY_OBJECT_DIR)).thenReturn(MY_BAS_PACK);
+        when(bundleManifest.getUniqueQualifier(MY_OBJECT_DIR)).thenReturn(MY_UNIQUE_QUALIFIER);
+        when(bundleManifest.getSourcecodeOutput(MY_OBJECT_DIR)).thenReturn(MY_SRC_OUT);
+        when(bundleManifest.getResourceOutput(MY_OBJECT_DIR)).thenReturn(MY_RESOURCE_OUT);
+        when(bundleManifest.getTocPath(objectDirElements[0])).thenReturn(MY_TOC_FILE);
+        when(bundleManifest.getValidationMessagesBundle(objectDirElements[0])).thenReturn(MY_VALIDATION_MESSAGE);
+
+        IIpsObjectPath ipsObjectPath = objectPathReader.readIpsObjectPath();
+        IpsSrcFolderEntry ipsSrcFolderEntry = (IpsSrcFolderEntry)ipsObjectPath.getEntries()[0];
+
+        assertEquals(ipsProject, ipsSrcFolderEntry.getIpsProject());
+        assertEquals(MY_OBJECT_DIR, ipsSrcFolderEntry.getIpsPackageFragmentRootName());
+        assertEquals(ipsObjectPath, ipsSrcFolderEntry.getIpsObjectPath());
+        assertEquals(MY_BAS_PACK, ipsSrcFolderEntry.getBasePackageNameForMergableJavaClasses());
+        assertEquals(MY_BAS_PACK, ipsSrcFolderEntry.getBasePackageNameForDerivedJavaClasses());
+        assertEquals(QNameUtil.concat(MY_BAS_PACK, MY_UNIQUE_QUALIFIER),
+                ipsSrcFolderEntry.getUniqueBasePackageNameForMergableArtifacts());
+        assertEquals(QNameUtil.concat(MY_BAS_PACK, MY_UNIQUE_QUALIFIER),
+                ipsSrcFolderEntry.getUniqueBasePackageNameForDerivedArtifacts());
+        assertEquals(mySrcOut, ipsSrcFolderEntry.getSpecificOutputFolderForMergableJavaFiles());
+        assertEquals(myResourceOut, ipsSrcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles());
+        assertEquals(MY_BAS_PACK + "/" + MY_TOC_FILE, ipsSrcFolderEntry.getFullTocPath());
+        assertEquals(MY_VALIDATION_MESSAGE, ipsSrcFolderEntry.getValidationMessagesBundle());
+    }
+
+    @Test
+    public void testReadIpsObjectPath_checkEntryNoUniqueQualifier() {
         ManifestElement[] objectDirElements = mockObjectDirElements(MY_OBJECT_DIR);
         when(bundleManifest.getBasePackage(MY_OBJECT_DIR)).thenReturn(MY_BAS_PACK);
         when(bundleManifest.getSourcecodeOutput(MY_OBJECT_DIR)).thenReturn(MY_SRC_OUT);
@@ -116,6 +147,8 @@ public class IpsObjectPathManifestReaderTest {
         assertEquals(ipsObjectPath, ipsSrcFolderEntry.getIpsObjectPath());
         assertEquals(MY_BAS_PACK, ipsSrcFolderEntry.getBasePackageNameForMergableJavaClasses());
         assertEquals(MY_BAS_PACK, ipsSrcFolderEntry.getBasePackageNameForDerivedJavaClasses());
+        assertEquals(MY_BAS_PACK, ipsSrcFolderEntry.getUniqueBasePackageNameForMergableArtifacts());
+        assertEquals(MY_BAS_PACK, ipsSrcFolderEntry.getUniqueBasePackageNameForDerivedArtifacts());
         assertEquals(mySrcOut, ipsSrcFolderEntry.getSpecificOutputFolderForMergableJavaFiles());
         assertEquals(myResourceOut, ipsSrcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles());
         assertEquals(MY_BAS_PACK + "/" + MY_TOC_FILE, ipsSrcFolderEntry.getFullTocPath());
@@ -135,7 +168,7 @@ public class IpsObjectPathManifestReaderTest {
     }
 
     @Test
-    public void testReadIpsObjectPath_checkContainerEntry() throws Exception {
+    public void testReadIpsObjectPath_checkContainerEntry() {
         mockObjectDirElements();
 
         IIpsObjectPath ipsObjectPath = objectPathReader.readIpsObjectPath();

@@ -62,6 +62,8 @@ public class Messages extends NLS {
     public static String IpsProjectRefEntry_noReferencedProjectSpecified;
     public static String IpsProjectRefEntry_msgMissingReferencedProject;
 
+    public static String IpsSrcFolderEntry_error_duplicateDerivedBasePackage;
+    public static String IpsSrcFolderEntry_error_duplicateMergableBasePackage;
     public static String IpsSrcFolderEntry_outputfolderdoesntexist;
     public static String IpsSrcFolderEntry_outputfoldermergablesrcmissing;
     public static String IpsSrcFolderEntry_outputfoldersrcderivedmissing;

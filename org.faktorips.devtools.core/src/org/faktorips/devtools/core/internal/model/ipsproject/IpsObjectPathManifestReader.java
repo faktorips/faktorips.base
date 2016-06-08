@@ -86,6 +86,7 @@ public class IpsObjectPathManifestReader {
         ipsSrcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(resourceOutputFolder);
         ipsSrcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(bundleManifest.getBasePackage(objectDir));
         ipsSrcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(bundleManifest.getBasePackage(objectDir));
+        ipsSrcFolderEntry.setUniqueQualifier(bundleManifest.getUniqueQualifier(objectDir));
         String tocPath = bundleManifest.getTocPath(manifestElement);
         if (StringUtils.isNotEmpty(tocPath)) {
             ipsSrcFolderEntry.setBasePackageRelativeTocPath(tocPath);

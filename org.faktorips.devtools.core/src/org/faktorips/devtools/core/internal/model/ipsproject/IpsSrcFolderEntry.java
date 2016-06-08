@@ -11,6 +11,8 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
@@ -62,6 +65,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     private static final String PROPERTY_VALIDATION_MESSAGES_BUNDLE = "validationMessagesBundle"; //$NON-NLS-1$
 
+    private static final String PROPERTY_UNIQUE_QUALIFIER = "uniqueQualifier"; //$NON-NLS-1$
+
     /** the folder containing the IPS objects */
     private IFolder sourceFolder;
 
@@ -83,6 +88,11 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * code.
      */
     private String basePackageDerived = StringUtils.EMPTY;
+
+    /**
+     * The qualifier may be specified if the base package is not unique over all dependent projects
+     */
+    private String uniqueQualifier = StringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot root;
 
@@ -121,7 +131,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + SystemUtils.LINE_SEPARATOR
                 + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    basePackageDerived=\"\">          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    basePackageDerived=\"\"          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    uniqueQualifier=\"\">            Optional argument if the basePackage names are not unique for all referencing source folders." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -265,6 +276,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         outputFolderDerived = outputFolderPathDerived.equals(StringUtils.EMPTY) ? null : project.getFolder(new Path(
                 outputFolderPathDerived));
         basePackageDerived = element.getAttribute(PROPERTY_BASE_PACKAGE_DERIVED);
+        uniqueQualifier = StringUtils.trimToEmpty(element.getAttribute(PROPERTY_UNIQUE_QUALIFIER));
     }
 
     @Override
@@ -283,6 +295,9 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 : outputFolderDerived.getProjectRelativePath().toString());
         element.setAttribute(PROPERTY_BASE_PACKAGE_DERIVED, basePackageDerived == null ? StringUtils.EMPTY
                 : basePackageDerived);
+        if (StringUtils.isNotEmpty(uniqueQualifier)) {
+            element.setAttribute(PROPERTY_UNIQUE_QUALIFIER, uniqueQualifier);
+        }
         return element;
     }
 
@@ -301,7 +316,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             result.add(validateOutputFolder());
         }
-
+        result.add(validateUniqueBasePackage());
         return result;
     }
 
@@ -339,6 +354,65 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             result.add(msg);
         }
         return result;
+    }
+
+    private MessageList validateUniqueBasePackage() {
+        MessageList ml = new MessageList();
+        ml.add(validateUniqueBasePackage(getIpsObjectPath().getSourceFolderEntries()));
+        Set<IIpsProject> allReferencedIpsProjects = new HashSet<IIpsProject>(getIpsObjectPath()
+                .getAllReferencedIpsProjects());
+        /*
+         * Avoid testing source folder entries against themselves. A project can be referenced
+         * multiple times in the same IPS object path. Thus use a set and remove this project.
+         */
+        allReferencedIpsProjects.remove(getIpsProject());
+        for (IIpsProject refProject : allReferencedIpsProjects) {
+            ml.add(validateUniqueBasePackage(refProject.getIpsObjectPath().getSourceFolderEntries()));
+        }
+        return ml;
+    }
+
+    private MessageList validateUniqueBasePackage(IIpsSrcFolderEntry[] entries) {
+        MessageList ml = new MessageList();
+        for (IIpsSrcFolderEntry entry : entries) {
+            if (!equals(entry)) {
+                ml.add(validateUniqueBasePackage(entry));
+            }
+        }
+        return ml;
+    }
+
+    protected MessageList validateUniqueBasePackage(IIpsSrcFolderEntry entry) {
+        MessageList ml = new MessageList();
+        if (getUniqueBasePackageNameForMergableArtifacts().equals(entry.getUniqueBasePackageNameForMergableArtifacts())) {
+            ml.newError(MSGCODE_DUPLICATE_BASE_PACKAGE, NLS.bind(
+                    Messages.IpsSrcFolderEntry_error_duplicateMergableBasePackage,
+                    getUniqueBasePackageNameForMergableArtifacts()), this);
+        }
+        if (getUniqueBasePackageNameForDerivedArtifacts().equals(entry.getUniqueBasePackageNameForDerivedArtifacts())) {
+            ml.newError(MSGCODE_DUPLICATE_BASE_PACKAGE, NLS.bind(
+                    Messages.IpsSrcFolderEntry_error_duplicateDerivedBasePackage,
+                    getUniqueBasePackageNameForDerivedArtifacts()), this);
+        }
+        return ml;
+    }
+
+    @Override
+    public String getUniqueBasePackageNameForMergableArtifacts() {
+        return QNameUtil.concat(getBasePackageNameForMergableJavaClasses(), getUniqueQualifier());
+    }
+
+    @Override
+    public String getUniqueBasePackageNameForDerivedArtifacts() {
+        return QNameUtil.concat(getBasePackageNameForDerivedJavaClasses(), getUniqueQualifier());
+    }
+
+    private String getUniqueQualifier() {
+        return uniqueQualifier;
+    }
+
+    public void setUniqueQualifier(String uniqueQualifier) {
+        this.uniqueQualifier = uniqueQualifier;
     }
 
     @Override
@@ -397,4 +471,5 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public boolean isReexported() {
         return true;
     }
+
 }

@@ -10,10 +10,13 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -51,7 +54,8 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
-        path = new IpsObjectPath(ipsProject);
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        path.setOutputDefinedPerSrcFolder(true);
     }
 
     @Test
@@ -128,11 +132,15 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals(project.getFolder("extensions"), entry.getSpecificOutputFolderForDerivedJavaFiles());
         assertEquals("org.sample.extensions", entry.getSpecificBasePackageNameForDerivedJavaClasses());
         assertEquals("motor.repository-toc.xml", entry.getBasePackageRelativeTocPath());
+        assertEquals("org.sample.generated.abc", entry.getUniqueBasePackageNameForMergableArtifacts());
+        assertEquals("org.sample.extensions.abc", entry.getUniqueBasePackageNameForDerivedArtifacts());
 
         entry.initFromXml((Element)nl.item(1), ipsProject.getProject());
         assertNull(entry.getSpecificOutputFolderForMergableJavaFiles());
         assertEquals("", entry.getSpecificBasePackageNameForMergableJavaClasses());
         assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
+        assertEquals("", entry.getUniqueBasePackageNameForMergableArtifacts());
+        assertEquals("", entry.getUniqueBasePackageNameForDerivedArtifacts());
     }
 
     @Test
@@ -141,7 +149,9 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         entry.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
         entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
+        entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.model.derived");
         entry.setBasePackageRelativeTocPath("toc.xml");
+        entry.setUniqueQualifier("unique");
         Element element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
         entry.initFromXml(element, project);
@@ -150,6 +160,9 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals(project.getFolder("javasrc").getFolder("modelclasses"),
                 entry.getSpecificOutputFolderForMergableJavaFiles());
         assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals("org.faktorips.sample.model.unique", entry.getUniqueBasePackageNameForMergableArtifacts());
+        assertEquals("org.faktorips.sample.model.derived", entry.getSpecificBasePackageNameForDerivedJavaClasses());
+        assertEquals("org.faktorips.sample.model.derived.unique", entry.getUniqueBasePackageNameForDerivedArtifacts());
 
         // null, default values for new entries
         entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
@@ -159,7 +172,9 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertNull(entry.getSpecificOutputFolderForMergableJavaFiles());
         assertNull(entry.getSpecificOutputFolderForDerivedJavaFiles());
         assertEquals("", entry.getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals("", entry.getUniqueBasePackageNameForMergableArtifacts());
         assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
+        assertEquals("", entry.getUniqueBasePackageNameForDerivedArtifacts());
     }
 
     @Test
@@ -197,6 +212,82 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(5, ml.size());
+    }
+
+    @Test
+    public void testValidate_UniqueBasePackage_ValidInSameProject() throws CoreException {
+        IIpsSrcFolderEntry entry = setUpPathForUniqueBasePackageTest();
+
+        MessageList ml = path.validate();
+
+        assertThat(ml, isEmpty());
+
+        entry.setSpecificBasePackageNameForMergableJavaClasses(path.getSourceFolderEntries()[0]
+                .getBasePackageNameForMergableJavaClasses());
+    }
+
+    @Test
+    public void testValidate_UniqueBasePackage_SameMergableBasePackageInSameProject() throws CoreException {
+        IIpsSrcFolderEntry entry = setUpPathForUniqueBasePackageTest();
+        entry.setSpecificBasePackageNameForMergableJavaClasses(path.getSourceFolderEntries()[0]
+                .getBasePackageNameForMergableJavaClasses());
+
+        MessageList ml = path.validate();
+
+        assertThat(ml, hasMessageCode(IpsSrcFolderEntry.MSGCODE_DUPLICATE_BASE_PACKAGE));
+    }
+
+    @Test
+    public void testValidate_UniqueBasePackage_SameDerivedBasePackageInSameProject() throws CoreException {
+        IIpsSrcFolderEntry entry = setUpPathForUniqueBasePackageTest();
+        entry.setSpecificBasePackageNameForDerivedJavaClasses(path.getSourceFolderEntries()[0]
+                .getBasePackageNameForDerivedJavaClasses());
+
+        MessageList ml = path.validate();
+
+        assertThat(ml, hasMessageCode(IpsSrcFolderEntry.MSGCODE_DUPLICATE_BASE_PACKAGE));
+    }
+
+    @Test
+    public void testValidate_UniqueBasePackage_DefinedInObjectPathInSameProject() throws CoreException {
+        path.setOutputDefinedPerSrcFolder(false);
+        setUpPathForUniqueBasePackageTest();
+
+        MessageList ml = path.validate();
+
+        assertThat(ml, hasMessageCode(IpsSrcFolderEntry.MSGCODE_DUPLICATE_BASE_PACKAGE));
+    }
+
+    @Test
+    public void testValidate_UniqueBasePackage_SameInDifferentProjects() throws CoreException {
+        IIpsProject ipsProject2 = newIpsProject();
+        path.newIpsProjectRefEntry(ipsProject2);
+
+        MessageList ml = path.validate();
+
+        assertThat(ml, hasMessageCode(IpsSrcFolderEntry.MSGCODE_DUPLICATE_BASE_PACKAGE));
+    }
+
+    @Test
+    public void testValidate_UniqueBasePackage_DiffInDifferentProjects() throws CoreException {
+        IIpsProject ipsProject2 = newIpsProject();
+        path.newIpsProjectRefEntry(ipsProject2);
+        path.getSourceFolderEntries()[0].setSpecificBasePackageNameForMergableJavaClasses("asd");
+        path.getSourceFolderEntries()[0].setSpecificBasePackageNameForDerivedJavaClasses("asd");
+
+        MessageList ml = path.validate();
+
+        assertThat(ml, isEmpty());
+    }
+
+    protected IIpsSrcFolderEntry setUpPathForUniqueBasePackageTest() throws CoreException {
+        IFolder testFolder = ipsProject.getProject().getFolder("test");
+        ipsProject.getProject().getFolder("derived").create(true, true, null);
+        testFolder.create(false, true, null);
+        IIpsSrcFolderEntry folderEntry = path.newSourceFolderEntry(testFolder);
+        folderEntry.setSpecificOutputFolderForMergableJavaFiles(ipsProject.getProject().getFolder("src"));
+        folderEntry.setSpecificOutputFolderForDerivedJavaFiles(ipsProject.getProject().getFolder("derived"));
+        return folderEntry;
     }
 
     @Test
