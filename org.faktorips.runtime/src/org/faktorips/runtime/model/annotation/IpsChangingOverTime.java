@@ -22,7 +22,7 @@ import org.faktorips.runtime.modeltype.internal.ModelType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface IpsProductCmptTypeGen {
+public @interface IpsChangingOverTime {
 
     /**
      * The java source class of the product component type generation

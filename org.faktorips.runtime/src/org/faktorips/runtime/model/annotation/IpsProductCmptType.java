@@ -14,7 +14,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.modeltype.internal.ModelType;
 
 /**
@@ -29,11 +28,5 @@ public @interface IpsProductCmptType {
      * The qualified IPS object name.
      */
     String name();
-
-    /**
-     * Whether the product component has {@link IProductComponentGeneration product component
-     * generations}.
-     */
-    boolean changingOverTime();
 
 }

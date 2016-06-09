@@ -28,9 +28,8 @@ public class ProductCmptDeclClassAnnGenTest {
     public void test() {
         XProductCmptClass product = mockProduct();
 
-        assertEquals(
-                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = false)"
-                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
+        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.getProperty("line.separator"),
+                generator.createAnnotation(product).getSourcecode());
     }
 
     @Test
@@ -39,13 +38,12 @@ public class ProductCmptDeclClassAnnGenTest {
 
         when(product.isChangingOverTime()).thenReturn(true);
         XProductCmptGenerationClass generationClass = mock(XProductCmptGenerationClass.class);
-        when(generationClass.getImplClassName()).thenReturn("ProductCmptGen");
+        when(generationClass.getInterfaceName()).thenReturn("IProductCmptGen");
         when(product.getProductCmptGenerationNode()).thenReturn(generationClass);
 
-        assertEquals(
-                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = true)"
-                        + System.getProperty("line.separator") + "@IpsProductCmptTypeGen(ProductCmptGen.class)"
-                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
+        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.getProperty("line.separator")
+                + "@IpsChangingOverTime(IProductCmptGen.class)" + System.getProperty("line.separator"), generator
+                .createAnnotation(product).getSourcecode());
     }
 
     @Test
@@ -54,10 +52,9 @@ public class ProductCmptDeclClassAnnGenTest {
 
         when(product.isConfigurationForPolicyCmptType()).thenReturn(true);
         when(product.getPolicyInterfaceName()).thenReturn("PolicyInterfaceClass");
-        assertEquals(
-                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = false)"
-                        + System.getProperty("line.separator") + "@IpsConfigures(PolicyInterfaceClass.class)"
-                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
+        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.getProperty("line.separator")
+                + "@IpsConfigures(PolicyInterfaceClass.class)" + System.getProperty("line.separator"), generator
+                .createAnnotation(product).getSourcecode());
     }
 
     private XProductCmptClass mockProduct() {

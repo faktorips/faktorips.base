@@ -9,16 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.AbstractTypeDeclClassAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
-import org.faktorips.runtime.model.annotation.IpsProductCmptTypeGen;
 
 public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
 
@@ -46,15 +45,13 @@ public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
 
         String ipsObjectName = prod.getIpsObjectPartContainer().getQualifiedName();
         String nameParam = "name = \"" + ipsObjectName + "\"";
-        String changingOverTimeParam = "changingOverTime = " + prod.isChangingOverTime();
-        codeFragmentBuilder.annotationLn(IpsProductCmptType.class,
-                StringUtils.join(new String[] { nameParam, changingOverTimeParam }, ", "));
+        codeFragmentBuilder.annotationLn(IpsProductCmptType.class, nameParam);
         return codeFragmentBuilder.getFragment();
     }
 
     /**
      * @return an annotation that annotates the declaration class of the generation of this product
-     * @see IpsProductCmptTypeGen
+     * @see IpsChangingOverTime
      */
     protected JavaCodeFragment createAnnConfigures(XProductCmptClass prod) {
         JavaCodeFragmentBuilder codeFragmentBuilder = new JavaCodeFragmentBuilder();
@@ -75,8 +72,8 @@ public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
         JavaCodeFragmentBuilder codeFragmentBuilder = new JavaCodeFragmentBuilder();
 
         if (prod.isChangingOverTime()) {
-            codeFragmentBuilder.annotationLn(IpsProductCmptTypeGen.class, prod.getProductCmptGenerationNode()
-                    .getImplClassName() + ".class");
+            codeFragmentBuilder.annotationLn(IpsChangingOverTime.class, prod.getProductCmptGenerationNode()
+                    .getInterfaceName() + ".class");
             return codeFragmentBuilder.getFragment();
         } else {
             return new JavaCodeFragment();
