@@ -7,11 +7,11 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.stdbuilder.xpand;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.xml.transform.OutputKeys;
@@ -29,6 +29,9 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
@@ -40,7 +43,7 @@ import org.w3c.dom.Element;
  */
 public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
 
-    private static final List<AnnotatedJavaElementType> RELEVANT_TYPES = Arrays.asList(
+    private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(
             AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER,
             AnnotatedJavaElementType.PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER,
             AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER,

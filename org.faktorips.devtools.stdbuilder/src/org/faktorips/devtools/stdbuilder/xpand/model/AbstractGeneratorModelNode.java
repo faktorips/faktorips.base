@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
+import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
@@ -877,6 +879,18 @@ public abstract class AbstractGeneratorModelNode {
 
     public String getMethodNameWriteToXml() {
         return "write" + StringUtils.capitalize(getName());
+    }
+
+    private IIpsSrcFolderEntry getIpsSrcFolderEntry() {
+        return (IIpsSrcFolderEntry)getIpsObjectPartContainer().getIpsSrcFile().getIpsPackageFragment().getRoot()
+                .getIpsObjectPathEntry();
+    }
+
+    public String getDocumentationResourceBundleBaseName() {
+        IIpsSrcFolderEntry srcEntry = getIpsSrcFolderEntry();
+        LabelAndDescriptionPropertiesBuilder lAdBuilder = getIpsProject().getIpsArtefactBuilderSet()
+                .getBuildersByClass(LabelAndDescriptionPropertiesBuilder.class).get(0);
+        return lAdBuilder.getResourceBundleBaseName(srcEntry);
     }
 
     @Override

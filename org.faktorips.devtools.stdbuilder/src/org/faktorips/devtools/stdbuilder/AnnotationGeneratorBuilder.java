@@ -18,6 +18,8 @@ import java.util.Map;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.ExtensionPropertyAnnGen;
+import org.faktorips.devtools.stdbuilder.xpand.LabelAndDescriptionAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.PublishedInterfaceAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.attribute.AttributeAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptAssociationAnnGenFactory;
@@ -56,7 +58,9 @@ public class AnnotationGeneratorBuilder {
                 // published interfaces
                 new PublishedInterfaceAnnGenFactory(),
                 // extension properties
-                new ExtensionPropertyAnnGen.Factory() };
+                new ExtensionPropertyAnnGen.Factory(),
+                // labels and descriptions
+                new LabelAndDescriptionAnnGen.Factory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {
