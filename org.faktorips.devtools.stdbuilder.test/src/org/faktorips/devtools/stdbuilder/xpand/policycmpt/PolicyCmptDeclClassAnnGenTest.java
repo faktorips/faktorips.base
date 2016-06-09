@@ -18,12 +18,30 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.junit.Test;
 
-public class PolicyCmptDeclClassAnnotationGeneratorTest {
+public class PolicyCmptDeclClassAnnGenTest {
 
-    public PolicyCmptDeclClassAnnotationGenerator generator = new PolicyCmptDeclClassAnnotationGenerator();
+    public PolicyCmptDeclClassAnnGen generator = new PolicyCmptDeclClassAnnGen();
 
     @Test
     public void test() {
+        XPolicyCmptClass policy = mockPolicyCmptClass();
+
+        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator"), generator
+                .createAnnotation(policy).getSourcecode());
+    }
+
+    @Test
+    public void testConfigured() {
+        XPolicyCmptClass policy = mockPolicyCmptClass();
+        when(policy.isConfigured()).thenReturn(true);
+        when(policy.getProductCmptClassName()).thenReturn("ProductCmptImplClass");
+
+        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator")
+                + "@IpsConfiguredBy(value = ProductCmptImplClass.class)" + System.getProperty("line.separator"),
+                generator.createAnnotation(policy).getSourcecode());
+    }
+
+    private XPolicyCmptClass mockPolicyCmptClass() {
         XPolicyCmptClass policy = mock(XPolicyCmptClass.class);
         when(policy.addImport(IpsPolicyCmptType.class)).thenReturn("IpsPolicyCmptType");
 
@@ -31,13 +49,6 @@ public class PolicyCmptDeclClassAnnotationGeneratorTest {
         when(ipsObject.getQualifiedName()).thenReturn("test.PolicyCmpt");
         when(policy.getIpsObjectPartContainer()).thenReturn(ipsObject);
 
-        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator"), generator
-                .createAnnotation(policy).getSourcecode());
-
-        when(policy.isConfigured()).thenReturn(true);
-        when(policy.getProductCmptClassName()).thenReturn("ProductCmptImplClass");
-        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator")
-                + "@IpsConfiguredBy(value = ProductCmptImplClass.class)" + System.getProperty("line.separator"),
-                generator.createAnnotation(policy).getSourcecode());
+        return policy;
     }
 }

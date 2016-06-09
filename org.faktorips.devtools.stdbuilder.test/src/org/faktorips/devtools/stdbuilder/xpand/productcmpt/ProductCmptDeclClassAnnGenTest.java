@@ -20,12 +20,47 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGen
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
 
-public class ProductCmptClassAnnotationGeneratorTest {
+public class ProductCmptDeclClassAnnGenTest {
 
-    private ProductCmptDeclClassAnnotationGenerator generator = new ProductCmptDeclClassAnnotationGenerator();
+    private ProductCmptDeclClassAnnGen generator = new ProductCmptDeclClassAnnGen();
 
     @Test
     public void test() {
+        XProductCmptClass product = mockProduct();
+
+        assertEquals(
+                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = false)"
+                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
+    }
+
+    @Test
+    public void testChangingOverTime() {
+        XProductCmptClass product = mockProduct();
+
+        when(product.isChangingOverTime()).thenReturn(true);
+        XProductCmptGenerationClass generationClass = mock(XProductCmptGenerationClass.class);
+        when(generationClass.getImplClassName()).thenReturn("ProductCmptGen");
+        when(product.getProductCmptGenerationNode()).thenReturn(generationClass);
+
+        assertEquals(
+                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = true)"
+                        + System.getProperty("line.separator") + "@IpsProductCmptTypeGen(ProductCmptGen.class)"
+                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
+    }
+
+    @Test
+    public void testConfigures() {
+        XProductCmptClass product = mockProduct();
+
+        when(product.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(product.getPolicyInterfaceName()).thenReturn("PolicyInterfaceClass");
+        assertEquals(
+                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = false)"
+                        + System.getProperty("line.separator") + "@IpsConfigures(PolicyInterfaceClass.class)"
+                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
+    }
+
+    private XProductCmptClass mockProduct() {
         XProductCmptClass product = mock(XProductCmptClass.class);
         when(product.addImport(IpsProductCmptType.class)).thenReturn("IpsProductCmptType");
 
@@ -36,28 +71,6 @@ public class ProductCmptClassAnnotationGeneratorTest {
         XPolicyCmptClass policy = mock(XPolicyCmptClass.class);
         when(policy.getImplClassName()).thenReturn("PolicyCmpt");
         when(product.getPolicyCmptClass()).thenReturn(policy);
-
-        assertEquals(
-                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = false)"
-                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
-
-        when(product.isConfigurationForPolicyCmptType()).thenReturn(true);
-        when(product.getPolicyInterfaceName()).thenReturn("PolicyInterfaceClass");
-        assertEquals(
-                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = false)"
-                        + System.getProperty("line.separator") + "@IpsConfigures(PolicyInterfaceClass.class)"
-                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
-
-        when(product.isConfigurationForPolicyCmptType()).thenReturn(false);
-        when(product.isChangingOverTime()).thenReturn(true);
-        XProductCmptGenerationClass generationClass = mock(XProductCmptGenerationClass.class);
-        when(generationClass.getImplClassName()).thenReturn("ProductCmptGen");
-        when(product.getProductCmptGenerationNode()).thenReturn(generationClass);
-
-        assertEquals(
-                "@IpsProductCmptType(name = \"test.ProductCmpt\", changingOverTime = true)"
-                        + System.getProperty("line.separator") + "@IpsProductCmptTypeGen(ProductCmptGen.class)"
-                        + System.getProperty("line.separator"), generator.createAnnotation(product).getSourcecode());
-
+        return product;
     }
 }

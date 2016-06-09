@@ -24,7 +24,7 @@ public class PolicyCmptDeclClassAnnGenFactory implements IAnnotationGeneratorFac
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         if (type == AnnotatedJavaElementType.POLICY_CMPT_DECLARATION_CLASS) {
-            return new PolicyCmptDeclClassAnnotationGenerator();
+            return new PolicyCmptDeclClassAnnGen();
         } else {
             return null;
         }
