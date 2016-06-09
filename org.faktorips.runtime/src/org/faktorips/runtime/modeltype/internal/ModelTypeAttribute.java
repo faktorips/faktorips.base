@@ -10,98 +10,45 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute;
+import org.faktorips.runtime.model.annotation.IpsAttribute;
+import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 
 /**
  * A {@link ModelTypeAttribute} represent an attribute from the PolicyCmptType or the
  * ProductCmptType.
  */
-public class ModelTypeAttribute extends AbstractModelElement implements IModelTypeAttribute {
+public class ModelTypeAttribute extends AbstractModelTypeAttribute {
 
-    private ModelType modelType;
+    private final Method getter;
 
-    private Class<?> datatype;
+    private final Method setter;
 
-    private ValueSetType valueSetType = ValueSetType.AllValues;
-
-    private AttributeType attributeType = AttributeType.CHANGEABLE;
-
-    private boolean isProductRelevant = false;
-
-    private Method getter;
-
-    public ModelTypeAttribute(String name, ModelType modelType) {
-        super(name);
-        this.modelType = modelType;
-    }
-
-    @Override
-    public IModelType getModelType() {
-        return modelType;
-    }
-
-    @Override
-    public Class<?> getDatatype() throws ClassNotFoundException {
-        return datatype;
-    }
-
-    @Override
-    public AttributeType getAttributeType() {
-        return attributeType;
-    }
-
-    @Override
-    public ValueSetType getValueSetType() {
-        return valueSetType;
+    public ModelTypeAttribute(ModelType modelType, Method getter, Method setter) {
+        super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
+                getter.getReturnType());
+        this.getter = getter;
+        this.setter = setter;
     }
 
     @Override
     public boolean isProductRelevant() {
-        return isProductRelevant;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(getName());
-        sb.append(": ");
-        sb.append(datatype.getSimpleName());
-        sb.append('(');
-        sb.append(attributeType);
-        sb.append(", ");
-        sb.append(valueSetType);
-        if (isProductRelevant) {
-            sb.append(", ");
-            sb.append("isProductRelevant");
-        }
-        sb.append(')');
-        return sb.toString();
+        return getter.isAnnotationPresent(IpsConfiguredAttribute.class);
     }
 
     @Override
     public Object getValue(IModelObject source) {
         try {
-            if (AttributeType.CONSTANT == attributeType) {
-                Field field = source.getClass().getField(getName().toUpperCase());
-                return field.get(source);
-            }
             return getter.invoke(source);
-        } catch (IllegalArgumentException e) {
-            handleGetterError(source, e);
         } catch (IllegalAccessException e) {
             handleGetterError(source, e);
         } catch (InvocationTargetException e) {
             handleGetterError(source, e);
         } catch (SecurityException e) {
-            handleGetterError(source, e);
-        } catch (NoSuchFieldException e) {
             handleGetterError(source, e);
         }
         return null;
@@ -110,10 +57,11 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     @Override
     public void setValue(IModelObject source, Object value) {
         try {
-            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(getName(), source.getClass());
-            propertyDescriptor.getWriteMethod().invoke(source, value);
-        } catch (IntrospectionException e) {
-            handleSetterError(source, value, e);
+            if (setter != null) {
+                setter.invoke(source, value);
+            } else {
+                handleSetterError(source, value, null);
+            }
         } catch (IllegalArgumentException e) {
             handleSetterError(source, value, e);
         } catch (IllegalAccessException e) {
@@ -121,11 +69,6 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         } catch (InvocationTargetException e) {
             handleSetterError(source, value, e);
         }
-    }
-
-    private void handleGetterError(IModelObject source, Exception e) {
-        throw new IllegalArgumentException(String.format("Could not get attribute %s on source object %s.", getName(),
-                source), e);
     }
 
     private void handleSetterError(IModelObject source, Object value, Exception e) {

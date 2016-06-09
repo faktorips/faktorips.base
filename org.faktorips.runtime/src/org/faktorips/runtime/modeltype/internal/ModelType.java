@@ -11,41 +11,56 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.model.Models;
+import org.faktorips.runtime.model.annotation.AnnotatedType;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
+import org.faktorips.runtime.util.MessagesHelper;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
-public class ModelType extends AbstractModelElement implements IModelType {
+public abstract class ModelType extends AbstractModelElement implements IModelType {
 
-    private List<IModelTypeAssociation> associations = new ArrayList<IModelTypeAssociation>();
-    private Map<String, IModelTypeAssociation> associationsByName = new HashMap<String, IModelTypeAssociation>();
+    private final AnnotatedType annotatedModelType;
 
-    private List<IModelTypeAttribute> attributes = new ArrayList<IModelTypeAttribute>();
-    private Map<String, IModelTypeAttribute> attributesByName = new HashMap<String, IModelTypeAttribute>();
+    private final LinkedHashMap<String, IModelTypeAttribute> attributesByName;
 
-    private Class<?> implementationClass;
-    private Class<?> interfaceClass;
+    private final LinkedHashMap<String, IModelTypeAssociation> associationsByName;
 
-    public ModelType(String name, Class<?> implementationClass) {
-        super(name);
-        this.implementationClass = implementationClass;
+    private final MessagesHelper messagesHelper;
+
+    public ModelType(String name, AnnotatedType annotatedModelType) {
+        super(name, annotatedModelType.get(IpsExtensionProperties.class));
+        this.annotatedModelType = annotatedModelType;
+        ModelTypePartReader annotationReader = new ModelTypePartReader(annotatedModelType);
+        attributesByName = annotationReader.getAttributes(this);
+        associationsByName = annotationReader.getAssociations(this);
+        IpsDocumented ipsDocumented = annotatedModelType.get(IpsDocumented.class);
+        messagesHelper = createMessageHelper(ipsDocumented, annotatedModelType.getClassLoader());
+    }
+
+    @Override
+    protected String getTypeName() {
+        return getName();
+    }
+
+    @Override
+    protected MessagesHelper getMessageHelper() {
+        return messagesHelper;
     }
 
     @Override
     public IModelTypeAssociation getDeclaredAssociation(int index) {
-        return associations.get(index);
+        return getDeclaredAssociations().get(index);
     }
 
     @Override
@@ -55,7 +70,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
 
     @Override
     public List<IModelTypeAssociation> getDeclaredAssociations() {
-        return Collections.unmodifiableList(associations);
+        return new ArrayList<IModelTypeAssociation>(associationsByName.values());
     }
 
     @Override
@@ -83,7 +98,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
 
     @Override
     public IModelTypeAttribute getDeclaredAttribute(int index) {
-        return attributes.get(index);
+        return getDeclaredAttributes().get(index);
     }
 
     @Override
@@ -108,7 +123,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
 
     @Override
     public List<IModelTypeAttribute> getDeclaredAttributes() {
-        return Collections.unmodifiableList(attributes);
+        return new ArrayList<IModelTypeAttribute>(attributesByName.values());
     }
 
     @Override
@@ -128,19 +143,22 @@ public class ModelType extends AbstractModelElement implements IModelType {
         getAttribute(attributeName).setValue(source, value);
     }
 
+    /**
+     * Returns the {@link AnnotatedType} object for this model type that should be used to read all
+     * annotations.
+     */
+    protected AnnotatedType getAnnotatedModelType() {
+        return annotatedModelType;
+    }
+
     @Override
     public Class<?> getJavaClass() {
-        return implementationClass;
+        return annotatedModelType.getImplementationClass();
     }
 
     @Override
     public Class<?> getJavaInterface() {
-        return interfaceClass;
-    }
-
-    @Override
-    public IModelType getSuperType() {
-        return Models.getModelType(implementationClass.getSuperclass());
+        return annotatedModelType.getPublishedInterface();
     }
 
     @Override

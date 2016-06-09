@@ -611,59 +611,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public IModelType getModelType(Class<?> modelObjectClass) {
-        // if (modelTypes.containsKey(modelObjectClass)) {
-        // return modelTypes.get(modelObjectClass);
-        // }
-        // URL xmlFile = modelObjectClass.getResource(modelObjectClass.getName().substring(
-        // modelObjectClass.getName().lastIndexOf('.') + 1)
-        //                + ".xml"); //$NON-NLS-1$
-        // IModelType modelType = new ModelType(this);
-        // XMLInputFactory factory = XMLInputFactory.newInstance();
-        // try {
-        // InputStream in = xmlFile.openStream();
-        // XMLStreamReader parser = factory.createXMLStreamReader(in);
-        //
-        // while (parser.hasNext() && parser.next() != XMLStreamConstants.START_ELEMENT) {
-        // // goto start element
-        // }
-        //
-        // modelType.initFromXml(parser);
-        // } catch (IOException e) {
-        // throw new RuntimeException(
-        //                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        // } catch (XMLStreamException e) {
-        // throw new RuntimeException(
-        //                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        // }
-        // modelTypes.put(modelObjectClass, modelType);
-        // modelTypesByName.put(modelType.getName(), modelType);
         return Models.getModelType(modelObjectClass);
-    }
-
-    public IModelType getModelType(String qualifiedName) {
-        // if (modelTypesByName.containsKey(qualifiedName)) {
-        // return modelTypesByName.get(qualifiedName);
-        // }
-        //        URL xmlFile = this.getClass().getResource(qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1) + ".xml"); //$NON-NLS-1$
-        // IModelType modelType = new ModelType(this);
-        // XMLInputFactory factory = XMLInputFactory.newInstance();
-        // try {
-        // InputStream in = xmlFile.openStream();
-        // XMLStreamReader parser = factory.createXMLStreamReader(in);
-        //
-        // while (parser.hasNext() && parser.next() != XMLStreamConstants.START_ELEMENT) {
-        // // goto start element
-        // }
-        //
-        // modelType.initFromXml(parser);
-        // } catch (IOException e) {
-        //            throw new RuntimeException("Error loading model type info for " + qualifiedName + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        // } catch (XMLStreamException e) {
-        //            throw new RuntimeException("Error loading model type info for " + qualifiedName + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        // }
-        // modelTypes.put(modelType.getClass(), modelType);
-        // modelTypesByName.put(qualifiedName, modelType);
-        return Models.getModelType(qualifiedName);
     }
 
     @Override

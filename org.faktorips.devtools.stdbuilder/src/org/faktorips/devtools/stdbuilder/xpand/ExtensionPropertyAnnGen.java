@@ -9,17 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -116,22 +108,9 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             Element valueElement = doc.createElement("value");
             extensionPropertyDefinition.valueToXml(valueElement, value);
-            try {
-                StringWriter writer = new StringWriter();
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.setOutputProperty(OutputKeys.ENCODING, ipsObjectPartContainer.getIpsProject()
-                        .getXmlFileCharset());
-                DOMSource source = new DOMSource(valueElement);
-                StreamResult result = new StreamResult(writer);
-                transformer.transform(source, result);
-                String valueString = writer.toString().replace("\r\r", "\r");
-                valueString = valueString.substring(valueString.indexOf("<value>") + 7,
-                        valueString.lastIndexOf("</value>"));
-                valueString = StringEscapeUtils.escapeJava(valueString);
-                annotationArg.append(valueString);
-            } catch (TransformerException e) {
-                throw new RuntimeException(e);
-            }
+            String valueString = valueElement.getTextContent();
+            valueString = StringEscapeUtils.escapeJava(valueString);
+            annotationArg.append(valueString);
             annotationArg.append("\"");
         }
         return new JavaCodeFragmentBuilder().annotationLn(IpsExtensionProperty.class, annotationArg.getFragment())

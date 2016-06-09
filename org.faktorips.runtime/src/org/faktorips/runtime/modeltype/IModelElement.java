@@ -19,7 +19,13 @@ import java.util.Set;
  * @author Daniel Hohenberger
  */
 public interface IModelElement {
+
     /**
+     * Returns the value for the given extension property identified by the specified id.
+     * <p>
+     * Note: At the moment only {@link String} is supported as extension property value. This
+     * methods returns {@link Object} for future changes.
+     * 
      * @return the value of the extension property defined by the given <code>propertyId</code> or
      *         <code>null</code> if the extension property's <code>isNull</code> attribute is
      *         <code>true</code>
@@ -38,14 +44,20 @@ public interface IModelElement {
     public String getName();
 
     /**
-     * TODO
+     * Returns the label for this model element in the specified locale. If there is no label in the
+     * specified locale, it tries to find the label in the default locale. If there is also no label
+     * in the default locale the element's name is returned.
      * 
      * @return the label for the given locale or the element's name if no label exists for the given
-     *         locale
+     *         locale nor in the default locale
      */
     public String getLabel(Locale locale);
 
     /**
+     * Returns the description for this model element in the specified locale. If there is no
+     * description in the specified locale, it tries to find the description in the default locale.
+     * If there is also no description in the default locale it returns the empty string.
+     * 
      * @return the description for the given locale or an empty string if no description exists for
      *         the given locale
      */

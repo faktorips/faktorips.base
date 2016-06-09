@@ -22,9 +22,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageType;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractPropertiesGenerator;
+import org.faktorips.runtime.modeltype.internal.DocumentationType;
 
 public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
 
@@ -59,14 +59,14 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
         if (ipsObjectPart instanceof ILabeledElement) {
             ILabel label = ((ILabeledElement)ipsObjectPart).getLabel(getSupportedLanguage().getLocale());
             if (label != null && StringUtils.isNotBlank(label.getValue())) {
-                labelsAndDescriptions.put(ipsObjectPart, MessageType.LABEL, label.getValue());
+                labelsAndDescriptions.put(ipsObjectPart, DocumentationType.LABEL, label.getValue());
             }
         }
         if (ipsObjectPart instanceof IDescribedElement) {
             IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getSupportedLanguage()
                     .getLocale());
             if (description != null && StringUtils.isNotBlank(description.getText())) {
-                labelsAndDescriptions.put(ipsObjectPart, MessageType.DESCRIPTION, description.getText());
+                labelsAndDescriptions.put(ipsObjectPart, DocumentationType.DESCRIPTION, description.getText());
             }
         }
     }

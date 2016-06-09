@@ -10,44 +10,96 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
 import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.util.MessagesHelper;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
-public class AbstractModelElement implements IModelElement {
-
-    private final Map<Locale, String> labelsByLocale = new HashMap<Locale, String>();
-
-    private final Map<Locale, String> descriptionsByLocale = new HashMap<Locale, String>();
-
-    private Map<String, Object> extPropertyValues;
+public abstract class AbstractModelElement implements IModelElement {
 
     private final String name;
 
-    public AbstractModelElement(String name) {
+    private final Map<String, Object> extPropertyValues;
+
+    public AbstractModelElement(String name, IpsExtensionProperties extensionProperties) {
         this.name = name;
+        extPropertyValues = initExtensionPropertyMap(extensionProperties);
+    }
+
+    private Map<String, Object> initExtensionPropertyMap(IpsExtensionProperties extensionPropertiesAnnotation) {
+        Map<String, Object> result = Collections.emptyMap();
+        if (extensionPropertiesAnnotation != null) {
+            IpsExtensionProperty[] extensionProperties = extensionPropertiesAnnotation.value();
+            result = new LinkedHashMap<String, Object>(extensionProperties.length, 1f);
+            for (IpsExtensionProperty ipsExtensionProperty : extensionProperties) {
+                result.put(ipsExtensionProperty.id(), initValue(ipsExtensionProperty));
+            }
+        }
+        return result;
+    }
+
+    private Object initValue(IpsExtensionProperty ipsExtensionProperty) {
+        if (ipsExtensionProperty.isNull()) {
+            return null;
+        } else {
+            return ipsExtensionProperty.value();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
     public String getLabel(Locale locale) {
-        String label = labelsByLocale.get(locale);
-        return IpsStringUtils.isEmpty(label) ? getName() : label;
+        return getDocumentation(locale, DocumentationType.LABEL, getName());
     }
 
     @Override
     public String getDescription(Locale locale) {
-        String description = descriptionsByLocale.get(locale);
-        return IpsStringUtils.isEmpty(description) ? IpsStringUtils.EMPTY : description;
+        return getDocumentation(locale, DocumentationType.DESCRIPTION, IpsStringUtils.EMPTY);
     }
+
+    private String getMessageKey(DocumentationType messageType) {
+        return messageType.getKey(getTypeName(), getName());
+    }
+
+    protected String getDocumentation(Locale locale, DocumentationType type, String fallback) {
+        MessagesHelper messageHelper = getMessageHelper();
+        if (messageHelper != null) {
+            return messageHelper.getMessageOr(getMessageKey(type), locale, fallback);
+        } else {
+            return fallback;
+        }
+    }
+
+    protected abstract MessagesHelper getMessageHelper();
+
+    protected MessagesHelper createMessageHelper(IpsDocumented documentedAnnotation, ClassLoader classLoader) {
+        if (documentedAnnotation != null) {
+            String documentationResourceBundle = documentedAnnotation.bundleName();
+            Locale defaultLocale = new Locale(documentedAnnotation.defaultLocale());
+            return new MessagesHelper(documentationResourceBundle, classLoader, defaultLocale);
+        } else {
+            return null;
+        }
+    }
+
+    protected abstract String getTypeName();
 
     @Override
     public Object getExtensionPropertyValue(String propertyId) {
@@ -55,21 +107,6 @@ public class AbstractModelElement implements IModelElement {
             return null;
         }
         return extPropertyValues.get(propertyId);
-    }
-
-    /**
-     * Sets the value of the extension property <code>propertyId</code>.
-     */
-    public void setExtensionPropertyValue(String propertyId, Object value) {
-        if (extPropertyValues == null) {
-            extPropertyValues = new HashMap<String, Object>(5);
-        }
-        extPropertyValues.put(propertyId, value);
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

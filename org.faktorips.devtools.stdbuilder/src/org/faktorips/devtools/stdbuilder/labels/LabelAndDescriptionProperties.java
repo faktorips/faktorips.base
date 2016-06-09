@@ -16,6 +16,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
+import org.faktorips.runtime.modeltype.internal.DocumentationType;
 
 public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
 
@@ -28,7 +29,7 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
         return MessageKey.create(key);
     }
 
-    public void put(IIpsObjectPartContainer ipsObjectPart, MessageType messageType, String messageText) {
+    public void put(IIpsObjectPartContainer ipsObjectPart, DocumentationType messageType, String messageText) {
         MessageKey messageKey = new MessageKey(ipsObjectPart, messageType);
         put(messageKey, messageText);
     }
@@ -37,14 +38,6 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
     @Override
     protected Collection<MessageKey> getKeysForIpsObject(String ipsObjectQname) {
         return (Collection<MessageKey>)super.getKeysForIpsObject(ipsObjectQname);
-    }
-
-    public static enum MessageType {
-
-        LABEL,
-
-        DESCRIPTION;
-
     }
 
     public static class MessageKey implements PropertyKey {
@@ -57,39 +50,22 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
 
         private final String key;
         private final String ipsObjectQname;
-        private final String ipsObjectPartType;
-        private final String ipsObjectPartName;
-        private final MessageType messageType;
 
-        public MessageKey(IIpsObjectPartContainer ipsObjectPart, MessageType messageType) {
+        public MessageKey(IIpsObjectPartContainer ipsObjectPart, DocumentationType messageType) {
             ipsObjectQname = ipsObjectPart.getIpsObject().getQualifiedName();
-            ipsObjectPartType = ipsObjectPart.getClass().getSimpleName();
-            ipsObjectPartName = ipsObjectPart.getName();
-            this.messageType = messageType;
-            key = ipsObjectQname + QNAME_SEPARATOR + ipsObjectPartType + QNAME_SEPARATOR + ipsObjectPartName
-                    + QNAME_SEPARATOR + messageType.name();
+            String ipsObjectPartName = ipsObjectPart.getName();
+            key = messageType.getKey(ipsObjectQname, ipsObjectPartName);
         }
 
-        public MessageKey(String key, String ipsObjectQName, String ipsObjectPartType, String ipsObjectPartName,
-                MessageType messageType) {
+        public MessageKey(String key, String ipsObjectQName) {
             this.key = key;
-            ipsObjectQname = ipsObjectQName;
-            this.ipsObjectPartType = ipsObjectPartType;
-            this.ipsObjectPartName = ipsObjectPartName;
-            this.messageType = messageType;
+            this.ipsObjectQname = ipsObjectQName;
         }
 
         public static MessageKey create(String key) {
             String[] split = key.split(QNAME_SEPARATOR);
-            if (split.length == 4) {
-                String ipsObjectQname = split[0];
-                String ipsObjectPartType = split[1];
-                String ipsObjectPartName = split[2];
-                MessageType type = MessageType.valueOf(split[3]);
-                return new MessageKey(key, ipsObjectQname, ipsObjectPartType, ipsObjectPartName, type);
-            } else {
-                return null;
-            }
+            String ipsObjectQname = split[0];
+            return new MessageKey(key, ipsObjectQname);
         }
 
         /**
@@ -103,18 +79,6 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
         @Override
         public String getIpsObjectQname() {
             return ipsObjectQname;
-        }
-
-        public String getIpsObjectPartType() {
-            return ipsObjectPartType;
-        }
-
-        public String getIpsObjectPartName() {
-            return ipsObjectPartName;
-        }
-
-        public MessageType getMessageType() {
-            return messageType;
         }
 
         @Override

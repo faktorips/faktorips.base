@@ -10,19 +10,20 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.Models;
+import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
+import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
+import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
@@ -30,72 +31,58 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation;
  * 
  * @author Daniel Hohenberger
  */
-public class ModelTypeAssociation extends AbstractModelElement implements IModelTypeAssociation {
+public class ModelTypeAssociation extends ModelPart implements IModelTypeAssociation {
 
-    private final Map<Locale, String> pluralLabelsByLocale = new HashMap<Locale, String>();
+    private final IpsAssociation annotation;
 
-    private ModelType modelType;
-    private AssociationType associationType = AssociationType.Association;
-    private int minCardinality = 0;
-    private int maxCardinality = Integer.MAX_VALUE;
-    private String namePlural = null;
-    private String targetJavaClassName = null;
-    private boolean isProductRelevant = false;
-    private boolean isDerivedUnion = false;
-    private boolean isSubsetOfADerivedUnion = false;
-    private Boolean isTargetRolePluralRequired = false;
-    private String inverseAssociation;
-    private String matchingAssociationName;
-    private String matchingAssociationSource;
+    private final Method getter;
 
-    private String getterName;
+    public ModelTypeAssociation(ModelType modelType, Method getterMethod) {
+        super(getAssociationAnnotation(getterMethod).name(), modelType, getterMethod
+                .getAnnotation(IpsExtensionProperties.class));
+        this.annotation = getAssociationAnnotation(getterMethod);
+        getter = getterMethod;
+    }
 
-    public ModelTypeAssociation(String name, ModelType modelType) {
-        super(name);
-        this.modelType = modelType;
+    private static IpsAssociation getAssociationAnnotation(Method getterMethod) {
+        return getterMethod.getAnnotation(IpsAssociation.class);
     }
 
     @Override
     public String getLabelForPlural(Locale locale) {
-        String label = pluralLabelsByLocale.get(locale);
-        return IpsStringUtils.isEmpty(label) ? getNamePlural() : label;
-    }
-
-    @Override
-    public IModelType getModelType() {
-        return modelType;
+        return getDocumentation(locale, DocumentationType.PLURAL_LABEL, getNamePlural());
     }
 
     @Override
     public AssociationType getAssociationType() {
-        return associationType;
-    }
-
-    @Override
-    public int getMaxCardinality() {
-        return maxCardinality;
+        return annotation.type();
     }
 
     @Override
     public int getMinCardinality() {
-        return minCardinality;
+        return annotation.min();
+    }
+
+    @Override
+    public int getMaxCardinality() {
+        return annotation.max();
     }
 
     @Override
     public String getNamePlural() {
-        return namePlural;
+        return annotation.pluralName();
     }
 
     @Override
-    public IModelType getTarget() throws ClassNotFoundException {
-        return Models.getModelType(targetJavaClassName);
+    public IModelType getTarget() {
+        return Models.getModelType(annotation.targetClass());
     }
 
     @Override
     public List<IModelObject> getTargetObjects(IModelObject source) {
         List<IModelObject> targets = new ArrayList<IModelObject>();
         try {
-            Object object = getGetter(source).invoke(source);
+            Object object = getter.invoke(source);
             if (object instanceof Iterable<?>) {
                 for (Object target : (Iterable<?>)object) {
                     targets.add((IModelObject)target);
@@ -103,10 +90,6 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
             } else if (object instanceof IModelObject) {
                 targets.add((IModelObject)object);
             }
-        } catch (IntrospectionException e) {
-            handleGetterError(source, e);
-        } catch (IllegalArgumentException e) {
-            handleGetterError(source, e);
         } catch (IllegalAccessException e) {
             handleGetterError(source, e);
         } catch (InvocationTargetException e) {
@@ -115,47 +98,99 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return targets;
     }
 
-    private Method getGetter(IModelObject source) throws IntrospectionException {
-        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(getUsedName(), source.getClass(),
-                getGetterName(), null);
-        return propertyDescriptor.getReadMethod();
-    }
-
-    private String getGetterName() {
-        if (getterName == null) {
-            getterName = "get" + getUsedName().substring(0, 1).toUpperCase() + getUsedName().substring(1);
-        }
-        return getterName;
-    }
-
     private void handleGetterError(IModelObject source, Exception e) {
         throw new IllegalArgumentException(String.format("Could not get target %s on source object %s.", getUsedName(),
                 source), e);
     }
 
     @Override
+    public String getUsedName() {
+        return isTargetRolePluralRequired() ? getNamePlural() : getName();
+    }
+
+    private boolean isTargetRolePluralRequired() {
+        return Iterable.class.isAssignableFrom(getter.getReturnType());
+    }
+
+    @Override
+    public boolean isDerivedUnion() {
+        return getter.isAnnotationPresent(IpsDerivedUnion.class);
+    }
+
+    @Override
+    public boolean isSubsetOfADerivedUnion() {
+        return getter.isAnnotationPresent(IpsSubsetOfDerivedUnion.class);
+    }
+
+    @Override
+    public String getInverseAssociation() {
+        if (getter.isAnnotationPresent(IpsInverseAssociation.class)) {
+            return getter.getAnnotation(IpsInverseAssociation.class).value();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @deprecated Since 3.18, use isMatchingAssociationPresent
+     */
+    @Deprecated
+    @Override
     public boolean isProductRelevant() {
-        return isProductRelevant;
+        return isMatchingAssociationPresent();
+    }
+
+    @Override
+    public boolean isMatchingAssociationPresent() {
+        return getter.isAnnotationPresent(IpsMatchingAssociation.class);
+    }
+
+    @Override
+    public String getMatchingAssociationName() {
+        if (getter.isAnnotationPresent(IpsMatchingAssociation.class)) {
+            return getter.getAnnotation(IpsMatchingAssociation.class).name();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String getMatchingAssociationSource() {
+        IModelType matchingAssociationSource = getMatchingAssociationSourceType();
+        if (matchingAssociationSource != null) {
+            return matchingAssociationSource.getName();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public IModelType getMatchingAssociationSourceType() {
+        if (getter.isAnnotationPresent(IpsMatchingAssociation.class)) {
+            return Models.getModelType(getter.getAnnotation(IpsMatchingAssociation.class).source());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getUsedName());
         sb.append(": ");
-        sb.append(targetJavaClassName);
+        sb.append(getTarget().getName());
         sb.append('(');
-        sb.append(associationType);
+        sb.append(getAssociationType());
         sb.append(' ');
-        if (isDerivedUnion) {
+        if (isDerivedUnion()) {
             sb.append(", Derived Union ");
         }
-        if (isSubsetOfADerivedUnion) {
+        if (isSubsetOfADerivedUnion()) {
             sb.append(", Subset of a Derived Union ");
         }
-        sb.append(minCardinality);
+        sb.append(getMinCardinality());
         sb.append("..");
-        sb.append(maxCardinality == Integer.MAX_VALUE ? "*" : maxCardinality);
-        if (isProductRelevant) {
+        sb.append(getMaxCardinality() == Integer.MAX_VALUE ? "*" : getMaxCardinality());
+        if (isProductRelevant()) {
             sb.append(", ");
             sb.append("isProductRelevant");
         }
@@ -163,33 +198,4 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return sb.toString();
     }
 
-    @Override
-    public String getUsedName() {
-        return isTargetRolePluralRequired ? getNamePlural() : getName();
-    }
-
-    @Override
-    public boolean isDerivedUnion() {
-        return isDerivedUnion;
-    }
-
-    @Override
-    public boolean isSubsetOfADerivedUnion() {
-        return isSubsetOfADerivedUnion;
-    }
-
-    @Override
-    public String getInverseAssociation() {
-        return inverseAssociation;
-    }
-
-    @Override
-    public String getMatchingAssociationName() {
-        return matchingAssociationName;
-    }
-
-    @Override
-    public String getMatchingAssociationSource() {
-        return matchingAssociationSource;
-    }
 }

@@ -16,30 +16,21 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 
 /**
- * 
- * @author Daniel Hohenberger
+ * A {@link IModelType} represents a type of Faktor-IPS. It provides all meta data for the type as
+ * well as for properties like attributes or associations.
  */
 public interface IModelType extends IModelElement {
 
-    public static final String XML_TAG = "ModelType";
-
-    public static final String PROPERTY_CLASS = "class";
-
-    public static final String PROPERTY_SUPERTYPE = "supertype";
-
     /**
      * Returns the Java class for this type.
-     * 
-     * @throws ClassNotFoundException if the class could not be loaded.
      */
-    public Class<?> getJavaClass() throws ClassNotFoundException;
+    public Class<?> getJavaClass();
 
     /**
-     * Returns the Java interface for this type.
-     * 
-     * @throws ClassNotFoundException if the class could not be loaded.
+     * Returns the published interface for this type. Returns <code>null</code> if published
+     * interfaces are not generated.
      */
-    public Class<?> getJavaInterface() throws ClassNotFoundException;
+    public Class<?> getJavaInterface();
 
     /**
      * Returns this model type's super type or <code>null</code> if it has none.
@@ -63,7 +54,7 @@ public interface IModelType extends IModelElement {
      * 
      * @throws IndexOutOfBoundsException if no attribute exists for the given <code>index</code>.
      */
-    public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException;
+    public IModelTypeAttribute getDeclaredAttribute(int index);
 
     /**
      * Returns the attribute with the given <code>name</code> declared in this type. Attributes
@@ -71,7 +62,7 @@ public interface IModelType extends IModelElement {
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
-    public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException;
+    public IModelTypeAttribute getDeclaredAttribute(String name);
 
     /**
      * Returns the attribute with the given <code>name</code> declared in this type or one of it's
@@ -79,7 +70,7 @@ public interface IModelType extends IModelElement {
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
-    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException;
+    public IModelTypeAttribute getAttribute(String name);
 
     /**
      * Returns a list containing all associations declared in this model type. Associations defined
@@ -155,6 +146,6 @@ public interface IModelType extends IModelElement {
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
-    IModelTypeAssociation getAssociation(String name) throws IllegalArgumentException;
+    public IModelTypeAssociation getAssociation(String name);
 
 }

@@ -39,9 +39,9 @@ import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageKey;
-import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageType;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
+import org.faktorips.runtime.modeltype.internal.DocumentationType;
 import org.junit.Test;
 
 public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
@@ -194,7 +194,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         assertThat(labelAndDescriptionGenerator.getLocalizedProperties().size(), is(equalTo(1)));
         assertThat(
                 labelAndDescriptionGenerator.getLocalizedProperties().getMessage(
-                        new MessageKey(pcType2, MessageType.LABEL).getKey()), is(equalTo("foobar")));
+                        new MessageKey(pcType2, DocumentationType.LABEL).getKey()), is(equalTo("foobar")));
     }
 
     @Test

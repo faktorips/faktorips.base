@@ -21,34 +21,6 @@ import org.faktorips.runtime.IModelObject;
  */
 public interface IModelTypeAssociation extends IModelElement {
 
-    public static final String XML_TAG = "ModelTypeAssociation";
-
-    public static final String XML_WRAPPER_TAG = "ModelTypeAssociations";
-
-    public static final String PROPERTY_NAME_PLURAL = "namePlural";
-
-    public static final String PROPERTY_TARGET = "target";
-
-    public static final String PROPERTY_MIN_CARDINALITY = "minCardinality";
-
-    public static final String PROPERTY_MAX_CARDINALITY = "maxCardinality";
-
-    public static final String PROPERTY_ASSOCIATION_TYPE = "associationType";
-
-    public static final String PROPERTY_PRODUCT_RELEVANT = "isProductRelevant";
-
-    public static final String PROPERTY_DERIVED_UNION = "isDerivedUnion";
-
-    public static final String PROPERTY_SUBSET_OF_A_DERIVED_UNION = "isSubsetOfADerivedUnion";
-
-    public static final String PROPERTY_TARGET_ROLE_PLURAL_REQUIRED = "isTargetRolePluralRequired";
-
-    public static final String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation";
-
-    public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName";
-
-    public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource";
-
     /**
      * Returns the model type this association belongs to.
      */
@@ -57,9 +29,8 @@ public interface IModelTypeAssociation extends IModelElement {
     /**
      * Returns the target model type object of this association.
      * 
-     * @throws ClassNotFoundException if the target class could not be loaded.
      */
-    public IModelType getTarget() throws ClassNotFoundException;
+    public IModelType getTarget();
 
     /**
      * Returns the minimum cardinality for this association. <code>0</code> if no minimum is set.
@@ -73,8 +44,9 @@ public interface IModelTypeAssociation extends IModelElement {
     public int getMaxCardinality();
 
     /**
-     * Returns the plural form of this model type's name or <code>null</code> if no plural for for
-     * the name is set.
+     * Returns the plural form of this model type's name or the empty String if no plural for the
+     * name is set.
+     * 
      */
     public String getNamePlural();
 
@@ -90,25 +62,6 @@ public interface IModelTypeAssociation extends IModelElement {
     public AssociationType getAssociationType();
 
     /**
-     * Enum defining the possible association types.
-     */
-    public enum AssociationType {
-        Association,
-        Composition,
-        CompositionToMaster;
-    }
-
-    /**
-     * Returns if this association is product relevant.
-     */
-    public boolean isProductRelevant();
-
-    /**
-     * Returns if this association is a derived union.
-     */
-    public boolean isDerivedUnion();
-
-    /**
      * Returns if this association is a subset of a derived union.
      */
     public boolean isSubsetOfADerivedUnion();
@@ -116,14 +69,19 @@ public interface IModelTypeAssociation extends IModelElement {
     /**
      * Returns the name of the inverse association if it is defined.
      * 
-     * @return The name of the inverse association or null for product component associations
+     * @return The name of the inverse association or null if there is no inverse association or it
+     *         is a product component associations
      */
     public String getInverseAssociation();
 
     /**
-     * Returns the plural label for the given locale.
-     * <p>
-     * Returns the association's plural name if no plural label for the given locale exists.
+     * Returns the plural label for this model element in the specified locale. If there is no
+     * plural label in the specified locale, it tries to find the plural label in the default
+     * locale. If there is also no plural label in the default locale the element's plural name is
+     * returned.
+     * 
+     * @return the label for the given locale or the element's name if no label exists for the given
+     *         locale nor in the default locale
      */
     public String getLabelForPlural(Locale locale);
 
@@ -139,6 +97,25 @@ public interface IModelTypeAssociation extends IModelElement {
      *             this model type association or that association is not accessible for any reason
      */
     public List<IModelObject> getTargetObjects(IModelObject source);
+
+    /**
+     * Returns if this association is product relevant.
+     * 
+     * @deprecated Since 3.18, use isMatchingAssociationPresent
+     */
+    @Deprecated
+    public boolean isProductRelevant();
+
+    /**
+     * Returns <code>true</code> if the association has a matching association. For policy
+     * associations that means it is configured by the product component. For product component
+     * associations that means it configures a policy association.
+     * 
+     * @see #getMatchingAssociationName()
+     * 
+     * @return <code>true</code> if this association has a matching association.
+     */
+    public boolean isMatchingAssociationPresent();
 
     /**
      * Returns the name of the matching product respectively policy component type association or
@@ -170,4 +147,27 @@ public interface IModelTypeAssociation extends IModelElement {
      * @return The qualified name of the matchingAssoctiation
      */
     public String getMatchingAssociationSource();
+
+    /**
+     * Returns the {@link IModelType} identified by {@link #getMatchingAssociationSource()}
+     * 
+     * @see #getMatchingAssociationSource()
+     * 
+     * @return The model type object of the matching association source
+     */
+    public IModelType getMatchingAssociationSourceType();
+
+    /**
+     * Returns if this association is a derived union.
+     */
+    public boolean isDerivedUnion();
+
+    /**
+     * Enum defining the possible association types.
+     */
+    public enum AssociationType {
+        Association,
+        Composition,
+        CompositionToMaster;
+    }
 }
