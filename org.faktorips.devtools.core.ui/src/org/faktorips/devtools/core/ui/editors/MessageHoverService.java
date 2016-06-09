@@ -166,6 +166,7 @@ public abstract class MessageHoverService {
      * An info Hover to display a message at a given display relative position.
      */
     class Hover {
+
         /**
          * Distance of info hover arrow from left side.
          */
@@ -235,6 +236,7 @@ public abstract class MessageHoverService {
 
         void dispose() {
             if (!fHoverShell.isDisposed()) {
+                fHoverShell.getRegion().dispose();
                 fHoverShell.dispose();
             }
         }
