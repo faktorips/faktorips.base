@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.labels;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.when;
 import java.io.InputStream;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -36,8 +38,10 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageKey;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
@@ -210,13 +214,37 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         assertThat(labelAndDescriptionGenerator.getLocalizedProperties().size(), is(equalTo(0)));
     }
 
-    private void setLabel(IPolicyCmptType pcType, String value) {
-        ILabel label = pcType.getLabel(Locale.GERMAN);
+    @Test
+    public void testGeneratePluralLabel() throws Exception {
+        setUpPcType();
+        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(IFile.class),
+                new SupportedLanguage(Locale.GERMAN), builder);
+        IAssociation association = pcType.newAssociation();
+        setLabel(association, "asso", "assos");
+
+        labelAndDescriptionGenerator.addLabelAndDescription(association);
+
+        assertThat(
+                labelAndDescriptionGenerator.getLocalizedProperties().getKeysForIpsObject(pcType.getQualifiedName()),
+                hasItems(new MessageKey(association, DocumentationType.LABEL), new MessageKey(association,
+                        DocumentationType.PLURAL_LABEL)));
+    }
+
+    private void setLabel(ILabeledElement labeledElement, String value) {
+        setLabel(labeledElement, value, null);
+    }
+
+    private void setLabel(ILabeledElement labeledElement, String value, String pluralValue) {
+        ILabel label = labeledElement.getLabel(Locale.GERMAN);
         if (label == null) {
-            label = pcType.newLabel();
+            label = labeledElement.newLabel();
             label.setLocale(Locale.GERMAN);
         }
         label.setValue(value);
+        if (StringUtils.isNotEmpty(pluralValue)) {
+            label.setPluralValue(pluralValue);
+        }
     }
 
     private void setDescription(IPolicyCmptType pcType, String text) {

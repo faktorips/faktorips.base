@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -92,6 +93,10 @@ public abstract class AbstractPropertiesGenerator {
 
     public ISupportedLanguage getSupportedLanguage() {
         return supportedLanguage;
+    }
+
+    protected Locale getLocale() {
+        return getSupportedLanguage().getLocale();
     }
 
     public AbstractLocalizedProperties getLocalizedProperties() {

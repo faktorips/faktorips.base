@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
@@ -57,14 +56,20 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
     private void addLabelAndDescription(IIpsObjectPartContainer ipsObjectPart,
             LabelAndDescriptionProperties labelsAndDescriptions) {
         if (ipsObjectPart instanceof ILabeledElement) {
-            ILabel label = ((ILabeledElement)ipsObjectPart).getLabel(getSupportedLanguage().getLocale());
-            if (label != null && StringUtils.isNotBlank(label.getValue())) {
-                labelsAndDescriptions.put(ipsObjectPart, DocumentationType.LABEL, label.getValue());
+            ILabeledElement labeledElement = (ILabeledElement)ipsObjectPart;
+            String label = labeledElement.getLabelValue(getLocale());
+            if (StringUtils.isNotBlank(label)) {
+                labelsAndDescriptions.put(ipsObjectPart, DocumentationType.LABEL, label);
+            }
+            if (labeledElement.isPluralLabelSupported()) {
+                String pluralLabelValue = labeledElement.getPluralLabelValue(getLocale());
+                if (StringUtils.isNotBlank(pluralLabelValue)) {
+                    labelsAndDescriptions.put(ipsObjectPart, DocumentationType.PLURAL_LABEL, pluralLabelValue);
+                }
             }
         }
         if (ipsObjectPart instanceof IDescribedElement) {
-            IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getSupportedLanguage()
-                    .getLocale());
+            IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getLocale());
             if (description != null && StringUtils.isNotBlank(description.getText())) {
                 labelsAndDescriptions.put(ipsObjectPart, DocumentationType.DESCRIPTION, description.getText());
             }

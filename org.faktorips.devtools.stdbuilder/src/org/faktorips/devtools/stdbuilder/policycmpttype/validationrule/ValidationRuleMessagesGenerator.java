@@ -51,7 +51,7 @@ public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator
      */
     String getMessageText(IValidationRule validationRule) {
         IValidationRuleMessageText internationalString = validationRule.getMessageText();
-        LocalizedString localizedString = internationalString.get(getSupportedLanguage().getLocale());
+        LocalizedString localizedString = internationalString.get(getLocale());
         String messageText = localizedString.getValue();
         StringBuilder result = new StringBuilder();
 
