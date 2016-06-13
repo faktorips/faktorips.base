@@ -20,6 +20,7 @@ import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
+import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
@@ -354,7 +355,7 @@ public interface IRuntimeRepository {
     /**
      * Returns a test suite that contains all tests that have qualified names starting with the
      * given prefix. Note that if test cases belong to different package fragments the returned test
-     * suite contains other testsuites. One suite for each package fragment. The given runtime
+     * suite contains other test suites. One suite for each package fragment. The given runtime
      * repository is the repository which will be used to instantiate the test cases.
      * 
      * @see IRuntimeRepository#getIpsTestCase
@@ -366,28 +367,37 @@ public interface IRuntimeRepository {
     /**
      * Returns <code>true</code> if the repository's content is modifiable. This feature is mainly
      * targeted for writing test cases that need to setup a repository with a test specific content
-     * programatically. Returns <code>false</code> otherwise.
+     * programmatically. Returns <code>false</code> otherwise.
      */
     public boolean isModifiable();
 
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given model
      * object class.
+     * 
+     * @deprecated use {@link Models#getModelType(Class)}
      */
+    @Deprecated
     public IModelType getModelType(Class<?> modelObjectClass);
 
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given model
      * object. This is a convenience method calling <code>getModelType</code> with the model
      * object's class.
+     * 
+     * @deprecated use {@link Models#getPolicyModel(IModelObject)}
      */
+    @Deprecated
     public IModelType getModelType(IModelObject modelObject);
 
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given product
      * component. This is a convenience method calling <code>getModelType</code> with the product
      * component class.
+     * 
+     * @deprecated use {@link Models#getProductModel(IProductComponent)}
      */
+    @Deprecated
     public IModelType getModelType(IProductComponent productComponent);
 
     /**

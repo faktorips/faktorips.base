@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -85,7 +86,7 @@ public class ProductModelTest {
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
-    private static abstract class Policy extends AbstractModelObject {
+    private static abstract class Policy extends AbstractModelObject implements IConfigurableModelObject {
 
     }
 

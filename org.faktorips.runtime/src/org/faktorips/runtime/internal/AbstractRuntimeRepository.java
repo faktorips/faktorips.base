@@ -40,6 +40,8 @@ import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
 import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.modeltype.IModelType;
+import org.faktorips.runtime.modeltype.IPolicyModel;
+import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
@@ -615,13 +617,13 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     @Override
-    public IModelType getModelType(IModelObject modelObject) {
-        return getModelType(modelObject.getClass());
+    public IPolicyModel getModelType(IModelObject modelObject) {
+        return Models.getPolicyModel(modelObject);
     }
 
     @Override
-    public IModelType getModelType(IProductComponent modelObject) {
-        return getModelType(modelObject.getClass());
+    public IProductModel getModelType(IProductComponent productComponent) {
+        return Models.getProductModel(productComponent);
     }
 
     @Override

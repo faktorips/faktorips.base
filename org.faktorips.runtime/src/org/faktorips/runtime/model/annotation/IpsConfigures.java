@@ -14,6 +14,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.faktorips.runtime.IConfigurableModelObject;
+
 /**
  * Links a {@code IProductCmptType} with the policy component type that it configures.
  */
@@ -26,5 +28,5 @@ public @interface IpsConfigures {
      * published interface is generated, the published interface class is returned. Else the
      * implementation class is returned.
      */
-    Class<?> value();
+    Class<? extends IConfigurableModelObject> value();
 }

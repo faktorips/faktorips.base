@@ -9,12 +9,11 @@
  *******************************************************************************/
 package org.faktorips.runtime.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.caching.AbstractComputable;
+import org.faktorips.runtime.caching.Memoizer;
 import org.faktorips.runtime.model.annotation.AnnotatedType;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
@@ -32,10 +31,56 @@ import org.faktorips.runtime.modeltype.internal.ProductModel;
  */
 public class Models {
 
-    private static final Map<Class<?>, TableModel> TABLE_MODEL_CACHE = new HashMap<Class<?>, TableModel>();
+    private static final Memoizer<Class<? extends ITable>, TableModel> TABLE_MODEL_CACHE = new Memoizer<Class<? extends ITable>, TableModel>(
+            new AbstractComputable<Class<? extends ITable>, TableModel>(TableModel.class) {
+
+                @Override
+                public TableModel compute(Class<? extends ITable> tableObjectClass) {
+                    return new TableModel(tableObjectClass);
+                }
+            });
+
+    private static final Memoizer<Class<? extends IProductComponent>, IProductModel> PRODUCT_MODEL_CACHE = new Memoizer<Class<? extends IProductComponent>, IProductModel>(
+            new AbstractComputable<Class<? extends IProductComponent>, IProductModel>(IProductModel.class) {
+                @Override
+                public IProductModel compute(Class<? extends IProductComponent> productComponentClass) {
+                    AnnotatedType annotatedModelType = AnnotatedType.from(productComponentClass);
+                    if (annotatedModelType.is(IpsProductCmptType.class)) {
+                        String name = annotatedModelType.get(IpsProductCmptType.class).name();
+                        return new ProductModel(name, annotatedModelType);
+                    } else {
+                        throw new IllegalArgumentException("The class " + productComponentClass.getCanonicalName()
+                                + " is not annotated as product component type.");
+                    }
+                }
+            });
+
+    private static final Memoizer<Class<? extends IModelObject>, IPolicyModel> POLICY_MODEL_CACHE = new Memoizer<Class<? extends IModelObject>, IPolicyModel>(
+            new AbstractComputable<Class<? extends IModelObject>, IPolicyModel>(IPolicyModel.class) {
+                @Override
+                public IPolicyModel compute(Class<? extends IModelObject> modelObjectClass) {
+                    AnnotatedType annotatedModelType = AnnotatedType.from(modelObjectClass);
+                    if (annotatedModelType.is(IpsPolicyCmptType.class)) {
+                        String name = annotatedModelType.get(IpsPolicyCmptType.class).name();
+                        return new PolicyModel(name, annotatedModelType);
+                    } else {
+                        throw new IllegalArgumentException("The class " + modelObjectClass.getCanonicalName()
+                                + " is not annotated as policy component type.");
+                    }
+                }
+            });
 
     private Models() {
         // prevent default constructor
+    }
+
+    private static <K, V> V get(Memoizer<K, V> memoizer, K key) {
+        try {
+            return memoizer.compute(key);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -43,17 +88,7 @@ public class Models {
      *         class
      */
     public static TableModel getTableModel(Class<? extends ITable> tableObjectClass) {
-        TableModel tm = TABLE_MODEL_CACHE.get(tableObjectClass);
-        if (tm == null) {
-            synchronized (TABLE_MODEL_CACHE) {
-                tm = TABLE_MODEL_CACHE.get(tableObjectClass);
-                if (tm == null) {
-                    tm = new TableModel(tableObjectClass);
-                    TABLE_MODEL_CACHE.put(tableObjectClass, tm);
-                }
-            }
-        }
-        return tm;
+        return get(TABLE_MODEL_CACHE, tableObjectClass);
     }
 
     /**
@@ -68,7 +103,8 @@ public class Models {
      * {@link #getProductModel(Class)} as argument without getting an
      * {@link IllegalArgumentException}.
      * 
-     * @param productModelClass The class that may be a product model class
+     * @param productModelClass The class that may be a the implementation or the published
+     *            interface of an {@link IProductComponent}.
      * @return <code>true</code> if the given class is a product model class
      */
     public static boolean isProductModel(Class<?> productModelClass) {
@@ -76,82 +112,71 @@ public class Models {
     }
 
     /**
-     * Retrieves the product model object for the given product component class.
-     * 
-     * @param productComponentClass The qualified class name of the generated class of model type
-     *            (interface or implementation)
-     * 
-     * @throws IllegalArgumentException if the given class is not proper annotated for a product
-     *             component model
+     * @param productModelClass The generated class for a product component type, may be either an
+     *            implementation class of a published interface.
+     * @return the product model object for the given product model class
+     * @throws IllegalArgumentException if the given class is not properly annotated for a product
+     *             model
      */
-    public static IProductModel getProductModel(Class<? extends IProductComponent> productComponentClass) {
-        AnnotatedType annotatedModelType = AnnotatedType.from(productComponentClass);
-        return getProductModel(productComponentClass, annotatedModelType);
-    }
-
-    private static IProductModel getProductModel(Class<? extends IProductComponent> productComponentClass,
-            AnnotatedType annotatedModelType) {
-        if (annotatedModelType.is(IpsProductCmptType.class)) {
-            String name = annotatedModelType.get(IpsProductCmptType.class).name();
-            return new ProductModel(name, annotatedModelType);
-        } else {
-            throw new IllegalArgumentException("The class " + productComponentClass.getCanonicalName()
-                    + " is not annotated as product component type.");
-        }
+    public static IProductModel getProductModel(Class<? extends IProductComponent> productModelClass) {
+        return get(PRODUCT_MODEL_CACHE, productModelClass);
     }
 
     /**
-     * Returns whether the given class is a generated policy type and could be given to
+     * @return the product model object for the given product component
+     * @throws IllegalArgumentException if the class of the given product component is not properly
+     *             annotated for a product model
+     */
+    public static IProductModel getProductModel(IProductComponent productComponent) {
+        return getProductModel(productComponent.getClass());
+    }
+
+    /**
+     * Returns whether the given class is a generated policy component type and could be given to
      * {@link #getPolicyModel(Class)} as argument without getting an
      * {@link IllegalArgumentException}.
      * 
-     * @param modelObjectClass The class that may be a policy model class
+     * @param policyModelClass The class that may be a the implementation or the published interface
+     *            of an {@link IModelObject}.
      * @return <code>true</code> if the given class is a policy model class
      */
-    public static boolean isPolicyModel(Class<?> modelObjectClass) {
-        return AnnotatedType.from(modelObjectClass).is(IpsPolicyCmptType.class);
+    public static boolean isPolicyModel(Class<?> policyModelClass) {
+        return AnnotatedType.from(policyModelClass).is(IpsPolicyCmptType.class);
     }
 
     /**
-     * Retrieves the policy model object for the given product component class.
-     * 
-     * @param modelObjectClass The qualified class name of the generated class of model type
-     *            (interface or implementation)
-     * 
-     * @throws IllegalArgumentException if the given class is not proper annotated for a policy
-     *             component model
+     * @param policyModelClass The generated class for a policy component type, may be either an
+     *            implementation class of a published interface.
+     * @return the policy model object for the given policy model class
+     * @throws IllegalArgumentException if the given class is not properly annotated for a policy
+     *             model
      */
-    public static IPolicyModel getPolicyModel(Class<? extends IModelObject> modelObjectClass) {
-        AnnotatedType annotatedModelType = AnnotatedType.from(modelObjectClass);
-        return getPolicyModel(modelObjectClass, annotatedModelType);
-    }
-
-    private static IPolicyModel getPolicyModel(Class<? extends IModelObject> modelObjectClass,
-            AnnotatedType annotatedModelType) {
-        if (annotatedModelType.is(IpsPolicyCmptType.class)) {
-            String name = annotatedModelType.get(IpsPolicyCmptType.class).name();
-            return new PolicyModel(name, annotatedModelType);
-        } else {
-            throw new IllegalArgumentException("The class " + modelObjectClass.getCanonicalName()
-                    + " is not annotated as policy component type.");
-        }
+    public static IPolicyModel getPolicyModel(Class<? extends IModelObject> policyModelClass) {
+        return get(POLICY_MODEL_CACHE, policyModelClass);
     }
 
     /**
-     * Retrieves the model object for the given product component class. This is either a product
-     * component type or policy component type.
-     * 
-     * @param modelObjectClass The qualified class name of the generated class of model type
-     *            (interface or implementation)
-     * 
-     * @throws IllegalArgumentException if the given class is not proper annotated for a model type
+     * @return the policy model object for the given model object
+     * @throws IllegalArgumentException if the class of the model object is not properly annotated
+     *             for a policy model
+     */
+    public static IPolicyModel getPolicyModel(IModelObject modelObject) {
+        return getPolicyModel(modelObject.getClass());
+    }
+
+    /**
+     * @return the model object for the given policy or product model class. This is either the
+     *         implementation or the published interface of a product component type or policy
+     *         component type.
+     * @throws IllegalArgumentException if the given class is not properly annotated for a model
+     *             type
      */
     public static IModelType getModelType(Class<?> modelObjectClass) {
         AnnotatedType annotatedModelType = AnnotatedType.from(modelObjectClass);
         if (annotatedModelType.is(IpsProductCmptType.class)) {
-            return getProductModel(modelObjectClass.asSubclass(IProductComponent.class), annotatedModelType);
+            return getProductModel(modelObjectClass.asSubclass(IProductComponent.class));
         } else if (annotatedModelType.is(IpsPolicyCmptType.class)) {
-            return getPolicyModel(modelObjectClass.asSubclass(IModelObject.class), annotatedModelType);
+            return getPolicyModel(modelObjectClass.asSubclass(IModelObject.class));
         } else {
             throw new IllegalArgumentException("The given class is not annotated as product or policy component type.");
         }
