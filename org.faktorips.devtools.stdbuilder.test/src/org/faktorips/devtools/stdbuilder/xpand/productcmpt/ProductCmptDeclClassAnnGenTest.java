@@ -9,14 +9,21 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XTableUsage;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
 
@@ -57,6 +64,18 @@ public class ProductCmptDeclClassAnnGenTest {
                 .createAnnotation(product).getSourcecode());
     }
 
+    @Test
+    public void testCreateTableUsagesAnnotation() {
+        XProductCmptClass productWithTableUsages = mockProductWithTableUsages();
+
+        JavaCodeFragment annotationCode = generator.createAnnTableUsages(productWithTableUsages);
+
+        assertEquals("@IpsTableUsages({\"table1\", \"table2\"})" + System.getProperty("line.separator"),
+                annotationCode.getSourcecode());
+        assertThat(annotationCode.getImportDeclaration().getImports(),
+                hasItem("org.faktorips.runtime.model.annotation.IpsTableUsages"));
+    }
+
     private XProductCmptClass mockProduct() {
         XProductCmptClass product = mock(XProductCmptClass.class);
         when(product.addImport(IpsProductCmptType.class)).thenReturn("IpsProductCmptType");
@@ -68,6 +87,18 @@ public class ProductCmptDeclClassAnnGenTest {
         XPolicyCmptClass policy = mock(XPolicyCmptClass.class);
         when(policy.getImplClassName()).thenReturn("PolicyCmpt");
         when(product.getPolicyCmptClass()).thenReturn(policy);
+        return product;
+    }
+
+    private XProductCmptClass mockProductWithTableUsages() {
+        XProductCmptClass product = mockProduct();
+
+        XTableUsage table1 = mock(XTableUsage.class);
+        when(table1.getName()).thenReturn("table1");
+        XTableUsage table2 = mock(XTableUsage.class);
+        when(table2.getName()).thenReturn("table2");
+
+        when(product.getAllDeclaredTables()).thenReturn(new LinkedHashSet<XTableUsage>(Arrays.asList(table1, table2)));
         return product;
     }
 }

@@ -22,9 +22,12 @@ import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.model.annotation.IpsTableUsage;
+import org.faktorips.runtime.model.annotation.IpsTableUsages;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
+import org.faktorips.runtime.modeltype.ITableUsageModel;
 
 /**
  * Utility to initialize the parts of an annotated model type.
@@ -32,40 +35,66 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute;
  */
 public class ModelTypePartReader {
 
-    private AnnotatedType annotatedModelType;
+    private final AnnotatedType annotatedModelType;
 
-    private final LinkedHashMap<String, AttributeDescriptor> attributes = new LinkedHashMap<String, AttributeDescriptor>();
+    private final ModelType modeltype;
 
-    private final LinkedHashMap<String, AssociationDescriptor> associations = new LinkedHashMap<String, AssociationDescriptor>();
+    private final LinkedHashMap<String, AttributeDescriptor> attributeDescriptors;
 
-    public ModelTypePartReader(AnnotatedType annotatedModelType) {
+    private final LinkedHashMap<String, AssociationDescriptor> associationDescriptors;
+
+    private final LinkedHashMap<String, TableUsageDescriptor> tableUsageDescriptors;
+
+    public ModelTypePartReader(AnnotatedType annotatedModelType, ModelType modeltype) {
         this.annotatedModelType = annotatedModelType;
-        readAnnotations();
+        this.modeltype = modeltype;
+        attributeDescriptors = initAttributes();
+        associationDescriptors = initAssociations();
+        tableUsageDescriptors = initTableUsage();
     }
 
-    private void readAnnotations() {
-        initAttributes();
-        initAssociations();
+    public ModelTypePartContainer readAnnotations() {
         readFields(annotatedModelType.getDeclaredFields());
         readMethods(annotatedModelType.getDeclaredMethods());
+
+        LinkedHashMap<String, IModelTypeAttribute> attributes = getAttributes(modeltype);
+        LinkedHashMap<String, IModelTypeAssociation> associations = getAssociations(modeltype);
+        LinkedHashMap<String, ITableUsageModel> tableUsages = getTables();
+
+        return new ModelTypePartContainer(attributes, associations, tableUsages);
     }
 
-    private void initAttributes() {
+    private LinkedHashMap<String, AttributeDescriptor> initAttributes() {
+        LinkedHashMap<String, AttributeDescriptor> descriptors = new LinkedHashMap<String, AttributeDescriptor>();
         if (annotatedModelType.is(IpsAttributes.class)) {
             String[] values = annotatedModelType.get(IpsAttributes.class).value();
             for (String name : values) {
-                attributes.put(name, new AttributeDescriptor());
+                descriptors.put(name, new AttributeDescriptor());
             }
         }
+        return descriptors;
     }
 
-    private void initAssociations() {
+    private LinkedHashMap<String, AssociationDescriptor> initAssociations() {
+        LinkedHashMap<String, AssociationDescriptor> descriptors = new LinkedHashMap<String, AssociationDescriptor>();
         if (annotatedModelType.is(IpsAssociations.class)) {
             String[] values = annotatedModelType.get(IpsAssociations.class).value();
             for (String name : values) {
-                associations.put(name, new AssociationDescriptor());
+                descriptors.put(name, new AssociationDescriptor());
             }
         }
+        return descriptors;
+    }
+
+    private LinkedHashMap<String, TableUsageDescriptor> initTableUsage() {
+        LinkedHashMap<String, TableUsageDescriptor> descriptors = new LinkedHashMap<String, TableUsageDescriptor>();
+        if (annotatedModelType.is(IpsTableUsages.class)) {
+            String[] values = annotatedModelType.get(IpsTableUsages.class).value();
+            for (String tableName : values) {
+                descriptors.put(tableName, new TableUsageDescriptor());
+            }
+        }
+        return descriptors;
     }
 
     private void readFields(List<Field> list) {
@@ -87,12 +116,15 @@ public class ModelTypePartReader {
             if (method.isAnnotationPresent(IpsAssociation.class)) {
                 getAssociationDescriptor(method).getterMethod = method;
             }
+            if (method.isAnnotationPresent(IpsTableUsage.class)) {
+                getTableUsageDescriptor(method).getterMethod = method;
+            }
         }
     }
 
-    public LinkedHashMap<String, IModelTypeAttribute> getAttributes(ModelType modelType) {
+    private LinkedHashMap<String, IModelTypeAttribute> getAttributes(ModelType modelType) {
         LinkedHashMap<String, IModelTypeAttribute> result = new LinkedHashMap<String, IModelTypeAttribute>();
-        for (Entry<String, AttributeDescriptor> entry : attributes.entrySet()) {
+        for (Entry<String, AttributeDescriptor> entry : attributeDescriptors.entrySet()) {
             AttributeDescriptor attributeDescriptor = entry.getValue();
             String name = entry.getKey();
             if (attributeDescriptor.isValid()) {
@@ -120,9 +152,9 @@ public class ModelTypePartReader {
         return modelType.getJavaInterface() == null ? modelType.getJavaClass() : modelType.getJavaInterface();
     }
 
-    public LinkedHashMap<String, IModelTypeAssociation> getAssociations(ModelType modelType) {
+    private LinkedHashMap<String, IModelTypeAssociation> getAssociations(ModelType modelType) {
         LinkedHashMap<String, IModelTypeAssociation> result = new LinkedHashMap<String, IModelTypeAssociation>();
-        for (Entry<String, AssociationDescriptor> entry : associations.entrySet()) {
+        for (Entry<String, AssociationDescriptor> entry : associationDescriptors.entrySet()) {
             AssociationDescriptor associationDescriptor = entry.getValue();
             String name = entry.getKey();
             if (associationDescriptor.isValid()) {
@@ -147,7 +179,8 @@ public class ModelTypePartReader {
     }
 
     private AttributeDescriptor getAttributeDescriptor(AnnotatedElement element) {
-        AttributeDescriptor attributeDescriptor = attributes.get(element.getAnnotation(IpsAttribute.class).name());
+        AttributeDescriptor attributeDescriptor = attributeDescriptors.get(element.getAnnotation(IpsAttribute.class)
+                .name());
         if (attributeDescriptor != null) {
             return attributeDescriptor;
         } else {
@@ -156,8 +189,8 @@ public class ModelTypePartReader {
     }
 
     private AttributeDescriptor getAttributeDescriptorForSetter(AnnotatedElement element) {
-        AttributeDescriptor attributeDescriptor = attributes.get(element.getAnnotation(IpsAttributeSetter.class)
-                .value());
+        AttributeDescriptor attributeDescriptor = attributeDescriptors.get(element.getAnnotation(
+                IpsAttributeSetter.class).value());
         if (attributeDescriptor != null) {
             return attributeDescriptor;
         } else {
@@ -166,10 +199,28 @@ public class ModelTypePartReader {
     }
 
     private AssociationDescriptor getAssociationDescriptor(AnnotatedElement element) {
-        AssociationDescriptor associationDescriptor = associations.get(element.getAnnotation(IpsAssociation.class)
-                .name());
+        AssociationDescriptor associationDescriptor = associationDescriptors.get(element.getAnnotation(
+                IpsAssociation.class).name());
         if (associationDescriptor != null) {
             return associationDescriptor;
+        } else {
+            throw invalidAnnotationsException(element);
+        }
+    }
+
+    private LinkedHashMap<String, ITableUsageModel> getTables() {
+        LinkedHashMap<String, ITableUsageModel> tableUsages = new LinkedHashMap<String, ITableUsageModel>();
+        for (Entry<String, TableUsageDescriptor> entry : tableUsageDescriptors.entrySet()) {
+            tableUsages.put(entry.getKey(), entry.getValue().create(modeltype));
+        }
+        return tableUsages;
+    }
+
+    private TableUsageDescriptor getTableUsageDescriptor(AnnotatedElement element) {
+        TableUsageDescriptor tableUsageDescriptor = tableUsageDescriptors.get(element
+                .getAnnotation(IpsTableUsage.class).name());
+        if (tableUsageDescriptor != null) {
+            return tableUsageDescriptor;
         } else {
             throw invalidAnnotationsException(element);
         }
@@ -215,4 +266,12 @@ public class ModelTypePartReader {
 
     }
 
+    private static class TableUsageDescriptor {
+
+        private Method getterMethod;
+
+        public ITableUsageModel create(ModelType modelType) {
+            return new TableUsageModel(modelType, getterMethod);
+        }
+    }
 }

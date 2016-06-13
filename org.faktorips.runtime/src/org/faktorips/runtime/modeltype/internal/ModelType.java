@@ -12,7 +12,6 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -35,20 +34,20 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
     private final AnnotatedType annotatedModelType;
 
-    private final LinkedHashMap<String, IModelTypeAttribute> attributesByName;
-
-    private final LinkedHashMap<String, IModelTypeAssociation> associationsByName;
-
     private final MessagesHelper messagesHelper;
+
+    private final ModelTypePartContainer modelTypeParts;
 
     public ModelType(String name, AnnotatedType annotatedModelType) {
         super(name, annotatedModelType.get(IpsExtensionProperties.class));
         this.annotatedModelType = annotatedModelType;
-        ModelTypePartReader annotationReader = new ModelTypePartReader(annotatedModelType);
-        attributesByName = annotationReader.getAttributes(this);
-        associationsByName = annotationReader.getAssociations(this);
+        modelTypeParts = new ModelTypePartReader(annotatedModelType, this).readAnnotations();
         IpsDocumented ipsDocumented = annotatedModelType.get(IpsDocumented.class);
         messagesHelper = createMessageHelper(ipsDocumented, annotatedModelType.getClassLoader());
+    }
+
+    protected ModelTypePartContainer getModelTypeParts() {
+        return modelTypeParts;
     }
 
     @Override
@@ -68,12 +67,12 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
     @Override
     public IModelTypeAssociation getDeclaredAssociation(String name) {
-        return associationsByName.get(name);
+        return getModelTypeParts().getAssociation(name);
     }
 
     @Override
     public List<IModelTypeAssociation> getDeclaredAssociations() {
-        return new ArrayList<IModelTypeAssociation>(associationsByName.values());
+        return new ArrayList<IModelTypeAssociation>(getModelTypeParts().getAssociations());
     }
 
     @Override
@@ -106,7 +105,7 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
     @Override
     public IModelTypeAttribute getDeclaredAttribute(String name) {
-        IModelTypeAttribute attr = attributesByName.get(name);
+        IModelTypeAttribute attr = getModelTypeParts().getAttribute(name);
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
         }
@@ -126,7 +125,7 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
     @Override
     public List<IModelTypeAttribute> getDeclaredAttributes() {
-        return new ArrayList<IModelTypeAttribute>(attributesByName.values());
+        return new ArrayList<IModelTypeAttribute>(getModelTypeParts().getAttributes());
     }
 
     @Override
@@ -204,7 +203,7 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
         @Override
         public boolean visitType(IModelType type) {
-            attribute = ((ModelType)type).attributesByName.get(attrName);
+            attribute = ((ModelType)type).getModelTypeParts().getAttribute(attrName);
             return attribute == null;
         }
 
@@ -240,7 +239,7 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
         @Override
         public boolean visitType(IModelType type) {
-            association = ((ModelType)type).associationsByName.get(associationName);
+            association = ((ModelType)type).getModelTypeParts().getAssociation(associationName);
             return association == null;
         }
 

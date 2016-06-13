@@ -9,15 +9,19 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
+import java.util.Set;
+
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.AbstractTypeDeclClassAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XTableUsage;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.annotation.IpsTableUsages;
 
 public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
 
@@ -27,7 +31,8 @@ public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
         JavaCodeFragment annotation = super.createAnnotation(modelNode);
 
         XProductCmptClass prod = (XProductCmptClass)modelNode;
-        annotation.append(createAnnConfigures(prod)).append(createAnnProductCmptTypeGen(prod));
+        annotation.append(createAnnConfigures(prod)).append(createAnnProductCmptTypeGen(prod))
+        .append(createAnnTableUsages(prod));
 
         return annotation;
     }
@@ -80,4 +85,13 @@ public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
         }
     }
 
+    /**
+     * @return an annotation containing the names of all {@code XTableUsage}s if the type has any.
+     * @see IpsTableUsages
+     */
+    protected JavaCodeFragment createAnnTableUsages(XProductCmptClass prod) {
+        Set<XTableUsage> tableUsages = prod.getAllDeclaredTables();
+        Class<?> annotationClass = IpsTableUsages.class;
+        return createAnnotationWithNodes(annotationClass, tableUsages);
+    }
 }

@@ -26,6 +26,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptAssociationA
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptDeclClassAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptAssociationAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptDeclClassAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.TableUsageAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
@@ -60,7 +61,9 @@ public class AnnotationGeneratorBuilder {
                 // extension properties
                 new ExtensionPropertyAnnGen.Factory(),
                 // labels and descriptions
-                new LabelAndDescriptionAnnGen.Factory() };
+                new LabelAndDescriptionAnnGen.Factory(),
+                // table usage
+                new TableUsageAnnGenFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

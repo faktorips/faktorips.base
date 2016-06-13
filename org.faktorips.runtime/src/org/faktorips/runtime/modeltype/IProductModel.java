@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.modeltype;
 
+import java.util.List;
+
 /**
  * This interface extends {@link IModelType} with policy specific information.
  */
@@ -44,5 +46,31 @@ public interface IProductModel extends IModelType {
 
     @Override
     public IProductModel getSuperType();
+
+    /**
+     * Returns the {@link ITableUsageModel} specified with the given name. The
+     * {@link ITableUsageModel} may be declared in this class or in any super class.
+     * 
+     * @param name The name of the table usage
+     * @return The requested {@link ITableUsageModel}
+     * @throws IllegalArgumentException if no table usage with the given <code>name</code> exists.
+     */
+    public ITableUsageModel getTableUsage(String name);
+
+    /**
+     * Returns a list containing all table usages declared in this model type. Table usages defined
+     * in the type's super types are not returned.
+     * 
+     * @return The list of all declared {@link ITableUsageModel}
+     */
+    public List<ITableUsageModel> getDeclaredTableUsages();
+
+    /**
+     * Returns a list containing the type's table usages including those defined in the type's super
+     * types.
+     * 
+     * @return The list of all {@link ITableUsageModel} in this type and all super types
+     */
+    public List<ITableUsageModel> getTableUsages();
 
 }

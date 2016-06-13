@@ -121,4 +121,22 @@ public class TableModel extends AbstractModelElement {
     protected String getMessageKey(DocumentationType messageType) {
         return messageType.getKey(getName(), IpsStringUtils.EMPTY);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getName());
+        sb.append(": ");
+        sb.append(type);
+        sb.append("(");
+        boolean first = true;
+        for (String columnName : columnNames) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(columnName);
+        }
+        sb.append(")");
+        return sb.toString();
+    }
 }

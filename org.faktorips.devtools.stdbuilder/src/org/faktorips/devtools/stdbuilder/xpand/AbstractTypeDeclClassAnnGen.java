@@ -56,7 +56,7 @@ public abstract class AbstractTypeDeclClassAnnGen implements IAnnotationGenerato
         return createAnnotationWithNodes(annotationClass, associations);
     }
 
-    private JavaCodeFragment createAnnotationWithNodes(Class<?> annotationClass,
+    protected JavaCodeFragment createAnnotationWithNodes(Class<?> annotationClass,
             Set<? extends AbstractGeneratorModelNode> nodes) {
         if (nodes.size() > 0) {
             ArrayList<String> nodeNames = new ArrayList<String>();

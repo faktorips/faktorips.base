@@ -229,6 +229,10 @@ public abstract class XProductClass extends XType {
         }
     }
 
+    public Set<XTableUsage> getAllDeclaredTables() {
+        return initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
+    }
+
     /**
      * Getting the list of {@link ITableStructureUsage} defined in this type. With the parameter
      * changableAssociations you could specify whether you want the {@link ITableStructureUsage}
