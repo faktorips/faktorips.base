@@ -92,7 +92,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	     «getInterfaceAnnotations(annotatedJavaElementTypeForGetter, genInterface())»
+	     «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
 	    «overrideAnnotationForConstainedAssociation()-»
 	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()-»;«ELSE-»
@@ -126,7 +126,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
-		    «getInterfaceAnnotations(annotatedJavaElementTypeForGetter, genInterface())»
+		    «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
 		    «overrideAnnotationForConstainedAssociation()-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»

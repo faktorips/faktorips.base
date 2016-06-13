@@ -24,7 +24,7 @@
 		 * @generated
 		 */
 		«getAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_IMPL_CLASS)-»
-		«getInterfaceAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_DECLARATION_CLASS, genInterface())-»
+		«getAnnotationsForPublishedInterface(AnnotatedJavaElementType::PRODUCT_CMPT_DECLARATION_CLASS, genInterface())-»
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 

@@ -663,7 +663,7 @@ public abstract class AbstractGeneratorModelNode {
      * interfaces aren't generated at all( {@link #isGeneratePublishedInterfaces()} is {@code false}
      * ).
      */
-    public String getInterfaceAnnotations(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
+    public String getAnnotationsForPublishedInterface(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
         if (isGeneratingInterface || !isGeneratePublishedInterfaces()) {
             return getAnnotations(type);
         } else {

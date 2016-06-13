@@ -51,7 +51,7 @@
 	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
-		«getInterfaceAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER, genInterface())-»
+		«getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType::PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())-»
 		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
 		public «javaClassName» «method(methodNameGetter)»
 		«IF genInterface()»;«ELSE-»
@@ -98,7 +98,7 @@
 	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
-		«getInterfaceAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER, genInterface())-»
+		«getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType::PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())-»
 		public void «method(methodNameSetter, javaClassName, "newValue")»{
 			«EXPAND ProductCommons::checkRepositoryModifyable-»
 			«methodNameSetterInternal»(«getReferenceOrSafeCopyIfNecessary("newValue")»);

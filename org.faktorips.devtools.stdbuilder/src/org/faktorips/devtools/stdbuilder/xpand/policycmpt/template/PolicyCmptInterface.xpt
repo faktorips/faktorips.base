@@ -20,7 +20,7 @@
 		 * @generated
 		 */
 		 «getAnnotations(AnnotatedJavaElementType::PUBLISHED_INTERFACE_CLASS)»
-		 «getInterfaceAnnotations(AnnotatedJavaElementType::POLICY_CMPT_DECLARATION_CLASS, genInterface())-»
+		 «getAnnotationsForPublishedInterface(AnnotatedJavaElementType::POLICY_CMPT_DECLARATION_CLASS, genInterface())-»
 		public interface «interfaceName» 
 		«IF extendsInterface-»
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»

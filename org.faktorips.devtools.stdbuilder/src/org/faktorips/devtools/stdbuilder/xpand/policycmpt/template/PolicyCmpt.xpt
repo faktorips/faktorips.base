@@ -25,7 +25,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 * @generated
 	 */
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
-	 «getInterfaceAnnotations(AnnotatedJavaElementType::POLICY_CMPT_DECLARATION_CLASS, genInterface())-»
+	 «getAnnotationsForPublishedInterface(AnnotatedJavaElementType::POLICY_CMPT_DECLARATION_CLASS, genInterface())-»
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
 		«IF !generatePublishedInterfaces-»

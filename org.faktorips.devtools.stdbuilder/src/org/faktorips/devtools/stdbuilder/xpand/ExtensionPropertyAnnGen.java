@@ -37,8 +37,8 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
 
     private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(
             AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER,
-            AnnotatedJavaElementType.PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER,
-            AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER,
+            AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
+            AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
             AnnotatedJavaElementType.POLICY_CMPT_DECLARATION_CLASS,
             AnnotatedJavaElementType.PRODUCT_CMPT_DECLARATION_CLASS,
             AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER,

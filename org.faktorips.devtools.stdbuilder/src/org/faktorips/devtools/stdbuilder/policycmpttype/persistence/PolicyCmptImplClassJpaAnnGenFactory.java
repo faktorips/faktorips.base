@@ -27,9 +27,9 @@ public class PolicyCmptImplClassJpaAnnGenFactory implements IAnnotationGenerator
                 return new PolicyCmptImplClassJpaAnnGen();
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:
                 return new PolicyCmptImplClassAttributeFieldJpaAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_GETTER:
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER:
                 return new PolicyCmptImplClassAttributeGetterJpaAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_SETTER:
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER:
                 return new PolicyCmptImplClassAttributeSetterJpaAnnGen();
             case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD:
                 return new PolicyCmptImplClassTransientFieldJpaAnnGen();
