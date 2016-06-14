@@ -178,7 +178,8 @@ public class Models {
         } else if (annotatedModelType.is(IpsPolicyCmptType.class)) {
             return getPolicyModel(modelObjectClass.asSubclass(IModelObject.class));
         } else {
-            throw new IllegalArgumentException("The given class is not annotated as product or policy component type.");
+            throw new IllegalArgumentException("The given " + modelObjectClass
+                    + " is not annotated as product or policy component type.");
         }
     }
 

@@ -23,8 +23,8 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 public class LabelAndDescriptionAnnGen implements IAnnotationGenerator {
 
     private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(
-            AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.POLICY_CMPT_DECLARATION_CLASS,
-            AnnotatedJavaElementType.PRODUCT_CMPT_DECLARATION_CLASS);
+            AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS,
+            AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS);
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {

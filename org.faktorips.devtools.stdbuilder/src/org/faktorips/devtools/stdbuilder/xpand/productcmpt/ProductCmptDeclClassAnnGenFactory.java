@@ -23,7 +23,7 @@ public class ProductCmptDeclClassAnnGenFactory implements IAnnotationGeneratorFa
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        if (type == AnnotatedJavaElementType.PRODUCT_CMPT_DECLARATION_CLASS) {
+        if (type == AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS) {
             return new ProductCmptDeclClassAnnGen();
         } else {
             return null;

@@ -77,9 +77,10 @@ public class ExtensionPropertyAnnGenTest {
 
         assertThat(annotation, is(notNullValue()));
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsExtensionProperties({\n\t@IpsExtensionProperty(id = \"foo\", value = \"bar\")"
-                        + LINE_SEPARATOR + "\n\t@IpsExtensionProperty(id = \"foobar\", value = \"baz\")"
-                        + LINE_SEPARATOR + " })" + LINE_SEPARATOR)));
+                is(equalTo("@IpsExtensionProperties({" + LINE_SEPARATOR
+                        + "\t@IpsExtensionProperty(id = \"foo\", value = \"bar\")" + LINE_SEPARATOR
+                        + "\t@IpsExtensionProperty(id = \"foobar\", value = \"baz\")" + LINE_SEPARATOR + " })"
+                        + LINE_SEPARATOR)));
     }
 
     @Test

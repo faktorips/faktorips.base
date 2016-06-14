@@ -39,8 +39,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
             AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER,
             AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
             AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
-            AnnotatedJavaElementType.POLICY_CMPT_DECLARATION_CLASS,
-            AnnotatedJavaElementType.PRODUCT_CMPT_DECLARATION_CLASS,
+            AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS, AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS,
             AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
             AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER);
 
@@ -78,9 +77,8 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
         if (annotations.size() == 1) {
             annotationArg.append(annotations.get(0));
         } else {
-            annotationArg.append("{");
+            annotationArg.append("{").appendln();
             for (JavaCodeFragment annotation : annotations) {
-                annotationArg.appendln();
                 annotationArg.append("\t");
                 annotationArg.append(annotation);
             }

@@ -52,8 +52,7 @@ public class PolicyCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
     protected JavaCodeFragment createAnnConfiguredBy(XPolicyCmptClass policy) {
         JavaCodeFragmentBuilder codeFragmentBuilder = new JavaCodeFragmentBuilder();
         if (policy.isConfigured()) {
-            codeFragmentBuilder.annotationLn(IpsConfiguredBy.class, "value = " + policy.getProductCmptClassName()
-                    + ".class");
+            codeFragmentBuilder.annotationLn(IpsConfiguredBy.class, policy.getProductCmptClassName() + ".class");
         }
         return codeFragmentBuilder.getFragment();
     }

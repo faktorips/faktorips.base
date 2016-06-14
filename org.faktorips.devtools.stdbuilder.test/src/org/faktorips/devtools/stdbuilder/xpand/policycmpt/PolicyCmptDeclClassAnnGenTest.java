@@ -37,8 +37,8 @@ public class PolicyCmptDeclClassAnnGenTest {
         when(policy.getProductCmptClassName()).thenReturn("ProductCmptImplClass");
 
         assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator")
-                + "@IpsConfiguredBy(value = ProductCmptImplClass.class)" + System.getProperty("line.separator"),
-                generator.createAnnotation(policy).getSourcecode());
+                + "@IpsConfiguredBy(ProductCmptImplClass.class)" + System.getProperty("line.separator"), generator
+                .createAnnotation(policy).getSourcecode());
     }
 
     private XPolicyCmptClass mockPolicyCmptClass() {

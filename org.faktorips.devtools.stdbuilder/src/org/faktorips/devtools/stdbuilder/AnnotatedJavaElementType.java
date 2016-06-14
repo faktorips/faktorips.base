@@ -38,7 +38,7 @@ public enum AnnotatedJavaElementType {
     /**
      * Represents the published interface if it is generated, else the implementation class.
      */
-    PRODUCT_CMPT_DECLARATION_CLASS,
+    PRODUCT_CMPT_DECL_CLASS,
 
     POLICY_CMPT_IMPL_CLASS,
 
@@ -66,7 +66,7 @@ public enum AnnotatedJavaElementType {
     /**
      * Represents the published interface if it is generated, else the implementation class.
      */
-    POLICY_CMPT_DECLARATION_CLASS,
+    POLICY_CMPT_DECL_CLASS,
 
     /**
      * Represents the published interface only, and <em>never</em> the implementation class. Thus it
