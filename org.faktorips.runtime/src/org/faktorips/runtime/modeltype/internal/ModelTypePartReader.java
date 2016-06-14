@@ -233,14 +233,14 @@ public class ModelTypePartReader {
     private static class AttributeDescriptor {
 
         private Field field;
-
         private Method getterMethod;
-
         private Method setterMethod;
 
         public AbstractModelTypeAttribute create(ModelType modelType) {
             if (field != null) {
                 return new ModelTypeConstantAttribute(modelType, field);
+            } else if (modelType instanceof PolicyModel) {
+                return new PolicyModelAttribute((PolicyModel)modelType, getterMethod, setterMethod);
             } else {
                 return new ModelTypeAttribute(modelType, getterMethod, setterMethod);
             }

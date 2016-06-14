@@ -2,6 +2,8 @@ package org.faktorips.runtime.modeltype.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -27,6 +29,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
+import org.faktorips.runtime.modeltype.internal.ModelType.AnnotatedElementMatcher;
 import org.junit.Test;
 
 public class ModelTypeTest {
@@ -234,4 +237,31 @@ public class ModelTypeTest {
 
     }
 
+    @Test
+    public void testSearchDeclaredMethod_exists() {
+        AnnotatedElementMatcher<IpsAttribute> matcher = new AnnotatedElementMatcher<IpsAttribute>() {
+
+            @Override
+            public boolean matches(IpsAttribute annotation) {
+                return annotation.name().equals("Attribute");
+            }
+        };
+        ModelType modelType = (ModelType)Models.getModelType(ISource.class);
+
+        assertNotNull(modelType.searchDeclaredMethod(IpsAttribute.class, matcher));
+    }
+
+    @Test
+    public void testSearchDeclaredMethod_missing() {
+        AnnotatedElementMatcher<IpsAttribute> matcherWrongProperties = new AnnotatedElementMatcher<IpsAttribute>() {
+
+            @Override
+            public boolean matches(IpsAttribute annotation) {
+                return annotation.name().equals("Attribute") && annotation.type() == AttributeType.CONSTANT;
+            }
+        };
+        ModelType modelType = (ModelType)Models.getModelType(ISource.class);
+
+        assertNull(modelType.searchDeclaredMethod(IpsAttribute.class, matcherWrongProperties));
+    }
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -111,5 +113,33 @@ public abstract class AbstractModelElement implements IModelElement {
             return new HashSet<String>(0);
         }
         return extPropertyValues.keySet();
+    }
+
+    /**
+     * If the <code>changingOverTime</code> is <code>false</code>, the given product component is
+     * returned. If changing over time is <code>true</code>, the effective date is used to determine
+     * the generation to use. If the effective date is <code>null</code>, the latest product
+     * component generation is returned.
+     * 
+     * @param productComponent the product component to potentially retrieve a generation from
+     * @param effectiveDate the date to select the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the model element's
+     *            configuration is not changing over time.
+     * @param changingOverTime whether the model element is changing over time.
+     * @return The given product component or the effective generation, depending on
+     *         changingOverTime and effectiveDate.
+     */
+    protected static Object getRelevantProductObject(IProductComponent productComponent,
+            Calendar effectiveDate,
+            boolean changingOverTime) {
+        Object source = productComponent;
+        if (changingOverTime) {
+            if (effectiveDate == null) {
+                source = productComponent.getLatestProductComponentGeneration();
+            } else {
+                source = productComponent.getGenerationBase(effectiveDate);
+            }
+        }
+        return source;
     }
 }

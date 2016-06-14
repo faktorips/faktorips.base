@@ -69,6 +69,11 @@ public abstract class AbstractModelTypeAttribute extends ModelPart implements IM
                 source), e);
     }
 
+    protected void handleGetterError(Object source, Exception e, String kindOfGetter) {
+        throw new IllegalArgumentException(String.format("Could not get %s for attribute %s on source object %s.",
+                kindOfGetter, getName(), source), e);
+    }
+
     /**
      * Creates an attribute model for a sub type in which this attribute is overwritten. This is
      * necessary to retrieve information contained in the class annotation such as labels if no

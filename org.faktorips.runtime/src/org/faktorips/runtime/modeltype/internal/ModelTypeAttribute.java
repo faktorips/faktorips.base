@@ -12,8 +12,10 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -42,6 +44,10 @@ public class ModelTypeAttribute extends AbstractModelTypeAttribute {
         } else {
             return getter.isAnnotationPresent(IpsConfiguredAttribute.class);
         }
+    }
+
+    protected Method getGetter() {
+        return getter;
     }
 
     @Override
@@ -73,6 +79,21 @@ public class ModelTypeAttribute extends AbstractModelTypeAttribute {
         } catch (InvocationTargetException e) {
             handleSetterError(source, value, e);
         }
+    }
+
+    protected Object getRelevantProductObject(IProductComponent productComponent, Calendar effectiveDate) {
+        return getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
+    }
+
+    /**
+     * @return whether or not this attribute is changing over time.
+     */
+    public boolean isChangingOverTime() {
+        if (!getGetter().isAnnotationPresent(IpsConfiguredAttribute.class)) {
+            throw new IllegalStateException("Getter for attribute \"" + getName() + "\" has no annotation "
+                    + IpsConfiguredAttribute.class + ". Cannot determine changing over time property.");
+        }
+        return getGetter().getAnnotation(IpsConfiguredAttribute.class).changingOverTime();
     }
 
     private void handleSetterError(IModelObject source, Object value, Exception e) {

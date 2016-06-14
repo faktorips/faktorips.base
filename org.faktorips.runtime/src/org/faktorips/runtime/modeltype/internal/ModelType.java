@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -171,6 +173,42 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
             sb.append(getSuperType().getName());
         }
         return sb.toString();
+    }
+
+    /**
+     * Searches for a method with the given annotation that matches the condition defined by a
+     * {@link AnnotatedElementMatcher matcher}. Only methods in this type model's declaration class
+     * are considered, thus no methods from super classes are found.
+     * 
+     * @param annotationClass the class of the annotation the method must be annotated with
+     * @param matcher matcher to determine if the annotation has the correct properties
+     * @return the first method that is both annotated with the given annotation and has the correct
+     *         annotated properties. <code>null</code> if no such method can be found.
+     */
+    public <T extends Annotation> Method searchDeclaredMethod(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher) {
+        List<Method> declaredMethods = getAnnotatedModelType().getDeclaredMethods();
+        for (Method method : declaredMethods) {
+            if (method.isAnnotationPresent(annotationClass) && matcher.matches(method.getAnnotation(annotationClass))) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Matcher for methods or fields based on annotation properties.
+     * 
+     * @param <T> is the type of annotation that is expected.
+     */
+    public abstract static class AnnotatedElementMatcher<T extends Annotation> {
+        /**
+         * 
+         * @param annotation the annotation found.
+         * @return <code>true</code> if the annotation matches the condition, <code>false</code>
+         *         else.
+         */
+        public abstract boolean matches(T annotation);
     }
 
     static class AttributeCollector extends TypeHierarchyVisitor {
