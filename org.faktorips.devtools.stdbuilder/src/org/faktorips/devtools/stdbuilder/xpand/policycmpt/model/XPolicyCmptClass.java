@@ -220,6 +220,11 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     public Set<XPolicyAttribute> getAttributes() {
+        return getAllDeclaredAttributes();
+    }
+
+    @Override
+    public Set<XPolicyAttribute> getAllDeclaredAttributes() {
         if (isCached(XPolicyAttribute.class)) {
             return getCachedObjects(XPolicyAttribute.class);
         } else {
@@ -257,6 +262,11 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     public Set<XPolicyAssociation> getAssociations() {
+        return getAllDeclaredAssociations();
+    }
+
+    @Override
+    public Set<XPolicyAssociation> getAllDeclaredAssociations() {
         if (isCached(XPolicyAssociation.class)) {
             return getCachedObjects(XPolicyAssociation.class);
         } else {

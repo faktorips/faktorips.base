@@ -41,7 +41,7 @@ public abstract class AbstractTypeDeclClassAnnGen implements IAnnotationGenerato
      * @see IpsAttributes
      */
     protected JavaCodeFragment createAnnAttributes(XType type) {
-        Set<? extends AbstractGeneratorModelNode> attributes = type.getAttributes();
+        Set<? extends AbstractGeneratorModelNode> attributes = type.getAllDeclaredAttributes();
         Class<?> annotationClass = IpsAttributes.class;
         return createAnnotationWithNodes(annotationClass, attributes);
     }
@@ -51,7 +51,7 @@ public abstract class AbstractTypeDeclClassAnnGen implements IAnnotationGenerato
      * @see IpsAssociations
      */
     protected JavaCodeFragment createAnnAssociations(XType type) {
-        Set<? extends AbstractGeneratorModelNode> associations = type.getAssociations();
+        Set<? extends AbstractGeneratorModelNode> associations = type.getAllDeclaredAssociations();
         Class<?> annotationClass = IpsAssociations.class;
         return createAnnotationWithNodes(annotationClass, associations);
     }
