@@ -37,7 +37,11 @@ public class ModelTypeAttribute extends AbstractModelTypeAttribute {
 
     @Override
     public boolean isProductRelevant() {
-        return getter.isAnnotationPresent(IpsConfiguredAttribute.class);
+        if (getModelType() instanceof ProductModel) {
+            return true;
+        } else {
+            return getter.isAnnotationPresent(IpsConfiguredAttribute.class);
+        }
     }
 
     @Override
