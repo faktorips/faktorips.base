@@ -12,6 +12,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -91,8 +92,8 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
-                    NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
+            throw new CoreException(
+                    new IpsStatus(NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }
 
@@ -119,14 +120,15 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         for (int j = 0; j < structure.getNumOfColumns(); j++) {
             Cell cell = sheetRow.getCell(j);
             if (cell == null) {
-                String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, new Object[] { rowIndex,
-                        j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() });
-                messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+                if (StringUtils.isNotEmpty(nullRepresentationString)) {
+                    String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, new Object[] {
+                            rowIndex, j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() });
+                    messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+                }
                 genRow.setValue(j, null);
             } else {
                 genRow.setValue(j, readCell(cell, datatypes[j]));
             }
         }
     }
-
 }

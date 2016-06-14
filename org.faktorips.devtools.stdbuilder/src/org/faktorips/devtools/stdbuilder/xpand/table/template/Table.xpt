@@ -85,8 +85,7 @@ public class «name» extends «Table_(tableRowName)»{
 	protected void addRow(«List_("String")» values, «IRuntimeRepository()» productRepository) {
 		«IF validColumns.size > 0-»
 		String «FOREACH validColumns AS column ITERATOR i»columnValue = values.get(«i.counter0»);
-		«column.datatypeName» «column.attributeName» = columnValue == null ? «column.nullExpression» : 
-		«column.getNewInstanceFromExpression("columnValue", "productRepository")»;
+		«column.datatypeName» «column.attributeName» = «column.getNewInstanceFromExpression("columnValue", "productRepository")»;
 	    «ENDFOREACH-»
 	    «ENDIF-»
 	    rows.add(new «tableRowName» («columnNames»));

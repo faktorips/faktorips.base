@@ -28,17 +28,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.junit.After;
 import org.junit.Test;
 
 public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-        IpsUIPlugin.getImageHandling().dispose();
-    }
 
     @Test
     public void testCreateImageDescriptor() {
@@ -85,6 +77,14 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(reSharedImage, reImage);
 
         otherManager.dispose();
+
+        assertFalse(reImage.isDisposed());
+        assertFalse(reSharedImage.isDisposed());
+
+        IpsUIPlugin.getImageHandling().disposeImage(sharedDesc);
+
+        assertTrue(reImage.isDisposed());
+        assertTrue(reSharedImage.isDisposed());
     }
 
     @Test
@@ -117,6 +117,10 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertFalse(imageP.isDisposed());
         assertEquals(imageA, imageB);
         assertEquals(imageA, imageP);
+
+        IpsUIPlugin.getImageHandling().disposeImage(descriptor);
+        assertTrue(imageB.isDisposed());
+        assertTrue(imageP.isDisposed());
     }
 
     @Test
@@ -135,6 +139,9 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         // test images
         assertEquals(disabledImage, IpsUIPlugin.getImageHandling().getDisabledImage(ipsElement));
         assertEquals(disabledImage, IpsUIPlugin.getImageHandling().getDisabledImage(newIpsElement));
+
+        IpsUIPlugin.getImageHandling().disposeImage(disabledDescriptor);
+        assertTrue(disabledImage.isDisposed());
     }
 
     @Test

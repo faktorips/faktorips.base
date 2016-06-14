@@ -134,7 +134,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     protected String getNewInstanceFromExpression(DatatypeHelper datatypeHelper,
             String expression,
             String repositoryExpression) {
-        JavaCodeFragment fragment = DatatypeHelperUtil.getNewInstanceFromExpression(getDatatypeHelper(), expression,
+        JavaCodeFragment fragment = DatatypeHelperUtil.getNewInstanceFromExpression(datatypeHelper, expression,
                 repositoryExpression);
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();

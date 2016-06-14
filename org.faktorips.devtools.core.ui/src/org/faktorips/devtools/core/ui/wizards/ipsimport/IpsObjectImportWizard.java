@@ -24,31 +24,25 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public abstract class IpsObjectImportWizard extends Wizard implements IImportWizard {
 
-    protected final static String DIALOG_SETTINGS_KEY = "IpsObjectImportWizard"; //$NON-NLS-1$
-
-    protected IStructuredSelection selection;
-    protected boolean hasNewDialogSettings;
+    private IStructuredSelection selection;
+    private boolean hasNewDialogSettings;
 
     // data that needs to be accessible across multiple wizard pages
-    protected boolean importIntoExisting;
-    protected String nullRepresentation;
+    private boolean importIntoExisting;
+    private String nullRepresentation;
 
-    protected SelectFileAndImportMethodPage startingPage;
+    private SelectFileAndImportMethodPage startingPage;
 
     public IpsObjectImportWizard() {
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
-        if (section == null) {
-            hasNewDialogSettings = true;
-        } else {
-            hasNewDialogSettings = false;
-            setDialogSettings(section);
-        }
+        IDialogSettings settings = workbenchSettings.getSection(getDialogSettingsKey());
+        setHasNewDialogSettings((settings == null));
+        setDialogSettings(settings);
     }
 
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        this.selection = selection;
+        this.setSelection(selection);
     }
 
     /**
@@ -59,15 +53,49 @@ public abstract class IpsObjectImportWizard extends Wizard implements IImportWiz
         this.importIntoExisting = importIntoExisting;
     }
 
+    protected boolean isImportIntoExisting() {
+        return importIntoExisting;
+    }
+
     public boolean isExcelTableFormatSelected() {
-        return startingPage.getFormat().getDefaultExtension().equals(".xls"); //$NON-NLS-1$
+        return ".xls".equals(getIpsOIWStartingPage().getFormat().getDefaultExtension()); //$NON-NLS-1$
     }
 
     /**
      * This method synchronizes the model with the current state of the GUI widgets.
      */
     protected void saveDataToWizard() {
-        nullRepresentation = startingPage.getNullRepresentation();
+        nullRepresentation = getIpsOIWStartingPage().getNullRepresentation();
+    }
+
+    protected String getNullRepresentation() {
+        return nullRepresentation;
+    }
+
+    protected abstract String getDialogSettingsKey();
+
+    public IStructuredSelection getSelection() {
+        return selection;
+    }
+
+    public void setSelection(IStructuredSelection selection) {
+        this.selection = selection;
+    }
+
+    public SelectFileAndImportMethodPage getIpsOIWStartingPage() {
+        return startingPage;
+    }
+
+    public void setIpsOIWStartingPage(SelectFileAndImportMethodPage startingPage) {
+        this.startingPage = startingPage;
+    }
+
+    public boolean isHasNewDialogSettings() {
+        return hasNewDialogSettings;
+    }
+
+    public void setHasNewDialogSettings(boolean hasNewDialogSettings) {
+        this.hasNewDialogSettings = hasNewDialogSettings;
     }
 
 }

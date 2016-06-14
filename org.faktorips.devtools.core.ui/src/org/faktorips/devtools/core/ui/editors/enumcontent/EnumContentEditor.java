@@ -31,6 +31,16 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
 public class EnumContentEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
     @Override
+    public IPage createModelDescriptionPage() throws CoreException {
+        IEnumType enumType = getEnumContent().findEnumType(getIpsProject());
+        if (enumType != null) {
+            return new EnumsDescriptionPage(enumType);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
         addPage(new EnumContentEditorPage(this));
     }
@@ -44,15 +54,4 @@ public class EnumContentEditor extends IpsObjectEditor implements IModelDescript
     IEnumContent getEnumContent() {
         return (IEnumContent)getIpsObject();
     }
-
-    @Override
-    public IPage createModelDescriptionPage() throws CoreException {
-        IEnumType enumType = getEnumContent().findEnumType(getIpsProject());
-        if (enumType != null) {
-            return new EnumsDescriptionPage(enumType);
-        } else {
-            return null;
-        }
-    }
-
 }

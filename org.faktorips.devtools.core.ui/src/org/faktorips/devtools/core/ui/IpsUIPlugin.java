@@ -1727,7 +1727,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         public void dispose() {
             if (resourceManager != null) {
                 resourceManager.dispose();
-                resourceManager = null;
             }
         }
     }

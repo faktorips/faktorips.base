@@ -19,9 +19,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -29,6 +32,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
+import org.faktorips.devtools.core.ui.wizards.enumimport.SelectFileAndImportMethodPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.tableconversion.ITableFormat;
@@ -42,28 +46,28 @@ import org.faktorips.util.message.MessageList;
 public class TableImportWizard extends IpsObjectImportWizard {
 
     public static final String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
-    private static final String DIALOG_SETTINGS_KEY_TABLE_IMPORT_WIZARD = "TableImportWizard"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
 
     private TableContentsPage newTableContentsPage;
     private SelectTableContentsPage selectContentsPage;
     private ImportPreviewPage tablePreviewPage;
 
     public TableImportWizard() {
+        super();
         setWindowTitle(Messages.TableImport_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/TableImportWizard.png")); //$NON-NLS-1$
-        initializeDialogSettings();
     }
 
     @Override
     public void addPages() {
         try {
-            startingPage = new SelectFileAndImportMethodPage(null);
-            startingPage.setImportIntoExisting(importIntoExisting);
-            newTableContentsPage = new TableContentsPage(selection);
-            selectContentsPage = new SelectTableContentsPage(selection);
+            setIpsOIWStartingPage(new SelectFileAndImportMethodPage(null));
+            getIpsOIWStartingPage().setImportIntoExisting(isImportIntoExisting());
+            newTableContentsPage = new TableContentsPage(getSelection());
+            selectContentsPage = new SelectTableContentsPage(getSelection());
 
-            addPage(startingPage);
+            addPage(getIpsOIWStartingPage());
             addPage(newTableContentsPage);
             addPage(selectContentsPage);
         } catch (Exception e) {
@@ -74,6 +78,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         saveDataToWizard();
+        SelectFileAndImportMethodPage startingPage = (SelectFileAndImportMethodPage)getIpsOIWStartingPage();
         if (page == startingPage) {
             /*
              * Set the completed state on the opposite page to true so that the wizard can finish
@@ -119,7 +124,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
     @Override
     public IWizardPage getStartingPage() {
-        return startingPage;
+        return getIpsOIWStartingPage();
     }
 
     @Override
@@ -141,12 +146,15 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
     @Override
     public boolean performFinish() {
+        int rowCount = 0;
+        final SelectFileAndImportMethodPage startingPage = (SelectFileAndImportMethodPage)getIpsOIWStartingPage();
         try {
             final String filename = startingPage.getFilename();
             final ITableFormat format = startingPage.getFormat();
             final ITableStructure structure = getTableStructure();
             ITableContents contents = getTableContents();
             final ITableRows tableRows = contents.getTableRows();
+            rowCount = tableRows.getNumOfRows();
 
             // no append, so remove any existing content
             if (!startingPage.isImportExistingAppend()) {
@@ -159,7 +167,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeTableImport(structure, new Path(filename), tableRows, nullRepresentation,
+                    format.executeTableImport(structure, new Path(filename), tableRows, getNullRepresentation(),
                             ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
                 }
             };
@@ -168,13 +176,6 @@ public class TableImportWizard extends IpsObjectImportWizard {
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(
                         new ResultDisplayer(getShell(), Messages.TableImportWizard_operationName, messageList));
-            }
-
-            // save the dialog settings
-            if (hasNewDialogSettings) {
-                IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
-                IDialogSettings settings = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
-                setDialogSettings(settings);
             }
 
             contents.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
@@ -186,9 +187,18 @@ public class TableImportWizard extends IpsObjectImportWizard {
             }
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the import process.", throwable)); //$NON-NLS-1$
         } finally {
+            // save the dialog settings
+            if (isHasNewDialogSettings()) {
+                IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+                IDialogSettings settings = workbenchSettings.addNewSection(getDialogSettingsKey());
+                setDialogSettings(settings);
+            }
             selectContentsPage.saveWidgetValues();
             startingPage.saveWidgetValues();
         }
+        rowCount = calculateRowCount(rowCount);
+        MessageDialog.openInformation(getShell(), Messages.TableImportWizard_tableImportControlTitle,
+                NLS.bind(Messages.TableImportWizard_tableImportControlBody, rowCount));
 
         // this implementation of this method should always return true since this causes the wizard
         // dialog to close. in either case if an exception arises or not it doesn't make sense to
@@ -196,11 +206,24 @@ public class TableImportWizard extends IpsObjectImportWizard {
         return true;
     }
 
-    private void initializeDialogSettings() {
-        IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
-        IDialogSettings settings = workbenchSettings.getSection(DIALOG_SETTINGS_KEY_TABLE_IMPORT_WIZARD);
-        hasNewDialogSettings = (settings == null);
-        setDialogSettings(settings);
+    private int calculateRowCount(int oldRowCount) {
+        if (newTableContentsPage.getCreatedTableContents() != null) {
+            return newTableContentsPage.getCreatedTableContents().getTableRows().getNumOfRows();
+        } else {
+            if (getIpsOIWStartingPage().isImportExistingAppend()) {
+                return getRowCountNewTable() - oldRowCount;
+            } else {
+                return getRowCountNewTable();
+            }
+        }
+    }
+
+    private int getRowCountNewTable() {
+        try {
+            return getTableContents().getTableRows().getNumOfRows();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
@@ -208,7 +231,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
      */
     private ITableStructure getTableStructure() {
         try {
-            if (startingPage.isImportIntoExisting()) {
+            if (getIpsOIWStartingPage().isImportIntoExisting()) {
                 ITableContents tableContents = (ITableContents)selectContentsPage.getTargetForImport();
                 return tableContents.findTableStructure(tableContents.getIpsProject());
             } else {
@@ -224,12 +247,17 @@ public class TableImportWizard extends IpsObjectImportWizard {
      * @return The table contents to import into.
      */
     private ITableContents getTableContents() throws CoreException {
-        if (startingPage.isImportIntoExisting()) {
+        if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (ITableContents)selectContentsPage.getTargetForImport();
         }
         IIpsSrcFile ipsSrcFile = newTableContentsPage.createIpsSrcFile(new NullProgressMonitor());
         newTableContentsPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<IIpsObject>());
         return newTableContentsPage.getCreatedTableContents();
+    }
+
+    @Override
+    protected String getDialogSettingsKey() {
+        return DIALOG_SETTINGS_KEY;
     }
 
 }
