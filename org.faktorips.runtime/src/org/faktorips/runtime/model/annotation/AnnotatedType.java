@@ -95,7 +95,7 @@ public class AnnotatedType {
     /**
      * Returns all fields that are declared in this type. That means it collects all fields from the
      * implementation and published interface. If this type represents a product component type it
-     * also adds all fields from generation.
+     * also adds all fields from generations.
      * 
      * @return A list of fields that are declared in this type
      */
@@ -110,7 +110,7 @@ public class AnnotatedType {
     /**
      * Returns all methods that are declared in this type. That means it collects all methods from
      * the implementation and published interface. If this type represents a product component type
-     * it also adds all methods from generation.
+     * it also adds all methods from generations.
      * 
      * @return A list of fields that are declared in this type
      */

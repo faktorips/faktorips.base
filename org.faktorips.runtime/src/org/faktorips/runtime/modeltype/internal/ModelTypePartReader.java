@@ -22,6 +22,7 @@ import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
@@ -92,7 +93,14 @@ public class ModelTypePartReader {
     public LinkedHashMap<String, IModelTypeAttribute> getAttributes(ModelType modelType) {
         LinkedHashMap<String, IModelTypeAttribute> result = new LinkedHashMap<String, IModelTypeAttribute>();
         for (Entry<String, AttributeDescriptor> entry : attributes.entrySet()) {
-            result.put(entry.getKey(), entry.getValue().create(modelType));
+            AttributeDescriptor attributeDescriptor = entry.getValue();
+            String name = entry.getKey();
+            if (attributeDescriptor.isValid()) {
+                result.put(name, attributeDescriptor.create(modelType));
+            } else {
+                throw new IllegalArgumentException(modelType.getAnnotatedModelType().toString() + " lists \"" + name
+                        + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found.");
+            }
         }
         return result;
     }
@@ -100,7 +108,24 @@ public class ModelTypePartReader {
     public LinkedHashMap<String, IModelTypeAssociation> getAssociations(ModelType modelType) {
         LinkedHashMap<String, IModelTypeAssociation> result = new LinkedHashMap<String, IModelTypeAssociation>();
         for (Entry<String, AssociationDescriptor> entry : associations.entrySet()) {
-            result.put(entry.getKey(), entry.getValue().create(modelType));
+            AssociationDescriptor associationDescriptor = entry.getValue();
+            String name = entry.getKey();
+            if (associationDescriptor.isValid()) {
+                result.put(name, associationDescriptor.create(modelType));
+            } else {
+                // else it must be defined in a super type but overridden (with the same name and
+                // target) in this type. That leads to a different implementation being generated
+                // but not a new annotation.
+                IModelType superType = modelType.getSuperType();
+                IModelTypeAssociation association = superType.getAssociation(name);
+                if (association != null) {
+                    result.put(name, association);
+                } else {
+                    throw new IllegalArgumentException(modelType.getAnnotatedModelType().toString() + " lists \""
+                            + name
+                            + "\" as one of it's @IpsAssociations but no matching @IpsAssociation could be found.");
+                }
+            }
         }
         return result;
     }
@@ -154,6 +179,10 @@ public class ModelTypePartReader {
             }
         }
 
+        public boolean isValid() {
+            return field != null || getterMethod != null;
+        }
+
     }
 
     private static class AssociationDescriptor {
@@ -162,6 +191,10 @@ public class ModelTypePartReader {
 
         public IModelTypeAssociation create(ModelType modelType) {
             return new ModelTypeAssociation(modelType, getterMethod);
+        }
+
+        public boolean isValid() {
+            return getterMethod != null;
         }
 
     }

@@ -11,8 +11,10 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -174,11 +176,17 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
     static class AttributeCollector extends TypeHierarchyVisitor {
 
-        List<IModelTypeAttribute> result = new ArrayList<IModelTypeAttribute>(30);
+        private List<IModelTypeAttribute> result = new ArrayList<IModelTypeAttribute>(30);
+        private Set<String> attributeNames = new HashSet<String>();
 
         @Override
         public boolean visitType(IModelType type) {
-            result.addAll(type.getDeclaredAttributes());
+            for (IModelTypeAttribute declaredAttribute : type.getDeclaredAttributes()) {
+                if (!attributeNames.contains(declaredAttribute.getName())) {
+                    attributeNames.add(declaredAttribute.getName());
+                    result.add(declaredAttribute);
+                }
+            }
             return true;
         }
 
@@ -204,11 +212,17 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
     static class AssociationsCollector extends TypeHierarchyVisitor {
 
-        List<IModelTypeAssociation> result = new ArrayList<IModelTypeAssociation>();
+        private List<IModelTypeAssociation> result = new ArrayList<IModelTypeAssociation>();
+        private Set<String> associationNames = new HashSet<String>();
 
         @Override
         public boolean visitType(IModelType type) {
-            result.addAll(type.getDeclaredAssociations());
+            for (IModelTypeAssociation declaredAssociation : type.getDeclaredAssociations()) {
+                if (!associationNames.contains(declaredAssociation.getName())) {
+                    associationNames.add(declaredAssociation.getName());
+                    result.add(declaredAssociation);
+                }
+            }
             return true;
         }
 
