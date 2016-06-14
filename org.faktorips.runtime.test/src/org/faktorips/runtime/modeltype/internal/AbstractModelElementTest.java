@@ -75,14 +75,13 @@ public class AbstractModelElementTest {
         }
 
         @Override
-        protected String getTypeName() {
-            return ANY_NAME;
+        protected String getMessageKey(DocumentationType messageType) {
+            return messageType.getKey(getName(), ANY_NAME);
         }
-
     }
 
     @IpsExtensionProperties({ @IpsExtensionProperty(id = "id1", isNull = true),
-        @IpsExtensionProperty(id = "id2", value = "anyValue") })
+            @IpsExtensionProperty(id = "id2", value = "anyValue") })
     @IpsDocumented(bundleName = "org.faktorips.runtime.modeltype.internal.test", defaultLocale = "de")
     private static class AnnotatedModelElement {
 

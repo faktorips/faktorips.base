@@ -74,9 +74,7 @@ public abstract class AbstractModelElement implements IModelElement {
         return getDocumentation(locale, DocumentationType.DESCRIPTION, IpsStringUtils.EMPTY);
     }
 
-    private String getMessageKey(DocumentationType messageType) {
-        return messageType.getKey(getTypeName(), getName());
-    }
+    protected abstract String getMessageKey(DocumentationType messageType);
 
     protected String getDocumentation(Locale locale, DocumentationType type, String fallback) {
         MessagesHelper messageHelper = getMessageHelper();
@@ -98,8 +96,6 @@ public abstract class AbstractModelElement implements IModelElement {
             return null;
         }
     }
-
-    protected abstract String getTypeName();
 
     @Override
     public Object getExtensionPropertyValue(String propertyId) {

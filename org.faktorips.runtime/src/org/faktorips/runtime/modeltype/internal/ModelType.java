@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedType;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -49,8 +50,8 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
     }
 
     @Override
-    protected String getTypeName() {
-        return getName();
+    protected String getMessageKey(DocumentationType messageType) {
+        return messageType.getKey(getName(), IpsStringUtils.EMPTY);
     }
 
     @Override

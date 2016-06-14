@@ -35,9 +35,13 @@ public abstract class ModelPart extends AbstractModelElement {
     /**
      * Returns the name of the parent model type.
      */
-    @Override
     protected String getTypeName() {
         return getModelType().getName();
+    }
+
+    @Override
+    protected String getMessageKey(DocumentationType messageType) {
+        return messageType.getKey(getTypeName(), getName());
     }
 
     @Override
