@@ -99,8 +99,11 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
         if (matchingAssociation == null) {
             return new JavaCodeFragment();
         } else {
-            JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder().append("source = ")
-                    .appendClassName(matchingAssociation.getSourceModelNode().getImplClassName()).append(".class, ")
+            JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder()
+                    .append("source = ")
+                    .appendClassName(
+                            matchingAssociation.getSourceModelNodeNotConsiderChangingOverTime()
+                                    .getPublishedInterfaceName()).append(".class, ")
                     .append("name = \"" + matchingAssociation.getName(false) + "\"");
 
             return new JavaCodeFragmentBuilder().annotationLn(IpsMatchingAssociation.class,

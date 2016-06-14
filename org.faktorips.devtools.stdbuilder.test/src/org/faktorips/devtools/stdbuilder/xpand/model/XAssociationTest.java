@@ -264,5 +264,4 @@ public class XAssociationTest {
 
         assertEquals(xDerivedUnion, xAssociation.getSubsettedDerivedUnion());
     }
-
 }

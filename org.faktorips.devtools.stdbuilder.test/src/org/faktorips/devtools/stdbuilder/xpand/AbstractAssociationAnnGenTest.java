@@ -98,8 +98,8 @@ public class AbstractAssociationAnnGenTest {
         XAssociation matchingAssociation = mock(XAssociation.class);
         when(matchingAssociation.getName(false)).thenReturn(MATCHING_ASSOCIATION);
         XType matchingSourceType = mock(XType.class);
-        when(matchingSourceType.getImplClassName()).thenReturn(MATCHING_SOURCE_TYPE);
-        when(matchingAssociation.getSourceModelNode()).thenReturn(matchingSourceType);
+        when(matchingSourceType.getPublishedInterfaceName()).thenReturn(MATCHING_SOURCE_TYPE);
+        when(matchingAssociation.getSourceModelNodeNotConsiderChangingOverTime()).thenReturn(matchingSourceType);
         when(association.getMatchingAssociation()).thenReturn(matchingAssociation);
     }
 

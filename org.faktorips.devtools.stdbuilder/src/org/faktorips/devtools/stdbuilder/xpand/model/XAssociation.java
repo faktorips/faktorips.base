@@ -203,6 +203,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getModelNode(getSourceType(), getModelNodeType(true));
     }
 
+    public XType getSourceModelNodeNotConsiderChangingOverTime() {
+        return getModelNode(getSourceType(), getModelNodeType(false));
+    }
+
     /**
      * Getting the target type of the association
      * 
