@@ -107,6 +107,7 @@ public class MessagesHelperTest {
 
     @Test
     public void testGetMessageOr_FoundLocaleFallback() throws Exception {
+        Locale.setDefault(Locale.ROOT);
         String qualifiedName = getClass().getName();
         MessagesHelper messagesHelper = new MessagesHelper(qualifiedName, loader, defaultLocale);
 
