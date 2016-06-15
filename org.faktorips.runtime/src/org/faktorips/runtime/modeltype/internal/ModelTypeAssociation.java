@@ -190,12 +190,24 @@ public class ModelTypeAssociation extends ModelPart implements IModelTypeAssocia
         sb.append(getMinCardinality());
         sb.append("..");
         sb.append(getMaxCardinality() == Integer.MAX_VALUE ? "*" : getMaxCardinality());
-        if (isProductRelevant()) {
+        if (isMatchingAssociationPresent()) {
             sb.append(", ");
             sb.append("isProductRelevant");
         }
         sb.append(')');
         return sb.toString();
+    }
+
+    /**
+     * Creates an association model for a sub type in which this association is overwritten. This is
+     * necessary to retrieve information contained in the class annotation such as labels if no
+     * getter is generated for the overwritten association in the sub class.
+     * 
+     * @param subModelType a model type representing a sub type of this association's model type
+     * @return a {@link ModelTypeAssociation} for the given sub model type
+     */
+    ModelTypeAssociation createOverwritingAssociationFor(ModelType subModelType) {
+        return new ModelTypeAssociation(subModelType, getter);
     }
 
 }

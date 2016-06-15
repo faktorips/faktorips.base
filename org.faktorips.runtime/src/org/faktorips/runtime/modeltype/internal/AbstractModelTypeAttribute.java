@@ -69,4 +69,14 @@ public abstract class AbstractModelTypeAttribute extends ModelPart implements IM
                 source), e);
     }
 
+    /**
+     * Creates an attribute model for a sub type in which this attribute is overwritten. This is
+     * necessary to retrieve information contained in the class annotation such as labels if no
+     * getter is generated for the overwritten attribute in the sub class.
+     * 
+     * @param subModelType a model type representing a sub type of this attribute's model type
+     * @return a {@link ModelTypeAttribute} for the given sub model type
+     */
+    abstract AbstractModelTypeAttribute createOverwritingAttributeFor(ModelType subModelType);
+
 }

@@ -98,11 +98,26 @@ public class ModelTypePartReader {
             if (attributeDescriptor.isValid()) {
                 result.put(name, attributeDescriptor.create(modelType));
             } else {
-                throw new IllegalArgumentException(modelType.getAnnotatedModelType().toString() + " lists \"" + name
-                        + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found.");
+                // it could be defined in a super type but overridden (with the same name and
+                // target) in this type. That leads to a different implementation being generated
+                // but not a new annotation.
+                IModelType superType = modelType.getSuperType();
+                IModelTypeAttribute attribute = superType.getAttribute(name);
+                if (attribute != null) {
+                    IModelTypeAttribute overwritingAttribute = ((AbstractModelTypeAttribute)attribute)
+                            .createOverwritingAttributeFor(modelType);
+                    result.put(name, overwritingAttribute);
+                } else {
+                    throw new IllegalArgumentException(getAnnotatedJavaClass(modelType) + " lists \"" + name
+                            + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found.");
+                }
             }
         }
         return result;
+    }
+
+    private Class<? extends Object> getAnnotatedJavaClass(ModelType modelType) {
+        return modelType.getJavaInterface() == null ? modelType.getJavaClass() : modelType.getJavaInterface();
     }
 
     public LinkedHashMap<String, IModelTypeAssociation> getAssociations(ModelType modelType) {
@@ -119,10 +134,11 @@ public class ModelTypePartReader {
                 IModelType superType = modelType.getSuperType();
                 IModelTypeAssociation association = superType.getAssociation(name);
                 if (association != null) {
-                    result.put(name, association);
+                    ModelTypeAssociation overwritingAssociation = ((ModelTypeAssociation)association)
+                            .createOverwritingAssociationFor(modelType);
+                    result.put(name, overwritingAssociation);
                 } else {
-                    throw new IllegalArgumentException(modelType.getAnnotatedModelType().toString() + " lists \""
-                            + name
+                    throw new IllegalArgumentException(getAnnotatedJavaClass(modelType) + " lists \"" + name
                             + "\" as one of it's @IpsAssociations but no matching @IpsAssociation could be found.");
                 }
             }

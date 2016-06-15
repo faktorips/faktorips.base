@@ -89,7 +89,7 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
         finder.visitHierarchy(this);
         if (finder.association == null) {
             throw new IllegalArgumentException("The type " + this
-                    + "(or one of it's supertypes) hasn't got an association " + name);
+                    + " (or one of it's super types) hasn't got an association \"" + name + "\"");
         }
         return finder.association;
     }
@@ -119,7 +119,7 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
         finder.visitHierarchy(this);
         if (finder.attribute == null) {
             throw new IllegalArgumentException("The type " + this
-                    + "(or one of it's supertypes) hasn't got an attribute " + name);
+                    + " (or one of it's supertypes) hasn't got an attribute \"" + name + "\"");
         }
         return finder.attribute;
     }

@@ -79,4 +79,9 @@ public class ModelTypeAttribute extends AbstractModelTypeAttribute {
         throw new IllegalArgumentException(String.format(
                 "Could not write attribute %s on source object %s to value %s.", getName(), source, value), e);
     }
+
+    @Override
+    ModelTypeAttribute createOverwritingAttributeFor(ModelType subModelType) {
+        return new ModelTypeAttribute(subModelType, getter, setter);
+    }
 }

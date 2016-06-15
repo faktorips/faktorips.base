@@ -52,4 +52,9 @@ public class ModelTypeConstantAttribute extends AbstractModelTypeAttribute {
         throw new IllegalArgumentException("Cannot modify a constant field.");
     }
 
+    @Override
+    ModelTypeConstantAttribute createOverwritingAttributeFor(ModelType subModelType) {
+        return new ModelTypeConstantAttribute(subModelType, field);
+    }
+
 }
