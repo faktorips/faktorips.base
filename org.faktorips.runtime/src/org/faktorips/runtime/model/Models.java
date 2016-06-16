@@ -40,31 +40,29 @@ public class Models {
                 }
             });
 
-    private static final Memoizer<Class<? extends IProductComponent>, IProductModel> PRODUCT_MODEL_CACHE = new Memoizer<Class<? extends IProductComponent>, IProductModel>(
-            new AbstractComputable<Class<? extends IProductComponent>, IProductModel>(IProductModel.class) {
+    private static final Memoizer<AnnotatedType, IProductModel> PRODUCT_MODEL_CACHE = new Memoizer<AnnotatedType, IProductModel>(
+            new AbstractComputable<AnnotatedType, IProductModel>(IProductModel.class) {
                 @Override
-                public IProductModel compute(Class<? extends IProductComponent> productComponentClass) {
-                    AnnotatedType annotatedModelType = AnnotatedType.from(productComponentClass);
+                public IProductModel compute(AnnotatedType annotatedModelType) {
                     if (annotatedModelType.is(IpsProductCmptType.class)) {
                         String name = annotatedModelType.get(IpsProductCmptType.class).name();
                         return new ProductModel(name, annotatedModelType);
                     } else {
-                        throw new IllegalArgumentException("The class " + productComponentClass.getCanonicalName()
+                        throw new IllegalArgumentException("The class " + getAnnotatedClass(annotatedModelType)
                                 + " is not annotated as product component type.");
                     }
                 }
             });
 
-    private static final Memoizer<Class<? extends IModelObject>, IPolicyModel> POLICY_MODEL_CACHE = new Memoizer<Class<? extends IModelObject>, IPolicyModel>(
-            new AbstractComputable<Class<? extends IModelObject>, IPolicyModel>(IPolicyModel.class) {
+    private static final Memoizer<AnnotatedType, IPolicyModel> POLICY_MODEL_CACHE = new Memoizer<AnnotatedType, IPolicyModel>(
+            new AbstractComputable<AnnotatedType, IPolicyModel>(IPolicyModel.class) {
                 @Override
-                public IPolicyModel compute(Class<? extends IModelObject> modelObjectClass) {
-                    AnnotatedType annotatedModelType = AnnotatedType.from(modelObjectClass);
+                public IPolicyModel compute(AnnotatedType annotatedModelType) {
                     if (annotatedModelType.is(IpsPolicyCmptType.class)) {
                         String name = annotatedModelType.get(IpsPolicyCmptType.class).name();
                         return new PolicyModel(name, annotatedModelType);
                     } else {
-                        throw new IllegalArgumentException("The class " + modelObjectClass.getCanonicalName()
+                        throw new IllegalArgumentException("The class " + getAnnotatedClass(annotatedModelType)
                                 + " is not annotated as policy component type.");
                     }
                 }
@@ -72,6 +70,11 @@ public class Models {
 
     private Models() {
         // prevent default constructor
+    }
+
+    private static String getAnnotatedClass(AnnotatedType annotatedModelType) {
+        return annotatedModelType.getPublishedInterface() != null ? annotatedModelType.getPublishedInterface()
+                .getCanonicalName() : annotatedModelType.getImplementationClass().getCanonicalName();
     }
 
     private static <K, V> V get(Memoizer<K, V> memoizer, K key) {
@@ -119,7 +122,7 @@ public class Models {
      *             model
      */
     public static IProductModel getProductModel(Class<? extends IProductComponent> productModelClass) {
-        return get(PRODUCT_MODEL_CACHE, productModelClass);
+        return get(PRODUCT_MODEL_CACHE, AnnotatedType.from(productModelClass));
     }
 
     /**
@@ -152,7 +155,7 @@ public class Models {
      *             model
      */
     public static IPolicyModel getPolicyModel(Class<? extends IModelObject> policyModelClass) {
-        return get(POLICY_MODEL_CACHE, policyModelClass);
+        return get(POLICY_MODEL_CACHE, AnnotatedType.from(policyModelClass));
     }
 
     /**

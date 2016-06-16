@@ -84,6 +84,11 @@ public class ModelsTest {
         assertThat(Models.getPolicyModel(TestPolicy.class), is(sameInstance(model)));
     }
 
+    @Test
+    public void testGetPolicyModel_isReturningCachedInstanceForInterfaceAndImplementation() {
+        assertThat(Models.getPolicyModel(MyPolicy.class), is(sameInstance(Models.getPolicyModel(IMyPolicy.class))));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testGetPolicyModel_noAnnotation() {
         Models.getPolicyModel(TestPolicyWithoutAnnotation.class);
@@ -110,6 +115,11 @@ public class ModelsTest {
         IProductModel model = Models.getProductModel(new TestProduct());
 
         assertThat(Models.getProductModel(TestProduct.class), is(sameInstance(model)));
+    }
+
+    @Test
+    public void testGetProductModel_isReturningCachedInstanceForInterfaceAndImplementation() {
+        assertThat(Models.getProductModel(MyProduct.class), is(sameInstance(Models.getProductModel(IMyProduct.class))));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -1,7 +1,9 @@
 package org.faktorips.runtime.model.annotation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -77,6 +79,22 @@ public class AnnotatedTypeTest {
         IpsPublishedInterface annotation = annotatedModelTypes.get(IpsPublishedInterface.class);
 
         assertThat(annotation, notNullValue());
+    }
+
+    @Test
+    public void testEquals() {
+        assertThat(AnnotatedType.from(Implementation.class), is(equalTo(AnnotatedType.from(Implementation.class))));
+    }
+
+    @Test
+    public void testHashcode() {
+        assertThat(AnnotatedType.from(Implementation.class).hashCode(),
+                is(equalTo(AnnotatedType.from(Implementation.class).hashCode())));
+    }
+
+    @Test
+    public void testFrom_returnsSameInstance() {
+        assertThat(AnnotatedType.from(Implementation.class), is(sameInstance(AnnotatedType.from(Implementation.class))));
     }
 
     @IpsPublishedInterface(implementation = Implementation.class)
