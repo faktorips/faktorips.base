@@ -22,10 +22,12 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -144,9 +146,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** Action to reset all literal names to the values of their respective default providers. */
     private IAction resetLiteralNamesAction;
 
-    /**
-     * Flag indicating whether the 'Lock and Synchronize Literal Names' option is currently active.
-     */
+    /** Flag indicating whether the 'Lock and Synchronize Literal Names' option is currently active. */
     private boolean lockAndSynchronizeLiteralNames;
 
     /**
@@ -313,7 +313,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * 
      * @param datatype the datatype to set the correct column style. If data type is null, the
      *            default style configured by the {@link DefaultControlFactory} is used.
-     */
+     * */
     private EnumValueTraversalStrategy addTableColumn(String columnName,
             ValueDatatype datatype,
             boolean identifierColumnn,
@@ -615,10 +615,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         literalNameAttributeValue.setValue(ValueFactory.createStringValue(literalValue));
     }
 
-    public TableViewer getEnumValueTableViewer() {
-        return enumValuesTableViewer;
-    }
-
     private static class EnumValueTraversalStrategy extends LinkedColumnsTraversalStrategy<IEnumValue> {
 
         private final int columnIndex;
@@ -662,6 +658,32 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
             return enumValues.get(index);
         }
+    }
+
+    /** The content provider for the table viewer. */
+    private static class EnumValuesContentProvider implements IStructuredContentProvider {
+
+        private final IEnumValueContainer enumValueContainer;
+
+        public EnumValuesContentProvider(IEnumValueContainer enumValueContainer) {
+            this.enumValueContainer = enumValueContainer;
+        }
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            return enumValueContainer.getEnumValues().toArray();
+        }
+
+        @Override
+        public void dispose() {
+            // Nothing to dispose.
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do on input change event.
+        }
+
     }
 
     /** The label provider for the table viewer. */
