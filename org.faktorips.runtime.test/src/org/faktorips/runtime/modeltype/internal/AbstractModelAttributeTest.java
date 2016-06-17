@@ -22,7 +22,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.junit.Test;
 
-public class AbstractModelTypeAttributeTest {
+public class AbstractModelAttributeTest {
 
     private final IModelType modelType = Models.getModelType(Policy.class);
 
@@ -80,68 +80,6 @@ public class AbstractModelTypeAttributeTest {
         assertFalse(subAttr2.isProductRelevant());
     }
 
-    @Test
-    public void testGetValue() {
-        Policy modelObject = new Policy();
-        modelObject.attr1 = 123;
-
-        assertEquals("const", constant.getValue(modelObject));
-        assertEquals(123, attr1.getValue(modelObject));
-        assertEquals(null, attr2.getValue(modelObject));
-
-        SubPolicy subPolicy = new SubPolicy();
-        assertEquals("const", constant.getValue(subPolicy));
-        assertEquals(42, attr1.getValue(subPolicy));
-        assertEquals(new Date(0), attr2.getValue(subPolicy));
-        assertEquals("const", subConstant.getValue(subPolicy));
-        assertEquals(42, subAttr1.getValue(subPolicy));
-        assertEquals(new Date(0), subAttr2.getValue(subPolicy));
-    }
-
-    @Test
-    public void testSetValue() {
-        Policy modelObject = new Policy();
-
-        attr1.setValue(modelObject, 412);
-
-        assertEquals(412, modelObject.attr1);
-
-        subAttr1.setValue(modelObject, 567);
-
-        assertEquals(567, modelObject.attr1);
-    }
-
-    @Test
-    public void testSetValue_Overwritten() {
-        SubPolicy subPolicy = new SubPolicy();
-
-        subAttr2.setValue(subPolicy, new Date(1));
-
-        assertEquals(new Date(1), subPolicy.attr2);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetValue_CannotModifyConstant() {
-        Policy modelObject = new Policy();
-
-        constant.setValue(modelObject, "asd");
-        subConstant.setValue(modelObject, "asd");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetValue_CannotDerivedAttribute() {
-        Policy modelObject = new Policy();
-
-        attr2.setValue(modelObject, "asd");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetValue_CannotDerivedAttributeWithOverwritten() {
-        Policy modelObject = new Policy();
-
-        subAttr2.setValue(modelObject, "asd");
-    }
-
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsAttributes({ "const", "attr1", "attr2" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.modeltype.internal.test", defaultLocale = "de")
@@ -180,10 +118,6 @@ public class AbstractModelTypeAttributeTest {
     private static class SubPolicy extends Policy {
 
         private Date attr2 = new Date(0);
-
-        public SubPolicy() {
-            setAttr1(42);
-        }
 
         @Override
         @IpsAttribute(name = "attr2", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Range)

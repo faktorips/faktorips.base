@@ -19,18 +19,69 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
+import org.faktorips.runtime.model.annotation.IpsAttribute;
+import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
-import org.faktorips.runtime.modeltype.IModelType;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
 import org.faktorips.runtime.modeltype.internal.ModelType.AnnotatedElementMatcher;
 import org.faktorips.valueset.ValueSet;
 
-public class PolicyModelAttribute extends ModelTypeAttribute {
+public class PolicyModelAttribute extends AbstractModelAttribute implements IPolicyModelAttribute {
+
+    private final Method getter;
+
+    private final Method setter;
 
     private Method defaultValueMethod;
     private Method valueSetMethod;
 
-    public PolicyModelAttribute(PolicyModel modelType, Method getterMethod, Method setterMethod) {
-        super(modelType, getterMethod, setterMethod);
+    public PolicyModelAttribute(PolicyModel modelType, Method getter, Method setter, boolean changingOverTime) {
+        super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
+                getter.getReturnType(), changingOverTime);
+        this.getter = getter;
+        this.setter = setter;
+    }
+
+    @Override
+    public boolean isProductRelevant() {
+        return getter.isAnnotationPresent(IpsConfiguredAttribute.class);
+    }
+
+    @Override
+    public Object getValue(IModelObject source) {
+        try {
+            return getter.invoke(source);
+        } catch (IllegalAccessException e) {
+            handleGetterError(source, e);
+        } catch (InvocationTargetException e) {
+            handleGetterError(source, e);
+        } catch (SecurityException e) {
+            handleGetterError(source, e);
+        }
+        return null;
+    }
+
+    @Override
+    public void setValue(IModelObject source, Object value) {
+        try {
+            if (setter != null) {
+                setter.invoke(source, value);
+            } else {
+                handleSetterError(source, value, null);
+            }
+        } catch (IllegalArgumentException e) {
+            handleSetterError(source, value, e);
+        } catch (IllegalAccessException e) {
+            handleSetterError(source, value, e);
+        } catch (InvocationTargetException e) {
+            handleSetterError(source, value, e);
+        }
+    }
+
+    private void handleSetterError(IModelObject source, Object value, Exception e) {
+        throw new IllegalArgumentException(String.format(
+                "Could not write attribute %s on source object %s to value %s.", getName(), source, value), e);
     }
 
     @Override
@@ -38,31 +89,12 @@ public class PolicyModelAttribute extends ModelTypeAttribute {
         return (PolicyModel)super.getModelType();
     }
 
-    /**
-     * Returns the product configured default value of the attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getDefaultValue() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
-     * 
-     * @param modelObject the configurable model object from which product component and (if
-     *            necessary) effective date can be retrieved
-     * @see #getDefaultValue(IProductComponent, Calendar)
-     */
+    @Override
     public Object getDefaultValue(IConfigurableModelObject modelObject) {
         return getDefaultValue(modelObject.getProductComponent(), modelObject.getEffectiveFromAsCalendar());
     }
 
-    /**
-     * Returns the product configured default value of the attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getDefaultValue() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
-     * 
-     * @param source the product component to read the attribute default value from.
-     * @param effectiveDate the date to determine the product component generation. If
-     *            <code>null</code> the latest generation is used. Is ignored if the attribute's
-     *            configuration is not changing over time.
-     */
+    @Override
     public Object getDefaultValue(IProductComponent source, Calendar effectiveDate) {
         return invokeGetterMethod(getDefaultValueMethod(), getRelevantProductObject(source, effectiveDate),
                 "default value");
@@ -85,28 +117,12 @@ public class PolicyModelAttribute extends ModelTypeAttribute {
         return findMethod(IpsDefaultValue.class, filter, "default value", false);
     }
 
-    /**
-     * Returns the value set of the given model object's attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
-     *
-     * @param modelObject the configurable model object from which product component and (if
-     *            necessary) effective date can be retrieved
-     * @see #getValueSet(IProductComponent, Calendar, IValidationContext)
-     */
+    @Override
     public ValueSet<?> getValueSet(IConfigurableModelObject modelObject, IValidationContext context) {
         return getValueSet((IModelObject)modelObject, context);
     }
 
-    /**
-     * Returns the value set of the given model object's attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
-     *
-     * @param modelObject a model object
-     */
+    @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         if (isProductRelevant() && modelObject instanceof IConfigurableModelObject) {
             IConfigurableModelObject configurableModelObject = (IConfigurableModelObject)modelObject;
@@ -116,18 +132,7 @@ public class PolicyModelAttribute extends ModelTypeAttribute {
         return (ValueSet<?>)invokeGetterMethod(getValueSetMethod(), modelObject, "value set", context);
     }
 
-    /**
-     * Returns the value set of the given model object's attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
-     *
-     * @param source the product component to read an attribute value set from. Must correspond to
-     *            the {@link IModelType} this attribute belongs to.
-     * @param effectiveDate the date to determine the product component generation. If
-     *            <code>null</code> the latest generation is used. Is ignored if the attribute's
-     *            configuration is not changing over time.
-     */
+    @Override
     public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context) {
         return (ValueSet<?>)invokeGetterMethod(getValueSetMethod(), getRelevantProductObject(source, effectiveDate),
                 "value set", context);
@@ -138,6 +143,11 @@ public class PolicyModelAttribute extends ModelTypeAttribute {
             valueSetMethod = findValueSetMethod();
         }
         return valueSetMethod;
+    }
+
+    @Override
+    public PolicyModelAttribute createOverwritingAttributeFor(ModelType subModelType) {
+        return new PolicyModelAttribute((PolicyModel)subModelType, getter, setter, isChangingOverTime());
     }
 
     private Method findValueSetMethod() {

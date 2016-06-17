@@ -11,6 +11,7 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.ITable;
@@ -31,7 +32,7 @@ public class TableUsageModel extends ModelPart implements ITableUsageModel {
     }
 
     @Override
-    public ITable getTable(IProductComponent productComponent) {
+    public ITable getTable(IProductComponent productComponent, Calendar effectiveDate) {
         try {
             return (ITable)getter.invoke(productComponent);
         } catch (IllegalAccessException e) {

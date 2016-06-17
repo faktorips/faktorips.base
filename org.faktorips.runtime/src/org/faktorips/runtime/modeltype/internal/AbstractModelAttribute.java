@@ -10,26 +10,36 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import org.faktorips.runtime.IModelObject;
+import java.util.Calendar;
+
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
 /**
- * A {@link AbstractModelTypeAttribute} represents an attribute from a PolicyCmptType or a
+ * A {@link AbstractModelAttribute} represents an attribute from a PolicyCmptType or a
  * ProductCmptType.
  */
-public abstract class AbstractModelTypeAttribute extends ModelPart implements IModelTypeAttribute {
+public abstract class AbstractModelAttribute extends ModelPart implements IModelTypeAttribute {
 
     private final IpsAttribute attributeAnnotation;
 
     private final Class<?> datatype;
 
-    public AbstractModelTypeAttribute(ModelType modelType, IpsAttribute attributeAnnotation,
-            IpsExtensionProperties extensionProperties, Class<?> datatype) {
+    private final boolean changingOverTime;
+
+    public AbstractModelAttribute(ModelType modelType, IpsAttribute attributeAnnotation,
+            IpsExtensionProperties extensionProperties, Class<?> datatype, boolean changingOverTime) {
         super(attributeAnnotation.name(), modelType, extensionProperties);
         this.attributeAnnotation = attributeAnnotation;
         this.datatype = datatype;
+        this.changingOverTime = changingOverTime;
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return changingOverTime;
     }
 
     @Override
@@ -64,7 +74,7 @@ public abstract class AbstractModelTypeAttribute extends ModelPart implements IM
         return sb.toString();
     }
 
-    protected void handleGetterError(IModelObject source, Exception e) {
+    protected void handleGetterError(Object source, Exception e) {
         throw new IllegalArgumentException(String.format("Could not get attribute %s on source object %s.", getName(),
                 source), e);
     }
@@ -80,8 +90,12 @@ public abstract class AbstractModelTypeAttribute extends ModelPart implements IM
      * getter is generated for the overwritten attribute in the sub class.
      * 
      * @param subModelType a model type representing a sub type of this attribute's model type
-     * @return a {@link ModelTypeAttribute} for the given sub model type
+     * @return a {@link AbstractModelAttribute} for the given sub model type
      */
-    abstract AbstractModelTypeAttribute createOverwritingAttributeFor(ModelType subModelType);
+    public abstract AbstractModelAttribute createOverwritingAttributeFor(ModelType subModelType);
+
+    protected Object getRelevantProductObject(IProductComponent productComponent, Calendar effectiveDate) {
+        return getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
+    }
 
 }

@@ -12,9 +12,6 @@ package org.faktorips.runtime.modeltype;
 
 import java.util.List;
 
-import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
-
 /**
  * A {@link IModelType} represents a type of Faktor-IPS. It provides all meta data for the type as
  * well as for properties like attributes or associations.
@@ -41,13 +38,13 @@ public interface IModelType extends IModelElement {
      * Returns a list containing all attributes declared in this model type. Attributes defined in
      * the type's super types are not returned.
      */
-    public List<IModelTypeAttribute> getDeclaredAttributes();
+    public List<? extends IModelTypeAttribute> getDeclaredAttributes();
 
     /**
      * Returns a list containing the type's attributes including those defined in the type's super
      * types.
      */
-    public List<IModelTypeAttribute> getAttributes();
+    public List<? extends IModelTypeAttribute> getAttributes();
 
     /**
      * Returns the declared attribute at the given <code>index</code>.
@@ -76,12 +73,12 @@ public interface IModelType extends IModelElement {
      * Returns a list containing all associations declared in this model type. Associations defined
      * in the type's super types are not returned.
      */
-    public List<IModelTypeAssociation> getDeclaredAssociations();
+    public List<? extends IModelTypeAssociation> getDeclaredAssociations();
 
     /**
      * Returns the type's associations including those defined in it's super types.
      */
-    public List<IModelTypeAssociation> getAssociations();
+    public List<? extends IModelTypeAssociation> getAssociations();
 
     /**
      * Returns the association at the given <code>index</code>. Associations defined in the type's
@@ -98,47 +95,6 @@ public interface IModelType extends IModelElement {
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
     public IModelTypeAssociation getDeclaredAssociation(String name);
-
-    /**
-     * Returns a list of the target(s) of the given model object's association identified by the
-     * given association name.
-     * 
-     * @param source a model object corresponding to this model type
-     * @param associationName the name of the association
-     * @return a list of the target(s) of the given model object's association identified by the
-     *         given association name
-     * @throws IllegalArgumentException if the model does not fit this model type, has no
-     *             association by the given name or that association is not accessible for any
-     *             reason
-     */
-    public List<IModelObject> getTargetObjects(IModelObject source, String associationName);
-
-    /**
-     * Returns the value of the given model object's attribute identified by the given attribute
-     * name.
-     * 
-     * @see IModelTypeAttribute#getValue(IModelObject)
-     * @param modelObject a model object corresponding to this model type
-     * @param attributeName the name of the attribute
-     * @return the value of the given model object's attribute identified by the given attribute
-     *         name
-     * @throws IllegalArgumentException if the model object does not fit this model type, has no
-     *             attribute by the given name or that attribute is not accessible for any reason
-     */
-    public Object getAttributeValue(IModelObject modelObject, String attributeName);
-
-    /**
-     * Sets the given model object's attribute identified by the given name to the given value. This
-     * only works for attributes of type {@link AttributeType#CHANGEABLE}.
-     * 
-     * @see IModelTypeAttribute#setValue(IModelObject, Object)
-     * @param modelObject a model object corresponding to this model type
-     * @param value an object of the datatype for the {@link IModelTypeAttribute} by the given name
-     * @throws IllegalArgumentException if the model object does not fit this model type, has no
-     *             changeable attribute by the given name or that attribute is not accessible for
-     *             any reason or the value does not fit the attribute's datatype.
-     */
-    public void setAttributeValue(IModelObject modelObject, String attributeName, Object value);
 
     /**
      * Returns the association with the given <code>name</code> declared in this type or one of it's

@@ -10,25 +10,72 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.Models;
-import org.faktorips.runtime.model.annotation.AnnotatedType;
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
 import org.faktorips.runtime.modeltype.IProductModel;
+import org.faktorips.runtime.modeltype.IProductModelAssociation;
+import org.faktorips.runtime.modeltype.IProductModelAttribute;
 import org.faktorips.runtime.modeltype.ITableUsageModel;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
+import org.faktorips.runtime.modeltype.internal.read.ModelPartCollector;
+import org.faktorips.runtime.modeltype.internal.read.ProductModelAssociationCollector;
+import org.faktorips.runtime.modeltype.internal.read.ProductModelAttributeCollector;
+import org.faktorips.runtime.modeltype.internal.read.TableUsageCollector;
+import org.faktorips.runtime.modeltype.internal.read.TypeModelPartsReader;
 
 public class ProductModel extends ModelType implements IProductModel {
 
-    public ProductModel(String name, AnnotatedType annotatedModelType) {
-        super(name, annotatedModelType);
+    private final AnnotatedDeclaration generationDeclaration;
+
+    private final LinkedHashMap<String, IProductModelAttribute> attributes;
+
+    private final LinkedHashMap<String, IProductModelAssociation> associations;
+
+    private final LinkedHashMap<String, ITableUsageModel> tableUsages;
+
+    public ProductModel(String name, AnnotatedDeclaration annotatedDeclaration) {
+        super(name, annotatedDeclaration);
+        generationDeclaration = isChangingOverTime() ? AnnotatedDeclaration.from(annotatedDeclaration.get(
+                IpsChangingOverTime.class).value()) : null;
+
+        ProductModelAttributeCollector attributeCollector = new ProductModelAttributeCollector();
+        ProductModelAssociationCollector associationCollector = new ProductModelAssociationCollector();
+        TableUsageCollector tableUsageCollector = new TableUsageCollector();
+        initParts(attributeCollector, associationCollector, tableUsageCollector);
+        attributes = attributeCollector.createParts(this);
+        associations = associationCollector.createParts(this);
+        tableUsages = tableUsageCollector.createParts(this);
+    }
+
+    private void initParts(ProductModelAttributeCollector attributeCollector,
+            ProductModelAssociationCollector associationCollector,
+            TableUsageCollector tableUsageCollector) {
+        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(Arrays.<ModelPartCollector<?, ?>> asList(
+                attributeCollector, associationCollector, tableUsageCollector));
+        typeModelPartsReader.init(getAnnotatedDeclaration());
+        typeModelPartsReader.read(getAnnotatedDeclaration());
+        if (isChangingOverTime()) {
+            typeModelPartsReader.read(generationDeclaration);
+        }
+    }
+
+    @Override
+    protected List<Method> getDeclaredMethods() {
+        List<Method> result = super.getDeclaredMethods();
+        result.addAll(generationDeclaration.getDeclaredMethods());
+        return result;
     }
 
     /**
@@ -36,7 +83,7 @@ public class ProductModel extends ModelType implements IProductModel {
      */
     @Override
     public boolean isChangingOverTime() {
-        return getAnnotatedModelType().is(IpsChangingOverTime.class);
+        return getAnnotatedDeclaration().is(IpsChangingOverTime.class);
     }
 
     /**
@@ -44,7 +91,7 @@ public class ProductModel extends ModelType implements IProductModel {
      */
     @Override
     public boolean isConfigurationForPolicyCmptType() {
-        return getAnnotatedModelType().is(IpsConfigures.class);
+        return getAnnotatedDeclaration().is(IpsConfigures.class);
     }
 
     /**
@@ -52,7 +99,7 @@ public class ProductModel extends ModelType implements IProductModel {
      */
     @Override
     public IPolicyModel getPolicyCmptType() {
-        return Models.getPolicyModel(getAnnotatedModelType().get(IpsConfigures.class).value()
+        return Models.getPolicyModel(getAnnotatedDeclaration().get(IpsConfigures.class).value()
                 .asSubclass(IModelObject.class));
     }
 
@@ -64,13 +111,80 @@ public class ProductModel extends ModelType implements IProductModel {
     }
 
     @Override
+    public List<IProductModelAttribute> getDeclaredAttributes() {
+        return new ArrayList<IProductModelAttribute>(attributes.values());
+    }
+
+    @Override
+    public List<IProductModelAttribute> getAttributes() {
+        AttributeCollector<IProductModelAttribute> attrCollector = new AttributeCollector<IProductModelAttribute>();
+        attrCollector.visitHierarchy(this);
+        return attrCollector.getResult();
+    }
+
+    @Override
+    public IProductModelAttribute getAttribute(String name) {
+        return (IProductModelAttribute)super.getAttribute(name);
+    }
+
+    @Override
+    public IProductModelAttribute getDeclaredAttribute(String name) {
+        IProductModelAttribute attr = attributes.get(name);
+        if (attr == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
+        }
+        return attr;
+    }
+
+    @Override
+    public IProductModelAttribute getDeclaredAttribute(int index) {
+        return getDeclaredAttributes().get(index);
+    }
+
+    @Override
+    public List<IProductModelAssociation> getDeclaredAssociations() {
+        return new ArrayList<IProductModelAssociation>(associations.values());
+    }
+
+    @Override
+    public List<IProductModelAssociation> getAssociations() {
+        AssociationsCollector<IProductModelAssociation> asscCollector = new AssociationsCollector<IProductModelAssociation>();
+        asscCollector.visitHierarchy(this);
+        return asscCollector.getResult();
+    }
+
+    @Override
+    public IProductModelAssociation getAssociation(String name) {
+        return (IProductModelAssociation)super.getAssociation(name);
+    }
+
+    @Override
+    public IProductModelAssociation getDeclaredAssociation(String name) {
+        return associations.get(name);
+    }
+
+    @Override
     public ITableUsageModel getTableUsage(String name) {
-        return getModelTypeParts().getTableUsageModel(name);
+        TableUsageFinder finder = new TableUsageFinder(name);
+        finder.visitHierarchy(this);
+        if (finder.tableUsage == null) {
+            throw new IllegalArgumentException("The type " + this
+                    + " (or one of it's super types) hasn't got a table usage \"" + name + "\"");
+        }
+        return finder.tableUsage;
     }
 
     @Override
     public List<ITableUsageModel> getDeclaredTableUsages() {
-        return new ArrayList<ITableUsageModel>(getModelTypeParts().getTableUsages());
+        return new ArrayList<ITableUsageModel>(tableUsages.values());
+    }
+
+    public ITableUsageModel getDeclaredTableUsage(String name) {
+        ITableUsageModel tableUsage = tableUsages.get(name);
+        if (tableUsage == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared table usage " + name);
+        }
+        return tableUsage;
     }
 
     @Override
@@ -78,7 +192,26 @@ public class ProductModel extends ModelType implements IProductModel {
         TableUsagesCollector tuCollector = new TableUsagesCollector();
         tuCollector.visitHierarchy(this);
         return tuCollector.result;
+    }
 
+    public Class<?> getGenerationJavaClass() {
+        if (generationDeclaration != null) {
+            return generationDeclaration.getImplementationClass();
+        } else {
+            return null;
+        }
+    }
+
+    public Class<?> getGenerationJavaInterface() {
+        if (generationDeclaration != null) {
+            return generationDeclaration.getPublishedInterface();
+        } else {
+            return null;
+        }
+    }
+
+    public Class<?> getGenerationDeclarationClass() {
+        return getGenerationJavaInterface() == null ? getGenerationJavaClass() : getGenerationJavaInterface();
     }
 
     static class TableUsagesCollector extends TypeHierarchyVisitor {
@@ -105,8 +238,12 @@ public class ProductModel extends ModelType implements IProductModel {
 
         @Override
         public boolean visitType(IModelType type) {
-            tableUsage = ((ModelType)type).getModelTypeParts().getTableUsageModel(tableUsageName);
-            return tableUsage == null;
+            try {
+                tableUsage = ((ProductModel)type).getDeclaredTableUsage(tableUsageName);
+                return false;
+            } catch (IllegalArgumentException e) {
+                return true;
+            }
         }
     }
 }

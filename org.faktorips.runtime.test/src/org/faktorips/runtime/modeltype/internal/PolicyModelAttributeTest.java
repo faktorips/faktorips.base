@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -26,11 +28,15 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.modeltype.IModelType;
+import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
+import org.faktorips.runtime.modeltype.IPolicyModel;
+import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
 import org.faktorips.valueset.DefaultRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -49,11 +55,96 @@ public class PolicyModelAttributeTest {
     private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
     @Test
+    public void testGetValue() {
+        IPolicyModel modelType = Models.getPolicyModel(Policy.class);
+        IPolicyModelAttribute constant = modelType.getAttribute("const");
+        IPolicyModelAttribute attr1 = modelType.getAttribute("attr1");
+        IPolicyModelAttribute attr2 = modelType.getAttribute("attr2");
+        IPolicyModel subModelType = Models.getPolicyModel(SubPolicy.class);
+        IPolicyModelAttribute subConstant = subModelType.getAttribute("const");
+        IPolicyModelAttribute subAttr1 = subModelType.getAttribute("attr1");
+        IPolicyModelAttribute subAttr2 = subModelType.getAttribute("attr2");
+        Policy modelObject = new Policy();
+
+        modelObject.attr1 = 123;
+
+        assertEquals("const", constant.getValue(modelObject));
+        assertEquals(123, attr1.getValue(modelObject));
+        assertEquals(null, attr2.getValue(modelObject));
+
+        SubPolicy subPolicy = new SubPolicy();
+        assertEquals("const", constant.getValue(subPolicy));
+        assertEquals(42, attr1.getValue(subPolicy));
+        assertEquals(new Date(0), attr2.getValue(subPolicy));
+        assertEquals("const", subConstant.getValue(subPolicy));
+        assertEquals(42, subAttr1.getValue(subPolicy));
+        assertEquals(new Date(0), subAttr2.getValue(subPolicy));
+    }
+
+    @Test
+    public void testSetValue() {
+        IPolicyModel modelType = Models.getPolicyModel(Policy.class);
+        IPolicyModelAttribute attr1 = modelType.getAttribute("attr1");
+        IPolicyModel subModelType = Models.getPolicyModel(SubPolicy.class);
+        IPolicyModelAttribute subAttr1 = subModelType.getAttribute("attr1");
+        Policy modelObject = new Policy();
+
+        attr1.setValue(modelObject, 412);
+
+        assertEquals(412, modelObject.attr1);
+
+        subAttr1.setValue(modelObject, 567);
+
+        assertEquals(567, modelObject.attr1);
+    }
+
+    @Test
+    public void testSetValue_Overwritten() {
+        IPolicyModel subModelType = Models.getPolicyModel(SubPolicy.class);
+        IPolicyModelAttribute subAttr2 = subModelType.getAttribute("attr2");
+        SubPolicy subPolicy = new SubPolicy();
+
+        subAttr2.setValue(subPolicy, new Date(1));
+
+        assertEquals(new Date(1), subPolicy.attr2);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testSetValue_CannotModifyConstant() {
+        IPolicyModel modelType = Models.getPolicyModel(Policy.class);
+        IPolicyModelAttribute constant = modelType.getAttribute("const");
+        IPolicyModel subModelType = Models.getPolicyModel(SubPolicy.class);
+        IPolicyModelAttribute subConstant = subModelType.getAttribute("const");
+        Policy modelObject = new Policy();
+
+        constant.setValue(modelObject, "asd");
+        subConstant.setValue(modelObject, "asd");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetValue_CannotDerivedAttribute() {
+        IPolicyModel modelType = Models.getPolicyModel(Policy.class);
+        IPolicyModelAttribute attr2 = modelType.getAttribute("attr2");
+        Policy modelObject = new Policy();
+
+        attr2.setValue(modelObject, "asd");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetValue_CannotDerivedAttributeWithOverwritten() {
+        IPolicyModel subModelType = Models.getPolicyModel(SubPolicy.class);
+        IPolicyModelAttribute subAttr2 = subModelType.getAttribute("attr2");
+        Policy modelObject = new Policy();
+
+        subAttr2.setValue(modelObject, "asd");
+    }
+
+    @Test
     public void testGetValueSet_productComponent() {
         Produkt source = new Produkt();
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
         ValueSet<?> valueSet = attribute.getValueSet(source, null, null);
 
         assertTrue(valueSet instanceof UnrestrictedValueSet);
@@ -63,9 +154,9 @@ public class PolicyModelAttributeTest {
     public void testGetValueSet_changingOverTime() {
         Produkt source = new Produkt();
         when(repository.getLatestProductComponentGeneration(source)).thenReturn(new ProduktGen());
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         ValueSet<?> valueSet = attribute.getValueSet(source, null, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
@@ -77,9 +168,9 @@ public class PolicyModelAttributeTest {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen();
         when(repository.getProductComponentGeneration("id", effectiveDate)).thenReturn(gen);
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         ValueSet<?> valueSet = attribute.getValueSet(source, effectiveDate, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
@@ -89,9 +180,9 @@ public class PolicyModelAttributeTest {
     @Test
     public void testGetValueSet_modelObject() {
         ConfVertrag vertrag = new ConfVertrag();
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof UnrestrictedValueSet);
@@ -103,9 +194,9 @@ public class PolicyModelAttributeTest {
         ConfVertrag vertrag = new ConfVertrag();
         vertrag.effectiveFrom = Calendar.getInstance();
         when(repository.getProductComponentGeneration("id", vertrag.effectiveFrom)).thenReturn(gen);
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
@@ -116,10 +207,10 @@ public class PolicyModelAttributeTest {
     public void testGetValueSet_modelObjectChangingOverTime_noEffectiveDate() {
         ConfVertrag vertrag = new ConfVertrag();
         when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent()))
-        .thenReturn(new ProduktGen());
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+                .thenReturn(new ProduktGen());
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
@@ -129,9 +220,9 @@ public class PolicyModelAttributeTest {
     @Test
     public void testGetValueSet_notConfigured() {
         Vertrag vertrag = new Vertrag();
-        IModelType typeModel = Models.getModelType(Vertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(Vertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof DefaultRange);
@@ -141,9 +232,9 @@ public class PolicyModelAttributeTest {
     @Test
     public void testGetValueSet_notConfiguredOnConfigurablePolicy() {
         ConfVertrag vertrag = new ConfVertrag();
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr2");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr2");
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof UnrestrictedValueSet);
@@ -152,9 +243,9 @@ public class PolicyModelAttributeTest {
 
     @Test
     public void testGetDefaultValue() {
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
         Object defaultValue = attribute.getDefaultValue(new Produkt(), null);
 
         assertEquals("foobar", defaultValue);
@@ -165,9 +256,9 @@ public class PolicyModelAttributeTest {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen();
         when(repository.getProductComponentGeneration("id", effectiveDate)).thenReturn(gen);
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         Object defaultValue = attribute.getDefaultValue(source, effectiveDate);
 
         assertEquals("blub", defaultValue);
@@ -178,9 +269,9 @@ public class PolicyModelAttributeTest {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen();
         when(repository.getLatestProductComponentGeneration(source)).thenReturn(gen);
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         Object defaultValue = attribute.getDefaultValue(source, null);
 
         assertEquals("blub", defaultValue);
@@ -188,8 +279,8 @@ public class PolicyModelAttributeTest {
 
     @Test(expected = IllegalStateException.class)
     public void testGetDefaultValue_notConfigured() {
-        IModelType typeModel = Models.getModelType(Vertrag.class);
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        IPolicyModel policyModel = Models.getPolicyModel(Vertrag.class);
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
 
         attribute.getDefaultValue(new Produkt(), null);
     }
@@ -200,9 +291,9 @@ public class PolicyModelAttributeTest {
         ConfVertrag vertrag = new ConfVertrag();
         vertrag.effectiveFrom = Calendar.getInstance();
         when(repository.getProductComponentGeneration("id", vertrag.effectiveFrom)).thenReturn(gen);
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         Object defaultValue = attribute.getDefaultValue(vertrag);
 
         assertEquals("blub", defaultValue);
@@ -213,9 +304,9 @@ public class PolicyModelAttributeTest {
         ProduktGen gen = new ProduktGen();
         ConfVertrag vertrag = new ConfVertrag();
         when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent())).thenReturn(gen);
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         Object defaultValue = attribute.getDefaultValue(vertrag);
 
         assertEquals("blub", defaultValue);
@@ -223,26 +314,37 @@ public class PolicyModelAttributeTest {
 
     @Test
     public void testIsChangingOverTime() {
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
 
         assertFalse(attribute.isChangingOverTime());
     }
 
     @Test
     public void testIsChangingOverTime_true() {
-        IModelType typeModel = Models.getModelType(ConfVertrag.class);
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
 
         assertTrue(attribute.isChangingOverTime());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testIsChangingOverTime_noAnnotation() {
-        IModelType typeModel = Models.getModelType(DummyVertrag.class);
-        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        IPolicyModel policyModel = Models.getPolicyModel(DummyVertrag.class);
+        IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
 
-        assertTrue(attribute.isChangingOverTime());
+        assertFalse(attribute.isChangingOverTime());
+    }
+
+    @Test
+    public void testGetLabel_overwrittenAttribute() {
+        IModelType modelType = Models.getModelType(Policy.class);
+        IModelType subModelType = Models.getModelType(SubPolicy.class);
+        IModelTypeAttribute attribute = modelType.getAttribute("attr1");
+        IModelTypeAttribute overwritingAttribute = subModelType.getAttribute("attr1");
+
+        assertEquals("MeinAttribut (original)", attribute.getLabel(Locale.GERMAN));
+        assertEquals("MeinAttribut (überschrieben)", overwritingAttribute.getLabel(Locale.GERMAN));
     }
 
     @IpsPolicyCmptType(name = "Vertragxyz")
@@ -423,6 +525,61 @@ public class PolicyModelAttributeTest {
         @Override
         public MessageList validate(IValidationContext context) {
             return null;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "MyPolicy")
+    @IpsAttributes({ "const", "attr1", "attr2" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.modeltype.internal.test", defaultLocale = "de")
+    private static class Policy implements IModelObject {
+
+        @IpsAttribute(name = "const", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
+        public final String CONSTANT = "const";
+
+        private int attr1;
+
+        @IpsAttribute(name = "attr1", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Enum)
+        @IpsConfiguredAttribute(changingOverTime = true)
+        public int getAttr1() {
+            return attr1;
+        }
+
+        @IpsAttributeSetter("attr1")
+        public void setAttr1(int i) {
+            attr1 = i;
+        }
+
+        @IpsAttribute(name = "attr2", type = AttributeType.DERIVED_ON_THE_FLY, valueSetType = ValueSetType.Range)
+        public Date getAttr2() {
+            return null;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return null;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "MySubPolicy")
+    @IpsAttributes({ "const", "attr1", "attr2" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.modeltype.internal.test", defaultLocale = "de")
+    private static class SubPolicy extends Policy {
+
+        private Date attr2 = new Date(0);
+
+        public SubPolicy() {
+            setAttr1(42);
+        }
+
+        @Override
+        @IpsAttribute(name = "attr2", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.Range)
+        public Date getAttr2() {
+            return attr2;
+        }
+
+        @IpsAttributeSetter("attr2")
+        public void setAttr2(Date d) {
+            attr2 = d;
         }
     }
 

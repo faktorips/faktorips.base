@@ -39,8 +39,8 @@ public class ModelTypeTest {
         IModelType superSourceModelType = Models.getModelType(SuperSource.class);
         IModelType sourceModelType = Models.getModelType(Source.class);
 
-        List<IModelTypeAttribute> superSourceAttributes = superSourceModelType.getAttributes();
-        List<IModelTypeAttribute> sourceAttributes = sourceModelType.getAttributes();
+        List<? extends IModelTypeAttribute> superSourceAttributes = superSourceModelType.getAttributes();
+        List<? extends IModelTypeAttribute> sourceAttributes = sourceModelType.getAttributes();
 
         assertThat(superSourceAttributes.size(), is(2));
         assertThat(sourceAttributes.size(), is(3));
@@ -72,10 +72,10 @@ public class ModelTypeTest {
         IModelType superTargetModelType = Models.getModelType(SuperTarget.class);
         IModelType targetModelType = Models.getModelType(Target.class);
 
-        List<IModelTypeAssociation> superSourceAssociations = superSourceModelType.getAssociations();
-        List<IModelTypeAssociation> sourceAssociations = sourceModelType.getAssociations();
-        List<IModelTypeAssociation> superTargetAssociations = superTargetModelType.getAssociations();
-        List<IModelTypeAssociation> targetAssociations = targetModelType.getAssociations();
+        List<? extends IModelTypeAssociation> superSourceAssociations = superSourceModelType.getAssociations();
+        List<? extends IModelTypeAssociation> sourceAssociations = sourceModelType.getAssociations();
+        List<? extends IModelTypeAssociation> superTargetAssociations = superTargetModelType.getAssociations();
+        List<? extends IModelTypeAssociation> targetAssociations = targetModelType.getAssociations();
 
         assertThat(superSourceAssociations.size(), is(2));
         assertThat(sourceAssociations.size(), is(3));

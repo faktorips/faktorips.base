@@ -10,13 +10,9 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
@@ -31,7 +27,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation;
  * 
  * @author Daniel Hohenberger
  */
-public class ModelTypeAssociation extends ModelPart implements IModelTypeAssociation {
+public abstract class ModelTypeAssociation extends ModelPart implements IModelTypeAssociation {
 
     private final IpsAssociation annotation;
 
@@ -76,31 +72,6 @@ public class ModelTypeAssociation extends ModelPart implements IModelTypeAssocia
     @Override
     public IModelType getTarget() {
         return Models.getModelType(annotation.targetClass());
-    }
-
-    @Override
-    public List<IModelObject> getTargetObjects(IModelObject source) {
-        List<IModelObject> targets = new ArrayList<IModelObject>();
-        try {
-            Object object = getter.invoke(source);
-            if (object instanceof Iterable<?>) {
-                for (Object target : (Iterable<?>)object) {
-                    targets.add((IModelObject)target);
-                }
-            } else if (object instanceof IModelObject) {
-                targets.add((IModelObject)object);
-            }
-        } catch (IllegalAccessException e) {
-            handleGetterError(source, e);
-        } catch (InvocationTargetException e) {
-            handleGetterError(source, e);
-        }
-        return targets;
-    }
-
-    private void handleGetterError(IModelObject source, Exception e) {
-        throw new IllegalArgumentException(String.format("Could not get target %s on source object %s.", getUsedName(),
-                source), e);
     }
 
     @Override
@@ -173,6 +144,12 @@ public class ModelTypeAssociation extends ModelPart implements IModelTypeAssocia
         }
     }
 
+    protected Method getGetterMethod() {
+        return getter;
+    }
+
+    public abstract ModelTypeAssociation createOverwritingAssociationFor(ModelType subModelType);
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getUsedName());
@@ -196,18 +173,6 @@ public class ModelTypeAssociation extends ModelPart implements IModelTypeAssocia
         }
         sb.append(')');
         return sb.toString();
-    }
-
-    /**
-     * Creates an association model for a sub type in which this association is overwritten. This is
-     * necessary to retrieve information contained in the class annotation such as labels if no
-     * getter is generated for the overwritten association in the sub class.
-     * 
-     * @param subModelType a model type representing a sub type of this association's model type
-     * @return a {@link ModelTypeAssociation} for the given sub model type
-     */
-    ModelTypeAssociation createOverwritingAssociationFor(ModelType subModelType) {
-        return new ModelTypeAssociation(subModelType, getter);
     }
 
 }

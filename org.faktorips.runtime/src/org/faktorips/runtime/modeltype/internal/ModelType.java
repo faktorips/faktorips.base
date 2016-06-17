@@ -17,9 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.model.annotation.AnnotatedType;
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.modeltype.IModelType;
@@ -34,22 +33,15 @@ import org.faktorips.runtime.util.MessagesHelper;
  */
 public abstract class ModelType extends AbstractModelElement implements IModelType {
 
-    private final AnnotatedType annotatedModelType;
+    private final AnnotatedDeclaration annotatedDeclaration;
 
     private final MessagesHelper messagesHelper;
 
-    private final ModelTypePartContainer modelTypeParts;
-
-    public ModelType(String name, AnnotatedType annotatedModelType) {
+    public ModelType(String name, AnnotatedDeclaration annotatedModelType) {
         super(name, annotatedModelType.get(IpsExtensionProperties.class));
-        this.annotatedModelType = annotatedModelType;
-        modelTypeParts = new ModelTypePartReader(annotatedModelType, this).readAnnotations();
+        this.annotatedDeclaration = annotatedModelType;
         IpsDocumented ipsDocumented = annotatedModelType.get(IpsDocumented.class);
         messagesHelper = createMessageHelper(ipsDocumented, annotatedModelType.getClassLoader());
-    }
-
-    protected ModelTypePartContainer getModelTypeParts() {
-        return modelTypeParts;
     }
 
     @Override
@@ -68,23 +60,6 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
     }
 
     @Override
-    public IModelTypeAssociation getDeclaredAssociation(String name) {
-        return getModelTypeParts().getAssociation(name);
-    }
-
-    @Override
-    public List<IModelTypeAssociation> getDeclaredAssociations() {
-        return new ArrayList<IModelTypeAssociation>(getModelTypeParts().getAssociations());
-    }
-
-    @Override
-    public List<IModelTypeAssociation> getAssociations() {
-        AssociationsCollector asscCollector = new AssociationsCollector();
-        asscCollector.visitHierarchy(this);
-        return asscCollector.result;
-    }
-
-    @Override
     public IModelTypeAssociation getAssociation(String name) {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);
@@ -93,25 +68,6 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
                     + " (or one of it's super types) hasn't got an association \"" + name + "\"");
         }
         return finder.association;
-    }
-
-    @Override
-    public List<IModelObject> getTargetObjects(IModelObject source, String associationName) {
-        return getAssociation(associationName).getTargetObjects(source);
-    }
-
-    @Override
-    public IModelTypeAttribute getDeclaredAttribute(int index) {
-        return getDeclaredAttributes().get(index);
-    }
-
-    @Override
-    public IModelTypeAttribute getDeclaredAttribute(String name) {
-        IModelTypeAttribute attr = getModelTypeParts().getAttribute(name);
-        if (attr == null) {
-            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
-        }
-        return attr;
     }
 
     @Override
@@ -125,44 +81,26 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
         return finder.attribute;
     }
 
-    @Override
-    public List<IModelTypeAttribute> getDeclaredAttributes() {
-        return new ArrayList<IModelTypeAttribute>(getModelTypeParts().getAttributes());
-    }
-
-    @Override
-    public List<IModelTypeAttribute> getAttributes() {
-        AttributeCollector attrCollector = new AttributeCollector();
-        attrCollector.visitHierarchy(this);
-        return attrCollector.result;
-    }
-
-    @Override
-    public Object getAttributeValue(IModelObject source, String attributeName) {
-        return getAttribute(attributeName).getValue(source);
-    }
-
-    @Override
-    public void setAttributeValue(IModelObject source, String attributeName, Object value) {
-        getAttribute(attributeName).setValue(source, value);
-    }
-
     /**
-     * Returns the {@link AnnotatedType} object for this model type that should be used to read all
-     * annotations.
+     * Returns the {@link AnnotatedDeclaration} object for this model type that should be used to
+     * read all annotations.
      */
-    protected AnnotatedType getAnnotatedModelType() {
-        return annotatedModelType;
+    protected AnnotatedDeclaration getAnnotatedDeclaration() {
+        return annotatedDeclaration;
     }
 
     @Override
     public Class<?> getJavaClass() {
-        return annotatedModelType.getImplementationClass();
+        return annotatedDeclaration.getImplementationClass();
     }
 
     @Override
     public Class<?> getJavaInterface() {
-        return annotatedModelType.getPublishedInterface();
+        return annotatedDeclaration.getPublishedInterface();
+    }
+
+    public Class<?> getDeclarationClass() {
+        return getJavaInterface() == null ? getJavaClass() : getJavaInterface();
     }
 
     @Override
@@ -187,13 +125,17 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
      */
     public <T extends Annotation> Method searchDeclaredMethod(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
-        List<Method> declaredMethods = getAnnotatedModelType().getDeclaredMethods();
+        List<Method> declaredMethods = getDeclaredMethods();
         for (Method method : declaredMethods) {
             if (method.isAnnotationPresent(annotationClass) && matcher.matches(method.getAnnotation(annotationClass))) {
                 return method;
             }
         }
         return null;
+    }
+
+    protected List<Method> getDeclaredMethods() {
+        return getAnnotatedDeclaration().getDeclaredMethods();
     }
 
     /**
@@ -211,20 +153,26 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
         public abstract boolean matches(T annotation);
     }
 
-    static class AttributeCollector extends TypeHierarchyVisitor {
+    static class AttributeCollector<T extends IModelTypeAttribute> extends TypeHierarchyVisitor {
 
-        private List<IModelTypeAttribute> result = new ArrayList<IModelTypeAttribute>(30);
-        private Set<String> attributeNames = new HashSet<String>();
+        private final List<T> result = new ArrayList<T>(30);
+        private final Set<String> attributeNames = new HashSet<String>();
 
         @Override
         public boolean visitType(IModelType type) {
             for (IModelTypeAttribute declaredAttribute : type.getDeclaredAttributes()) {
                 if (!attributeNames.contains(declaredAttribute.getName())) {
                     attributeNames.add(declaredAttribute.getName());
-                    result.add(declaredAttribute);
+                    @SuppressWarnings("unchecked")
+                    T castedAttribute = (T)declaredAttribute;
+                    result.add(castedAttribute);
                 }
             }
             return true;
+        }
+
+        public List<T> getResult() {
+            return result;
         }
 
     }
@@ -241,26 +189,36 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
 
         @Override
         public boolean visitType(IModelType type) {
-            attribute = ((ModelType)type).getModelTypeParts().getAttribute(attrName);
-            return attribute == null;
+            try {
+                attribute = ((ModelType)type).getDeclaredAttribute(attrName);
+                return false;
+            } catch (IllegalArgumentException e) {
+                return true;
+            }
         }
 
     }
 
-    static class AssociationsCollector extends TypeHierarchyVisitor {
+    static class AssociationsCollector<T extends IModelTypeAssociation> extends TypeHierarchyVisitor {
 
-        private List<IModelTypeAssociation> result = new ArrayList<IModelTypeAssociation>();
-        private Set<String> associationNames = new HashSet<String>();
+        private final List<T> result = new ArrayList<T>();
+        private final Set<String> associationNames = new HashSet<String>();
 
         @Override
         public boolean visitType(IModelType type) {
             for (IModelTypeAssociation declaredAssociation : type.getDeclaredAssociations()) {
                 if (!associationNames.contains(declaredAssociation.getName())) {
                     associationNames.add(declaredAssociation.getName());
-                    result.add(declaredAssociation);
+                    @SuppressWarnings("unchecked")
+                    T castedAssociation = (T)declaredAssociation;
+                    result.add(castedAssociation);
                 }
             }
             return true;
+        }
+
+        protected List<T> getResult() {
+            return result;
         }
 
     }
@@ -270,14 +228,14 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
         private String associationName;
         private IModelTypeAssociation association = null;
 
-        public AssociationFinder(String attrName) {
+        public AssociationFinder(String associationName) {
             super();
-            this.associationName = attrName;
+            this.associationName = associationName;
         }
 
         @Override
         public boolean visitType(IModelType type) {
-            association = ((ModelType)type).getModelTypeParts().getAssociation(associationName);
+            association = ((ModelType)type).getDeclaredAssociation(associationName);
             return association == null;
         }
 

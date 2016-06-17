@@ -27,16 +27,16 @@ import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
-import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
+import org.faktorips.runtime.modeltype.IPolicyModel;
+import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
 import org.junit.Test;
 
-public class ModelTypeAssociationTest {
+public class PolicyModelAssociationTest {
 
-    private final IModelType modelType = Models.getModelType(Source.class);
-    private final IModelTypeAssociation association = modelType.getAssociation("asso");
-    private final IModelTypeAssociation association2 = modelType.getAssociation("asso2");
+    private final IPolicyModel modelType = Models.getPolicyModel(Source.class);
+    private final IPolicyModelAssociation association = modelType.getAssociation("asso");
+    private final IPolicyModelAssociation association2 = modelType.getAssociation("asso2");
 
     @Test
     public void testGetTarget() {

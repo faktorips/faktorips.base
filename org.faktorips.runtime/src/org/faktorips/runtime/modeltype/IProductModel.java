@@ -48,29 +48,34 @@ public interface IProductModel extends IModelType {
     public IProductModel getSuperType();
 
     /**
-     * Returns the {@link ITableUsageModel} specified with the given name. The
-     * {@link ITableUsageModel} may be declared in this class or in any super class.
+     * Returns the {@link ITableUsageModel} for the specified name. May look in super types if there
+     * is no table usage in this type.
      * 
      * @param name The name of the table usage
-     * @return The requested {@link ITableUsageModel}
-     * @throws IllegalArgumentException if no table usage with the given <code>name</code> exists.
+     * @return The {@link ITableUsageModel} with the specified name
      */
     public ITableUsageModel getTableUsage(String name);
 
     /**
-     * Returns a list containing all table usages declared in this model type. Table usages defined
-     * in the type's super types are not returned.
+     * Returns a list of {@link ITableUsageModel} which are declared in this type. In contrast to
+     * {@link #getTableUsages()} this does not returns table usages of the super types.
      * 
-     * @return The list of all declared {@link ITableUsageModel}
+     * @return A list of {@link ITableUsageModel} declared in this type
      */
     public List<ITableUsageModel> getDeclaredTableUsages();
 
     /**
-     * Returns a list containing the type's table usages including those defined in the type's super
-     * types.
+     * Returns a list of {@link ITableUsageModel} which are declared in this type or in any super
+     * type.
      * 
-     * @return The list of all {@link ITableUsageModel} in this type and all super types
+     * @return All {@link ITableUsageModel} accessible in this product type.
      */
     public List<ITableUsageModel> getTableUsages();
+
+    @Override
+    public IProductModelAttribute getAttribute(String name);
+
+    @Override
+    public IProductModelAssociation getAssociation(String name);
 
 }

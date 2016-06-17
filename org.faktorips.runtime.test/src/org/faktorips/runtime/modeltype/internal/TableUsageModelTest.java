@@ -29,8 +29,8 @@ public class TableUsageModelTest {
     public void testGetTableUsage() throws Exception {
         IProductModel productModel = Models.getProductModel(Product.class);
         Product product = mock(Product.class, CALLS_REAL_METHODS);
-        assertThat(productModel.getTableUsage("table1").getTable(product), is((ITable)Product.TABLE1));
-        assertThat(productModel.getTableUsage("table2").getTable(product), is((ITable)Product.TABLE2));
+        assertThat(productModel.getTableUsage("table1").getTable(product, null), is((ITable)Product.TABLE1));
+        assertThat(productModel.getTableUsage("table2").getTable(product, null), is((ITable)Product.TABLE2));
     }
 
     @Test

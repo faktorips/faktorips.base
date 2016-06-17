@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.runtime.modeltype;
 
+import java.util.List;
+
 /**
  * This interface extends {@link IModelType} with policy specific information.
  */
@@ -36,5 +38,35 @@ public interface IPolicyModel extends IModelType {
 
     @Override
     public IPolicyModel getSuperType();
+
+    @Override
+    public IPolicyModelAttribute getAttribute(String name);
+
+    @Override
+    public IPolicyModelAttribute getDeclaredAttribute(int index);
+
+    @Override
+    public IPolicyModelAttribute getDeclaredAttribute(String name);
+
+    @Override
+    public List<IPolicyModelAttribute> getDeclaredAttributes();
+
+    @Override
+    public List<IPolicyModelAttribute> getAttributes();
+
+    @Override
+    public IPolicyModelAssociation getAssociation(String name);
+
+    @Override
+    public List<IPolicyModelAssociation> getAssociations();
+
+    @Override
+    public IPolicyModelAssociation getDeclaredAssociation(int index);
+
+    @Override
+    public IPolicyModelAssociation getDeclaredAssociation(String name);
+
+    @Override
+    public List<IPolicyModelAssociation> getDeclaredAssociations();
 
 }

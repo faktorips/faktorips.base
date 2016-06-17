@@ -11,13 +11,13 @@ import java.io.Serializable;
 
 import org.junit.Test;
 
-public class AnnotatedTypeTest {
+public class AnnotatedDeclarationTest {
 
     @Test
     public void testGetPublishedInterface_FromImplementation() {
         @SuppressWarnings("unchecked")
-        Class<PublishedInterface> ifce = (Class<PublishedInterface>)AnnotatedType
-                .getPublishedInterface(Implementation.class);
+        Class<PublishedInterface> ifce = (Class<PublishedInterface>)AnnotatedDeclaration
+        .getPublishedInterface(Implementation.class);
 
         assertThat(ifce, equalTo(PublishedInterface.class));
     }
@@ -25,8 +25,8 @@ public class AnnotatedTypeTest {
     @Test
     public void testGetPublishedInterface_FromInterface() {
         @SuppressWarnings("unchecked")
-        Class<PublishedInterface> ifce = (Class<PublishedInterface>)AnnotatedType
-                .getPublishedInterface(PublishedInterface.class);
+        Class<PublishedInterface> ifce = (Class<PublishedInterface>)AnnotatedDeclaration
+        .getPublishedInterface(PublishedInterface.class);
 
         assertThat(ifce, equalTo(PublishedInterface.class));
     }
@@ -34,8 +34,8 @@ public class AnnotatedTypeTest {
     @Test
     public void testGetImplementationClass_FromImplementation() {
         @SuppressWarnings("unchecked")
-        Class<Implementation> implementationClass = (Class<Implementation>)AnnotatedType
-                .getImplementationClass(Implementation.class);
+        Class<Implementation> implementationClass = (Class<Implementation>)AnnotatedDeclaration
+        .getImplementationClass(Implementation.class);
 
         assertThat(implementationClass, equalTo(Implementation.class));
     }
@@ -43,29 +43,29 @@ public class AnnotatedTypeTest {
     @Test
     public void testGetImplementationClass_FromInterface() {
         @SuppressWarnings("unchecked")
-        Class<Implementation> implementationClass = (Class<Implementation>)AnnotatedType
-                .getImplementationClass(PublishedInterface.class);
+        Class<Implementation> implementationClass = (Class<Implementation>)AnnotatedDeclaration
+        .getImplementationClass(PublishedInterface.class);
 
         assertThat(implementationClass, equalTo(Implementation.class));
     }
 
     @Test
     public void testIs_Interface() {
-        AnnotatedType annotatedModelTypes = AnnotatedType.from(PublishedInterface.class);
+        AnnotatedDeclaration annotatedModelTypes = AnnotatedDeclaration.from(PublishedInterface.class);
 
         assertTrue(annotatedModelTypes.is(IpsPublishedInterface.class));
     }
 
     @Test
     public void testIs_Impl() {
-        AnnotatedType annotatedModelTypes = AnnotatedType.from(Implementation.class);
+        AnnotatedDeclaration annotatedModelTypes = AnnotatedDeclaration.from(Implementation.class);
 
         assertTrue(annotatedModelTypes.is(IpsPublishedInterface.class));
     }
 
     @Test
     public void testGet_Interface() {
-        AnnotatedType annotatedModelTypes = AnnotatedType.from(PublishedInterface.class);
+        AnnotatedDeclaration annotatedModelTypes = AnnotatedDeclaration.from(PublishedInterface.class);
 
         IpsPublishedInterface annotation = annotatedModelTypes.get(IpsPublishedInterface.class);
 
@@ -74,7 +74,7 @@ public class AnnotatedTypeTest {
 
     @Test
     public void testGet_Impl() {
-        AnnotatedType annotatedModelTypes = AnnotatedType.from(Implementation.class);
+        AnnotatedDeclaration annotatedModelTypes = AnnotatedDeclaration.from(Implementation.class);
 
         IpsPublishedInterface annotation = annotatedModelTypes.get(IpsPublishedInterface.class);
 
@@ -83,18 +83,20 @@ public class AnnotatedTypeTest {
 
     @Test
     public void testEquals() {
-        assertThat(AnnotatedType.from(Implementation.class), is(equalTo(AnnotatedType.from(Implementation.class))));
+        assertThat(AnnotatedDeclaration.from(Implementation.class),
+                is(equalTo(AnnotatedDeclaration.from(Implementation.class))));
     }
 
     @Test
     public void testHashcode() {
-        assertThat(AnnotatedType.from(Implementation.class).hashCode(),
-                is(equalTo(AnnotatedType.from(Implementation.class).hashCode())));
+        assertThat(AnnotatedDeclaration.from(Implementation.class).hashCode(),
+                is(equalTo(AnnotatedDeclaration.from(Implementation.class).hashCode())));
     }
 
     @Test
     public void testFrom_returnsSameInstance() {
-        assertThat(AnnotatedType.from(Implementation.class), is(sameInstance(AnnotatedType.from(Implementation.class))));
+        assertThat(AnnotatedDeclaration.from(Implementation.class),
+                is(sameInstance(AnnotatedDeclaration.from(Implementation.class))));
     }
 
     @IpsPublishedInterface(implementation = Implementation.class)

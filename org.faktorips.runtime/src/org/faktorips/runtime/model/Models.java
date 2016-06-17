@@ -14,7 +14,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.AbstractComputable;
 import org.faktorips.runtime.caching.Memoizer;
-import org.faktorips.runtime.model.annotation.AnnotatedType;
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.table.TableModel;
@@ -40,29 +40,29 @@ public class Models {
                 }
             });
 
-    private static final Memoizer<AnnotatedType, IProductModel> PRODUCT_MODEL_CACHE = new Memoizer<AnnotatedType, IProductModel>(
-            new AbstractComputable<AnnotatedType, IProductModel>(IProductModel.class) {
+    private static final Memoizer<AnnotatedDeclaration, IProductModel> PRODUCT_MODEL_CACHE = new Memoizer<AnnotatedDeclaration, IProductModel>(
+            new AbstractComputable<AnnotatedDeclaration, IProductModel>(IProductModel.class) {
                 @Override
-                public IProductModel compute(AnnotatedType annotatedModelType) {
-                    if (annotatedModelType.is(IpsProductCmptType.class)) {
-                        String name = annotatedModelType.get(IpsProductCmptType.class).name();
-                        return new ProductModel(name, annotatedModelType);
+                public IProductModel compute(AnnotatedDeclaration annotatedDeclaration) {
+                    if (annotatedDeclaration.is(IpsProductCmptType.class)) {
+                        String name = annotatedDeclaration.get(IpsProductCmptType.class).name();
+                        return new ProductModel(name, annotatedDeclaration);
                     } else {
-                        throw new IllegalArgumentException("The class " + getAnnotatedClass(annotatedModelType)
+                        throw new IllegalArgumentException("The class " + annotatedDeclaration.getDeclarationClassName()
                                 + " is not annotated as product component type.");
                     }
                 }
             });
 
-    private static final Memoizer<AnnotatedType, IPolicyModel> POLICY_MODEL_CACHE = new Memoizer<AnnotatedType, IPolicyModel>(
-            new AbstractComputable<AnnotatedType, IPolicyModel>(IPolicyModel.class) {
+    private static final Memoizer<AnnotatedDeclaration, IPolicyModel> POLICY_MODEL_CACHE = new Memoizer<AnnotatedDeclaration, IPolicyModel>(
+            new AbstractComputable<AnnotatedDeclaration, IPolicyModel>(IPolicyModel.class) {
                 @Override
-                public IPolicyModel compute(AnnotatedType annotatedModelType) {
+                public IPolicyModel compute(AnnotatedDeclaration annotatedModelType) {
                     if (annotatedModelType.is(IpsPolicyCmptType.class)) {
                         String name = annotatedModelType.get(IpsPolicyCmptType.class).name();
                         return new PolicyModel(name, annotatedModelType);
                     } else {
-                        throw new IllegalArgumentException("The class " + getAnnotatedClass(annotatedModelType)
+                        throw new IllegalArgumentException("The class " + annotatedModelType.getDeclarationClassName()
                                 + " is not annotated as policy component type.");
                     }
                 }
@@ -70,11 +70,6 @@ public class Models {
 
     private Models() {
         // prevent default constructor
-    }
-
-    private static String getAnnotatedClass(AnnotatedType annotatedModelType) {
-        return annotatedModelType.getPublishedInterface() != null ? annotatedModelType.getPublishedInterface()
-                .getCanonicalName() : annotatedModelType.getImplementationClass().getCanonicalName();
     }
 
     private static <K, V> V get(Memoizer<K, V> memoizer, K key) {
@@ -111,7 +106,7 @@ public class Models {
      * @return <code>true</code> if the given class is a product model class
      */
     public static boolean isProductModel(Class<?> productModelClass) {
-        return AnnotatedType.from(productModelClass).is(IpsProductCmptType.class);
+        return AnnotatedDeclaration.from(productModelClass).is(IpsProductCmptType.class);
     }
 
     /**
@@ -122,7 +117,7 @@ public class Models {
      *             model
      */
     public static IProductModel getProductModel(Class<? extends IProductComponent> productModelClass) {
-        return get(PRODUCT_MODEL_CACHE, AnnotatedType.from(productModelClass));
+        return get(PRODUCT_MODEL_CACHE, AnnotatedDeclaration.from(productModelClass));
     }
 
     /**
@@ -144,7 +139,7 @@ public class Models {
      * @return <code>true</code> if the given class is a policy model class
      */
     public static boolean isPolicyModel(Class<?> policyModelClass) {
-        return AnnotatedType.from(policyModelClass).is(IpsPolicyCmptType.class);
+        return AnnotatedDeclaration.from(policyModelClass).is(IpsPolicyCmptType.class);
     }
 
     /**
@@ -155,7 +150,7 @@ public class Models {
      *             model
      */
     public static IPolicyModel getPolicyModel(Class<? extends IModelObject> policyModelClass) {
-        return get(POLICY_MODEL_CACHE, AnnotatedType.from(policyModelClass));
+        return get(POLICY_MODEL_CACHE, AnnotatedDeclaration.from(policyModelClass));
     }
 
     /**
@@ -175,7 +170,7 @@ public class Models {
      *             type
      */
     public static IModelType getModelType(Class<?> modelObjectClass) {
-        AnnotatedType annotatedModelType = AnnotatedType.from(modelObjectClass);
+        AnnotatedDeclaration annotatedModelType = AnnotatedDeclaration.from(modelObjectClass);
         if (annotatedModelType.is(IpsProductCmptType.class)) {
             return getProductModel(modelObjectClass.asSubclass(IProductComponent.class));
         } else if (annotatedModelType.is(IpsPolicyCmptType.class)) {
