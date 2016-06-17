@@ -10,19 +10,18 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
-public class TableContentsContentProvider implements IStructuredContentProvider {
+public class TableContentsContentProvider implements ILazyContentProvider {
 
-    @Override
-    public Object[] getElements(Object inputElement) {
-        if (inputElement instanceof ITableContents) {
-            ITableContents table = (ITableContents)inputElement;
-            return table.getTableRows().getRows();
-        }
-        return new Object[0];
+    private TableViewer viewer;
+    private Object[] elements;
+
+    public TableContentsContentProvider(TableViewer viewer) {
+        this.viewer = viewer;
     }
 
     @Override
@@ -32,6 +31,16 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        // Nothing to do
+        if (newInput instanceof ITableContents) {
+            ITableContents table = (ITableContents)newInput;
+            elements = table.getTableRows().getRows();
+        } else {
+            elements = new ITableContents[0];
+        }
+    }
+
+    @Override
+    public void updateElement(int index) {
+        viewer.replace(elements[index], index);
     }
 }

@@ -64,6 +64,8 @@ public class NewRowAction extends IpsAction {
             tableContentsGeneration.newRow();
         }
 
+        tableViewer.setItemCount(tableContents.getTableRows().getNumOfRows());
+        tableViewer.setInput(tableContents);
         tableViewer.refresh(true);
         contentPage.redrawTable();
     }
