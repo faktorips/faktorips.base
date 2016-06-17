@@ -134,6 +134,7 @@ public class ContentPage extends IpsObjectEditorPage {
         initTablePopupMenu(table, deleteRowAction, newRowAction);
 
         tableViewer.setInput(getTableContents());
+        tableViewer.setItemCount(getTableContents().getTableRows().getNumOfRows());
 
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(newRowAction);
@@ -232,7 +233,8 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
-        Table table = new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION);
+        Table table = new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION
+                | SWT.VIRTUAL);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         // occupy all available space
@@ -303,9 +305,9 @@ public class ContentPage extends IpsObjectEditorPage {
 
             tableViewer = new TableViewer(table);
             tableViewer.setUseHashlookup(true);
-            tableViewer.setContentProvider(new TableContentsContentProvider());
             TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
             tableViewer.setLabelProvider(labelProvider);
+            tableViewer.setContentProvider(new TableContentsContentProvider(tableViewer));
 
             ITableStructure tableStructure = getTableStructure();
             String[] columnProperties = new String[getTableContents().getNumOfColumns()];
@@ -343,10 +345,10 @@ public class ContentPage extends IpsObjectEditorPage {
                 // use the number of columns in the contents as only those can be edited.
                 CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i)
-                            .findValueDatatype(getTableContents().getIpsProject());
-                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault()
-                            .getValueDatatypeControlFactory(dataType);
+                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
+                            getTableContents().getIpsProject());
+                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                            dataType);
                     IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
                             getTableContents().getIpsProject());
                     TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
