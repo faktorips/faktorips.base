@@ -32,6 +32,7 @@ import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.faktorips.valueset.DefaultRange;
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 import org.junit.Test;
@@ -47,27 +48,107 @@ public class PolicyModelAttributeTest {
 
     private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
-    // @Test
-    // public void testGetValueSet() {
-    // ConfVertrag vertrag = new ConfVertrag();
-    // IModelType typeModel = Models.getModelType(ConfVertrag.class);
-    //
-    // PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
-    // ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
-    //
-    // assertTrue(valueSet instanceof UnrestrictedValueSet);
-    // }
-    //
-    // @Test
-    // public void testGetValueSet_notConfigured() {
-    // Vertrag vertrag = new Vertrag();
-    // IModelType typeModel = Models.getModelType(Vertrag.class);
-    //
-    // PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
-    // ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
-    //
-    // assertTrue(valueSet instanceof DefaultRange);
-    // }
+    @Test
+    public void testGetValueSet_productComponent() {
+        Produkt source = new Produkt();
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        ValueSet<?> valueSet = attribute.getValueSet(source, null, null);
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+    }
+
+    @Test
+    public void testGetValueSet_changingOverTime() {
+        Produkt source = new Produkt();
+        when(repository.getLatestProductComponentGeneration(source)).thenReturn(new ProduktGen());
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        ValueSet<?> valueSet = attribute.getValueSet(source, null, null);
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+    }
+
+    @Test
+    public void testGetValueSet_changingOverTimeWithCalendar() {
+        Produkt source = new Produkt();
+        ProduktGen gen = new ProduktGen();
+        when(repository.getProductComponentGeneration("id", effectiveDate)).thenReturn(gen);
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        ValueSet<?> valueSet = attribute.getValueSet(source, effectiveDate, null);
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+    }
+
+    @Test
+    public void testGetValueSet_modelObject() {
+        ConfVertrag vertrag = new ConfVertrag();
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+    }
+
+    @Test
+    public void testGetValueSet_modelObjectChangingOverTime() {
+        ProduktGen gen = new ProduktGen();
+        ConfVertrag vertrag = new ConfVertrag();
+        vertrag.effectiveFrom = Calendar.getInstance();
+        when(repository.getProductComponentGeneration("id", vertrag.effectiveFrom)).thenReturn(gen);
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+    }
+
+    @Test
+    public void testGetValueSet_modelObjectChangingOverTime_noEffectiveDate() {
+        ConfVertrag vertrag = new ConfVertrag();
+        when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent()))
+        .thenReturn(new ProduktGen());
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attrChangingOverTime");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+    }
+
+    @Test
+    public void testGetValueSet_notConfigured() {
+        Vertrag vertrag = new Vertrag();
+        IModelType typeModel = Models.getModelType(Vertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr1");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
+
+        assertTrue(valueSet instanceof DefaultRange);
+        assertEquals(new DefaultRange<String>("A", "Z"), valueSet);
+    }
+
+    @Test
+    public void testGetValueSet_notConfiguredOnConfigurablePolicy() {
+        ConfVertrag vertrag = new ConfVertrag();
+        IModelType typeModel = Models.getModelType(ConfVertrag.class);
+
+        PolicyModelAttribute attribute = (PolicyModelAttribute)typeModel.getAttribute("attr2");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+        assertFalse(valueSet.containsNull());
+    }
 
     @Test
     public void testGetDefaultValue() {
@@ -166,12 +247,13 @@ public class PolicyModelAttributeTest {
 
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
-    @IpsAttributes({ "attr1", "attrChangingOverTime" })
+    @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime" })
     private class ConfVertrag implements IConfigurableModelObject {
 
         private final Produkt produkt;
 
         private String attr1;
+        private String attr2;
         private String attrChangingOverTime;
         private Calendar effectiveFrom;
 
@@ -193,6 +275,24 @@ public class PolicyModelAttributeTest {
         @IpsAllowedValues("attr1")
         public ValueSet<String> getSetOfAllowedValuesForAttr1(IValidationContext context) {
             return produkt.getSetOfAllowedValuesForAttr1(context);
+        }
+
+        @IpsAttribute(name = "attr2", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)
+        public String getAttr2() {
+            return attr2;
+        }
+
+        @IpsAttributeSetter("attr2")
+        public void setAttr2(String value) {
+            attr2 = value;
+        }
+
+        /**
+         * @param context unused
+         */
+        @IpsAllowedValues("attr2")
+        public ValueSet<String> getSetOfAllowedValuesForAttr2(IValidationContext context) {
+            return new UnrestrictedValueSet<String>(false);
         }
 
         @IpsAttribute(name = "attrChangingOverTime", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)
@@ -291,7 +391,7 @@ public class PolicyModelAttributeTest {
          */
         @IpsAllowedValues("attrChangingOverTime")
         public ValueSet<String> getSetOfAllowedValuesForAttrChangingOverTime(IValidationContext context) {
-            return new UnrestrictedValueSet<String>();
+            return new OrderedValueSet<String>(false, null, "foo", "bar");
         }
 
     }
