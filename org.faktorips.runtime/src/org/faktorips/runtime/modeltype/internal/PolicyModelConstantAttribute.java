@@ -43,14 +43,7 @@ public class PolicyModelConstantAttribute extends AbstractModelAttribute impleme
 
     @Override
     public Object getValue(IModelObject source) {
-        try {
-            return field.get(source);
-        } catch (IllegalAccessException e) {
-            handleGetterError(source, e);
-        } catch (SecurityException e) {
-            handleGetterError(source, e);
-        }
-        return null;
+        return invokeField(field, source);
     }
 
     @Override

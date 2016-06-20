@@ -10,7 +10,6 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 
@@ -50,38 +49,16 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
 
     @Override
     public Object getValue(IModelObject source) {
-        try {
-            return getter.invoke(source);
-        } catch (IllegalAccessException e) {
-            handleGetterError(source, e);
-        } catch (InvocationTargetException e) {
-            handleGetterError(source, e);
-        } catch (SecurityException e) {
-            handleGetterError(source, e);
-        }
-        return null;
+        return invokeMethod(getter, source);
     }
 
     @Override
     public void setValue(IModelObject source, Object value) {
-        try {
-            if (setter != null) {
-                setter.invoke(source, value);
-            } else {
-                handleSetterError(source, value, null);
-            }
-        } catch (IllegalArgumentException e) {
-            handleSetterError(source, value, e);
-        } catch (IllegalAccessException e) {
-            handleSetterError(source, value, e);
-        } catch (InvocationTargetException e) {
-            handleSetterError(source, value, e);
+        if (setter == null) {
+            throw new IllegalArgumentException(String.format("There is no setter for attribute %s in type %s.",
+                    getName(), getModelType().getName()));
         }
-    }
-
-    private void handleSetterError(IModelObject source, Object value, Exception e) {
-        throw new IllegalArgumentException(String.format(
-                "Could not write attribute %s on source object %s to value %s.", getName(), source, value), e);
+        invokeMethod(setter, source, value);
     }
 
     @Override
@@ -96,8 +73,7 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
 
     @Override
     public Object getDefaultValue(IProductComponent source, Calendar effectiveDate) {
-        return invokeGetterMethod(getDefaultValueMethod(), getRelevantProductObject(source, effectiveDate),
-                "default value");
+        return invokeMethod(getDefaultValueMethod(), getRelevantProductObject(source, effectiveDate));
     }
 
     private Method getDefaultValueMethod() {
@@ -129,13 +105,12 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
             return getValueSet(configurableModelObject.getProductComponent(),
                     configurableModelObject.getEffectiveFromAsCalendar(), context);
         }
-        return (ValueSet<?>)invokeGetterMethod(getValueSetMethod(), modelObject, "value set", context);
+        return (ValueSet<?>)invokeMethod(getValueSetMethod(), modelObject, context);
     }
 
     @Override
     public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context) {
-        return (ValueSet<?>)invokeGetterMethod(getValueSetMethod(), getRelevantProductObject(source, effectiveDate),
-                "value set", context);
+        return (ValueSet<?>)invokeMethod(getValueSetMethod(), getRelevantProductObject(source, effectiveDate), context);
     }
 
     private Method getValueSetMethod() {
@@ -158,21 +133,6 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
             }
         };
         return findMethod(IpsAllowedValues.class, filter, "allowed values", true);
-    }
-
-    private Object invokeGetterMethod(Method method, Object source, String kindOfGetter, Object... params) {
-        try {
-            return method.invoke(source, params);
-        } catch (IllegalArgumentException e) {
-            handleGetterError(source, e, kindOfGetter);
-        } catch (IllegalAccessException e) {
-            handleGetterError(source, e, kindOfGetter);
-        } catch (InvocationTargetException e) {
-            handleGetterError(source, e, kindOfGetter);
-        } catch (SecurityException e) {
-            handleGetterError(source, e, kindOfGetter);
-        }
-        return null;
     }
 
     private <T extends Annotation> Method findMethod(Class<T> annotationClass,

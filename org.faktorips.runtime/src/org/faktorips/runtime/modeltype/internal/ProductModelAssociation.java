@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.runtime.modeltype.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,29 +46,16 @@ public class ProductModelAssociation extends ModelTypeAssociation implements IPr
     @Override
     public List<IProductComponent> getTargetObjects(IProductComponent productComponentSource, Calendar effectiveDate) {
         List<IProductComponent> targets = new ArrayList<IProductComponent>();
-
-        try {
-            Object returnValue = getGetterMethod().invoke(
-                    getRelevantProductObject(productComponentSource, effectiveDate, isChangingOverTime()));
-            if (returnValue instanceof Iterable<?>) {
-                for (Object target : (Iterable<?>)returnValue) {
-                    targets.add((IProductComponent)target);
-                }
-            } else if (returnValue instanceof IProductComponent) {
-                targets.add((IProductComponent)returnValue);
+        Object source = getRelevantProductObject(productComponentSource, effectiveDate, isChangingOverTime());
+        Object returnValue = invokeMethod(getGetterMethod(), source);
+        if (returnValue instanceof Iterable<?>) {
+            for (Object target : (Iterable<?>)returnValue) {
+                targets.add((IProductComponent)target);
             }
-
-        } catch (IllegalAccessException e) {
-            handleGetterError(productComponentSource, e);
-        } catch (InvocationTargetException e) {
-            handleGetterError(productComponentSource, e);
+        } else if (returnValue instanceof IProductComponent) {
+            targets.add((IProductComponent)returnValue);
         }
         return targets;
-    }
-
-    private void handleGetterError(IProductComponent source, Exception e) {
-        throw new IllegalArgumentException(String.format("Could not get target %s on source object %s.", getUsedName(),
-                source), e);
     }
 
     @Override

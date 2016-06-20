@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.runtime.modeltype.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 
@@ -43,17 +42,7 @@ public class ProductModelAttribute extends AbstractModelAttribute implements IPr
 
     @Override
     public Object getValue(IProductComponent productComponent, Calendar effectiveDate) {
-        Object source = getRelevantProductObject(productComponent, effectiveDate);
-        try {
-            return getter.invoke(source);
-        } catch (IllegalAccessException e) {
-            handleGetterError(source, e);
-        } catch (InvocationTargetException e) {
-            handleGetterError(source, e);
-        } catch (SecurityException e) {
-            handleGetterError(source, e);
-        }
-        return null;
+        return invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
     }
 
 }

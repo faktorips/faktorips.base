@@ -10,6 +10,9 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -113,6 +116,46 @@ public abstract class AbstractModelElement implements IModelElement {
             return new HashSet<String>(0);
         }
         return extPropertyValues.keySet();
+    }
+
+    protected Object invokeMethod(Method method, Object source, Object... arguments) {
+        try {
+            return method.invoke(source, arguments);
+        } catch (NullPointerException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (IllegalArgumentException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (IllegalAccessException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (InvocationTargetException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (SecurityException e) {
+            throw createGetterError(source, method, arguments, e);
+        }
+    }
+
+    private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Exception e) {
+        return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
+                method.getName(), IpsStringUtils.join(args, ", "), source), e);
+    }
+
+    protected Object invokeField(Field field, Object source) {
+        try {
+            return field.get(source);
+        } catch (NullPointerException e) {
+            throw createFieldError(source, field, e);
+        } catch (IllegalArgumentException e) {
+            throw createFieldError(source, field, e);
+        } catch (IllegalAccessException e) {
+            throw createFieldError(source, field, e);
+        } catch (SecurityException e) {
+            throw createFieldError(source, field, e);
+        }
+    }
+
+    private IllegalArgumentException createFieldError(Object source, Field field, Exception e) {
+        return new IllegalArgumentException(String.format("Could not get value of %s on source object %s.",
+                field.getName(), source), e);
     }
 
     /**

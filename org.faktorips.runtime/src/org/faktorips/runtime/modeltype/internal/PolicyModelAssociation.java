@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.runtime.modeltype.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,26 +47,15 @@ public class PolicyModelAssociation extends ModelTypeAssociation implements IPol
     @Override
     public List<IModelObject> getTargetObjects(IModelObject source) {
         List<IModelObject> targets = new ArrayList<IModelObject>();
-        try {
-            Object object = getGetterMethod().invoke(source);
-            if (object instanceof Iterable<?>) {
-                for (Object target : (Iterable<?>)object) {
-                    targets.add((IModelObject)target);
-                }
-            } else if (object instanceof IModelObject) {
-                targets.add((IModelObject)object);
+        Object object = invokeMethod(getGetterMethod(), source);
+        if (object instanceof Iterable<?>) {
+            for (Object target : (Iterable<?>)object) {
+                targets.add((IModelObject)target);
             }
-        } catch (IllegalAccessException e) {
-            handleGetterError(source, e);
-        } catch (InvocationTargetException e) {
-            handleGetterError(source, e);
+        } else if (object instanceof IModelObject) {
+            targets.add((IModelObject)object);
         }
         return targets;
-    }
-
-    private void handleGetterError(IModelObject source, Exception e) {
-        throw new IllegalArgumentException(String.format("Could not get target %s on source object %s.", getUsedName(),
-                source), e);
     }
 
 }
