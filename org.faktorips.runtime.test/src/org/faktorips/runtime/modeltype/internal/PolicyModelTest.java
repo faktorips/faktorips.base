@@ -9,12 +9,15 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.model.Models;
+import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
@@ -56,14 +59,36 @@ public class PolicyModelTest {
 
     @Test
     public void testGetDeclaredAttributes() {
-        assertThat(policyModel.getAttributes().size(), is(2));
-        assertThat(policyModel.getAttributes().get(1).getName(), is("const"));
-        assertNotNull(policyModel.getAttribute("attr"));
+        assertThat(policyModel.getDeclaredAttributes().size(), is(2));
+        assertThat(policyModel.getDeclaredAttributes().get(1).getName(), is("const"));
+        assertNotNull(policyModel.getDeclaredAttribute("attr"));
+    }
+
+    @Test
+    public void testGetAttributes() {
+        assertThat(policyModel.getAttributes().size(), is(3));
+        assertThat(policyModel.getAttributes().get(0).getName(), is("attr"));
+        assertNotNull(policyModel.getAttribute("supAttr"));
+    }
+
+    @Test
+    public void testGetDeclaredAssociations() {
+        assertThat(policyModel.getDeclaredAssociations().size(), is(1));
+        assertThat(policyModel.getDeclaredAssociations().get(0).getName(), is("asso"));
+        assertNotNull(policyModel.getDeclaredAssociation("asso"));
+    }
+
+    @Test
+    public void testGetAssociations() {
+        assertThat(policyModel.getAssociations().size(), is(2));
+        assertThat(policyModel.getAssociations().get(0).getName(), is("asso"));
+        assertNotNull(policyModel.getAssociation("supAsso"));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsConfiguredBy(Product.class)
     @IpsAttributes({ "attr", "const" })
+    @IpsAssociations({ "asso" })
     private static abstract class Policy extends SuperPolicy {
 
         @IpsAttribute(name = "const", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
@@ -74,11 +99,21 @@ public class PolicyModelTest {
 
         @IpsAttributeSetter("attr")
         public abstract void setAttr(String attr);
+
+        @IpsAssociation(name = "asso", max = 0, min = 0, targetClass = Policy.class, type = AssociationType.Composition)
+        public abstract Policy getPartPolicy();
     }
 
     @IpsPolicyCmptType(name = "MySuperPolicy")
+    @IpsAttributes({ "supAttr" })
+    @IpsAssociations({ "supAsso" })
     private static abstract class SuperPolicy extends AbstractModelObject {
 
+        @IpsAttribute(name = "supAttr", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
+        public static final int supAttr = 5;
+
+        @IpsAssociation(name = "supAsso", max = 0, min = 0, targetClass = SuperPolicy.class, type = AssociationType.Composition)
+        public abstract SuperPolicy getPartSuperPolicy();
     }
 
     @IpsProductCmptType(name = "MyProduct")

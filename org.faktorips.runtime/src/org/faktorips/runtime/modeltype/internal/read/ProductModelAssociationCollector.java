@@ -25,8 +25,8 @@ public class ProductModelAssociationCollector extends
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
     public ProductModelAssociationCollector() {
-        super(
-                Arrays.<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new IpsAssociationProcessor<ProductModelAssociationCollector.ProductAssociationDescriptor>()));
+        super(Arrays
+                .<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new ProductIpsAssociationProcessor()));
     }
 
     @Override

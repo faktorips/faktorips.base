@@ -104,66 +104,6 @@ public class ProductModel extends ModelType implements IProductModel {
     }
 
     @Override
-    public IProductModel getSuperType() {
-        Class<?> superclass = getJavaClass().getSuperclass();
-        return Models.isProductModel(superclass) ? Models.getProductModel(superclass
-                .asSubclass(IProductComponent.class)) : null;
-    }
-
-    @Override
-    public List<IProductModelAttribute> getDeclaredAttributes() {
-        return new ArrayList<IProductModelAttribute>(attributes.values());
-    }
-
-    @Override
-    public List<IProductModelAttribute> getAttributes() {
-        AttributeCollector<IProductModelAttribute> attrCollector = new AttributeCollector<IProductModelAttribute>();
-        attrCollector.visitHierarchy(this);
-        return attrCollector.getResult();
-    }
-
-    @Override
-    public IProductModelAttribute getAttribute(String name) {
-        return (IProductModelAttribute)super.getAttribute(name);
-    }
-
-    @Override
-    public IProductModelAttribute getDeclaredAttribute(String name) {
-        IProductModelAttribute attr = attributes.get(name);
-        if (attr == null) {
-            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
-        }
-        return attr;
-    }
-
-    @Override
-    public IProductModelAttribute getDeclaredAttribute(int index) {
-        return getDeclaredAttributes().get(index);
-    }
-
-    @Override
-    public List<IProductModelAssociation> getDeclaredAssociations() {
-        return new ArrayList<IProductModelAssociation>(associations.values());
-    }
-
-    @Override
-    public List<IProductModelAssociation> getAssociations() {
-        AssociationsCollector<IProductModelAssociation> asscCollector = new AssociationsCollector<IProductModelAssociation>();
-        asscCollector.visitHierarchy(this);
-        return asscCollector.getResult();
-    }
-
-    @Override
-    public IProductModelAssociation getAssociation(String name) {
-        return (IProductModelAssociation)super.getAssociation(name);
-    }
-
-    @Override
-    public IProductModelAssociation getDeclaredAssociation(String name) {
-        return associations.get(name);
-    }
-
-    @Override
     public ITableUsageModel getTableUsage(String name) {
         TableUsageFinder finder = new TableUsageFinder(name);
         finder.visitHierarchy(this);
@@ -212,6 +152,71 @@ public class ProductModel extends ModelType implements IProductModel {
 
     public Class<?> getGenerationDeclarationClass() {
         return getGenerationJavaInterface() == null ? getGenerationJavaClass() : getGenerationJavaInterface();
+    }
+
+    @Override
+    public IProductModel getSuperType() {
+        Class<?> superclass = getJavaClass().getSuperclass();
+        return Models.isProductModel(superclass) ? Models.getProductModel(superclass
+                .asSubclass(IProductComponent.class)) : null;
+    }
+
+    @Override
+    public IProductModelAttribute getDeclaredAttribute(int index) {
+        return getDeclaredAttributes().get(index);
+    }
+
+    @Override
+    public IProductModelAttribute getDeclaredAttribute(String name) {
+        IProductModelAttribute attr = attributes.get(name);
+        if (attr == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
+        }
+        return attr;
+    }
+
+    @Override
+    public List<IProductModelAttribute> getDeclaredAttributes() {
+        return new ArrayList<IProductModelAttribute>(attributes.values());
+    }
+
+    @Override
+    public IProductModelAttribute getAttribute(String name) {
+        return (IProductModelAttribute)super.getAttribute(name);
+    }
+
+    @Override
+    public List<IProductModelAttribute> getAttributes() {
+        AttributeCollector<IProductModelAttribute> attrCollector = new AttributeCollector<IProductModelAttribute>();
+        attrCollector.visitHierarchy(this);
+        return attrCollector.getResult();
+    }
+
+    @Override
+    public IProductModelAssociation getDeclaredAssociation(int index) {
+        return (IProductModelAssociation)super.getDeclaredAssociation(index);
+    }
+
+    @Override
+    public IProductModelAssociation getDeclaredAssociation(String name) {
+        return associations.get(name);
+    }
+
+    @Override
+    public List<IProductModelAssociation> getDeclaredAssociations() {
+        return new ArrayList<IProductModelAssociation>(associations.values());
+    }
+
+    @Override
+    public IProductModelAssociation getAssociation(String name) {
+        return (IProductModelAssociation)super.getAssociation(name);
+    }
+
+    @Override
+    public List<IProductModelAssociation> getAssociations() {
+        AssociationsCollector<IProductModelAssociation> asscCollector = new AssociationsCollector<IProductModelAssociation>();
+        asscCollector.visitHierarchy(this);
+        return asscCollector.getResult();
     }
 
     static class TableUsagesCollector extends TypeHierarchyVisitor {

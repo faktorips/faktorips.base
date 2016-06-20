@@ -49,13 +49,8 @@ public class ProductModelAssociation extends ModelTypeAssociation implements IPr
         List<IProductComponent> targets = new ArrayList<IProductComponent>();
 
         try {
-            Object returnValue;
-            if (isChangingOverTime()) {
-                returnValue = getGetterMethod().invoke(productComponentSource.getGenerationBase(effectiveDate));
-            } else {
-                returnValue = getGetterMethod().invoke(productComponentSource);
-
-            }
+            Object returnValue = getGetterMethod().invoke(
+                    getRelevantProductObject(productComponentSource, effectiveDate, isChangingOverTime()));
             if (returnValue instanceof Iterable<?>) {
                 for (Object target : (Iterable<?>)returnValue) {
                     targets.add((IProductComponent)target);

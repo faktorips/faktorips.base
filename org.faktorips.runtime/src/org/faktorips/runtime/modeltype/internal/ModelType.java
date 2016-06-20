@@ -60,6 +60,11 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
     }
 
     @Override
+    public IModelTypeAttribute getDeclaredAttribute(int index) {
+        return getDeclaredAttributes().get(index);
+    }
+
+    @Override
     public IModelTypeAssociation getAssociation(String name) {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);

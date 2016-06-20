@@ -10,6 +10,8 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.Models;
+import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
@@ -17,6 +19,7 @@ import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.faktorips.runtime.modeltype.IProductModel;
@@ -74,13 +77,29 @@ public class ProductModelTest {
         assertThat(productModel.getAttributes().size(), is(3));
         assertThat(productModel.getAttributes().get(0).getName(), is("attr"));
         assertThat(productModel.getAttributes().get(1).getName(), is("attr_changing"));
-        assertThat(productModel.getAttributes().get(2).getName(), is("sup"));
+        assertThat(productModel.getAttributes().get(2).getName(), is("supAttr"));
+    }
+
+    @Test
+    public void testGetDeclaredAssociations() {
+        assertThat(productModel.getDeclaredAssociations().size(), is(2));
+        assertThat(productModel.getDeclaredAssociations().get(0).getName(), is("asso"));
+        assertThat(productModel.getDeclaredAssociations().get(1).getName(), is("asso_changing"));
+    }
+
+    @Test
+    public void testGetAssociations() {
+        assertThat(productModel.getAssociations().size(), is(3));
+        assertThat(productModel.getAssociations().get(0).getName(), is("asso"));
+        assertThat(productModel.getAssociations().get(1).getName(), is("asso_changing"));
+        assertThat(productModel.getAssociations().get(2).getName(), is("supAsso"));
     }
 
     @IpsProductCmptType(name = "MyProduct")
     @IpsConfigures(Policy.class)
     @IpsChangingOverTime(ProductGen.class)
     @IpsAttributes({ "attr", "attr_changing" })
+    @IpsAssociations({ "asso", "asso_changing" })
     private static abstract class Product extends SuperProduct {
 
         public Product(IRuntimeRepository repository, String id, String PolicyKindId, String versionId) {
@@ -92,6 +111,9 @@ public class ProductModelTest {
 
         @IpsAttributeSetter("attr")
         public abstract void setAttr(String attr);
+
+        @IpsAssociation(name = "asso", min = 1, max = 2, targetClass = Product.class, type = AssociationType.Association)
+        public abstract Product getAsso();
 
     }
 
@@ -107,16 +129,23 @@ public class ProductModelTest {
         @IpsAttributeSetter("attr_changing")
         public abstract void setAttr(String attr);
 
+        @IpsAssociation(name = "asso_changing", min = 1, max = 2, targetClass = Product.class, type = AssociationType.Association)
+        public abstract ProductGen getAsso_changing();
+
     }
 
     @IpsProductCmptType(name = "MySuperProduct")
-    @IpsAttributes({ "sup" })
+    @IpsAttributes({ "supAttr" })
+    @IpsAssociations({ "supAsso" })
     private static abstract class SuperProduct extends ProductComponent {
 
-        @IpsAttribute(name = "sup", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)
+        @IpsAttribute(name = "supAttr", type = AttributeType.CHANGEABLE, valueSetType = ValueSetType.AllValues)
         public int getSup() {
             return 1;
         }
+
+        @IpsAssociation(name = "supAsso", max = 5, min = 1, targetClass = SuperProduct.class, type = AssociationType.Association)
+        public abstract SuperProduct getSupAsso();
 
         public SuperProduct(IRuntimeRepository repository, String id, String PolicyKindId, String versionId) {
             super(repository, id, PolicyKindId, versionId);

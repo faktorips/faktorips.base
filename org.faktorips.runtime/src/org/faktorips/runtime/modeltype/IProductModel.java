@@ -44,9 +44,6 @@ public interface IProductModel extends IModelType {
      */
     public IPolicyModel getPolicyCmptType();
 
-    @Override
-    public IProductModel getSuperType();
-
     /**
      * Returns the {@link ITableUsageModel} for the specified name. May look in super types if there
      * is no table usage in this type.
@@ -73,9 +70,36 @@ public interface IProductModel extends IModelType {
     public List<ITableUsageModel> getTableUsages();
 
     @Override
+    public IProductModel getSuperType();
+
+    @Override
     public IProductModelAttribute getAttribute(String name);
 
     @Override
+    public IProductModelAttribute getDeclaredAttribute(int index);
+
+    @Override
+    public IProductModelAttribute getDeclaredAttribute(String name);
+
+    @Override
+    public List<IProductModelAttribute> getDeclaredAttributes();
+
+    @Override
+    public List<IProductModelAttribute> getAttributes();
+
+    @Override
     public IProductModelAssociation getAssociation(String name);
+
+    @Override
+    public List<IProductModelAssociation> getAssociations();
+
+    @Override
+    public IProductModelAssociation getDeclaredAssociation(int index);
+
+    @Override
+    public IProductModelAssociation getDeclaredAssociation(String name);
+
+    @Override
+    public List<IProductModelAssociation> getDeclaredAssociations();
 
 }

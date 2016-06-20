@@ -72,26 +72,6 @@ public class PolicyModel extends ModelType implements IPolicyModel {
     }
 
     @Override
-    public IPolicyModelAssociation getDeclaredAssociation(String name) {
-        return associations.get(name);
-    }
-
-    @Override
-    public IPolicyModelAssociation getDeclaredAssociation(int index) {
-        return getDeclaredAssociations().get(index);
-    }
-
-    @Override
-    public List<IPolicyModelAssociation> getDeclaredAssociations() {
-        return new ArrayList<IPolicyModelAssociation>(associations.values());
-    }
-
-    @Override
-    public IPolicyModelAttribute getAttribute(String name) {
-        return (IPolicyModelAttribute)super.getAttribute(name);
-    }
-
-    @Override
     public IPolicyModelAttribute getDeclaredAttribute(String name) {
         IPolicyModelAttribute attr = attributes.get(name);
         if (attr == null) {
@@ -102,12 +82,17 @@ public class PolicyModel extends ModelType implements IPolicyModel {
 
     @Override
     public IPolicyModelAttribute getDeclaredAttribute(int index) {
-        return getDeclaredAttributes().get(index);
+        return (IPolicyModelAttribute)super.getDeclaredAttribute(index);
     }
 
     @Override
     public List<IPolicyModelAttribute> getDeclaredAttributes() {
         return new ArrayList<IPolicyModelAttribute>(attributes.values());
+    }
+
+    @Override
+    public IPolicyModelAttribute getAttribute(String name) {
+        return (IPolicyModelAttribute)super.getAttribute(name);
     }
 
     @Override
@@ -118,10 +103,18 @@ public class PolicyModel extends ModelType implements IPolicyModel {
     }
 
     @Override
-    public List<IPolicyModelAssociation> getAssociations() {
-        AssociationsCollector<IPolicyModelAssociation> asscCollector = new AssociationsCollector<IPolicyModelAssociation>();
-        asscCollector.visitHierarchy(this);
-        return asscCollector.getResult();
+    public IPolicyModelAssociation getDeclaredAssociation(String name) {
+        return associations.get(name);
+    }
+
+    @Override
+    public IPolicyModelAssociation getDeclaredAssociation(int index) {
+        return (IPolicyModelAssociation)super.getDeclaredAssociation(index);
+    }
+
+    @Override
+    public List<IPolicyModelAssociation> getDeclaredAssociations() {
+        return new ArrayList<IPolicyModelAssociation>(associations.values());
     }
 
     @Override
@@ -129,4 +122,10 @@ public class PolicyModel extends ModelType implements IPolicyModel {
         return (IPolicyModelAssociation)super.getAssociation(name);
     }
 
+    @Override
+    public List<IPolicyModelAssociation> getAssociations() {
+        AssociationsCollector<IPolicyModelAssociation> asscCollector = new AssociationsCollector<IPolicyModelAssociation>();
+        asscCollector.visitHierarchy(this);
+        return asscCollector.getResult();
+    }
 }
