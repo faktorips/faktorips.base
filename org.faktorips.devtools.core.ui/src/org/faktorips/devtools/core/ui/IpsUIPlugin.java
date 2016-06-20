@@ -1167,7 +1167,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * IMPORTANT NOTES:
      * 
-     * The action will NOT run in UI thread!
+     * The action will NOT run in UI thread! If you need to run in display thread use
+     * {@link BusyIndicator#showWhile(Display, Runnable)}
      * 
      * You cannot call this method from another modal dialog like a wizard because the wizard has
      * its own progress and this one will wait until the dialog is finished.

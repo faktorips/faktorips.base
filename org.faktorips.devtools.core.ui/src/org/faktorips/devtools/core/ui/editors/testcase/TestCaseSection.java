@@ -975,7 +975,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
 
-        IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
+        Runnable runnableForBusyIndicator = new Runnable() {
+            @Override
+            public void run() {
+                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+            }
+        };
+        BusyIndicator.showWhile(getDisplay(), runnableForBusyIndicator);
     }
 
     /**
@@ -1312,7 +1318,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return new IIpsSrcFile[0];
         }
 
-        // TODO joerg getSubtypeHierarchy better performance using IpsSrcFiles
         List<IType> allSubtypes = policyCmptType.getSubtypeHierarchy().getAllSubtypes(policyCmptType);
         List<IIpsSrcFile> allIpsSrcFilesSubtypes = new ArrayList<IIpsSrcFile>();
         for (IType subtype : allSubtypes) {
