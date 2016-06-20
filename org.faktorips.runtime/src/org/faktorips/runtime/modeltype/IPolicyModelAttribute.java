@@ -85,21 +85,6 @@ public interface IPolicyModelAttribute extends IModelTypeAttribute {
      * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
      * class is not configured by a product class.
      *
-     * @param modelObject the configurable model object from which product component and (if
-     *            necessary) effective date can be retrieved
-     * @see #getValueSet(IProductComponent, Calendar, IValidationContext)
-     * @throw UnsupportedOperationException if invoked on a
-     *        {@link org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType#CONSTANT}
-     *        attribute.
-     */
-    ValueSet<?> getValueSet(IConfigurableModelObject modelObject, IValidationContext context);
-
-    /**
-     * Returns the value set of the given model object's attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
-     *
      * @param modelObject a model object
      * @throw UnsupportedOperationException if invoked on a
      *        {@link org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType#CONSTANT}

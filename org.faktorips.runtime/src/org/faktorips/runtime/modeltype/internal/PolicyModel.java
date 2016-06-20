@@ -23,7 +23,6 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.modeltype.IPolicyModel;
 import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
 import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
-import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.modeltype.internal.read.ModelPartCollector;
 import org.faktorips.runtime.modeltype.internal.read.PolicyModelAssociationCollector;
 import org.faktorips.runtime.modeltype.internal.read.PolicyModelAttributeCollector;
@@ -59,8 +58,8 @@ public class PolicyModel extends ModelType implements IPolicyModel {
     }
 
     @Override
-    public IProductModel getProductCmptType() {
-        return Models.getProductModel(getAnnotatedDeclaration().get(IpsConfiguredBy.class).value()
+    public ProductModel getProductCmptType() {
+        return (ProductModel)Models.getProductModel(getAnnotatedDeclaration().get(IpsConfiguredBy.class).value()
                 .asSubclass(IProductComponent.class));
     }
 

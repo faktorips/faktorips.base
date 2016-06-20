@@ -67,11 +67,6 @@ public class PolicyModelConstantAttribute extends AbstractModelAttribute impleme
     }
 
     @Override
-    public ValueSet<?> getValueSet(IConfigurableModelObject modelObject, IValidationContext context) {
-        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
-    }
-
-    @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
     }

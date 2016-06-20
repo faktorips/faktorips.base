@@ -12,6 +12,8 @@ package org.faktorips.runtime.modeltype.internal;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -33,7 +35,7 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
     private final Method setter;
 
     private Method defaultValueMethod;
-    private Method valueSetMethod;
+    private Map<ModelType, Method> valueSetMethods = new HashMap<ModelType, Method>(2);
 
     public PolicyModelAttribute(PolicyModel modelType, Method getter, Method setter, boolean changingOverTime) {
         super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
@@ -73,49 +75,47 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
 
     @Override
     public Object getDefaultValue(IProductComponent source, Calendar effectiveDate) {
-        return invokeMethod(getDefaultValueMethod(), getRelevantProductObject(source, effectiveDate));
+        if (!isProductRelevant()) {
+            throw new IllegalStateException("Trying to find default value method in product class, but policy class "
+                    + getModelType().getJavaClass() + " is not configurable.");
+        }
+        return invokeMethod(getDefaultValueMethod(getModelType().getProductCmptType()),
+                getRelevantProductObject(source, effectiveDate));
     }
 
-    private Method getDefaultValueMethod() {
+    private Method getDefaultValueMethod(ModelType modelType) {
         if (defaultValueMethod == null) {
-            defaultValueMethod = findDefaultValueMethod();
+            defaultValueMethod = findDefaultValueMethod(modelType);
         }
         return defaultValueMethod;
     }
 
-    private Method findDefaultValueMethod() {
+    private Method findDefaultValueMethod(ModelType modelType) {
         AnnotatedElementMatcher<IpsDefaultValue> filter = new AnnotatedElementMatcher<IpsDefaultValue>() {
             @Override
             public boolean matches(IpsDefaultValue ann) {
                 return ann.value().equals(getName());
             }
         };
-        return findMethod(IpsDefaultValue.class, filter, "default value", false);
-    }
-
-    @Override
-    public ValueSet<?> getValueSet(IConfigurableModelObject modelObject, IValidationContext context) {
-        return getValueSet((IModelObject)modelObject, context);
+        return findMethod(IpsDefaultValue.class, filter, "default value", modelType);
     }
 
     @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
-        if (isProductRelevant() && modelObject instanceof IConfigurableModelObject) {
-            IConfigurableModelObject configurableModelObject = (IConfigurableModelObject)modelObject;
-            return getValueSet(configurableModelObject.getProductComponent(),
-                    configurableModelObject.getEffectiveFromAsCalendar(), context);
-        }
-        return (ValueSet<?>)invokeMethod(getValueSetMethod(), modelObject, context);
+        return (ValueSet<?>)invokeMethod(getValueSetMethod(getModelType()), modelObject, context);
     }
 
     @Override
     public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context) {
-        return (ValueSet<?>)invokeMethod(getValueSetMethod(), getRelevantProductObject(source, effectiveDate), context);
+        return (ValueSet<?>)invokeMethod(getValueSetMethod(getModelType().getProductCmptType()),
+                getRelevantProductObject(source, effectiveDate), context);
     }
 
-    private Method getValueSetMethod() {
+    private Method getValueSetMethod(ModelType model) {
+        Method valueSetMethod = valueSetMethods.get(model);
         if (valueSetMethod == null) {
-            valueSetMethod = findValueSetMethod();
+            valueSetMethod = findValueSetMethod(model);
+            valueSetMethods.put(model, valueSetMethod);
         }
         return valueSetMethod;
     }
@@ -125,30 +125,14 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
         return new PolicyModelAttribute((PolicyModel)subModelType, getter, setter, isChangingOverTime());
     }
 
-    private Method findValueSetMethod() {
+    private Method findValueSetMethod(ModelType modelType) {
         AnnotatedElementMatcher<IpsAllowedValues> filter = new AnnotatedElementMatcher<IpsAllowedValues>() {
             @Override
             public boolean matches(IpsAllowedValues ann) {
                 return ann.value().equals(getName());
             }
         };
-        return findMethod(IpsAllowedValues.class, filter, "allowed values", true);
-    }
-
-    private <T extends Annotation> Method findMethod(Class<T> annotationClass,
-            AnnotatedElementMatcher<T> filter,
-            String methodDescription,
-            boolean fallbackToPolicy) {
-        if (!getModelType().isConfiguredByPolicyCmptType() || !isProductRelevant()) {
-            if (fallbackToPolicy) {
-                return findMethod(annotationClass, filter, methodDescription, getModelType());
-            } else {
-                throw new IllegalStateException("Trying to find " + methodDescription
-                        + " method in product class, but policy class " + getModelType().getJavaClass()
-                        + " is not configurable.");
-            }
-        }
-        return findMethod(annotationClass, filter, methodDescription, (ProductModel)getModelType().getProductCmptType());
+        return findMethod(IpsAllowedValues.class, filter, "allowed values", modelType);
     }
 
     private <T extends Annotation> Method findMethod(Class<T> annotationClass,

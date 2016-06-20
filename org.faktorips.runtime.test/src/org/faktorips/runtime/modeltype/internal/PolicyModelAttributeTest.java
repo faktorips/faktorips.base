@@ -16,6 +16,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.Models;
@@ -183,7 +184,7 @@ public class PolicyModelAttributeTest {
         IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
         IPolicyModelAttribute attribute = policyModel.getAttribute("attr1");
-        ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, new ValidationContext());
 
         assertTrue(valueSet instanceof UnrestrictedValueSet);
     }
@@ -207,7 +208,7 @@ public class PolicyModelAttributeTest {
     public void testGetValueSet_modelObjectChangingOverTime_noEffectiveDate() {
         ConfVertrag vertrag = new ConfVertrag();
         when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent()))
-                .thenReturn(new ProduktGen());
+        .thenReturn(new ProduktGen());
         IPolicyModel policyModel = Models.getPolicyModel(ConfVertrag.class);
 
         IPolicyModelAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -406,6 +407,14 @@ public class PolicyModelAttributeTest {
         @IpsAttributeSetter("attrChangingOverTime")
         public void setAttrChangingOverTime(String value) {
             attrChangingOverTime = value;
+        }
+
+        /**
+         * @param context unused
+         */
+        @IpsAllowedValues("attrChangingOverTime")
+        public ValueSet<String> getSetOfAllowedValuesForAttrChangingOverTime(IValidationContext context) {
+            return new OrderedValueSet<String>(false, null, "foo", "bar");
         }
 
         @Override
