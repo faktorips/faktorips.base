@@ -12,7 +12,6 @@ package org.faktorips.runtime.modeltype;
 import java.util.Calendar;
 
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.model.table.TableModel;
 
@@ -28,11 +27,10 @@ public interface ITableUsageModel extends IModelElement {
      * table usage is not changing over time the date will be ignored.
      * 
      * 
-     * @param productComponent a product object corresponding to the {@link IProductModel} this
-     *            association belongs to
-     * @param effectiveDate The date that should be used to get the
-     *            {@link IProductComponentGeneration} if this association is changing over time. May
-     *            be <code>null</code> to get the latest generation.
+     * @param productComponent The product component that holds the table instance
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the table usage
+     *            configuration is not changing over time.
      * 
      * @return The table instance hold by the product component and is identified by this table
      *         usage

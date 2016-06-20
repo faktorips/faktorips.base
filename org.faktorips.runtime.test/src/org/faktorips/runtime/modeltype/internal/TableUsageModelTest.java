@@ -2,18 +2,21 @@ package org.faktorips.runtime.modeltype.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.model.Models;
+import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.annotation.IpsTableUsage;
@@ -22,15 +25,45 @@ import org.faktorips.runtime.model.table.TableStructureType;
 import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.modeltype.ITableUsageModel;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TableUsageModelTest {
+
+    @Mock
+    private IRuntimeRepository repository;
+
+    private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
     @Test
     public void testGetTableUsage() throws Exception {
         IProductModel productModel = Models.getProductModel(Product.class);
-        Product product = mock(Product.class, CALLS_REAL_METHODS);
-        assertThat(productModel.getTableUsage("table1").getTable(product, null), is((ITable)Product.TABLE1));
-        assertThat(productModel.getTableUsage("table2").getTable(product, null), is((ITable)Product.TABLE2));
+        Product product = new Product();
+        assertThat(productModel.getTableUsage("table1").getTable(product, null), is((ITable)product.TABLE1));
+        assertThat(productModel.getTableUsage("table2").getTable(product, null), is((ITable)product.TABLE2));
+    }
+
+    @Test
+    public void testGetTableUsage_fromGeneration() throws Exception {
+        Product product = new Product();
+        ProductGen productGen = new ProductGen(product);
+        when(repository.getProductComponentGeneration("id", effectiveDate)).thenReturn(productGen);
+        IProductModel productModel = Models.getProductModel(Product.class);
+
+        assertThat(productModel.getTableUsage("tableGen").getTable(product, effectiveDate),
+                is((ITable)productGen.TABLE_GEN));
+    }
+
+    @Test
+    public void testGetTableUsage_fromGeneration_noEffectiveDate() throws Exception {
+        Product product = new Product();
+        ProductGen productGen = new ProductGen(product);
+        when(repository.getLatestProductComponentGeneration(product)).thenReturn(productGen);
+        IProductModel productModel = Models.getProductModel(Product.class);
+
+        assertThat(productModel.getTableUsage("tableGen").getTable(product, null), is((ITable)productGen.TABLE_GEN));
     }
 
     @Test
@@ -64,7 +97,7 @@ public class TableUsageModelTest {
     }
 
     @IpsTableStructure(name = "FooTable", type = TableStructureType.MULTIPLE_CONTENTS, columns = {})
-    public static class FooTable extends Table<FooTableRow> {
+    private class FooTable extends Table<FooTableRow> {
 
         @Override
         public String getName() {
@@ -83,11 +116,11 @@ public class TableUsageModelTest {
 
     }
 
-    public static class FooTableRow {
+    private static class FooTableRow {
     }
 
     @IpsTableStructure(name = "BarTable", type = TableStructureType.MULTIPLE_CONTENTS, columns = {})
-    public static class BarTable extends Table<BarTableRow> {
+    private static class BarTable extends Table<BarTableRow> {
 
         @Override
         public String getName() {
@@ -106,18 +139,19 @@ public class TableUsageModelTest {
 
     }
 
-    public static class BarTableRow {
+    private static class BarTableRow {
     }
 
     @IpsProductCmptType(name = "MyProduct")
-    @IpsTableUsages({ "table1", "table2" })
-    public static abstract class Product extends ProductComponent {
+    @IpsTableUsages({ "table1", "table2", "tableGen" })
+    @IpsChangingOverTime(ProductGen.class)
+    private class Product extends ProductComponent {
 
-        public final static FooTable TABLE1 = new FooTable();
-        public final static BarTable TABLE2 = new BarTable();
+        public final FooTable TABLE1 = new FooTable();
+        public final BarTable TABLE2 = new BarTable();
 
         public Product() {
-            super(null, null, null, null);
+            super(repository, "id", "kindId", "versionId");
         }
 
         @IpsTableUsage(name = "table1")
@@ -138,16 +172,29 @@ public class TableUsageModelTest {
 
         @Override
         public boolean isChangingOverTime() {
-            // not used
-            return false;
+            return true;
+        }
+    }
+
+    private class ProductGen extends ProductComponentGeneration {
+
+        public final BarTable TABLE_GEN = new BarTable();
+
+        public ProductGen(Product product) {
+            super(product);
+        }
+
+        @IpsTableUsage(name = "tableGen")
+        public BarTable getTableGen() {
+            return TABLE_GEN;
         }
     }
 
     @IpsProductCmptType(name = "MyChildProduct")
     @IpsTableUsages({ "table3" })
-    public static abstract class ChildProduct extends Product {
+    private class ChildProduct extends Product {
 
-        public final static FooTable TABLE3 = new FooTable();
+        public final FooTable TABLE3 = new FooTable();
 
         @IpsTableUsage(name = "table3")
         public FooTable getTable3() {

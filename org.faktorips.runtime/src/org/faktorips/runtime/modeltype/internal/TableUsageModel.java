@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -34,7 +35,8 @@ public class TableUsageModel extends ModelPart implements ITableUsageModel {
     @Override
     public ITable getTable(IProductComponent productComponent, Calendar effectiveDate) {
         try {
-            return (ITable)getter.invoke(productComponent);
+            return (ITable)getter
+                    .invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
         } catch (IllegalAccessException e) {
             throw getterError(productComponent, e);
         } catch (InvocationTargetException e) {
@@ -42,6 +44,10 @@ public class TableUsageModel extends ModelPart implements ITableUsageModel {
         } catch (SecurityException e) {
             throw getterError(productComponent, e);
         }
+    }
+
+    private boolean isChangingOverTime() {
+        return IProductComponentGeneration.class.isAssignableFrom(getter.getDeclaringClass());
     }
 
     @Override
