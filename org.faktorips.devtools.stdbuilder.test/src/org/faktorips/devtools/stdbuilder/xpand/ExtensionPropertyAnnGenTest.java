@@ -65,8 +65,8 @@ public class ExtensionPropertyAnnGenTest {
 
         assertThat(annotation, is(notNullValue()));
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", value = \"bar\")"
-                        + LINE_SEPARATOR + ")" + LINE_SEPARATOR)));
+                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", value = \"bar\")" + ")"
+                        + LINE_SEPARATOR)));
     }
 
     @Test
@@ -76,11 +76,9 @@ public class ExtensionPropertyAnnGenTest {
         JavaCodeFragment annotation = extensionPropertyAnnotationGenerator.createAnnotation(modelNode);
 
         assertThat(annotation, is(notNullValue()));
-        assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsExtensionProperties({" + LINE_SEPARATOR
-                        + "\t@IpsExtensionProperty(id = \"foo\", value = \"bar\")" + LINE_SEPARATOR
-                        + "\t@IpsExtensionProperty(id = \"foobar\", value = \"baz\")" + LINE_SEPARATOR + " })"
-                        + LINE_SEPARATOR)));
+        assertThat(annotation.getSourcecode(), is(equalTo("@IpsExtensionProperties({" + LINE_SEPARATOR
+                + "\t@IpsExtensionProperty(id = \"foo\", value = \"bar\")," + LINE_SEPARATOR
+                + "\t@IpsExtensionProperty(id = \"foobar\", value = \"baz\")" + "})" + LINE_SEPARATOR)));
     }
 
     @Test
@@ -92,8 +90,8 @@ public class ExtensionPropertyAnnGenTest {
 
         assertThat(annotation, is(notNullValue()));
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foobar\", value = \"baz\")"
-                        + LINE_SEPARATOR + ")" + LINE_SEPARATOR)));
+                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foobar\", value = \"baz\")" + ")"
+                        + LINE_SEPARATOR)));
     }
 
     @Test
@@ -104,8 +102,8 @@ public class ExtensionPropertyAnnGenTest {
 
         assertThat(annotation, is(notNullValue()));
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", isNull = true)"
-                        + LINE_SEPARATOR + ")" + LINE_SEPARATOR)));
+                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", isNull = true)" + ")"
+                        + LINE_SEPARATOR)));
     }
 
     @Test
@@ -123,7 +121,7 @@ public class ExtensionPropertyAnnGenTest {
         assertThat(annotation, is(notNullValue()));
         assertThat(annotation.getSourcecode(),
                 is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", value = \"bar\\n\\tba    z\")"
-                        + LINE_SEPARATOR + ")" + LINE_SEPARATOR)));
+                        + ")" + LINE_SEPARATOR)));
     }
 
     @Ignore("Complex XML is not supported at the moment")

@@ -1140,10 +1140,24 @@ public class JavaCodeFragmentBuilder {
      *            added.
      */
     public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, JavaCodeFragment params) {
+        annotation(annotation.getName(), params).appendln();
+        return this;
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters and a line separator. '@' character and a
+     * line feed will be automatically added. Import statements are added automatically to the code
+     * fragment (if needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without parenthesis. If empty, parenthesis aren't
+     *            added.
+     */
+    public JavaCodeFragmentBuilder annotation(Class<?> annotation, JavaCodeFragment params) {
         if (annotation == null) {
             return this;
         }
-        annotationLn(annotation.getName(), params);
+        annotation(annotation.getName(), params);
         return this;
     }
 
@@ -1238,6 +1252,19 @@ public class JavaCodeFragmentBuilder {
      *            empty String, paranthesis aren't added.
      */
     public JavaCodeFragmentBuilder annotationLn(String annotation, JavaCodeFragment params) {
+        return annotation(annotation, params).appendln();
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters. '@' character and a line feed will be
+     * automatically added. Import statements are added automatically to the code fragment (if
+     * needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
+     *            empty String, paranthesis aren't added.
+     */
+    public JavaCodeFragmentBuilder annotation(String annotation, JavaCodeFragment params) {
         if (annotation == null) {
             return this;
         }
@@ -1248,7 +1275,6 @@ public class JavaCodeFragmentBuilder {
             fragment.append(params);
             fragment.append(')');
         }
-        fragment.appendln();
         return this;
     }
 
@@ -1600,6 +1626,20 @@ public class JavaCodeFragmentBuilder {
         return this;
     }
 
+    public JavaCodeFragmentBuilder appendJoin(List<JavaCodeFragment> parts, String separator) {
+        if (parts == null) {
+            return this;
+        }
+        String nullSafeSeparator = StringUtils.defaultString(separator);
+        for (int i = 0; i < parts.size(); i++) {
+            append(parts.get(i));
+            if (i + 1 < parts.size()) {
+                append(nullSafeSeparator);
+            }
+        }
+        return this;
+    }
+
     @Override
     public String toString() {
         return fragment.toString();
@@ -1745,4 +1785,5 @@ public class JavaCodeFragmentBuilder {
             return exceptionClasses == null ? 0 : exceptionClasses.length;
         }
     }
+
 }

@@ -14,6 +14,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -77,12 +78,9 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
         if (annotations.size() == 1) {
             annotationArg.append(annotations.get(0));
         } else {
-            annotationArg.append("{").appendln();
-            for (JavaCodeFragment annotation : annotations) {
-                annotationArg.append("\t");
-                annotationArg.append(annotation);
-            }
-            annotationArg.append(" }");
+            annotationArg.append("{").appendln().append("\t");
+            annotationArg.appendJoin(annotations, "," + SystemUtils.LINE_SEPARATOR + "\t");
+            annotationArg.append("}");
         }
 
         return new JavaCodeFragmentBuilder().annotationLn(IpsExtensionProperties.class, annotationArg.getFragment())
@@ -111,7 +109,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
             annotationArg.append(valueString);
             annotationArg.append("\"");
         }
-        return new JavaCodeFragmentBuilder().annotationLn(IpsExtensionProperty.class, annotationArg.getFragment())
+        return new JavaCodeFragmentBuilder().annotation(IpsExtensionProperty.class, annotationArg.getFragment())
                 .getFragment();
     }
 
