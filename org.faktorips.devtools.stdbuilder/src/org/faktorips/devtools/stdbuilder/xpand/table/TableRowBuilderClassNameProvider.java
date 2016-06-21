@@ -14,8 +14,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 public class TableRowBuilderClassNameProvider extends DefaultJavaClassNameProvider {
 
-    public TableRowBuilderClassNameProvider() {
-        super(true);
+    public TableRowBuilderClassNameProvider(boolean isGeneratePublishedInterface) {
+        super(isGeneratePublishedInterface);
     }
 
     @Override

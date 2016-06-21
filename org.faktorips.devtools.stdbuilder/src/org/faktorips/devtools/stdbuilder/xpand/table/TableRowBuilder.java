@@ -10,7 +10,6 @@
 package org.faktorips.devtools.stdbuilder.xpand.table;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -24,7 +23,6 @@ import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTableRow;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends XpandBuilder<XTableRow> {
 
@@ -32,12 +30,7 @@ public class TableRowBuilder extends XpandBuilder<XTableRow> {
 
     public TableRowBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService) {
         super(builderSet, modelContext, modelService, new LocalizedStringsSet(TableRowBuilder.class));
-        javaClassNameProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
-            @Override
-            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
-                return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
-            }
-        };
+        javaClassNameProvider = new TableRowBuilderClassNameProvider(builderSet.isGeneratePublishedInterfaces());
     }
 
     @Override
