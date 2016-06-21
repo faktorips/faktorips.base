@@ -76,8 +76,9 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
     @Override
     public Object getDefaultValue(IProductComponent source, Calendar effectiveDate) {
         if (!isProductRelevant()) {
-            throw new IllegalStateException("Trying to find default value method in product class, but policy class "
-                    + getModelType().getJavaClass() + " is not configurable.");
+            throw new IllegalStateException(
+                    "Trying to find default value method in product class, but policy attribute "
+                            + getModelType().getName() + '.' + getName() + " is not configurable.");
         }
         return invokeMethod(getDefaultValueMethod(getModelType().getProductCmptType()),
                 getRelevantProductObject(source, effectiveDate));
