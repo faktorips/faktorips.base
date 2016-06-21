@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -63,7 +62,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
-import org.faktorips.devtools.core.ui.editors.SearchSelectionBar;
 import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -129,12 +127,8 @@ public class ContentPage extends IpsObjectEditorPage {
         if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             createExtensionProperty(formBody, toolkit);
         }
-
-        final SearchSelectionBar searchSelectionLogic = new SearchSelectionBar(formBody, toolkit);
-
         final Table table = createTable(formBody);
         initTableViewer(table, toolkit);
-
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
@@ -142,10 +136,10 @@ public class ContentPage extends IpsObjectEditorPage {
         tableViewer.setInput(getTableContents());
 
         ScrolledForm form = getManagedForm().getForm();
-        IToolBarManager toolBarManager = form.getToolBarManager();
-        toolBarManager.add(newRowAction);
-        toolBarManager.add(deleteRowAction);
-        toolBarManager.add(new Separator());
+        form.getToolBarManager().add(newRowAction);
+        form.getToolBarManager().add(deleteRowAction);
+        form.getToolBarManager().add(new Separator());
+
         // create own TableImportExportActionInEditor because the editor must be refreshed after
         // importing of the table contents otherwise the old content is visible until the editor is
         // reopened
@@ -156,15 +150,13 @@ public class ContentPage extends IpsObjectEditorPage {
         TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(),
                 getTableContents(), false);
 
-        toolBarManager.add(importAction);
-        toolBarManager.add(exportAction);
+        form.getToolBarManager().add(importAction);
+        form.getToolBarManager().add(exportAction);
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-            toolBarManager.add(new Separator());
-            toolBarManager.add(new NavigateToTableStructureAction(getTableContents()));
+            form.getToolBarManager().add(new Separator());
+            form.getToolBarManager().add(new NavigateToTableStructureAction(getTableContents()));
         }
-
         form.updateToolBar();
-        searchSelectionLogic.init(tableViewer);
 
         // FS#822 workaround to activate the correct cell editor (row and column),
         // after scrolling and activating another cell the table on a different page.
