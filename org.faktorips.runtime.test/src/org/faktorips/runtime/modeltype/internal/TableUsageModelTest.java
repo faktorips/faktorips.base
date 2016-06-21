@@ -2,6 +2,8 @@ package org.faktorips.runtime.modeltype.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -96,6 +98,21 @@ public class TableUsageModelTest {
         assertThat(productModel.getTableUsage("table2").getTableModel(), is(Models.getTableModel(BarTable.class)));
     }
 
+    @Test
+    public void testGetTableModel_multipleStructures() {
+        ITableUsageModel tableUsage = Models.getProductModel(Product.class).getTableUsage("multitable");
+        assertNotNull(tableUsage);
+        try {
+            tableUsage.getTableModel();
+            fail("Expected " + UnsupportedOperationException.class + " because there are multiple table structures");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        } catch (Throwable t) {
+            fail("Expected " + UnsupportedOperationException.class
+                    + " because there are multiple table structures, but got " + t);
+        }
+    }
+
     @IpsTableStructure(name = "FooTable", type = TableStructureType.MULTIPLE_CONTENTS, columns = {})
     private class FooTable extends Table<FooTableRow> {
 
@@ -143,7 +160,7 @@ public class TableUsageModelTest {
     }
 
     @IpsProductCmptType(name = "MyProduct")
-    @IpsTableUsages({ "table1", "table2", "tableGen" })
+    @IpsTableUsages({ "table1", "table2", "multitable", "tableGen" })
     @IpsChangingOverTime(ProductGen.class)
     private class Product extends ProductComponent {
 
@@ -162,6 +179,11 @@ public class TableUsageModelTest {
         @IpsTableUsage(name = "table2")
         public BarTable getTable2() {
             return TABLE2;
+        }
+
+        @IpsTableUsage(name = "multitable")
+        public ITable getMultitable() {
+            return null;
         }
 
         @Override

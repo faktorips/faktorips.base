@@ -53,6 +53,12 @@ public class TableUsageModel extends ModelPart implements ITableUsageModel {
     @Override
     public TableModel getTableModel() {
         Class<? extends ITable> tableClass = getter.getReturnType().asSubclass(ITable.class);
+
+        if (tableClass.equals(ITable.class)) {
+            throw new UnsupportedOperationException("Cannot create new TableModel as the table usage " + getName()
+                    + " uses multiple table structures.");
+        }
+
         return Models.getTableModel(tableClass);
     }
 

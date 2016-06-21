@@ -39,6 +39,7 @@ public interface ITableUsageModel extends IModelElement {
 
     /**
      * @return the model for the table structure referenced in this table usage.
+     * @throws UnsupportedOperationException if this table usage uses multiple table structures.
      */
     public TableModel getTableModel();
 

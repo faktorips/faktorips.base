@@ -48,7 +48,8 @@ public class Models {
                         String name = annotatedDeclaration.get(IpsProductCmptType.class).name();
                         return new ProductModel(name, annotatedDeclaration);
                     } else {
-                        throw new IllegalArgumentException("The class " + annotatedDeclaration.getDeclarationClassName()
+                        throw new IllegalArgumentException("The class "
+                                + annotatedDeclaration.getDeclarationClassName()
                                 + " is not annotated as product component type.");
                     }
                 }
@@ -82,6 +83,7 @@ public class Models {
     }
 
     /**
+     * @param tableObjectClass a generated subclass of {@link ITable}
      * @return a {@link TableModel} describing the type and columns of the given {@link ITable}
      *         class
      */
