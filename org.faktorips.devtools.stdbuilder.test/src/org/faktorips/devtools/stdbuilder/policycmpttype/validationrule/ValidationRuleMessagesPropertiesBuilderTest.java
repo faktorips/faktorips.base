@@ -163,13 +163,13 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
         when(ipsSrcFile.getIpsObject()).thenReturn(pcType);
         String pcTypeName = "PcTypeTestName";
-        when(ipsSrcFile.getQualifiedNameType()).thenReturn(
-                new QualifiedNameType(pcTypeName, IpsObjectType.POLICY_CMPT_TYPE));
+        QualifiedNameType qualifiedNameType = new QualifiedNameType(pcTypeName, IpsObjectType.POLICY_CMPT_TYPE);
+        when(ipsSrcFile.getQualifiedNameType()).thenReturn(qualifiedNameType);
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
 
         builderSpy.delete(ipsSrcFile);
 
-        verify(generatorMock).deleteAllMessagesFor(pcTypeName);
+        verify(generatorMock).deleteAllMessagesFor(qualifiedNameType);
 
     }
 

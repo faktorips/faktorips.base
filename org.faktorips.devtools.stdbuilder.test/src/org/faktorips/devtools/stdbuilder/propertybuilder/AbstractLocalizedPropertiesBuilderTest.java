@@ -94,7 +94,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
         builder.delete(ipsSrcFile);
 
         verify(builder.generator, times(ipsProject.getReadOnlyProperties().getSupportedLanguages().size()))
-                .deleteAllMessagesFor(ipsSrcFile.getQualifiedNameType().getName());
+                .deleteAllMessagesFor(ipsSrcFile.getQualifiedNameType());
     }
 
     private static class TestBuilder extends AbstractLocalizedPropertiesBuilder {

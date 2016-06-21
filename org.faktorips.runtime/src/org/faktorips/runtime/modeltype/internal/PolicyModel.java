@@ -30,6 +30,8 @@ import org.faktorips.runtime.modeltype.internal.read.TypeModelPartsReader;
 
 public class PolicyModel extends ModelType implements IPolicyModel {
 
+    public static final String KIND_NAME = "PolicyCmptType";
+
     private final LinkedHashMap<String, IPolicyModelAttribute> attributes;
 
     private final LinkedHashMap<String, IPolicyModelAssociation> associations;
@@ -50,6 +52,11 @@ public class PolicyModel extends ModelType implements IPolicyModel {
                 attributeCollector, associationCollector));
         typeModelPartsReader.init(annotatedDeclararation);
         typeModelPartsReader.read(annotatedDeclararation);
+    }
+
+    @Override
+    protected String getKindName() {
+        return KIND_NAME;
     }
 
     @Override

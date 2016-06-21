@@ -41,7 +41,7 @@ public abstract class ModelPart extends AbstractModelElement {
 
     @Override
     protected String getMessageKey(DocumentationType messageType) {
-        return messageType.getKey(getTypeName(), getName());
+        return messageType.getKey(getTypeName(), getModelType().getKindName(), getName());
     }
 
     @Override

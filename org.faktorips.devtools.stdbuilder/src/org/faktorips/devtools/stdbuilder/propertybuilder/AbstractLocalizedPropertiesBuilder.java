@@ -48,7 +48,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
     }
 
     protected abstract AbstractPropertiesGenerator createNewMessageGenerator(IFile propertyFile,
-    ISupportedLanguage supportedLanguage);
+            ISupportedLanguage supportedLanguage);
 
     protected abstract String getResourceBundleBaseName(IIpsSrcFolderEntry entry);
 
@@ -143,7 +143,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
             AbstractPropertiesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile.getIpsPackageFragment()
                     .getRoot(), supportedLanguage);
             QualifiedNameType qualifiedNameType = ipsSrcFile.getQualifiedNameType();
-            messagesGenerator.deleteAllMessagesFor(qualifiedNameType.getName());
+            messagesGenerator.deleteAllMessagesFor(qualifiedNameType);
         }
     }
 

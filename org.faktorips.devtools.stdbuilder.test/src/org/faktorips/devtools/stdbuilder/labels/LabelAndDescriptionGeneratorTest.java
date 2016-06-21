@@ -36,9 +36,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -52,13 +57,21 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
     private static final String MY_QNAME = "myQName";
 
+    private static final String MY_ENUM_QNAME = "myEnumQName";
+
     private IPolicyCmptType pcType;
+
+    private IEnumType enumType;
+
+    private IEnumContent enumContent;
 
     private IIpsProject ipsProject;
 
     public void setUpPcType() throws Exception {
         ipsProject = newIpsProject("myProject");
         pcType = newPolicyCmptType(ipsProject, MY_QNAME);
+        enumType = newEnumType(ipsProject, MY_ENUM_QNAME);
+        enumContent = newEnumContent(enumType, MY_ENUM_QNAME);
     }
 
     @Test
@@ -98,15 +111,21 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         assertFalse(labelsAndDescriptions.isModified());
 
         messagesGenerator.generate(pcType);
+        messagesGenerator.generate(enumType);
+        messagesGenerator.generate(enumContent);
 
         assertFalse(labelsAndDescriptions.isModified());
 
         setLabel(pcType, "foo");
         setDescription(pcType, "bar");
+        setDescription(enumType, "et");
+        setDescription(enumContent, "ec");
 
         messagesGenerator.generate(pcType);
+        messagesGenerator.generate(enumType);
+        messagesGenerator.generate(enumContent);
         assertTrue(labelsAndDescriptions.isModified());
-        assertEquals(2, labelsAndDescriptions.size());
+        assertEquals(4, labelsAndDescriptions.size());
 
         messagesGenerator.saveIfModified("");
 
@@ -116,6 +135,8 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         reset(inputStream);
 
         messagesGenerator.generate(pcType);
+        messagesGenerator.generate(enumType);
+        messagesGenerator.generate(enumContent);
         assertFalse(labelsAndDescriptions.isModified());
 
         verifyZeroInteractions(propertyFile);
@@ -193,7 +214,8 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         labelAndDescriptionGenerator.addLabelAndDescription(pcType);
         labelAndDescriptionGenerator.addLabelAndDescription(pcType2);
 
-        labelAndDescriptionGenerator.deleteAllMessagesFor(MY_QNAME);
+        labelAndDescriptionGenerator.deleteAllMessagesFor(new QualifiedNameType(MY_QNAME,
+                IpsObjectType.POLICY_CMPT_TYPE));
 
         assertThat(labelAndDescriptionGenerator.getLocalizedProperties().size(), is(equalTo(1)));
         assertThat(
@@ -226,7 +248,8 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         labelAndDescriptionGenerator.addLabelAndDescription(association);
 
         assertThat(
-                labelAndDescriptionGenerator.getLocalizedProperties().getKeysForIpsObject(pcType.getQualifiedName()),
+                labelAndDescriptionGenerator.getLocalizedProperties()
+                        .getKeysForIpsObject(pcType.getQualifiedNameType()),
                 hasItems(new MessageKey(association, DocumentationType.LABEL), new MessageKey(association,
                         DocumentationType.PLURAL_LABEL)));
     }
@@ -247,7 +270,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         }
     }
 
-    private void setDescription(IPolicyCmptType pcType, String text) {
+    private void setDescription(IDescribedElement pcType, String text) {
         IDescription description = pcType.getDescription(Locale.GERMAN);
         if (description == null) {
             description = pcType.newDescription();

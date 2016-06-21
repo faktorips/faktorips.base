@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -242,7 +244,8 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         validationRuleMessagesGenerator.addValidationRuleMessages(pcType);
         validationRuleMessagesGenerator.addValidationRuleMessages(pcType2);
 
-        validationRuleMessagesGenerator.deleteAllMessagesFor(MY_QNAME);
+        validationRuleMessagesGenerator.deleteAllMessagesFor(new QualifiedNameType(MY_QNAME,
+                IpsObjectType.POLICY_CMPT_TYPE));
 
         assertEquals(1, validationRuleMessagesGenerator.getValidationMessages().size());
         assertEquals("text3", validationRuleMessagesGenerator.getValidationMessages().getMessage("pcType2-otherRule"));

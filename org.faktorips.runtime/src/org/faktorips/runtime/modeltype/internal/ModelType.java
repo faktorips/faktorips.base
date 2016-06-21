@@ -44,9 +44,11 @@ public abstract class ModelType extends AbstractModelElement implements IModelTy
         messagesHelper = createMessageHelper(ipsDocumented, annotatedModelType.getClassLoader());
     }
 
+    protected abstract String getKindName();
+
     @Override
     protected String getMessageKey(DocumentationType messageType) {
-        return messageType.getKey(getName(), IpsStringUtils.EMPTY);
+        return messageType.getKey(getName(), getKindName(), IpsStringUtils.EMPTY);
     }
 
     @Override

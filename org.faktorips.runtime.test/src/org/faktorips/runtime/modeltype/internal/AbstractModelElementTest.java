@@ -28,6 +28,8 @@ import org.junit.Test;
 
 public class AbstractModelElementTest {
 
+    private static final String ANY_TYPE = "any_type";
+
     private static final String ANY_NAME = "any_name";
 
     private final AbstractModelElement element = new TestModelElement(ANY_NAME);
@@ -76,7 +78,7 @@ public class AbstractModelElementTest {
 
         @Override
         protected String getMessageKey(DocumentationType messageType) {
-            return messageType.getKey(getName(), ANY_NAME);
+            return messageType.getKey(getName(), ANY_TYPE, ANY_NAME);
         }
     }
 

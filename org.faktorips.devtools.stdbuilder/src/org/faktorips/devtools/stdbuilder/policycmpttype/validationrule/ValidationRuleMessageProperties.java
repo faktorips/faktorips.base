@@ -13,6 +13,8 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
@@ -37,8 +39,8 @@ public class ValidationRuleMessageProperties extends AbstractLocalizedProperties
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<RuleKeyParts> getKeysForPolicyCmptType(String qname) {
-        return (Collection<RuleKeyParts>)getKeysForIpsObject(qname);
+    public Collection<RuleKeyParts> getKeysForPolicyCmptType(QualifiedNameType qualifiedNameType) {
+        return (Collection<RuleKeyParts>)getKeysForIpsObject(qualifiedNameType);
     }
 
     static class RuleKeyParts implements PropertyKey {
@@ -100,6 +102,10 @@ public class ValidationRuleMessageProperties extends AbstractLocalizedProperties
         }
 
         @Override
+        public QualifiedNameType getIpsObjectQNameType() {
+            return new QualifiedNameType(pcTypeName, IpsObjectType.POLICY_CMPT_TYPE);
+        }
+
         public String getIpsObjectQname() {
             return pcTypeName;
         }

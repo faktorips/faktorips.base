@@ -121,7 +121,7 @@ public class TableColumnModel extends AbstractModelElement {
 
     @Override
     protected String getMessageKey(DocumentationType messageType) {
-        return messageType.getKey(tableModel.getName(), getName());
+        return messageType.getKey(tableModel.getName(), TableModel.KIND_NAME, getName());
     }
 
     @Override

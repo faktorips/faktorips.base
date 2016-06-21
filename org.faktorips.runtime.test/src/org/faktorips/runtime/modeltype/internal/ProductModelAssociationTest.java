@@ -63,7 +63,7 @@ public class ProductModelAssociationTest {
 
     @Test
     public void testGetNamePlural() {
-        assertEquals("testPluralLabel", association.getLabelForPlural(Locale.CANADA));
+        assertEquals("testPluralLabelProduct", association.getLabelForPlural(Locale.CANADA));
         assertEquals("assos2", association2.getLabelForPlural(Locale.CANADA));
     }
 

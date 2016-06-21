@@ -57,13 +57,13 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         labelAndDescriptionProperties.put(association, DocumentationType.LABEL, "Hello World");
         labelAndDescriptionProperties.put(tableStructure, DocumentationType.LABEL, "TabTab");
 
-        labelAndDescriptionProperties.deleteAllMessagesFor(pcType.getQualifiedName());
+        labelAndDescriptionProperties.deleteAllMessagesFor(pcType.getQualifiedNameType());
 
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
-                .getQualifiedName());
+                .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(0));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(tableStructure, DocumentationType.LABEL)
-        .getKey()), is(equalTo("TabTab")));
+                .getKey()), is(equalTo("TabTab")));
     }
 
     @Test
@@ -82,13 +82,13 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         labelAndDescriptionProperties.put(tableStructure, DocumentationType.LABEL, "TabTab");
 
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
-                .getQualifiedName());
+                .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(5)));
         assertThat(
                 labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.LABEL).getKey()),
                 is(equalTo("Hello World")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.DESCRIPTION)
-        .getKey()), is(equalTo("Lorem Ipsum\ndolor sit amet")));
+                .getKey()), is(equalTo("Lorem Ipsum\ndolor sit amet")));
         assertThat(
                 labelAndDescriptionProperties.getMessage(new MessageKey(attribute2, DocumentationType.LABEL).getKey()),
                 is(equalTo("Foo")));
@@ -96,9 +96,9 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
                 labelAndDescriptionProperties.getMessage(new MessageKey(association, DocumentationType.LABEL).getKey()),
                 is(equalTo("Hello World")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(association2, DocumentationType.LABEL)
-        .getKey()), is(equalTo("Bar")));
+                .getKey()), is(equalTo("Bar")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(tableStructure, DocumentationType.LABEL)
-        .getKey()), is(equalTo("TabTab")));
+                .getKey()), is(equalTo("TabTab")));
     }
 
     @Test
@@ -118,13 +118,13 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         labelAndDescriptionProperties.put(tableStructure, DocumentationType.LABEL, "TabTab");
 
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
-                .getQualifiedName());
+                .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(5)));
         assertThat(
                 labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.LABEL).getKey()),
                 is(equalTo("Hello World")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.DESCRIPTION)
-        .getKey()), is(equalTo("Lorem Ipsum\ndolor sit amet")));
+                .getKey()), is(equalTo("Lorem Ipsum\ndolor sit amet")));
         assertThat(
                 labelAndDescriptionProperties.getMessage(new MessageKey(attribute2, DocumentationType.LABEL).getKey()),
                 is(equalTo("Foo")));
@@ -132,9 +132,9 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
                 labelAndDescriptionProperties.getMessage(new MessageKey(association, DocumentationType.LABEL).getKey()),
                 is(equalTo("Hello World")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(association2, DocumentationType.LABEL)
-        .getKey()), is(equalTo("Bar")));
+                .getKey()), is(equalTo("Bar")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(tableStructure, DocumentationType.LABEL)
-        .getKey()), is(equalTo("TabTab")));
+                .getKey()), is(equalTo("TabTab")));
     }
 
     @Test
@@ -145,13 +145,13 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         labelAndDescriptionProperties.put(attribute, DocumentationType.DESCRIPTION, "");
 
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
-                .getQualifiedName());
+                .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(2)));
         assertThat(
                 labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.LABEL).getKey()),
                 is(equalTo("")));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.DESCRIPTION)
-        .getKey()), is(equalTo("")));
+                .getKey()), is(equalTo("")));
     }
 
     @Test
@@ -163,10 +163,10 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         labelAndDescriptionProperties.remove(new MessageKey(attribute, DocumentationType.LABEL));
 
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
-                .getQualifiedName());
+                .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(1)));
         assertThat(labelAndDescriptionProperties.getMessage(new MessageKey(attribute, DocumentationType.DESCRIPTION)
-        .getKey()), is(equalTo("Lorem Ipsum\ndolor sit amet")));
+                .getKey()), is(equalTo("Lorem Ipsum\ndolor sit amet")));
     }
 
 }

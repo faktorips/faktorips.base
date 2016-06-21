@@ -30,6 +30,8 @@ import org.faktorips.runtime.util.MessagesHelper;
  */
 public class TableModel extends AbstractModelElement {
 
+    public static final String KIND_NAME = "TableStructure";
+
     private TableStructureType type;
     private LinkedHashMap<String, TableColumnModel> columnModels;
     private List<String> columnNames;
@@ -119,7 +121,7 @@ public class TableModel extends AbstractModelElement {
 
     @Override
     protected String getMessageKey(DocumentationType messageType) {
-        return messageType.getKey(getName(), IpsStringUtils.EMPTY);
+        return messageType.getKey(getName(), KIND_NAME, IpsStringUtils.EMPTY);
     }
 
     @Override

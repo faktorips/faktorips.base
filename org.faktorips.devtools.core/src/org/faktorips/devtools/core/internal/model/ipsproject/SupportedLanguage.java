@@ -112,4 +112,9 @@ public class SupportedLanguage implements ISupportedLanguage {
         return element;
     }
 
+    @Override
+    public String toString() {
+        return locale + (defaultLanguage ? "*" : ""); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
 }

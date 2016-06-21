@@ -43,8 +43,8 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     private transient IPath path = null;
 
     public QualifiedNameType(String name, IpsObjectType type) {
-        ArgumentCheck.notNull(name, this);
-        ArgumentCheck.notNull(type, this);
+        ArgumentCheck.notNull(name);
+        ArgumentCheck.notNull(type);
         qualifiedName = name;
         this.type = type;
         calculateHashCode();
@@ -190,7 +190,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         if (type == null) {
             throw new IllegalStateException(
                     "Unable to deserialize this qualified name type because the IpsObjectType could not be resolved: " //$NON-NLS-1$
-                    + type);
+                            + type);
         }
         calculateHashCode();
     }

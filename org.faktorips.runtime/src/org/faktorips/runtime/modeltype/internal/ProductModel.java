@@ -37,6 +37,8 @@ import org.faktorips.runtime.modeltype.internal.read.TypeModelPartsReader;
 
 public class ProductModel extends ModelType implements IProductModel {
 
+    public static final String KIND_NAME = "ProductCmptType2";
+
     private final AnnotatedDeclaration generationDeclaration;
 
     private final LinkedHashMap<String, IProductModelAttribute> attributes;
@@ -69,6 +71,11 @@ public class ProductModel extends ModelType implements IProductModel {
         if (isChangingOverTime()) {
             typeModelPartsReader.read(generationDeclaration);
         }
+    }
+
+    @Override
+    protected String getKindName() {
+        return KIND_NAME;
     }
 
     @Override

@@ -19,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
@@ -87,12 +89,17 @@ public class ValidationRuleMessagePropertiesTest {
         validationMessages.store(outputStream, "");
         validationMessages.load(new ByteArrayInputStream(outputStream.toByteArray()));
 
-        Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(QNAME1);
+        Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME1,
+                IpsObjectType.POLICY_CMPT_TYPE));
         assertEquals(2, rules.size());
         assertThat(rules, hasItem(new RuleKeyParts(QNAME1, RULE1, getRuleQName(QNAME1, RULE1))));
         assertThat(rules, hasItem(new RuleKeyParts(QNAME1, RULE2, getRuleQName(QNAME1, RULE2))));
-        rules = validationMessages.getKeysForPolicyCmptType(QNAME2);
-        assertEquals(1, validationMessages.getKeysForPolicyCmptType(QNAME2).size());
+        rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME2,
+                IpsObjectType.POLICY_CMPT_TYPE));
+        assertEquals(
+                1,
+                validationMessages.getKeysForPolicyCmptType(
+                        new QualifiedNameType(QNAME2, IpsObjectType.POLICY_CMPT_TYPE)).size());
         assertThat(rules, hasItem(new RuleKeyParts(QNAME2, RULE3, getRuleQName(QNAME2, RULE3))));
     }
 

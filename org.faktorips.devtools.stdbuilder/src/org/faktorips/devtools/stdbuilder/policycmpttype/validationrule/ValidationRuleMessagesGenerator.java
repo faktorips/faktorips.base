@@ -89,7 +89,7 @@ public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator
      * @param policyCmptType The name of the policy component type used to get the message key
      */
     void deleteMessagesForDeletedRules(IPolicyCmptType policyCmptType) {
-        deleteMessagesForDeletedParts(policyCmptType.getQualifiedName(), createLocalizedProperties(policyCmptType));
+        deleteMessagesForDeletedParts(policyCmptType.getQualifiedNameType(), createLocalizedProperties(policyCmptType));
     }
 
     protected AbstractLocalizedProperties createLocalizedProperties(IPolicyCmptType pcType) {

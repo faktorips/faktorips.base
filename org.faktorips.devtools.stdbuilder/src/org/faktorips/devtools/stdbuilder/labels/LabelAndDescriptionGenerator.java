@@ -82,7 +82,7 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
     }
 
     public void generate(IIpsObject ipsObject) {
-        deleteMessagesForDeletedParts(ipsObject.getQualifiedName(), createLocalizedProperties(ipsObject));
+        deleteMessagesForDeletedParts(ipsObject.getQualifiedNameType(), createLocalizedProperties(ipsObject));
         addLabelsAndDescriptions(ipsObject, getLocalizedProperties());
     }
 

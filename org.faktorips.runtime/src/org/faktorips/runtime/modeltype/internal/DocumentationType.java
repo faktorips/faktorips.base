@@ -27,11 +27,11 @@ public enum DocumentationType {
     public static final String QNAME_SEPARATOR = "-";
 
     /**
-     * Creates a unique key to identify a message of this type, using the objectName and partName
-     * separated by {@link #QNAME_SEPARATOR} and appending the name of the current message type.
-     * 
+     * Creates a unique key to identify a message of this type, using the objectName, qualified name
+     * type and partName separated by {@link #QNAME_SEPARATOR} and appending the name of the current
+     * message type.
      */
-    public String getKey(String objectName, String partName) {
-        return IpsStringUtils.join(Arrays.asList(objectName, partName, name()), QNAME_SEPARATOR);
+    public String getKey(String objectName, String objectType, String partName) {
+        return IpsStringUtils.join(Arrays.asList(objectName, objectType, partName, name()), QNAME_SEPARATOR);
     }
 }

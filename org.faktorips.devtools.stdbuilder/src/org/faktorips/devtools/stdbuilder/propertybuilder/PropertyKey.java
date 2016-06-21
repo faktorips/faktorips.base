@@ -9,9 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.propertybuilder;
 
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+
 public interface PropertyKey {
     public String getKey();
 
-    public String getIpsObjectQname();
+    public QualifiedNameType getIpsObjectQNameType();
 
 }

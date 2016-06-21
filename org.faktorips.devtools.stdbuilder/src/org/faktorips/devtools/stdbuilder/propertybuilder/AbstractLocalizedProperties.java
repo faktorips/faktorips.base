@@ -14,12 +14,13 @@ import java.io.OutputStream;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.stdbuilder.MessagesProperties;
 import org.faktorips.util.MultiMap;
 
 public abstract class AbstractLocalizedProperties {
 
-    private final MultiMap<String, PropertyKey> propertyKeysForIpsObject = MultiMap.createWithSetsAsValues();
+    private final MultiMap<QualifiedNameType, PropertyKey> propertyKeysForIpsObject = MultiMap.createWithSetsAsValues();
 
     private final MessagesProperties messagesProperties = new MessagesProperties();
 
@@ -46,11 +47,11 @@ public abstract class AbstractLocalizedProperties {
         return messagesProperties.isModified();
     }
 
-    public void deleteAllMessagesFor(String ipsObjectQname) {
-        for (PropertyKey propertyKey : propertyKeysForIpsObject.get(ipsObjectQname)) {
+    public void deleteAllMessagesFor(QualifiedNameType qualifiedNameType) {
+        for (PropertyKey propertyKey : propertyKeysForIpsObject.get(qualifiedNameType)) {
             messagesProperties.remove(propertyKey.getKey());
         }
-        propertyKeysForIpsObject.remove(ipsObjectQname);
+        propertyKeysForIpsObject.remove(qualifiedNameType);
     }
 
     public void load(InputStream stream) {
@@ -63,7 +64,7 @@ public abstract class AbstractLocalizedProperties {
         for (String key : messagesProperties.keySet()) {
             PropertyKey propertyKey = createPropertyEntry(key);
             if (propertyKey != null) {
-                propertyKeysForIpsObject.put(propertyKey.getIpsObjectQname(), propertyKey);
+                propertyKeysForIpsObject.put(propertyKey.getIpsObjectQNameType(), propertyKey);
             }
         }
     }
@@ -72,7 +73,7 @@ public abstract class AbstractLocalizedProperties {
 
     public void put(PropertyKey propertyKey, String messageText) {
         if (defaultLang || StringUtils.isNotBlank(messageText)) {
-            propertyKeysForIpsObject.put(propertyKey.getIpsObjectQname(), propertyKey);
+            propertyKeysForIpsObject.put(propertyKey.getIpsObjectQNameType(), propertyKey);
             messagesProperties.put(propertyKey.getKey(), messageText);
         } else {
             remove(propertyKey);
@@ -80,12 +81,12 @@ public abstract class AbstractLocalizedProperties {
     }
 
     public void remove(PropertyKey propertyKey) {
-        propertyKeysForIpsObject.remove(propertyKey.getIpsObjectQname(), propertyKey);
+        propertyKeysForIpsObject.remove(propertyKey.getIpsObjectQNameType(), propertyKey);
         messagesProperties.remove(propertyKey.getKey());
     }
 
-    protected Collection<? extends PropertyKey> getKeysForIpsObject(String ipsObjectQname) {
-        return propertyKeysForIpsObject.get(ipsObjectQname);
+    protected Collection<? extends PropertyKey> getKeysForIpsObject(QualifiedNameType qualifiedNameType) {
+        return propertyKeysForIpsObject.get(qualifiedNameType);
     }
 
     public String getMessage(String qualifiedMessageKey) {

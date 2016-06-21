@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 
@@ -87,8 +88,8 @@ public abstract class AbstractPropertiesGenerator {
         return messagesPropertiesFile;
     }
 
-    public void deleteAllMessagesFor(String ipsObjectQname) {
-        getLocalizedProperties().deleteAllMessagesFor(ipsObjectQname);
+    public void deleteAllMessagesFor(QualifiedNameType ipsObject) {
+        getLocalizedProperties().deleteAllMessagesFor(ipsObject);
     }
 
     public ISupportedLanguage getSupportedLanguage() {
@@ -112,12 +113,12 @@ public abstract class AbstractPropertiesGenerator {
      * the current IPS object. The method compares the already existing messages for the object with
      * the current existing messages
      */
-    protected void deleteMessagesForDeletedParts(String ipsObjectQname,
+    protected void deleteMessagesForDeletedParts(QualifiedNameType qualifiedNameType,
             AbstractLocalizedProperties existingLocalizedProperties) {
         Collection<PropertyKey> keysForIpsObjectToDelete = new HashSet<PropertyKey>(getLocalizedProperties()
-                .getKeysForIpsObject(ipsObjectQname));
+                .getKeysForIpsObject(qualifiedNameType));
         Collection<? extends PropertyKey> newKeysForIpsObject = existingLocalizedProperties
-                .getKeysForIpsObject(ipsObjectQname);
+                .getKeysForIpsObject(qualifiedNameType);
         keysForIpsObjectToDelete.removeAll(newKeysForIpsObject);
         for (PropertyKey propertyKey : keysForIpsObjectToDelete) {
             getLocalizedProperties().remove(propertyKey);
