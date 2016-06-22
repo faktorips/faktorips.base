@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.Models;
@@ -23,6 +24,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.faktorips.runtime.modeltype.IProductModel;
+import org.faktorips.runtime.modeltype.IProductModelAssociation;
 import org.junit.Test;
 
 public class ProductModelTest {
@@ -85,6 +87,8 @@ public class ProductModelTest {
         assertThat(productModel.getDeclaredAssociations().size(), is(2));
         assertThat(productModel.getDeclaredAssociations().get(0).getName(), is("asso"));
         assertThat(productModel.getDeclaredAssociations().get(1).getName(), is("asso_changing"));
+        assertThat(superProductModel.getDeclaredAssociations().size(), is(1));
+        assertThat(superProductModel.getDeclaredAssociations().get(0).getName(), is("supAsso"));
     }
 
     @Test
@@ -93,6 +97,56 @@ public class ProductModelTest {
         assertThat(productModel.getAssociations().get(0).getName(), is("asso"));
         assertThat(productModel.getAssociations().get(1).getName(), is("asso_changing"));
         assertThat(productModel.getAssociations().get(2).getName(), is("supAsso"));
+    }
+
+    @Test
+    public void testGetDeclaredAssociation() {
+        IProductModelAssociation association = productModel.getDeclaredAssociation("asso");
+        IProductModelAssociation superAsso = productModel.getDeclaredAssociation("supAsso");
+        IProductModelAssociation superAssoInSuper = superProductModel.getDeclaredAssociation("supAsso");
+
+        assertThat(association.getName(), is("asso"));
+        assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
+        assertThat(superAsso, is(nullValue()));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+    }
+
+    @Test
+    public void testGetDeclaredAssociation_Plural() {
+        IProductModelAssociation association = productModel.getDeclaredAssociation("assos");
+        IProductModelAssociation superAsso = productModel.getDeclaredAssociation("supAssos");
+        IProductModelAssociation superAssoInSuper = superProductModel.getDeclaredAssociation("supAssos");
+
+        assertThat(association, is(nullValue()));
+        assertThat(superAsso, is(nullValue()));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+    }
+
+    @Test
+    public void testGetAssociation() {
+        IProductModelAssociation association = productModel.getAssociation("asso");
+        IProductModelAssociation superAsso = productModel.getAssociation("supAsso");
+        IProductModelAssociation superAssoInSuper = superProductModel.getAssociation("supAsso");
+
+        assertThat(association.getName(), is("asso"));
+        assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
+        assertThat(superAsso.getName(), is("supAsso"));
+        assertThat(superAsso.getNamePlural(), is("supAssos"));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+    }
+
+    @Test
+    public void testGetAssociation_Plural() {
+        IProductModelAssociation superAsso = productModel.getAssociation("supAssos");
+        IProductModelAssociation superAssoInSuper = superProductModel.getAssociation("supAssos");
+
+        assertThat(superAsso.getName(), is("supAsso"));
+        assertThat(superAsso.getNamePlural(), is("supAssos"));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
     }
 
     @IpsProductCmptType(name = "MyProduct")
@@ -144,7 +198,7 @@ public class ProductModelTest {
             return 1;
         }
 
-        @IpsAssociation(name = "supAsso", max = 5, min = 1, targetClass = SuperProduct.class, type = AssociationType.Association)
+        @IpsAssociation(name = "supAsso", pluralName = "supAssos", max = 5, min = 1, targetClass = SuperProduct.class, type = AssociationType.Association)
         public abstract SuperProduct getSupAsso();
 
         public SuperProduct(IRuntimeRepository repository, String id, String PolicyKindId, String versionId) {

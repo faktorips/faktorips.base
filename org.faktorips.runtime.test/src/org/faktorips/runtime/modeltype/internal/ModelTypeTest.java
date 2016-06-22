@@ -88,6 +88,34 @@ public class ModelTypeTest {
         Models.getModelType(Faker.class);
     }
 
+    @Test
+    public void testSearchDeclaredMethod_exists() {
+        AnnotatedElementMatcher<IpsAttribute> matcher = new AnnotatedElementMatcher<IpsAttribute>() {
+    
+            @Override
+            public boolean matches(IpsAttribute annotation) {
+                return annotation.name().equals("Attribute");
+            }
+        };
+        ModelType modelType = (ModelType)Models.getModelType(ISource.class);
+    
+        assertNotNull(modelType.searchDeclaredMethod(IpsAttribute.class, matcher));
+    }
+
+    @Test
+    public void testSearchDeclaredMethod_missing() {
+        AnnotatedElementMatcher<IpsAttribute> matcherWrongProperties = new AnnotatedElementMatcher<IpsAttribute>() {
+    
+            @Override
+            public boolean matches(IpsAttribute annotation) {
+                return annotation.name().equals("Attribute") && annotation.type() == AttributeType.CONSTANT;
+            }
+        };
+        ModelType modelType = (ModelType)Models.getModelType(ISource.class);
+    
+        assertNull(modelType.searchDeclaredMethod(IpsAttribute.class, matcherWrongProperties));
+    }
+
     @IpsPublishedInterface(implementation = SuperSource.class)
     @IpsPolicyCmptType(name = "SuperSource")
     @IpsAssociations({ "SuperTarget", "Target" })
@@ -235,33 +263,5 @@ public class ModelTypeTest {
             return null;
         }
 
-    }
-
-    @Test
-    public void testSearchDeclaredMethod_exists() {
-        AnnotatedElementMatcher<IpsAttribute> matcher = new AnnotatedElementMatcher<IpsAttribute>() {
-
-            @Override
-            public boolean matches(IpsAttribute annotation) {
-                return annotation.name().equals("Attribute");
-            }
-        };
-        ModelType modelType = (ModelType)Models.getModelType(ISource.class);
-
-        assertNotNull(modelType.searchDeclaredMethod(IpsAttribute.class, matcher));
-    }
-
-    @Test
-    public void testSearchDeclaredMethod_missing() {
-        AnnotatedElementMatcher<IpsAttribute> matcherWrongProperties = new AnnotatedElementMatcher<IpsAttribute>() {
-
-            @Override
-            public boolean matches(IpsAttribute annotation) {
-                return annotation.name().equals("Attribute") && annotation.type() == AttributeType.CONSTANT;
-            }
-        };
-        ModelType modelType = (ModelType)Models.getModelType(ISource.class);
-
-        assertNull(modelType.searchDeclaredMethod(IpsAttribute.class, matcherWrongProperties));
     }
 }

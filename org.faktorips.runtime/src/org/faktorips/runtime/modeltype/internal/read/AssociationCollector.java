@@ -11,8 +11,10 @@ package org.faktorips.runtime.modeltype.internal.read;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
@@ -31,6 +33,14 @@ public abstract class AssociationCollector<T extends IModelTypeAssociation, D ex
             return annotatedDeclaration.get(IpsAssociations.class).value();
         } else {
             return NO_NAMES;
+        }
+    }
+
+    @Override
+    protected void addPart(LinkedHashMap<String, T> result, T part) {
+        super.addPart(result, part);
+        if (IpsStringUtils.isNotEmpty(part.getNamePlural())) {
+            result.put(part.getNamePlural(), part);
         }
     }
 

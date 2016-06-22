@@ -13,6 +13,7 @@ package org.faktorips.runtime.modeltype.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
@@ -120,7 +121,7 @@ public class PolicyModel extends ModelType implements IPolicyModel {
 
     @Override
     public List<IPolicyModelAssociation> getDeclaredAssociations() {
-        return new ArrayList<IPolicyModelAssociation>(associations.values());
+        return new ArrayList<IPolicyModelAssociation>(new LinkedHashSet<IPolicyModelAssociation>(associations.values()));
     }
 
     @Override

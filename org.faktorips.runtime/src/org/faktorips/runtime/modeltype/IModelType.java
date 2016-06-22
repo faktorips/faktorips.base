@@ -90,7 +90,8 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns the association with the given <code>name</code> declared in this type. Associations
-     * defined in the type's super types are not considered.
+     * defined in the type's super types are not considered. The name could either be the singular
+     * or the plural name.
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
@@ -98,7 +99,7 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns the association with the given <code>name</code> declared in this type or one of it's
-     * super types.
+     * super types. The name could either be the singular or the plural name.
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */

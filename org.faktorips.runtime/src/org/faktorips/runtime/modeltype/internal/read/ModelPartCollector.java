@@ -42,9 +42,14 @@ public abstract class ModelPartCollector<T extends IModelElement, D extends Part
         LinkedHashMap<String, T> result = new LinkedHashMap<String, T>();
         for (Entry<String, D> descriptorEntry : descriptors.entrySet()) {
             D descriptor = descriptorEntry.getValue();
-            result.put(descriptorEntry.getKey(), descriptor.create(modelType));
+            T part = descriptor.create(modelType);
+            addPart(result, part);
         }
         return result;
+    }
+
+    protected void addPart(LinkedHashMap<String, T> result, T part) {
+        result.put(part.getName(), part);
     }
 
     protected abstract String[] getNames(AnnotatedDeclaration annotatedDeclaration);

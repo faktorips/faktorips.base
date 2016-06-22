@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
@@ -211,7 +212,8 @@ public class ProductModel extends ModelType implements IProductModel {
 
     @Override
     public List<IProductModelAssociation> getDeclaredAssociations() {
-        return new ArrayList<IProductModelAssociation>(associations.values());
+        return new ArrayList<IProductModelAssociation>(new LinkedHashSet<IProductModelAssociation>(
+                associations.values()));
     }
 
     @Override

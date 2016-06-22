@@ -5,8 +5,11 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
@@ -21,6 +24,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
+import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
 import org.junit.Test;
 
 public class PolicyModelTest {
@@ -73,22 +77,79 @@ public class PolicyModelTest {
 
     @Test
     public void testGetDeclaredAssociations() {
-        assertThat(policyModel.getDeclaredAssociations().size(), is(1));
+        assertThat(policyModel.getDeclaredAssociations().size(), is(2));
         assertThat(policyModel.getDeclaredAssociations().get(0).getName(), is("asso"));
         assertNotNull(policyModel.getDeclaredAssociation("asso"));
+        assertThat(policyModel.getDeclaredAssociations().get(1).getName(), is("asso2"));
+        assertNotNull(policyModel.getDeclaredAssociation("asso2"));
+    }
+
+    @Test
+    public void testGetDeclaredAssociation() {
+        IPolicyModelAssociation association = policyModel.getDeclaredAssociation("asso");
+        IPolicyModelAssociation association2 = policyModel.getDeclaredAssociation("asso2");
+        IPolicyModelAssociation superAsso = policyModel.getDeclaredAssociation("supAsso");
+        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getDeclaredAssociation("supAsso");
+
+        assertThat(association.getName(), is("asso"));
+        assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
+        assertThat(association2.getName(), is("asso2"));
+        assertThat(association2.getNamePlural(), is("asso2s"));
+        assertThat(superAsso, is(nullValue()));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+    }
+
+    @Test
+    public void testGetDeclaredAssociation_Plural() {
+        IPolicyModelAssociation association = policyModel.getDeclaredAssociation("assos");
+        IPolicyModelAssociation superAsso = policyModel.getDeclaredAssociation("supAssos");
+        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getDeclaredAssociation("supAssos");
+
+        assertThat(association, is(nullValue()));
+        assertThat(superAsso, is(nullValue()));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+    }
+
+    @Test
+    public void testGetAssociation() {
+        IPolicyModelAssociation association = policyModel.getAssociation("asso");
+        IPolicyModelAssociation superAsso = policyModel.getAssociation("supAsso");
+        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getAssociation("supAsso");
+
+        assertThat(association.getName(), is("asso"));
+        assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
+        assertThat(superAsso.getName(), is("supAsso"));
+        assertThat(superAsso.getNamePlural(), is("supAssos"));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+    }
+
+    @Test
+    public void testGetAssociation_Plural() {
+        IPolicyModelAssociation superAsso = policyModel.getAssociation("supAssos");
+        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getAssociation("supAssos");
+
+        assertThat(superAsso.getName(), is("supAsso"));
+        assertThat(superAsso.getNamePlural(), is("supAssos"));
+        assertThat(superAssoInSuper.getName(), is("supAsso"));
+        assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
     }
 
     @Test
     public void testGetAssociations() {
-        assertThat(policyModel.getAssociations().size(), is(2));
+        assertThat(policyModel.getAssociations().size(), is(3));
         assertThat(policyModel.getAssociations().get(0).getName(), is("asso"));
+        assertThat(policyModel.getAssociations().get(1).getName(), is("asso2"));
+        assertThat(policyModel.getAssociations().get(2).getName(), is("supAsso"));
         assertNotNull(policyModel.getAssociation("supAsso"));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsConfiguredBy(Product.class)
     @IpsAttributes({ "attr", "const" })
-    @IpsAssociations({ "asso" })
+    @IpsAssociations({ "asso", "asso2" })
     private static abstract class Policy extends SuperPolicy {
 
         @IpsAttribute(name = "const", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
@@ -102,6 +163,9 @@ public class PolicyModelTest {
 
         @IpsAssociation(name = "asso", max = 0, min = 0, targetClass = Policy.class, type = AssociationType.Composition)
         public abstract Policy getPartPolicy();
+
+        @IpsAssociation(name = "asso2", pluralName = "asso2s", max = 5, min = 0, targetClass = Policy.class, type = AssociationType.Composition)
+        public abstract List<Policy> getTargets();
     }
 
     @IpsPolicyCmptType(name = "MySuperPolicy")
@@ -112,7 +176,7 @@ public class PolicyModelTest {
         @IpsAttribute(name = "supAttr", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
         public static final int supAttr = 5;
 
-        @IpsAssociation(name = "supAsso", max = 0, min = 0, targetClass = SuperPolicy.class, type = AssociationType.Composition)
+        @IpsAssociation(name = "supAsso", pluralName = "supAssos", max = 0, min = 0, targetClass = SuperPolicy.class, type = AssociationType.Composition)
         public abstract SuperPolicy getPartSuperPolicy();
     }
 
