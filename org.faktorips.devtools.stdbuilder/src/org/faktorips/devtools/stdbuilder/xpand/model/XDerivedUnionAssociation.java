@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -96,7 +95,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      *         false otherwise
      */
     public boolean isImplementedInSuperclass(XType xType) {
-        if (getSourceType().equals(xType.getType())) {
+        if (isDefinedIn(xType)) {
             return false;
         }
         IType supertype = xType.getType().findSupertype(xType.getIpsProject());
@@ -111,7 +110,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      * <code>false</code> else.
      */
     public boolean isDefinedIn(XType xType) {
-        return getAssociation().getType().equals(xType.getType());
+        return getSourceType().equals(xType.getType());
     }
 
     /**
@@ -136,7 +135,7 @@ public class XDerivedUnionAssociation extends XAssociation {
     }
 
     public boolean needOverride(XType currentContextType) {
-        return (isImplementedInSuperclass(currentContextType) || getSourceModelNode() != currentContextType);
+        return !isDefinedIn(currentContextType) || isImplementedInSuperclass(currentContextType);
     }
 
     @Override
@@ -146,13 +145,10 @@ public class XDerivedUnionAssociation extends XAssociation {
 
     @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementTypeForGetter() {
-        if (getAssociation() instanceof IProductCmptTypeAssociation) {
+        if (isProductCmptTypeAssociation()) {
             return AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
-        } else if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
-            return AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
         } else {
-            // should not occur
-            return null;
+            return AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
         }
     }
 

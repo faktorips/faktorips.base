@@ -18,7 +18,9 @@
      * 
      * @generated
      */
-     «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+     «IF isDefinedIn(currentContextType) -»
+     	«getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+     «ENDIF-»
      «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
      public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());

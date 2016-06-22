@@ -11,13 +11,14 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import org.faktorips.devtools.stdbuilder.xpand.AbstractAssociationAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAssociation;
 
 public class ProductCmptAssociationAnnGen extends AbstractAssociationAnnGen {
 
     @Override
-    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode ipsElement) {
-        return ipsElement instanceof XProductAssociation;
+    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode node) {
+        return node instanceof XProductAssociation || node instanceof XDerivedUnionAssociation;
     }
 
 }
