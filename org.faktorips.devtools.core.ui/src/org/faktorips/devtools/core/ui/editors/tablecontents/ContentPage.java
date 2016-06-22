@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -44,7 +46,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -119,6 +120,7 @@ public class ContentPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+
         checkDifferences(formBody, toolkit);
 
         GridLayout layout = new GridLayout(1, false);
@@ -127,19 +129,24 @@ public class ContentPage extends IpsObjectEditorPage {
         if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             createExtensionProperty(formBody, toolkit);
         }
+
         final Table table = createTable(formBody);
         initTableViewer(table, toolkit);
+
+        tableViewer.setInput(getTableContents());
+        TableRows tableRows = (TableRows)getTableContents().getTableRows();
+        tableViewer.setItemCount(tableRows.getNumOfRows());
+
+        IToolBarManager formToolbarManager = getManagedForm().getForm().getToolBarManager();
+
+        createUniqueKeyValidationButton(tableRows, formToolbarManager);
+
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
-
-        tableViewer.setInput(getTableContents());
-        tableViewer.setItemCount(getTableContents().getTableRows().getNumOfRows());
-
-        ScrolledForm form = getManagedForm().getForm();
-        form.getToolBarManager().add(newRowAction);
-        form.getToolBarManager().add(deleteRowAction);
-        form.getToolBarManager().add(new Separator());
+        formToolbarManager.add(newRowAction);
+        formToolbarManager.add(deleteRowAction);
+        formToolbarManager.add(new Separator());
 
         // create own TableImportExportActionInEditor because the editor must be refreshed after
         // importing of the table contents otherwise the old content is visible until the editor is
@@ -151,13 +158,13 @@ public class ContentPage extends IpsObjectEditorPage {
         TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(),
                 getTableContents(), false);
 
-        form.getToolBarManager().add(importAction);
-        form.getToolBarManager().add(exportAction);
+        formToolbarManager.add(importAction);
+        formToolbarManager.add(exportAction);
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-            form.getToolBarManager().add(new Separator());
-            form.getToolBarManager().add(new NavigateToTableStructureAction(getTableContents()));
+            formToolbarManager.add(new Separator());
+            formToolbarManager.add(new NavigateToTableStructureAction(getTableContents()));
         }
-        form.updateToolBar();
+        formToolbarManager.update(true);
 
         // FS#822 workaround to activate the correct cell editor (row and column),
         // after scrolling and activating another cell the table on a different page.
@@ -194,6 +201,16 @@ public class ContentPage extends IpsObjectEditorPage {
                 selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
             }
         });
+    }
+
+    private void createUniqueKeyValidationButton(TableRows tableRows, IToolBarManager formToolbarManager) {
+        UniqueKeyValidatonAction uniqueKeyValidationAction = new UniqueKeyValidatonAction(tableViewer);
+        ActionContributionItem uniqueKeyValidationActionContributionItem = new ActionContributionItem(
+                uniqueKeyValidationAction);
+        uniqueKeyValidationActionContributionItem.setVisible(tableRows.isUniqueKeyValidationEnabled()
+                && !tableRows.isUniqueKeyValidatedAutomatically());
+        formToolbarManager.add(uniqueKeyValidationActionContributionItem);
+        formToolbarManager.add(new Separator());
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {
@@ -396,46 +413,42 @@ public class ContentPage extends IpsObjectEditorPage {
             // because table contents is read only
             return;
         }
-        try {
-            ITableStructure structure = getTableStructure();
-            if (structure == null) {
-                String msg = NLS.bind(Messages.ContentPage_msgMissingStructure, getTableContents().getTableStructure());
-                SetStructureDialog dialog = new SetStructureDialog(getTableContents(), getSite().getShell(), msg);
-                int button = dialog.open();
-                if (button != Window.OK) {
-                    msg = NLS.bind(Messages.ContentPage_msgNoStructureFound, getTableContents().getTableStructure());
-                    toolkit.createLabel(formBody, msg);
-                    return;
-                } else {
-                    structure = getTableStructure();
-                }
+        ITableStructure structure = getTableStructure();
+        if (structure == null) {
+            String msg = NLS.bind(Messages.ContentPage_msgMissingStructure, getTableContents().getTableStructure());
+            SetStructureDialog dialog = new SetStructureDialog(getTableContents(), getSite().getShell(), msg);
+            int button = dialog.open();
+            if (button != Window.OK) {
+                msg = NLS.bind(Messages.ContentPage_msgNoStructureFound, getTableContents().getTableStructure());
+                toolkit.createLabel(formBody, msg);
+                return;
+            } else {
+                structure = getTableStructure();
             }
-            if (structure == null) {
+        }
+        if (structure == null) {
+            return;
+        }
+        int difference = structure.getColumns().length - getTableContents().getNumOfColumns();
+
+        if (difference != 0) {
+            IInputValidator validator = new Validator(difference);
+
+            String msg = msgByDifference(difference);
+            String title = titleByDifference(difference);
+
+            InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$
+            int state = dialog.open();
+            if (state == Window.OK) {
+                if (difference > 0) {
+                    insertColumnsAt(dialog.getValue());
+                } else {
+                    removeColumns(dialog.getValue());
+                }
+            } else {
+                toolkit.createLabel(formBody, Messages.ContentPage_msgCantShowContent);
                 return;
             }
-            int difference = structure.getColumns().length - getTableContents().getNumOfColumns();
-
-            if (difference != 0) {
-                IInputValidator validator = new Validator(difference);
-
-                String msg = msgByDifference(difference);
-                String title = titleByDifference(difference);
-
-                InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$
-                int state = dialog.open();
-                if (state == Window.OK) {
-                    if (difference > 0) {
-                        insertColumnsAt(dialog.getValue());
-                    } else {
-                        removeColumns(dialog.getValue());
-                    }
-                } else {
-                    toolkit.createLabel(formBody, Messages.ContentPage_msgCantShowContent);
-                    return;
-                }
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -508,8 +521,12 @@ public class ContentPage extends IpsObjectEditorPage {
         return getTableEditor().getTableContents();
     }
 
-    private ITableStructure getTableStructure() throws CoreException {
-        return getTableContents().findTableStructure(getTableContents().getIpsProject());
+    private ITableStructure getTableStructure() {
+        try {
+            return getTableContents().findTableStructure(getTableContents().getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private ITableRows getActiveGeneration() {

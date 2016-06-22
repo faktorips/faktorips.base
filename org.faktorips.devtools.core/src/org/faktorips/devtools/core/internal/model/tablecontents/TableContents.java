@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -46,7 +47,6 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
@@ -379,16 +379,11 @@ public class TableContents extends IpsObject implements ITableContents {
         list.add(singleTableContentsValidator.validateIfPossible());
     }
 
-    ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {
+    ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) {
         if (structure == null) {
             return new ValueDatatype[0];
         }
-        IColumn[] columns = structure.getColumns();
-        ValueDatatype[] datatypes = new ValueDatatype[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            datatypes[i] = columns[i].findValueDatatype(ipsProject);
-        }
-        return datatypes;
+        return ((TableStructure)structure).findColumnDatatypes(ipsProject);
     }
 
     @Override

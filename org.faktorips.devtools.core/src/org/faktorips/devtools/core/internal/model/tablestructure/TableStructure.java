@@ -20,6 +20,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -536,5 +537,21 @@ public class TableStructure extends IpsObject implements ITableStructure {
             keysDatatypes.add(keyDatatype);
         }
         return false;
+    }
+
+    /**
+     * Returns the datatypes for all this table structure's columns.
+     */
+    public ValueDatatype[] findColumnDatatypes(IIpsProject ipsProject) {
+        ValueDatatype[] datatypes = new ValueDatatype[columns.size()];
+        int i = 0;
+        for (IColumn column : columns) {
+            try {
+                datatypes[i++] = column.findValueDatatype(ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return datatypes;
     }
 }
