@@ -40,6 +40,8 @@ public class Messages extends NLS {
 
     public static String TableContentsEditor_TableContentsEditor_title2;
 
+    public static String TableContentsEditor_UniqueKeysValidatedManually;
+
     public static String ContentPage_msgMissingStructure;
 
     public static String ContentPage_msgNoStructureFound;
@@ -91,5 +93,9 @@ public class Messages extends NLS {
     public static String SelectionStatusBarPublisher_singleMarkedRow;
 
     public static String TableModelDescriptionPage_generalInformation;
+
+    public static String UniqueKeyValidatonAction_Label;
+
+    public static String UniqueKeyValidatonAction_Tooltip;
 
 }

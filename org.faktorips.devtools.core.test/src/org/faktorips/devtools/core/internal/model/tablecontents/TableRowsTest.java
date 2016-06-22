@@ -17,12 +17,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,34 +36,34 @@ import org.w3c.dom.Element;
 public class TableRowsTest extends AbstractIpsPluginTest {
 
     private ITableContents table;
-    private TableRows generation;
+    private TableRows tableRows;
     private IIpsProject project;
+    private ITableStructure structure;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
-                "StructureTable");
+        structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         table.setTableStructure(structure.getQualifiedName());
-        generation = (TableRows)table.newTableRows();
+        tableRows = (TableRows)table.newTableRows();
         table.newColumn(null);
         table.newColumn(null);
         table.newColumn(null);
 
-        generation.getIpsSrcFile().save(true, null);
+        tableRows.getIpsSrcFile().save(true, null);
     }
 
     @Test
     public void testGetChildren() {
-        int childrenSizeBefore = generation.getChildren().length;
+        int childrenSizeBefore = tableRows.getChildren().length;
         table.newColumn(null);
         table.newColumn(null);
-        generation.newRow();
-        generation.newRow();
-        IIpsElement[] children = generation.getChildren();
+        tableRows.newRow();
+        tableRows.newRow();
+        IIpsElement[] children = tableRows.getChildren();
         assertEquals(childrenSizeBefore + 2, children.length);
     }
 
@@ -66,14 +71,14 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     public void testNewRow() {
         table.newColumn(null);
         table.newColumn(null);
-        IRow row0 = generation.newRow();
+        IRow row0 = tableRows.newRow();
         String id0 = row0.getId();
         assertNotNull(id0);
         assertEquals(0, row0.getRowNumber());
         assertNull(row0.getValue(0));
         assertNull(row0.getValue(1));
 
-        IRow row1 = generation.newRow();
+        IRow row1 = tableRows.newRow();
         String id1 = row1.getId();
         assertNotNull(id1);
         assertFalse(id0.equals(id1));
@@ -82,24 +87,24 @@ public class TableRowsTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewColumn() {
-        IRow row1 = generation.newRow();
-        IRow row2 = generation.newRow();
-        generation.newColumn(3, "a");
+        IRow row1 = tableRows.newRow();
+        IRow row2 = tableRows.newRow();
+        tableRows.newColumn(3, "a");
         assertEquals("a", row1.getValue(3));
         assertEquals("a", row2.getValue(3));
     }
 
     @Test
     public void testRemoveColumn() {
-        IRow row1 = generation.newRow();
-        IRow row2 = generation.newRow();
+        IRow row1 = tableRows.newRow();
+        IRow row2 = tableRows.newRow();
         row1.setValue(0, "row1,col1");
         row1.setValue(1, "row1,col2");
         row1.setValue(2, "row1,col3");
         row2.setValue(0, "row2,col1");
         row2.setValue(1, "row2,col2");
         row2.setValue(2, "row2,col3");
-        generation.removeColumn(1);
+        tableRows.removeColumn(1);
         assertEquals("row1,col1", row1.getValue(0));
         assertEquals("row1,col3", row1.getValue(1));
         try {
@@ -119,84 +124,129 @@ public class TableRowsTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        IRow row1 = generation.newRow();
-        IRow row2 = generation.newRow();
-        Element element = generation.toXml(newDocument());
+        IRow row1 = tableRows.newRow();
+        IRow row2 = tableRows.newRow();
+        Element element = tableRows.toXml(newDocument());
         row1.delete();
         row2.delete();
-        generation.initFromXml(element);
-        assertEquals(2, generation.getNumOfRows());
+        tableRows.initFromXml(element);
+        assertEquals(2, tableRows.getNumOfRows());
     }
 
     @Test
     public void testInitFromXml() {
-        generation.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(2, generation.getNumOfRows());
+        tableRows.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals(2, tableRows.getNumOfRows());
     }
 
     @Test
     public void testNewPart() {
         // test rownumber init within newPart()
-        IRow row0 = generation.newPart(IRow.class);
+        IRow row0 = tableRows.newPart(IRow.class);
         String id0 = row0.getId();
         assertNotNull(id0);
         assertEquals(0, row0.getRowNumber());
 
-        IRow row1 = generation.newPart(IRow.class);
+        IRow row1 = tableRows.newPart(IRow.class);
         String id1 = row1.getId();
         assertNotNull(id1);
         assertFalse(id0.equals(id1));
         assertEquals(1, row1.getRowNumber());
 
-        assertTrue(generation.newPart(IRow.class) != null);
+        assertTrue(tableRows.newPart(IRow.class) != null);
     }
 
     @Test
     public void testClear() {
-        generation.newRow();
-        generation.newRow();
-        generation.clear();
-        assertEquals(0, generation.getNumOfRows());
+        tableRows.newRow();
+        tableRows.newRow();
+        tableRows.clear();
+        assertEquals(0, tableRows.getNumOfRows());
     }
 
     @Test
     public void testGetRow() {
-        IRow row1 = generation.newRow();
-        generation.newRow();
-        IRow row2 = generation.newRow();
+        IRow row1 = tableRows.newRow();
+        tableRows.newRow();
+        IRow row2 = tableRows.newRow();
 
-        assertEquals(row1, generation.getRow(0));
-        assertEquals(row2, generation.getRow(2));
+        assertEquals(row1, tableRows.getRow(0));
+        assertEquals(row2, tableRows.getRow(2));
 
-        assertNull(generation.getRow(-1));
-        assertNull(generation.getRow(42));
+        assertNull(tableRows.getRow(-1));
+        assertNull(tableRows.getRow(42));
     }
 
     @Test
     public void testGetRowIndex() {
-        IRow row = generation.newRow();
+        IRow row = tableRows.newRow();
         assertEquals(0, row.getRowNumber());
-        row = generation.newRow();
+        row = tableRows.newRow();
         assertEquals(1, row.getRowNumber());
-        row = generation.newRow();
+        row = tableRows.newRow();
         assertEquals(2, row.getRowNumber());
     }
 
     @Test
     public void testInsertRowAfter() {
-        IRow row0 = generation.insertRowAfter(999);
+        IRow row0 = tableRows.insertRowAfter(999);
         assertEquals(0, row0.getRowNumber());
-        assertEquals(true, generation.getIpsSrcFile().isDirty());
+        assertEquals(true, tableRows.getIpsSrcFile().isDirty());
 
-        IRow row1 = generation.newRow();
+        IRow row1 = tableRows.newRow();
         assertEquals(1, row1.getRowNumber());
-        IRow row2 = generation.insertRowAfter(0);
+        IRow row2 = tableRows.insertRowAfter(0);
         assertEquals(1, row2.getRowNumber());
-        IRow row3 = generation.insertRowAfter(0);
+        IRow row3 = tableRows.insertRowAfter(0);
         assertEquals(1, row3.getRowNumber());
         assertEquals(2, row2.getRowNumber());
-        IRow row4 = generation.insertRowAfter(999);
+        IRow row4 = tableRows.insertRowAfter(999);
         assertEquals(4, row4.getRowNumber());
+    }
+
+    @Test
+    public void testIsUniqueKeyValidatedAutomatically() throws CoreException {
+        createColumnsWithRangeKey();
+        for (int i = 0; i < 5000;) {
+            newRow(Integer.toString(i++), Integer.toString(i));
+        }
+        tableRows.getRow(1).setValue(0, "0");
+        tableRows.getRow(1).setValue(1, "1");
+        // same as row 0 -> unique key validation
+
+        assertTrue(tableRows.isUniqueKeyValidatedAutomatically());
+
+        newRow("5000", "5001");
+
+        assertFalse(tableRows.isUniqueKeyValidatedAutomatically());
+    }
+
+    private IRow newRow(String... values) {
+        IRow row = tableRows.newRow();
+        for (int i = 0; i < values.length; i++) {
+            row.setValue(i, values[i]);
+        }
+        return row;
+    }
+
+    private void createColumnsWithRangeKey() throws CoreException {
+        IColumn column = structure.newColumn();
+        column.setName("a");
+        column.setDatatype("int");
+        column = structure.newColumn();
+        column.setName("b");
+        column.setDatatype("int");
+        column = structure.newColumn();
+        column.setName("c");
+        column.setDatatype("String");
+        structure.getIpsSrcFile().save(true, null);
+        IColumnRange range = structure.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("a");
+        range.setToColumn("b");
+        IIndex uniqueKey = structure.newIndex();
+        uniqueKey.addKeyItem(range.getName());
+        table.validate(project);
     }
 
 }

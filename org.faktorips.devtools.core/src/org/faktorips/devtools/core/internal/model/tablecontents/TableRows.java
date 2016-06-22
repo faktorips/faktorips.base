@@ -35,6 +35,8 @@ public class TableRows extends IpsObjectPart implements ITableRows {
 
     private UniqueKeyValidator uniqueKeyValidator;
 
+    private MessageList lastUniqueKeyValidationResult;
+
     public TableRows(TableContents parent, String id) {
         super(parent, id);
     }
@@ -260,26 +262,82 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
+
         if (tableStructure != null && datatypes != null && tableStructure.getUniqueKeys().length > 0) {
-            MessageList uniqueKeyList = new MessageList();
-            validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
-            list.add(uniqueKeyList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
+            MessageList validationMessageList = new MessageList();
+
+            validateUniqueKeys(validationMessageList, tableStructure, datatypes);
+            list.add(validationMessageList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
         }
     }
 
     /**
      * Validates the unique keys of all rows.
      */
-    public void validateUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
-        if (isUniqueKeyValidationEnabled()) {
-            // check if the unique key cache needs to be updated
-            if (uniqueKeyValidator.isEmtpy() || uniqueKeyValidator.isInvalidUniqueKeyCache(tableStructure)) {
-                // could be happen if a new column was added to the table generation
-                // or the structure has changed, e.g. a new unique key was added
-                updateUniqueKeyCache(tableStructure);
-            }
+    void validateUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
+        validateUniqueKeys(list, tableStructure, datatypes, isUniqueKeyValidatedAutomatically(tableStructure));
+    }
 
-            uniqueKeyValidator.validateAllUniqueKeys(list, tableStructure, datatypes);
+    /**
+     * Returns whether the unique key validation is run automatically every time the table rows are
+     * validated. If the table structure has a lot of defined ranges and/or the table contents are
+     * very large, this will be false. Validation can then be triggered manually via
+     * {@link #validateUniqueKeysManually()}.
+     */
+    public boolean isUniqueKeyValidatedAutomatically() {
+        try {
+            return isUniqueKeyValidatedAutomatically(getTableContents().findTableStructure(getIpsProject()));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private boolean isUniqueKeyValidatedAutomatically(ITableStructure tableStructure) {
+        // 5000 seems to be a good threshold currently, as sample contents with 11 keys and < 450
+        // lines validate in less than 2 seconds on my machine. Might be necessary to increase with
+        // growing performance or allow setting by customers to fit their hardware...
+        return tableStructure.getRanges().length * rows.size() <= 5000;
+    }
+
+    private void validateUniqueKeys(MessageList list,
+            ITableStructure tableStructure,
+            ValueDatatype[] datatypes,
+            boolean validate) {
+        if (isUniqueKeyValidationEnabled()) {
+            if (validate) {
+                // check if the unique key cache needs to be updated
+                if (uniqueKeyValidator.isEmtpy() || uniqueKeyValidator.isInvalidUniqueKeyCache(tableStructure)) {
+                    // could be happen if a new column was added to the table generation
+                    // or the structure has changed, e.g. a new unique key was added
+                    updateUniqueKeyCache(tableStructure);
+                }
+                uniqueKeyValidator.validateAllUniqueKeys(list, tableStructure, datatypes);
+            } else {
+                list.add(lastUniqueKeyValidationResult);
+            }
+        }
+    }
+
+    /**
+     * Runs the unique key validation, even if it is disabled by
+     * {@link #isUniqueKeyValidatedAutomatically()}. Caches the validation result to return it with
+     * future validations until {@link #validateUniqueKeysManually()} is run again.
+     */
+    public void validateUniqueKeysManually() {
+        try {
+            lastUniqueKeyValidationResult = new MessageList();
+            IIpsProject ipsProject = getTableContents().getIpsProject();
+            ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
+            ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure,
+                    ipsProject);
+            validateUniqueKeys(lastUniqueKeyValidationResult, tableStructure, datatypes, true);
+            boolean dirty = getIpsSrcFile().isDirty();
+            objectHasChanged();
+            if (!dirty) {
+                getIpsSrcFile().save(true, null);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 

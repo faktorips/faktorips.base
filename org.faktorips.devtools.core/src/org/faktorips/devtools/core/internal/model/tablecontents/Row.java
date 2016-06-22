@@ -190,11 +190,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
-        MessageList uniqueKeyList = new MessageList();
+        MessageList validationMessageList = new MessageList();
         if (tableStructure.getUniqueKeys().length > 0) {
-            getTableRows().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+            getTableRows().validateUniqueKeys(validationMessageList, tableStructure, datatypes);
         }
-        list.add(uniqueKeyList.getMessagesFor(this));
+        list.add(validationMessageList.getMessagesFor(this));
     }
 
     /**

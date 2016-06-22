@@ -10,13 +10,18 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.part.IPage;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableRows;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
+import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
 
@@ -65,4 +70,13 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
         }
     }
 
+    @Override
+    protected List<IMessage> getMessages() {
+        List<IMessage> messages = super.getMessages();
+        TableRows tableRows = (TableRows)getTableContents().getTableRows();
+        if (tableRows.isUniqueKeyValidationEnabled() && !tableRows.isUniqueKeyValidatedAutomatically()) {
+            messages.add(0, new UiMessage(Messages.TableContentsEditor_UniqueKeysValidatedManually));
+        }
+        return messages;
+    }
 }
