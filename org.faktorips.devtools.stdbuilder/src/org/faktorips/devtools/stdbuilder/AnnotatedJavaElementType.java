@@ -80,6 +80,10 @@ public enum AnnotatedJavaElementType {
 
     TABLE_USAGE_GETTER,
 
+    ENUM_CLASS,
+
+    ENUM_ATTRIBUTE_GETTER,
+
     /**
      * Using this type the annotation generator provides java doc tags for any {@link IIpsElement}.
      */
