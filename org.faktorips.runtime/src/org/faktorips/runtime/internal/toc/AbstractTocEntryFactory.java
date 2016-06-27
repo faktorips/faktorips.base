@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -35,6 +36,9 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectQualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
         String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
+        if (xmlResourceName == null) {
+            xmlResourceName = IpsStringUtils.EMPTY;
+        }
         String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
         return createFromXmlInternal(entryElement, ipsObjectId, ipsObjectQualifiedName, xmlResourceName,
                 implementationClassName);
@@ -197,8 +201,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                 String ipsObjectQualifiedName,
                 String xmlResourceName,
                 String implementationClassName) {
-            return new ProductCmptTypeTocEntry(ipsObjectId, ipsObjectQualifiedName, xmlResourceName,
-                    implementationClassName);
+            return new ProductCmptTypeTocEntry(ipsObjectId, ipsObjectQualifiedName, implementationClassName);
         }
 
         @Override
@@ -216,8 +219,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                 String ipsObjectQualifiedName,
                 String xmlResourceName,
                 String implementationClassName) {
-            return new PolicyCmptTypeTocEntry(ipsObjectId, ipsObjectQualifiedName, xmlResourceName,
-                    implementationClassName);
+            return new PolicyCmptTypeTocEntry(ipsObjectId, ipsObjectQualifiedName, implementationClassName);
         }
 
         @Override

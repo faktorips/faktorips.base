@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
+import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
@@ -310,7 +312,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(Class<?> clazz) {
-        getContext().addImport(clazz.getName());
+        getContext().addImport(clazz.getCanonicalName());
         return clazz.getSimpleName();
     }
 
@@ -655,6 +657,20 @@ public abstract class AbstractGeneratorModelNode {
         return result.toString();
     }
 
+    /**
+     * Returns all annotations like {@link #getAnnotations(AnnotatedJavaElementType)}, but only if
+     * currently an interface is generated ({@code isGeneratingInterface} is {@code true} or
+     * interfaces aren't generated at all( {@link #isGeneratePublishedInterfaces()} is {@code false}
+     * ).
+     */
+    public String getAnnotationsForPublishedInterface(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
+        if (isGeneratingInterface || !isGeneratePublishedInterfaces()) {
+            return getAnnotations(type);
+        } else {
+            return "";
+        }
+    }
+
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
         List<IJavaElement> result = new ArrayList<IJavaElement>();
         List<IGeneratedJavaElement> generatedJavaElements = modelContext.getGeneratedJavaElements(this);
@@ -863,6 +879,18 @@ public abstract class AbstractGeneratorModelNode {
 
     public String getMethodNameWriteToXml() {
         return "write" + StringUtils.capitalize(getName());
+    }
+
+    private IIpsSrcFolderEntry getIpsSrcFolderEntry() {
+        return (IIpsSrcFolderEntry)getIpsObjectPartContainer().getIpsSrcFile().getIpsPackageFragment().getRoot()
+                .getIpsObjectPathEntry();
+    }
+
+    public String getDocumentationResourceBundleBaseName() {
+        IIpsSrcFolderEntry srcEntry = getIpsSrcFolderEntry();
+        LabelAndDescriptionPropertiesBuilder lAdBuilder = getIpsProject().getIpsArtefactBuilderSet()
+                .getBuildersByClass(LabelAndDescriptionPropertiesBuilder.class).get(0);
+        return lAdBuilder.getResourceBundleBaseName(srcEntry);
     }
 
     @Override

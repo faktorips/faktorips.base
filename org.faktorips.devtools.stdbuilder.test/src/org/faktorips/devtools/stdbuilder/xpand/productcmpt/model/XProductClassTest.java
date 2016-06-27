@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
@@ -171,6 +171,14 @@ public class XProductClassTest {
 
     @Test
     public void getChangableProductAttributes() {
+        XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
+        Set<XProductAttribute> attributes = productClass.getAttributes();
+        assertEquals(2, attributes.size());
+        assertThat(attributes, hasItems(attrNode1, attrNode3));
+    }
+
+    @Test
+    public void getStaticProductAttributes() {
         XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
         Set<XProductAttribute> attributes = productClass.getAttributes();
         assertEquals(1, attributes.size());
@@ -178,11 +186,11 @@ public class XProductClassTest {
     }
 
     @Test
-    public void getStaticProductAttributes() {
-        XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
-        Set<XProductAttribute> attributes = productClass.getAttributes();
-        assertEquals(2, attributes.size());
-        assertThat(attributes, hasItems(attrNode1, attrNode3));
+    public void getAllAttributes() {
+        XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
+        Set<XProductAttribute> attributes = productClass.getAllDeclaredAttributes();
+        assertEquals(3, attributes.size());
+        assertThat(attributes, hasItems(attrNode1, attrNode2, attrNode3));
     }
 
     @Test
@@ -199,6 +207,14 @@ public class XProductClassTest {
         Set<XProductAssociation> associations = productClass.getAssociations();
         assertEquals(2, associations.size());
         assertThat(associations, hasItems(assocNode1, assocNode3));
+    }
+
+    @Test
+    public void getAllAssociations() {
+        XProductClass productClass = new XProductCmptClass(type, modelContext, modelService);
+        Set<XProductAssociation> associations = productClass.getAllDeclaredAssociations();
+        assertEquals(3, associations.size());
+        assertThat(associations, hasItems(assocNode1, assocNode2, assocNode3));
     }
 
     @Test

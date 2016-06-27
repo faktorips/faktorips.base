@@ -21,6 +21,8 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 /**
  * This class generates the @Transient JPA annotation for fields of policy component types.
  * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD
+ * 
  * @author Roman Grutza
  */
 public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -35,11 +37,6 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnot
         fragment.addImport(IMPORT_TRANSIENT);
 
         return fragment;
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD;
     }
 
     @Override

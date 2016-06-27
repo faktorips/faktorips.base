@@ -10,13 +10,17 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
@@ -76,19 +80,26 @@ public class ValidationRuleMessagePropertiesTest {
         mockRuleProperties(rule1, pcType1, RULE1);
         mockRuleProperties(rule2, pcType1, RULE2);
         mockRuleProperties(rule3, pcType2, RULE3);
-        ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties();
+        ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties(false);
         validationMessages.put(rule1, "123");
         validationMessages.put(rule2, "123");
         validationMessages.put(rule3, "312");
 
-        validationMessages.initMessagesForPcTypes();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        validationMessages.store(outputStream, "");
+        validationMessages.load(new ByteArrayInputStream(outputStream.toByteArray()));
 
-        Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(QNAME1);
+        Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME1,
+                IpsObjectType.POLICY_CMPT_TYPE));
         assertEquals(2, rules.size());
         assertThat(rules, hasItem(new RuleKeyParts(QNAME1, RULE1, getRuleQName(QNAME1, RULE1))));
         assertThat(rules, hasItem(new RuleKeyParts(QNAME1, RULE2, getRuleQName(QNAME1, RULE2))));
-        rules = validationMessages.getKeysForPolicyCmptType(QNAME2);
-        assertEquals(1, validationMessages.getKeysForPolicyCmptType(QNAME2).size());
+        rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME2,
+                IpsObjectType.POLICY_CMPT_TYPE));
+        assertEquals(
+                1,
+                validationMessages.getKeysForPolicyCmptType(
+                        new QualifiedNameType(QNAME2, IpsObjectType.POLICY_CMPT_TYPE)).size());
         assertThat(rules, hasItem(new RuleKeyParts(QNAME2, RULE3, getRuleQName(QNAME2, RULE3))));
     }
 

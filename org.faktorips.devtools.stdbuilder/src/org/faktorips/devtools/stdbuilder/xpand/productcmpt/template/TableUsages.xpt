@@ -35,6 +35,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
+	 «getAnnotations(AnnotatedJavaElementType::TABLE_USAGE_GETTER)-»
     public «tableClassName» «method(methodNameGetter)» {
         if («fieldName» == null) {
             return null;

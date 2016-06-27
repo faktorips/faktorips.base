@@ -36,6 +36,14 @@ public class IpsStringUtils {
     }
 
     /**
+     * Returns <code>true</code> if s is not null and is not the empty string, otherwise
+     * <code>false</code>.
+     */
+    public static final boolean isNotEmpty(String s) {
+        return !isEmpty(s);
+    }
+
+    /**
      * Returns <code>true</code> if s is either null, the empty string or a string that only
      * contains whitespaces, otherwise <code>false</code>.
      */

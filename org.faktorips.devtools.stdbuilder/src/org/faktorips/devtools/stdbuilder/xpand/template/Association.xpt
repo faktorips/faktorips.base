@@ -28,6 +28,7 @@
 			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
+			 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
 		     public «IF !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»;
 
 			/**
@@ -42,6 +43,7 @@
 			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
+			 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
 		    public «IF !genInterface()»abstract«ENDIF» «targetInterfaceName» «method(methodNameGetter)»;
 		«ENDIF-»
 	«ENDIF»

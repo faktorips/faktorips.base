@@ -29,7 +29,7 @@ public class PolicyCmptImplClassJaxbAnnGenFactory implements IAnnotationGenerato
         switch (type) {
             case POLICY_CMPT_IMPL_CLASS:
                 return new PolicyCmptImplClassJaxbAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION:
+            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD:
                 return new PolicyCmptImplClassAssociationJaxbAnnGen();
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:
                 return new PolicyCmptImplClassAttributeFieldJaxbGen();

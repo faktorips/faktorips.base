@@ -17,7 +17,9 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.util.StringUtil;
@@ -189,4 +191,23 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return "PROPERTY_" + StringUtils.upperCase(getFieldName());
     }
 
+    /**
+     * Extension to {@link #getAnnotationsForPublishedInterface(AnnotatedJavaElementType, boolean)} for
+     * attribute methods that are generated in either published interface or implementation class
+     * depending on the {@link Modifier}. For published attributes, this method inherits the
+     * behavior of {@link #getAnnotationsForPublishedInterface(AnnotatedJavaElementType, boolean)}. If the
+     * attribute is not published, this method only returns annotations if the builder is currently
+     * generating an implementation class.
+     */
+    public String getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
+        if (isPublished()) {
+            return getAnnotationsForPublishedInterface(type, isGeneratingInterface);
+        } else {
+            if (!isGeneratingInterface) {
+                return getAnnotations(type);
+            } else {
+                return "";
+            }
+        }
+    }
 }

@@ -19,9 +19,8 @@ public class ProductCmptTypeTocEntry extends ModelTypeTocEntry {
 
     public static final String XML_TAG = "ProductCmptType";
 
-    public ProductCmptTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
-            String implementationClassName) {
-        super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
+    public ProductCmptTypeTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String implementationClassName) {
+        super(ipsObjectId, ipsObjectQualifiedName, implementationClassName);
     }
 
     @Override

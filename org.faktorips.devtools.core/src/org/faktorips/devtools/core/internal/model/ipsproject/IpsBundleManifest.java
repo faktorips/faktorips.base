@@ -86,6 +86,8 @@ public class IpsBundleManifest {
 
     public static final String HEADER_OBJECT_DIR = "Fips-ObjectDir"; //$NON-NLS-1$
 
+    public static final String HEADER_UNIQUE_QUALIFIER = "Fips-UniqueQualifier"; //$NON-NLS-1$
+
     public static final String ATTRIBUTE_TOC = "toc"; //$NON-NLS-1$
 
     public static final String ATTRIBUTE_VALIDATION_MESSAGES = "messages"; //$NON-NLS-1$
@@ -110,10 +112,10 @@ public class IpsBundleManifest {
      * Returning the base package for the specified objectDir. If there is no special setting for
      * the specified objectDir the default base package is returned.
      * <p>
-     * Note that there is no possibility to configure different base packages for the different
-     * output directories.
+     * Note that there is no possibility to configure different base packages for the mergable and
+     * derived artifacts.
      * 
-     * @param objectDir The name of the model folder for which you want to know the base pacakge
+     * @param objectDir The name of the model folder for which you want to know the base package
      * 
      * @return The base package configured for the given objectDir.
      */
@@ -126,6 +128,22 @@ public class IpsBundleManifest {
             }
         }
         return getBasePackage();
+    }
+
+    String getUniqueQualifier() {
+        Attributes attributes = manifest.getMainAttributes();
+        return getValue(attributes, HEADER_UNIQUE_QUALIFIER);
+    }
+
+    public String getUniqueQualifier(String objectDir) {
+        Attributes attributes = manifest.getAttributes(objectDir);
+        if (attributes != null) {
+            String result = getValue(attributes, HEADER_UNIQUE_QUALIFIER);
+            if (result != null) {
+                return result;
+            }
+        }
+        return getUniqueQualifier();
     }
 
     String getSourcecodeOutput() {

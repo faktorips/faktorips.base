@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.MethodParameter;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilderClassNameProvider;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilderClassNameProvider;
 
 public class XTableRow extends XTableStructure {
 
@@ -27,7 +27,7 @@ public class XTableRow extends XTableStructure {
 
     public XTableRow(ITableStructure row, GeneratorModelContext context, ModelService modelService) {
         super(row, context, modelService);
-        nameProvider = new TableRowBuilderClassNameProvider();
+        nameProvider = new TableRowBuilderClassNameProvider(context.isGeneratePublishedInterfaces(row.getIpsProject()));
     }
 
     @Override

@@ -56,6 +56,8 @@ public enum BuilderKindIds implements IBuilderKindId {
 
     VALIDATION_RULE_MESSAGES,
 
+    LABELS_AND_DESCRIPTIONS,
+
     TOC_FILE();
 
     @Override

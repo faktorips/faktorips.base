@@ -144,11 +144,25 @@ public abstract class XType extends XClass {
     public abstract Set<? extends XAttribute> getAttributes();
 
     /**
-     * Returns the list of associations in the current type.
+     * Returns the list of all attributes declared in the current type. For product component types,
+     * this method does not differentiate between changing and not changing over time attributes.
      * 
-     * @return The list of associations in this type except derived unions
+     * @return the list of all attributes declared of this type
+     */
+    public abstract Set<? extends XAttribute> getAllDeclaredAttributes();
+
+    /**
+     * @return The list of associations relevant for this type instance
      */
     public abstract Set<? extends XAssociation> getAssociations();
+
+    /**
+     * Returns the list of associations declared in the current type. For product component types,
+     * this method does not differentiate between changing and not changing over time associations.
+     * 
+     * @return the list of all associations declared in this type
+     */
+    public abstract Set<? extends XAssociation> getAllDeclaredAssociations();
 
     /**
      * Getting the list of every derived union needs to be implemented. That means it is either

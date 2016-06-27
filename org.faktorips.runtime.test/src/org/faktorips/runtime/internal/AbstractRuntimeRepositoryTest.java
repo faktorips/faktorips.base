@@ -11,15 +11,20 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryLookup;
@@ -45,7 +50,7 @@ public class AbstractRuntimeRepositoryTest {
     private AbstractRuntimeRepository repositoryD;
 
     @Test
-    public void testGetEnumValuesDefinedInType() throws Exception {
+    public void testGetEnumValuesDefinedInType() {
         AbstractRuntimeRepository abstractRuntimeRepository = mock(AbstractRuntimeRepository.class, CALLS_REAL_METHODS);
 
         List<EnumTestClass> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(EnumTestClass.class);
@@ -78,38 +83,40 @@ public class AbstractRuntimeRepositoryTest {
         assertEquals(expected, enumValues);
     }
 
-    private void initRepositoryReferences(AbstractRuntimeRepository repositoryA,
-            AbstractRuntimeRepository repositoryB,
-            AbstractRuntimeRepository repositoryC,
-            AbstractRuntimeRepository repositoryD) throws Exception {
-        Field declaredField = AbstractRuntimeRepository.class.getDeclaredField("repositories");
-        declaredField.setAccessible(true);
-        declaredField.set(repositoryA, new ArrayList<IRuntimeRepository>());
-        declaredField.set(repositoryB, new ArrayList<IRuntimeRepository>());
-        declaredField.set(repositoryC, new ArrayList<IRuntimeRepository>());
-        declaredField.set(repositoryD, new ArrayList<IRuntimeRepository>());
+    @Test
+    public void testGetAllModelTypeImplementationClasses() throws Exception {
+        initRepositoryReferences(repositoryA, repositoryB);
 
-        repositoryA.addDirectlyReferencedRepository(repositoryB);
-        repositoryA.addDirectlyReferencedRepository(repositoryC);
-        repositoryC.addDirectlyReferencedRepository(repositoryD);
+        Set<String> modelTypeImplementationClasses = repositoryA.getAllModelTypeImplementationClasses();
 
-        mockRepositories();
+        assertNotNull(modelTypeImplementationClasses);
+        verify(repositoryA).getAllModelTypeImplementationClasses(anySetOf(String.class));
+        verify(repositoryB).getAllModelTypeImplementationClasses(anySetOf(String.class));
     }
 
-    private void mockRepositories() {
-        doReturn(null).when(repositoryA).getEnumValueLookupService(EnumTestClass.class);
-        doReturn(null).when(repositoryB).getEnumValueLookupService(EnumTestClass.class);
-        doReturn(null).when(repositoryC).getEnumValueLookupService(EnumTestClass.class);
-        doReturn(null).when(repositoryD).getEnumValueLookupService(EnumTestClass.class);
+    private void initRepositoryReferences(AbstractRuntimeRepository referencingRepository,
+            AbstractRuntimeRepository... referencedRepositories) throws Exception {
+        Field declaredField = AbstractRuntimeRepository.class.getDeclaredField("repositories");
+        declaredField.setAccessible(true);
+        declaredField.set(referencingRepository, new ArrayList<IRuntimeRepository>());
+        mockRepository(referencingRepository);
 
-        doReturn(null).when(repositoryA).getEnumValuesInternal(EnumTestClass.class);
-        doReturn(null).when(repositoryB).getEnumValuesInternal(EnumTestClass.class);
-        doReturn(null).when(repositoryC).getEnumValuesInternal(EnumTestClass.class);
-        doReturn(null).when(repositoryD).getEnumValuesInternal(EnumTestClass.class);
+        for (AbstractRuntimeRepository referencedRepository : referencedRepositories) {
+            declaredField.set(referencedRepository, new ArrayList<IRuntimeRepository>());
+            referencingRepository.addDirectlyReferencedRepository(referencedRepository);
+            mockRepository(referencedRepository);
+        }
+
+    }
+
+    private void mockRepository(AbstractRuntimeRepository repository) {
+        doReturn(null).when(repository).getEnumValueLookupService(EnumTestClass.class);
+        doReturn(null).when(repository).getEnumValuesInternal(EnumTestClass.class);
+        doNothing().when(repository).getAllModelTypeImplementationClasses(anySetOf(String.class));
     }
 
     @Test
-    public void testSetGetRuntimeRepositoryLookup() throws Exception {
+    public void testSetGetRuntimeRepositoryLookup() {
         IRuntimeRepositoryLookup repositoryLookupMock = mock(IRuntimeRepositoryLookup.class);
         repositoryA.setRuntimeRepositoryLookup(repositoryLookupMock);
 

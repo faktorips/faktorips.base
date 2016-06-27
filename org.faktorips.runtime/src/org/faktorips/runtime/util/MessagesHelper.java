@@ -123,6 +123,26 @@ public class MessagesHelper {
         return mf.format(replacements);
     }
 
+    /**
+     * Getting the message for the given key in the specified language. If there is no message in
+     * the specified language the message helper searches the key in the default language. If there
+     * is not message for the specified key in the requested language nor the default language, this
+     * message returns the specified fallback text.
+     * 
+     * @param key The key to identify the message
+     * @param locale the locale of the expected message
+     * @param fallBack a fall back text if there is no message
+     * 
+     * @return The message for the specified key
+     */
+    public String getMessageOr(String key, Locale locale, String fallBack) {
+        try {
+            return getMessageInternal(key, locale);
+        } catch (MissingResourceException e) {
+            return fallBack;
+        }
+    }
+
     private static class IpsMessageFormat extends Format {
 
         /**

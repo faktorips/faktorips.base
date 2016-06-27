@@ -47,7 +47,7 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
      * which is a subset of this association.
      */
     public boolean isImplementedInSuperclass(XPolicyCmptClass xClass) {
-        if (getTypeOfAssociation().equals(xClass.getType())) {
+        if (getSourceType().equals(xClass.getType())) {
             return false;
         }
         IPolicyCmptType supertype = (IPolicyCmptType)xClass.getType().findSupertype(xClass.getIpsProject());

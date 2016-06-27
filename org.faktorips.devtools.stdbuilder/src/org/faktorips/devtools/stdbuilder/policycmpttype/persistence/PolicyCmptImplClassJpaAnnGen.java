@@ -32,6 +32,8 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
  * information which annotations to generate is pulled from the class {@link PersistentTypeInfo}
  * which is part of persistent {@link IPolicyCmptType}s.
  * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS
+ * 
  * @author Roman Grutza
  */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -53,11 +55,6 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
     private static final String IMPORT_INHERITANCE_TYPE = "javax.persistence.InheritanceType";
 
     private static final String ATTRIBUTE_INHERITANCE_TYPE = "InheritanceType";
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
-    }
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {

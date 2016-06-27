@@ -16,37 +16,40 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.modeltype.internal.AbstractModelElement;
+import org.faktorips.runtime.modeltype.internal.DocumentationType;
+import org.faktorips.runtime.util.MessagesHelper;
 
 /**
  * Description of a runtime {@linkplain ITable table's} name, {@linkplain TableStructureType type}
  * and {@linkplain TableColumnModel columns}.
  */
-public class TableModel {
+public class TableModel extends AbstractModelElement {
 
-    private String name;
+    public static final String KIND_NAME = "TableStructure";
+
     private TableStructureType type;
     private LinkedHashMap<String, TableColumnModel> columnModels;
     private List<String> columnNames;
+    private final MessagesHelper messagesHelper;
 
     public TableModel(Class<? extends ITable> tableObjectClass) {
-
+        super(tableObjectClass.getAnnotation(IpsTableStructure.class).name(), tableObjectClass
+                .getAnnotation(IpsExtensionProperties.class));
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
 
-        this.name = annotation.name();
         this.type = annotation.type();
         this.columnNames = Arrays.asList(annotation.columns());
 
         Class<?> tableRowClass = (Class<?>)((ParameterizedType)tableObjectClass.getGenericSuperclass())
                 .getActualTypeArguments()[0];
-        this.columnModels = TableColumnModel.createModelsFrom(columnNames, tableRowClass);
-    }
-
-    /**
-     * @return qualified name of the IPS table structure.
-     */
-    public String getName() {
-        return name;
+        this.columnModels = TableColumnModel.createModelsFrom(this, columnNames, tableRowClass);
+        messagesHelper = createMessageHelper(tableObjectClass.getAnnotation(IpsDocumented.class),
+                tableObjectClass.getClassLoader());
     }
 
     /**
@@ -109,5 +112,33 @@ public class TableModel {
         }
 
         return values;
+    }
+
+    @Override
+    protected MessagesHelper getMessageHelper() {
+        return messagesHelper;
+    }
+
+    @Override
+    protected String getMessageKey(DocumentationType messageType) {
+        return messageType.getKey(getName(), KIND_NAME, IpsStringUtils.EMPTY);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getName());
+        sb.append(": ");
+        sb.append(type);
+        sb.append("(");
+        boolean first = true;
+        for (String columnName : columnNames) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(columnName);
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }

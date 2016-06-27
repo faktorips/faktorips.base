@@ -16,7 +16,7 @@
 	     * «ENDIF-»«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	     «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+	    «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
 	    «getModifier(genInterface())» «javaClassName» «method(methodName, methodParameters)» «IF abstract || genInterface()-»
 	    	;
 	    «ELSE-»

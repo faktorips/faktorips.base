@@ -133,11 +133,13 @@ public class MessagesProperties {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return properties.toString();
+    }
+
     private static class SortedProperties extends Properties {
 
-        /**
-         * Comment for <code>serialVersionUID</code>
-         */
         private static final long serialVersionUID = 7627392983212145038L;
 
         @Override

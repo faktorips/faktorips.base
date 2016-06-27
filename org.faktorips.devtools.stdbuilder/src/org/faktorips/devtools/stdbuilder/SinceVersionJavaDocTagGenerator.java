@@ -13,12 +13,12 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
+/**
+ * Generates the java doc tag <code>@since</code> with the configured version.
+ * 
+ * @see AnnotatedJavaElementType#ELEMENT_JAVA_DOC
+ */
 public class SinceVersionJavaDocTagGenerator implements IAnnotationGenerator {
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.ELEMENT_JAVA_DOC;
-    }
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {

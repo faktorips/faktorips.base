@@ -6,6 +6,8 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template»
 
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::INTERFACE)-»
 	package «getPackageName(BuilderAspect::INTERFACE)»;
@@ -17,6 +19,8 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		 «getAnnotations(AnnotatedJavaElementType::PUBLISHED_INTERFACE_CLASS)»
+		 «getAnnotationsForPublishedInterface(AnnotatedJavaElementType::POLICY_CMPT_DECL_CLASS, genInterface())-»
 		public interface «interfaceName» 
 		«IF extendsInterface-»
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»

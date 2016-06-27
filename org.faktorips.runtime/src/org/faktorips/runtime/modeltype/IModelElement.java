@@ -13,11 +13,6 @@ package org.faktorips.runtime.modeltype;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.faktorips.runtime.IRuntimeRepository;
-
 /**
  * Base Interface for all model elements.
  * 
@@ -25,81 +20,46 @@ import org.faktorips.runtime.IRuntimeRepository;
  */
 public interface IModelElement {
 
-    public static final String PROPERTY_NAME = "name";
-
-    public static final String DESCRIPTIONS_XML_TAG = "Description";
-
-    public static final String DESCRIPTIONS_XML_WRAPPER_TAG = "Descriptions";
-
-    public static final String DESCRIPTIONS_PROPERTY_LOCALE = "locale";
-
-    public static final String LABELS_XML_TAG = "Label";
-
-    public static final String LABELS_XML_WRAPPER_TAG = "Labels";
-
-    public static final String LABELS_PROPERTY_LOCALE = "locale";
-
-    public static final String LABELS_PROPERTY_VALUE = "value";
-
-    public static final String LABELS_PROPERTY_PLURAL_VALUE = "pluralValue";
-
-    public static final String EXTENSION_PROPERTIES_XML_TAG = "Value";
-
-    public static final String EXTENSION_PROPERTIES_XML_WRAPPER_TAG = "ExtensionProperties";
-
-    public static final String EXTENSION_PROPERTIES_PROPERTY_ID = "id";
-
-    public static final String EXTENSION_PROPERTIES_PROPERTY_NULL = "isNull";
-
     /**
-     * @param propertyId the id of the desired extension property. Returns the value of the
-     *            extension property defined by the given <code>propertyId</code> or
-     *            <code>null</code> if the extension property's <code>isNull</code> attribute is
-     *            <code>true</code>.
-     * @throws IllegalArgumentException if no such property exists.
+     * Returns the value for the given extension property identified by the specified id.
+     * <p>
+     * Note: At the moment only {@link String} is supported as extension property value. This
+     * methods returns {@link Object} for future changes.
+     * 
+     * @return the value of the extension property defined by the given <code>propertyId</code> or
+     *         <code>null</code> if the extension property's <code>isNull</code> attribute is
+     *         <code>true</code>
+     * @throws IllegalArgumentException if no such property exists
      */
-    public Object getExtensionPropertyValue(String propertyId) throws IllegalArgumentException;
+    public Object getExtensionPropertyValue(String propertyId);
 
     /**
-     * Returns a set of the extension property ids defined for this element.
+     * @return a set of the extension property ids defined for this element
      */
     public Set<String> getExtensionPropertyIds();
 
     /**
-     * Returns the name of this model type.
+     * @return the qualified IPS object name
      */
     public String getName();
 
     /**
-     * Initializes the model element's state with the data stored in the xml element at the parser's
-     * current position.
-     */
-    public void initFromXml(XMLStreamReader parser) throws XMLStreamException;
-
-    /**
-     * Initializes the model element's extension properties with the data stored in the xml element
-     * at the parser's current position. This method assumes that the element is
-     * <code>&lt;ExtensionProperties&gt;</code>.
-     */
-    public void initExtPropertiesFromXml(XMLStreamReader parser) throws XMLStreamException;
-
-    /**
-     * Returns the repository this model element belongs to. This method never returns
-     * <code>null</code>.
-     */
-    public IRuntimeRepository getRepository();
-
-    /**
-     * Returns the label for the given locale.
-     * <p>
-     * Returns the element's name if no label exists for the given locale.
+     * Returns the label for this model element in the specified locale. If there is no label in the
+     * specified locale, it tries to find the label in the default locale. If there is also no label
+     * in the default locale the element's name is returned.
+     * 
+     * @return the label for the given locale or the element's name if no label exists for the given
+     *         locale nor in the default locale
      */
     public String getLabel(Locale locale);
 
     /**
-     * Returns the description for the given locale.
-     * <p>
-     * Returns an empty string if no description exists for the given locale.
+     * Returns the description for this model element in the specified locale. If there is no
+     * description in the specified locale, it tries to find the description in the default locale.
+     * If there is also no description in the default locale it returns the empty string.
+     * 
+     * @return the description for the given locale or an empty string if no description exists for
+     *         the given locale
      */
     public String getDescription(Locale locale);
 

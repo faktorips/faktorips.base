@@ -87,7 +87,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * the given element (textual representation of value "blabla" is
      * &ltvalue&gtblabla&lt/value&gt).
      * 
-     * @param valueElement The value element (textual representation <value></value>).
+     * @param valueElement The value element (textual representation &lt;value&gt;&lt;/value&gt;).
      * @param value The value to add to the XML. The passed value is <strong>never</strong>
      *            <code>null</code>. Null handling is done before this method is called.
      */
@@ -98,7 +98,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * other than <code>null</code> is stored in the element. Null handling is done before this
      * method is called!
      * 
-     * @param valueElement The value element (textual representation <value></value>).
+     * @param valueElement The value element (textual representation &lt;value&gt;&lt;/value&gt;).
      */
     public Object getValueFromXml(Element valueElement);
 

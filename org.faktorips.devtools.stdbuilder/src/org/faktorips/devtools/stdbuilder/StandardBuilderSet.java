@@ -69,6 +69,7 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
+import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
@@ -89,10 +90,10 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuild
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableBuilderFactory;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.tablebuilder.TableRowBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilderFactory;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -388,6 +389,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptClassBuilder);
 
         builders.put(BuilderKindIds.VALIDATION_RULE_MESSAGES, new ValidationRuleMessagesPropertiesBuilder(this));
+        builders.put(BuilderKindIds.LABELS_AND_DESCRIPTIONS, new LabelAndDescriptionPropertiesBuilder(this));
 
         List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
         for (IIpsArtefactBuilder ipsArtefactBuilder : extendingBuilders) {
@@ -398,10 +400,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             builders.put(id, ipsArtefactBuilder);
         }
 
-        builders.put(BuilderKindIds.POLICY_CMPT_MODEL_TYPE, new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE,
-                this));
-        builders.put(BuilderKindIds.PRODUCT_CMPT_MODEL_TYPE, new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE,
-                this));
         tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
         return builders;

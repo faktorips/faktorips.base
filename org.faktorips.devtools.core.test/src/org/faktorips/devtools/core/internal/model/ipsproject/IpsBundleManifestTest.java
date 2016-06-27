@@ -35,7 +35,11 @@ public class IpsBundleManifestTest {
 
     private static final String MY_BASE_PACKAGE = "myBasePackage";
 
-    private static final String MY_BASE_PACKAGE2 = "myBasePackage";
+    private static final String MY_BASE_PACKAGE2 = "myBasePackage2";
+
+    private static final String MY_UNIQUE_QUALIFIER = "myQualifier";
+
+    private static final String MY_UNIQUE_QUALIFIER2 = "myQualifier2";
 
     private static final String MY_OBJECT_DIR = "myObjectdir";
 
@@ -62,10 +66,17 @@ public class IpsBundleManifestTest {
     private IpsProject ipsProject;
 
     @Before
+    public void createIpsBundleManifest() {
+        mockManifest();
+        mockProject();
+        ipsBundleManifest = new IpsBundleManifest(manifest);
+    }
+
     public void mockManifest() {
         Attributes attributes = mock(Attributes.class);
         when(manifest.getMainAttributes()).thenReturn(attributes);
         when(attributes.getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(MY_BASE_PACKAGE);
+        when(attributes.getValue(IpsBundleManifest.HEADER_UNIQUE_QUALIFIER)).thenReturn(MY_UNIQUE_QUALIFIER);
         when(attributes.getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(MY_SRC_OUT);
         when(attributes.getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(MY_RESOURCE_OUT);
         when(attributes.getValue(IpsBundleManifest.HEADER_OBJECT_DIR)).thenReturn(
@@ -74,11 +85,12 @@ public class IpsBundleManifestTest {
         Attributes attributesForObjectDir = mock(Attributes.class);
         when(manifest.getAttributes(MY_OBJECT_DIR)).thenReturn(attributesForObjectDir);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(MY_BASE_PACKAGE2);
+        when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_UNIQUE_QUALIFIER)).thenReturn(
+                MY_UNIQUE_QUALIFIER2);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(MY_SRC_OUT2);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(MY_RESOURCE_OUT2);
     }
 
-    @Before
     public void mockProject() {
         IProject project = mock(IProject.class);
         when(ipsProject.getProject()).thenReturn(project);
@@ -86,13 +98,8 @@ public class IpsBundleManifestTest {
         when(project.getFolder(anyString())).thenReturn(folder);
     }
 
-    @Before
-    public void createIpsBundleManifest() throws Exception {
-        ipsBundleManifest = new IpsBundleManifest(manifest);
-    }
-
     @Test
-    public void testGetBasePackage() throws Exception {
+    public void testGetBasePackage() {
         when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
                 " " + MY_BASE_PACKAGE + " ");
 
@@ -102,21 +109,21 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetBasePackage_trim() throws Exception {
+    public void testGetBasePackage_trim() {
         String basePackage = ipsBundleManifest.getBasePackage();
 
         assertEquals(MY_BASE_PACKAGE, basePackage);
     }
 
     @Test
-    public void testGetBasePackage_forObjectDir() throws Exception {
+    public void testGetBasePackage_forObjectDir() {
         String basePackage = ipsBundleManifest.getBasePackage(MY_OBJECT_DIR);
 
         assertEquals(MY_BASE_PACKAGE2, basePackage);
     }
 
     @Test
-    public void testGetBasePackage_forObjectDirTrim() throws Exception {
+    public void testGetBasePackage_forObjectDirTrim() {
         when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
                 " " + MY_BASE_PACKAGE2 + " ");
 
@@ -126,28 +133,69 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetBasePackage_forInvalidObjectDir() throws Exception {
+    public void testGetBasePackage_forInvalidObjectDir() {
         String basePackage = ipsBundleManifest.getBasePackage(INVALID_OBJECT_DIR);
 
         assertEquals(MY_BASE_PACKAGE, basePackage);
     }
 
     @Test
-    public void testGetSourcecodeOutput() throws Exception {
+    public void testGetUniqueQualifier() {
+        String uniqueQualifier = ipsBundleManifest.getUniqueQualifier();
+
+        assertEquals(MY_UNIQUE_QUALIFIER, uniqueQualifier);
+    }
+
+    @Test
+    public void testGetUniqueQualifier_trim() {
+        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
+                " " + MY_UNIQUE_QUALIFIER + " ");
+
+        String uniqueQualifier = ipsBundleManifest.getUniqueQualifier();
+
+        assertEquals(MY_UNIQUE_QUALIFIER, uniqueQualifier);
+    }
+
+    @Test
+    public void testGetUniqueQualifier_forObjectDir() {
+        String uniqueQualifier = ipsBundleManifest.getUniqueQualifier(MY_OBJECT_DIR);
+
+        assertEquals(MY_UNIQUE_QUALIFIER2, uniqueQualifier);
+    }
+
+    @Test
+    public void testGetUniqueQualifier_forObjectDirTrim() {
+        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
+                " " + MY_UNIQUE_QUALIFIER2 + " ");
+
+        String uniqueQualifier = ipsBundleManifest.getUniqueQualifier(MY_OBJECT_DIR);
+
+        assertEquals(MY_UNIQUE_QUALIFIER2, uniqueQualifier);
+    }
+
+    @Test
+    public void testGetUniqueQualifier_forInvalidObjectDir() {
+        String uniqueQualifier = ipsBundleManifest.getUniqueQualifier(INVALID_OBJECT_DIR);
+
+        assertEquals(MY_UNIQUE_QUALIFIER, uniqueQualifier);
+    }
+
+    @Test
+    public void testGetSourcecodeOutput() {
         String srcOutput = ipsBundleManifest.getSourcecodeOutput();
 
         assertEquals(MY_SRC_OUT, srcOutput);
     }
 
     @Test
-    public void testGetSourcecodeOutput_forObjectDir() throws Exception {
+    public void testGetSourcecodeOutput_forObjectDir() {
         String srcOutput = ipsBundleManifest.getSourcecodeOutput(MY_OBJECT_DIR);
 
         assertEquals(MY_SRC_OUT2, srcOutput);
     }
 
     @Test
-    public void testGetSourcecodeOutput_trim() throws Exception {
+    public void testGetSourcecodeOutput_trim() {
         when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(MY_SRC_OUT + " ");
 
         String srcOutput = ipsBundleManifest.getSourcecodeOutput();
@@ -156,7 +204,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetSourcecodeOutput_objectDirAndTrim() throws Exception {
+    public void testGetSourcecodeOutput_objectDirAndTrim() {
         when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(
                 MY_SRC_OUT2 + " ");
 
@@ -166,21 +214,21 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetSourcecodeOutput_forInvalidObjectDir() throws Exception {
+    public void testGetSourcecodeOutput_forInvalidObjectDir() {
         String srcOutput = ipsBundleManifest.getSourcecodeOutput(INVALID_OBJECT_DIR);
 
         assertEquals(MY_SRC_OUT, srcOutput);
     }
 
     @Test
-    public void testGetResourceOutput() throws Exception {
+    public void testGetResourceOutput() {
         String srcOutput = ipsBundleManifest.getResourceOutput();
 
         assertEquals(MY_RESOURCE_OUT, srcOutput);
     }
 
     @Test
-    public void testGetResourceOutput_trim() throws Exception {
+    public void testGetResourceOutput_trim() {
         when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(
                 MY_RESOURCE_OUT + " ");
 
@@ -190,14 +238,14 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetResourceOutput_forObjectDir() throws Exception {
+    public void testGetResourceOutput_forObjectDir() {
         String srcOutput = ipsBundleManifest.getResourceOutput(MY_OBJECT_DIR);
 
         assertEquals(MY_RESOURCE_OUT2, srcOutput);
     }
 
     @Test
-    public void testGetResourceOutput_forObjectDirTrim() throws Exception {
+    public void testGetResourceOutput_forObjectDirTrim() {
         when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(
                 MY_RESOURCE_OUT2 + " ");
 
@@ -207,14 +255,14 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetResourceOutput_forInvalidObjectDir() throws Exception {
+    public void testGetResourceOutput_forInvalidObjectDir() {
         String srcOutput = ipsBundleManifest.getResourceOutput(INVALID_OBJECT_DIR);
 
         assertEquals(MY_RESOURCE_OUT, srcOutput);
     }
 
     @Test
-    public void testGetObjectDirs() throws Exception {
+    public void testGetObjectDirs() {
         List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
@@ -222,7 +270,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirElements_empty() throws Exception {
+    public void testGetObjectDirElements_empty() {
         ipsBundleManifest = new IpsBundleManifest(mock(Manifest.class));
         ManifestElement[] objectDir = ipsBundleManifest.getObjectDirElements();
 
@@ -230,7 +278,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirElements_noValue() throws Exception {
+    public void testGetObjectDirElements_noValue() {
         Attributes attributes = mock(Attributes.class);
         when(manifest.getMainAttributes()).thenReturn(attributes);
         ManifestElement[] objectDir = ipsBundleManifest.getObjectDirElements();
@@ -239,7 +287,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirElements() throws Exception {
+    public void testGetObjectDirElements() {
         ManifestElement[] objectDir = ipsBundleManifest.getObjectDirElements();
 
         assertEquals(1, objectDir.length);
@@ -266,7 +314,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetTocPath() throws Exception {
+    public void testGetTocPath() {
         ManifestElement objectDirElement = ipsBundleManifest.getObjectDirElements()[0];
 
         String toc = ipsBundleManifest.getTocPath(objectDirElement);
@@ -275,7 +323,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetValidationMessagesBundle() throws Exception {
+    public void testGetValidationMessagesBundle() {
         ManifestElement objectDirElement = ipsBundleManifest.getObjectDirElements()[0];
 
         String messages = ipsBundleManifest.getValidationMessagesBundle(objectDirElement);

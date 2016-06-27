@@ -10,12 +10,9 @@
 
 package org.faktorips.runtime.internal;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -29,10 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IModelObject;
@@ -45,8 +38,10 @@ import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
+import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.modeltype.internal.ModelType;
+import org.faktorips.runtime.modeltype.IPolicyModel;
+import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
@@ -71,10 +66,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     // a list of all repositories this one depends on directly or indirectly
     // see getAllRepositories() for further information
     private List<IRuntimeRepository> allRepositories = null;
-
-    private Map<Class<?>, IModelType> modelTypes = new ConcurrentHashMap<Class<?>, IModelType>();
-
-    private Map<String, IModelType> modelTypesByName = new ConcurrentHashMap<String, IModelType>();
 
     private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new ConcurrentHashMap<Class<?>, IEnumValueLookupService<?>>();
 
@@ -622,69 +613,17 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public IModelType getModelType(Class<?> modelObjectClass) {
-        if (modelTypes.containsKey(modelObjectClass)) {
-            return modelTypes.get(modelObjectClass);
-        }
-        URL xmlFile = modelObjectClass.getResource(modelObjectClass.getName().substring(
-                modelObjectClass.getName().lastIndexOf('.') + 1)
-                + ".xml"); //$NON-NLS-1$
-        IModelType modelType = new ModelType(this);
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        try {
-            InputStream in = xmlFile.openStream();
-            XMLStreamReader parser = factory.createXMLStreamReader(in);
-
-            while (parser.hasNext() && parser.next() != XMLStreamConstants.START_ELEMENT) {
-                // goto start element
-            }
-
-            modelType.initFromXml(parser);
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(
-                    "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        modelTypes.put(modelObjectClass, modelType);
-        modelTypesByName.put(modelType.getName(), modelType);
-        return modelType;
-    }
-
-    public IModelType getModelType(String qualifiedName) {
-        if (modelTypesByName.containsKey(qualifiedName)) {
-            return modelTypesByName.get(qualifiedName);
-        }
-        URL xmlFile = this.getClass().getResource(qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1) + ".xml"); //$NON-NLS-1$
-        IModelType modelType = new ModelType(this);
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        try {
-            InputStream in = xmlFile.openStream();
-            XMLStreamReader parser = factory.createXMLStreamReader(in);
-
-            while (parser.hasNext() && parser.next() != XMLStreamConstants.START_ELEMENT) {
-                // goto start element
-            }
-
-            modelType.initFromXml(parser);
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading model type info for " + qualifiedName + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        } catch (XMLStreamException e) {
-            throw new RuntimeException("Error loading model type info for " + qualifiedName + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        modelTypes.put(modelType.getClass(), modelType);
-        modelTypesByName.put(qualifiedName, modelType);
-        return modelType;
+        return Models.getModelType(modelObjectClass);
     }
 
     @Override
-    public IModelType getModelType(IModelObject modelObject) {
-        return getModelType(modelObject.getClass());
+    public IPolicyModel getModelType(IModelObject modelObject) {
+        return Models.getPolicyModel(modelObject);
     }
 
     @Override
-    public IModelType getModelType(IProductComponent modelObject) {
-        return getModelType(modelObject.getClass());
+    public IProductModel getModelType(IProductComponent productComponent) {
+        return Models.getProductModel(productComponent);
     }
 
     @Override

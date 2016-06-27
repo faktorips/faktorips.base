@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectTest;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -601,8 +602,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(ipsProject);
         ((IpsModel)ipsProject.getIpsModel())
-        .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                builderSet) });
+                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                        builderSet) });
 
         IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -612,16 +613,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builder.deleteCalled);
     }
 
-    // TODO pk
-    @Test
-    public void testDependencyGraphWithMultipleDelete() {
-
-    }
-
     @Test
     public void testDependencyGraphWithReferencingProjects() throws Exception {
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
         IIpsProject projectC = createSubProject(projectB, "projectC");
+        IpsProjectTest.updateSrcFolderEntryQalifiers(projectB, "b");
+        IpsProjectTest.updateSrcFolderEntryQalifiers(projectC, "c");
 
         IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
 
@@ -727,6 +724,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     public void testDependencyGraphWithProductsInReferencingProjects() throws Exception {
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
         IIpsProject projectC = createSubProject(projectB, "projectC");
+        IpsProjectTest.updateSrcFolderEntryQalifiers(projectB, "b");
+        IpsProjectTest.updateSrcFolderEntryQalifiers(projectC, "c");
 
         IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
         IProductCmptType aProductType = newProductCmptType(ipsProject, "aProductType");

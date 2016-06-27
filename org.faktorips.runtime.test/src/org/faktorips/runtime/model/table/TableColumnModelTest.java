@@ -5,9 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.internal.TestTableRow;
+import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
-import org.faktorips.runtime.model.table.TableColumnModel;
 import org.faktorips.values.Decimal;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,12 +16,14 @@ import org.junit.rules.ExpectedException;
 
 public class TableColumnModelTest {
 
+    private final TableModel tableModel = Models.getTableModel(TestTable.class);
+
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
     public void testGetValue() throws NoSuchMethodException, SecurityException {
-        TableColumnModel columnModel = new TableColumnModel("gender", Integer.class,
+        TableColumnModel columnModel = new TableColumnModel(tableModel, "gender", Integer.class,
                 TestTableRow.class.getDeclaredMethod("getGender"));
 
         TestTableRow row = new TestTableRow("F10", 3, Decimal.valueOf(28.2));
@@ -46,7 +49,7 @@ public class TableColumnModelTest {
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("is not listed as column in the @" + IpsTableStructure.class.getSimpleName()
                 + " annotation");
-        TableColumnModel.createModelsFrom(Arrays.asList(new String[] { "company" }), TestTableRow.class);
+        TableColumnModel.createModelsFrom(tableModel, Arrays.asList(new String[] { "company" }), TestTableRow.class);
     }
 
     /**
@@ -63,8 +66,8 @@ public class TableColumnModelTest {
     public void testCreateModelsFromNoGetter() {
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("No getter method found for annotated column \"troll\"");
-        TableColumnModel.createModelsFrom(Arrays.asList(new String[] { "company", "gender", "rate", "troll" }),
-                TestTableRow.class);
+        TableColumnModel.createModelsFrom(tableModel,
+                Arrays.asList(new String[] { "company", "gender", "rate", "troll" }), TestTableRow.class);
     }
 
     /**
@@ -81,7 +84,7 @@ public class TableColumnModelTest {
     public void testCreateModelsFromNoGetterMult() {
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("No getter methods found for annotated columns \"troll\", \"ips\"");
-        TableColumnModel.createModelsFrom(Arrays.asList(new String[] { "company", "gender", "rate", "troll", "ips" }),
-                TestTableRow.class);
+        TableColumnModel.createModelsFrom(tableModel,
+                Arrays.asList(new String[] { "company", "gender", "rate", "troll", "ips" }), TestTableRow.class);
     }
 }

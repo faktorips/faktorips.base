@@ -95,4 +95,35 @@ public class MessagesHelperTest {
         assertEquals("test 1 abc null", message);
     }
 
+    @Test
+    public void testGetMessageOr_FoundMessage() throws Exception {
+        String qualifiedName = getClass().getName();
+        MessagesHelper messagesHelper = new MessagesHelper(qualifiedName, loader, defaultLocale);
+
+        String message = messagesHelper.getMessageOr("test", Locale.GERMAN, "fallback");
+
+        assertEquals("testmessageInDe", message);
+    }
+
+    @Test
+    public void testGetMessageOr_FoundLocaleFallback() throws Exception {
+        Locale.setDefault(Locale.ROOT);
+        String qualifiedName = getClass().getName();
+        MessagesHelper messagesHelper = new MessagesHelper(qualifiedName, loader, defaultLocale);
+
+        String message = messagesHelper.getMessageOr("test", Locale.CHINESE, "fallback");
+
+        assertEquals("testmessageInEn", message);
+    }
+
+    @Test
+    public void testGetMessageOr_Fallback() throws Exception {
+        String qualifiedName = getClass().getName();
+        MessagesHelper messagesHelper = new MessagesHelper(qualifiedName, loader, defaultLocale);
+
+        String message = messagesHelper.getMessageOr("n o t", Locale.CHINESE, "fallback");
+
+        assertEquals("fallback", message);
+    }
+
 }

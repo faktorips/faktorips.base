@@ -10,63 +10,24 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Properties;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.stdbuilder.MessagesProperties;
-import org.faktorips.util.MultiMap;
+import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
+import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
 
-public class ValidationRuleMessageProperties {
+public class ValidationRuleMessageProperties extends AbstractLocalizedProperties {
 
-    private final MultiMap<String, RuleKeyParts> generatedMessages = MultiMap.createWithSetsAsValues();
-
-    private final MessagesProperties messagesProperties = new MessagesProperties();
-
-    /**
-     * Default constructor creating a new {@link Properties} object.
-     */
-    public ValidationRuleMessageProperties() {
+    public ValidationRuleMessageProperties(boolean defaultLang) {
+        super(defaultLang);
     }
 
-    public void deleteAllMessagesFor(String policyCmptType) {
-        Collection<RuleKeyParts> rules = generatedMessages.get(policyCmptType);
-        for (RuleKeyParts rule : rules) {
-            messagesProperties.remove(rule.getKey());
-        }
-        generatedMessages.remove(policyCmptType);
-    }
-
-    /**
-     * Clear all existing elements and load new properties form stream.
-     * 
-     * @param stream The {@link InputStream} to load, @see {@link Properties#load(InputStream)}
-     */
-    public void load(InputStream stream) {
-        messagesProperties.load(stream);
-        initMessagesForPcTypes();
-    }
-
-    void initMessagesForPcTypes() {
-        generatedMessages.clear();
-        for (Object keyObject : messagesProperties.keySet()) {
-            if (keyObject instanceof String) {
-                String key = (String)keyObject;
-                String[] split = key.split(IValidationRule.QNAME_SEPARATOR);
-                if (split.length == 2) {
-                    String pcType = split[0];
-                    String ruleName = split[1];
-                    generatedMessages.put(pcType, new RuleKeyParts(pcType, ruleName, key));
-                }
-            }
-        }
-    }
-
-    public void store(OutputStream outputStream, String comments) {
-        messagesProperties.store(outputStream, comments);
+    @Override
+    protected PropertyKey createPropertyEntry(String key) {
+        return RuleKeyParts.create(key);
     }
 
     public void put(IValidationRule validationRule, String messageText) {
@@ -74,37 +35,15 @@ public class ValidationRuleMessageProperties {
         String ruleName = validationRule.getName();
         String key = validationRule.getQualifiedRuleName();
         RuleKeyParts ruleKeyParts = new RuleKeyParts(pcTypeName, ruleName, key);
-        generatedMessages.put(pcTypeName, ruleKeyParts);
-        messagesProperties.put(key, messageText);
+        put(ruleKeyParts, messageText);
     }
 
-    public void remove(RuleKeyParts ruleNameAndKey) {
-        generatedMessages.remove(ruleNameAndKey.pcTypeName, ruleNameAndKey);
-        messagesProperties.remove(ruleNameAndKey.key);
+    @SuppressWarnings("unchecked")
+    public Collection<RuleKeyParts> getKeysForPolicyCmptType(QualifiedNameType qualifiedNameType) {
+        return (Collection<RuleKeyParts>)getKeysForIpsObject(qualifiedNameType);
     }
 
-    public int size() {
-        return messagesProperties.size();
-    }
-
-    public void clear() {
-        messagesProperties.clear();
-        generatedMessages.clear();
-    }
-
-    public boolean isModified() {
-        return messagesProperties.isModified();
-    }
-
-    Collection<RuleKeyParts> getKeysForPolicyCmptType(String pcTypeName) {
-        return generatedMessages.get(pcTypeName);
-    }
-
-    String getMessage(String qualifiedRuleName) {
-        return messagesProperties.getMessage(qualifiedRuleName);
-    }
-
-    static class RuleKeyParts {
+    static class RuleKeyParts implements PropertyKey {
 
         private final String pcTypeName;
 
@@ -118,10 +57,20 @@ public class ValidationRuleMessageProperties {
             this.key = key;
         }
 
+        public static RuleKeyParts create(String key) {
+            String[] split = key.split(IValidationRule.QNAME_SEPARATOR);
+            if (split.length == 2) {
+                return new RuleKeyParts(split[0], split[1], key);
+            } else {
+                return null;
+            }
+        }
+
         public String getRuleName() {
             return ruleName;
         }
 
+        @Override
         public String getKey() {
             return key;
         }
@@ -150,6 +99,20 @@ public class ValidationRuleMessageProperties {
             RuleKeyParts other = (RuleKeyParts)obj;
             return ObjectUtils.equals(key, other.key) && ObjectUtils.equals(pcTypeName, other.pcTypeName)
                     && ObjectUtils.equals(ruleName, other.ruleName);
+        }
+
+        @Override
+        public QualifiedNameType getIpsObjectQNameType() {
+            return new QualifiedNameType(pcTypeName, IpsObjectType.POLICY_CMPT_TYPE);
+        }
+
+        public String getIpsObjectQname() {
+            return pcTypeName;
+        }
+
+        @Override
+        public String toString() {
+            return key;
         }
 
     }

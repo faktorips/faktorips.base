@@ -35,6 +35,8 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociati
 /**
  * This class generates JPA annotations for associations of policy component types.
  * 
+ * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD
+ * 
  * @author Roman Grutza
  */
 public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -69,11 +71,6 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         annotationForRelationshipType.put(RelationshipType.ONE_TO_ONE, ANNOTATION_ONE_TO_ONE);
         annotationForRelationshipType.put(RelationshipType.MANY_TO_MANY, ANNOTATION_MANY_TO_MANY);
         annotationForRelationshipType.put(RelationshipType.MANY_TO_ONE, ANNOTATION_MANY_TO_ONE);
-    }
-
-    @Override
-    public AnnotatedJavaElementType getAnnotatedJavaElementType() {
-        return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
     }
 
     @Override
@@ -150,8 +147,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         if (persistenceProvider != null && persistenceProvider.isSupportingOrphanRemoval()) {
             IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
             if (persistenceAssociatonInfo.isOrphanRemoval()) {
-                String attributeOrphanRemoval = persistenceProvider
-                        .getRelationshipAnnotationAttributeOrphanRemoval();
+                String attributeOrphanRemoval = persistenceProvider.getRelationshipAnnotationAttributeOrphanRemoval();
                 if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
                     attributesToAppend.add(attributeOrphanRemoval);
                 }

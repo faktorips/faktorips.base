@@ -15,9 +15,6 @@ import org.faktorips.values.ObjectUtil;
 /**
  * Delta computation options that create child deltas per position and don't ignore any property.
  * 
- * TODO the following reference does not exist
- * 
- * 
  * @see IDeltaComputationOptions.ComputationMethod#BY_POSITION
  * 
  * @author Jan Ortmann

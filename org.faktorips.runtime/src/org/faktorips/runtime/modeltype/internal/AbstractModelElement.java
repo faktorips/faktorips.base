@@ -10,50 +10,96 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
 import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.util.MessagesHelper;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
-public class AbstractModelElement implements IModelElement {
+public abstract class AbstractModelElement implements IModelElement {
 
-    private final Map<Locale, String> labelsByLocale = new HashMap<Locale, String>();
+    private final String name;
 
-    private final Map<Locale, String> descriptionsByLocale = new HashMap<Locale, String>();
+    private final Map<String, Object> extPropertyValues;
 
-    private Map<String, Object> extPropertyValues;
+    public AbstractModelElement(String name, IpsExtensionProperties extensionProperties) {
+        this.name = name;
+        extPropertyValues = initExtensionPropertyMap(extensionProperties);
+    }
 
-    private String name;
+    private Map<String, Object> initExtensionPropertyMap(IpsExtensionProperties extensionPropertiesAnnotation) {
+        Map<String, Object> result = Collections.emptyMap();
+        if (extensionPropertiesAnnotation != null) {
+            IpsExtensionProperty[] extensionProperties = extensionPropertiesAnnotation.value();
+            result = new LinkedHashMap<String, Object>(extensionProperties.length, 1f);
+            for (IpsExtensionProperty ipsExtensionProperty : extensionProperties) {
+                result.put(ipsExtensionProperty.id(), initValue(ipsExtensionProperty));
+            }
+        }
+        return result;
+    }
 
-    private IRuntimeRepository repository;
+    private Object initValue(IpsExtensionProperty ipsExtensionProperty) {
+        if (ipsExtensionProperty.isNull()) {
+            return null;
+        } else {
+            return ipsExtensionProperty.value();
+        }
+    }
 
-    public AbstractModelElement(IRuntimeRepository repository) {
-        this.repository = repository;
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
     public String getLabel(Locale locale) {
-        String label = labelsByLocale.get(locale);
-        return IpsStringUtils.isEmpty(label) ? getName() : label;
+        return getDocumentation(locale, DocumentationType.LABEL, getName());
     }
 
     @Override
     public String getDescription(Locale locale) {
-        String description = descriptionsByLocale.get(locale);
-        return IpsStringUtils.isEmpty(description) ? IpsStringUtils.EMPTY : description;
+        return getDocumentation(locale, DocumentationType.DESCRIPTION, IpsStringUtils.EMPTY);
+    }
+
+    protected abstract String getMessageKey(DocumentationType messageType);
+
+    protected String getDocumentation(Locale locale, DocumentationType type, String fallback) {
+        MessagesHelper messageHelper = getMessageHelper();
+        if (messageHelper != null) {
+            return messageHelper.getMessageOr(getMessageKey(type), locale, fallback);
+        } else {
+            return fallback;
+        }
+    }
+
+    protected abstract MessagesHelper getMessageHelper();
+
+    protected MessagesHelper createMessageHelper(IpsDocumented documentedAnnotation, ClassLoader classLoader) {
+        if (documentedAnnotation != null) {
+            String documentationResourceBundle = documentedAnnotation.bundleName();
+            Locale defaultLocale = new Locale(documentedAnnotation.defaultLocale());
+            return new MessagesHelper(documentationResourceBundle, classLoader, defaultLocale);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -64,89 +110,6 @@ public class AbstractModelElement implements IModelElement {
         return extPropertyValues.get(propertyId);
     }
 
-    /**
-     * Sets the value of the extension property <code>propertyId</code>.
-     */
-    public void setExtensionPropertyValue(String propertyId, Object value) {
-        if (extPropertyValues == null) {
-            extPropertyValues = new HashMap<String, Object>(5);
-        }
-        extPropertyValues.put(propertyId, value);
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
-        for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(PROPERTY_NAME)) {
-                this.name = parser.getAttributeValue(i);
-            }
-        }
-    }
-
-    protected final void initDescriptionsFromXml(XMLStreamReader parser) throws XMLStreamException {
-        Locale currentLocale = null;
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_TAG)) {
-                        currentLocale = initDescriptionFromXml(parser);
-                    }
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                    if (currentLocale != null && !parser.isWhiteSpace()) {
-                        descriptionsByLocale.put(currentLocale, parser.getText());
-                        currentLocale = null;
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
-                        return;
-                    }
-                    break;
-            }
-        }
-    }
-
-    private Locale initDescriptionFromXml(XMLStreamReader parser) {
-        Locale locale = null;
-        for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(IModelElement.DESCRIPTIONS_PROPERTY_LOCALE)) {
-                String localeCode = parser.getAttributeValue(i);
-                locale = IpsStringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
-            }
-        }
-        return locale;
-    }
-
-    protected final void initLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelElement.LABELS_XML_TAG)) {
-                        initLabelFromXml(parser);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
-                        return;
-                    }
-                    break;
-            }
-        }
-    }
-
-    protected void initLabelFromXml(XMLStreamReader parser) {
-        String localeCode = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_LOCALE);
-        Locale locale = IpsStringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
-        String value = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_VALUE);
-        labelsByLocale.put(locale, value);
-    }
-
     @Override
     public Set<String> getExtensionPropertyIds() {
         if (extPropertyValues == null) {
@@ -155,71 +118,71 @@ public class AbstractModelElement implements IModelElement {
         return extPropertyValues.keySet();
     }
 
-    @Override
-    public void initExtPropertiesFromXml(XMLStreamReader parser) throws XMLStreamException {
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_TAG)) {
-                        initExtPropertyValueFromXml(parser);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
-                        return;
-                    }
-                    break;
-            }
+    protected Object invokeMethod(Method method, Object source, Object... arguments) {
+        try {
+            return method.invoke(source, arguments);
+        } catch (NullPointerException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (IllegalArgumentException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (IllegalAccessException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (InvocationTargetException e) {
+            throw createGetterError(source, method, arguments, e);
+        } catch (SecurityException e) {
+            throw createGetterError(source, method, arguments, e);
         }
     }
 
-    private void initExtPropertyValueFromXml(XMLStreamReader parser) throws XMLStreamException {
-        String id = null;
-        boolean isNull = true;
-        StringBuilder value = new StringBuilder();
-        for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(EXTENSION_PROPERTIES_PROPERTY_ID)) {
-                id = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(EXTENSION_PROPERTIES_PROPERTY_NULL)) {
-                isNull = Boolean.valueOf(parser.getAttributeValue(i)).booleanValue();
-            }
-        }
-        if (isNull) {
-            setExtensionPropertyValue(id, null);
-        } else {
-            for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-                switch (event) {
-                    case XMLStreamConstants.CHARACTERS:
-                        value.append(parser.getText().trim());
-                        break;
-                    case XMLStreamConstants.CDATA:
-                        value.append(parser.getText().trim());
-                        break;
-                    case XMLStreamConstants.END_ELEMENT:
-                        if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_TAG)) {
-                            setExtensionPropertyValue(id, value.toString());
-                            return;
-                        }
-                        break;
-                }
-            }
+    private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Exception e) {
+        return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
+                method.getName(), IpsStringUtils.join(args, ", "), source), e);
+    }
+
+    protected Object invokeField(Field field, Object source) {
+        try {
+            return field.get(source);
+        } catch (NullPointerException e) {
+            throw createFieldError(source, field, e);
+        } catch (IllegalArgumentException e) {
+            throw createFieldError(source, field, e);
+        } catch (IllegalAccessException e) {
+            throw createFieldError(source, field, e);
+        } catch (SecurityException e) {
+            throw createFieldError(source, field, e);
         }
     }
 
-    @Override
-    public IRuntimeRepository getRepository() {
-        return repository;
+    private IllegalArgumentException createFieldError(Object source, Field field, Exception e) {
+        return new IllegalArgumentException(String.format("Could not get value of %s on source object %s.",
+                field.getName(), source), e);
     }
 
     /**
-     * Loads the class indicated by the given name using the repository's class loader.
+     * If the <code>changingOverTime</code> is <code>false</code>, the given product component is
+     * returned. If changing over time is <code>true</code>, the effective date is used to determine
+     * the generation to use. If the effective date is <code>null</code>, the latest product
+     * component generation is returned.
+     * 
+     * @param productComponent the product component to potentially retrieve a generation from
+     * @param effectiveDate the date to select the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the model element's
+     *            configuration is not changing over time.
+     * @param changingOverTime whether the model element is changing over time.
+     * @return The given product component or the effective generation, depending on
+     *         changingOverTime and effectiveDate.
      */
-    Class<?> loadClass(String className) {
-        try {
-            return Class.forName(className, true, repository.getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+    protected static Object getRelevantProductObject(IProductComponent productComponent,
+            Calendar effectiveDate,
+            boolean changingOverTime) {
+        Object source = productComponent;
+        if (changingOverTime) {
+            if (effectiveDate == null) {
+                source = productComponent.getLatestProductComponentGeneration();
+            } else {
+                source = productComponent.getGenerationBase(effectiveDate);
+            }
         }
+        return source;
     }
-
 }

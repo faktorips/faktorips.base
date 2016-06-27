@@ -171,6 +171,11 @@ public abstract class XProductClass extends XType {
     }
 
     @Override
+    public Set<XProductAttribute> getAllDeclaredAttributes() {
+        return initNodesForParts(getType().getProductCmptTypeAttributes(), XProductAttribute.class);
+    }
+
+    @Override
     public Set<XProductAssociation> getAssociations() {
         if (isCached(XProductAssociation.class)) {
             return getCachedObjects(XProductAssociation.class);
@@ -180,6 +185,11 @@ public abstract class XProductClass extends XType {
             putToCache(nodesForParts);
             return nodesForParts;
         }
+    }
+
+    @Override
+    public Set<XProductAssociation> getAllDeclaredAssociations() {
+        return initNodesForParts(getType().getProductCmptTypeAssociations(), XProductAssociation.class);
     }
 
     /**
@@ -217,6 +227,10 @@ public abstract class XProductClass extends XType {
             putToCache(nodesForParts);
             return nodesForParts;
         }
+    }
+
+    public Set<XTableUsage> getAllDeclaredTables() {
+        return initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
     }
 
     /**

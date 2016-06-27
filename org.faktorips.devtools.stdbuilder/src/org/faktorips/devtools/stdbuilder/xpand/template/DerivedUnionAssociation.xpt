@@ -18,6 +18,9 @@
      * 
      * @generated
      */
+     «IF isDefinedIn(currentContextType) -»
+     	«getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+     «ENDIF-»
      «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
      public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
@@ -49,6 +52,7 @@
      * 
      * @generated
      */
+     «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
      «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
     public «targetInterfaceName» «methodNameGetter»() {
      	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextType) AS this-»

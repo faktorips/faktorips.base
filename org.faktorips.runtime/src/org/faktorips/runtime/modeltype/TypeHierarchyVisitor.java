@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A visitor that allows to implement functions on a type's hierarchy. As we don't have an explizit
- * type hierarchy class, not the typicall implementation with accept/visit methods, but still a
+ * A visitor that allows to implement functions on a type's hierarchy. As we don't have an explicit
+ * type hierarchy class, not the typical implementation with accept/visit methods, but still a
  * visitor.
  * 
  * @author Jan Ortmann

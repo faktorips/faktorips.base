@@ -18,6 +18,7 @@ Require-Bundle: org.faktorips.dtflcommon,
  org.faktorips.abstracttest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
-Import-Package: org.junit;version="4.5.0",
+Import-Package: org.faktorips.devtools.stdbuilder.labels,
+ org.junit;version="4.5.0",
  org.junit.matchers;version="4.5.0",
  org.junit.runner;version="4.5.0"

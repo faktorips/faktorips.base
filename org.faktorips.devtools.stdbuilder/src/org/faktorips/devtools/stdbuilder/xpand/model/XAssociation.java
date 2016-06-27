@@ -21,11 +21,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
@@ -193,12 +195,16 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * 
      * @return The IType that is the parent of the association
      */
-    protected IType getTypeOfAssociation() {
+    protected IType getSourceType() {
         return getAssociation().getType();
     }
 
-    protected XType getSourceType() {
-        return getModelNode(getTypeOfAssociation(), getModelNodeType(true));
+    public XType getSourceModelNode() {
+        return getModelNode(getSourceType(), getModelNodeType(true));
+    }
+
+    public XType getSourceModelNodeNotConsiderChangingOverTime() {
+        return getModelNode(getSourceType(), getModelNodeType(false));
     }
 
     /**
@@ -259,7 +265,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     public String getTypeName() {
-        return getTypeOfAssociation().getName();
+        return getSourceType().getName();
     }
 
     protected String getClassName(XClass xClass) {
@@ -322,7 +328,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         if (generatingInterface) {
             return true;
         }
-        return !isGeneratePublishedInterfaces() && !isSubsetImplementedInSameType(getSourceType());
+        return !isGeneratePublishedInterfaces() && !isSubsetImplementedInSameType(getSourceModelNode());
     }
 
     protected boolean isSubsetImplementedInSameType(XType contextType) {
@@ -332,4 +338,41 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return !subsetAssociations.isEmpty();
     }
 
+    /**
+     * Returns the type of the association, e.g. association, composition. Note that aggregations
+     * are returned as composition.
+     * 
+     * @return type of the association
+     * @see AssociationType
+     */
+    public AssociationType getAssociationType() {
+        org.faktorips.devtools.core.model.type.AssociationType associationType = getAssociation().getAssociationType();
+        if (associationType.isMasterToDetail()) {
+            return AssociationType.Composition;
+        } else if (associationType.isCompositionDetailToMaster()) {
+            return AssociationType.CompositionToMaster;
+        } else if (associationType.isAssoziation()) {
+            return AssociationType.Association;
+        } else {
+            // should not occur
+            return null;
+        }
+    }
+
+    public XAssociation getMatchingAssociation() {
+        try {
+            IAssociation matchingAssociation = getAssociation().findMatchingAssociation();
+            if (matchingAssociation != null) {
+                return getModelNode(matchingAssociation, getMatchingClass());
+            } else {
+                return null;
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    protected abstract Class<? extends XAssociation> getMatchingClass();
+
+    public abstract AnnotatedJavaElementType getAnnotatedJavaElementTypeForGetter();
 }

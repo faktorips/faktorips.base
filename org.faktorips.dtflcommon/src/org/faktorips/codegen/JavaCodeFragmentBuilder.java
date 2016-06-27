@@ -1119,14 +1119,45 @@ public class JavaCodeFragmentBuilder {
      * fragment (if needed).
      * 
      * @param annotation The annotation class
-     * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
-     *            empty String, paranthesis aren't added.
+     * @param params Parameters for the annotation without parenthesis. If <code>null</code> or an
+     *            empty String, parenthesis aren't added.
      */
     public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, String params) {
+        JavaCodeFragment paramsCodeFragment = new JavaCodeFragment();
+        if (StringUtils.isNotEmpty(params)) {
+            paramsCodeFragment.append(params);
+        }
+        return annotationLn(annotation, paramsCodeFragment);
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters and a line separator. '@' character and a
+     * line feed will be automatically added. Import statements are added automatically to the code
+     * fragment (if needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without parenthesis. If empty, parenthesis aren't
+     *            added.
+     */
+    public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, JavaCodeFragment params) {
+        annotation(annotation.getName(), params).appendln();
+        return this;
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters and a line separator. '@' character and a
+     * line feed will be automatically added. Import statements are added automatically to the code
+     * fragment (if needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without parenthesis. If empty, parenthesis aren't
+     *            added.
+     */
+    public JavaCodeFragmentBuilder annotation(Class<?> annotation, JavaCodeFragment params) {
         if (annotation == null) {
             return this;
         }
-        annotationLn(annotation.getName(), params);
+        annotation(annotation.getName(), params);
         return this;
     }
 
@@ -1136,7 +1167,7 @@ public class JavaCodeFragmentBuilder {
      * fragment (if needed).
      * 
      * <pre>
-     * Example 
+     * Example
      *   annotation : javax.xml.bind.annotation.XmlRootElement
      *   paramName  : name
      *   stringValue: policy
@@ -1145,7 +1176,7 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation The annotation class
      * @param paramName The name of the parameter
-     * @param stringValue The unqoted string value for the parameter. This method generates the
+     * @param stringValue The unquoted string value for the parameter. This method generates the
      *            quotes.
      * 
      */
@@ -1158,36 +1189,12 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Writes the annotation with the indicated parameters. '@' character and a line feed will be
+     * Writes the annotation with the indicated parameter of type String. '@' character will be
      * automatically added. Import statements are added automatically to the code fragment (if
      * needed).
      * 
-     * @param annotation The annotation class
-     * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
-     *            empty String, paranthesis aren't added.
-     */
-    public JavaCodeFragmentBuilder annotationLn(String annotation, String params) {
-        if (annotation == null) {
-            return this;
-        }
-        fragment.append("@"); //$NON-NLS-1$
-        fragment.appendClassName(annotation);
-        if (params != null && params.length() > 0) {
-            fragment.append('(');
-            fragment.append(params);
-            fragment.append(')');
-        }
-        fragment.appendln();
-        return this;
-    }
-
-    /**
-     * Writes the annotation with the indicated parameter of type String. '@' character and a line
-     * feed will be automatically added. Import statements are added automatically to the code
-     * fragment (if needed).
-     * 
      * <pre>
-     * Example 
+     * Example
      *   annotation : javax.xml.bind.annotation.XmlRootElement
      *   paramName  : name
      *   stringValue: policy
@@ -1196,11 +1203,137 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation The annotation class
      * @param paramName The name of the parameter
-     * @param stringValue The unqoted string value for the parameter. This method generates the
+     * @param stringValue The unquoted string value for the parameter. This method generates the
+     *            quotes.
+     * 
+     */
+    public JavaCodeFragmentBuilder annotation(Class<?> annotation, String paramName, String stringValue) {
+        if (annotation == null) {
+            return this;
+        }
+        annotation(annotation.getName(), paramName, stringValue);
+        return this;
+    }
+
+    /**
+     * Writes the annotation with the indicated value of type String. '@' character will be
+     * automatically added. Import statements are added automatically to the code fragment (if
+     * needed). This should be used if the annotation has just a single parameter named 'value', for
+     * which the name can be omitted.
+     * 
+     * <pre>
+     * Example
+     *   annotation : javax.xml.bind.annotation.XmlRootElement
+     *   paramName  : name
+     *   stringValue: policy
+     *   Result: @XmlElement(&quot;Policy&quot;)
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param stringValue The unquoted string value for the parameter. This method generates the
+     *            quotes.
+     * 
+     */
+    public JavaCodeFragmentBuilder annotation(Class<?> annotation, String stringValue) {
+        if (annotation == null) {
+            return this;
+        }
+        annotation(annotation.getName(), stringValue);
+        return this;
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters. '@' character and a line feed will be
+     * automatically added. Import statements are added automatically to the code fragment (if
+     * needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
+     *            empty String, paranthesis aren't added.
+     */
+    public JavaCodeFragmentBuilder annotationLn(String annotation, JavaCodeFragment params) {
+        return annotation(annotation, params).appendln();
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters. '@' character and a line feed will be
+     * automatically added. Import statements are added automatically to the code fragment (if
+     * needed).
+     * 
+     * @param annotation The annotation class
+     * @param params Parameters for the annotation without paranthesis. If <code>null</code> or an
+     *            empty String, paranthesis aren't added.
+     */
+    public JavaCodeFragmentBuilder annotation(String annotation, JavaCodeFragment params) {
+        if (annotation == null) {
+            return this;
+        }
+        fragment.append("@"); //$NON-NLS-1$
+        fragment.appendClassName(annotation);
+        if (params != null && params.getSourcecode().length() > 0) {
+            fragment.append('(');
+            fragment.append(params);
+            fragment.append(')');
+        }
+        return this;
+    }
+
+    public JavaCodeFragmentBuilder annotationLn(String annotation, String params) {
+        JavaCodeFragment paramsCodeFragment = new JavaCodeFragment();
+        if (StringUtils.isNotEmpty(params)) {
+            paramsCodeFragment.append(params);
+        }
+        return annotationLn(annotation, paramsCodeFragment);
+    }
+
+    /**
+     * Writes the annotation with the indicated parameter of type String. '@' character and a line
+     * feed will be automatically added. Import statements are added automatically to the code
+     * fragment (if needed).
+     * 
+     * <pre>
+     * Example
+     *   annotation : javax.xml.bind.annotation.XmlRootElement
+     *   paramName  : name
+     *   stringValue: policy
+     *   Result: @XmlElement(name=&quot;Policy&quot;)
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param paramName The name of the parameter
+     * @param stringValue The unquoted string value for the parameter. This method generates the
      *            quotes.
      * 
      */
     public JavaCodeFragmentBuilder annotationLn(String annotation, String paramName, String stringValue) {
+        if (annotation == null) {
+            return this;
+        }
+        annotation(annotation, paramName, stringValue);
+        fragment.appendln();
+        return this;
+    }
+
+    /**
+     * Writes the annotation with the indicated parameter of type String. '@' character will be
+     * automatically added. Import statements are added automatically to the code fragment (if
+     * needed).
+     * 
+     * <pre>
+     * Example
+     *   annotation : javax.xml.bind.annotation.XmlRootElement
+     *   paramName  : name
+     *   stringValue: policy
+     *   Result: @XmlElement(name=&quot;Policy&quot;)
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param paramName The name of the parameter
+     * @param stringValue The unquoted string value for the parameter. This method generates the
+     *            quotes.
+     * 
+     */
+    public JavaCodeFragmentBuilder annotation(String annotation, String paramName, String stringValue) {
         if (annotation == null) {
             return this;
         }
@@ -1211,7 +1344,37 @@ public class JavaCodeFragmentBuilder {
         fragment.append('=');
         fragment.appendQuoted(stringValue);
         fragment.append(')');
-        fragment.appendln();
+        return this;
+    }
+
+    /**
+     * Writes the annotation with the indicated value of type String. '@' character will be
+     * automatically added. Import statements are added automatically to the code fragment (if
+     * needed). This should be used if the annotation has just a single parameter named 'value', for
+     * which the name can be omitted.
+     * 
+     * <pre>
+     * Example
+     *   annotation : javax.xml.bind.annotation.XmlRootElement
+     *   paramName  : name
+     *   stringValue: policy
+     *   Result: @XmlElement(&quot;Policy&quot;)
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param stringValue The unquoted string value for the parameter. This method generates the
+     *            quotes.
+     * 
+     */
+    public JavaCodeFragmentBuilder annotation(String annotation, String stringValue) {
+        if (annotation == null) {
+            return this;
+        }
+        fragment.append("@"); //$NON-NLS-1$
+        fragment.appendClassName(annotation);
+        fragment.append('(');
+        fragment.appendQuoted(stringValue);
+        fragment.append(')');
         return this;
     }
 
@@ -1221,7 +1384,7 @@ public class JavaCodeFragmentBuilder {
      * fragment (if needed).
      * 
      * <pre>
-     * Example 
+     * Example
      *   annotation : javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter
      *   paramName  : value
      *   classValue: EnumValueXmlAdapter.class
@@ -1253,7 +1416,7 @@ public class JavaCodeFragmentBuilder {
      * added. Import statements are added automatically to the code fragment (if needed).
      * 
      * <pre>
-     * Example 
+     * Example
      *   annotation : javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter
      *   paramName  : value
      *   classValue: EnumValueXmlAdapter.class
@@ -1463,6 +1626,20 @@ public class JavaCodeFragmentBuilder {
         return this;
     }
 
+    public JavaCodeFragmentBuilder appendJoin(List<JavaCodeFragment> parts, String separator) {
+        if (parts == null) {
+            return this;
+        }
+        String nullSafeSeparator = StringUtils.defaultString(separator);
+        for (int i = 0; i < parts.size(); i++) {
+            append(parts.get(i));
+            if (i + 1 < parts.size()) {
+                append(nullSafeSeparator);
+            }
+        }
+        return this;
+    }
+
     @Override
     public String toString() {
         return fragment.toString();
@@ -1608,4 +1785,5 @@ public class JavaCodeFragmentBuilder {
             return exceptionClasses == null ? 0 : exceptionClasses.length;
         }
     }
+
 }

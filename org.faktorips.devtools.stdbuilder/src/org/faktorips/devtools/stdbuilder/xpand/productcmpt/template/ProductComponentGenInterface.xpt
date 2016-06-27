@@ -22,9 +22,10 @@
 		«ENDIF-»
 		 * @generated
 		 */
-		«IF !productCmptType.changingOverTime-»
+	     «IF !productCmptType.changingOverTime-»
 		 @Deprecated
 		«ENDIF-» 
+		«getAnnotations(AnnotatedJavaElementType::PUBLISHED_INTERFACE_CLASS)»
 		public interface «interfaceName» 
 		«IF extendsInterface-»
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»

@@ -649,12 +649,18 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
+    /**
+     * Does nothing if the referenced project is <code>null</code>.
+     */
     private void searchReferencedProject(AbstractSearch search,
             IpsObjectPathSearchContext searchContext,
             IIpsObjectPathEntry entry) {
         if (search.isIncludeIndirect() && isProjectRefEntry(entry)) {
             IIpsProject referencedIpsProject = search.getReferencedIpsProject(entry);
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().searchIpsObjectPath(search, searchContext);
+            if (referencedIpsProject != null) {
+                ((IpsProject)referencedIpsProject).getIpsObjectPathInternal()
+                        .searchIpsObjectPath(search, searchContext);
+            }
         }
     }
 

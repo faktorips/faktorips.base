@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
@@ -17,6 +18,16 @@ import java.util.Map;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.ExtensionPropertyAnnGen;
+import org.faktorips.devtools.stdbuilder.xpand.LabelAndDescriptionAnnGen;
+import org.faktorips.devtools.stdbuilder.xpand.PublishedInterfaceAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.attribute.AttributeAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptAssociationAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptDeclClassAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptAssociationAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptDeclClassAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.TableUsageAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
 
@@ -33,8 +44,26 @@ public class AnnotationGeneratorBuilder {
                 new PolicyCmptImplClassJaxbAnnGenFactory(),
                 // since version java doc
                 new SinceVersionJavaDocTagGenerator.Factory(),
-                // annotations for tables and table rows
-                new TableAnnotationGeneratorFactory() };
+                // tables and table rows
+                new TableAnnGenFactory(),
+                // attributes
+                new AttributeAnnGenFactory(),
+                // policy associations
+                new PolicyCmptAssociationAnnGenFactory(),
+                // product associations
+                new ProductCmptAssociationAnnGenFactory(),
+                // policy component implementation classes
+                new PolicyCmptDeclClassAnnGenFactory(),
+                // product component implementation classes
+                new ProductCmptDeclClassAnnGenFactory(),
+                // published interfaces
+                new PublishedInterfaceAnnGenFactory(),
+                // extension properties
+                new ExtensionPropertyAnnGen.Factory(),
+                // labels and descriptions
+                new LabelAndDescriptionAnnGen.Factory(),
+                // table usage
+                new TableUsageAnnGenFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

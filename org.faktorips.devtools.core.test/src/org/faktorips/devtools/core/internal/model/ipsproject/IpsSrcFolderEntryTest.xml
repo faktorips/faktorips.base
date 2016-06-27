@@ -7,6 +7,7 @@
 		basePackageMergable="org.sample.generated"
 		tocPath="motor.repository-toc.xml"
 		outputFolderDerived="extensions" 
-		basePackageDerived="org.sample.extensions"/>
+		basePackageDerived="org.sample.extensions"
+		uniqueQualifier="abc"/>
 	<Entry type="src" sourceFolder="ipssrc/modelclasses" outputFolder ="" basePackage=""/>
 </TestCases>

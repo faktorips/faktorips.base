@@ -20,10 +20,8 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -165,43 +163,14 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
         when(ipsSrcFile.getIpsObject()).thenReturn(pcType);
         String pcTypeName = "PcTypeTestName";
-        when(ipsSrcFile.getQualifiedNameType()).thenReturn(
-                new QualifiedNameType(pcTypeName, IpsObjectType.POLICY_CMPT_TYPE));
+        QualifiedNameType qualifiedNameType = new QualifiedNameType(pcTypeName, IpsObjectType.POLICY_CMPT_TYPE);
+        when(ipsSrcFile.getQualifiedNameType()).thenReturn(qualifiedNameType);
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
 
         builderSpy.delete(ipsSrcFile);
 
-        verify(generatorMock).deleteAllMessagesFor(pcTypeName);
+        verify(generatorMock).deleteAllMessagesFor(qualifiedNameType);
 
-    }
-
-    @Test
-    public void testDeleteIgnoresOtherTypes() throws Exception {
-        StandardBuilderSet builderSet = mockBuilderSet();
-
-        // we use a spy object to insert the generatorMock
-        ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
-        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
-        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
-                any(ISupportedLanguage.class));
-
-        IIpsPackageFragment pack = mockPackageFragment();
-
-        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
-        IpsObjectType ipsObjectType = mock(IpsObjectType.class);
-        when(ipsSrcFile.getQualifiedNameType()).thenReturn(new QualifiedNameType("pcType", ipsObjectType));
-        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
-
-        // should not throw any exception
-        builderSpy.delete(ipsSrcFile);
-        verifyZeroInteractions(generatorMock);
-
-        IIpsObject anyIpsObject = mock(IIpsObject.class);
-        when(ipsSrcFile.getIpsObject()).thenReturn(anyIpsObject);
-
-        // should not throw any exception
-        builderSpy.delete(ipsSrcFile);
-        verifyZeroInteractions(generatorMock);
     }
 
     @Test
@@ -270,35 +239,6 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         ISupportedLanguage supportedLanguage = new SupportedLanguage(locale, false);
         IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         assertEquals(file, propertyFile);
-    }
-
-    @Test
-    public void testBeforeBuildProcess() throws Exception {
-        StandardBuilderSet builderSet = mockBuilderSet();
-        IIpsPackageFragment fragment = mockPackageFragment();
-        IIpsPackageFragmentRoot root = fragment.getRoot();
-
-        IIpsProject ipsProject = mockIpsProject();
-        when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
-
-        ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
-                builderSet);
-
-        ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
-        when(propertyFile.exists()).thenReturn(true);
-        IFolder folder = mock(IFolder.class);
-        when(propertyFile.getParent()).thenReturn(folder);
-
-        validationMessagesBuilder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        verify(folder).exists();
-        verify(folder).create(anyBoolean(), anyBoolean(), any(IProgressMonitor.class));
-
-        reset(folder);
-        when(folder.exists()).thenReturn(true);
-        validationMessagesBuilder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        verify(folder).exists();
-        verifyNoMoreInteractions(folder);
     }
 
     @Test

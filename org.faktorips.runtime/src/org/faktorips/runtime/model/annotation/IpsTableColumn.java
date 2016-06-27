@@ -9,8 +9,10 @@
  *******************************************************************************/
 package org.faktorips.runtime.model.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import org.faktorips.runtime.model.table.TableColumnModel;
 
@@ -19,6 +21,7 @@ import org.faktorips.runtime.model.table.TableColumnModel;
  * {@link TableColumnModel}.
  */
 @Retention(value = RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface IpsTableColumn {
 
     /**

@@ -10,25 +10,11 @@
 
 package org.faktorips.runtime.modeltype;
 
-import org.faktorips.runtime.IModelObject;
-
 /**
  * 
  * @author Daniel Hohenberger
  */
 public interface IModelTypeAttribute extends IModelElement {
-
-    public static final String XML_TAG = "ModelTypeAttribute";
-
-    public static final String XML_WRAPPER_TAG = "ModelTypeAttributes";
-
-    public static final String PROPERTY_DATATYPE = "datatype";
-
-    public static final String PROPERTY_VALUE_SET_TYPE = "valueSetType";
-
-    public static final String PROPERTY_ATTRIBUTE_TYPE = "attributeType";
-
-    public static final String PROPERTY_PRODUCT_RELEVANT = "isProductRelevant";
 
     /**
      * Returns the model type this attribute belongs to.
@@ -55,6 +41,15 @@ public interface IModelTypeAttribute extends IModelElement {
      * Returns if this attribute is product relevant.
      */
     public boolean isProductRelevant();
+
+    /**
+     * Checks whether this attribute is changing over time. For product attribute that means the
+     * attribute resides in the generation. For policy attributes the optional product configuration
+     * ({@link #isProductRelevant()}) resides in the generation.
+     * 
+     * @return whether or not this attribute is changing over time.
+     */
+    public boolean isChangingOverTime();
 
     /**
      * Enum defining the possible value set types.
@@ -105,31 +100,5 @@ public interface IModelTypeAttribute extends IModelElement {
             return null;
         }
     }
-
-    /**
-     * Returns the value of the given model object's attribute identified by this model type
-     * attribute.
-     * 
-     * @param modelObject a model object corresponding to the {@link IModelType} this attribute
-     *            belongs to
-     * @return the value of the given model object's attribute identified by this model type
-     *         attribute
-     * @throws IllegalArgumentException if the model object does not have an attribute fitting this
-     *             model type attribute or that attribute is not accessible for any reason
-     */
-    public Object getValue(IModelObject modelObject);
-
-    /**
-     * Sets the given model object's attribute identified by this model type attribute to the given
-     * value. This only works for attributes of type {@link AttributeType#CHANGEABLE}.
-     * 
-     * @param modelObject a model object corresponding to the {@link IModelType} this attribute
-     *            belongs to
-     * @param value an object of this model type attribute's datatype
-     * @throws IllegalArgumentException if the model object does not have a changeable attribute
-     *             fitting this model type attribute or that attribute is not accessible for any
-     *             reason or the value does not fit the attribute's datatype.
-     */
-    public void setValue(IModelObject modelObject, Object value);
 
 }

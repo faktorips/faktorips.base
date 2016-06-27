@@ -24,7 +24,7 @@ public class ProjectSearch extends AbstractSearch {
 
     @Override
     public void processEntry(IIpsObjectPathEntry entry) {
-        if (isProjectRefEntry(entry)) {
+        if (isProjectRefEntry(entry) && getReferencedIpsProject(entry) != null) {
             projects.add(getReferencedIpsProject(entry));
         }
     }
