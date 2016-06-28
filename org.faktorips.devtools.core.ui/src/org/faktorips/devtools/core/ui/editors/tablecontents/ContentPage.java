@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.SearchBar;
 import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -130,6 +131,8 @@ public class ContentPage extends IpsObjectEditorPage {
             createExtensionProperty(formBody, toolkit);
         }
 
+        final SearchBar searchBar = new SearchBar(formBody, toolkit);
+
         final Table table = createTable(formBody);
         initTableViewer(table, toolkit);
 
@@ -165,6 +168,7 @@ public class ContentPage extends IpsObjectEditorPage {
             formToolbarManager.add(new NavigateToTableStructureAction(getTableContents()));
         }
         formToolbarManager.update(true);
+        searchBar.setFilterTo(tableViewer);
 
         // FS#822 workaround to activate the correct cell editor (row and column),
         // after scrolling and activating another cell the table on a different page.
@@ -362,10 +366,10 @@ public class ContentPage extends IpsObjectEditorPage {
                 // use the number of columns in the contents as only those can be edited.
                 CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i)
-                            .findValueDatatype(getTableContents().getIpsProject());
-                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault()
-                            .getValueDatatypeControlFactory(dataType);
+                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
+                            getTableContents().getIpsProject());
+                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                            dataType);
                     IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
                             getTableContents().getIpsProject());
                     TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor

@@ -65,7 +65,7 @@ public class TableContentsCellModifier implements ICellModifier {
         int columnIndex = getColumnIndexForProperty(property);
         if (columnIndex >= 0) {
             IRow row = null;
-            if (element instanceof TableItem) {
+            if (element instanceof TableItem && !((TableItem)element).isDisposed()) {
                 row = (IRow)((TableItem)element).getData();
             } else if (element instanceof IRow) {
                 row = (IRow)element;

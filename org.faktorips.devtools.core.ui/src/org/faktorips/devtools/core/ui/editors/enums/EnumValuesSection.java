@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,13 +23,12 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -40,10 +41,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.enums.EnumValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -64,9 +67,12 @@ import org.faktorips.devtools.core.ui.controls.tableedit.DatatypeEditingSupport;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport.EditCondition;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
+import org.faktorips.devtools.core.ui.editors.SearchBar;
+import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TableUtil;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -157,12 +163,15 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     private boolean enumTypeEditing;
 
+    private final IEditorSite editorSite;
+
     /**
      * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
      * <tt>IEnumValueContainer</tt>.
      * 
      * @param enumValueContainer The <tt>IEnumValue</tt>s of this <tt>IEnumValueContainer</tt> will
      *            be shown.
+     * @param editorSite the editor site to register common providers
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
@@ -170,9 +179,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      *             referenced by the IPS object being edited.
      * @throws NullPointerException If <tt>enumValueContainer</tt> is <tt>null</tt>.
      */
-    public EnumValuesSection(final IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
-            throws CoreException {
+    public EnumValuesSection(final IEnumValueContainer enumValueContainer, IEditorSite editorSite, Composite parent,
+            UIToolkit toolkit) throws CoreException {
         super(enumValueContainer, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        this.editorSite = editorSite;
         ArgumentCheck.notNull(enumValueContainer);
 
         this.enumValueContainer = enumValueContainer;
@@ -213,9 +223,21 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
+        SearchBar searchBar = new SearchBar(client, toolkit);
         enumValuesTable = toolkit.createTable(client, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
                 | SWT.FULL_SELECTION);
         enumValuesTableViewer = new TableViewer(enumValuesTable);
+
+        final SelectionStatusBarPublisher selectionStatusBarPublisher = new SelectionStatusBarPublisher(editorSite);
+        enumValuesTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
+            }
+
+        });
+        searchBar.setFilterTo(enumValuesTableViewer);
 
         createTableColumns();
 
@@ -248,6 +270,21 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
         });
         createTableValidationHoverService();
+    }
+
+    private List<Integer> rowsFromSelection(ISelection selection) {
+        List<Integer> rowNumbers = new ArrayList<Integer>();
+        if (!selection.isEmpty()) {
+            Collection<EnumValue> rows = TypedSelection.createAnyCount(EnumValue.class, selection).getElements();
+            for (EnumValue row : rows) {
+                rowNumbers.add(calculateEnumRowNr(row));
+            }
+        }
+        return rowNumbers;
+    }
+
+    private int calculateEnumRowNr(EnumValue enumValue) {
+        return enumValue.getEnumValueContainer().getEnumValues().indexOf(enumValue);
     }
 
     /** Creates the table columns. */
@@ -663,32 +700,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
             return enumValues.get(index);
         }
-    }
-
-    /** The content provider for the table viewer. */
-    private static class EnumValuesContentProvider implements IStructuredContentProvider {
-
-        private final IEnumValueContainer enumValueContainer;
-
-        public EnumValuesContentProvider(IEnumValueContainer enumValueContainer) {
-            this.enumValueContainer = enumValueContainer;
-        }
-
-        @Override
-        public Object[] getElements(Object inputElement) {
-            return enumValueContainer.getEnumValues().toArray();
-        }
-
-        @Override
-        public void dispose() {
-            // Nothing to dispose.
-        }
-
-        @Override
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            // Nothing to do on input change event.
-        }
-
     }
 
     /** The label provider for the table viewer. */

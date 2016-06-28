@@ -106,7 +106,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
         enumAttributesSection = new EnumAttributesSection(enumType, formBody, getSite(), toolkit);
         try {
-            enumValuesSection = new EnumValuesSection(enumType, formBody, toolkit);
+            enumValuesSection = new EnumValuesSection(enumType, getEditorSite(), formBody, toolkit);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
