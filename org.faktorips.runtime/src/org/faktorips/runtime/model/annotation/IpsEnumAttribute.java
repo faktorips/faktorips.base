@@ -21,4 +21,10 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 public @interface IpsEnumAttribute {
     String name();
+
+    boolean identifier() default false;
+
+    boolean unique() default false;
+
+    boolean displayName() default false;
 }

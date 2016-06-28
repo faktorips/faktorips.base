@@ -10,9 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
-import org.faktorips.runtime.model.annotation.IpsEnumDisplayName;
-import org.faktorips.runtime.model.annotation.IpsEnumIdentifier;
-import org.faktorips.runtime.model.annotation.IpsEnumUnique;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,9 +48,9 @@ public class EnumAttributeModelTest {
     }
 
     @Test
-    public void testIsId() {
-        assertThat(fooModel.isId(), is(true));
-        assertThat(barModel.isId(), is(false));
+    public void testIsIdentifier() {
+        assertThat(fooModel.isIdentifier(), is(true));
+        assertThat(barModel.isIdentifier(), is(false));
     }
 
     @Test
@@ -102,15 +99,12 @@ public class EnumAttributeModelTest {
             this.bar = bar;
         }
 
-        @IpsEnumAttribute(name = "foo")
-        @IpsEnumUnique
-        @IpsEnumIdentifier
+        @IpsEnumAttribute(name = "foo", unique = true, identifier = true)
         public Integer getFoo() {
             return foo;
         }
 
-        @IpsEnumAttribute(name = "bar")
-        @IpsEnumDisplayName
+        @IpsEnumAttribute(name = "bar", displayName = true)
         public String getBar(Locale locale) {
             return bar.get(locale);
         }

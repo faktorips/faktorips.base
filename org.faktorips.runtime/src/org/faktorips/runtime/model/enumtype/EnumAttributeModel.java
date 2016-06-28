@@ -13,9 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
-import org.faktorips.runtime.model.annotation.IpsEnumDisplayName;
-import org.faktorips.runtime.model.annotation.IpsEnumIdentifier;
-import org.faktorips.runtime.model.annotation.IpsEnumUnique;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.modeltype.internal.AbstractModelElement;
 import org.faktorips.runtime.modeltype.internal.DocumentationType;
@@ -32,11 +30,14 @@ public class EnumAttributeModel extends AbstractModelElement {
 
     private final Method getterMethod;
 
+    private final IpsEnumAttribute annotation;
+
     public EnumAttributeModel(EnumModel enumModel, String name, Method getterMethod) {
         super(name, getterMethod.getAnnotation(IpsExtensionProperties.class));
         this.enumModel = enumModel;
         this.datatype = getterMethod.getReturnType();
         this.getterMethod = getterMethod;
+        this.annotation = getterMethod.getAnnotation(IpsEnumAttribute.class);
     }
 
     /**
@@ -50,21 +51,21 @@ public class EnumAttributeModel extends AbstractModelElement {
      * Whether this attribute's value is unique over all the enum's values.
      */
     public boolean isUnique() {
-        return getterMethod.isAnnotationPresent(IpsEnumUnique.class);
+        return annotation.unique();
     }
 
     /**
      * Whether this attribute is used to identify an enum value.
      */
-    public boolean isId() {
-        return getterMethod.isAnnotationPresent(IpsEnumIdentifier.class);
+    public boolean isIdentifier() {
+        return annotation.identifier();
     }
 
     /**
      * Whether this attribute is used to display an enum value for human readability.
      */
     public boolean isDisplayName() {
-        return getterMethod.isAnnotationPresent(IpsEnumDisplayName.class);
+        return annotation.displayName();
     }
 
     /**
