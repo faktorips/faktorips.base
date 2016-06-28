@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Table;
@@ -110,9 +111,8 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
                  * in GTK / Linux appending a new row resetting the selected column to -1 so we safe
                  * the currently selected column
                  */
-                int currentRow = getCurrentRow();
-                appendTableRow();
-                tableViewer.getTable().select(currentRow);
+                Object newRow = appendTableRow();
+                tableViewer.setSelection(new StructuredSelection(newRow), true);
             } else {
                 /*
                  * This will ensure that if the cursor is in the last row and last column, hitting
@@ -241,19 +241,21 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * <p>
      * Does nothing otherwise.
      */
-    private void appendTableRow() {
+    private Object appendTableRow() {
         if (tableViewer.getInput() instanceof ITableContents) {
             ITableContents tableContents = (ITableContents)tableViewer.getInput();
             IRow newRow = tableContents.getTableRows().newRow();
             tableViewer.add(newRow);
-
+            return newRow;
         } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
             try {
-                enumValueContainer.newEnumValue();
+                return enumValueContainer.newEnumValue();
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            return null;
         }
     }
 

@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
@@ -65,10 +64,6 @@ public class DeleteRowAction extends IpsAction {
         try {
             model.executeModificationsWithSingleEvent(new DeleteSelectedRowsModification(
                     getIpsSrcFileForSelection(selection), selection, tableViewer, contentPage));
-
-            ITableContents tableContents = (ITableContents)tableViewer.getInput();
-            tableViewer.setItemCount(tableContents.getTableRows().getNumOfRows());
-            tableViewer.setInput(tableContents);
             tableViewer.refresh(false);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

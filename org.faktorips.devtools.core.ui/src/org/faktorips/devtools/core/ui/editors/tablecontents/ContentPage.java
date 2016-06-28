@@ -305,9 +305,9 @@ public class ContentPage extends IpsObjectEditorPage {
 
             tableViewer = new TableViewer(table);
             tableViewer.setUseHashlookup(true);
+            tableViewer.setContentProvider(new TableContentsContentProvider());
             TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
             tableViewer.setLabelProvider(labelProvider);
-            tableViewer.setContentProvider(new TableContentsContentProvider(tableViewer));
 
             ITableStructure tableStructure = getTableStructure();
             String[] columnProperties = new String[getTableContents().getNumOfColumns()];
@@ -345,10 +345,10 @@ public class ContentPage extends IpsObjectEditorPage {
                 // use the number of columns in the contents as only those can be edited.
                 CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
-                            getTableContents().getIpsProject());
-                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                            dataType);
+                    ValueDatatype dataType = tableStructure.getColumn(i)
+                            .findValueDatatype(getTableContents().getIpsProject());
+                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault()
+                            .getValueDatatypeControlFactory(dataType);
                     IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
                             getTableContents().getIpsProject());
                     TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
