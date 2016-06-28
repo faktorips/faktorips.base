@@ -334,7 +334,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
             boolean dirty = getIpsSrcFile().isDirty();
             objectHasChanged();
             if (!dirty) {
-                getIpsSrcFile().save(true, null);
+                getIpsSrcFile().markAsClean();
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
