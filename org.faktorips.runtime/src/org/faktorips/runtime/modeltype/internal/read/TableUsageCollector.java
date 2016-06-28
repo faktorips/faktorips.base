@@ -17,6 +17,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsTableUsage;
 import org.faktorips.runtime.model.annotation.IpsTableUsages;
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.ITableUsageModel;
 import org.faktorips.runtime.modeltype.internal.ModelType;
 import org.faktorips.runtime.modeltype.internal.TableUsageModel;
@@ -93,7 +94,8 @@ public class TableUsageCollector extends ModelPartCollector<ITableUsageModel, Ta
         }
 
         @Override
-        public ITableUsageModel create(ModelType modelType) {
+        public ITableUsageModel create(IModelElement parentElement) {
+            ModelType modelType = (ModelType)parentElement;
             if (isValid()) {
                 return createValid(modelType);
             } else {

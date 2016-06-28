@@ -11,7 +11,6 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,10 +20,9 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
-import org.faktorips.runtime.modeltype.IPolicyModel;
 import org.faktorips.runtime.modeltype.IPolicyAssociationModel;
 import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
-import org.faktorips.runtime.modeltype.internal.read.ModelPartCollector;
+import org.faktorips.runtime.modeltype.IPolicyModel;
 import org.faktorips.runtime.modeltype.internal.read.PolicyAssociationModelCollector;
 import org.faktorips.runtime.modeltype.internal.read.PolicyAttributeModelCollector;
 import org.faktorips.runtime.modeltype.internal.read.TypeModelPartsReader;
@@ -49,8 +47,7 @@ public class PolicyModel extends ModelType implements IPolicyModel {
     private void initParts(AnnotatedDeclaration annotatedDeclararation,
             PolicyAttributeModelCollector attributeCollector,
             PolicyAssociationModelCollector associationCollector) {
-        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(Arrays.<ModelPartCollector<?, ?>> asList(
-                attributeCollector, associationCollector));
+        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector);
         typeModelPartsReader.init(annotatedDeclararation);
         typeModelPartsReader.read(annotatedDeclararation);
     }

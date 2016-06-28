@@ -12,7 +12,6 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -25,12 +24,11 @@ import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
-import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.modeltype.IProductAssociationModel;
 import org.faktorips.runtime.modeltype.IProductAttributeModel;
+import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.modeltype.ITableUsageModel;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
-import org.faktorips.runtime.modeltype.internal.read.ModelPartCollector;
 import org.faktorips.runtime.modeltype.internal.read.ProductAssociationModelCollector;
 import org.faktorips.runtime.modeltype.internal.read.ProductAttributeModelCollector;
 import org.faktorips.runtime.modeltype.internal.read.TableUsageCollector;
@@ -65,8 +63,8 @@ public class ProductModel extends ModelType implements IProductModel {
     private void initParts(ProductAttributeModelCollector attributeCollector,
             ProductAssociationModelCollector associationCollector,
             TableUsageCollector tableUsageCollector) {
-        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(Arrays.<ModelPartCollector<?, ?>> asList(
-                attributeCollector, associationCollector, tableUsageCollector));
+        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector,
+                tableUsageCollector);
         typeModelPartsReader.init(getAnnotatedDeclaration());
         typeModelPartsReader.read(getAnnotatedDeclaration());
         if (isChangingOverTime()) {

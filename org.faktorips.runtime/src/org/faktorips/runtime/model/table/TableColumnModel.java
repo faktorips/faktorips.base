@@ -11,18 +11,19 @@ package org.faktorips.runtime.model.table;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsTableColumn;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.internal.AbstractModelElement;
 import org.faktorips.runtime.modeltype.internal.DocumentationType;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader.ModelElementCreator;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader.NameAccessor;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -70,53 +71,39 @@ public class TableColumnModel extends AbstractModelElement {
     }
 
     protected static LinkedHashMap<String, TableColumnModel> createModelsFrom(TableModel tableModel,
-            List<String> declaredColumnNames,
+            Class<? extends ITable> tableObjectClass,
             Class<?> tableRowClass) {
+        Class<IpsTableStructure> parentAnnotation = IpsTableStructure.class;
+        NamesAccessor<IpsTableStructure> getNamesOfPartsFromParentAnnotation = new NamesAccessor<IpsTableStructure>() {
 
-        HashMap<String, TableColumnModel> columnModels = new HashMap<String, TableColumnModel>();
-
-        for (Method method : tableRowClass.getMethods()) {
-            if (method.isAnnotationPresent(IpsTableColumn.class)) {
-                IpsTableColumn annotation = method.getAnnotation(IpsTableColumn.class);
-
-                String columnName = annotation.name();
-
-                if (declaredColumnNames.contains(columnName)) {
-                    Class<?> returntype = method.getReturnType();
-                    columnModels.put(columnName, new TableColumnModel(tableModel, columnName, returntype, method));
-                } else {
-                    throw new IllegalStateException("\"" + columnName + "\" is not listed as column in the @"
-                            + IpsTableStructure.class.getSimpleName() + " annotation");
-                }
+            @Override
+            public String[] getNames(IpsTableStructure annotation) {
+                return annotation.columns();
             }
-        }
+        };
+        Class<IpsTableColumn> childAnnotation = IpsTableColumn.class;
+        NameAccessor<IpsTableColumn> getNameOfPartFromChildAnnotation = new NameAccessor<IpsTableColumn>() {
 
-        // as no duplicates are allowed, this should guaranty the equality
-        if (columnModels.size() == declaredColumnNames.size()) {
-            return sortHashMapByKeys(declaredColumnNames, columnModels);
-        } else {
-            // in case declaredColumnNames is a fix size list, remove is not supported
-            LinkedList<String> declaredColumnNamesCopy = new LinkedList<String>(declaredColumnNames);
-
-            declaredColumnNamesCopy.removeAll(columnModels.keySet());
-            String s = "";
-            if (declaredColumnNamesCopy.size() > 1) {
-                s = "s";
+            @Override
+            public String getName(IpsTableColumn annotation) {
+                return annotation.name();
             }
-            throw new IllegalStateException("No getter method" + s + " found for annotated column" + s + " \""
-                    + IpsStringUtils.join(declaredColumnNamesCopy, "\", \"") + "\"");
-        }
-    }
-
-    private static LinkedHashMap<String, TableColumnModel> sortHashMapByKeys(List<String> keys,
-            HashMap<String, TableColumnModel> columnModels) {
-
-        LinkedHashMap<String, TableColumnModel> results = new LinkedHashMap<String, TableColumnModel>();
-        for (String key : keys) {
-            results.put(key, columnModels.get(key));
-        }
-
-        return results;
+        };
+        ModelElementCreator<TableColumnModel> createTableColumnModel = new ModelElementCreator<TableColumnModel>() {
+            @Override
+            public TableColumnModel create(IModelElement modelType, String name, Method getterMethod) {
+                return new TableColumnModel((TableModel)modelType, name, getterMethod.getReturnType(), getterMethod);
+            }
+        };
+        // @formatter:off
+        SimpleTypeModelPartsReader<TableColumnModel, IpsTableStructure, IpsTableColumn> modelPartsReader = new SimpleTypeModelPartsReader<TableColumnModel, IpsTableStructure, IpsTableColumn>(
+                parentAnnotation,
+                getNamesOfPartsFromParentAnnotation,
+                childAnnotation,
+                getNameOfPartFromChildAnnotation,
+                createTableColumnModel);
+        return modelPartsReader.createParts(tableObjectClass, tableRowClass, tableModel);
+        // @formatter:on
     }
 
     @Override

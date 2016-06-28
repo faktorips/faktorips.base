@@ -11,12 +11,19 @@ package org.faktorips.runtime.model.enumtype;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
+import org.faktorips.runtime.model.annotation.IpsEnum;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.internal.AbstractModelElement;
 import org.faktorips.runtime.modeltype.internal.DocumentationType;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader.ModelElementCreator;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader.NameAccessor;
+import org.faktorips.runtime.modeltype.internal.read.SimpleTypeModelPartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -123,5 +130,40 @@ public class EnumAttributeModel extends AbstractModelElement {
     @Override
     protected MessagesHelper getMessageHelper() {
         return enumModel.getMessageHelper();
+    }
+
+    protected static LinkedHashMap<String, EnumAttributeModel> createFrom(EnumModel enumModel, Class<?> enumClass) {
+        Class<IpsEnum> parentAnnotation = IpsEnum.class;
+        NamesAccessor<IpsEnum> getNamesOfPartsFromParentAnnotation = new NamesAccessor<IpsEnum>() {
+
+            @Override
+            public String[] getNames(IpsEnum annotation) {
+                return annotation.attributeNames();
+            }
+        };
+        Class<IpsEnumAttribute> childAnnotation = IpsEnumAttribute.class;
+        NameAccessor<IpsEnumAttribute> getNameOfPartFromChildAnnotation = new NameAccessor<IpsEnumAttribute>() {
+
+            @Override
+            public String getName(IpsEnumAttribute annotation) {
+                return annotation.name();
+            }
+        };
+        ModelElementCreator<EnumAttributeModel> createEnumAttributeModel = new ModelElementCreator<EnumAttributeModel>() {
+            @Override
+            public EnumAttributeModel create(IModelElement modelType, String name, Method getterMethod) {
+                return new EnumAttributeModel((EnumModel)modelType, name, getterMethod);
+            }
+        };
+        // @formatter:off
+        SimpleTypeModelPartsReader<EnumAttributeModel, IpsEnum, IpsEnumAttribute> modelPartsReader = new SimpleTypeModelPartsReader<EnumAttributeModel, IpsEnum, IpsEnumAttribute>(
+                parentAnnotation,
+                getNamesOfPartsFromParentAnnotation,
+                childAnnotation,
+                getNameOfPartFromChildAnnotation,
+                createEnumAttributeModel);
+
+        return modelPartsReader.createParts(enumClass, enumModel);
+        // @formatter:on
     }
 }

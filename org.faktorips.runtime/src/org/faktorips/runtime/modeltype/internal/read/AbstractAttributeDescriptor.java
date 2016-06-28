@@ -13,6 +13,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.internal.AbstractAttributeModel;
@@ -45,7 +46,8 @@ abstract class AbstractAttributeDescriptor<T extends IModelTypeAttribute> extend
     }
 
     @Override
-    public T create(ModelType modelType) {
+    public T create(IModelElement parentElement) {
+        ModelType modelType = (ModelType)parentElement;
         if (isValid()) {
             return createValid(modelType);
         } else {

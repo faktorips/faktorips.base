@@ -11,6 +11,7 @@ package org.faktorips.runtime.modeltype.internal.read;
 
 import java.lang.reflect.Method;
 
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.internal.ModelType;
@@ -33,7 +34,8 @@ abstract class AbstractAssociationDescriptor<P extends IModelTypeAssociation> ex
     }
 
     @Override
-    public P create(ModelType modelType) {
+    public P create(IModelElement parentElement) {
+        ModelType modelType = (ModelType)parentElement;
         if (isValid()) {
             return createValid(modelType);
         } else {
@@ -46,7 +48,7 @@ abstract class AbstractAssociationDescriptor<P extends IModelTypeAssociation> ex
                 if (association != null) {
                     @SuppressWarnings("unchecked")
                     P overwritingAssociationFor = (P)((ModelTypeAssociation)association)
-                            .createOverwritingAssociationFor(modelType);
+                    .createOverwritingAssociationFor(modelType);
                     return overwritingAssociationFor;
                 }
             }
