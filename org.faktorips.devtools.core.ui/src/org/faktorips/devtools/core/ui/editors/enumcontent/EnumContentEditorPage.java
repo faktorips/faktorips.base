@@ -81,11 +81,12 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         formBody.setLayout(createPageLayout(1, false));
 
         createToolbarActions();
+
         createToolbar();
 
         new EnumContentGeneralInfoSection(this, enumContent, formBody, toolkit);
         try {
-            enumValuesSection = new EnumValuesSection(enumContent, formBody, toolkit);
+            enumValuesSection = new EnumValuesSection(enumContent, getEditorSite(), formBody, toolkit);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -177,7 +178,5 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
                 enumValuesSection.refresh();
             }
         }
-
     }
-
 }

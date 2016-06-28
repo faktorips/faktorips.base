@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IActionBars;
@@ -27,15 +28,25 @@ import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
 public class SelectionStatusBarPublisher {
     private static final int MAX_ROWS_MARKED_NO_AREA = 5;
 
-    private List<Integer> selectedRows = new ArrayList<Integer>();
-    private IStatusLineManager statusLineManager;
-    private final IEditorSite editorSite;
+    private final List<Integer> selectedRows = new ArrayList<Integer>();
+
+    private final IStatusLineManager statusLineManager;
 
     public SelectionStatusBarPublisher(IEditorSite editorSite) {
-        if (editorSite == null) {
-            throw new NullPointerException("editorsite is null"); //$NON-NLS-1$
+        statusLineManager = getStatusLineManager(editorSite);
+    }
+
+    public SelectionStatusBarPublisher(IStatusLineManager statusLineManager) {
+        this.statusLineManager = statusLineManager;
+    }
+
+    private IStatusLineManager getStatusLineManager(IEditorSite editorSite) {
+        IActionBars bars = editorSite.getActionBars();
+        if (bars == null) {
+            return null;
+        } else {
+            return bars.getStatusLineManager();
         }
-        this.editorSite = editorSite;
     }
 
     public void updateMarkedRows(List<Integer> selection) {
@@ -54,7 +65,7 @@ public class SelectionStatusBarPublisher {
     private void updateMarkedRowsLabel() {
         String labelContent;
         if (selectedRows.isEmpty()) {
-            labelContent = ""; //$NON-NLS-1$
+            labelContent = StringUtils.EMPTY;
 
         } else {
             if (selectedRows.size() == 1) {
@@ -62,8 +73,7 @@ public class SelectionStatusBarPublisher {
             } else if (selectedRows.size() <= MAX_ROWS_MARKED_NO_AREA) {
                 labelContent = NLS.bind(Messages.SelectionStatusBarPublisher_multipleMarkedRows, selectedRows);
             } else {
-                Object[] selArg = { selectedRows.size(), selectedRows.get(0),
-                        selectedRows.get(selectedRows.size() - 1) };
+                Object[] selArg = { selectedRows.size(), selectedRows.get(0), selectedRows.get(selectedRows.size() - 1) };
                 labelContent = NLS.bind(Messages.SelectionStatusBarPublisher_manyMarkedRows, selArg);
             }
         }
@@ -71,26 +81,7 @@ public class SelectionStatusBarPublisher {
     }
 
     private void setLeftBottomStatusBar(final String text) {
-        if (statusLineManagerAvailable()) {
-            statusLineManager.setMessage(text);
-        }
+        statusLineManager.setMessage(text);
     }
 
-    private boolean statusLineManagerAvailable() {
-        if (statusLineManager == null) {
-            if (editorSite == null) {
-                return false;
-            } else {
-                IActionBars bars = editorSite.getActionBars();
-                if (bars == null) {
-                    return false;
-                } else {
-                    statusLineManager = bars.getStatusLineManager();
-                    return (statusLineManager != null);
-                }
-            }
-        } else {
-            return true;
-        }
-    }
 }
