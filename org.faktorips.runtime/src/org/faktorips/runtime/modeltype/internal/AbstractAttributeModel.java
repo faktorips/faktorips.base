@@ -18,10 +18,10 @@ import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
 /**
- * A {@link AbstractModelAttribute} represents an attribute from a PolicyCmptType or a
+ * A {@link AbstractAttributeModel} represents an attribute from a PolicyCmptType or a
  * ProductCmptType.
  */
-public abstract class AbstractModelAttribute extends ModelPart implements IModelTypeAttribute {
+public abstract class AbstractAttributeModel extends ModelPart implements IModelTypeAttribute {
 
     private final IpsAttribute attributeAnnotation;
 
@@ -29,7 +29,7 @@ public abstract class AbstractModelAttribute extends ModelPart implements IModel
 
     private final boolean changingOverTime;
 
-    public AbstractModelAttribute(ModelType modelType, IpsAttribute attributeAnnotation,
+    public AbstractAttributeModel(ModelType modelType, IpsAttribute attributeAnnotation,
             IpsExtensionProperties extensionProperties, Class<?> datatype, boolean changingOverTime) {
         super(attributeAnnotation.name(), modelType, extensionProperties);
         this.attributeAnnotation = attributeAnnotation;
@@ -80,9 +80,9 @@ public abstract class AbstractModelAttribute extends ModelPart implements IModel
      * getter is generated for the overwritten attribute in the sub class.
      * 
      * @param subModelType a model type representing a sub type of this attribute's model type
-     * @return a {@link AbstractModelAttribute} for the given sub model type
+     * @return a {@link AbstractAttributeModel} for the given sub model type
      */
-    public abstract AbstractModelAttribute createOverwritingAttributeFor(ModelType subModelType);
+    public abstract AbstractAttributeModel createOverwritingAttributeFor(ModelType subModelType);
 
     protected Object getRelevantProductObject(IProductComponent productComponent, Calendar effectiveDate) {
         return getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());

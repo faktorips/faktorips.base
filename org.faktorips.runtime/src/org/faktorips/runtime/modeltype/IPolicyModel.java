@@ -40,33 +40,33 @@ public interface IPolicyModel extends IModelType {
     public IPolicyModel getSuperType();
 
     @Override
-    public IPolicyModelAttribute getAttribute(String name);
+    public IPolicyAttributeModel getAttribute(String name);
 
     @Override
-    public IPolicyModelAttribute getDeclaredAttribute(int index);
+    public IPolicyAttributeModel getDeclaredAttribute(int index);
 
     @Override
-    public IPolicyModelAttribute getDeclaredAttribute(String name);
+    public IPolicyAttributeModel getDeclaredAttribute(String name);
 
     @Override
-    public List<IPolicyModelAttribute> getDeclaredAttributes();
+    public List<IPolicyAttributeModel> getDeclaredAttributes();
 
     @Override
-    public List<IPolicyModelAttribute> getAttributes();
+    public List<IPolicyAttributeModel> getAttributes();
 
     @Override
-    public IPolicyModelAssociation getAssociation(String name);
+    public IPolicyAssociationModel getAssociation(String name);
 
     @Override
-    public List<IPolicyModelAssociation> getAssociations();
+    public List<IPolicyAssociationModel> getAssociations();
 
     @Override
-    public IPolicyModelAssociation getDeclaredAssociation(int index);
+    public IPolicyAssociationModel getDeclaredAssociation(int index);
 
     @Override
-    public IPolicyModelAssociation getDeclaredAssociation(String name);
+    public IPolicyAssociationModel getDeclaredAssociation(String name);
 
     @Override
-    public List<IPolicyModelAssociation> getDeclaredAssociations();
+    public List<IPolicyAssociationModel> getDeclaredAssociations();
 
 }

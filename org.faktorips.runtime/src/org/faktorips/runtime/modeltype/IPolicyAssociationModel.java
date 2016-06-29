@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
 
-public interface IPolicyModelAssociation extends IModelTypeAssociation {
+public interface IPolicyAssociationModel extends IModelTypeAssociation {
 
     /**
      * Returns the model type this association belongs to.

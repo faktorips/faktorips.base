@@ -17,7 +17,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.valueset.ValueSet;
 
-public interface IPolicyModelAttribute extends IModelTypeAttribute {
+public interface IPolicyAttributeModel extends IModelTypeAttribute {
 
     /**
      * Returns the value of the given model object's attribute identified by this model type

@@ -13,7 +13,7 @@ import java.util.Calendar;
 
 import org.faktorips.runtime.IProductComponent;
 
-public interface IProductModelAttribute extends IModelTypeAttribute {
+public interface IProductAttributeModel extends IModelTypeAttribute {
 
     public Object getValue(IProductComponent productComponent, Calendar effectiveDate);
 

@@ -24,7 +24,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
-import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
+import org.faktorips.runtime.modeltype.IPolicyAssociationModel;
 import org.junit.Test;
 
 public class PolicyModelTest {
@@ -86,10 +86,10 @@ public class PolicyModelTest {
 
     @Test
     public void testGetDeclaredAssociation() {
-        IPolicyModelAssociation association = policyModel.getDeclaredAssociation("asso");
-        IPolicyModelAssociation association2 = policyModel.getDeclaredAssociation("asso2");
-        IPolicyModelAssociation superAsso = policyModel.getDeclaredAssociation("supAsso");
-        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getDeclaredAssociation("supAsso");
+        IPolicyAssociationModel association = policyModel.getDeclaredAssociation("asso");
+        IPolicyAssociationModel association2 = policyModel.getDeclaredAssociation("asso2");
+        IPolicyAssociationModel superAsso = policyModel.getDeclaredAssociation("supAsso");
+        IPolicyAssociationModel superAssoInSuper = superPolicyModel.getDeclaredAssociation("supAsso");
 
         assertThat(association.getName(), is("asso"));
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
@@ -102,9 +102,9 @@ public class PolicyModelTest {
 
     @Test
     public void testGetDeclaredAssociation_Plural() {
-        IPolicyModelAssociation association = policyModel.getDeclaredAssociation("assos");
-        IPolicyModelAssociation superAsso = policyModel.getDeclaredAssociation("supAssos");
-        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getDeclaredAssociation("supAssos");
+        IPolicyAssociationModel association = policyModel.getDeclaredAssociation("assos");
+        IPolicyAssociationModel superAsso = policyModel.getDeclaredAssociation("supAssos");
+        IPolicyAssociationModel superAssoInSuper = superPolicyModel.getDeclaredAssociation("supAssos");
 
         assertThat(association, is(nullValue()));
         assertThat(superAsso, is(nullValue()));
@@ -114,9 +114,9 @@ public class PolicyModelTest {
 
     @Test
     public void testGetAssociation() {
-        IPolicyModelAssociation association = policyModel.getAssociation("asso");
-        IPolicyModelAssociation superAsso = policyModel.getAssociation("supAsso");
-        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getAssociation("supAsso");
+        IPolicyAssociationModel association = policyModel.getAssociation("asso");
+        IPolicyAssociationModel superAsso = policyModel.getAssociation("supAsso");
+        IPolicyAssociationModel superAssoInSuper = superPolicyModel.getAssociation("supAsso");
 
         assertThat(association.getName(), is("asso"));
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
@@ -128,8 +128,8 @@ public class PolicyModelTest {
 
     @Test
     public void testGetAssociation_Plural() {
-        IPolicyModelAssociation superAsso = policyModel.getAssociation("supAssos");
-        IPolicyModelAssociation superAssoInSuper = superPolicyModel.getAssociation("supAssos");
+        IPolicyAssociationModel superAsso = policyModel.getAssociation("supAssos");
+        IPolicyAssociationModel superAssoInSuper = superPolicyModel.getAssociation("supAssos");
 
         assertThat(superAsso.getName(), is("supAsso"));
         assertThat(superAsso.getNamePlural(), is("supAssos"));

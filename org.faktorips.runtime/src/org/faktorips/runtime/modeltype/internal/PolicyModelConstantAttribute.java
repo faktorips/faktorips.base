@@ -19,14 +19,14 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
+import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
 import org.faktorips.valueset.ValueSet;
 
 /**
  * A {@link PolicyModelConstantAttribute} represent an attribute from the PolicyCmptType or the
  * ProductCmptType.
  */
-public class PolicyModelConstantAttribute extends AbstractModelAttribute implements IPolicyModelAttribute {
+public class PolicyModelConstantAttribute extends AbstractAttributeModel implements IPolicyAttributeModel {
 
     private final Field field;
 

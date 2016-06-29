@@ -11,19 +11,19 @@ package org.faktorips.runtime.modeltype.internal.read;
 
 import java.util.Arrays;
 
-import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
+import org.faktorips.runtime.modeltype.IPolicyAssociationModel;
 import org.faktorips.runtime.modeltype.internal.ModelType;
-import org.faktorips.runtime.modeltype.internal.PolicyModelAssociation;
+import org.faktorips.runtime.modeltype.internal.PolicyAssociationModel;
 
-public class PolicyModelAssociationCollector extends
-        AssociationCollector<IPolicyModelAssociation, PolicyModelAssociationCollector.PolicyAssociationDescriptor> {
+public class PolicyAssociationModelCollector extends
+        AssociationCollector<IPolicyAssociationModel, PolicyAssociationModelCollector.PolicyAssociationDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
-    public PolicyModelAssociationCollector() {
+    public PolicyAssociationModelCollector() {
         super(
-                Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(new IpsAssociationProcessor<PolicyModelAssociationCollector.PolicyAssociationDescriptor>()));
+                Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(new IpsAssociationProcessor<PolicyAssociationModelCollector.PolicyAssociationDescriptor>()));
     }
 
     @Override
@@ -31,11 +31,11 @@ public class PolicyModelAssociationCollector extends
         return new PolicyAssociationDescriptor();
     }
 
-    static class PolicyAssociationDescriptor extends AbstractAssociationDescriptor<IPolicyModelAssociation> {
+    static class PolicyAssociationDescriptor extends AbstractAssociationDescriptor<IPolicyAssociationModel> {
 
         @Override
-        public IPolicyModelAssociation createValid(ModelType modelType) {
-            return new PolicyModelAssociation(modelType, getAnnotatedElement());
+        public IPolicyAssociationModel createValid(ModelType modelType) {
+            return new PolicyAssociationModel(modelType, getAnnotatedElement());
         }
 
     }

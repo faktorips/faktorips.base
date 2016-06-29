@@ -37,14 +37,14 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IProductModel;
-import org.faktorips.runtime.modeltype.IProductModelAssociation;
+import org.faktorips.runtime.modeltype.IProductAssociationModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductModelAssociationTest {
+public class ProductAssociationModelTest {
 
     @Mock
     private IRuntimeRepository repository;
@@ -52,8 +52,8 @@ public class ProductModelAssociationTest {
     private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
     private final IProductModel modelType = Models.getProductModel(Source.class);
-    private final IProductModelAssociation association = modelType.getAssociation("asso");
-    private final IProductModelAssociation association2 = modelType.getAssociation("asso2");
+    private final IProductAssociationModel association = modelType.getAssociation("asso");
+    private final IProductAssociationModel association2 = modelType.getAssociation("asso2");
 
     @Test
     public void testGetTarget() {
@@ -195,7 +195,7 @@ public class ProductModelAssociationTest {
 
         @Override
         public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
-            if (effectiveDate != ProductModelAssociationTest.this.effectiveDate) {
+            if (effectiveDate != ProductAssociationModelTest.this.effectiveDate) {
                 return productGen2;
             }
             return productGen;

@@ -17,20 +17,20 @@ import java.util.List;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.modeltype.IPolicyModel;
 import org.faktorips.runtime.modeltype.IProductModel;
-import org.faktorips.runtime.modeltype.IProductModelAssociation;
+import org.faktorips.runtime.modeltype.IProductAssociationModel;
 
-public class ProductModelAssociation extends ModelTypeAssociation implements IProductModelAssociation {
+public class ProductAssociationModel extends ModelTypeAssociation implements IProductAssociationModel {
 
     private boolean changingOverTime;
 
-    public ProductModelAssociation(ModelType modelType, Method getterMethod, boolean changingOverTime) {
+    public ProductAssociationModel(ModelType modelType, Method getterMethod, boolean changingOverTime) {
         super(modelType, getterMethod);
         this.changingOverTime = changingOverTime;
     }
 
     @Override
-    public ProductModelAssociation createOverwritingAssociationFor(ModelType subModelType) {
-        return new ProductModelAssociation(subModelType, getGetterMethod(), changingOverTime);
+    public ProductAssociationModel createOverwritingAssociationFor(ModelType subModelType) {
+        return new ProductAssociationModel(subModelType, getGetterMethod(), changingOverTime);
     }
 
     @Override

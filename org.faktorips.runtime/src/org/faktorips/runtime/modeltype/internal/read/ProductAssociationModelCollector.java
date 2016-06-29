@@ -10,53 +10,46 @@
 package org.faktorips.runtime.modeltype.internal.read;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
-import org.faktorips.runtime.modeltype.IProductModelAttribute;
+import org.faktorips.runtime.modeltype.IProductAssociationModel;
 import org.faktorips.runtime.modeltype.internal.ModelType;
-import org.faktorips.runtime.modeltype.internal.ProductModelAttribute;
+import org.faktorips.runtime.modeltype.internal.ProductAssociationModel;
 
-public class ProductModelAttributeCollector extends
-AttributeCollector<IProductModelAttribute, ProductModelAttributeCollector.ProductAttributeDescriptor> {
+public class ProductAssociationModelCollector extends
+        AssociationCollector<IProductAssociationModel, ProductAssociationModelCollector.ProductAssociationDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
-    public ProductModelAttributeCollector() {
-        super(Arrays.asList(new ProductIpsAttributeProcessor(),
-                new IpsAttributeSetterProcessor<ProductAttributeDescriptor>()));
+    public ProductAssociationModelCollector() {
+        super(Arrays
+                .<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new ProductIpsAssociationProcessor()));
     }
 
     @Override
-    protected ProductAttributeDescriptor createDescriptor() {
-        return new ProductAttributeDescriptor();
+    protected ProductAssociationDescriptor createDescriptor() {
+        return new ProductAssociationDescriptor();
     }
 
-    static class ProductIpsAttributeProcessor extends IpsAttributeProcessor<ProductAttributeDescriptor> {
+    static class ProductIpsAssociationProcessor extends IpsAssociationProcessor<ProductAssociationDescriptor> {
 
         @Override
-        public void process(ProductAttributeDescriptor descriptor,
+        public void process(ProductAssociationDescriptor descriptor,
                 AnnotatedDeclaration annotatedDeclaration,
                 AnnotatedElement annotatedElement) {
+            super.process(descriptor, annotatedDeclaration, annotatedElement);
             descriptor.setChangingOverTime(IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration
                     .getImplementationClass()));
-            descriptor.setAnnotatedElement(annotatedElement);
         }
 
     }
 
-    static class ProductAttributeDescriptor extends AbstractAttributeDescriptor<IProductModelAttribute> {
+    static class ProductAssociationDescriptor extends AbstractAssociationDescriptor<IProductAssociationModel> {
 
         private boolean changingOverTime;
-
-        @Override
-        public IProductModelAttribute createValid(ModelType modelType) {
-            return new ProductModelAttribute(modelType, isChangingOverTime(), (Method)getAnnotatedElement(),
-                    getSetterMethod());
-        }
 
         public boolean isChangingOverTime() {
             return changingOverTime;
@@ -66,6 +59,10 @@ AttributeCollector<IProductModelAttribute, ProductModelAttributeCollector.Produc
             this.changingOverTime = changingOverTime;
         }
 
+        @Override
+        protected IProductAssociationModel createValid(ModelType modelType) {
+            return new ProductAssociationModel(modelType, getAnnotatedElement(), changingOverTime);
+        }
     }
 
 }

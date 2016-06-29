@@ -15,15 +15,15 @@ import java.util.Calendar;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IProductModelAttribute;
+import org.faktorips.runtime.modeltype.IProductAttributeModel;
 
-public class ProductModelAttribute extends AbstractModelAttribute implements IProductModelAttribute {
+public class ProductAttributeModel extends AbstractAttributeModel implements IProductAttributeModel {
 
     private final Method getter;
 
     private final Method setter;
 
-    public ProductModelAttribute(ModelType modelType, boolean changingOverTime, Method getter, Method setter) {
+    public ProductAttributeModel(ModelType modelType, boolean changingOverTime, Method getter, Method setter) {
         super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
                 getter.getReturnType(), changingOverTime);
         this.getter = getter;
@@ -36,8 +36,8 @@ public class ProductModelAttribute extends AbstractModelAttribute implements IPr
     }
 
     @Override
-    public AbstractModelAttribute createOverwritingAttributeFor(ModelType subModelType) {
-        return new ProductModelAttribute(subModelType, isChangingOverTime(), getter, setter);
+    public AbstractAttributeModel createOverwritingAttributeFor(ModelType subModelType) {
+        return new ProductAttributeModel(subModelType, isChangingOverTime(), getter, setter);
     }
 
     @Override

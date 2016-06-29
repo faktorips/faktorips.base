@@ -22,7 +22,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
 import org.junit.Test;
 
-public class AbstractModelAttributeTest {
+public class AbstractAttributeModelTest {
 
     private final IModelType modelType = Models.getModelType(Policy.class);
 

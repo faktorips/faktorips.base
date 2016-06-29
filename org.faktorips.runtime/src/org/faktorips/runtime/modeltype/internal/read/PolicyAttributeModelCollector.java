@@ -14,19 +14,19 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
-import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
+import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
 import org.faktorips.runtime.modeltype.internal.ModelType;
 import org.faktorips.runtime.modeltype.internal.PolicyModelConstantAttribute;
 import org.faktorips.runtime.modeltype.internal.PolicyModel;
-import org.faktorips.runtime.modeltype.internal.PolicyModelAttribute;
+import org.faktorips.runtime.modeltype.internal.PolicyAttributeModel;
 
-public class PolicyModelAttributeCollector extends
-AttributeCollector<IPolicyModelAttribute, PolicyModelAttributeCollector.PolicyAttributeDescriptor> {
+public class PolicyAttributeModelCollector extends
+AttributeCollector<IPolicyAttributeModel, PolicyAttributeModelCollector.PolicyAttributeDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
-    public PolicyModelAttributeCollector() {
+    public PolicyAttributeModelCollector() {
         super(Arrays.asList(new IpsAttributeProcessor<PolicyAttributeDescriptor>(),
                 new IpsAttributeSetterProcessor<PolicyAttributeDescriptor>()));
     }
@@ -36,15 +36,15 @@ AttributeCollector<IPolicyModelAttribute, PolicyModelAttributeCollector.PolicyAt
         return new PolicyAttributeDescriptor();
     }
 
-    static class PolicyAttributeDescriptor extends AbstractAttributeDescriptor<IPolicyModelAttribute> {
+    static class PolicyAttributeDescriptor extends AbstractAttributeDescriptor<IPolicyAttributeModel> {
 
         @Override
-        protected IPolicyModelAttribute createValid(ModelType modelType) {
+        protected IPolicyAttributeModel createValid(ModelType modelType) {
             if (getAnnotatedElement() instanceof Field) {
                 boolean changingOverTime = isChangingOverTime();
                 return new PolicyModelConstantAttribute(modelType, (Field)getAnnotatedElement(), changingOverTime);
             } else {
-                return new PolicyModelAttribute((PolicyModel)modelType, (Method)getAnnotatedElement(),
+                return new PolicyAttributeModel((PolicyModel)modelType, (Method)getAnnotatedElement(),
                         getSetterMethod(), isChangingOverTime());
             }
         }

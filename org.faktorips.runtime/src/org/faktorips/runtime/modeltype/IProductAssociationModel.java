@@ -20,7 +20,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
  * 
  * @author Daniel Hohenberger
  */
-public interface IProductModelAssociation extends IModelTypeAssociation {
+public interface IProductAssociationModel extends IModelTypeAssociation {
 
     /**
      * Returns the model type this association belongs to.

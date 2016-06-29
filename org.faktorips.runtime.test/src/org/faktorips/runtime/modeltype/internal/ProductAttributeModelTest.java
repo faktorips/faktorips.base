@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductModelAttributeTest {
+public class ProductAttributeModelTest {
 
     @Mock
     private IRuntimeRepository repository;
@@ -184,7 +184,7 @@ public class ProductModelAttributeTest {
 
         @Override
         public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
-            if (effectiveDate != ProductModelAttributeTest.this.effectiveDate) {
+            if (effectiveDate != ProductAttributeModelTest.this.effectiveDate) {
                 return new SubProduktGen(this) {
 
                     @Override

@@ -24,11 +24,11 @@ import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
+import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
 import org.faktorips.runtime.modeltype.internal.ModelType.AnnotatedElementMatcher;
 import org.faktorips.valueset.ValueSet;
 
-public class PolicyModelAttribute extends AbstractModelAttribute implements IPolicyModelAttribute {
+public class PolicyAttributeModel extends AbstractAttributeModel implements IPolicyAttributeModel {
 
     private final Method getter;
 
@@ -37,7 +37,7 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
     private Method defaultValueMethod;
     private Map<ModelType, Method> valueSetMethods = new HashMap<ModelType, Method>(2);
 
-    public PolicyModelAttribute(PolicyModel modelType, Method getter, Method setter, boolean changingOverTime) {
+    public PolicyAttributeModel(PolicyModel modelType, Method getter, Method setter, boolean changingOverTime) {
         super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
                 getter.getReturnType(), changingOverTime);
         this.getter = getter;
@@ -122,8 +122,8 @@ public class PolicyModelAttribute extends AbstractModelAttribute implements IPol
     }
 
     @Override
-    public PolicyModelAttribute createOverwritingAttributeFor(ModelType subModelType) {
-        return new PolicyModelAttribute((PolicyModel)subModelType, getter, setter, isChangingOverTime());
+    public PolicyAttributeModel createOverwritingAttributeFor(ModelType subModelType) {
+        return new PolicyAttributeModel((PolicyModel)subModelType, getter, setter, isChangingOverTime());
     }
 
     private Method findValueSetMethod(ModelType modelType) {

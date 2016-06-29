@@ -15,12 +15,12 @@ import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.modeltype.IPolicyModel;
-import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
+import org.faktorips.runtime.modeltype.IPolicyAssociationModel;
 import org.faktorips.runtime.modeltype.IProductModel;
 
-public class PolicyModelAssociation extends ModelTypeAssociation implements IPolicyModelAssociation {
+public class PolicyAssociationModel extends ModelTypeAssociation implements IPolicyAssociationModel {
 
-    public PolicyModelAssociation(ModelType modelType, Method getterMethod) {
+    public PolicyAssociationModel(ModelType modelType, Method getterMethod) {
         super(modelType, getterMethod);
     }
 
@@ -30,8 +30,8 @@ public class PolicyModelAssociation extends ModelTypeAssociation implements IPol
     }
 
     @Override
-    public PolicyModelAssociation createOverwritingAssociationFor(ModelType subModelType) {
-        return new PolicyModelAssociation(subModelType, getGetterMethod());
+    public PolicyAssociationModel createOverwritingAssociationFor(ModelType subModelType) {
+        return new PolicyAssociationModel(subModelType, getGetterMethod());
     }
 
     @Override

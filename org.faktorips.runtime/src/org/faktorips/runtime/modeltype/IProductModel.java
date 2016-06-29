@@ -73,33 +73,33 @@ public interface IProductModel extends IModelType {
     public IProductModel getSuperType();
 
     @Override
-    public IProductModelAttribute getAttribute(String name);
+    public IProductAttributeModel getAttribute(String name);
 
     @Override
-    public IProductModelAttribute getDeclaredAttribute(int index);
+    public IProductAttributeModel getDeclaredAttribute(int index);
 
     @Override
-    public IProductModelAttribute getDeclaredAttribute(String name);
+    public IProductAttributeModel getDeclaredAttribute(String name);
 
     @Override
-    public List<IProductModelAttribute> getDeclaredAttributes();
+    public List<IProductAttributeModel> getDeclaredAttributes();
 
     @Override
-    public List<IProductModelAttribute> getAttributes();
+    public List<IProductAttributeModel> getAttributes();
 
     @Override
-    public IProductModelAssociation getAssociation(String name);
+    public IProductAssociationModel getAssociation(String name);
 
     @Override
-    public List<IProductModelAssociation> getAssociations();
+    public List<IProductAssociationModel> getAssociations();
 
     @Override
-    public IProductModelAssociation getDeclaredAssociation(int index);
+    public IProductAssociationModel getDeclaredAssociation(int index);
 
     @Override
-    public IProductModelAssociation getDeclaredAssociation(String name);
+    public IProductAssociationModel getDeclaredAssociation(String name);
 
     @Override
-    public List<IProductModelAssociation> getDeclaredAssociations();
+    public List<IProductAssociationModel> getDeclaredAssociations();
 
 }
