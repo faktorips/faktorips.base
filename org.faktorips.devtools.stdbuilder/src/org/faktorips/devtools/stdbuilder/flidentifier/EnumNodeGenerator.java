@@ -63,9 +63,8 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     protected void addNewInstanceForEnumType(JavaCodeFragment fragment, EnumTypeDatatypeAdapter datatype, String value) {
         XEnumType enumType = getBuilderSet().getModelNode(datatype.getEnumType(), XEnumType.class);
-        enumType.setExtendedExprCompiler(exprCompiler);
         try {
-            fragment.append(enumType.getNewInstanceCodeFragement(datatype, value));
+            fragment.append(enumType.getNewInstanceCodeFragement(datatype, value, exprCompiler));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

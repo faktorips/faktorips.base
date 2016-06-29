@@ -584,8 +584,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
      * <tt>IEnumAttribute</tt>.
      */
-    private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject) {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
@@ -800,7 +799,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject)) {
                 return currentEnumAttribute;

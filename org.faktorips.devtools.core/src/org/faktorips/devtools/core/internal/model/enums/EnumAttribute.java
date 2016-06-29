@@ -489,7 +489,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
+    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {

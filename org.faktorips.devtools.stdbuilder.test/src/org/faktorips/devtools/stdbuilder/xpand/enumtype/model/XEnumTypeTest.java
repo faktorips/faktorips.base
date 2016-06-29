@@ -84,7 +84,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
         createEnumValue();
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 
-        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1", null);
 
         assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
     }
@@ -98,7 +98,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
         createEnumValue();
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 
-        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1", null);
         System.out.println(codeFragement.getSourcecode());
 
         assertEquals(
@@ -114,7 +114,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
         createEnumValue();
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 
-        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1");
+        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1", null);
 
         assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
     }

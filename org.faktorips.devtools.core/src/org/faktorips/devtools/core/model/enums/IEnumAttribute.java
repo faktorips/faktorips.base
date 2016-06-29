@@ -406,11 +406,9 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *            <tt>IEnumAttribute</tt>. This is not necessarily the project this
      *            <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the super
-     *             <tt>IEnumAttribute</tt>.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
+    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject);
 
     /**
      * Returns the original <tt>IEnumAttribute</tt> this <tt>IEnumAttribute</tt> is a copy of (if

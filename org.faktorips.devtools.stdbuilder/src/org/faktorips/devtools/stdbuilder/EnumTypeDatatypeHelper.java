@@ -63,7 +63,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
             return new JavaCodeFragment("null");
         }
         try {
-            return enumType.getNewInstanceCodeFragement(enumTypeAdapter, value);
+            return enumType.getNewInstanceCodeFragement(enumTypeAdapter, value, null);
 
         } catch (CoreException e) {
             throw new RuntimeException(e);

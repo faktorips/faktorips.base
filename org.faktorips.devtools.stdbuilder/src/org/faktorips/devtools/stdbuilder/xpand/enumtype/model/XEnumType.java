@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand.enumtype.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,34 +17,40 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.MethodParameter;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.runtime.IMarker;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.util.ArgumentCheck;
 
 public class XEnumType extends XClass {
 
-    /** The builder configuration property name that indicates whether to use Java 5 enum types. */
-    private static final String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
+    static final String VAR_NAME_PRODUCT_REPOSITORY = "productRepository";
 
-    private ExtendedExprCompiler expressionCompilerLazy;
-
-    private EnumJavaClassNameProvider javaClassNameProvider;
+    private final EnumJavaClassNameProvider javaClassNameProvider;
 
     public XEnumType(IEnumType enumtype, GeneratorModelContext context, ModelService modelService) {
         super(enumtype, context, modelService);
         javaClassNameProvider = createEnumJavaClassNameProvider(isGeneratePublishedInterfaces());
+    }
+
+    /* private */boolean isMarkerEnum() {
+        return getIpsProject().getMarkerEnums().contains(getEnumType().getIpsSrcFile());
     }
 
     @Override
@@ -66,26 +73,40 @@ public class XEnumType extends XClass {
 
     @Override
     protected String getBaseSuperclassName() {
-        // TODO
         return "";
     }
 
     @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
-        // TODO
-        return new LinkedHashSet<String>();
+        if (isAbstract()) {
+            return getExtendedOrImplementedInterfaces();
+        } else {
+            return new LinkedHashSet<String>();
+        }
     }
 
     @Override
-    protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
-        // TODO Auto-generated method stub
-        return new LinkedHashSet<String>();
+    public LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
+        LinkedHashSet<String> interfaces = new LinkedHashSet<String>();
+        if (hasSuperEnumType()) {
+            interfaces.add(addImport(getSuperEnumType().getQualifiedClassName()));
+        }
+
+        if (isClass()) {
+            interfaces.add(addImport(Serializable.class));
+            interfaces.add(addImport(Comparable.class) + "<" + getName() + ">");
+        }
+
+        if (isMarkerEnum()) {
+            interfaces.add(addImport(IMarker.class));
+        }
+
+        return interfaces;
     }
 
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
-        // TODO Auto-generated method stub
-        return new LinkedHashSet<String>();
+        return getExtendedOrImplementedInterfaces();
     }
 
     public IEnumType getEnumType() {
@@ -96,7 +117,7 @@ public class XEnumType extends XClass {
         return getEnumType().getQualifiedName();
     }
 
-    public List<XEnumAttribute> getAttributeModelNodes(boolean includeSupertypeCopies, boolean includeLiteralName) {
+    public List<XEnumAttribute> getAttributes(boolean includeSupertypeCopies, boolean includeLiteralName) {
         List<IEnumAttribute> enumAttributes;
         if (includeSupertypeCopies) {
             enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
@@ -106,8 +127,39 @@ public class XEnumType extends XClass {
         return new ArrayList<XEnumAttribute>(initNodesForParts(enumAttributes, XEnumAttribute.class));
     }
 
-    public List<XEnumAttribute> getAllAttributeModelNodes() {
-        return getAttributeModelNodes(true, true);
+    public List<XEnumAttribute> getDeclaredAttributesWithoutLiteralName() {
+        return getAttributes(false, false);
+    }
+
+    public List<XEnumAttribute> getAllAttributesWithoutLiteralName() {
+        return getAttributes(true, false);
+    }
+
+    public List<XEnumAttribute> getAllAttributesWithField() {
+        List<XEnumAttribute> results = new ArrayList<XEnumAttribute>();
+        List<XEnumAttribute> attributeModelNodes = getAttributes(true, false);
+        for (XEnumAttribute attribute : attributeModelNodes) {
+            if (attribute.isGenerateField()) {
+                results.add(attribute);
+            }
+        }
+        return results;
+    }
+
+    public List<XEnumAttribute> getAllUniqueAttributesWithoutLiteralName() {
+        List<XEnumAttribute> attributeModelNodes = getAttributes(true, false);
+        List<XEnumAttribute> results = new ArrayList<XEnumAttribute>();
+
+        for (XEnumAttribute attribute : attributeModelNodes) {
+            if (attribute.isUniqueInHierachy()) {
+                results.add(attribute);
+            }
+        }
+        return results;
+    }
+
+    public List<XEnumAttribute> getAllAttributes() {
+        return getAttributes(true, true);
     }
 
     public String getEnumContentQualifiedName() {
@@ -118,34 +170,22 @@ public class XEnumType extends XClass {
         return getEnumType().isExtensible();
     }
 
-    /**
-     * Returns whether to generate an enum.
-     */
-    protected boolean isEnum() {
-        return isInterface() ? false : getEnumType().isInextensibleEnum();
+    public boolean isAbstract() {
+        return getEnumType().isAbstract();
     }
 
     /**
      * Returns whether to generate a class.
      */
-    protected boolean isClass() {
-        return isInterface() ? false : getEnumType().isExtensible();
+    public boolean isClass() {
+        return isInterface() ? false : isExtensible();
     }
 
     /**
      * Returns whether to generate an interface.
      */
-    protected boolean isInterface() {
+    public boolean isInterface() {
         return getEnumType().isAbstract();
-    }
-
-    /**
-     * Returns <code>true</code> if Java 5 enums are available.
-     */
-    protected boolean isJava5EnumsAvailable() {
-        return ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
-                && getIpsProject().getIpsArtefactBuilderSet().getConfig()
-                        .getPropertyValueAsBoolean(USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY);
     }
 
     /* This method is public because it is used in enumXmlAdapterBuilder */
@@ -157,8 +197,26 @@ public class XEnumType extends XClass {
         return getModelNode(getEnumType().findIdentiferAttribute(getIpsProject()), XEnumAttribute.class);
     }
 
+    public XEnumAttribute getDisplayNameAttribute() {
+        return getModelNode(getEnumType().findUsedAsNameInFaktorIpsUiAttribute(getIpsProject()), XEnumAttribute.class);
+    }
+
+    public XEnumAttribute getEnumLiteralNameAttribute() {
+        IEnumLiteralNameAttribute literalNameAttribute = getEnumType().getEnumLiteralNameAttribute();
+
+        if (literalNameAttribute != null) {
+            return getModelNode(literalNameAttribute, XEnumAttribute.class);
+        } else {
+            throw new IllegalStateException("Literalname attribute is null for the enum type " + getName());
+        }
+    }
+
     public String getQualifiedClassName() {
         return getQualifiedName(BuilderAspect.IMPLEMENTATION);
+    }
+
+    public String getUnqualifiedClassName() {
+        return addImport(getQualifiedName(BuilderAspect.IMPLEMENTATION));
     }
 
     /**
@@ -174,17 +232,18 @@ public class XEnumType extends XClass {
      * [Javadoc]
      * repository.getEnumValue(Gender.class, &quot;m&quot;)
      * </pre>
-     *
+     * 
      * @throws CoreException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumType</code> or <code>enumValue</code> is
      *             <code>null</code>.
      */
-    public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter, String value)
-            throws CoreException {
+    public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter,
+            String value,
+            ExtendedExprCompiler exprCompiler) throws CoreException {
 
         ArgumentCheck.notNull(enumTypeAdapter, this);
 
-        ExtendedExprCompiler expressionCompiler = getExpressionCompiler();
+        ExtendedExprCompiler expressionCompiler = getExpressionCompiler(exprCompiler);
         JavaCodeFragment repositoryExp = expressionCompiler.getRuntimeRepositoryExpression();
 
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -207,22 +266,11 @@ public class XEnumType extends XClass {
         return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(value, false, repositoryExp);
     }
 
-    private ExtendedExprCompiler getExpressionCompiler() {
-        if (expressionCompilerLazy == null) {
-            expressionCompilerLazy = getIpsProject().newExpressionCompiler();
+    private ExtendedExprCompiler getExpressionCompiler(ExtendedExprCompiler exprCompiler) {
+        if (exprCompiler == null) {
+            return getIpsProject().newExpressionCompiler();
         }
-        return expressionCompilerLazy;
-    }
-
-    /**
-     * Sets the {@link ExtendedExprCompiler} used to create code fragments containing repository
-     * access.
-     *
-     * @param expressionCompiler the {@link ExtendedExprCompiler} used to create code fragments
-     *            containing repository access
-     */
-    public void setExtendedExprCompiler(ExtendedExprCompiler expressionCompiler) {
-        this.expressionCompilerLazy = expressionCompiler;
+        return exprCompiler;
     }
 
     /**
@@ -353,6 +401,100 @@ public class XEnumType extends XClass {
         char[] charArray = attributeName.toCharArray();
         charArray[0] = Character.toUpperCase(attributeName.charAt(0));
         return "getValueBy" + String.copyValueOf(charArray); //$NON-NLS-1$
+    }
+
+    public boolean hasSuperEnumType() {
+        return getSuperEnumType() != null;
+    }
+
+    public XEnumType getSuperEnumType() {
+        if (getEnumType().findSuperEnumType(getIpsProject()) != null) {
+            return getModelNode(getEnumType().findSuperEnumType(getIpsProject()), XEnumType.class);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isMessageHelperNeeded() {
+        if (getEnumType().isCapableOfContainingValues()
+                && (getEnumType().isInextensibleEnum() || getEnumType().containsValues())) {
+            List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(false);
+            for (IEnumAttribute enumAttribute : enumAttributes) {
+                if (enumAttribute.isMultilingual()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isGenerateMethodCompareTo() {
+        return getEnumType().isExtensible() && !isInterface();
+    }
+
+    public boolean isIndexFieldRequired() {
+        return getEnumType().isExtensible() || isGenerateMethodCompareTo();
+    }
+
+    public String getDefaultLocale() {
+        JavaCodeFragment defaultLocaleExpr = LocaleGeneratorUtil.getLocaleCodeFragment(getIpsProject()
+                .getReadOnlyProperties().getDefaultLanguage().getLocale());
+        addImport(defaultLocaleExpr.getImportDeclaration());
+        return defaultLocaleExpr.getSourcecode();
+    }
+
+    public List<XEnumValue> getEnumValues() {
+        return new ArrayList<XEnumValue>(initNodesForParts(getEnumType().getEnumValues(), XEnumValue.class));
+    }
+
+    public List<MethodParameter> getConstructorParameters() {
+        List<MethodParameter> parameters = new ArrayList<MethodParameter>();
+        if (isIndexFieldRequired()) {
+            parameters.add(new MethodParameter("int", getVarNameIndex()));
+        }
+
+        for (XEnumAttribute attribute : getAllAttributesWithField()) {
+            parameters
+                    .add(new MethodParameter(attribute.getDatatypeNameForConstructor(), attribute.getMemberVarName()));
+        }
+
+        return parameters;
+    }
+
+    public List<MethodParameter> getStringConstructorParameters() {
+        List<MethodParameter> parameters = new ArrayList<MethodParameter>();
+        if (isIndexFieldRequired()) {
+            parameters.add(new MethodParameter("int", getVarNameIndex()));
+        }
+
+        for (XEnumAttribute attribute : getAllAttributesWithField()) {
+            if (attribute.isMultilingual()) {
+                parameters.add(new MethodParameter(addImport(InternationalString.class), attribute
+                        .getStringConstructorParamName()));
+            } else {
+                parameters.add(new MethodParameter(addImport(String.class), attribute.getStringConstructorParamName()));
+            }
+        }
+
+        parameters.add(new MethodParameter(addImport(IRuntimeRepository.class), getVarnameProductRepository()));
+
+        return parameters;
+    }
+
+    public String getVarNameMessageHelper() {
+        return "MESSAGE_HELPER";
+    }
+
+    public String getVarNameIdMap() {
+        return "ID_MAP";
+    }
+
+    public String getVarnameProductRepository() {
+        return VAR_NAME_PRODUCT_REPOSITORY;
+    }
+
+    public String getVarNameIndex() {
+        return "index";
     }
 
     private static final class EnumJavaClassNameProvider extends DefaultJavaClassNameProvider {

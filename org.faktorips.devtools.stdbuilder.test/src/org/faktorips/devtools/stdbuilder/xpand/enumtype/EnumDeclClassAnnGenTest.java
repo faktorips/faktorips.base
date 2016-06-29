@@ -59,7 +59,7 @@ public class EnumDeclClassAnnGenTest {
         XEnumAttribute attribute3 = mock(XEnumAttribute.class);
         when(attribute3.getName()).thenReturn("A3");
         List<XEnumAttribute> attributes = Arrays.asList(attribute2, attribute1, attribute3);
-        when(enumtype.getAllAttributeModelNodes()).thenReturn(attributes);
+        when(enumtype.getAllAttributes()).thenReturn(attributes);
         return enumtype;
     }
 

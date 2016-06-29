@@ -45,9 +45,6 @@ ListUtil(AbstractGeneratorModelNode this):
 	
 MsgReplacementParameter(AbstractGeneratorModelNode this):
 	addImport(MsgReplacementParameter.name);
-	
-MessagesHelper(AbstractGeneratorModelNode this):
-	addImport(MessagesHelper.name);
 
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
@@ -181,11 +178,20 @@ Locale(AbstractGeneratorModelNode this):
 LocalizedString(AbstractGeneratorModelNode this):
 	addImport(LocalizedString.name);
 	
+InternationalString(AbstractGeneratorModelNode this):
+	addImport(InternationalString.name);
+
+Long(AbstractGeneratorModelNode this):
+	addImport("java.lang.Long");
+	
 DefaultInternationalString(AbstractGeneratorModelNode this):
 	addImport(DefaultInternationalString.name);
 
 Table_(AbstractGeneratorModelNode this, String genericType) :
 	addImport(Table.name) + "<" + genericType + ">";
+	
+MessagesHelper(AbstractGeneratorModelNode this):
+	addImport(MessagesHelper.name);
 
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :

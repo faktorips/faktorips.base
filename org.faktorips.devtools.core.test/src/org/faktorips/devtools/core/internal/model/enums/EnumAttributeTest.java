@@ -413,7 +413,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindIsUsedAsNameInFaktorIpsUi() throws CoreException {
+    public void testFindIsUsedAsNameInFaktorIpsUi() {
         try {
             inheritedEnumAttributeId.findIsUsedAsNameInFaktorIpsUi(null);
             fail();

@@ -1,0 +1,39 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+
+«DEFINE main FOR XEnumType»
+«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+package «getPackageName(BuilderAspect::INTERFACE)»;
+
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+/**
+* @generated
+*/
+«getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
+public interface «name» «EXPAND CommonDefinitions::extendedInterfaces»{
+	«EXPAND getterMethod FOREACH declaredAttributesWithoutLiteralName-»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE getterMethod FOR XEnumAttribute-»
+	/**
+	«IF multilingual-»
+		* «localizedJDoc("GETTER_MULTILINGUAL", name)»
+	«ELSE-»
+		* «localizedJDoc("GETTER", name)»
+	«ENDIF-»
+	*
+	* @generated
+	*/
+	«getAnnotations(AnnotatedJavaElementType::ENUM_ATTRIBUTE_GETTER)-»
+	public «datatypeName» «IF multilingual»«method(methodNameGetter, Locale(), "locale")»«ELSE»«method(methodNameGetter)»«ENDIF»;
+«ENDDEFINE»

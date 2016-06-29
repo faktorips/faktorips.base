@@ -384,10 +384,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <tt>true</tt>. Returns <tt>null</tt> if none is found.
      * 
      * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
-     * 
-     * @throws CoreException If an exception occurs during the look up.
      */
-    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject);
 
     /**
      * Returns the index of the given <tt>IEnumAttribute</tt> or -1 if the given

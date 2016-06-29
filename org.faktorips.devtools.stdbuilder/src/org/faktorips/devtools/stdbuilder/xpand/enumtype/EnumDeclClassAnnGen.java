@@ -41,7 +41,7 @@ public class EnumDeclClassAnnGen implements IAnnotationGenerator {
         JavaCodeFragmentBuilder codeFragmentBuilder = new JavaCodeFragmentBuilder();
 
         String name = enumtype.getQualifiedIpsObjectName();
-        List<XEnumAttribute> attributes = enumtype.getAllAttributeModelNodes();
+        List<XEnumAttribute> attributes = enumtype.getAllAttributes();
         List<String> attributeNames = new ArrayList<String>(attributes.size());
         for (XEnumAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
