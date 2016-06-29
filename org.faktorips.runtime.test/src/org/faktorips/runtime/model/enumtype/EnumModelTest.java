@@ -100,7 +100,7 @@ public class EnumModelTest {
 
     }
 
-    @IpsExtensibleEnum(enumContentName = "my.baz", idBoundary = "")
+    @IpsExtensibleEnum(enumContentName = "my.baz")
     @IpsEnum(name = "my.bar", attributeNames = {})
     private static class Bar {
 

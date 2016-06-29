@@ -32,7 +32,7 @@ public class EnumDeclClassAnnGenTest {
 
         assertThat(
                 enumDeclClassAnnGen.createAnnotation(enumtype).getSourcecode(),
-                is(equalTo("@IpsEnum(name = \"test.EnumType\" attributeNames = {\"A2\", \"A1\", \"A3\"})"
+                is(equalTo("@IpsEnum(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
                         + System.getProperty("line.separator"))));
     }
 
@@ -44,7 +44,7 @@ public class EnumDeclClassAnnGenTest {
 
         assertThat(
                 enumDeclClassAnnGen.createAnnotation(enumtype).getSourcecode(),
-                is(equalTo("@IpsEnum(name = \"test.EnumType\" attributeNames = {\"A2\", \"A1\", \"A3\"})"
+                is(equalTo("@IpsEnum(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
                         + System.getProperty("line.separator") + "@IpsExtensibleEnum(enumContentName=\"foo.EnumName\")"
                         + System.getProperty("line.separator"))));
     }

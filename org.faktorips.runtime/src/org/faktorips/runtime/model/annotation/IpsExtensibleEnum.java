@@ -21,6 +21,4 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface IpsExtensibleEnum {
     String enumContentName();
-
-    String idBoundary();
 }

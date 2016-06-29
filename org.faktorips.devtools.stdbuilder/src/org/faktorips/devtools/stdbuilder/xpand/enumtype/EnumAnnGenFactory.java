@@ -11,9 +11,10 @@ package org.faktorips.devtools.stdbuilder.xpand.enumtype;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 
-public class EnumDeclClassAnnGenFactory implements IAnnotationGeneratorFactory {
+public class EnumAnnGenFactory implements IAnnotationGeneratorFactory {
 
     @Override
     public boolean isRequiredFor(IIpsProject ipsProject) {
@@ -21,11 +22,15 @@ public class EnumDeclClassAnnGenFactory implements IAnnotationGeneratorFactory {
     }
 
     @Override
-    public EnumDeclClassAnnGen createAnnotationGenerator(AnnotatedJavaElementType type) {
-        if (type == AnnotatedJavaElementType.ENUM_CLASS) {
-            return new EnumDeclClassAnnGen();
-        } else {
-            return null;
+    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
+        switch (type) {
+            case ENUM_CLASS:
+                return new EnumDeclClassAnnGen();
+            case ENUM_ATTRIBUTE_GETTER:
+                return new EnumAttributeAnnGen();
+
+            default:
+                return null;
         }
     }
 

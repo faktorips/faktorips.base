@@ -37,7 +37,7 @@ public class EnumDeclClassAnnGen implements IAnnotationGenerator {
         return modelNode instanceof XEnumType;
     }
 
-    public JavaCodeFragment createIpsEnumAnnotation(XEnumType enumtype) {
+    private JavaCodeFragment createIpsEnumAnnotation(XEnumType enumtype) {
         JavaCodeFragmentBuilder codeFragmentBuilder = new JavaCodeFragmentBuilder();
 
         String name = enumtype.getQualifiedIpsObjectName();
@@ -47,11 +47,11 @@ public class EnumDeclClassAnnGen implements IAnnotationGenerator {
             attributeNames.add(attribute.getName());
         }
         codeFragmentBuilder.annotationLn(IpsEnum.class,
-                "name = \"" + name + "\" attributeNames = {\"" + StringUtils.join(attributeNames, "\", \"") + "\"}");
+                "name = \"" + name + "\", attributeNames = {\"" + StringUtils.join(attributeNames, "\", \"") + "\"}");
         return codeFragmentBuilder.getFragment();
     }
 
-    public JavaCodeFragment createIpsExtensibleEnumAnnotation(XEnumType enumtype) {
+    private JavaCodeFragment createIpsExtensibleEnumAnnotation(XEnumType enumtype) {
         JavaCodeFragmentBuilder codeFragmentBuilder = new JavaCodeFragmentBuilder();
         if (enumtype.isExtensible()) {
             String enumContentName = enumtype.getEnumContentQualifiedName();
