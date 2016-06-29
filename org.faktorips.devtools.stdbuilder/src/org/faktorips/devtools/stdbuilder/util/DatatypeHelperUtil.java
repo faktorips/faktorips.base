@@ -10,10 +10,8 @@ package org.faktorips.devtools.stdbuilder.util;
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -38,12 +36,8 @@ public class DatatypeHelperUtil {
             String repoExpression) {
         if (DatatypeUtil.isExtensibleEnumType(datatypeHelper.getDatatype())) {
             EnumTypeDatatypeHelper enumtypeHelper = (EnumTypeDatatypeHelper)datatypeHelper;
-            try {
-                return enumtypeHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
-                        enumtypeHelper.getEnumType(), expression, new JavaCodeFragment(repoExpression));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return enumtypeHelper.getCallGetValueByIdentifierCodeFragment(expression, new JavaCodeFragment(
+                    repoExpression));
         } else {
             return datatypeHelper.newInstanceFromExpression(expression);
         }

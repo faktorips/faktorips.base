@@ -24,32 +24,23 @@ import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
-
-    @Mock
-    private StandardBuilderSet builderSet;
-
-    @Mock
-    private EnumTypeBuilder enumTypeBuilder;
+public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
 
     private EnumPropertyBuilder enumPropertyBuilder;
-
-    private IIpsProject ipsProject;
 
     private EnumType enumType;
 
@@ -59,19 +50,15 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = newIpsProject();
-        when(builderSet.getEnumTypeBuilder()).thenReturn(enumTypeBuilder);
-        when(builderSet.getIpsProject()).thenReturn(ipsProject);
-        when(builderSet.getLanguageUsedInGeneratedSourceCode()).thenReturn(Locale.GERMAN);
+
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.getBuilderSetConfig().setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATOR_LOCALE,
+                Locale.GERMAN.toString(), null);
+        ipsProject.setProperties(properties);
         enumType = newEnumType(ipsProject, "AnyEnumType");
         enumType.setExtensible(false);
         ipsSrcFile = enumType.getIpsSrcFile();
-        when(enumTypeBuilder.getRelativeJavaFile(ipsSrcFile)).thenReturn(new Path("/org/package/AnyEnumType.java"));
-    }
-
-    @Before
-    public void createEnumPropertyBuilder() throws Exception {
-        enumPropertyBuilder = new EnumPropertyBuilder(builderSet);
+        enumPropertyBuilder = (EnumPropertyBuilder)builderSet.getBuilderById(BuilderKindIds.ENUM_PROPERTY);
     }
 
     @Test
@@ -81,7 +68,8 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
 
         String folder = ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFullPath()
                 .toPortableString();
-        assertEquals(folder + "/org/package/AnyEnumType_de.properties", propertyFile.getFullPath().toPortableString());
+        assertEquals(folder + '/' + BASE_PACKAGE_NAME_MERGABLE.replace('.', '/') + "/AnyEnumType_de.properties",
+                propertyFile.getFullPath().toPortableString());
     }
 
     @Test

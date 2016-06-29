@@ -67,7 +67,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
-import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
@@ -81,6 +80,9 @@ import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumTypeBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
@@ -370,9 +372,9 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
         builders.put(BuilderKindIds.BUSINESS_FUNCTION, new BusinessFunctionBuilder(this));
         // New enum type builder
-        EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(this);
+        EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilderFactory().createBuilder(this);
         builders.put(BuilderKindIds.ENUM_TYPE, enumTypeBuilder);
-        builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this, enumTypeBuilder));
+        builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));
         builders.put(BuilderKindIds.ENUM_CONTENT, new EnumContentBuilder(this));
         builders.put(BuilderKindIds.ENUM_PROPERTY, new EnumPropertyBuilder(this));
 
@@ -676,7 +678,9 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         if (datatype instanceof EnumTypeDatatypeAdapter) {
-            return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), (EnumTypeDatatypeAdapter)datatype);
+            EnumTypeDatatypeAdapter enumtypeadapter = (EnumTypeDatatypeAdapter)datatype;
+            XEnumType enumType = getModelNode(enumtypeadapter.getEnumType(), XEnumType.class);
+            return new EnumTypeDatatypeHelper(enumType, (EnumTypeDatatypeAdapter)datatype);
         }
 
         if (datatypeHelperFactoryRegistry.hasFactory(datatype)) {

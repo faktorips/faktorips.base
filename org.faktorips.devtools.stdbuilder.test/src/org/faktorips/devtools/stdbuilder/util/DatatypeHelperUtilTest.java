@@ -12,21 +12,14 @@ package org.faktorips.devtools.stdbuilder.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
-import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
 import org.junit.Test;
 
 public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {
@@ -37,6 +30,10 @@ public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {
         paymentMode.setAbstract(false);
         paymentMode.setExtensible(true);
         paymentMode.newEnumLiteralNameAttribute();
+        IEnumAttribute identifierAttribute = paymentMode.newEnumAttribute();
+        identifierAttribute.setIdentifier(true);
+        identifierAttribute.setName("id");
+        identifierAttribute.setDatatype(Datatype.STRING.getName());
 
         Datatype datatype = ipsProject.findDatatype("PaymentMode");
         DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(datatype);
@@ -53,7 +50,7 @@ public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {
         String newInstanceFromExpression = repoExpression + fragment.getSourcecode();
         assertEquals(newInstanceFromExpression,
                 DatatypeHelperUtil.getNewInstanceFromExpression(datatypeHelper, "getValue()", repoExpression)
-                        .getSourcecode());
+                .getSourcecode());
     }
 
     @Test
@@ -85,18 +82,5 @@ public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {
         JavaCodeFragment newInstanceFromExpression = booleanTypeHelper.newInstanceFromExpression("getValue()");
         assertEquals(newInstanceFromExpression,
                 DatatypeHelperUtil.getNewInstanceFromExpression(booleanTypeHelper, "getValue()", "repo"));
-    }
-
-    @Test(expected = CoreRuntimeException.class)
-    public void testNewInstanceFromExpression_RethrowsCoreExceptionAsCoreRuntimeException() throws Exception {
-        IEnumType extensibleEnumType = mock(IEnumType.class);
-        when(extensibleEnumType.isExtensible()).thenReturn(true);
-        EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = mock(EnumTypeDatatypeAdapter.class);
-        when(enumTypeDatatypeAdapter.getEnumType()).thenReturn(extensibleEnumType);
-        EnumTypeDatatypeHelper badHelper = mock(EnumTypeDatatypeHelper.class);
-        when(badHelper.getDatatype()).thenReturn(enumTypeDatatypeAdapter);
-        doThrow(CoreException.class).when(badHelper).getEnumTypeBuilder();
-
-        DatatypeHelperUtil.getNewInstanceFromExpression(badHelper, "foo", "bar");
     }
 }

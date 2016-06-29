@@ -1,0 +1,67 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+
+«DEFINE main FOR XEnumType»
+«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+«REM»
+/**
+* «localizedJDoc("CLASS_DESCRIPTION")»
+*
+* @generated
+*/
+«ENDREM»
+«REM»TODO: jabx?! «ENDREM»
+«REM»«getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»«ENDREM»
+public class «name» {
+«REM»
+	«EXPAND messageHelperVar»
+	
+	«EXPAND enumValues»
+	«EXPAND attributes»
+	«EXPAND constructor»  
+	
+	«EXPAND initKeyMaps»
+	
+	«EXPAND getValueBy»
+	«EXPAND isValueBy»
+	«EXPAND getters»
+	«EXPAND values»
+	«EXPAND toString»
+	«EXPAND equals»
+	«EXPAND hashCode»
+	«EXPAND enumValueId»
+	«IF generateMethodCompareTo-»
+		«EXPAND compareTo»
+	«ENDIF»
+	«ENDREM»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE final FOR XEnumType-»
+	«IF class-»final«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE classOrEnumOrInterface FOR XEnumType-»
+	«IF interface»interface
+	«ELSEIF class»class
+	«ELSEIF enum»enum
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE extendsAndImplements FOR XEnumType-»
+«ENDDEFINE»
+
+«DEFINE messageHelperVar FOR XEnumType-»
+«ENDDEFINE»

@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
@@ -53,28 +53,27 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
         return getEnumAttribute().isMultilingual();
     }
 
-    protected String getMethodNameGetter() {
-        Datatype datatype = getDatatypeHelper(false).getDatatype();
-        return getJavaNamingConvention().getGetterMethodName(getName(), datatype);
-    }
-
-    private DatatypeHelper getDatatypeHelper(boolean mapMultilingual) {
+    protected DatatypeHelper getDatatypeHelper(boolean mapMultilingual) {
         IEnumAttribute enumAttribute = getEnumAttribute();
-        try {
-            if (enumAttribute == null) {
-                return getIpsProject().getDatatypeHelper(Datatype.STRING);
-            } else if (mapMultilingual && enumAttribute.isMultilingual()) {
-                return new InternationalStringDatatypeHelper(true);
-            } else {
-                ValueDatatype datatype = enumAttribute.findDatatype(getIpsProject());
-                return getDatatypeHelper(datatype);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        if (enumAttribute == null) {
+            return getIpsProject().getDatatypeHelper(Datatype.STRING);
+        } else if (mapMultilingual && enumAttribute.isMultilingual()) {
+            return new InternationalStringDatatypeHelper(true);
+        } else {
+            return getDatatypeHelper(getDatatype());
         }
     }
 
-    protected DatatypeHelper getDatatypeHelper(ValueDatatype datatype) {
-        return getIpsProject().getDatatypeHelper(datatype);
+    public Datatype getDatatype() {
+        try {
+            return getEnumAttribute().findDatatype(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public String getMethodNameGetter() {
+        Datatype datatype = getDatatypeHelper(false).getDatatype();
+        return getJavaNamingConvention().getGetterMethodName(getName(), datatype);
     }
 }
