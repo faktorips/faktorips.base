@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.ExtensionPropertyAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.LabelAndDescriptionAnnGen;
@@ -42,7 +41,7 @@ public class AnnotationGeneratorBuilder {
                 // JPA support
                 new PolicyCmptImplClassJpaAnnGenFactory(),
                 // Jaxb support
-                new PolicyCmptImplClassJaxbAnnGenFactory(),
+                new JaxbAnnGenFactory(),
                 // since version java doc
                 new SinceVersionJavaDocTagGenerator.Factory(),
                 // tables and table rows
