@@ -25,7 +25,6 @@
    <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
    <extension-point id="versionProvider" name="Version Provider" schema="schema/versionProvider.exsd"/>
-   <extension-point id="datatypeHelperFactory" name="DatatypeHelperFactory" schema="schema/datatypeHelperFactory.exsd"/>
    
    
 <!-- 
@@ -144,28 +143,6 @@
             datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
             helperClass="org.faktorips.codegen.dthelpers.joda.MonthDayHelper">
       </datatypeDefinition>
-   </extension>
-
-<!-- 
-    Datatype Helper Factories
--->
-   <extension point="org.faktorips.devtools.core.datatypeHelperFactory">
-      <datatypeHelperFactory
-            datatypeClass="org.faktorips.datatype.joda.LocalDateDatatype"
-            factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalDateHelperFactory">
-      </datatypeHelperFactory>
-      <datatypeHelperFactory
-            datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
-            factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalDateTimeHelperFactory">
-      </datatypeHelperFactory>
-      <datatypeHelperFactory
-            datatypeClass="org.faktorips.datatype.joda.LocalTimeDatatype"
-            factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalTimeHelperFactory">
-      </datatypeHelperFactory>
-      <datatypeHelperFactory
-            datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
-            factoryClass="org.faktorips.devtools.core.internal.model.datatype.MonthDayHelperFactory">
-      </datatypeHelperFactory>
    </extension>
 
 <!-- 

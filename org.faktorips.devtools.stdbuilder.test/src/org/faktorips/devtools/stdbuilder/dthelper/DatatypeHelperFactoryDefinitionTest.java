@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.datatype;
+package org.faktorips.devtools.stdbuilder.dthelper;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory;
+import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
 import org.junit.Test;
 
 public class DatatypeHelperFactoryDefinitionTest {

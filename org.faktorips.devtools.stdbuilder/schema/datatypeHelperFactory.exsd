@@ -50,7 +50,7 @@ Note that the factory takes precedence over the default helper that is defined i
                   The factory that creates helpers for the data type.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory"/>
                </appinfo>
             </annotation>
          </attribute>

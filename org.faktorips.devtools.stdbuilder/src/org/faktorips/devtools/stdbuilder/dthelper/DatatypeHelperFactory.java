@@ -7,14 +7,14 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.model.datatype;
+package org.faktorips.devtools.stdbuilder.dthelper;
 
  import org.faktorips.codegen.DatatypeHelper;
- import org.faktorips.datatype.Datatype;
- import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
  public interface DatatypeHelperFactory {
 
-     DatatypeHelper createDatatypeHelper(Datatype datatype, IIpsProject ipsProject);
+     DatatypeHelper createDatatypeHelper(Datatype datatype, StandardBuilderSet builderSet);
 
 }

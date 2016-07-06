@@ -7,11 +7,12 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.datatype;
+package org.faktorips.devtools.stdbuilder.dthelper;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
 import org.junit.Test;
 
 public class LocalDateHelperVariantTest {
