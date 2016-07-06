@@ -27,7 +27,9 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
@@ -136,7 +138,8 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a specific {@IBaseMethod} to be added to the list of generated Java elements.
+     * Expects a specific {@IBaseMethod} to be added to the list of generated Java
+     * elements.
      * 
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method
@@ -150,6 +153,19 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
 
     protected final IJavaNamingConvention getJavaNamingConvention() {
         return ipsProject.getJavaNamingConvention();
+    }
+
+    protected void setGeneratorProperty(IIpsProject ipsProject, String key, String value) {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
+        builderConfig.setPropertyValue(key, value, null);
+        try {
+            ipsProject.setProperties(properties);
+            ipsProject.reinitializeIpsArtefactBuilderSet();
+            builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }

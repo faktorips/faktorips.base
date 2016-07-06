@@ -15,7 +15,8 @@ Require-Bundle: org.faktorips.dtflcommon,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
  org.eclipse.draw2d,
  org.faktorips.devtools.core,
- org.faktorips.abstracttest
+ org.faktorips.abstracttest,
+ com.google.guava;bundle-version="18.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
 Import-Package: org.junit;version="4.5.0",

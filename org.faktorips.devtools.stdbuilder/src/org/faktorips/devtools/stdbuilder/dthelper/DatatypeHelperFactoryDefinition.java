@@ -7,14 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.datatype;
+package org.faktorips.devtools.stdbuilder.dthelper;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory;
 
 public class DatatypeHelperFactoryDefinition {
 

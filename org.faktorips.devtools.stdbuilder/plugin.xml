@@ -4,6 +4,7 @@
    <extension-point id="artefactBuilderFactory" name="artefactBuilderFactory" schema="schema/artefactBuilderFactory.exsd"/>
    <extension-point id="tocEntryBuilderFactory" name="TOC entry builder factory" schema="schema/tocEntryBuilderFactory.exsd"/>
    <extension-point id="tocEntryFactory" name="TOC entry factory" schema="schema/tocEntryFactory.exsd"/>
+   <extension-point id="datatypeHelperFactory" name="DatatypeHelperFactory" schema="schema/datatypeHelperFactory.exsd"/>
 
    <extension
          id="ipsstdbuilderset"
@@ -263,5 +264,28 @@
             class="org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.ProductBuilderFactory">
       </artefactBuilderFactory>
    </extension>
+
+<!-- 
+    Datatype Helper Factories
+-->
+   <extension point="org.faktorips.devtools.stdbuilder.datatypeHelperFactory">
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.LocalDateDatatype"
+            factoryClass="org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperFactory">
+      </datatypeHelperFactory>
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
+            factoryClass="org.faktorips.devtools.stdbuilder.dthelper.LocalDateTimeHelperFactory">
+      </datatypeHelperFactory>
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.LocalTimeDatatype"
+            factoryClass="org.faktorips.devtools.stdbuilder.dthelper.LocalTimeHelperFactory">
+      </datatypeHelperFactory>
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
+            factoryClass="org.faktorips.devtools.stdbuilder.dthelper.MonthDayHelperFactory">
+      </datatypeHelperFactory>
+   </extension>
+
 
 </plugin>

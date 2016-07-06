@@ -42,13 +42,11 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
-import org.faktorips.devtools.core.internal.model.datatype.DatatypeHelperFactoryDefinition;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -65,6 +63,9 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
+import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory;
+import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
+import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
@@ -212,6 +213,12 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_ALL = "All";
     public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY = "Policies only";
     public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT = "Products only";
+
+    /**
+     * Configuration property that defines which variant of local date should be used (joda or
+     * java8)
+     */
+    public static final String CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT = "localDateDatatypeHelperVariant"; //$NON-NLS-1$
 
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
@@ -516,6 +523,11 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                 new GenericJPA2PersistenceProvider());
     }
 
+    public LocalDateHelperVariant getLocalDateHelperVariant() {
+        return LocalDateHelperVariant.fromString(getConfig().getPropertyValueAsString(
+                CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT));
+    }
+
     /**
      * Returns the qualified class name for the given datatype.
      * 
@@ -683,7 +695,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
         if (datatypeHelperFactoryRegistry.hasFactory(datatype)) {
             DatatypeHelperFactory factory = datatypeHelperFactoryRegistry.getFactory(datatype);
-            return factory.createDatatypeHelper(datatype, getIpsProject());
+            return factory.createDatatypeHelper(datatype, this);
         }
 
         return datatypeHelperRegistry.getDatatypeHelper(datatype);
@@ -788,7 +800,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
          */
         private void initialize() {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
-            IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
+            IExtensionPoint point = registry.getExtensionPoint(StdBuilderPlugin.PLUGIN_ID,
                     DATATYPE_HELPER_FACTORY_EXTENSION_POINT);
             IExtension[] extensions = point.getExtensions();
 

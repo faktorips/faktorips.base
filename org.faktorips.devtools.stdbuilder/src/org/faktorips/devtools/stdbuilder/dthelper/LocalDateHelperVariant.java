@@ -1,4 +1,4 @@
-package org.faktorips.devtools.core.internal.model.datatype;
+package org.faktorips.devtools.stdbuilder.dthelper;
 
 import org.apache.commons.lang.StringUtils;
 

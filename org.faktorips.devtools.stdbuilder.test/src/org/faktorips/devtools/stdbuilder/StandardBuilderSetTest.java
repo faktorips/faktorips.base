@@ -14,9 +14,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.abstracttest.builder.TestBuilderSetConfig;
-import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.IntegerHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
@@ -25,12 +22,13 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.datatype.joda.MonthDayDatatype;
-import org.faktorips.devtools.core.internal.model.datatype.AbstractDateHelperFactory;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
 import org.junit.Test;
 
-public class StandardBuilderSetTest extends AbstractIpsPluginTest {
+public class StandardBuilderSetTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetDatatypeHelper_DefaultHelper() throws CoreException {
@@ -53,8 +51,7 @@ public class StandardBuilderSetTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
-        StandardBuilderSet builderSet = new StandardBuilderSet();
-        builderSet.setIpsProject(ipsProject);
+        IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
 
         assertThat(builderSet.getDatatypeHelper(LocalDateDatatype.DATATYPE),
                 is(instanceOf(org.faktorips.codegen.dthelpers.joda.LocalDateHelper.class)));
@@ -69,22 +66,8 @@ public class StandardBuilderSetTest extends AbstractIpsPluginTest {
     @Test
     public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
-        StandardBuilderSet builderSet = new StandardBuilderSet();
-        builderSet.setIpsProject(ipsProject);
-
-        // Although builderSet's IPS project is ipsProject, ipsProject.getIpsArtefactBuilderSet
-        // returns a TestIpsArtefactBuilderSet. The factory to which helper creation is delegated
-        // gets the IPS project as an argument. The factory obtains the builder set and the
-        // configuration from the project, i.e. it will use the TestIpsArtefactBuilderSet (and its
-        // configuration).
-        //
-        // By setting the config property for the helper variant to Java8 on the
-        // TestIpsArtefactBuilderSet's config, the factory should return Java8 helpers
-        //
-        // Jacko says: "Because it's bad, it's bad..."
-        TestIpsArtefactBuilderSet testBuilderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        TestBuilderSetConfig testConfig = testBuilderSet.getConfig();
-        testConfig.getProperties().put(AbstractDateHelperFactory.CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT, "java8");
+        setGeneratorProperty(ipsProject, StandardBuilderSet.CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT,
+                LocalDateHelperVariant.JAVA8.toString().toLowerCase());
 
         assertThat(builderSet.getDatatypeHelper(LocalDateDatatype.DATATYPE),
                 is(instanceOf(org.faktorips.codegen.dthelpers.java8.LocalDateHelper.class)));

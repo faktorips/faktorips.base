@@ -7,24 +7,24 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.datatype;
+package org.faktorips.devtools.stdbuilder.dthelper;
 
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.datatype.joda.LocalDateTimeDatatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
 
-public class LocalDateTimeHelperFactory extends AbstractDateHelperFactory<LocalDateTimeDatatype> {
+public class LocalDateHelperFactory extends AbstractDateHelperFactory<LocalDateDatatype> {
 
-    public LocalDateTimeHelperFactory() {
-        super(LocalDateTimeDatatype.class);
+    public LocalDateHelperFactory() {
+        super(LocalDateDatatype.class);
     }
 
     @Override
-    DatatypeHelper createDatatypeHelper(LocalDateTimeDatatype datatype, LocalDateHelperVariant variant) {
+    DatatypeHelper createDatatypeHelper(LocalDateDatatype datatype, LocalDateHelperVariant variant) {
         switch (variant) {
             case JAVA8:
-                return new org.faktorips.codegen.dthelpers.java8.LocalDateTimeHelper(datatype);
+                return new org.faktorips.codegen.dthelpers.java8.LocalDateHelper(datatype);
             default:
-                return new org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper(datatype);
+                return new org.faktorips.codegen.dthelpers.joda.LocalDateHelper(datatype);
         }
     }
 
