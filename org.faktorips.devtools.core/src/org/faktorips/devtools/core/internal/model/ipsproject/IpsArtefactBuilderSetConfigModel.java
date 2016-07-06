@@ -111,6 +111,10 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         }
     }
 
+    public void removeProperty(String propertyName) {
+        properties.remove(propertyName);
+    }
+
     @Override
     public final Element toXml(Document doc) {
         Element root = doc.createElement(XML_ELEMENT);
@@ -157,7 +161,8 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
             Object value = parsedValueMap.get(propertyDef.getName());
             if (value == null) {
-                parsedValueMap.put(propertyDef.getName(), propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
+                parsedValueMap.put(propertyDef.getName(),
+                        propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
             }
         }
         return new IpsArtefactBuilderSetConfig(parsedValueMap);

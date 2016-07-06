@@ -71,9 +71,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         }
 
         assertTrue(propertyDefNames.contains("generateChangeListener"));
-        assertTrue(propertyDefNames.contains("useJavaEnumTypes"));
         assertTrue(propertyDefNames.contains("generatorLocale"));
-        assertTrue(propertyDefNames.contains("useTypesafeCollections"));
         assertTrue(propertyDefNames.contains("generateDeltaSupport"));
         assertTrue(propertyDefNames.contains("generateCopySupport"));
         assertTrue(propertyDefNames.contains("generateVisitorSupport"));
@@ -83,6 +81,9 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         assertTrue(propertyDefNames.contains("formulaCompiling"));
         assertTrue(propertyDefNames.contains("markNoneMergeableResourcesAsDerived"));
         assertTrue(propertyDefNames.contains("toXMLSupport"));
+        // discontinued properties
+        assertFalse(propertyDefNames.contains("useJavaEnumTypes"));
+        assertFalse(propertyDefNames.contains("useTypesafeCollections"));
 
         IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo
                 .getPropertyDefinition("loggingFrameworkConnector");

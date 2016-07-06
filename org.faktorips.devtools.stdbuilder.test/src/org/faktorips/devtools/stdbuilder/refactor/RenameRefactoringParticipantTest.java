@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.util.StringUtil;
 import org.junit.Test;
 
@@ -172,7 +171,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     @Test
     public void testRenameEnumAttributeAbstractJava5Enums() throws CoreException {
-        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
         enumType.setAbstract(true);
 
@@ -191,7 +189,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
      */
     @Test
     public void testRenameEnumAttributeHierarchy() throws CoreException {
-        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
         // Create the hierarchy
         IEnumType superEnumType = createEnumType("SuperEnumType", null, "id", "name");
         superEnumType.setAbstract(true);
@@ -265,13 +262,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     @Test
     public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
-        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
-        performTestRenameEnumLiteralNameAttributeValue();
-    }
-
-    @Test
-    public void testRenameEnumLiteralNameAttributeValueJava5Enums() throws CoreException {
-        ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
         performTestRenameEnumLiteralNameAttributeValue();
     }
 
