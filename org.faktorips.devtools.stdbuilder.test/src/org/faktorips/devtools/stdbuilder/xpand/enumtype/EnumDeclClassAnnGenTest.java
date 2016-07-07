@@ -12,55 +12,106 @@ package org.faktorips.devtools.stdbuilder.xpand.enumtype;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumAttribute;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.junit.Before;
 import org.junit.Test;
 
-public class EnumDeclClassAnnGenTest {
+public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
 
-    private final EnumDeclClassAnnGen enumDeclClassAnnGen = new EnumDeclClassAnnGen();
+    private EnumDeclClassAnnGen enumDeclClassAnnGen;
+    private ModelService modelService;
+    private GeneratorModelContext modelContext;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        enumDeclClassAnnGen = new EnumDeclClassAnnGen();
+        modelService = new ModelService();
+        modelContext = builderSet.getGeneratorModelContext();
+    }
 
     @Test
-    public void testCreateAnnotation() {
-        XEnumType enumtype = mockEnumtype();
+    public void testCreateAnnotationForAbstractEnum() throws CoreException {
+        XEnumType xEnumtype = modelService.getModelNode(setUpEnumtype(), XEnumType.class, modelContext);
+
+        JavaCodeFragment annotation = enumDeclClassAnnGen.createAnnotation(xEnumtype);
 
         assertThat(
-                enumDeclClassAnnGen.createAnnotation(enumtype).getSourcecode(),
+                annotation.getSourcecode(),
                 is(equalTo("@IpsEnum(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
                         + System.getProperty("line.separator"))));
     }
 
     @Test
-    public void testCreateAnnotationExtensible() {
-        XEnumType enumtype = mockEnumtype();
-        when(enumtype.isExtensible()).thenReturn(true);
-        when(enumtype.getEnumContentQualifiedName()).thenReturn("foo.EnumName");
+    public void testCreateAnnotation() throws CoreException {
+        EnumType enumType = setUpEnumtype();
+        enumType.newEnumLiteralNameAttribute();
+        XEnumType xEnumtype = modelService.getModelNode(enumType, XEnumType.class, modelContext);
+
+        JavaCodeFragment annotation = enumDeclClassAnnGen.createAnnotation(xEnumtype);
 
         assertThat(
-                enumDeclClassAnnGen.createAnnotation(enumtype).getSourcecode(),
+                annotation.getSourcecode(),
+                is(equalTo("@IpsEnum(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
+                        + System.getProperty("line.separator"))));
+    }
+
+    @Test
+    public void testCreateAnnotationExtensible() throws CoreException {
+        EnumType enumType = setUpEnumtype();
+        enumType.newEnumLiteralNameAttribute();
+        enumType.setExtensible(true);
+        enumType.setEnumContentName("foo.EnumName");
+        XEnumType xEnumtype = modelService.getModelNode(enumType, XEnumType.class, modelContext);
+
+        JavaCodeFragment annotation = enumDeclClassAnnGen.createAnnotation(xEnumtype);
+
+        assertThat(
+                annotation.getSourcecode(),
                 is(equalTo("@IpsEnum(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
                         + System.getProperty("line.separator") + "@IpsExtensibleEnum(enumContentName=\"foo.EnumName\")"
                         + System.getProperty("line.separator"))));
     }
 
-    private XEnumType mockEnumtype() {
-        XEnumType enumtype = mock(XEnumType.class);
-        when(enumtype.getQualifiedIpsObjectName()).thenReturn("test.EnumType");
-        XEnumAttribute attribute1 = mock(XEnumAttribute.class);
-        when(attribute1.getName()).thenReturn("A1");
-        XEnumAttribute attribute2 = mock(XEnumAttribute.class);
-        when(attribute2.getName()).thenReturn("A2");
-        XEnumAttribute attribute3 = mock(XEnumAttribute.class);
-        when(attribute3.getName()).thenReturn("A3");
-        List<XEnumAttribute> attributes = Arrays.asList(attribute2, attribute1, attribute3);
-        when(enumtype.getAllAttributes()).thenReturn(attributes);
-        return enumtype;
+    @Test
+    public void testCreateAnnotation_abstractEnumWithAbstractParent() throws CoreException {
+        EnumType enumType = setUpEnumtype();
+        enumType.setAbstract(true);
+        EnumType parentEnumType = newEnumType(ipsProject, "test.AbstractEnumType");
+        parentEnumType.setAbstract(true);
+        IEnumAttribute superAttr1 = parentEnumType.newEnumAttribute();
+        superAttr1.setName("superAttr1");
+        IEnumAttribute superAttr2 = parentEnumType.newEnumAttribute();
+        superAttr2.setName("superAttr2");
+        enumType.setSuperEnumType("test.AbstractEnumType");
+        XEnumType xEnumtype = modelService.getModelNode(enumType, XEnumType.class, modelContext);
+
+        JavaCodeFragment annotation = enumDeclClassAnnGen.createAnnotation(xEnumtype);
+
+        assertThat(
+                annotation.getSourcecode(),
+                is(equalTo("@IpsEnum(name = \"test.EnumType\", attributeNames = {\"superAttr1\", \"superAttr2\", \"A2\", \"A1\", \"A3\"})"
+                        + System.getProperty("line.separator"))));
+    }
+
+    private EnumType setUpEnumtype() throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "test.EnumType");
+        IEnumAttribute attribute2 = enumType.newEnumAttribute();
+        attribute2.setName("A2");
+        IEnumAttribute attribute1 = enumType.newEnumAttribute();
+        attribute1.setName("A1");
+        IEnumAttribute attribute3 = enumType.newEnumAttribute();
+        attribute3.setName("A3");
+        return enumType;
     }
 
 }

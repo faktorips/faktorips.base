@@ -11,7 +11,9 @@ package org.faktorips.runtime.modeltype.internal.read;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.modeltype.IModelElement;
@@ -24,6 +26,7 @@ import org.faktorips.runtime.modeltype.IModelElement;
 public class SimpleTypeModelPartsReader<E extends IModelElement, P extends Annotation, C extends Annotation> {
     private SimpleGetterMethodCollector<E, P, C> collector;
     private TypeModelPartsReader typeModelPartsReader;
+    private Class<P> parentAnnotation;
 
     /**
      * @param parentAnnotation the type of annotation on the parent class
@@ -38,6 +41,7 @@ public class SimpleTypeModelPartsReader<E extends IModelElement, P extends Annot
      */
     public SimpleTypeModelPartsReader(Class<P> parentAnnotation, NamesAccessor<P> namesAccessor,
             Class<C> childAnnotation, NameAccessor<C> nameAccessor, ModelElementCreator<E> modelElementCreator) {
+        this.parentAnnotation = parentAnnotation;
         collector = new SimpleGetterMethodCollector<E, P, C>(parentAnnotation, namesAccessor, childAnnotation,
                 nameAccessor, modelElementCreator);
         typeModelPartsReader = new TypeModelPartsReader(collector);
@@ -66,8 +70,36 @@ public class SimpleTypeModelPartsReader<E extends IModelElement, P extends Annot
             Class<?> classWithGetterMethods,
             IModelElement parentModel) {
         typeModelPartsReader.init(AnnotatedDeclaration.from(classWithChildNameList));
+        readMethodsFromAnnotatedParentInterfaces(classWithGetterMethods);
         typeModelPartsReader.read(AnnotatedDeclaration.from(classWithGetterMethods));
         return collector.createParts(parentModel);
+    }
+
+    private void readMethodsFromAnnotatedParentInterfaces(Class<?> classWithGetterMethods) {
+        if (classWithGetterMethods.isInterface()) {
+            Deque<Class<?>> superInterfaces = new LinkedList<Class<?>>();
+            Class<?> superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(classWithGetterMethods);
+            while (superInterfaceWithParentAnnotation != null) {
+                superInterfaces.push(superInterfaceWithParentAnnotation);
+                superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(superInterfaceWithParentAnnotation);
+            }
+            while (!superInterfaces.isEmpty()) {
+                typeModelPartsReader.read(AnnotatedDeclaration.from(superInterfaces.pop()));
+            }
+        }
+    }
+
+    private Class<?> findSuperInterfaceWithParentAnnotation(Class<?> iface) {
+        for (Class<?> superInterface : iface.getInterfaces()) {
+            if (superInterface.isAnnotationPresent(parentAnnotation)) {
+                return superInterface;
+            }
+            Class<?> interfaceWithAnnotation = findSuperInterfaceWithParentAnnotation(superInterface);
+            if (interfaceWithAnnotation != null) {
+                return interfaceWithAnnotation;
+            }
+        }
+        return null;
     }
 
     /**

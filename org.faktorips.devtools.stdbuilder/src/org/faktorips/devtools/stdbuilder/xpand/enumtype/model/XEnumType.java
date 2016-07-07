@@ -120,7 +120,11 @@ public class XEnumType extends XClass {
     public List<XEnumAttribute> getAttributes(boolean includeSupertypeCopies, boolean includeLiteralName) {
         List<IEnumAttribute> enumAttributes;
         if (includeSupertypeCopies) {
-            enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
+            if (isAbstract()) {
+                enumAttributes = getEnumType().findAllEnumAttributes(includeLiteralName, getIpsProject());
+            } else {
+                enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
+            }
         } else {
             enumAttributes = getEnumType().getEnumAttributes(includeLiteralName);
         }
@@ -151,7 +155,7 @@ public class XEnumType extends XClass {
         List<XEnumAttribute> results = new ArrayList<XEnumAttribute>();
 
         for (XEnumAttribute attribute : attributeModelNodes) {
-            if (attribute.isUniqueInHierachy()) {
+            if (attribute.isUnique()) {
                 results.add(attribute);
             }
         }

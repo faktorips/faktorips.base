@@ -397,7 +397,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindIsIdentifier() {
+    public void testFindIsIdentifier() throws CoreException {
         try {
             inheritedEnumAttributeId.findIsIdentifier(null);
             fail();
@@ -407,6 +407,14 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
         assertFalse(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
+
+        inheritedEnumAttributeId.setInherited(true);
+        EnumType subSubEnumType = newEnumType(ipsProject, "SubSubEnumType");
+        subSubEnumType.setSuperEnumType(subEnumType.getQualifiedName());
+        inheritedEnumAttributeId = subSubEnumType.newEnumAttribute();
+        inheritedEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+        inheritedEnumAttributeId.setInherited(true);
+        assertTrue(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
 
         genderEnumAttributeId.setInherited(true);
         assertFalse(genderEnumAttributeId.findIsIdentifier(ipsProject));

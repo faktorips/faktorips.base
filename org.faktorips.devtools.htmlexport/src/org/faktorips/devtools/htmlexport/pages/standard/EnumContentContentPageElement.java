@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -53,8 +53,8 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(
                 new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ", //$NON-NLS-1$
                         getContext())).addPageElements(
-                new PageElementUtils(getContext()).createLinkPageElement(getContext(), getEnumType(),
-                        TargetType.CONTENT, getEnumType().getQualifiedName(), true)));
+                                new PageElementUtils(getContext()).createLinkPageElement(getContext(), getEnumType(),
+                                        TargetType.CONTENT, getEnumType().getQualifiedName(), true)));
 
         addValuesTable();
     }
@@ -66,7 +66,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         EnumValuesTablePageElement tablePageElement;
         try {
             tablePageElement = new EnumValuesTablePageElement(getDocumentedIpsObject(), getContext());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsStatus status = new IpsStatus(IStatus.ERROR,
                     "Error creating EnumValuesTable of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
             getContext().addStatus(status);

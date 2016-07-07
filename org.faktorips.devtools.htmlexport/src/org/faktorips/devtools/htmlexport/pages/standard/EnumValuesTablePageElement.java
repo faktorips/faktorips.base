@@ -51,19 +51,19 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumType}
      * 
      */
-    public EnumValuesTablePageElement(IEnumType type, DocumentationContext context) throws CoreException {
+    public EnumValuesTablePageElement(IEnumType type, DocumentationContext context) {
         super(type.getEnumValues(), context);
-        enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
+        enumAttributes = type.findAllEnumAttributes(true, type.getIpsProject());
     }
 
     /**
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumContent}
      * 
      */
-    public EnumValuesTablePageElement(IEnumContent content, DocumentationContext context) throws CoreException {
+    public EnumValuesTablePageElement(IEnumContent content, DocumentationContext context) {
         super(content.getEnumValues(), context);
         IEnumType type = content.findEnumType(content.getIpsProject());
-        enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
+        enumAttributes = type.findAllEnumAttributes(true, type.getIpsProject());
     }
 
     @Override

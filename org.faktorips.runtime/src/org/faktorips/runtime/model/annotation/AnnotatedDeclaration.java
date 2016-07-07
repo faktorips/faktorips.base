@@ -214,8 +214,7 @@ public class AnnotatedDeclaration {
             if (modelObjectClass.isAnnotationPresent(IpsPublishedInterface.class)) {
                 return modelObjectClass.getAnnotation(IpsPublishedInterface.class).implementation();
             } else {
-                throw new IllegalArgumentException("The interface " + modelObjectClass.getCanonicalName()
-                        + " is no IPS published interface");
+                return null;
             }
         } else {
             return modelObjectClass;

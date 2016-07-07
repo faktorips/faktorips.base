@@ -36,6 +36,12 @@ public class EnumsDescriptionPage extends DefaultModelDescriptionPage {
     protected List<DescriptionItem> createDescriptions() throws CoreException {
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
         if (getIpsObject() != null) {
+            // use of
+            // org.faktorips.devtools.core.model.enums.IEnumType.findAllEnumAttributes(boolean,
+            // IIpsProject) would lead to displaying the overwritten description as desired in
+            // https://jira.faktorzehn.de/browse/FIPS-4372, but to an empty description in all other
+            // cases, as descriptions are not automatically inherited.
+            @SuppressWarnings("deprecation")
             List<IEnumAttribute> enumAttributtes = getIpsObject().findAllEnumAttributesIncludeSupertypeOriginals(true,
                     getIpsObject().getIpsProject());
             for (IEnumAttribute enumAttributte : enumAttributtes) {

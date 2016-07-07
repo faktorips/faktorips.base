@@ -138,6 +138,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals("foo", attributes.get(3).getName());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testFindAllEnumAttributesIncludeSupertypeOriginals() throws CoreException {
         try {
@@ -165,6 +166,96 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         List<IEnumAttribute> allWithLiterals = subEnumType.findAllEnumAttributesIncludeSupertypeOriginals(true,
                 ipsProject);
         assertEquals(4, allWithLiterals.size());
+    }
+
+    @Test
+    public void testFindAllEnumAttributes_allInherited() throws CoreException {
+        EnumType abstractGrandParent = newAbstractEnumType("A", null);
+        IEnumAttribute idAttributeGP = newEnumAttribute(abstractGrandParent, "id");
+        IEnumAttribute nameAttributeGP = newEnumAttribute(abstractGrandParent, "name");
+
+        EnumType abstractParent = newAbstractEnumType("B", abstractGrandParent);
+        IEnumAttribute idAttributeP = newEnumAttribute(abstractParent, "id", true);
+        IEnumAttribute otherAttributeP = newEnumAttribute(abstractParent, "other");
+        IEnumAttribute nameAttributeP = newEnumAttribute(abstractParent, "name", true);
+
+        EnumType concrete = newEnumType(ipsProject, "C");
+        concrete.setSuperEnumType(abstractParent.getQualifiedName());
+        IEnumAttribute otherAttributeC = newEnumAttribute(concrete, "other", true);
+        IEnumAttribute idAttributeC = newEnumAttribute(concrete, "id", true);
+        IEnumAttribute localAttribute = newEnumAttribute(concrete, "local");
+        IEnumAttribute nameAttributeC = newEnumAttribute(concrete, "name", true);
+        IEnumLiteralNameAttribute literalNameAttribute = concrete.newEnumLiteralNameAttribute();
+
+        assertEquals(Arrays.asList(idAttributeGP, nameAttributeGP),
+                abstractGrandParent.findAllEnumAttributes(true, ipsProject));
+        assertEquals(Arrays.asList(idAttributeP, otherAttributeP, nameAttributeP),
+                abstractParent.findAllEnumAttributes(true, ipsProject));
+        assertEquals(
+                Arrays.asList(otherAttributeC, idAttributeC, localAttribute, nameAttributeC, literalNameAttribute),
+                concrete.findAllEnumAttributes(true, ipsProject));
+    }
+
+    @Test
+    public void testFindAllEnumAttributes_onlyNew() throws CoreException {
+        EnumType abstractGrandParent = newAbstractEnumType("A", null);
+        IEnumAttribute idAttributeGP = newEnumAttribute(abstractGrandParent, "id");
+        IEnumAttribute nameAttributeGP = newEnumAttribute(abstractGrandParent, "name");
+
+        EnumType abstractParent = newAbstractEnumType("B", abstractGrandParent);
+        IEnumAttribute otherAttributeP = newEnumAttribute(abstractParent, "other");
+
+        EnumType concrete = newEnumType(ipsProject, "c");
+        concrete.setSuperEnumType(abstractParent.getQualifiedName());
+        IEnumAttribute idAttributeC = newEnumAttribute(concrete, "id", true);
+        IEnumAttribute otherAttributeC = newEnumAttribute(concrete, "other", true);
+        IEnumLiteralNameAttribute literalNameAttribute = concrete.newEnumLiteralNameAttribute();
+        IEnumAttribute localAttribute = newEnumAttribute(concrete, "local");
+        IEnumAttribute nameAttributeC = newEnumAttribute(concrete, "name", true);
+
+        assertEquals(Arrays.asList(idAttributeGP, nameAttributeGP),
+                abstractGrandParent.findAllEnumAttributes(true, ipsProject));
+        assertEquals(Arrays.asList(idAttributeGP, nameAttributeGP, otherAttributeP),
+                abstractParent.findAllEnumAttributes(true, ipsProject));
+        assertEquals(
+                Arrays.asList(idAttributeC, otherAttributeC, literalNameAttribute, localAttribute, nameAttributeC),
+                concrete.findAllEnumAttributes(true, ipsProject));
+    }
+
+    @Test
+    public void testFindAllEnumAttributes_duplicateAttributeName() throws CoreException {
+        EnumType parent = newAbstractEnumType("A", null);
+        IEnumAttribute idAttributeGP = newEnumAttribute(parent, "id");
+
+        EnumType concrete = newEnumType(ipsProject, "C");
+        concrete.setSuperEnumType(parent.getQualifiedName());
+        IEnumAttribute idAttributeC = newEnumAttribute(concrete, "id", false);
+
+        assertEquals(Arrays.asList(idAttributeGP), parent.findAllEnumAttributes(true, ipsProject));
+        assertEquals(Arrays.asList(idAttributeGP, idAttributeC), concrete.findAllEnumAttributes(true, ipsProject));
+    }
+
+    private IEnumAttribute newEnumAttribute(EnumType abstractGrandParent, String name) throws CoreException {
+        return newEnumAttribute(abstractGrandParent, name, false);
+    }
+
+    private IEnumAttribute newEnumAttribute(EnumType abstractGrandParent, String name, boolean inherited)
+            throws CoreException {
+        IEnumAttribute attribute = abstractGrandParent.newEnumAttribute();
+        attribute.setName(name);
+        if (inherited) {
+            attribute.setInherited(inherited);
+        }
+        return attribute;
+    }
+
+    private EnumType newAbstractEnumType(String name, EnumType parent) throws CoreException {
+        EnumType abstractEnum = newEnumType(ipsProject, name);
+        abstractEnum.setAbstract(true);
+        if (parent != null) {
+            abstractEnum.setSuperEnumType(parent.getQualifiedName());
+        }
+        return abstractEnum;
     }
 
     @Test
@@ -1133,7 +1224,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         List<IDependency> depencendiesListSubEnumType = Arrays.asList(dependenciesSubEnumType);
         IDependency superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(subEnumType
                 .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
-                IpsObjectType.ENUM_TYPE));
+                        IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubEnumType.contains(superEnumTypeDependency));
 
         List<IDependencyDetail> details = subEnumType.getDependencyDetails(dependenciesSubEnumType[0]);

@@ -97,7 +97,7 @@ public enum «name» «EXPAND CommonDefinitions::implementedInterfaces»{
 	* @generated
 	*/
 	public static final «enumType.name» «IF multilingual-»«method(methodNameGetValueBy, datatypeName, memberVarName, Locale(), "locale")»«ELSE»«method(methodNameGetValueBy, datatypeName, memberVarName)»«ENDIF-»{
-		«IF identifierInHierachy-»
+		«IF identifier-»
 			return «enumType.varNameIdMap».get(«memberVarName»);
 		«ELSE-»
 			for(«enumType.name» currentValue : values()){

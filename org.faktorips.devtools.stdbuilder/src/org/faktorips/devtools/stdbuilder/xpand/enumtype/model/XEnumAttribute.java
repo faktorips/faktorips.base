@@ -37,10 +37,6 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     public boolean isUnique() {
-        return getEnumAttribute().isUnique();
-    }
-
-    public boolean isUniqueInHierachy() {
         try {
             return getEnumAttribute().findIsUnique(getIpsProject());
         } catch (CoreException e) {
@@ -49,7 +45,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     public boolean isDisplayName() {
-        return getEnumAttribute().isUsedAsNameInFaktorIpsUi();
+        return getEnumAttribute().findIsUsedAsNameInFaktorIpsUi(getIpsProject());
     }
 
     public boolean isInherited() {
@@ -57,10 +53,6 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     public boolean isIdentifier() {
-        return getEnumAttribute().isIdentifier();
-    }
-
-    public boolean isIdentifierInHierachy() {
         return getEnumAttribute().findIsIdentifier(getIpsProject());
     }
 

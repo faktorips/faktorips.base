@@ -173,7 +173,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Validates the <tt>name</tt> property. */
-    private void validateName(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateName(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
 
@@ -214,8 +214,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         // Check for other attributes with the same name in the supertype hierarchy.
-        List<IEnumAttribute> allEnumAttributes = getEnumType().findAllEnumAttributesIncludeSupertypeOriginals(true,
-                ipsProject);
+        List<IEnumAttribute> allEnumAttributes = getEnumType().findAllEnumAttributes(true, ipsProject);
         numberEnumAttributesThisName = 0;
         for (IEnumAttribute enumAttribute : allEnumAttributes) {
             if (enumAttribute.getName().equals(name)) {

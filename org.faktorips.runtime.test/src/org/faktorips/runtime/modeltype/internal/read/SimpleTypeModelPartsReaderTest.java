@@ -105,6 +105,40 @@ public class SimpleTypeModelPartsReaderTest {
         simpleTypeModelPartsReader.createParts(Parent2.class, PartHolder1.class, parentModel);
     }
 
+    @Test
+    public void testCreateParts_Interface() throws Exception {
+        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+                ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
+
+        LinkedHashMap<String, DummyElement> parts = simpleTypeModelPartsReader.createParts(ParentInterface.class,
+                ParentInterface.class, parentModel);
+
+        assertThat(parts, is(notNullValue()));
+        assertThat(parts.size(), is(2));
+        Iterator<String> keys = parts.keySet().iterator();
+        assertThat(keys.next(), is(equalTo("Tick")));
+        assertThat(keys.next(), is(equalTo("Trick")));
+        assertThat(parts.get("Tick").parentElement, is(parentModel));
+        assertThat(parts.get("Tick").getterMethod, is(equalTo(ParentInterface.class.getMethod("foo"))));
+    }
+
+    @Test
+    public void testCreateParts_SubInterface() throws Exception {
+        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+                ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
+
+        LinkedHashMap<String, DummyElement> parts = simpleTypeModelPartsReader.createParts(SubInterface.class,
+                SubInterface.class, parentModel);
+
+        assertThat(parts, is(notNullValue()));
+        assertThat(parts.size(), is(2));
+        Iterator<String> keys = parts.keySet().iterator();
+        assertThat(keys.next(), is(equalTo("Tick")));
+        assertThat(keys.next(), is(equalTo("Trick")));
+        assertThat(parts.get("Tick").parentElement, is(parentModel));
+        assertThat(parts.get("Tick").getterMethod, is(equalTo(ParentInterface.class.getMethod("foo"))));
+    }
+
     @Retention(RetentionPolicy.RUNTIME)
     private static @interface ParentAnnotation {
         String[] kids();
@@ -118,6 +152,19 @@ public class SimpleTypeModelPartsReaderTest {
     @ParentAnnotation(kids = { "Tick", "Trick" })
     private static class Parent {
 
+    }
+
+    @ParentAnnotation(kids = { "Tick", "Trick" })
+    private static interface ParentInterface {
+        @ChildAnnotation("Tick")
+        public void foo();
+
+        @ChildAnnotation("Trick")
+        public void bar();
+    }
+
+    @ParentAnnotation(kids = { "Tick", "Trick" })
+    private static interface SubInterface extends ParentInterface {
     }
 
     @ParentAnnotation(kids = { "Tick", "Trick", "Track" })

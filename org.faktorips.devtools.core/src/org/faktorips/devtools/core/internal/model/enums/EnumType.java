@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -247,6 +248,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             attributesList.addAll(currentEnumType.getEnumAttributes(includeLiteralName));
         }
         return attributesList;
+    }
+
+    @Override
+    public List<IEnumAttribute> findAllEnumAttributes(final boolean includeLiteralName, IIpsProject ipsProject) {
+        ArgumentCheck.notNull(ipsProject);
+
+        final LinkedList<IEnumAttribute> allAttributes = new LinkedList<IEnumAttribute>();
+        EnumTypeHierarchyVisitor collector = new AttributeFinder(getIpsProject(), allAttributes, includeLiteralName);
+        collector.start(this);
+        return allAttributes;
     }
 
     @Override
@@ -709,10 +720,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             String text = (notInheritedAttributesCount > 1) ? NLS.bind(
                     Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural, notInheritedAttributesCount,
                     showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
-                    showFirst);
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
-                    text, Message.ERROR, this);
-            validationMessageList.add(message);
+                            showFirst);
+                    Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
+                            text, Message.ERROR, this);
+                    validationMessageList.add(message);
         }
     }
 
@@ -1090,6 +1101,47 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     public boolean isIdentifierNamespaceBelowBoundary() {
         return true;
+    }
+
+    private final class AttributeFinder extends EnumTypeHierarchyVisitor {
+        private final LinkedList<IEnumAttribute> allAttributes;
+        private final boolean includeLiteralName;
+
+        private AttributeFinder(IIpsProject ipsProject, LinkedList<IEnumAttribute> allAttributes,
+                boolean includeLiteralName) {
+            super(ipsProject);
+            this.allAttributes = allAttributes;
+            this.includeLiteralName = includeLiteralName;
+        }
+
+        @Override
+        protected boolean visit(IEnumType currentType) {
+            LinkedList<IEnumAttribute> attributesToPrepend = new LinkedList<IEnumAttribute>();
+            for (IEnumAttribute localAttribute : ((EnumType)currentType).getEnumAttributesInternal(true,
+                    includeLiteralName)) {
+                if (!contains(localAttribute)) {
+                    attributesToPrepend.addFirst(localAttribute);
+                }
+            }
+            for (IEnumAttribute attributeToPrepend : attributesToPrepend) {
+                allAttributes.addFirst(attributeToPrepend);
+            }
+            return true;
+        }
+
+        /**
+         * If there are multiple attributes with the same name and none of them is marked as
+         * inherited, add all those attributes (or "duplicates") to the list. This case is necessary
+         * to detect errors during object validation.
+         */
+        private final boolean contains(IEnumAttribute attribute) {
+            for (IEnumAttribute enumAttribute : allAttributes) {
+                if (enumAttribute.getName().equals(attribute.getName()) && enumAttribute.isInherited()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierarchyVisitor {
