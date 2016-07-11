@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Calendar;
@@ -324,7 +325,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetActualTemplateValue() throws Exception {
+    public void testGetActualTemplateValue() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
@@ -346,6 +347,32 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
 
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(pTable);
         assertThat(pmo.getActualTemplateValue(), is((Object)"templateTable"));
+
+    }
+
+    @Test
+    public void testGetActualTemplateValue_null() throws CoreException {
+        IIpsProject ipsProject = newIpsProject();
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
+        ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
+        tableStructurUsage.setRoleName("RoleName");
+
+        IProductCmpt t = newProductTemplate(productCmptType, "Template");
+        IProductCmpt p = newProductCmpt(productCmptType, "Product");
+
+        p.setTemplate(t.getQualifiedName());
+
+        IProductCmptGeneration tGen = (IProductCmptGeneration)t.newGeneration(EFFECTIVE_DATE);
+        IProductCmptGeneration pGen = (IProductCmptGeneration)p.newGeneration(EFFECTIVE_DATE);
+
+        ITableContentUsage tTable = tGen.newTableContentUsage(tableStructurUsage);
+        ITableContentUsage pTable = pGen.newTableContentUsage(tableStructurUsage);
+
+        tTable.setTableContentName(null);
+        pTable.setTableContentName(null);
+
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(pTable);
+        assertThat(pmo.getActualTemplateValue(), is(nullValue()));
 
     }
 
