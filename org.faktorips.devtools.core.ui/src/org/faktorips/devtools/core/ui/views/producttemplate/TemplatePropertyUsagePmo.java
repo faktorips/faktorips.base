@@ -189,7 +189,11 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      */
     protected Object getActualTemplateValue() {
         ITemplatedValue templatePropertyValue = findTemplatedValue(getTemplate());
-        return valueFunction().apply(templatePropertyValue);
+        if (templatePropertyValue != null) {
+            return valueFunction().apply(templatePropertyValue);
+        } else {
+            return null;
+        }
     }
 
     /**
