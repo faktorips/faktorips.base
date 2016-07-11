@@ -119,7 +119,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     @Override
-    public final String getId() {
+    public String getId() {
         return id;
     }
 
