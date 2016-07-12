@@ -85,6 +85,11 @@ public enum «name» «EXPAND CommonDefinitions::implementedInterfaces»{
 «ENDDEFINE»
 
 «DEFINE constructors FOR XEnumType-»
+	/**
+	* «localizedJDoc("CONSTRUCTOR", name)»
+	*
+	* @generated
+	*/
 	private «method(name, constructorParameters)»{
 		«EXPAND CommonEnumType::fieldInitializations(false)-»
 	}
