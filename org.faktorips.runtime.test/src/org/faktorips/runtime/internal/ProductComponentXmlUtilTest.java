@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -28,17 +29,25 @@ public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {
     public void testGetPropertyElements() {
         Element genEl = getTestDocument().getDocumentElement();
         Map<String, Element> map = ProductComponentXmlUtil.getPropertyElements(genEl);
-        assertEquals(4, map.size());
+        assertEquals(6, map.size());
 
-        Element attr1El = map.get("attribute1");
-        assertEquals("ConfigElement", attr1El.getNodeName());
+        assertNull(map.get("attribute1"));
+
+        Element attr1El = map.get("@default_attribute1");
+        assertEquals("ConfiguredDefault", attr1El.getNodeName());
         assertEquals("attribute1", attr1El.getAttribute("attribute"));
         assertEquals("2", attr1El.getAttribute("value"));
+        Element attr1VSEl = map.get("@valueSet_attribute1");
+        assertEquals("ConfiguredValueSet", attr1VSEl.getNodeName());
+        assertEquals("attribute1", attr1VSEl.getAttribute("attribute"));
 
-        Element attr2El = map.get("attribute2");
-        assertEquals("ConfigElement", attr2El.getNodeName());
+        Element attr2El = map.get("@default_attribute2");
+        assertEquals("ConfiguredDefault", attr2El.getNodeName());
         assertEquals("attribute2", attr2El.getAttribute("attribute"));
         assertEquals("m", attr2El.getAttribute("value"));
+        Element attr2VSEl = map.get("@valueSet_attribute2");
+        assertEquals("ConfiguredValueSet", attr2VSEl.getNodeName());
+        assertEquals("attribute2", attr2VSEl.getAttribute("attribute"));
 
         Element attr3El = map.get("attribute3");
         assertEquals(ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE, attr3El.getNodeName());

@@ -22,6 +22,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -59,10 +60,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        ITemplatedValue t1Value = t1.newPropertyValue(attribute);
-        ITemplatedValue t2Value = t2.newPropertyValue(attribute);
-        ITemplatedValue p1Value = p1.newPropertyValue(attribute);
-        ITemplatedValue p2Value = p2.newPropertyValue(attribute);
+        ITemplatedValue t1Value = t1.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue t2Value = t2.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
         t1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -73,10 +74,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(valuePmo.getInheritingTemplatedValues(), hasItems(p2Value));
 
         // Property value of generations
-        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(attribute);
-        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(attribute);
-        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(attribute);
-        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(attribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(attribute, IAttributeValue.class);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -111,10 +112,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        IPropertyValue t1Value = t1.newPropertyValue(attribute);
-        IPropertyValue t2Value = t2.newPropertyValue(attribute);
-        IPropertyValue p1Value = p1.newPropertyValue(attribute);
-        IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        IPropertyValue t1Value = t1.newPropertyValue(attribute, IAttributeValue.class);
+        IPropertyValue t2Value = t2.newPropertyValue(attribute, IAttributeValue.class);
+        IPropertyValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
+        IPropertyValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
         t1Value.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -125,10 +126,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
                 hasItems((ITemplatedValue)p2Value));
 
         // Property value of generations
-        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(genAttribute);
-        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(genAttribute);
-        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(genAttribute);
-        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(genAttribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(genAttribute, IAttributeValue.class);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(genAttribute, IAttributeValue.class);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(genAttribute, IAttributeValue.class);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(genAttribute, IAttributeValue.class);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -159,10 +160,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        ITemplatedValue t1Value = t1.newPropertyValue(attribute);
-        ITemplatedValue t2Value = t2.newPropertyValue(attribute);
-        ITemplatedValue p1Value = p1.newPropertyValue(attribute);
-        ITemplatedValue p2Value = p2.newPropertyValue(attribute);
+        ITemplatedValue t1Value = t1.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue t2Value = t2.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
         t1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -173,10 +174,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(valuePmo.getDefiningTemplatedValues(), hasItems(p1Value, t2Value));
 
         // Property value of generations
-        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(attribute);
-        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(attribute);
-        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(attribute);
-        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(attribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(attribute, IAttributeValue.class);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -211,10 +212,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        ITemplatedValue t1Value = t1.newPropertyValue(attribute);
-        ITemplatedValue t2Value = t2.newPropertyValue(attribute);
-        ITemplatedValue p1Value = p1.newPropertyValue(attribute);
-        ITemplatedValue p2Value = p2.newPropertyValue(attribute);
+        ITemplatedValue t1Value = t1.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue t2Value = t2.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
+        ITemplatedValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
         t1Value.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -224,10 +225,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(new TemplatePropertyUsagePmo(t2Value).getDefiningTemplatedValues().isEmpty(), is(true));
 
         // Property value of generations
-        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(genAttribute);
-        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(genAttribute);
-        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(genAttribute);
-        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(genAttribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(genAttribute, IAttributeValue.class);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(genAttribute, IAttributeValue.class);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(genAttribute, IAttributeValue.class);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(genAttribute, IAttributeValue.class);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -294,8 +295,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
 
         p.setTemplate(t.getQualifiedName());
 
-        IPropertyValue templateValue = t.newPropertyValue(attribute);
-        IPropertyValue prodCmptValue = p.newPropertyValue(attribute);
+        IPropertyValue templateValue = t.newPropertyValue(attribute, IAttributeValue.class);
+        IPropertyValue prodCmptValue = p.newPropertyValue(attribute, IAttributeValue.class);
 
         templateValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         prodCmptValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -314,7 +315,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
 
         IProductCmpt prodCmpt = newProductCmpt(productCmptType, "Product");
-        IPropertyValue propertyValue = prodCmpt.newPropertyValue(attribute);
+        IPropertyValue propertyValue = prodCmpt.newPropertyValue(attribute, IAttributeValue.class);
         propertyValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo();

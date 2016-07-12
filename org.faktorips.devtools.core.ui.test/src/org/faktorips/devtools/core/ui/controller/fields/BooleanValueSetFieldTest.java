@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
@@ -47,7 +47,7 @@ public class BooleanValueSetFieldTest {
     private Checkbox nullBox;
 
     @Mock
-    private IConfigElement configElement;
+    private IConfiguredValueSet configValueSet;
 
     @Mock
     private IIpsModel ipsModel;
@@ -67,10 +67,10 @@ public class BooleanValueSetFieldTest {
         when(control.getTrueCheckBox()).thenReturn(trueBox);
         when(control.getFalseCheckBox()).thenReturn(falseBox);
         when(control.getNullCheckBox()).thenReturn(nullBox);
-        when(configElement.getIpsModel()).thenReturn(ipsModel);
-        when(ipsModel.getNextPartId(configElement)).thenReturn(id);
+        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        when(ipsModel.getNextPartId(configValueSet)).thenReturn(id);
 
-        field = new BooleanValueSetField(configElement, control);
+        field = new BooleanValueSetField(configValueSet, control);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class BooleanValueSetFieldTest {
         when(falseBox.isChecked()).thenReturn(true);
         nullBox = null;
 
-        field = new BooleanValueSetField(configElement, control);
+        field = new BooleanValueSetField(configValueSet, control);
 
         IEnumValueSet fieldValueSet = field.parseContent();
         List<String> valuesAsList = fieldValueSet.getValuesAsList();

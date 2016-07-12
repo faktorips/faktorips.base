@@ -82,7 +82,7 @@ public interface IPropertyValue extends ITemplatedValue {
     /**
      * Returns the value.
      */
-    public String getPropertyValue();
+    public Object getPropertyValue();
 
     /**
      * Returns the {@link IPropertyValueContainer} this property value belongs to.
@@ -99,13 +99,16 @@ public interface IPropertyValue extends ITemplatedValue {
 
         private final String propertyName;
 
-        public PropertyValueIdentifier(String propertyName) {
+        private final PropertyValueType type;
+
+        public PropertyValueIdentifier(String propertyName, PropertyValueType type) {
             super();
             this.propertyName = Preconditions.checkNotNull(propertyName);
+            this.type = type;
         }
 
         public PropertyValueIdentifier(IPropertyValue p) {
-            this(p.getPropertyName());
+            this(p.getPropertyName(), p.getPropertyValueType());
         }
 
         @Override
@@ -131,7 +134,7 @@ public interface IPropertyValue extends ITemplatedValue {
         public IPropertyValue getValueFrom(ITemplatedValueContainer container) {
             ArgumentCheck.isInstanceOf(container, IPropertyValueContainer.class);
             IPropertyValueContainer propertyValueContainer = (IPropertyValueContainer)container;
-            return propertyValueContainer.getPropertyValue(propertyName);
+            return propertyValueContainer.getPropertyValue(propertyName, type.getInterfaceClass());
         }
 
     }

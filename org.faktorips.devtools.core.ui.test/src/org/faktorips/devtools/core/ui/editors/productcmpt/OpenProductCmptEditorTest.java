@@ -20,11 +20,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,12 +40,12 @@ public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
         super.setUp();
         IpsPlugin.getDefault().setTestMode(true);
         IIpsProject project = newIpsProject();
-        ProductCmpt productCmpt = newProductCmpt(project, "ProductCmpt");
+        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(project, "PolicyCmpt", "ProductCmpt");
+
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(project);
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         generation.setValidFrom(new GregorianCalendar());
-
-        IConfigElement configElement = generation.newConfigElement();
-        configElement.setValueSetType(ValueSetType.ENUM);
 
         editorInput = ProductCmptEditorInput.createWithGeneration(generation);
     }

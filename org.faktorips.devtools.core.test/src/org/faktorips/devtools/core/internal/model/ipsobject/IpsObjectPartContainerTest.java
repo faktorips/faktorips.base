@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -17,7 +18,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -462,8 +462,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         // create srcfile with contents
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
+
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
-        generation.newConfigElement();
         generation.newLink("");
 
         // validate
@@ -855,7 +855,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IIpsProjectProperties properties = ipsProject.getProperties();
         Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
         ISupportedLanguage[] languageArray = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages
-                .size()]);
+                                                                                               .size()]);
         properties.removeSupportedLanguage(languageArray[0]);
         properties.removeSupportedLanguage(languageArray[1]);
         properties.addSupportedLanguage(languageArray[1].getLocale());
@@ -1123,7 +1123,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     private static class TestIpsObjectPartContainerWithVersion extends TestIpsObjectPartContainer implements
-            IVersionControlledElement {
+    IVersionControlledElement {
 
         public TestIpsObjectPartContainerWithVersion(IIpsElement parent) {
             super(parent);
@@ -1131,7 +1131,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
-            ILabeledElement {
+    ILabeledElement {
 
         private int numOfUpdateSrcFileCalls;
 

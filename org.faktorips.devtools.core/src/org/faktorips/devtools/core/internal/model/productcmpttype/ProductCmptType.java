@@ -332,6 +332,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * <p>
      * Note this is a model internal method, it is not part of the published interface.
      * 
+     */
+    public Map<String, IProductCmptProperty> findProductCmptPropertyMap(IIpsProject ipsProject) {
+        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, true, ipsProject);
+        collector.start(this);
+        return collector.getPropertyMap();
+    }
+
+    /**
+     * Returns a map containing the property names as keys and the properties as values. This method
+     * searches the super type hierarchy.
+     * <p>
+     * Note this is a model internal method, it is not part of the published interface.
+     * 
      * @param propertyType The type of properties that should be included in the map.
      *            <code>null</code> indicates that all properties should be included in the map.
      */
@@ -711,10 +724,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this);
+                }
     }
 
     private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
@@ -722,10 +735,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this);
+                }
     }
 
     private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
@@ -733,10 +746,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this);
+                }
     }
 
     private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject)
@@ -744,10 +757,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this);
+                }
     }
 
     private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject)
@@ -755,10 +768,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE,
                 true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this);
+                }
     }
 
     void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -767,7 +780,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             for (IAttribute attribute : allAttributes) {
                 if (!attribute.isOfType(getQualifiedNameType())) {
                     new AttributeAbstractDatatypeValidator(attribute, this, ipsProject)
-                            .validateNotAbstractDatatype(list);
+                    .validateNotAbstractDatatype(list);
                 }
             }
         }
@@ -818,7 +831,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 if (!matchingPolicyCmptTypeAssociations.getPolicyCmptType().isConfigurableByProductCmptType()) {
                     IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
                             getQualifiedNameType(), matchingPolicyCmptTypeAssociations.getPolicyCmptType()
-                                    .getQualifiedNameType());
+                            .getQualifiedNameType());
                     dependencies.add(dependency);
                 }
             }
@@ -1441,7 +1454,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             add(propertyMap, policyCmptTypeAttributes);
             add(propertyMap, validationRules);
 
-            if (propertyType == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE) {
+            if (propertyType == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE || propertyType == null) {
                 fixOverwrittenPolicyCmptTypeAttributes(propertyMap);
             }
 

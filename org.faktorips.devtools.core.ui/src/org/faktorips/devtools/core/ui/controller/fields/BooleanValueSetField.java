@@ -18,7 +18,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -26,12 +26,12 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl
 
 public class BooleanValueSetField extends DefaultEditField<IValueSet> {
 
-    private IConfigElement configElement;
+    private IConfiguredValueSet configuredValueSet;
 
     private BooleanValueSetControl booleanValueSetControl;
 
-    public BooleanValueSetField(IConfigElement configElement, BooleanValueSetControl booleanValueSetControl) {
-        this.configElement = configElement;
+    public BooleanValueSetField(IConfiguredValueSet configuredValueSet, BooleanValueSetControl booleanValueSetControl) {
+        this.configuredValueSet = configuredValueSet;
         this.booleanValueSetControl = booleanValueSetControl;
     }
 
@@ -88,7 +88,8 @@ public class BooleanValueSetField extends DefaultEditField<IValueSet> {
     @Override
     protected IEnumValueSet parseContent() {
         List<String> valuesAsList = createValuesAsList();
-        return new EnumValueSet(configElement, valuesAsList, configElement.getIpsModel().getNextPartId(configElement));
+        return new EnumValueSet(configuredValueSet, valuesAsList, configuredValueSet.getIpsModel().getNextPartId(
+                configuredValueSet));
     }
 
     private List<String> createValuesAsList() {

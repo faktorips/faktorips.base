@@ -15,7 +15,6 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -101,26 +100,26 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value);
 
     /**
-     * Returns the configuration elements.
+     * Returns the default value configuration elements.
      */
-    public IConfigElement[] getConfigElements();
+    public IConfiguredDefault[] getConfiguredDefaults();
 
     /**
-     * Returns the configuration element that corresponds to the attribute with the given name.
-     * Returns {@code null} if no such element exists.
+     * Returns the value set configuration elements.
      */
-    public IConfigElement getConfigElement(String attributeName);
+    public IConfiguredValueSet[] getConfiguredValueSets();
 
     /**
-     * Creates a new configuration element.
+     * Returns the default value configuration element that corresponds to the attribute with the
+     * given name. Returns {@code null} if no such element exists.
      */
-    public IConfigElement newConfigElement();
+    public IConfiguredDefault getConfiguredDefault(String attributeName);
 
     /**
-     * Creates a new configuration element for the given attribute. If attribute is {@code null} no
-     * reference to an attribute is set, but the new config element is still created.
+     * Returns the value set configuration element that corresponds to the attribute with the given
+     * name. Returns {@code null} if no such element exists.
      */
-    public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute);
+    public IConfiguredValueSet getConfiguredValueSet(String attributeName);
 
     /**
      * Returns the number of configuration elements.

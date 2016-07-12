@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -35,7 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigElementProposalProviderTest {
     @Mock
-    private ConfigElement propertyValue;
+    private ConfiguredValueSet propertyValue;
 
     @Mock
     private IInputFormat<String> inputFormat;

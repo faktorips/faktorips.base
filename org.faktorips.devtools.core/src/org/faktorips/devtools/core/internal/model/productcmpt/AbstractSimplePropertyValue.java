@@ -33,7 +33,7 @@ abstract class AbstractSimplePropertyValue extends BaseIpsObjectPart implements 
     }
 
     @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
+    public IPropertyValueContainer getPropertyValueContainer() {
         return (IPropertyValueContainer)getParent();
     }
 

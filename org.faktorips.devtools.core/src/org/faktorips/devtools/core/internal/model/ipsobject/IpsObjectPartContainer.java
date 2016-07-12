@@ -444,8 +444,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected void initPartContainersFromXml(Element element) {
         HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
-        Set<String> idSet = new HashSet<String>();
         reinitPartCollections();
+        initPartContainersFromXml(element, idPartMap);
+    }
+
+    protected void initPartContainersFromXml(Element element, Map<String, IIpsObjectPart> idPartMap) {
+        Set<String> idSet = new HashSet<String>();
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
@@ -456,7 +460,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (partEl.getNodeName().equals(XML_EXT_PROPERTIES_ELEMENT)) {
                 continue;
             }
-            String id = partEl.getAttribute("id").trim(); //$NON-NLS-1$
+            String id = partEl.getAttribute(IIpsObjectPart.PROPERTY_ID).trim();
             IIpsObjectPart part = idPartMap.get(id);
             if (part == null) {
                 part = newPart(partEl, getNextPartId());
@@ -466,16 +470,33 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                     throw new IllegalArgumentException("Could not re-add part " + part); //$NON-NLS-1$
                 }
             }
-            // part might be null if the element does not represent a part!
+            // part might be null if the partEl does not represent a IpsObjectPart!
             if (part != null) {
                 part.initFromXml(partEl);
                 if (!idSet.add(part.getId())) {
                     throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
                             + part.getId());
                 }
+            } else {
+                if (isLegacyElement(partEl)) {
+                    // while reading legacy XML we need to ignore all IDs
+                    initPartContainersFromXml(partEl, Collections.<String, IIpsObjectPart> emptyMap());
+                }
             }
         }
-        return;
+    }
+
+    /**
+     * This method may be overwritten in subclasses to define legacy XML elements which content
+     * should be processed. That means that this element could not be used by any
+     * {@link IIpsObjectPart} but the nested elements may be interesting.
+     * 
+     * @param element The element that may be legacy
+     * 
+     * @return true if the initialization continues with the child elements.
+     */
+    protected boolean isLegacyElement(Element element) {
+        return false;
     }
 
     private HashMap<String, IIpsObjectPart> createIdPartMap() {

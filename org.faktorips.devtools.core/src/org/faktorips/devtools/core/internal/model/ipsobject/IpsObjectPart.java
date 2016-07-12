@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.beans.PropertyChangeEvent;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
@@ -41,6 +42,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * Constructor for testing purposes.
      */
     protected IpsObjectPart() {
+        id = UUID.randomUUID().toString();
         // Provides default constructor for testing purposes
     }
 
@@ -135,7 +137,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
             this.id = id;
         } else {
             String s = element.getAttribute(PROPERTY_ID);
-            if (!StringUtils.isEmpty(s)) {
+            if (StringUtils.isNotEmpty(s)) {
                 this.id = s;
             } // else keep the id set in the constructor. migration for old files without id!
         }
@@ -190,20 +192,5 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         }
         return true;
     }
-
-    // ok, to suppress unchecked warnings, because the method signature is defined by Eclipse
-    // @SuppressWarnings("rawtypes")
-    // @Override
-    // public Object getAdapter(Class adapterType) {
-    // if (IResource.class.equals(adapterType) ||
-    // ResourceMapping.class.isAssignableFrom(adapterType)) {
-    // /*
-    // * This prevents the CVSLightweightDecorator from displaying decorations for
-    // * ipsobjectparts in ModelExplorer and ProductExplorer.
-    // */
-    // return null;
-    // }
-    // return super.getAdapter(adapterType);
-    // }
 
 }

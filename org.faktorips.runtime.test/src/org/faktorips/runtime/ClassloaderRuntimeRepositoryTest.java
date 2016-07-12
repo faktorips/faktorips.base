@@ -34,8 +34,6 @@ import org.faktorips.runtime.testrepository.motor.MotorProduct;
 import org.faktorips.runtime.testrepository.motor.MotorProductGen;
 import org.faktorips.runtime.testrepository.motor.RateTable;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
-import org.faktorips.values.Decimal;
-import org.faktorips.values.Money;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,8 +63,6 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNotNull(motorPk);
         MotorProductGen motorProductGen = (MotorProductGen)motorPk.getGenerationBase(effectiveDate);
         assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(15, 0), motorProductGen.getFixedCosts());
         // the valid-to of this product component is read from the TOC entry
         assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo());
 
@@ -74,8 +70,6 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNotNull(motorPk);
         motorProductGen = (MotorProductGen)motorPk.getGenerationBase(effectiveDate);
         assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
         // the valid-to of this product component is read from the XML content of the product
         // component
         assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo());
@@ -84,8 +78,6 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNotNull(homePk);
         HomeProductGen homeProductGen = (HomeProductGen)homePk.getGenerationBase(effectiveDate);
         assertNotNull(homeProductGen);
-        assertEquals(Decimal.valueOf("0.16"), homeProductGen.getTaxRate());
-        assertEquals(Money.euro(10, 0), homeProductGen.getFixedCosts());
 
         // request for none existing component
         assertNull(repository.getProductComponent("notThere"));
@@ -124,14 +116,10 @@ public class ClassloaderRuntimeRepositoryTest {
         MotorProductGen motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus",
                 new GregorianCalendar(2005, 1, 1));
         assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
 
         motorProductGen = (MotorProductGen)repository.getProductComponentGeneration("motor.MotorPlus",
                 new GregorianCalendar(2006, 1, 1));
         assertNotNull(motorProductGen);
-        assertEquals(Decimal.valueOf("0.16"), motorProductGen.getTaxRate());
-        assertEquals(Money.euro(30, 0), motorProductGen.getFixedCosts());
     }
 
     @Test
@@ -285,7 +273,7 @@ public class ClassloaderRuntimeRepositoryTest {
     public void testGetIpsTestCaseStartingWith() {
         assertIpsTestCasesStartingWith("test", new String[] { "test.CalculationTest1", "test.CalculationTest2" });
         assertIpsTestCasesStartingWith("test.CalculationTest", new String[] { "test.CalculationTest1",
-                "test.CalculationTest2" });
+        "test.CalculationTest2" });
         assertIpsTestCasesStartingWith("test.CalculationTest1", new String[] { "test.CalculationTest1" });
         assertIpsTestCasesStartingWith("test1", new String[] {});
     }
@@ -316,10 +304,12 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNull(dummyRuntimeObject);
         class NoClass implements IRuntimeObject {
 
+            @Override
             public Set<String> getExtensionPropertyIds() {
                 return Collections.emptySet();
             }
 
+            @Override
             public Object getExtensionPropertyValue(String propertyId) {
                 return null;
             }

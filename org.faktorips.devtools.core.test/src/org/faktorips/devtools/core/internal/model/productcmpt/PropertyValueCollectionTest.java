@@ -59,7 +59,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         super.setUp();
         when(parent.getIpsObject()).thenReturn(ipsObject);
         when(parent.getIpsProject()).thenReturn(ipsProject);
-        valueContainer = new PropertyValueCollection();
+        valueContainer = new PropertyValueCollection(parent);
 
         AttributeValue part1 = new AttributeValue(parent, "ID1");
         part1.setAttribute("AV1");
@@ -89,15 +89,11 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         assertAttributesSize(4);
 
         valueContainer.addPropertyValue(new AttributeValue(parent, "ID4"));
-        assertAttributesSize(5);
+        assertAttributesSize(4);
     }
 
     @Test
     public void testRemovePart() {
-        valueContainer.addPropertyValue(new AttributeValue(parent, "ID1"));
-        assertAttributesSize(4);
-
-        valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
         assertAttributesSize(3);
 
         valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
@@ -136,16 +132,16 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(property.getPropertyName()).thenReturn("AV1");
         when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
-        IPropertyValue value = valueContainer.getPropertyValue(property);
+        IPropertyValue value = valueContainer.getPropertyValue(property, IAttributeValue.class);
         assertNotNull(value);
-        IPropertyValue value2 = valueContainer.getPropertyValue("AV1");
+        IPropertyValue value2 = valueContainer.getPropertyValue("AV1", IAttributeValue.class);
         assertSame("Parts", value, value2);
 
         ProductCmptTypeAttribute illegalTypeAttr = mock(ProductCmptTypeAttribute.class);
         when(illegalTypeAttr.getPropertyName()).thenReturn("AVIllegal");
         when(illegalTypeAttr.getProductCmptPropertyType()).thenReturn(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
-        value = valueContainer.getPropertyValue(illegalTypeAttr);
+        value = valueContainer.getPropertyValue(illegalTypeAttr, IAttributeValue.class);
         assertNull(value);
     }
 
@@ -155,12 +151,12 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(attribute.getPropertyName()).thenReturn("AV5");
         when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
-        IAttributeValue value = valueContainer.newPropertyValue(parent, attribute, "ID5", IAttributeValue.class);
+        IAttributeValue value = valueContainer.newPropertyValue(attribute, "ID5", IAttributeValue.class);
         assertNotNull(value);
         value.setAttribute("AV5");
         assertAttributesSize(4);
 
-        IPropertyValue value2 = valueContainer.getPropertyValue("AV5");
+        IPropertyValue value2 = valueContainer.getPropertyValue("AV5", IAttributeValue.class);
         assertSame("Parts", value, value2);
     }
 
@@ -171,26 +167,25 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
 
         assertSize(3);
-        IFormula formula = valueContainer.newPropertyValue(parent, property, "MethodID1", IFormula.class);
+        IFormula formula = valueContainer.newPropertyValue(property, "MethodID1", IFormula.class);
         assertNotNull(formula);
         formula.setFormulaSignature("Method1");
         assertSize(4);
 
-        IPropertyValue value2 = valueContainer.getPropertyValue("Method1");
+        IPropertyValue value2 = valueContainer.getPropertyValue("Method1", IFormula.class);
         assertSame("Parts", formula, value2);
     }
 
     @Test
-    public void testNewPartThisXML() {
-        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, Formula.TAG_NAME, "MethodID1");
+    public void testNewPropertyValueThisXML() {
+        IFormula formula = (IFormula)valueContainer.newPropertyValue(Formula.TAG_NAME, "MethodID1");
         assertNotNull(formula);
 
-        IProductCmptLink link = (IProductCmptLink)valueContainer.newPropertyValue(parent, ProductCmptLink.TAG_NAME,
-                "LinkID1");
+        IProductCmptLink link = (IProductCmptLink)valueContainer.newPropertyValue(ProductCmptLink.TAG_NAME, "LinkID1");
         // Link must be null as valueContainer cannot create parts that are not IPropertyValues
         assertNull(link);
 
-        IIpsObjectPart part = valueContainer.newPropertyValue(parent, "TestIllegalXMLTag", "valueID1");
+        IIpsObjectPart part = valueContainer.newPropertyValue("TestIllegalXMLTag", "valueID1");
         assertNull(part);
     }
 

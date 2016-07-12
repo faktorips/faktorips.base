@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -66,7 +67,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -93,12 +95,14 @@ import org.w3c.dom.Element;
 
 public class ProductCmptTest extends AbstractIpsPluginTest {
 
+    private static final String POLICY_ATTRIBUTE_NAME = "sumInsured";
     private ProductCmpt productCmpt;
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
     private IIpsSrcFile srcFile;
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
+    private IPolicyCmptTypeAttribute policyAttr;
     private IProductCmptTypeAttribute attr1;
     private IProductCmptTypeAttribute attr2;
     private IProductCmptType productCmptType;
@@ -114,6 +118,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
 
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "PolType", "ProdType");
+        policyAttr = policyCmptType.newPolicyCmptTypeAttribute("policyAttr");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         attr1 = new ProductCmptTypeAttribute(productCmptType, "IDAttr1");
         attr1.setName("TypeAttr1");
@@ -125,8 +130,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testGetChildrenThis_generationsAreAllowed() {
         productCmpt.setProductCmptType(productCmptType.getQualifiedName());
 
-        IPropertyValue property1 = productCmpt.newPropertyValue(attr1);
-        IPropertyValue property2 = productCmpt.newPropertyValue(attr2);
+        IPropertyValue property1 = productCmpt.newPropertyValue(attr1, IAttributeValue.class);
+        IPropertyValue property2 = productCmpt.newPropertyValue(attr2, IAttributeValue.class);
 
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setTarget(productCmptType.getQualifiedName());
@@ -452,9 +457,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(validFrom2);
 
         // Create the corresponding property values
-        IPropertyValue productValue1 = productCmpt.newPropertyValue(productAttribute1);
-        IPropertyValue productValue2 = productCmpt.newPropertyValue(productAttribute2);
-        IPropertyValue productValue3 = productCmpt.newPropertyValue(productAttribute3);
+        IPropertyValue productValue1 = productCmpt.newPropertyValue(productAttribute1, IAttributeValue.class);
+        IPropertyValue productValue2 = productCmpt.newPropertyValue(productAttribute2, IAttributeValue.class);
+        IPropertyValue productValue3 = productCmpt.newPropertyValue(productAttribute3, IAttributeValue.class);
         IPropertyValue gen1Value1 = generation1.newAttributeValue(genAttribute1);
         IPropertyValue gen1Value2 = generation1.newAttributeValue(genAttribute2);
         IPropertyValue gen2Value1 = generation2.newAttributeValue(genAttribute1);
@@ -509,7 +514,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productAttribute.setCategory(category.getName());
 
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
-        IPropertyValue productValue = productCmpt.newPropertyValue(productAttribute);
+        IPropertyValue productValue = productCmpt.newPropertyValue(productAttribute, IAttributeValue.class);
 
         List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(category,
                 new GregorianCalendar(2070, 1, 1), ipsProject);
@@ -538,7 +543,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmptType.setPolicyCmptType("PolType");
 
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
-        IPropertyValue productValue = productCmpt.newPropertyValue(policyAttribute);
+        IPropertyValue productValue = productCmpt.newPropertyValue(policyAttribute, IConfiguredDefault.class);
 
         List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(category,
                 new GregorianCalendar(2070, 1, 1), ipsProject);
@@ -568,8 +573,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
         GregorianCalendar validFrom = createValidFromDate(1);
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(validFrom);
-        IPropertyValue productValue1 = generation.newPropertyValue(productAttribute1);
-        IPropertyValue productValue2 = generation.newPropertyValue(productAttribute2);
+        IPropertyValue productValue1 = generation.newPropertyValue(productAttribute1, IAttributeValue.class);
+        IPropertyValue productValue2 = generation.newPropertyValue(productAttribute2, IAttributeValue.class);
 
         List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(null, validFrom, ipsProject);
         assertEquals(productValue1, propertyValues.get(0));
@@ -613,6 +618,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXml_LegazyConfigElement() {
+        productCmpt.initFromXml(getTestDocument("_LegazyConfigElement").getDocumentElement());
+        IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(POLICY_ATTRIBUTE_NAME,
+                IConfiguredValueSet.class);
+        IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(POLICY_ATTRIBUTE_NAME,
+                IConfiguredDefault.class);
+
+        // the ID should NOT be the old ID of the valueSet to avoid ID collision
+        assertThat(configuredValueSet.getId(), is(not("1")));
+        assertThat(configuredValueSet.getValueSet(), instanceOf(RangeValueSet.class));
+        assertThat(configuredValueSet.getPolicyCmptTypeAttribute(), is(POLICY_ATTRIBUTE_NAME));
+        assertThat(configuredDefault.getValue(), is("10"));
+        assertThat(configuredDefault.getPolicyCmptTypeAttribute(), is(POLICY_ATTRIBUTE_NAME));
+    }
+
+    @Test
     public void testInitFromXml() {
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("MotorProduct", productCmpt.getProductCmptType());
@@ -621,7 +642,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2, productCmpt.getNumOfGenerations());
         IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, gen.getNumOfConfigElements());
-        IConfigElement ce = gen.getConfigElements()[0];
+        IConfiguredDefault ce = gen.getConfiguredDefaults()[0];
         assertEquals("1.5", ce.getValue());
 
         assertEquals(2, productCmpt.getNumOfLinks());
@@ -635,7 +656,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.setRuntimeId("MotorProductId");
         productCmpt.setTemplate("MeinTemplate");
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
-        IConfigElement ce1 = gen1.newConfigElement();
+        IConfiguredDefault ce1 = gen1.newPropertyValue(policyAttr, IConfiguredDefault.class);
         ce1.setValue("0.15");
         productCmpt.newGeneration();
 
@@ -647,8 +668,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals("MeinTemplate", productCmpt.getTemplate());
         assertEquals(2, copy.getNumOfGenerations());
         IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
-        assertEquals(1, genCopy.getConfigElements().length);
-        assertEquals("0.15", genCopy.getConfigElements()[0].getValue());
+        assertEquals(1, genCopy.getConfiguredDefaults().length);
+        assertEquals("0.15", genCopy.getConfiguredDefaults()[0].getValue());
     }
 
     @Test
@@ -662,7 +683,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     @Test
     public void testToXml_AttributeValues() throws CoreException {
         attr2.setChangingOverTime(false);
-        IPropertyValue propertyValue = productCmpt.newPropertyValue(attr2);
+        IPropertyValue propertyValue = productCmpt.newPropertyValue(attr2, IAttributeValue.class);
         Element xml = productCmpt.toXml(newDocument());
 
         ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
@@ -681,7 +702,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml_TableContentUsage() throws CoreException {
-        productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), "tc"));
+        productCmpt.newPropertyValues(new TableStructureUsage(mock(IProductCmptType.class), "tc"));
         Element xml = productCmpt.toXml(newDocument());
 
         ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
@@ -698,8 +719,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml_Formula() throws CoreException {
-        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
-                mock(IProductCmptType.class), "Id"));
+        IFormula newFormula = productCmpt.newPropertyValue(
+                new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
         Element xml = productCmpt.toXml(newDocument());
 
@@ -752,8 +773,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptType productCmptType = testType.findProductCmptType(ipsProject);
         IProductCmpt product = newProductCmpt(productCmptType, "TestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
-        IConfigElement ce1 = gen.newConfigElement();
-        ce1.setPolicyCmptTypeAttribute("A1");
+        gen.newPropertyValue(a1, IConfiguredDefault.class);
 
         IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
         a2.setName("A2");
@@ -761,10 +781,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         IProductCmpt product2 = newProductCmpt(productCmptType, "TestProduct2");
         gen = product2.getProductCmptGeneration(0);
-        ce1 = gen.newConfigElement();
-        ce1.setPolicyCmptTypeAttribute("A1");
-        IConfigElement ce2 = gen.newConfigElement();
-        ce2.setPolicyCmptTypeAttribute("A2");
+        gen.newPropertyValue(a1, IConfiguredDefault.class);
+        gen.newPropertyValue(a2, IConfiguredDefault.class);
 
         assertEquals(true, product.containsDifferenceToModel(ipsProject));
         assertEquals(false, product2.containsDifferenceToModel(ipsProject));
@@ -782,10 +800,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
         assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
 
-        IPropertyValue wrongAttributeValue = newProductCmpt.getProductCmptGeneration(0).newPropertyValue(newAttribute);
+        IPropertyValue wrongAttributeValue = newProductCmpt.getProductCmptGeneration(0).newPropertyValue(newAttribute,
+                IAttributeValue.class);
         assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
 
-        IPropertyValue correctAttributeValue = newProductCmpt.newPropertyValue(newAttribute);
+        IPropertyValue correctAttributeValue = newProductCmpt.newPropertyValue(newAttribute, IAttributeValue.class);
         assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
 
         wrongAttributeValue.delete();
@@ -892,7 +911,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
         assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
 
-        newProductCmpt.newPropertyValue(tableStructureUsage);
+        newProductCmpt.newPropertyValues(tableStructureUsage);
         assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
     }
 
@@ -959,8 +978,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         IProductCmpt product = newProductCmpt(productCmptType, "TestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
-        IConfigElement ce1 = gen.newConfigElement();
-        ce1.setPolicyCmptTypeAttribute("A1");
+        gen.newPropertyValues(a1);
 
         IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
         a2.setName("A2");
@@ -968,10 +986,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         IProductCmpt product2 = newProductCmpt(productCmptType, "TestProduct2");
         gen = product2.getProductCmptGeneration(0);
-        ce1 = gen.newConfigElement();
-        ce1.setPolicyCmptTypeAttribute("A1");
-        IConfigElement ce2 = gen.newConfigElement();
-        ce2.setPolicyCmptTypeAttribute("A2");
+        gen.newPropertyValues(a1);
+        gen.newPropertyValues(a2);
 
         assertEquals(true, product.containsDifferenceToModel(ipsProject));
         product.fixAllDifferencesToModel(ipsProject);
@@ -998,38 +1014,38 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPropertyValue() throws Exception {
+    public void testNewPropertyValues() throws Exception {
         assertEquals(0, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValue(attr1);
+        productCmpt.newPropertyValues(attr1);
         assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValue(attr2);
+        productCmpt.newPropertyValues(attr2);
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
 
-        productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
+        productCmpt.newPropertyValues(new ValidationRule(mock(IPolicyCmptType.class), ""));
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
+        productCmpt.newPropertyValues(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), ""));
+        productCmpt.newPropertyValues(new TableStructureUsage(mock(IProductCmptType.class), ""));
         assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass()).size());
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));
+        productCmpt.newPropertyValues(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.FORMULA.getInterfaceClass()).size());
     }
 
     @Test
     public void testGetAttributeValue() {
-        productCmpt.newPropertyValue(attr1);
+        productCmpt.newPropertyValues(attr1);
         assertNotNull(productCmpt.getAttributeValue("TypeAttr1"));
         assertNull(productCmpt.getAttributeValue("NonExistentAttr"));
     }
 
     @Test
     public void testHasPropertyValue() {
-        assertFalse(productCmpt.hasPropertyValue(attr1));
+        assertFalse(productCmpt.hasPropertyValue(attr1, PropertyValueType.ATTRIBUTE_VALUE));
 
-        productCmpt.newPropertyValue(attr1);
-        assertTrue(productCmpt.hasPropertyValue(attr1));
+        productCmpt.newPropertyValues(attr1);
+        assertTrue(productCmpt.hasPropertyValue(attr1, PropertyValueType.ATTRIBUTE_VALUE));
     }
 
     @Test
@@ -1117,8 +1133,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetTableContentUsages() {
-        ITableContentUsage contentUsagePC = (ITableContentUsage)productCmpt.newPropertyValue(new TableStructureUsage(
-                mock(IProductCmptType.class), ""));
+        ITableContentUsage contentUsagePC = productCmpt.newPropertyValue(new TableStructureUsage(
+                mock(IProductCmptType.class), ""), ITableContentUsage.class);
         assertNotNull(contentUsagePC);
 
         assertEquals(1, productCmpt.getTableContentUsages().length);
@@ -1127,8 +1143,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetFormulas() {
-        IFormula formula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
-                mock(IProductCmptType.class), "Id"));
+        IFormula formula = productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"),
+                IFormula.class);
         assertNotNull(formula);
 
         assertEquals(1, productCmpt.getFormulas().length);
@@ -1171,7 +1187,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
         assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
 
-        newProductCmpt.newPropertyValue(newFormulaSignature);
+        newProductCmpt.newPropertyValues(newFormulaSignature);
         assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
     }
 
@@ -1227,7 +1243,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptTypeMethod formulaSignature = newProductCmptType.newFormulaSignature("newFormula");
 
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
-        IFormula formula = (IFormula)productCmpt.newPropertyValue(formulaSignature);
+        IFormula formula = productCmpt.newPropertyValue(formulaSignature, IFormula.class);
 
         assertNotNull(formula);
         assertEquals(formulaSignature.getFormulaName(), formula.getFormulaSignature());
@@ -1334,4 +1350,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertThat(product.isPartOfTemplateHierarchy(), is(true));
     }
 
+    @Test
+    public void testAddPartThis_ConfigElement() throws CoreException {
+        ProductCmpt product = newProductCmpt(productCmptType, "product");
+        IConfiguredDefault configDefault = product.newPropertyValue(policyAttr, IConfiguredDefault.class);
+
+        assertThat(product.addPartThis(configDefault), is(true));
+    }
+
+    @Test
+    public void testRemovePartThis_ConfigElement() throws CoreException {
+        ProductCmpt product = newProductCmpt(productCmptType, "product");
+        IConfiguredDefault configDefault = product.newPropertyValue(policyAttr, IConfiguredDefault.class);
+
+        assertThat(product.removePartThis(configDefault), is(true));
+        assertNull(product.getPropertyValue(policyAttr, IConfiguredDefault.class));
+    }
 }

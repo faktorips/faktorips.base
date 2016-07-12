@@ -10,8 +10,15 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.transform;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -30,12 +37,16 @@ import org.faktorips.util.ClassToInstancesMap;
 public class PropertyValueCollection {
 
     private final ClassToInstancesMap<IPropertyValue> classToInstancesMap;
+    private final IPropertyValueContainer propertyValueContainer;
 
     /**
      * Creates a new {@link PropertyValueCollection}.
      * 
+     * @param propertyValueContainer the container using this collection
+     * 
      */
-    public PropertyValueCollection() {
+    public PropertyValueCollection(IPropertyValueContainer propertyValueContainer) {
+        this.propertyValueContainer = propertyValueContainer;
         classToInstancesMap = new ClassToInstancesMap<IPropertyValue>();
     }
 
@@ -47,15 +58,29 @@ public class PropertyValueCollection {
      * safely casted to the {@link IProductCmptProperty}'s value class.
      * 
      * @param property the product component property a {@link IPropertyValue} is requested for
+     * @param type the expected type of the property value, needs to be the interface type!
      * @return the {@link IPropertyValue} for the indicated property. Returns <code>null</code> if
      *         the given property is <code>null</code> or if no property could be found.
      */
-    public IPropertyValue getPropertyValue(IProductCmptProperty property) {
+    public <T extends IPropertyValue> T getPropertyValue(IProductCmptProperty property, Class<T> type) {
         if (property == null) {
             return null;
         }
-        return getPropertyValue(property.getProductCmptPropertyType().getValueType().getInterfaceClass(),
-                property.getPropertyName());
+        return getPropertyValue(property.getPropertyName(), type);
+    }
+
+    public List<IPropertyValue> getPropertyValues(final IProductCmptProperty property) {
+        if (property == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<IPropertyValue>(filter(
+                transform(property.getPropertyValueTypes(), new Function<PropertyValueType, IPropertyValue>() {
+
+                    @Override
+                    public IPropertyValue apply(PropertyValueType type) {
+                        return getPropertyValue(property, type.getInterfaceClass());
+                    }
+                }), Predicates.notNull()));
     }
 
     /**
@@ -64,12 +89,12 @@ public class PropertyValueCollection {
      * The property value is searched by the property name. If there are multiple property values
      * with the same name, the first one is returned.
      * 
-     * @param type the type of {@link IPropertyValue} that is requested
      * @param propertyName the name of the requested property value
+     * @param type the type of {@link IPropertyValue} that is requested
      * @return the {@link IPropertyValue} for the indicated type and name. Returns <code>null</code>
      *         if no property could be found.
      */
-    public <T extends IPropertyValue> T getPropertyValue(Class<T> type, String propertyName) {
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
         List<T> list = classToInstancesMap.get(type);
         for (T propertyValue : list) {
             if (propertyValue.getPropertyName().equals(propertyName)) {
@@ -81,42 +106,43 @@ public class PropertyValueCollection {
 
     /**
      * Searches all {@link IPropertyValue}s registered with this {@link PropertyValueCollection} for
-     * one with the indicated name.
+     * any with the indicated name.
      * <p>
      * Note that a safe cast can not be guaranteed as {@link IPropertyValue}s of a different
      * class/type may have the same property name.
      * 
      * @param propertyName the name of the requested {@link IPropertyValue}
-     * @return the {@link IPropertyValue} with the given name. Returns <code>null</code> if the
+     * @return a list of {@link IPropertyValue} with the given name. Returns an empty list if the
      *         given Property name is <code>null</code> or if no property with the indicated name
      *         could be found.
      */
-    public <T extends IPropertyValue> T getPropertyValue(String propertyName) {
+    public <T extends IPropertyValue> List<T> getPropertyValues(String propertyName) {
         List<IPropertyValue> allValues = getAllPropertyValues();
-        return getPropertyValueFromList(allValues, propertyName);
+        return getPropertyValuesFromList(allValues, propertyName);
     }
 
     /**
-     * Searches the given list for a property with the given name. Returns <code>null</code> if no
+     * Searches the given list for properties with the given name. Returns an empty list if no
      * element can be found, or if one of the arguments is <code>null</code>.
      * 
      * @param valueList the list to search
      * @param propertyName the name of the property
      * @return the first element with the given name in the list.
      */
-    private static <T extends IPropertyValue> T getPropertyValueFromList(List<IPropertyValue> valueList,
+    private static <T extends IPropertyValue> List<T> getPropertyValuesFromList(List<IPropertyValue> valueList,
             String propertyName) {
+        List<T> result = new ArrayList<T>();
         if (propertyName == null || valueList == null) {
-            return null;
+            return result;
         }
         for (IPropertyValue value : valueList) {
             if (propertyName.equals(value.getPropertyName())) {
                 @SuppressWarnings("unchecked")
                 T castedValue = (T)value;
-                return castedValue;
+                result.add(castedValue);
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -130,17 +156,39 @@ public class PropertyValueCollection {
     }
 
     /**
+     * Creates and returns all necessary property values for a given {@link IProductCmptProperty}
+     * and add the new values to the {@link IPropertyValueContainer}.
+     * 
+     * @param container the container that should be the parent of the new {@link IPropertyValue}
+     * @param property the {@link IProductCmptProperty} the values are created for
+     * @param partId the new part's id
+     * @return the newly created property values or an empty list if the given property is
+     *         <code>null</code>.
+     */
+    public List<IPropertyValue> newPropertyValues(IPropertyValueContainer container,
+            IProductCmptProperty property,
+            String partId) {
+        ArrayList<IPropertyValue> result = new ArrayList<IPropertyValue>();
+        for (PropertyValueType valueType : property.getPropertyValueTypes()) {
+            IPropertyValue propertyValue = newPropertyValue(property, partId, valueType.getInterfaceClass());
+            result.add(propertyValue);
+        }
+        return result;
+    }
+
+    /**
      * Creates a new part for the given XML tag adds it to this holder and returns it.
      * 
      * @param xmlTagName the XML tag a {@link IPropertyValue} should be created for
      * @param partId the new part's id
+     * 
      * @return the newly created part or <code>null</code> if the given XML tag corresponds to no
      *         {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
      */
-    public IPropertyValue newPropertyValue(IPropertyValueContainer container, String xmlTagName, String partId) {
+    public IPropertyValue newPropertyValue(String xmlTagName, String partId) {
         PropertyValueType propertyType = PropertyValueType.getTypeForXmlTag(xmlTagName);
         if (propertyType != null) {
-            IPropertyValue newPropertyValue = newPropertyValue(container, partId, propertyType.getInterfaceClass());
+            IPropertyValue newPropertyValue = newPropertyValue(partId, propertyType.getInterfaceClass());
             return newPropertyValue;
         }
         return null;
@@ -151,52 +199,32 @@ public class PropertyValueCollection {
      * 
      * Caution: This Method creates an {@link IPropertyValue} without initializing it properly and
      * thereby setting the property name to "". Use
-     * {@link #newPropertyValue(IPropertyValueContainer, IProductCmptProperty, String, Class)} in
-     * all cases an {@link IProductCmptProperty} is available.
+     * {@link #newPropertyValue(IProductCmptProperty, String, Class)} in all cases an
+     * {@link IProductCmptProperty} is available.
      * 
-     * @param <T> The type of the property value you want to create
-     * @param container the container to add the property value into
      * @param partId the part id for the new property value
      * @param type the type of the property value you want to create
+     * 
+     * @param <T> The type of the property value you want to create
      * @return the created property value
      */
-    public <T extends IPropertyValue> T newPropertyValue(IPropertyValueContainer container, String partId, Class<T> type) {
-        return newPropertyValue(container, null, partId, type);
+    public <T extends IPropertyValue> T newPropertyValue(String partId, Class<T> type) {
+        return newPropertyValue((IProductCmptProperty)null, partId, type);
     }
 
     /**
-     * Creating an unspecific {@link IPropertyValue} for the given container. The type of the
-     * property is given by the {@link IProductCmptProperty}.
-     * 
-     * @param container The container in which the new property value should be added
-     * @param property the {@link IProductCmptProperty} that is the meta class of the property value
-     * @param partId the part id of the created property value
-     * @return The newly created property value
-     */
-    public IPropertyValue newPropertyValue(IPropertyValueContainer container,
-            IProductCmptProperty property,
-            String partId) {
-        return newPropertyValue(container, property, partId, property.getProductCmptPropertyType().getValueType()
-                .getInterfaceClass());
-    }
-
-    /**
-     * Creating a new {@link IPropertyValue} that and initialize it with the given parameters. The
-     * clazz specifying the type of the container. The caller have to make sure that the given
+     * Creating a new {@link IPropertyValue} and initialize it with the given parameters. The clazz
+     * specifying the type of the container. The caller have to make sure that the given
      * {@link IProductCmptProperty} is of the correct type.
      * 
-     * @param container the container that should be the parent of the new {@link IPropertyValue}
      * @param property the {@link IProductCmptProperty} the {@link IPropertyValue} is created for
      * @param partId the new part's id
      * @param clazz the class parameter is used to get a type safe return value.
      * @return the newly created {@link IPropertyValue} or <code>null</code> if the given property
      *         is <code>null</code>.
      */
-    public <T extends IPropertyValue> T newPropertyValue(IPropertyValueContainer container,
-            IProductCmptProperty property,
-            String partId,
-            Class<T> clazz) {
-        T propertyValue = PropertyValueType.createPropertyValue(container, property, partId, clazz);
+    public <T extends IPropertyValue> T newPropertyValue(IProductCmptProperty property, String partId, Class<T> clazz) {
+        T propertyValue = PropertyValueType.createPropertyValue(getPropertyValueContainer(), property, partId, clazz);
         addPropertyValue(propertyValue);
         return propertyValue;
     }
@@ -208,7 +236,13 @@ public class PropertyValueCollection {
      * @param value the value to be added
      */
     public boolean addPropertyValue(IPropertyValue value) {
-        return classToInstancesMap.putWithRuntimeCheck(value.getPropertyValueType().getInterfaceClass(), value) != null;
+        Class<? extends IPropertyValue> interfaceClass = value.getPropertyValueType().getInterfaceClass();
+        List<? extends IPropertyValue> list = classToInstancesMap.get(interfaceClass);
+        if (list.contains(value)) {
+            return true;
+        } else {
+            return classToInstancesMap.putWithRuntimeCheck(interfaceClass, value) != null;
+        }
     }
 
     /**
@@ -219,8 +253,7 @@ public class PropertyValueCollection {
      *         otherwise.
      */
     public boolean removePropertyValue(IPropertyValue value) {
-        boolean removed = classToInstancesMap.remove(value.getPropertyValueType().getInterfaceClass(), value);
-        return removed;
+        return classToInstancesMap.remove(value.getPropertyValueType().getInterfaceClass(), value);
     }
 
     /**
@@ -239,6 +272,10 @@ public class PropertyValueCollection {
      */
     public void clear() {
         classToInstancesMap.clear();
+    }
+
+    public IPropertyValueContainer getPropertyValueContainer() {
+        return propertyValueContainer;
     }
 
 }

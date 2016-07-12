@@ -44,7 +44,10 @@ public class PropertyValueTypeTest {
     private IAttributeValue attributeValue;
 
     @Mock
-    private IConfigElement configElement;
+    private IConfiguredDefault configuredDefault;
+
+    @Mock
+    private IConfiguredValueSet configuredValueSet;
 
     @Mock
     private ITableContentUsage tableContentUsage;
@@ -91,11 +94,19 @@ public class PropertyValueTypeTest {
     }
 
     @Test
-    public void testGetValueGetter_configElement() throws Exception {
-        when(configElement.getValueSet()).thenReturn(valueSet1);
+    public void testGetValueGetter_configuredDefault() throws Exception {
+        when(configuredDefault.getValue()).thenReturn("10");
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.CONFIG_ELEMENT.getValueGetter();
-        assertThat(valueFunction.apply(configElement), is((Object)valueSet1));
+        Function<IPropertyValue, Object> valueFunction = PropertyValueType.CONFIGURED_DEFAULT.getValueGetter();
+        assertThat(valueFunction.apply(configuredDefault), is((Object)"10"));
+    }
+
+    @Test
+    public void testGetValueGetter_configuredValueSet() throws Exception {
+        when(configuredValueSet.getValueSet()).thenReturn(valueSet1);
+
+        Function<IPropertyValue, Object> valueFunction = PropertyValueType.CONFIGURED_VALUESET.getValueGetter();
+        assertThat(valueFunction.apply(configuredValueSet), is((Object)valueSet1));
     }
 
     @Test
@@ -162,17 +173,28 @@ public class PropertyValueTypeTest {
     }
 
     @Test
+    public void testGetValueSetter_ConfiguredDefault() throws Exception {
+        IIpsModel ipsModel = mock(IIpsModel.class);
+        when(configuredDefault.getIpsModel()).thenReturn(ipsModel);
+        when(ipsModel.getNextPartId(configuredDefault)).thenReturn(ANY_VALUE);
+
+        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.CONFIGURED_DEFAULT.getValueSetter();
+        valueConsumer.accept(configuredDefault, "10");
+        verify(configuredDefault).setValue("10");
+    }
+
+    @Test
     public void testGetValueSetter_ConfigElement() throws Exception {
         IValueSet value = mock(IValueSet.class);
         IValueSet copy = mock(IValueSet.class);
-        when(value.copy(configElement, ANY_VALUE)).thenReturn(copy);
+        when(value.copy(configuredValueSet, ANY_VALUE)).thenReturn(copy);
         IIpsModel ipsModel = mock(IIpsModel.class);
-        when(configElement.getIpsModel()).thenReturn(ipsModel);
-        when(ipsModel.getNextPartId(configElement)).thenReturn(ANY_VALUE);
+        when(configuredValueSet.getIpsModel()).thenReturn(ipsModel);
+        when(ipsModel.getNextPartId(configuredValueSet)).thenReturn(ANY_VALUE);
 
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.CONFIG_ELEMENT.getValueSetter();
-        valueConsumer.accept(configElement, value);
-        verify(configElement).setValueSet(copy);
+        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.CONFIGURED_VALUESET.getValueSetter();
+        valueConsumer.accept(configuredValueSet, value);
+        verify(configuredValueSet).setValueSet(copy);
     }
 
     @Test

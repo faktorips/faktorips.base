@@ -15,14 +15,17 @@ import java.util.Comparator;
 
 import com.google.common.base.Function;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredDefault;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
 import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
 import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConfig;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -57,7 +60,6 @@ public enum PropertyValueType {
         public IAttributeValue createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
-
             AttributeValue attributeValue = new AttributeValue(container, partId,
                     property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
             IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
@@ -111,6 +113,11 @@ public enum PropertyValueType {
             };
         }
 
+        @Override
+        public boolean isPartOfComposite() {
+            return false;
+        }
+
     },
 
     /**
@@ -124,10 +131,7 @@ public enum PropertyValueType {
         public ITableContentUsage createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
-
-            ITableContentUsage tableUsage = new TableContentUsage(container, partId,
-                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            return tableUsage;
+            return new TableContentUsage(container, partId, property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
         }
 
         @Override
@@ -167,6 +171,11 @@ public enum PropertyValueType {
             };
         }
 
+        @Override
+        public boolean isPartOfComposite() {
+            return false;
+        }
+
     },
 
     /**
@@ -180,9 +189,7 @@ public enum PropertyValueType {
         public IFormula createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
-
-            IFormula formula = new Formula(container, partId, property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            return formula;
+            return new Formula(container, partId, property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
         }
 
         @Override
@@ -222,36 +229,38 @@ public enum PropertyValueType {
             };
         }
 
+        @Override
+        public boolean isPartOfComposite() {
+            return false;
+        }
+
     },
 
     /**
-     * Type for {@link IConfigElement}.
+     * Type for {@link IConfiguredValueSet}.
      * <p>
-     * An {@link IPropertyValue} with this type can be safely casted to {@link IConfigElement}.
+     * An {@link IPropertyValue} with this type can be safely casted to {@link IConfiguredValueSet}.
      */
-    CONFIG_ELEMENT(IConfigElement.class, ConfigElement.class, ConfigElement.TAG_NAME) {
+    CONFIGURED_VALUESET(IConfiguredValueSet.class, ConfiguredValueSet.class, ConfiguredValueSet.TAG_NAME) {
 
         @Override
-        public IConfigElement createPropertyValue(IPropertyValueContainer container,
+        public IConfiguredValueSet createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
-
-            IConfigElement configElement = new ConfigElement(container, partId,
-                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
+            String policyAttributeName = property != null ? property.getName() : StringUtils.EMPTY;
+            IConfiguredValueSet configuredValueSet = new ConfiguredValueSet(container, policyAttributeName, partId);
             IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)property;
             if (attribute != null) {
-                configElement.setPolicyCmptTypeAttribute(attribute.getName());
-                configElement.setValue(attribute.getDefaultValue());
-                configElement.setValueSetCopy(attribute.getValueSet());
+                configuredValueSet.setValueSetCopy(attribute.getValueSet());
                 if (Datatype.BOOLEAN.getQualifiedName().equals(attribute.getDatatype())
                         || Datatype.PRIMITIVE_BOOLEAN.getQualifiedName().equals(attribute.getDatatype())) {
                     // Special case (FIPS-1344): For boolean values, we only support
                     // enum value sets, because unrestricted value sets do not yield
                     // any benefit.
-                    configElement.convertValueSetToEnumType();
+                    configuredValueSet.convertValueSetToEnumType();
                 }
             }
-            return configElement;
+            return configuredValueSet;
         }
 
         @Override
@@ -260,10 +269,9 @@ public enum PropertyValueType {
 
                 @Override
                 public Object apply(IPropertyValue propertyValue) {
-                    // TODO FIPS-4556 at the moment only the value set is supplied
-                    if (propertyValue instanceof IConfigElement) {
-                        IConfigElement configElement = (IConfigElement)propertyValue;
-                        return configElement.getValueSet();
+                    if (propertyValue instanceof IConfiguredValueSet) {
+                        IConfiguredValueSet configuredValueSet = (IConfiguredValueSet)propertyValue;
+                        return configuredValueSet.getValueSet();
                     }
                     throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
                 }
@@ -294,15 +302,94 @@ public enum PropertyValueType {
 
                 @Override
                 public void accept(IPropertyValue propertyValue, Object value) {
-                    if (value instanceof IValueSet && propertyValue instanceof IConfigElement) {
+                    if (value instanceof IValueSet && propertyValue instanceof IConfiguredValueSet) {
                         IValueSet valueSet = (IValueSet)value;
-                        IConfigElement element = (IConfigElement)propertyValue;
+                        IConfiguredValueSet element = (IConfiguredValueSet)propertyValue;
                         element.setValueSet(valueSet.copy(element, element.getIpsModel().getNextPartId(element)));
                     } else {
                         throw new IllegalArgumentException();
                     }
                 }
             };
+        }
+
+        @Override
+        public boolean isPartOfComposite() {
+            return true;
+        }
+
+        @Override
+        protected boolean isProperXmlTagName(String xmlTagName) {
+            return super.isProperXmlTagName(xmlTagName) || ConfiguredValueSet.LEGACY_TAG_NAME.equals(xmlTagName);
+        }
+
+    },
+
+    /**
+     * Type for {@link IConfiguredDefault}.
+     * <p>
+     * An {@link IPropertyValue} with this type can be safely casted to {@link IConfiguredDefault}.
+     */
+    CONFIGURED_DEFAULT(IConfiguredDefault.class, ConfiguredDefault.class, ConfiguredDefault.TAG_NAME) {
+
+        @Override
+        public IConfiguredDefault createPropertyValue(IPropertyValueContainer container,
+                IProductCmptProperty property,
+                String partId) {
+            String policyAttributeName = property != null ? property.getName() : StringUtils.EMPTY;
+            IConfiguredDefault configuredDefault = new ConfiguredDefault(container, policyAttributeName, partId);
+            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)property;
+            if (attribute != null) {
+                configuredDefault.setValue(attribute.getDefaultValue());
+            }
+            return configuredDefault;
+        }
+
+        @Override
+        public Function<IPropertyValue, Object> getValueGetter() {
+            return new Function<IPropertyValue, Object>() {
+
+                @Override
+                public Object apply(IPropertyValue propertyValue) {
+                    if (propertyValue instanceof IConfiguredDefault) {
+                        IConfiguredDefault configuredDefault = (IConfiguredDefault)propertyValue;
+                        return configuredDefault.getValue();
+                    }
+                    throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
+                }
+            };
+        }
+
+        @Override
+        public ProductCmptPropertyType getCorrespondingPropertyType() {
+            return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
+        }
+
+        @Override
+        public BiConsumer<IPropertyValue, Object> getValueSetter() {
+            return new BiConsumer<IPropertyValue, Object>() {
+
+                @Override
+                public void accept(IPropertyValue propertyValue, Object value) {
+                    if (value instanceof String && propertyValue instanceof IConfiguredDefault) {
+                        String defaultValue = (String)value;
+                        IConfiguredDefault element = (IConfiguredDefault)propertyValue;
+                        element.setValue(defaultValue);
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
+            };
+        }
+
+        @Override
+        public boolean isPartOfComposite() {
+            return true;
+        }
+
+        @Override
+        protected boolean isProperXmlTagName(String xmlTagName) {
+            return super.isProperXmlTagName(xmlTagName) || ConfiguredDefault.LEGACY_TAG_NAME.equals(xmlTagName);
         }
 
     },
@@ -319,7 +406,6 @@ public enum PropertyValueType {
         public IValidationRuleConfig createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
-
             IValidationRuleConfig ruleConfig = new ValidationRuleConfig(container, partId,
                     property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
             IValidationRule rule = (IValidationRule)property;
@@ -364,6 +450,11 @@ public enum PropertyValueType {
                     }
                 }
             };
+        }
+
+        @Override
+        public boolean isPartOfComposite() {
+            return false;
         }
 
     };
@@ -434,6 +525,18 @@ public enum PropertyValueType {
         return xmlTag;
     }
 
+    @SuppressWarnings("unchecked")
+    protected <T extends IIpsObjectPartContainer> T checkContainerType(IIpsObjectPartContainer container,
+            Class<T> concreteContainerClass) {
+        if (!concreteContainerClass.isInstance(container)) {
+            throw new IllegalArgumentException(
+                    "The container for " + name() + " must be a " + concreteContainerClass.getSimpleName()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return (T)container;
+    }
+
+    public abstract boolean isPartOfComposite();
+
     /**
      * Searches and returns a {@link PropertyValueType} that can create IPS object parts for the
      * given class.
@@ -466,11 +569,15 @@ public enum PropertyValueType {
      */
     public static PropertyValueType getTypeForXmlTag(String xmlTagName) {
         for (PropertyValueType type : values()) {
-            if (type.getValueXmlTagName().equals(xmlTagName)) {
+            if (type.isProperXmlTagName(xmlTagName)) {
                 return type;
             }
         }
         return null;
+    }
+
+    protected boolean isProperXmlTagName(String xmlTagName) {
+        return getValueXmlTagName().equals(xmlTagName);
     }
 
     /**
@@ -484,21 +591,21 @@ public enum PropertyValueType {
      * concrete type is obtained from this parameter and the caller has to ensure that the given
      * type is the same as the type obtained from the {@link IProductCmptProperty}'s type.
      * 
-     * @param container The container that is used as parent object, the created element is
+     * @param parent The container that is used as parent object, the created element is
      *            <strong>not</strong> added to it
      * @param productCmptProperty The {@link IProductCmptProperty} that may be set in the new value
      *            if it is not null
      * @param partId The part id of the generated {@link IPropertyValue}
-     * @param type The class that specifies the type of the created element
+     * @param clazz The class that specifies the type of the created element
      */
-    public static <T extends IPropertyValue> T createPropertyValue(IPropertyValueContainer container,
+    public static <T extends IPropertyValue> T createPropertyValue(IPropertyValueContainer parent,
             IProductCmptProperty productCmptProperty,
             String partId,
-            Class<T> type) {
+            Class<T> clazz) {
 
         @SuppressWarnings("unchecked")
         // The enum could not be specialized with generics but the implementation is type safe
-        T propertyValue = (T)PropertyValueType.getTypeForValueClass(type).createPropertyValue(container,
+        T propertyValue = (T)PropertyValueType.getTypeForValueClass(clazz).createPropertyValue(parent,
                 productCmptProperty, partId);
         return propertyValue;
     }

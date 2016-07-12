@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -56,15 +57,15 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
      * 
      * @param parent The parent composite to add this control to.
      * @param toolkit The toolkit used to create controls.
-     * @param configElement The {@link IConfigElement} that contains the value set.
+     * @param configuredValueSet The {@link IConfiguredValueSet} that contains the value set.
      */
     public BooleanValueSetControl(Composite parent, UIToolkit toolkit, IPolicyCmptTypeAttribute attribute,
-            IConfigElement configElement) {
+            IConfiguredValueSet configuredValueSet) {
         super(parent, SWT.NONE);
         this.toolkit = toolkit;
         this.attribute = attribute;
 
-        setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
+        setEnumValueSetProvider(new DefaultEnumValueSetProvider(configuredValueSet));
         initControls();
 
     }

@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -73,7 +73,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     private IProductCmptType productCmptType;
 
     private IPolicyCmptTypeAttribute attr;
-    private IConfigElement ce;
+    private IConfiguredValueSet cValueSet;
 
     private IIpsProject ipsProject;
     private IIpsProject productIpsProject;
@@ -104,8 +104,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         cmpt.setProductCmptType(productCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 
-        ce = generation.newConfigElement();
-        ce.setPolicyCmptTypeAttribute("attr");
+        cValueSet = generation.newPropertyValue(attr, IConfiguredValueSet.class);
 
         EnumType enumType = newEnumType(ipsProject, MY_EXTENSIBLE_ENUM);
         enumType.setExtensible(true);
@@ -116,12 +115,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopy() {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("10");
         set.addValue("5");
         set.addValue("1");
 
-        IEnumValueSet copy = (IEnumValueSet)set.copy(generation.newConfigElement(), "1");
+        IEnumValueSet copy = (IEnumValueSet)set.copy(generation.newPropertyValue(attr, IConfiguredValueSet.class), "1");
         assertEquals(3, copy.size());
         assertEquals(0, copy.getPositions("10").get(0).intValue());
         assertEquals(1, copy.getPositions("5").get(0).intValue());
@@ -130,12 +129,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopyPropertiesFrom() {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("10");
         set.addValue("5");
         set.addValue("1");
 
-        EnumValueSet set2 = new EnumValueSet(generation.newConfigElement(), "1");
+        EnumValueSet set2 = new EnumValueSet(generation.newPropertyValue(attr, IConfiguredValueSet.class), "1");
         set2.copyPropertiesFrom(set);
 
         assertEquals(3, set2.size());
@@ -146,7 +145,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetPositions() {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         List<Integer> positions = set.getPositions("1");
         assertEquals(0, positions.size());
 
@@ -179,7 +178,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValue() throws Exception {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("10EUR");
         set.addValue("20EUR");
         set.addValue("30EUR");
@@ -199,7 +198,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueInvalidSet() throws Exception {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("1");
         assertFalse(set.containsValue("10 EUR", ipsProject));
 
@@ -209,12 +208,12 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueSet() throws Exception {
-        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        EnumValueSet superset = new EnumValueSet(cValueSet, "id1");
         superset.addValue("1EUR");
         superset.addValue("2EUR");
         superset.addValue("3EUR");
 
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
         assertTrue(superset.containsValueSet(subset));
 
         subset.addValue("1EUR");
@@ -229,7 +228,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         subset.addValue("4EUR");
         assertFalse(superset.containsValueSet(subset));
 
-        EnumValueSet abstractSet = new EnumValueSet(ce, "60");
+        EnumValueSet abstractSet = new EnumValueSet(cValueSet, "60");
         abstractSet.setAbstract(true);
         assertTrue(abstractSet.containsValueSet(subset));
         assertFalse(subset.containsValueSet(abstractSet));
@@ -248,10 +247,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPolicyCmptTypeAttribute("attr2");
+        IConfiguredValueSet cValueSet2 = generation.newPropertyValue(attr2, IConfiguredValueSet.class);
 
-        subset = new EnumValueSet(ce2, "50");
+        subset = new EnumValueSet(cValueSet2, "50");
         subset.addValue("2EUR");
 
         assertFalse(superset.containsValueSet(subset));
@@ -259,9 +257,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueSet_EqualValueSetsWithNull() {
-        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        EnumValueSet superset = new EnumValueSet(cValueSet, "id1");
         superset.setContainsNull(true);
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
         subset.setContainsNull(true);
 
         assertTrue(superset.containsValueSet(subset));
@@ -269,9 +267,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueSet_EqualValueSetsWithoutNull() {
-        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        EnumValueSet superset = new EnumValueSet(cValueSet, "id1");
         superset.setContainsNull(false);
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
         subset.setContainsNull(false);
 
         assertTrue(superset.containsValueSet(subset));
@@ -279,9 +277,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueSet_ContainsSubValueSet() {
-        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        EnumValueSet superset = new EnumValueSet(cValueSet, "id1");
         superset.setContainsNull(true);
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
         subset.setContainsNull(false);
 
         assertTrue(superset.containsValueSet(subset));
@@ -289,9 +287,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueSet_ContainsSubValueSetNot() {
-        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        EnumValueSet superset = new EnumValueSet(cValueSet, "id1");
         superset.setContainsNull(false);
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
         subset.setContainsNull(true);
 
         assertFalse(superset.containsValueSet(subset));
@@ -300,7 +298,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testContainsValueSet_differentProjects() {
         EnumValueSet superset = new EnumValueSet(attr, "id1");
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
 
         boolean containsValueSet = superset.containsValueSet(subset);
 
@@ -311,7 +309,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     public void testContainsValueSet_differentProjects_extensibleEnum() {
         attr.setDatatype(MY_EXTENSIBLE_ENUM);
         EnumValueSet superset = new EnumValueSet(attr, "id1");
-        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        EnumValueSet subset = new EnumValueSet(cValueSet, "id2");
 
         boolean containsValueSet = superset.containsValueSet(subset);
 
@@ -320,7 +318,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddValue() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("one");
@@ -332,7 +330,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRemoveValue_byValue() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -391,7 +389,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRemoveValue_byIndex() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("one");
@@ -440,7 +438,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValue() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -453,7 +451,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -469,7 +467,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -486,7 +484,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("three");
@@ -505,7 +503,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -522,7 +520,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -540,7 +538,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -560,7 +558,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -579,7 +577,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -599,7 +597,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -624,7 +622,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
         Element element = XmlUtil.getFirstElement(root);
-        IEnumValueSet set = new EnumValueSet(ce, "1");
+        IEnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.initFromXml(element);
         assertEquals("one", set.getValue(0));
         assertEquals("two", set.getValue(1));
@@ -633,13 +631,13 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
         set.setContainsNull(true);
         Element element = set.toXml(newDocument());
-        IEnumValueSet set2 = new EnumValueSet(ce, "1");
+        IEnumValueSet set2 = new EnumValueSet(cValueSet, "1");
         set2.initFromXml(element);
         assertEquals("one", set2.getValue(0));
         assertEquals("two", set2.getValue(1));
@@ -650,7 +648,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate() throws Exception {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.size());
 
@@ -670,7 +668,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
 
-        IPolicyCmptTypeAttribute attr = ce.findPcTypeAttribute(ipsProject);
+        IPolicyCmptTypeAttribute attr = cValueSet.findPcTypeAttribute(ipsProject);
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         attr.getIpsObject().getIpsSrcFile().save(true, null);
 
@@ -687,13 +685,13 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
 
         // test with unkonwn datatype
-        EnumValueSet set2 = new EnumValueSet(ce, "2");
+        EnumValueSet set2 = new EnumValueSet(cValueSet, "2");
         set2.addValue("1");
         set2.addValue("2");
         list = set2.validate(ipsProject);
         assertEquals(0, list.size());
 
-        ((IProductCmptGeneration)ce.getPropertyValueContainer()).getProductCmpt().setProductCmptType("unkown");
+        ((IProductCmptGeneration)cValueSet.getPropertyValueContainer()).getProductCmpt().setProductCmptType("unkown");
         list = set2.validate(ipsProject);
         assertEquals(1, list.size());
         assertThat(list, hasMessageCode(IValueSet.MSGCODE_UNKNOWN_DATATYPE));
@@ -702,7 +700,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_CheckDuplicates() throws CoreException {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.size());
 
@@ -721,7 +719,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
         ObjectProperty[] ops = msg0.getInvalidObjectProperties();
         assertEquals(3, ops.length);
-        assertEquals(ce, ops[0].getObject());
+        assertEquals(cValueSet, ops[0].getObject());
         assertEquals(0, ops[1].getIndex());
         assertEquals(2, ops[2].getIndex());
 
@@ -742,7 +740,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateValue() throws CoreException {
-        EnumValueSet set = new EnumValueSet(ce, "1");
+        EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("2EUR");
         set.addValue("3EUR");
         set.addValue("2EUR");
@@ -769,7 +767,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValues() {
-        EnumValueSet set = new EnumValueSet(ce, "50");
+        EnumValueSet set = new EnumValueSet(cValueSet, "50");
         String[] values = set.getValues();
 
         assertEquals(0, values.length);
@@ -785,7 +783,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsContainsNull_SetContainsNull() {
-        EnumValueSet set = new EnumValueSet(ce, "50");
+        EnumValueSet set = new EnumValueSet(cValueSet, "50");
 
         set.setContainsNull(true);
         assertTrue(set.isContainsNull());
@@ -796,7 +794,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddValues() {
-        EnumValueSet set = spy(new EnumValueSet(ce, "50"));
+        EnumValueSet set = spy(new EnumValueSet(cValueSet, "50"));
         ContentsChangeListener mockedListener = mock(ContentsChangeListener.class);
         set.getIpsModel().addChangeListener(mockedListener);
         set.getIpsModel().addChangeListener(mockedListener);
@@ -821,7 +819,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRemoveValues() {
-        EnumValueSet set = spy(new EnumValueSet(ce, "50"));
+        EnumValueSet set = spy(new EnumValueSet(cValueSet, "50"));
         ContentsChangeListener mockedListener = mock(ContentsChangeListener.class);
         set.getIpsModel().addChangeListener(mockedListener);
 
@@ -848,7 +846,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFormatList_empty() throws Exception {
-        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        EnumValueSet enumValueSet = new EnumValueSet(cValueSet, "id");
 
         String shortString = enumValueSet.toShortString();
 
@@ -857,7 +855,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFormatList_oneElement() throws Exception {
-        EnumValueSet enumValueSet = new EnumValueSet(ce, Arrays.asList("a"), "id");
+        EnumValueSet enumValueSet = new EnumValueSet(cValueSet, Arrays.asList("a"), "id");
 
         String shortString = enumValueSet.toShortString();
 
@@ -866,7 +864,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFormatList_twoElement() throws Exception {
-        EnumValueSet enumValueSet = new EnumValueSet(ce, Arrays.asList("a", "b"), "id");
+        EnumValueSet enumValueSet = new EnumValueSet(cValueSet, Arrays.asList("a", "b"), "id");
 
         String shortString = enumValueSet.toShortString();
 
@@ -875,7 +873,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFormatList_EnumValueSet_abstract_excludingNull() throws Exception {
-        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        EnumValueSet enumValueSet = new EnumValueSet(cValueSet, "id");
         enumValueSet.setAbstract(true);
 
         String shortString = enumValueSet.toShortString();
@@ -887,7 +885,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFormatList_EnumValueSet_abstract_includingNull() throws Exception {
-        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        EnumValueSet enumValueSet = new EnumValueSet(cValueSet, "id");
         enumValueSet.setAbstract(true);
         enumValueSet.setContainsNull(true);
 
@@ -1030,8 +1028,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        IConfigElement ce2 = generation.newConfigElement(attr2);
-        EnumValueSet enum2 = new EnumValueSet(ce2, "id");
+        IConfiguredValueSet cValueSet2 = generation.newPropertyValue(attr2, IConfiguredValueSet.class);
+        EnumValueSet enum2 = new EnumValueSet(cValueSet2, "id");
         enum2.addValues(Arrays.asList("1", "2", "3"));
 
         assertTrue(enum1.compareTo(enum2) > 0);
@@ -1039,7 +1037,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     private IEnumValueSet createEnumValueSet(String... values) {
-        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        EnumValueSet enumValueSet = new EnumValueSet(cValueSet, "id");
         enumValueSet.addValues(Arrays.asList(values));
         return enumValueSet;
     }

@@ -102,7 +102,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         formula.setFormulaSignature(method.getFormulaName());
         formula.setExpression("42");
 
-        IFormula staticFormula = (IFormula)productCmpt.newPropertyValue(staticMethod);
+        IFormula staticFormula = productCmpt.newPropertyValue(staticMethod, IFormula.class);
         staticFormula.setExpression("42");
 
         refTarget = newProductCmpt(productCmptType, "RefProduct");
@@ -169,7 +169,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testSetRuntimeIdForStaticLinks() throws CoreException, IOException, SAXException,
-            ParserConfigurationException {
+    ParserConfigurationException {
         incrementalBuild();
         IFile xmlFile = getXmlFile(productCmpt);
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
@@ -183,7 +183,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testDeleteDummyGenerationsIfProductCmptTypeDoesNotAllowGenerations() throws CoreException, IOException,
-            SAXException, ParserConfigurationException {
+    SAXException, ParserConfigurationException {
         incrementalBuild();
         assertNumberOfGenerations(productCmpt, 1);
 
@@ -218,7 +218,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     private void assertNumberOfGenerations(IProductCmpt productCmpt, int expectedGenerationCount) throws SAXException,
-            IOException, ParserConfigurationException, CoreException {
+    IOException, ParserConfigurationException, CoreException {
         IFile xmlFile = getXmlFile(productCmpt);
         Document document = getDocumentBuilder().parse(xmlFile.getContents());
         Element prodCmptElement = document.getDocumentElement();

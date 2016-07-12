@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -41,9 +41,9 @@ import org.w3c.dom.Element;
 public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptTypeAttribute attr;
-    private IConfigElement ce;
+    private IConfiguredValueSet cValueSet1;
 
-    private IConfigElement ce2;
+    private IConfiguredValueSet cValueSet2;
 
     private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
@@ -68,11 +68,9 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         cmpt.setProductCmptType(productType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 
-        ce = generation.newConfigElement();
-        ce.setPolicyCmptTypeAttribute("attr");
+        cValueSet1 = generation.newPropertyValue(attr, IConfiguredValueSet.class);
 
-        ce2 = generation.newConfigElement();
-        ce2.setPolicyCmptTypeAttribute("attr2");
+        cValueSet2 = generation.newPropertyValue(attr2, IConfiguredValueSet.class);
     }
 
     @Test
@@ -81,43 +79,43 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         Element root = doc.getDocumentElement();
         Element element = XmlUtil.getFirstElement(root);
 
-        IValueSet allValues = new UnrestrictedValueSet(ce, "1");
+        IValueSet allValues = new UnrestrictedValueSet(cValueSet1, "1");
         allValues.initFromXml(element);
         assertNotNull(allValues);
     }
 
     @Test
     public void testToXml() {
-        UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, "1");
+        UnrestrictedValueSet allValues = new UnrestrictedValueSet(cValueSet1, "1");
         Element element = allValues.toXml(newDocument());
-        IUnrestrictedValueSet allValues2 = new UnrestrictedValueSet(ce, "2");
+        IUnrestrictedValueSet allValues2 = new UnrestrictedValueSet(cValueSet1, "2");
         allValues2.initFromXml(element);
         assertNotNull(allValues2);
     }
 
     @Test
     public void testContainsValue() throws Exception {
-        UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, "1");
+        UnrestrictedValueSet allValues = new UnrestrictedValueSet(cValueSet1, "1");
         assertFalse(allValues.containsValue("abc", ipsProject));
         assertTrue(allValues.containsValue("1EUR", ipsProject));
 
-        ce.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        cValueSet1.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         assertFalse(allValues.containsValue("1EUR", ipsProject));
         assertTrue(allValues.containsValue("99", ipsProject));
     }
 
     @Test
     public void testContainsValueSet() throws Exception {
-        IUnrestrictedValueSet allValues = (IUnrestrictedValueSet)ce.getValueSet();
+        IUnrestrictedValueSet allValues = (IUnrestrictedValueSet)cValueSet1.getValueSet();
 
         assertTrue(allValues.containsValueSet(allValues));
-        assertTrue(allValues.containsValueSet(new UnrestrictedValueSet(ce, "99")));
-        assertFalse(allValues.containsValueSet(ce2.getValueSet()));
+        assertTrue(allValues.containsValueSet(new UnrestrictedValueSet(cValueSet1, "99")));
+        assertFalse(allValues.containsValueSet(cValueSet2.getValueSet()));
     }
 
     @Test
     public void testIsContainsNull() throws Exception {
-        IUnrestrictedValueSet allValues = (IUnrestrictedValueSet)ce.getValueSet();
+        IUnrestrictedValueSet allValues = (IUnrestrictedValueSet)cValueSet1.getValueSet();
 
         // test with non-primitive datatype
         assertTrue(allValues.isContainsNull());

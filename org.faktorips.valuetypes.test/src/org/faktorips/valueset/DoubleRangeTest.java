@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
+
 import org.junit.Test;
 
 public class DoubleRangeTest {
@@ -32,6 +34,62 @@ public class DoubleRangeTest {
         assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
         assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
         assertTrue(range.containsNull());
+    }
+
+    @Test
+    public void testConstructor3() {
+        DoubleRange range = new DoubleRange(5.0, 10.0, 1.0, true);
+        assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
+        assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
+        assertEquals(range.getStep().doubleValue(), 1.0, 0.0);
+        assertTrue(range.containsNull());
+    }
+
+    @Test
+    public void testContains() {
+        DoubleRange range = DoubleRange.valueOf(null, 100.0, 10.0, false);
+        assertTrue(range.contains(30.0));
+        assertTrue(range.contains(100.0));
+        assertFalse(range.contains(110.0));
+        assertFalse(range.contains(35.0));
+
+        range = DoubleRange.valueOf(10.0, null, 10.0, false);
+        assertTrue(range.contains(30.0));
+        assertTrue(range.contains(10.0));
+        assertFalse(range.contains(-10.0));
+        assertFalse(range.contains(44.0));
+
+        range = DoubleRange.valueOf(10.0, 100.0, 10.0, true);
+        assertTrue(range.contains(null));
+    }
+
+    @Test
+    public void testGetValues() {
+        DoubleRange range = DoubleRange.valueOf(0.0, 100.0, 20.0, false);
+        Set<Double> values = range.getValues(false);
+        assertEquals(6, range.size());
+        assertTrue(values.contains(0.0));
+        assertTrue(values.contains(20.0));
+        assertTrue(values.contains(40.0));
+        assertTrue(values.contains(60.0));
+        assertTrue(values.contains(80.0));
+        assertTrue(values.contains(100.0));
+
+        assertFalse(values.contains(new Integer(-10)));
+        assertFalse(values.contains(new Integer(50)));
+        assertFalse(values.contains(new Integer(110)));
+        assertFalse(values.contains(new Integer(120)));
+
+        range = DoubleRange.valueOf(0.0, 100.0, 20.0, true);
+        values = range.getValues(false);
+        assertEquals(7, range.size());
+    }
+
+    @Test
+    public void testCheckIfStepFitsIntoBounds() throws Exception {
+        DoubleRange doubleRange = DoubleRange.valueOf(0.0, 5.0, 0.1, false);
+
+        doubleRange.checkIfStepFitsIntoBounds();
     }
 
     @Test

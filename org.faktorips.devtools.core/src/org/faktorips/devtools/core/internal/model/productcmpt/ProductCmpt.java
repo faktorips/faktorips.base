@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -63,6 +64,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.TypeValidations;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -77,7 +79,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private final ProductCmptLinkCollection linkCollection = new ProductCmptLinkCollection();
 
-    private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
+    private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection(this);
 
     private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
             linkCollection);
@@ -334,7 +336,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+                            IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -378,6 +380,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
         template = element.getAttribute(PROPERTY_TEMPLATE);
+    }
+
+    @Override
+    protected boolean isLegacyElement(Element element) {
+        return ValueToXmlHelper.LEGACY_XML_TAG_CONFIG_ELEMENT.equals(element.getNodeName());
     }
 
     /**
@@ -470,23 +477,28 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IPropertyValue getPropertyValue(IProductCmptProperty property) {
-        return propertyValueCollection.getPropertyValue(property);
+    public <T extends IPropertyValue> T getPropertyValue(IProductCmptProperty property, Class<T> type) {
+        return propertyValueCollection.getPropertyValue(property, type);
     }
 
     @Override
-    public boolean hasPropertyValue(IProductCmptProperty property) {
-        return getPropertyValue(property) != null;
+    public List<IPropertyValue> getPropertyValues(IProductCmptProperty property) {
+        return propertyValueCollection.getPropertyValues(property);
     }
 
     @Override
-    public IPropertyValue getPropertyValue(String propertyName) {
-        return propertyValueCollection.getPropertyValue(propertyName);
+    public boolean hasPropertyValue(IProductCmptProperty property, PropertyValueType propertyValueType) {
+        return getPropertyValue(property, propertyValueType.getInterfaceClass()) != null;
+    }
+
+    @Override
+    public List<IPropertyValue> getPropertyValues(String propertyName) {
+        return propertyValueCollection.getPropertyValues(propertyName);
     }
 
     @Override
     public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
-        return propertyValueCollection.getPropertyValue(type, propertyName);
+        return propertyValueCollection.getPropertyValue(propertyName, type);
     }
 
     @Override
@@ -505,10 +517,18 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
+    public <T extends IPropertyValue> T newPropertyValue(IProductCmptProperty property, Class<T> type) {
+        T newPropertyValue = propertyValueCollection.newPropertyValue(property, getNextPartId(), type);
         objectHasChanged();
         return newPropertyValue;
+    }
+
+    @Override
+    public List<IPropertyValue> newPropertyValues(IProductCmptProperty property) {
+        List<IPropertyValue> newPropertyValues = propertyValueCollection.newPropertyValues(this, property,
+                getNextPartId());
+        objectHasChanged();
+        return newPropertyValues;
     }
 
     @Override
@@ -520,12 +540,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
+        } else if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
+            return createAndAddNewLinkInternal(id);
+        } else {
+            return propertyValueCollection.newPropertyValue(xmlTagName, id);
         }
-        if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
-            IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
-            return newLinkInternal;
-        }
-        return propertyValueCollection.newPropertyValue(this, xmlTagName, id);
     }
 
     @Override
@@ -538,10 +557,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return createAndAddNewLinkInternal(getNextPartId());
         } else if (IPropertyValue.class.isAssignableFrom(partType)) {
             Class<? extends IPropertyValue> propertyValueType = partType.asSubclass(IPropertyValue.class);
-            IPropertyValue newPart = propertyValueCollection.newPropertyValue(this, getNextPartId(), propertyValueType);
-            return newPart;
+            return propertyValueCollection.newPropertyValue(getNextPartId(), propertyValueType);
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -564,7 +583,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return propertyValueCollection.getPropertyValue(IAttributeValue.class, attribute);
+        return propertyValueCollection.getPropertyValue(attribute, IAttributeValue.class);
     }
 
     @Override
@@ -688,10 +707,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
 
         for (IProductCmptProperty property : category.findProductCmptProperties(contextType, true, ipsProject)) {
-            if (hasPropertyValue(property)) {
-                propertyValues.add(getPropertyValue(property));
-            } else if (generation != null && generation.hasPropertyValue(property)) {
-                propertyValues.add(generation.getPropertyValue(property));
+            propertyValues.addAll(getPropertyValues(property));
+            if (generation != null) {
+                propertyValues.addAll(generation.getPropertyValues(property));
             }
         }
 
@@ -777,7 +795,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public ITableContentUsage getTableContentUsage(String rolename) {
-        return propertyValueCollection.getPropertyValue(ITableContentUsage.class, rolename);
+        return propertyValueCollection.getPropertyValue(rolename, ITableContentUsage.class);
     }
 
     @Override
@@ -794,7 +812,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IFormula getFormula(String formulaName) {
-        return propertyValueCollection.getPropertyValue(IFormula.class, formulaName);
+        return propertyValueCollection.getPropertyValue(formulaName, IFormula.class);
     }
 
     /**

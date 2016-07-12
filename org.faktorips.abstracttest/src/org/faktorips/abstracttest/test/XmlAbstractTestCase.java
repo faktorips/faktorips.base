@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
@@ -33,12 +34,22 @@ public abstract class XmlAbstractTestCase {
 
     /**
      * Returns the xml document that is associated with the test case. This document has the same
-     * name as the test case class and the ending "+.xml".
+     * name as the test case class concatenated with suffix and the ending "+.xml".
      */
     public Document getTestDocument() {
+        return getTestDocument(StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns the xml document that is associated with the test case. This document has the same
+     * name as the test case class concatenated with suffix and the ending "+.xml".
+     * 
+     * @param suffix the suffix that should be set after the class name
+     */
+    public Document getTestDocument(String suffix) {
         InputStream is = null;
         try {
-            String resourceName = getXmlResourceName();
+            String resourceName = getXmlResourceName(suffix);
             is = getClass().getResourceAsStream(resourceName);
             if (is == null) {
                 throw new RuntimeException("Can't find resource " + resourceName);
@@ -51,17 +62,21 @@ public abstract class XmlAbstractTestCase {
         }
     }
 
+    public String getXmlResourceName() {
+        return getXmlResourceName(StringUtils.EMPTY);
+    }
+
     /**
      * Returns the xml file name that is associated with the test case. This file name has the same
      * name as the test case class and the ending "+.xml".
      */
-    public String getXmlResourceName() {
+    public String getXmlResourceName(String suffix) {
         String className = getClass().getName();
         int index = className.lastIndexOf('.');
         if (index > -1) {
             className = className.substring(index + 1);
         }
-        return className + ".xml";
+        return className + suffix + ".xml";
     }
 
     public final Document newDocument() {

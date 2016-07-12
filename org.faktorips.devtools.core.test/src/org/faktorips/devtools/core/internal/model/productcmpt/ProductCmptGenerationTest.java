@@ -45,7 +45,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -72,6 +73,7 @@ import org.w3c.dom.Element;
 public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
+    private IPolicyCmptTypeAttribute attribute;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
@@ -89,6 +91,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("attribute");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
@@ -147,23 +151,22 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         formula.setFormulaSignature("calculation");
         ITableContentUsage contentUsage = generation.newTableContentUsage();
         contentUsage.setStructureUsage("RateTable");
-        IConfigElement element = generation.newConfigElement();
-        element.setPolicyCmptTypeAttribute("policyAttribute");
+        IConfiguredDefault defaultValue = generation.newPropertyValue(policyAttr, IConfiguredDefault.class);
 
-        assertEquals(value, generation.getPropertyValue(attribute));
-        assertEquals(formula, generation.getPropertyValue(signature));
-        assertEquals(contentUsage, generation.getPropertyValue(structureUsage));
-        assertEquals(element, generation.getPropertyValue(policyAttr));
+        assertEquals(value, generation.getPropertyValue(attribute, IAttributeValue.class));
+        assertEquals(formula, generation.getPropertyValue(signature, IFormula.class));
+        assertEquals(contentUsage, generation.getPropertyValue(structureUsage, ITableContentUsage.class));
+        assertEquals(defaultValue, generation.getPropertyValue(policyAttr, IConfiguredDefault.class));
     }
 
     @Test
     public void testHasPropertyValue() {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
 
-        assertFalse(generation.hasPropertyValue(attribute));
+        assertFalse(generation.hasPropertyValue(attribute, PropertyValueType.ATTRIBUTE_VALUE));
 
         generation.newAttributeValue(attribute);
-        assertTrue(generation.hasPropertyValue(attribute));
+        assertTrue(generation.hasPropertyValue(attribute, PropertyValueType.ATTRIBUTE_VALUE));
     }
 
     @Test
@@ -202,7 +205,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewConfigElement_PolicyAttribute() {
+    public void testNewPropertyValue_configElement() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("a1");
         attribute.setProductRelevant(true);
@@ -212,10 +215,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         range.setLowerBound("1");
         range.setUpperBound("42");
 
-        IConfigElement el = generation.newConfigElement(attribute);
-        assertEquals("a1", el.getPolicyCmptTypeAttribute());
-        assertEquals("10", el.getValue());
-        range = (IRangeValueSet)el.getValueSet();
+        IConfiguredDefault defaultValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredValueSet valueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        assertEquals("a1", defaultValue.getPolicyCmptTypeAttribute());
+        assertEquals("10", defaultValue.getValue());
+        range = (IRangeValueSet)valueSet.getValueSet();
         assertEquals("1", range.getLowerBound());
         assertEquals("42", range.getUpperBound());
     }
@@ -228,10 +232,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ITableContentUsage tcu1 = generation.newTableContentUsage();
         ITableContentUsage tcu2 = generation.newTableContentUsage();
         ITableContentUsage tcu3 = generation.newTableContentUsage();
-        IConfigElement ce1 = generation.newConfigElement();
-        IConfigElement ce2 = generation.newConfigElement();
-        IConfigElement ce3 = generation.newConfigElement();
-        IConfigElement ce4 = generation.newConfigElement();
+        IConfiguredDefault defaultValue1 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue2 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue3 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue4 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredValueSet valueSet1 = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        IConfiguredValueSet valueSet2 = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        IConfiguredValueSet valueSet3 = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
 
         List<? extends IPropertyValue> values = generation.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE
                 .getInterfaceClass());
@@ -249,12 +256,19 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(tcu2, values.get(1));
         assertEquals(tcu3, values.get(2));
 
-        values = generation.getPropertyValues(PropertyValueType.CONFIG_ELEMENT.getInterfaceClass());
+        values = generation.getPropertyValues(PropertyValueType.CONFIGURED_DEFAULT.getInterfaceClass());
         assertEquals(4, values.size());
-        assertEquals(ce1, values.get(0));
-        assertEquals(ce2, values.get(1));
-        assertEquals(ce3, values.get(2));
-        assertEquals(ce4, values.get(3));
+        assertEquals(defaultValue1, values.get(0));
+        assertEquals(defaultValue2, values.get(1));
+        assertEquals(defaultValue3, values.get(2));
+        assertEquals(defaultValue4, values.get(3));
+
+        values = generation.getPropertyValues(PropertyValueType.CONFIGURED_VALUESET.getInterfaceClass());
+        assertEquals(3, values.size());
+        assertEquals(valueSet1, values.get(0));
+        assertEquals(valueSet2, values.get(1));
+        assertEquals(valueSet3, values.get(2));
+
     }
 
     @Test
@@ -274,8 +288,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     @Test
     public void testToXmlElement() {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
-        generation.newConfigElement();
-        generation.newConfigElement();
+        generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        generation.newPropertyValue(attribute, IConfiguredValueSet.class);
         generation.newLink("coverage");
         generation.newLink("coverage");
         generation.newLink("coverage");
@@ -306,8 +320,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IAttributeValue[] attrValues = generation.getAttributeValues();
         assertEquals(1, attrValues.length);
 
-        IConfigElement[] configElements = generation.getConfigElements();
-        assertEquals(1, configElements.length);
+        IConfiguredDefault[] configDefaults = generation.getConfiguredDefaults();
+        assertEquals(1, configDefaults.length);
 
         IProductCmptLink[] relations = generation.getLinks();
         assertEquals(1, relations.length);
@@ -427,7 +441,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetChildren() throws CoreException {
-        IConfigElement element = generation.newConfigElement();
+        IConfiguredDefault defaultValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
         IFormula formula = generation.newFormula();
@@ -440,62 +454,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         IIpsElement[] children = generation.getChildren();
         List<IIpsElement> childrenList = Arrays.asList(children);
-        assertTrue(childrenList.contains(element));
+        assertTrue(childrenList.contains(defaultValue));
         assertTrue(childrenList.contains(usage));
         assertTrue(childrenList.contains(formula));
         assertTrue(childrenList.contains(link));
         assertTrue(childrenList.contains(ruleConfig));
-    }
-
-    @Test
-    public void testGetConfigElements() {
-        assertEquals(0, generation.getNumOfConfigElements());
-
-        IConfigElement ce1 = generation.newConfigElement();
-        assertEquals(ce1, generation.getConfigElements()[0]);
-
-        IConfigElement ce2 = generation.newConfigElement();
-        assertEquals(ce1, generation.getConfigElements()[0]);
-        assertEquals(ce2, generation.getConfigElements()[1]);
-    }
-
-    @Test
-    public void testGetConfigElements_Type() {
-        IConfigElement ce1 = generation.newConfigElement();
-        IConfigElement ce2 = generation.newConfigElement();
-
-        IConfigElement[] elements = generation.getConfigElements();
-        assertEquals(2, elements.length);
-        assertEquals(ce1, elements[0]);
-        assertEquals(ce2, elements[1]);
-    }
-
-    @Test
-    public void testGetConfigElement_AttributeName() {
-        generation.newConfigElement();
-        IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPolicyCmptTypeAttribute("a2");
-
-        assertEquals(ce2, generation.getConfigElement("a2"));
-        assertNull(generation.getConfigElement("unkown"));
-    }
-
-    @Test
-    public void testGetNumOfConfigElements() {
-        assertEquals(0, generation.getNumOfConfigElements());
-
-        generation.newConfigElement();
-        assertEquals(1, generation.getNumOfConfigElements());
-
-        generation.newConfigElement();
-        assertEquals(2, generation.getNumOfConfigElements());
-    }
-
-    @Test
-    public void testNewConfigElement() {
-        IConfigElement ce = generation.newConfigElement();
-        assertEquals(generation, ce.getParent());
-        assertEquals(1, generation.getNumOfConfigElements());
     }
 
     @Test
@@ -556,7 +519,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
-            Exception {
+    Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
@@ -577,7 +540,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
         ipsProject.getProperties()
-                .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+        .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
@@ -746,7 +709,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("a2");
         attribute.setChangingOverTime(false);
-        IAttributeValue valueA2 = (IAttributeValue)productCmpt.newPropertyValue(attribute);
+        IAttributeValue valueA2 = productCmpt.newPropertyValue(attribute, IAttributeValue.class);
         valueA2.setAttribute("a2");
 
         List<IAttributeValue> propertyValues = generation.getPropertyValuesIncludingProductCmpt(IAttributeValue.class);
@@ -812,5 +775,24 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         product.setTemplate("parentTemplate");
         assertThat(generation.isPartOfTemplateHierarchy(), is(true));
+    }
+
+    @Test
+    public void testAddPartThis_ConfigElement() throws CoreException {
+        ProductCmpt product = newProductCmpt(productCmptType, "product");
+        ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
+        IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+
+        assertThat(generation.addPartThis(configDefault), is(true));
+    }
+
+    @Test
+    public void testRemovePartThis_ConfigElement() throws CoreException {
+        ProductCmpt product = newProductCmpt(productCmptType, "product");
+        ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
+        IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+
+        assertThat(generation.removePartThis(configDefault), is(true));
+        assertNull(generation.getPropertyValue(attribute, IConfiguredDefault.class));
     }
 }

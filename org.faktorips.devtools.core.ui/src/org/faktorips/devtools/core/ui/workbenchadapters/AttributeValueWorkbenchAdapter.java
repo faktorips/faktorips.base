@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -43,7 +44,8 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
 
         String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
 
-        String value = attributeValue.getPropertyValue();
+        IValueHolder<?> valueHolder = attributeValue.getValueHolder();
+        String value = valueHolder != null ? valueHolder.getStringValue() : null;
         // try to get formatted value
         IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
         if (attribute != null) {

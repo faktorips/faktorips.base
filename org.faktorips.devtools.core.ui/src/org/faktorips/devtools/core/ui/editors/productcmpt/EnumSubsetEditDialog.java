@@ -51,7 +51,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
 
     public EnumSubsetEditDialog(IEnumValueSetProvider provider, ValueDatatype datatype, Shell parentShell,
             boolean viewOnly) {
-        super(provider.getTargetConfigElement(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
+        super(provider.getTargetConfiguredValueSet(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.enumValueSetProvider = provider;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
@@ -83,7 +83,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
         SubsetChooserViewer viewer = new SubsetChooserViewer(workArea, getToolkit());
         AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(
                 enumValueSetProvider.getSourceEnumValueSet(), valueDatatype, (IEnumValueSet)enumValueSetProvider
-                        .getTargetConfigElement().getValueSet());
+                        .getTargetConfiguredValueSet().getValueSet());
         viewer.init(model);
         viewer.setSourceLabel(enumValueSetProvider.getSourceLabel());
         viewer.setTargetLabel(enumValueSetProvider.getTargetLabel());

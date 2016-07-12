@@ -30,25 +30,39 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * <p>
      * Note that this method searches only the property values that have the same property type as
      * the indicated property. If you want to search only by name, use
-     * {@link #getPropertyValue(String)}.
+     * {@link #getPropertyValue(String, Class)}.
      */
-    public IPropertyValue getPropertyValue(IProductCmptProperty property);
+    public <T extends IPropertyValue> T getPropertyValue(IProductCmptProperty property, Class<T> type);
+
+    /**
+     * Returns the property values for the given property or an empty list if no value is defined
+     * for this container. In this case
+     * {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)} returns a delta
+     * containing an entry for the missing property values.
+     * <p>
+     * Returns an empty list if property is <code>null</code>.
+     * <p>
+     * Note that this method searches only the property values that have the same property type as
+     * the indicated property. If you want to search only by name, use
+     * {@link #getPropertyValues(String)}.
+     */
+    public List<IPropertyValue> getPropertyValues(IProductCmptProperty property);
 
     /**
      * Returns whether this {@link IPropertyValueContainer} contains an {@link IPropertyValue} for
      * the indicated {@link IProductCmptProperty}.
      */
-    public boolean hasPropertyValue(IProductCmptProperty property);
+    public boolean hasPropertyValue(IProductCmptProperty property, PropertyValueType type);
 
     /**
-     * Returns the property values for the given property name or <code>null</code> if no value is
+     * Returns the property values for the given property name or an empty list if no value is
      * defined for this container. In this case
      * {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)} returns a delta
-     * containing an entry for the missing property value.
+     * containing an entry for the missing property values.
      * <p>
-     * Returns <code>null</code> if propertyName is <code>null</code>.
+     * Returns an empty list if propertyName is <code>null</code>.
      */
-    public IPropertyValue getPropertyValue(String propertyName);
+    public List<IPropertyValue> getPropertyValues(String propertyName);
 
     /**
      * Returns the property value for the given property name and type or {@code null} if no value
@@ -73,11 +87,23 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
     public List<IPropertyValue> getAllPropertyValues();
 
     /**
-     * Creates a new property value for the given property.
+     * Creates a new property value for the given property and {@link PropertyValueType}.
+     * 
+     * @param property the property for that a new value should be created
+     * @param type the interface type of property value that should be created
+     * 
+     * @return Returns the newly created part
      * 
      * @throws NullPointerException if property is <code>null</code>.
      */
-    public IPropertyValue newPropertyValue(IProductCmptProperty property);
+    public <T extends IPropertyValue> T newPropertyValue(IProductCmptProperty property, Class<T> type);
+
+    /**
+     * Creates new property values for the given property.
+     * 
+     * @throws NullPointerException if property is <code>null</code>.
+     */
+    public List<IPropertyValue> newPropertyValues(IProductCmptProperty property);
 
     /**
      * Returns true if this container is responsible for the given property. For example a

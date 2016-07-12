@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,7 +47,7 @@ public class UnrestrictedValueSetFormatTest {
     private IpsUIPlugin uiPlugin;
 
     @Mock
-    private ConfigElement configElement;
+    private ConfiguredValueSet configValueSet;
 
     @Mock
     private ValueDatatype datatype;
@@ -59,17 +58,16 @@ public class UnrestrictedValueSetFormatTest {
 
     @Before
     public void setUp() throws Exception {
-        unrestrictedValueSetFormat = new UnrestrictedValueSetFormat(configElement, uiPlugin);
-        valueSet = new UnrestrictedValueSet(configElement, "2", true);
+        unrestrictedValueSetFormat = new UnrestrictedValueSetFormat(configValueSet, uiPlugin);
+        valueSet = new UnrestrictedValueSet(configValueSet, "2", true);
 
-        when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat(null));
-        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configElement.getIpsProject()).thenReturn(ipsProject);
-        when(configElement.getIpsModel()).thenReturn(ipsModel);
-        when(configElement.getIpsObject()).thenReturn(ipsObject);
-        when(configElement.getValueSet()).thenReturn(valueSet);
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.UNRESTRICTED));
+        when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(new DefaultInputFormat(null));
+        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
+        when(configValueSet.getIpsProject()).thenReturn(ipsProject);
+        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
+        when(configValueSet.getValueSet()).thenReturn(valueSet);
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.UNRESTRICTED));
     }
 
     @Test

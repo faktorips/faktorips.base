@@ -20,7 +20,7 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -54,7 +54,7 @@ public class EnumValueSetFormatTest {
     private IpsUIPlugin uiPlugin;
 
     @Mock
-    private ConfigElement configElement;
+    private ConfiguredValueSet configValueSet;
 
     @Mock
     private ValueDatatype datatype;
@@ -65,16 +65,16 @@ public class EnumValueSetFormatTest {
 
     @Before
     public void setUp() throws Exception {
-        enumVSFormat = new EnumValueSetFormat(configElement, uiPlugin);
-        enumValueSet = new EnumValueSet(configElement, "");
+        enumVSFormat = new EnumValueSetFormat(configValueSet, uiPlugin);
+        enumValueSet = new EnumValueSet(configValueSet, "");
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
                 new DefaultInputFormat(null));
-        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configElement.getIpsProject()).thenReturn(ipsProject);
-        when(configElement.getIpsModel()).thenReturn(ipsModel);
-        when(configElement.getIpsObject()).thenReturn(ipsObject);
-        when(configElement.getValueSet()).thenReturn(enumValueSet);
+        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
+        when(configValueSet.getIpsProject()).thenReturn(ipsProject);
+        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
+        when(configValueSet.getValueSet()).thenReturn(enumValueSet);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class EnumValueSetFormatTest {
 
         assertNotNull(valueSet);
         assertTrue(valueSet instanceof EnumValueSet);
-        assertEquals(configElement, enumVS.getParent());
+        assertEquals(configValueSet, enumVS.getParent());
         assertEquals(2, enumVS.getValuesAsList().size());
         assertEquals("test", enumVS.getValue(0));
         assertEquals("test2", enumVS.getValue(1));
@@ -99,7 +99,7 @@ public class EnumValueSetFormatTest {
 
         assertNotNull(enumVSFormat.parse("test | test1"));
         assertTrue(enumVSFormat.parse("test | test1") instanceof EnumValueSet);
-        assertEquals(configElement, enumVS.getParent());
+        assertEquals(configValueSet, enumVS.getParent());
         assertTrue(("").equals(enumVSFormat.parse("test | test1").getId()));
         assertEquals(2, enumVS.getValuesAsList().size());
         assertEquals("test", enumVS.getValue(0));
@@ -114,7 +114,7 @@ public class EnumValueSetFormatTest {
 
         assertNotNull(enumVSFormat.parse(""));
         assertTrue(enumVSFormat.parse("") instanceof EnumValueSet);
-        assertEquals(configElement, enumVS.getParent());
+        assertEquals(configValueSet, enumVS.getParent());
         assertEquals(1, enumVS.getValuesAsList().size());
         assertEquals("", enumVS.getValuesAsList().get(0));
     }
@@ -129,7 +129,7 @@ public class EnumValueSetFormatTest {
 
         assertNotNull(enumVSFormat.parse(""));
         assertTrue(enumVSFormat.parse("") instanceof EnumValueSet);
-        assertEquals(configElement, enumVS.getParent());
+        assertEquals(configValueSet, enumVS.getParent());
         assertEquals(0, enumVS.getValuesAsList().size());
     }
 
@@ -142,7 +142,7 @@ public class EnumValueSetFormatTest {
 
         assertNotNull(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
         assertTrue(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
-        assertEquals(configElement, enumVS.getParent());
+        assertEquals(configValueSet, enumVS.getParent());
         assertEquals(1, enumVS.getValuesAsList().size());
         assertEquals(null, enumVS.getValue(0));
     }
@@ -156,7 +156,7 @@ public class EnumValueSetFormatTest {
 
         assertNotNull(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
         assertTrue(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
-        assertEquals(configElement, enumVS.getParent());
+        assertEquals(configValueSet, enumVS.getParent());
         assertEquals(1, enumVS.getValuesAsList().size());
         assertEquals(null, enumVS.getValue(0));
     }
@@ -203,14 +203,14 @@ public class EnumValueSetFormatTest {
 
     @Test
     public void testIsResponsibleFor_ReturnTrueIfOnlyEnumValeSetTypeIsAllowed() throws CoreException {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.ENUM));
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.ENUM));
 
         assertTrue(enumVSFormat.isResponsibleFor("test | test1"));
     }
 
     @Test
     public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum() throws CoreException {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
         assertTrue(enumVSFormat.isResponsibleFor("test | test1"));
@@ -219,7 +219,7 @@ public class EnumValueSetFormatTest {
     @Test
     public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum_EmptyString()
             throws CoreException {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
         assertTrue(enumVSFormat.isResponsibleFor(""));

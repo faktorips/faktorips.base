@@ -164,8 +164,8 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     }
 
     @Override
-    public String getPropertyValue() {
-        return Boolean.toString(isActive());
+    public Boolean getPropertyValue() {
+        return isActive();
     }
 
     @Override

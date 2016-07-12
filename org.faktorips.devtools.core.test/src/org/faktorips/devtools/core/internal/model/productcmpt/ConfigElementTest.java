@@ -10,62 +10,31 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
-import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
+/**
+ * Tests methods that are implemented in ConfigElement that are not supposed to be overridden in
+ * subclasses. {@link ConfiguredDefault} is used as an example subclass.
+ */
 public class ConfigElementTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -73,7 +42,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
-    private IConfigElement configElement;
+    private IConfiguredDefault configuredDefault;
+    private IPolicyCmptTypeAttribute attribute;
 
     @Override
     @Before
@@ -81,50 +51,15 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+        attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("attribute");
+
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
-        configElement = generation.newConfigElement();
+        configuredDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
         productCmpt.getIpsSrcFile().save(true, null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
-    }
-
-    @Test
-    public void testGetAllowedValueSetTypes() throws CoreException {
-        // case 1: attribute not found
-        configElement.setPolicyCmptTypeAttribute("a1");
-        List<ValueSetType> types = configElement.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
-        assertEquals(configElement.getValueSet().getValueSetType(), types.get(0));
-
-        // case 2: attribute found, value set type is unrestricted, datatype is Integer
-        // => all types should be available
-        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
-        a1.setName("a1");
-        a1.setDatatype("Integer");
-        a1.setProductRelevant(true);
-        a1.setValueSetType(ValueSetType.UNRESTRICTED);
-        types = configElement.getAllowedValueSetTypes(ipsProject);
-        assertEquals(3, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.RANGE));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
-
-        // case 3: as before, but with datatype String
-        // => only unrestricted and enum should be available
-        a1.setDatatype("String");
-        types = configElement.getAllowedValueSetTypes(ipsProject);
-        assertEquals(2, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
-
-        // case 4: as before, but with datatype String
-        // => only unrestricted and enum should be available
-        a1.setDatatype("Integer");
-        a1.setValueSetType(ValueSetType.RANGE);
-        types = configElement.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
-        assertTrue(types.contains(ValueSetType.RANGE));
     }
 
     @Test
@@ -138,703 +73,26 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         a2.setName("a2");
 
         generation = productCmpt.getProductCmptGeneration(0);
-        IConfigElement ce = generation.newConfigElement();
-        ce.setPolicyCmptTypeAttribute("a1");
-        assertEquals(a1, ce.findPcTypeAttribute(ipsProject));
-        ce.setPolicyCmptTypeAttribute("a2");
-        assertEquals(a2, ce.findPcTypeAttribute(ipsProject));
-        ce.setPolicyCmptTypeAttribute("unkown");
-        assertNull(ce.findPcTypeAttribute(ipsProject));
-    }
-
-    @Test
-    public void testValidate_UnknownAttribute() throws CoreException {
-        configElement.setPolicyCmptTypeAttribute("a");
-        MessageList ml = configElement.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
-
-        policyCmptType.newPolicyCmptTypeAttribute().setName("a");
-        policyCmptType.getIpsSrcFile().save(true, null);
-
-        ml = configElement.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
-    }
-
-    @Test
-    public void testValidate_UnknownDatatypeValue() throws CoreException {
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("1");
-        ce.setPolicyCmptTypeAttribute("valueTest");
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setAttributeType(AttributeType.CHANGEABLE);
-
-        MessageList ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
-
-        attr.setDatatype("Decimal");
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
-    }
-
-    @Test
-    public void testValidate_ValueNotParsable() throws CoreException {
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("1");
-        ce.setPolicyCmptTypeAttribute("valueTest");
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setAttributeType(AttributeType.CHANGEABLE);
-        attr.setDatatype("Money");
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-
-        MessageList ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
-
-        attr.setDatatype("Decimal");
-        policyCmptType.getIpsSrcFile().save(true, null);
-
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
-    }
-
-    @Test
-    public void testValidateParsableEnumTypeDatatype() throws Exception {
-        IEnumType enumType = newEnumType(ipsProject, "EnumType");
-        enumType.setExtensible(false);
-        enumType.newEnumLiteralNameAttribute();
-
-        IEnumAttribute id = enumType.newEnumAttribute();
-        id.setName("id");
-        id.setDatatype(Datatype.STRING.getQualifiedName());
-        id.setUnique(true);
-        id.setIdentifier(true);
-
-        IEnumAttribute name = enumType.newEnumAttribute();
-        name.setName("name");
-        name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUnique(true);
-        name.setUsedAsNameInFaktorIpsUi(true);
-
-        IEnumValue enumValue = enumType.newEnumValue();
-        List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
-        values.get(0).setValue(ValueFactory.createStringValue("AN"));
-        values.get(1).setValue(ValueFactory.createStringValue("a"));
-        values.get(2).setValue(ValueFactory.createStringValue("an"));
-
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("a");
-        ce.setPolicyCmptTypeAttribute("valueTest");
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setAttributeType(AttributeType.CHANGEABLE);
-        attr.setDatatype(enumType.getQualifiedName());
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-
-        MessageList ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
-
-        ce.setValue("b");
-        ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
-    }
-
-    @Test
-    public void testValidate_InvalidValueset() throws CoreException {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setAttributeType(AttributeType.CHANGEABLE);
-        attr.setDatatype("Decimal");
-        attr.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();
-        valueSet.setLowerBound("a");
-        valueSet.setUpperBound("b");
-
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("1");
-        ce.setPolicyCmptTypeAttribute("valueTest");
-        ce.setValueSetCopy(valueSet);
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-
-        MessageList ml = ce.validate(ce.getIpsProject());
-
-        // no test for specific message codes because the codes are under controll
-        // of the value set.
-        assertTrue(ml.size() > 0);
-
-        valueSet = (IRangeValueSet)ce.getValueSet();
-        valueSet.setLowerBound("0");
-        valueSet.setUpperBound("100");
-
-        valueSet = (IRangeValueSet)attr.getValueSet();
-        valueSet.setLowerBound("0");
-        valueSet.setUpperBound("100");
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-
-        ml = ce.validate(ipsProject);
-        assertEquals(0, ml.size());
-    }
-
-    @Test
-    public void testValidate_InvalidDatatype() throws Exception {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("test");
-        InvalidDatatype datatype = new InvalidDatatype();
-        attr.setDatatype(datatype.getQualifiedName());
-
-        Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
-        vdlist.addAll(Arrays.asList(vds));
-        vdlist.add(datatype);
-
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
-        ipsProject.setProperties(properties);
-
-        IConfigElement ce = generation.newConfigElement();
-        ce.setPolicyCmptTypeAttribute("test");
-        MessageList ml = ce.validate(ce.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
-    }
-
-    @Test
-    public void testValidate_ValueNotInValueset() throws CoreException {
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("1");
-        ce.setPolicyCmptTypeAttribute("valueTest");
-        ce.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)ce.getValueSet();
-        valueSet.setLowerBound("10");
-        valueSet.setUpperBound("20");
-
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-
-        attr.setAttributeType(AttributeType.CONSTANT);
-        attr.setValueSetType(ValueSetType.RANGE);
-        attr.setDatatype("Decimal");
-        IRangeValueSet valueSetAttr = (IRangeValueSet)attr.getValueSet();
-        valueSetAttr.setLowerBound(null);
-        valueSetAttr.setUpperBound(null);
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-
-        MessageList ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
-
-        ce.setValue("15");
-
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
-    }
-
-    // TODO FIPS-4556
-    // @Test
-    // public void testValidate_ValueNotInValuesetForInheritedValues() throws CoreException {
-    // IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-    // attr.setName("valueTest");
-    // attr.setValueSetType(ValueSetType.RANGE);
-    // attr.setDatatype("Decimal");
-    //
-    // IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-    //
-    // templateConfigElement.setValueSetType(ValueSetType.RANGE);
-    // IRangeValueSet valueSet = (IRangeValueSet)templateConfigElement.getValueSet();
-    // valueSet.setLowerBound("10");
-    // valueSet.setUpperBound("20");
-    // templateConfigElement.setValue("1");
-    //
-    // configElement.setPolicyCmptTypeAttribute(attr.getName());
-    // configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-    //
-    // assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-    // assertThat(configElement.getValue(), is("1"));
-    //
-    // MessageList ml = configElement.validate(ipsProject);
-    // assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
-    //
-    // templateConfigElement.setValue("15");
-    // ml = configElement.validate(ipsProject);
-    // assertThat(ml, lacksMessageCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
-    // }
-
-    // TODO FIPS-4556
-    // @Test
-    // public void testValidate_ValueNotInValuesetForUndefinedValues() throws CoreException {
-    // IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-    // attr.setName("valueTest");
-    // attr.setValueSetType(ValueSetType.RANGE);
-    // attr.setDatatype("Decimal");
-    //
-    // IConfigElement template = createTemplateConfigElement(attr);
-    //
-    // // First set some invalid value set in template's fields...
-    // template.setValueSetType(ValueSetType.RANGE);
-    // IRangeValueSet valueSet = (IRangeValueSet)template.getValueSet();
-    // valueSet.setLowerBound("10");
-    // valueSet.setUpperBound("20");
-    // template.setValue("1");
-    // assertThat(template.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
-    // assertThat(template.getValueSet(), is((IValueSet)valueSet));
-    //
-    // // ...then make sure template forgets about its invalid value set if it is undefined
-    // template.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-    //
-    // assertThat(template.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
-    // assertThat(template.getValue(), is(""));
-    // assertThat(template.getValueSet(), is(instanceOf(UnrestrictedValueSet.class)));
-    //
-    // assertThat(template.validate(ipsProject),
-    // lacksMessageCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
-    // }
-
-    @Test
-    public void testValidate_ValueSetTypeMismatch() throws CoreException {
-        IPolicyCmptTypeAttribute attr = setUpRangeIntegerAttr();
-
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("12");
-        ce.setPolicyCmptTypeAttribute("a1");
-        ce.changeValueSetType(ValueSetType.RANGE);
-
-        MessageList ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-        ce.changeValueSetType(ValueSetType.ENUM);
-        ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-        attr.changeValueSetType(ValueSetType.UNRESTRICTED);
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-        ce.changeValueSetType(ValueSetType.RANGE);
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-        ce.changeValueSetType(ValueSetType.UNRESTRICTED);
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-    }
-
-    @Test
-    public void testValidate_ValueSetTypeMismatchForInheritedValues_changeParentValueSet() throws CoreException {
-        IPolicyCmptTypeAttribute attr = setUpRangeIntegerAttr();
-        IConfigElement templateConfigElement = setUpRangeIntegerTemplate(attr);
-        setUpInheritRangeValueSet(attr);
-
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-        assertThat(configElement.validate(ipsProject), lacksMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-        templateConfigElement.changeValueSetType(ValueSetType.ENUM);
-        // expect messages, as enum value set is empty and thus does not contain the value 12
-        assertThat(configElement.validate(ipsProject), hasMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-        attr.changeValueSetType(ValueSetType.UNRESTRICTED);
-        assertThat(configElement.validate(ipsProject), lacksMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-    }
-
-    @Test
-    public void testValidate_ValueSetTypeMismatchForInheritedValues() throws CoreException {
-        IPolicyCmptTypeAttribute attr = setUpRangeIntegerAttr();
-        IConfigElement templateConfigElement = setUpRangeIntegerTemplate(attr);
-        setUpInheritRangeValueSet(attr);
-
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-        assertThat(configElement.validate(ipsProject), lacksMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-        attr.changeValueSetType(ValueSetType.UNRESTRICTED);
-        // more general value set not validated, because defined as inherited
-        assertThat(configElement.validate(ipsProject), lacksMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-
-        templateConfigElement.changeValueSetType(ValueSetType.UNRESTRICTED);
-        assertThat(configElement.validate(ipsProject), lacksMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-    }
-
-    private void setUpInheritRangeValueSet(IPolicyCmptTypeAttribute attr) {
-        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        configElement.setPolicyCmptTypeAttribute(attr.getName());
-    }
-
-    private IConfigElement setUpRangeIntegerTemplate(IPolicyCmptTypeAttribute attr) throws CoreException {
-        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-        templateConfigElement.setValue("12");
-        templateConfigElement.changeValueSetType(ValueSetType.RANGE);
-        return templateConfigElement;
-    }
-
-    private IPolicyCmptTypeAttribute setUpRangeIntegerAttr() {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("a1");
-        attr.setValueSetType(ValueSetType.RANGE);
-        attr.setDatatype("Integer");
-        return attr;
-    }
-
-    @Test
-    public void testValidate_ValueSetTypeMismatchForUndefinedValues() throws CoreException {
-        IPolicyCmptTypeAttribute attr = setUpRangeIntegerAttr();
-
-        IConfigElement template = createTemplateConfigElement(attr);
-        template.setValue("12");
-        template.changeValueSetType(ValueSetType.ENUM);
-        template.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-
-        assertThat(template.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
-        assertThat(template.getValueSet(), is(instanceOf(UnrestrictedValueSet.class)));
-        assertThat(template.validate(ipsProject), lacksMessageCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
-    }
-
-    @Test
-    public void testValidate_ValueSetNotASubset() throws CoreException {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();
-        valueSet.setLowerBound("10");
-        valueSet.setUpperBound("15");
-        attr.setDatatype("Decimal");
-
-        IConfigElement ce = generation.newConfigElement();
-        ce.setValue("12");
-        ce.setPolicyCmptTypeAttribute("valueTest");
-        ce.setValueSetCopy(valueSet);
-        IRangeValueSet valueSet2 = (IRangeValueSet)ce.getValueSet();
-        valueSet2.setUpperBound("20");
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-
-        MessageList ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
-
-        valueSet.setUpperBound("20");
-        policyCmptType.getIpsSrcFile().save(true, null);
-
-        ml = ce.validate(ipsProject);
-        assertEquals(0, ml.size());
-
-        // check lower unbound values
-        valueSet.setLowerBound(null);
-        valueSet.setUpperBound(null);
-        valueSet2.setLowerBound(null);
-        valueSet2.setUpperBound(null);
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
-
-        valueSet.setLowerBound("10");
-        valueSet.setUpperBound(null);
-        valueSet2.setLowerBound(null);
-        valueSet2.setUpperBound(null);
-        ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
-
-        valueSet.setLowerBound(null);
-        valueSet.setUpperBound(null);
-        valueSet2.setLowerBound("10");
-        valueSet2.setUpperBound(null);
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
-
-        // check upper unbound values
-        valueSet.setLowerBound(null);
-        valueSet.setUpperBound("10");
-        valueSet2.setLowerBound(null);
-        valueSet2.setUpperBound(null);
-        ml = ce.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
-
-        valueSet.setLowerBound(null);
-        valueSet.setUpperBound(null);
-        valueSet2.setLowerBound(null);
-        valueSet2.setUpperBound("10");
-        ml = ce.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
-    }
-
-    @Test
-    public void testSetValue() {
-        configElement.setValue("newValue");
-        assertEquals("newValue", configElement.getValue());
-        assertTrue(configElement.getIpsSrcFile().isDirty());
-    }
-
-    @Test
-    public void testGetValue_DefinedValue() {
-        configElement.setValue("newValue");
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
-        assertThat(configElement.getValue(), is("newValue"));
-    }
-
-    // TODO FIPS-4556
-    // @Test
-    // public void testGetValue_InheritedValue() throws CoreException {
-    // IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attribute");
-    // IConfigElement templateConfigElement = createTemplateConfigElement(attribute);
-    //
-    // configElement.setPolicyCmptTypeAttribute(attribute.getName());
-    // configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-    // configElement.setValue("value");
-    //
-    // templateConfigElement.setValue("templateValue");
-    //
-    // assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-    // assertThat(configElement.getValue(), is("templateValue"));
-    // }
-
-    // TODO FIPS-4556
-    // @Test
-    // public void testGetValue_UndefinedValue() throws CoreException {
-    // IConfigElement templateConfigElement = createTemplateConfigElement();
-    // templateConfigElement.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-    // templateConfigElement.setValue("templateValue");
-    //
-    // assertThat(templateConfigElement.getTemplateValueStatus(),
-    // is(TemplateValueStatus.UNDEFINED));
-    // assertThat(templateConfigElement.getValue(), is(""));
-    //
-    // }
-
-    @Test
-    public void testGetValueSet_InheritedValue() throws CoreException {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setValueSetType(ValueSetType.RANGE);
-
-        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-        templateConfigElement.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)templateConfigElement.getValueSet();
-        valueSet.setLowerBound("10");
-        valueSet.setUpperBound("20");
-
-        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        configElement.setPolicyCmptTypeAttribute(attr.getName());
-
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-        assertThat(configElement.getValueSet(), is(instanceOf(IRangeValueSet.class)));
-
-        assertThat(((IRangeValueSet)configElement.getValueSet()).getLowerBound(), is("10"));
-        assertThat(((IRangeValueSet)configElement.getValueSet()).getUpperBound(), is("20"));
-    }
-
-    @Test
-    public void testGetValueSet_DefinedValue() {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setValueSetType(ValueSetType.RANGE);
-
-        configElement.setPolicyCmptTypeAttribute(attr.getName());
-        configElement.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)configElement.getValueSet();
-        valueSet.setLowerBound("10");
-        valueSet.setUpperBound("20");
-
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
-        assertThat(configElement.getValueSet(), is(instanceOf(IRangeValueSet.class)));
-
-        assertThat(((IRangeValueSet)configElement.getValueSet()).getLowerBound(), is("10"));
-        assertThat(((IRangeValueSet)configElement.getValueSet()).getUpperBound(), is("20"));
-
-    }
-
-    @Test
-    public void testGetValueSet_UndefinedValue() throws CoreException {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setValueSetType(ValueSetType.RANGE);
-
-        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-        templateConfigElement.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)templateConfigElement.getValueSet();
-        valueSet.setLowerBound("10");
-        valueSet.setUpperBound("20");
-
-        templateConfigElement.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        assertThat(templateConfigElement.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
-        assertThat(templateConfigElement.getValueSet(), is(not((IValueSet)valueSet)));
-        assertThat(templateConfigElement.getValueSet(), is(instanceOf(UnrestrictedValueSet.class)));
-
-    }
-
-    @Test
-    public void testInitFromXml() {
-        Document doc = getTestDocument();
-        configElement.initFromXml(doc.getDocumentElement());
-        assertEquals("42", configElement.getId());
-        assertEquals("sumInsured", configElement.getPolicyCmptTypeAttribute());
-        assertEquals("10", configElement.getValue());
-        IRangeValueSet range = (IRangeValueSet)configElement.getValueSet();
-        assertEquals("22", range.getLowerBound());
-        assertEquals("33", range.getUpperBound());
-        assertEquals("4", range.getStep());
-    }
-
-    @Test
-    public void testInitFromXml_InheritedValuesAreRead() throws CoreException {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setValueSetType(ValueSetType.RANGE);
-        attr.setDatatype("Decimal");
-
-        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-
-        // Set Range [10 ... 20 / 1] and value 10 in template
-        templateConfigElement.setValueSetType(ValueSetType.RANGE);
-        templateConfigElement.setValue("10");
-        IRangeValueSet templateConfigElementRange = (IRangeValueSet)templateConfigElement.getValueSet();
-        templateConfigElementRange.setLowerBound("10");
-        templateConfigElementRange.setUpperBound("20");
-        templateConfigElementRange.setStep("1");
-
-        // Set Range [100 ... 200 / 10] and value 100 in config element
-        configElement.setValue("100");
-        configElement.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet configElementRange = (IRangeValueSet)configElement.getValueSet();
-        configElementRange.setLowerBound("100");
-        configElementRange.setUpperBound("200");
-        configElementRange.setStep("10");
-
-        // Let config element inherit from template and thus use template's value/value set
-        configElement.setPolicyCmptTypeAttribute(attr.getName());
-        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-
-        // Precondition: inheriting from template should work
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-        // TODO FIPS-4556
-        // assertThat(configElement.getValue(), is("10"));
-
-        Element xmlElement = configElement.toXml(getTestDocument());
-
-        // Do not use template anymore. Values read from XML should now be the defined values
-        productCmpt.setTemplate("");
-        IConfigElement newConfigElement = generation.newConfigElement();
-        newConfigElement.initFromXml(xmlElement);
-
-        assertThat(newConfigElement.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
-        // TODO FIPS-4556
-        // assertThat(newConfigElement.getValue(), is("10"));
-        assertThat(newConfigElement.getValueSet(), is(instanceOf(IRangeValueSet.class)));
-        IRangeValueSet newRange = (IRangeValueSet)newConfigElement.getValueSet();
-        assertThat(newRange.getLowerBound(), is("10"));
-        assertThat(newRange.getUpperBound(), is("20"));
-        assertThat(newRange.getStep(), is("1"));
-    }
-
-    @Test
-    public void testToXmlDocument() {
-        IConfigElement cfgElement = generation.newConfigElement();
-        cfgElement.setValue("value");
-        cfgElement.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet valueSet = (IRangeValueSet)cfgElement.getValueSet();
-        valueSet.setLowerBound("22");
-        valueSet.setUpperBound("33");
-        valueSet.setStep("4");
-        Element xmlElement = cfgElement.toXml(getTestDocument());
-
-        IConfigElement newCfgElement = generation.newConfigElement();
-        newCfgElement.initFromXml(xmlElement);
-        assertEquals("value", newCfgElement.getValue());
-        assertEquals("22", ((IRangeValueSet)newCfgElement.getValueSet()).getLowerBound());
-        assertEquals("33", ((IRangeValueSet)newCfgElement.getValueSet()).getUpperBound());
-        assertEquals("4", ((IRangeValueSet)newCfgElement.getValueSet()).getStep());
-
-        cfgElement.setValueSetType(ValueSetType.ENUM);
-        IEnumValueSet enumValueSet = (IEnumValueSet)cfgElement.getValueSet();
-        enumValueSet.addValue("one");
-        enumValueSet.addValue("two");
-        enumValueSet.addValue("three");
-        enumValueSet.addValue("four");
-
-        xmlElement = cfgElement.toXml(getTestDocument());
-        assertEquals(4, ((IEnumValueSet)cfgElement.getValueSet()).getValues().length);
-        assertEquals("one", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[0]);
-        assertEquals("two", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[1]);
-        assertEquals("three", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[2]);
-        assertEquals("four", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[3]);
-
-        cfgElement.setValue(null);
-        xmlElement = cfgElement.toXml(getTestDocument());
-        newCfgElement.initFromXml(xmlElement);
-
-        assertNull(newCfgElement.getValue());
-    }
-
-    @Test
-    public void testToXmlDocument_ShouldPersistInheritedTemplateValues() throws XPathException, CoreException {
-
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("valueTest");
-        attr.setValueSetType(ValueSetType.RANGE);
-        attr.setDatatype("Decimal");
-
-        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-
-        // Set Range [10 ... 20 / 1] and value 10 in template
-        templateConfigElement.setValueSetType(ValueSetType.RANGE);
-        templateConfigElement.setValue("10");
-        IRangeValueSet templateValueSet = (IRangeValueSet)templateConfigElement.getValueSet();
-        templateValueSet.setLowerBound("10");
-        templateValueSet.setUpperBound("20");
-        templateValueSet.setStep("1");
-
-        // Set Range [100 ... 200 / 10] and value 100 in config element
-        configElement.setValue("100");
-        configElement.setValueSetType(ValueSetType.RANGE);
-        IRangeValueSet configElementValueSet = (IRangeValueSet)configElement.getValueSet();
-        configElementValueSet.setLowerBound("100");
-        configElementValueSet.setUpperBound("200");
-        configElementValueSet.setStep("10");
-
-        // Let config element inherit from template and thus use template's value/value set
-        configElement.setPolicyCmptTypeAttribute(attr.getName());
-        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-
-        // Precondition: inheriting from template should work
-        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
-        // TODO FIPS-4556
-        // assertThat(configElement.getValue(), is("10"));
-
-        // Assert that template values are persisted, not the values set in the config element
-        Element xmlElement = configElement.toXml(getTestDocument());
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        assertThat(xpath.evaluate("ValueSet/Range/LowerBound", xmlElement), is("10"));
-        assertThat(xpath.evaluate("ValueSet/Range/UpperBound", xmlElement), is("20"));
-        assertThat(xpath.evaluate("ValueSet/Range/Step", xmlElement), is("1"));
-        // TODO FIPS-4556
-        // assertThat(xpath.evaluate("Value", xmlElement), is("10"));
+        IConfiguredDefault defaultValue = generation.newPropertyValue(a1, IConfiguredDefault.class);
+        assertEquals(a1, defaultValue.findPcTypeAttribute(ipsProject));
     }
 
     @Test
     public void testGetCaption() throws CoreException {
-        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setName("attribute");
-        configElement.setPolicyCmptTypeAttribute("attribute");
-
         ILabel label = attribute.getLabel(Locale.US);
         label.setValue("TheCaption");
-        assertEquals("TheCaption", configElement.getCaption(Locale.US));
+        assertEquals("TheCaption", configuredDefault.getCaption(Locale.US));
     }
 
     @Test
     public void testGetCaptionNotExistent() throws CoreException {
-        assertNull(configElement.getCaption(Locale.TAIWAN));
+        assertNull(configuredDefault.getCaption(Locale.TAIWAN));
     }
 
     @Test
     public void testGetCaptionNullPointer() throws CoreException {
         try {
-            configElement.getCaption(null);
+            configuredDefault.getCaption(null);
             fail();
         } catch (NullPointerException e) {
         }
@@ -842,55 +100,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLastResortCaption() {
-        configElement.setPolicyCmptTypeAttribute("attribute");
-        assertEquals(StringUtils.capitalize(configElement.getPolicyCmptTypeAttribute()),
-                configElement.getLastResortCaption());
-    }
-
-    @Test
-    public void testValidateThis_nullIncompatible() throws CoreException {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setName("attr");
-        attr.setDatatype(ValueDatatype.INTEGER.getQualifiedName());
-        attr.setValueSetType(ValueSetType.UNRESTRICTED);
-        attr.getValueSet().setContainsNull(false);
-
-        configElement.setPolicyCmptTypeAttribute("attr");
-        configElement.setValueSetType(ValueSetType.UNRESTRICTED);
-        configElement.getValueSet().setAbstract(false);
-        configElement.getValueSet().setContainsNull(true);
-
-        MessageList messages = configElement.validate(ipsProject);
-        assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
-    }
-
-    @Test
-    public void testSetTemplateValueStatus() throws Exception {
-        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute("attrName");
-        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
-        templateConfigElement.setValueSet(new UnrestrictedValueSet(templateConfigElement, "123"));
-        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        configElement.setPolicyCmptTypeAttribute(attr.getName());
-
-        assertThat(configElement.getValueSet(), instanceOf(DelegatingValueSet.class));
-
-        configElement.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-
-        assertThat(configElement.getValueSet(), instanceOf(UnrestrictedValueSet.class));
-    }
-
-    private IConfigElement createTemplateConfigElement() throws CoreException {
-        IProductCmpt template = newProductTemplate(productCmptType, "Template");
-        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
-        IConfigElement templateConfigElement = templateGen.newConfigElement();
-        productCmpt.setTemplate(template.getQualifiedName());
-        return templateConfigElement;
-    }
-
-    private IConfigElement createTemplateConfigElement(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
-            throws CoreException {
-        IConfigElement templateConfigElement = createTemplateConfigElement();
-        templateConfigElement.setPolicyCmptTypeAttribute(policyCmptTypeAttribute.getName());
-        return templateConfigElement;
+        assertEquals(StringUtils.capitalize(configuredDefault.getPolicyCmptTypeAttribute()),
+                configuredDefault.getLastResortCaption());
     }
 }

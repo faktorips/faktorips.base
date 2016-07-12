@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 
 /**
  * Provider used when enum valuesets are configured. E.g. when an enum value set in the model
  * (policy component type attribute) is configured with a subset by a product component (config
  * element). In above case the model valueset will be returned by {@link #getSourceEnumValueSet()}.
- * {@link #getTargetConfigElement()} will return the config element of the product component, that
+ * {@link #getTargetConfiguredValueSet()} will return the config element of the product component, that
  * defines the subset of the source value set.
  * <p/>
  * However there are other cases of configuring valuesets against each other. E.g. product variants
@@ -50,9 +50,10 @@ public interface IEnumValueSetProvider {
     public String getSourceLabel();
 
     /**
-     * Returns the {@link IConfigElement} that defines and contains a subset of the source-valueset.
+     * Returns the {@link IConfiguredValueSet} that defines and contains a subset of the
+     * source-valueset.
      */
-    public IConfigElement getTargetConfigElement();
+    public IConfiguredValueSet getTargetConfiguredValueSet();
 
     /**
      * Returns the label that is to be displayed above the target values list.

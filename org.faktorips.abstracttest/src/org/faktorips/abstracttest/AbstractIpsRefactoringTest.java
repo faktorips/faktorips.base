@@ -32,7 +32,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -143,7 +144,9 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected IAttributeValue attributeValue;
 
-    protected IConfigElement productCmptGenerationConfigElement;
+    protected IConfiguredDefault productCmptGenerationConfiguredDefault;
+
+    protected IConfiguredValueSet productCmptGenerationConfiguredValueSet;
 
     protected ITestCase testCase;
 
@@ -325,7 +328,11 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         productCmpt = newProductCmpt(productCmptType, PRODUCT_NAME);
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGeneration.setValidFrom(new GregorianCalendar(2010, 3, 10));
-        productCmptGenerationConfigElement = productCmptGeneration.newConfigElement(policyCmptTypeAttribute);
+        productCmptGeneration.newPropertyValue(policyCmptTypeAttribute, IConfiguredDefault.class);
+        productCmptGenerationConfiguredDefault = productCmptGeneration.newPropertyValue(policyCmptTypeAttribute,
+                IConfiguredDefault.class);
+        productCmptGenerationConfiguredValueSet = productCmptGeneration.newPropertyValue(policyCmptTypeAttribute,
+                IConfiguredValueSet.class);
         attributeValue = productCmptGeneration.newAttributeValue(productCmptTypeAttribute);
     }
 

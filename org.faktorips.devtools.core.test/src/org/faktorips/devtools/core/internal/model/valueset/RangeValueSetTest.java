@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -46,8 +46,8 @@ import org.w3c.dom.Element;
 public class RangeValueSetTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptTypeAttribute attr;
-    private IConfigElement ce;
-    private IConfigElement intEl;
+    private IConfiguredValueSet cValueSet;
+    private IConfiguredValueSet intEl;
 
     private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
@@ -68,16 +68,14 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt = newProductCmpt(productCmptType, "test.Product");
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 
-        ce = generation.newConfigElement();
-        ce.setPolicyCmptTypeAttribute("attr");
+        cValueSet = generation.newPropertyValue(attr, IConfiguredValueSet.class);
 
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("test");
         attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
         attr2.setProductRelevant(true);
 
-        intEl = generation.newConfigElement();
-        intEl.setPolicyCmptTypeAttribute("test");
+        intEl = generation.newPropertyValue(attr2, IConfiguredValueSet.class);
     }
 
     @Test
@@ -87,7 +85,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
         // old format
         Element element = XmlUtil.getFirstElement(root);
-        IRangeValueSet range = new RangeValueSet(ce, "1");
+        IRangeValueSet range = new RangeValueSet(cValueSet, "1");
         range.initFromXml(element);
         assertEquals("42", range.getLowerBound());
         assertEquals("trulala", range.getUpperBound());
@@ -96,7 +94,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
         // new format
         element = XmlUtil.getElement(root, 1);
-        range = new RangeValueSet(ce, "1");
+        range = new RangeValueSet(cValueSet, "1");
         range.initFromXml(element);
         assertEquals("1", range.getLowerBound());
         assertEquals("10", range.getUpperBound());
@@ -107,13 +105,13 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        IRangeValueSet range = new RangeValueSet(ce, "1");
+        IRangeValueSet range = new RangeValueSet(cValueSet, "1");
         range.setLowerBound("10");
         range.setUpperBound("100");
         range.setStep("10");
         range.setContainsNull(true);
         Element element = range.toXml(newDocument());
-        IRangeValueSet r2 = new RangeValueSet(ce, "1");
+        IRangeValueSet r2 = new RangeValueSet(cValueSet, "1");
         r2.initFromXml(element);
         assertEquals(range.getLowerBound(), r2.getLowerBound());
         assertEquals(range.getUpperBound(), r2.getUpperBound());
@@ -492,12 +490,11 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         attr.setProductRelevant(true);
         attr.setValueSetType(ValueSetType.RANGE);
 
-        IConfigElement el = generation.newConfigElement();
-        el.setPolicyCmptTypeAttribute("attrX");
+        IConfiguredValueSet cValueSet1 = generation.newPropertyValue(attr, IConfiguredValueSet.class);
 
-        RangeValueSet range = new RangeValueSet(el, "10");
+        RangeValueSet range = new RangeValueSet(cValueSet1, "10");
         assertEquals(range.findValueDatatype(ipsProject).getQualifiedName(), Datatype.DECIMAL.getQualifiedName());
-        RangeValueSet subset = new RangeValueSet(el, "20");
+        RangeValueSet subset = new RangeValueSet(cValueSet1, "20");
         assertEquals(subset.findValueDatatype(ipsProject).getQualifiedName(), Datatype.DECIMAL.getQualifiedName());
 
         assertTrue(range.containsValueSet(subset));

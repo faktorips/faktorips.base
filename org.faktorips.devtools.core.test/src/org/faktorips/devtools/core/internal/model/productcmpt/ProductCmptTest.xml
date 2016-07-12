@@ -3,9 +3,8 @@
 <!-- Test data for ProductCmptTest.java -->
 <ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId" template="MyLittleTemplate">
 	<Generation validFrom="2004-01-01">
-		<ConfigElement type="productAttribute" pcTypeAttribute="rate"
-			value="1.5">
-			<Value><![CDATA[1.5]]></Value>
+        <ConfigElement attribute="rate" id="c1">
+            <Value isNull="false">1.5</Value>
 		</ConfigElement>
 	</Generation>
 	<Generation validFrom="2005-01-01" />

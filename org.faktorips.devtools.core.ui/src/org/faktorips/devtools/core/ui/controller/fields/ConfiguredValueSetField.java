@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -28,31 +28,31 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ContentProposalListene
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
-public class ConfigElementField extends FormattingTextField<IValueSet> {
+public class ConfiguredValueSetField extends FormattingTextField<IValueSet> {
 
     private final AnyValueSetControl valueSetControl;
-    private final IConfigElement configElement;
+    private final IConfiguredValueSet configuredValueSet;
 
-    public ConfigElementField(IConfigElement configElement, AnyValueSetControl valueSetControl) {
-        this(configElement, valueSetControl, true);
+    public ConfiguredValueSetField(IConfiguredValueSet configuredValueSet, AnyValueSetControl valueSetControl) {
+        this(configuredValueSet, valueSetControl, true);
     }
 
-    public ConfigElementField(IConfigElement configElement, AnyValueSetControl valueSetControl,
+    public ConfiguredValueSetField(IConfiguredValueSet configuredValueSet, AnyValueSetControl valueSetControl,
             boolean formatOnFocusLost) {
-        super(valueSetControl.getTextControl(), AnyValueSetFormat.newInstance(configElement), formatOnFocusLost);
+        super(valueSetControl.getTextControl(), AnyValueSetFormat.newInstance(configuredValueSet), formatOnFocusLost);
         // important: the whole value set must never be null but may contains null values
         setSupportsNullStringRepresentation(false);
         this.valueSetControl = valueSetControl;
-        this.configElement = configElement;
+        this.configuredValueSet = configuredValueSet;
         initContentAssistent();
     }
 
     private void initContentAssistent() {
         if (isContentAssistAvailable()) {
-            ValueDatatype valueDatatype = configElement.findValueDatatype(getIpsProject());
+            ValueDatatype valueDatatype = configuredValueSet.findValueDatatype(getIpsProject());
             IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype, getIpsProject());
-            AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement, valueDatatype,
-                    inputFormat);
+            AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configuredValueSet,
+                    valueDatatype, inputFormat);
             ContentProposalAdapter contentProposalAdapter = new UIToolkit(null).attachContentProposalAdapter(
                     getTextControl(), proposalProvider, ContentProposalAdapter.PROPOSAL_IGNORE, null);
             ContentProposalListener contentProposalListener = new ContentProposalListener(contentProposalAdapter);
@@ -62,16 +62,16 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
 
     private boolean isContentAssistAvailable() {
         try {
-            boolean enumValueSetAllowed = configElement.getAllowedValueSetTypes(getIpsProject()).contains(
+            boolean enumValueSetAllowed = configuredValueSet.getAllowedValueSetTypes(getIpsProject()).contains(
                     ValueSetType.ENUM);
             if (enumValueSetAllowed) {
-                ValueDatatype valueDatatype = configElement.findValueDatatype(getIpsProject());
+                ValueDatatype valueDatatype = configuredValueSet.findValueDatatype(getIpsProject());
                 if (valueDatatype == null) {
                     return false;
                 } else if (valueDatatype.isEnum()) {
                     return true;
                 }
-                IValueSet modelValueSet = configElement.findPcTypeAttribute(getIpsProject()).getValueSet();
+                IValueSet modelValueSet = configuredValueSet.findPcTypeAttribute(getIpsProject()).getValueSet();
                 return modelValueSet.isEnum();
             } else {
                 return false;
@@ -82,7 +82,7 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
     }
 
     private IIpsProject getIpsProject() {
-        return configElement.getIpsProject();
+        return configuredValueSet.getIpsProject();
     }
 
     @Override

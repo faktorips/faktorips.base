@@ -21,7 +21,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -42,8 +42,8 @@ import org.faktorips.util.memento.Memento;
  */
 public class AnyValueSetControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-    /** The config element that owns the value set being shown and edited */
-    private IConfigElement configElement;
+    /** The {@link IConfiguredValueSet} that owns the value set being shown and edited */
+    private IConfiguredValueSet configValueSet;
 
     /** The shell to details dialog within. */
     private Shell shell;
@@ -73,15 +73,15 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      * 
      * @param parent The parent composite to add this control to.
      * @param toolkit The toolkit used to create controls.
-     * @param configElement The config element that contains the value set.
+     * @param configuredValueSet The {@link IConfiguredValueSet} that contains the value set.
      * @param shell The shell to open the details edit dialog within.
      */
-    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell) {
+    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet, Shell shell) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
-        this.configElement = configElement;
+        this.configValueSet = configuredValueSet;
         this.shell = shell;
         getTextControl().setEditable(true);
-        setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
+        setEnumValueSetProvider(new DefaultEnumValueSetProvider(configuredValueSet));
     }
 
     @Override
@@ -90,13 +90,13 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         try {
             IpsPartEditDialog2 dialog = createEnumSubsetDialogIfApplicable();
             if (dialog == null) {
-                List<ValueSetType> valueSetTypes = configElement.getAllowedValueSetTypes(getIpsProject());
-                dialog = new AnyValueSetEditDialog(configElement, valueSetTypes, shell, !dataChangeable);
+                List<ValueSetType> valueSetTypes = configValueSet.getAllowedValueSetTypes(getIpsProject());
+                dialog = new AnyValueSetEditDialog(configValueSet, valueSetTypes, shell, !dataChangeable);
             }
             dialog.setDataChangeable(isDataChangeable());
             if (dialog.open() == Window.OK) {
                 String formattedValue = IpsUIPlugin.getDefault().getDatatypeFormatter()
-                        .formatValueSet(configElement.getValueSet());
+                        .formatValueSet(configValueSet.getValueSet());
                 getTextControl().setText(formattedValue);
             } else {
                 resetState();
@@ -118,11 +118,11 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     }
 
     private IIpsProject getIpsProject() {
-        return configElement.getIpsProject();
+        return configValueSet.getIpsProject();
     }
 
     private IpsPartEditDialog2 createEnumSubsetDialogIfApplicable() throws CoreException {
-        IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(getIpsProject());
+        IPolicyCmptTypeAttribute attribute = configValueSet.findPcTypeAttribute(getIpsProject());
         ValueDatatype datatype = getValueDatatype(attribute);
 
         if (attribute == null) {
@@ -131,7 +131,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         if (!attribute.getValueSet().isEnum()) {
             return null;
         }
-        if (!configElement.getValueSet().isEnum()) {
+        if (!configValueSet.getValueSet().isEnum()) {
             return null;
         }
         if (attribute.getValueSet().canBeUsedAsSupersetForAnotherEnumValueSet() || datatype.isEnum()) {
@@ -145,8 +145,8 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      * recovery.
      */
     private void preserveState() {
-        dirty = configElement.getIpsObject().getIpsSrcFile().isDirty();
-        state = configElement.newMemento();
+        dirty = configValueSet.getIpsObject().getIpsSrcFile().isDirty();
+        state = configValueSet.newMemento();
     }
 
     /**
@@ -158,9 +158,9 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             // no state was preserved, so dont do anything.
             return;
         }
-        configElement.setState(state);
+        configValueSet.setState(state);
         if (!dirty) {
-            configElement.getIpsObject().getIpsSrcFile().markAsClean();
+            configValueSet.getIpsObject().getIpsSrcFile().markAsClean();
         }
     }
 

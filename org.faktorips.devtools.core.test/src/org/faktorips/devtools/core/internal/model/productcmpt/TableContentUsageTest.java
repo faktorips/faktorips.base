@@ -225,7 +225,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     public void testGetProductCmpt() {
         assertNotNull(contentUsage.getProductCmpt());
 
-        ITableContentUsage contentUsagePC = (ITableContentUsage)cmpt.newPropertyValue(structUsage);
+        ITableContentUsage contentUsagePC = cmpt.newPropertyValue(structUsage, ITableContentUsage.class);
         assertNotNull(contentUsagePC);
         assertNotNull(contentUsagePC.getProductCmpt());
         assertEquals(cmpt, contentUsagePC.getProductCmpt());

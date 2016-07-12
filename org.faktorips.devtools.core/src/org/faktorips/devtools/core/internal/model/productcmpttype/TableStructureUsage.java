@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -286,6 +288,11 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
+    }
+
+    @Override
+    public List<PropertyValueType> getPropertyValueTypes() {
+        return Arrays.asList(PropertyValueType.TABLE_CONTENT_USAGE);
     }
 
     @Override

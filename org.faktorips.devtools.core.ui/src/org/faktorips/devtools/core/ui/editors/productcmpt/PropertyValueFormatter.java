@@ -14,13 +14,16 @@ import com.google.common.base.Function;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 
 /**
@@ -36,12 +39,23 @@ public class PropertyValueFormatter {
         }
     };
 
-    public static final Function<IConfigElement, String> CONFIG_ELEMENT = new Function<IConfigElement, String>() {
+    public static final Function<IConfiguredValueSet, String> CONFIGURED_VALUESET = new Function<IConfiguredValueSet, String>() {
 
         @Override
-        public String apply(IConfigElement configElement) {
-            return configElement != null ? AnyValueSetFormat.newInstance(configElement).format(
-                    configElement.getValueSet()) : StringUtils.EMPTY;
+        public String apply(IConfiguredValueSet configuredValueSet) {
+            return configuredValueSet != null ? AnyValueSetFormat.newInstance(configuredValueSet).format(
+                    configuredValueSet.getValueSet()) : StringUtils.EMPTY;
+        }
+    };
+
+    public static final Function<IConfiguredDefault, String> CONFIGURED_DEFAULT = new Function<IConfiguredDefault, String>() {
+
+        @Override
+        public String apply(IConfiguredDefault configuredDefault) {
+            UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
+            return configuredDefault != null ? datatypeFormatter.formatValue(
+                    configuredDefault.findValueDatatype(configuredDefault.getIpsProject()),
+                    configuredDefault.getValue()) : StringUtils.EMPTY;
         }
     };
 
@@ -93,8 +107,10 @@ public class PropertyValueFormatter {
         }
         if (propertyValue.getPropertyValueType() == PropertyValueType.ATTRIBUTE_VALUE) {
             return ATTRIBUTE_VALUE.apply((IAttributeValue)propertyValue);
-        } else if (propertyValue.getPropertyValueType() == PropertyValueType.CONFIG_ELEMENT) {
-            return CONFIG_ELEMENT.apply((IConfigElement)propertyValue);
+        } else if (propertyValue.getPropertyValueType() == PropertyValueType.CONFIGURED_VALUESET) {
+            return CONFIGURED_VALUESET.apply((IConfiguredValueSet)propertyValue);
+        } else if (propertyValue.getPropertyValueType() == PropertyValueType.CONFIGURED_DEFAULT) {
+            return CONFIGURED_DEFAULT.apply((IConfiguredDefault)propertyValue);
         } else if (propertyValue.getPropertyValueType() == PropertyValueType.TABLE_CONTENT_USAGE) {
             return TABLE_CONTENT_USAGE.apply((ITableContentUsage)propertyValue);
         } else if (propertyValue.getPropertyValueType() == PropertyValueType.FORMULA) {

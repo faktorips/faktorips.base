@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -44,8 +44,8 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
     /** Initial height of the dialog. */
     private static final int INITIAL_HEIGHT = 550;
 
-    /** The config element that owns the value set being shown/edited. */
-    private IConfigElement configElement;
+    /** The {@link IConfiguredValueSet} that owns the value set being shown/edited. */
+    private IConfiguredValueSet configuredValueSet;
 
     /** list of value set types the users can select */
     private List<ValueSetType> allowedValuesSetTypes;
@@ -53,19 +53,20 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
     /** true if the dialog is used to just display the value set, no editing is possible */
     private boolean viewOnly;
 
-    public AnyValueSetEditDialog(IConfigElement configElement, List<ValueSetType> allowedTypes, Shell parentShell) {
-        this(configElement, allowedTypes, parentShell, false);
+    public AnyValueSetEditDialog(IConfiguredValueSet configuredValueSet, List<ValueSetType> allowedTypes,
+            Shell parentShell) {
+        this(configuredValueSet, allowedTypes, parentShell, false);
     }
 
-    public AnyValueSetEditDialog(IConfigElement configElement, List<ValueSetType> allowedTypes, Shell parentShell,
-            boolean viewOnly) {
+    public AnyValueSetEditDialog(IConfiguredValueSet configuredValueSet, List<ValueSetType> allowedTypes,
+            Shell parentShell, boolean viewOnly) {
 
-        super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
-        this.configElement = configElement;
+        super(configuredValueSet, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
+        this.configuredValueSet = configuredValueSet;
         this.viewOnly = viewOnly;
         allowedValuesSetTypes = allowedTypes;
-        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configElement.getId(),
-                new Point(INITIAL_WIDTH, INITIAL_HEIGHT), null);
+        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configuredValueSet.getId(), new Point(INITIAL_WIDTH,
+                INITIAL_HEIGHT), null);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
 
     private Composite createValueSetControl(Composite parent) {
         ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, getToolkit(),
-                getBindingContext(), configElement, allowedValuesSetTypes,
+                getBindingContext(), configuredValueSet, allowedValuesSetTypes,
                 ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
         vsEdit.setEnabled(!viewOnly);

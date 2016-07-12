@@ -649,15 +649,16 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         @Override
         public boolean isFiltered(IProductCmptProperty property) {
-            IProductCmptGeneration gen = getActiveGeneration();
-            if (gen.getPropertyValue(property) != null) {
-                return isInherited(gen.getPropertyValue(property));
-            }
-
-            IProductCmpt cmpt = gen.getProductCmpt();
-            if (cmpt.getPropertyValue(property) != null) {
-                return isInherited(cmpt.getPropertyValue(property));
-            }
+            // TODO Filter auf property value ebene :(
+            // IProductCmptGeneration gen = getActiveGeneration();
+            // if (!gen.getPropertyValues(property).isEmpty()) {
+            // return isInherited(gen.getPropertyValue(property));
+            // }
+            //
+            // IProductCmpt cmpt = gen.getProductCmpt();
+            // if (cmpt.getPropertyValue(property) != null) {
+            // return isInherited(cmpt.getPropertyValue(property));
+            // }
             return false;
         }
 

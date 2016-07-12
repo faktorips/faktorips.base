@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
 
     @Test
     public void testGetValues_addNull() {
-        owner = mock(IConfigElement.class);
+        owner = mock(IConfiguredValueSet.class);
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
                 owner, valueDatatype, valueSource);
         when(valueDatatype.isPrimitive()).thenReturn(false);
@@ -75,7 +75,7 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
 
     @Test
     public void testGetValues_doNotAddNull_forPrimitiveDatatype() {
-        owner = mock(IConfigElement.class);
+        owner = mock(IConfiguredValueSet.class);
         when(valueDatatype.isPrimitive()).thenReturn(true);
 
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(

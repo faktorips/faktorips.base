@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -382,7 +383,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        IPropertyValue propertyValue = generation.newConfigElement(attribute);
+        IPropertyValue propertyValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
 
         assertTrue(attribute.isPropertyFor(propertyValue));
     }

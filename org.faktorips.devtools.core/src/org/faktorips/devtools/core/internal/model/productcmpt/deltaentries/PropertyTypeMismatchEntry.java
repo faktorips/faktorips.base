@@ -51,7 +51,7 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
     @Override
     public void fix() {
         value.delete();
-        propertyValueContainer.newPropertyValue(property);
+        propertyValueContainer.newPropertyValues(property);
     }
 
 }

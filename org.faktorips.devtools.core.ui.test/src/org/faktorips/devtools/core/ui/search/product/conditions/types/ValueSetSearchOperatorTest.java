@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -53,9 +54,9 @@ public class ValueSetSearchOperatorTest extends AbstractIpsPluginTest {
         productCmpt.setProductCmptType(policyCmptType.getProductCmptType());
         generation = (IProductCmptGeneration)productCmpt.newGeneration(VALID_FROM);
 
-        IConfigElement configElement = generation.newConfigElement(attribute);
-        IValueSet source = new RangeValueSet(configElement, "partIDXXXX", "2", "5", "1");
-        configElement.setValueSet(source);
+        IConfiguredValueSet configuredValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        IValueSet source = new RangeValueSet(configuredValueSet, "partIDXXXX", "2", "5", "1");
+        configuredValueSet.setValueSet(source);
 
     }
 

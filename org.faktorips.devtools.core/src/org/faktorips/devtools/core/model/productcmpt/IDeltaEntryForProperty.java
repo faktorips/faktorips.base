@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-
 /**
  * Delta entry for a product definition property.
  * 

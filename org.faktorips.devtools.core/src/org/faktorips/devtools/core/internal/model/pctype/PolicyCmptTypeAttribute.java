@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.AttributeProperty;
@@ -476,6 +478,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
+    }
+
+    @Override
+    public List<PropertyValueType> getPropertyValueTypes() {
+        return Arrays.asList(PropertyValueType.CONFIGURED_VALUESET, PropertyValueType.CONFIGURED_DEFAULT);
     }
 
     @Override
