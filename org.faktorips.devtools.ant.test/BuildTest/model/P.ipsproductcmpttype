@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmptType2 abstract="false" changingOverTime="true" configurationForPolicyCmptType="true" instancesIcon="" layerSupertype="false" policyCmptType="V" supertype="" xml:space="preserve">
+    <Label id="f9dc67d8-87d6-45ac-8b5f-2947130b537a" locale="en" pluralValue="" value=""/>
+    <Description id="335cc343-4150-4b99-b4d9-831beb1661a3" locale="en"/>
+    <Category defaultForFormulaSignatureDefinitions="false" defaultForPolicyCmptTypeAttributes="false" defaultForProductCmptTypeAttributes="true" defaultForTableStructureUsages="false" defaultForValidationRules="false" id="afe0e18b-7e7d-4a6b-bdbe-ec6343f7ed97" name="Attributes" position="left">
+        <Label id="8a00c8f6-ade4-4116-b626-1914cff78f96" locale="en" pluralValue="" value=""/>
+        <Description id="c9bc6ec6-99cf-4529-8c28-e7f3ed781042" locale="en"/>
+    </Category>
+    <Category defaultForFormulaSignatureDefinitions="true" defaultForPolicyCmptTypeAttributes="false" defaultForProductCmptTypeAttributes="false" defaultForTableStructureUsages="true" defaultForValidationRules="false" id="7c1bcea0-f8d0-4d10-bed8-f482be9902a9" name="Tables and Formulas" position="left">
+        <Label id="27cac81f-1435-4f9b-abf9-9e83f8e899ff" locale="en" pluralValue="" value=""/>
+        <Description id="582393b2-61fd-44af-9f8e-b9a9f561fc13" locale="en"/>
+    </Category>
+    <Category defaultForFormulaSignatureDefinitions="false" defaultForPolicyCmptTypeAttributes="false" defaultForProductCmptTypeAttributes="false" defaultForTableStructureUsages="false" defaultForValidationRules="true" id="683dc4eb-217b-4277-a4f1-db02d0e89990" name="Validation Rules" position="left">
+        <Label id="8cf4a6c0-66c9-4fac-b46a-c501e488d15a" locale="en" pluralValue="" value=""/>
+        <Description id="7d5c2214-806c-4761-8762-feedb7250bed" locale="en"/>
+    </Category>
+    <Category defaultForFormulaSignatureDefinitions="false" defaultForPolicyCmptTypeAttributes="true" defaultForProductCmptTypeAttributes="false" defaultForTableStructureUsages="false" defaultForValidationRules="false" id="d585d02e-afa0-488d-8ccd-24c80702e2ce" name="Defaults and Value Sets" position="right">
+        <Label id="d1ce085b-5ab7-4e30-8262-ccbcaa853e95" locale="en" pluralValue="" value=""/>
+        <Description id="89e7b6a5-f7d0-4aba-b08e-ed1feb613aeb" locale="en"/>
+    </Category>
+</ProductCmptType2>

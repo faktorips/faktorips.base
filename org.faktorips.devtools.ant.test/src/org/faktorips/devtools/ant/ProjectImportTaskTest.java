@@ -20,9 +20,9 @@ import java.util.TimeZone;
 import org.apache.tools.ant.BuildException;
 import org.junit.Test;
 
-public class ProjectImportTaskTest{
+public class ProjectImportTaskTest {
 
-@Test
+    @Test
     public void testNullAttribute() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
@@ -39,7 +39,7 @@ public class ProjectImportTaskTest{
 
     }
 
-@Test
+    @Test
     public void testNotExistingDirectory() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
@@ -53,7 +53,7 @@ public class ProjectImportTaskTest{
         }
     }
 
-@Test
+    @Test
     public void testIsNoDirectory() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
@@ -77,7 +77,7 @@ public class ProjectImportTaskTest{
         }
     }
 
-@Test
+    @Test
     public void testImport() {
         String path = this.getTempDirPath();
         ProjectImportTask projectimporter = new ProjectImportTask();
