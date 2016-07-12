@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmpt productCmptType="P" runtimeId="sample.P 2016-05" template="" xml:space="preserve">
+    <validTo isNull="true"/>
+    <Description id="f8c4a0ea-bd82-4a04-b2b9-36ea521412b8" locale="en"/>
+    <Generation id="d3256bfb-de23-4047-8f88-897493485f11" validFrom="2016-05-18">
+        <ConfigElement attribute="a" id="eca8adb6-c8eb-4112-9e5e-0c810b950263" templateValueStatus="defined">
+            <Value isNull="false">Foo</Value>
+            <Description id="12a8743d-3614-4aff-9e7c-591a682428b5" locale="en"/>
+            <ValueSet abstract="false" id="f2a9eeae-f81c-47c3-897d-8a2f302fdfdf">
+                <Enum>
+                    <Value>
+                        <Data isNull="false">Foo</Data>
+                    </Value>
+                    <Value>
+                        <Data isNull="false">Bar</Data>
+                    </Value>
+                </Enum>
+            </ValueSet>
+        </ConfigElement>
+    </Generation>
+</ProductCmpt>

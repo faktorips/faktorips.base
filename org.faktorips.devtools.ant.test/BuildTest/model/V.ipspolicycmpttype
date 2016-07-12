@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicyCmptType abstract="false" configurableByProductCmptType="true" forceExtensionCompilationUnitGeneration="false" productCmptType="P" supertype="" xml:space="preserve">
+    <Label id="8cb03cdf-21d8-4f9f-bb34-eacbda9364b0" locale="en" pluralValue="" value=""/>
+    <Description id="d5b54d9c-599b-4fa8-9b1f-ad6527eb2c95" locale="en"/>
+    <Attribute attributeType="changeable" category="" changingOverTime="true" computationMethodSignature="" datatype="String" id="8a470689-ac20-4016-b41f-e6e9bd769284" modifier="published" name="a" overwrite="false" productRelevant="true">
+        <DefaultValue isNull="true"/>
+        <Label id="4bbf3dce-a73f-4361-b0e9-7f47c749addd" locale="en" pluralValue="" value=""/>
+        <Description id="88fafaab-2cbb-4b5f-b941-f1d8de2ed0f2" locale="en"/>
+        <ValueSet abstract="false" id="c68fa9c1-cc80-4057-8356-e75858f490e6">
+            <AllValues containsNull="true"/>
+        </ValueSet>
+    </Attribute>
+</PolicyCmptType>

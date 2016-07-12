@@ -8,10 +8,4 @@ diese Klassen für die Eclipse-Laufzeitumgebung nicht sichtbar sind.
 
 Startet man zu Testzwecken aus Eclipse heraus eine neue Eclipse Instanz so wird nicht automatisch vor dem Start die ant_tasks.jar
 Datei neu gebaut. D.h. zur Entwicklungszeit ist es möglich dass die Sources und die .class Dateien in der ant_tasks.jar Datei nicht synchron sind.
-Um dies zu vermeiden wurde den Projekt ein AntBuilder (siehe Project Properties/Builder) hinzugefügt, der mit der Datei /scripts/buildExtraJAR.xml
-aus diesem Projekt konfiguriert wird. Dieser Builder aktualisiert nun das ant_tasks.jar durch den Eclipse Build Mechanismus.
-Für den AntBuilder ist die ant-tasks.jar.launch Konfiguration unter /.externalToolBuilders eingecheckt. Der Antbuilder ist per default
-deaktiviert. Er kann unter Project Properties, Builder aktiviert werden.
-
-In der Datei buildExtraJar.xml muss die Ant Property eclipsehome auf die lokale Umgebung angepass werden.
-..
+Dazu muss das Projekt einmal mit mvn clean install gebaut werden (ggf. vorher auch org.faktorips.devtools.core).

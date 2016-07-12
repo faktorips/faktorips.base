@@ -1,0 +1,1 @@
+Minimales Ips-Projekt zum Test der Ant-Plugins. Die AntBuildTest.launch startet das aktuelle Eclipse mit importProject.xml.

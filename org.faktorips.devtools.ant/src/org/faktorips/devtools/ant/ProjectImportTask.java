@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
  * Implements a custom Ant-Task, which imports a given Directory to a running Eclipse Workspace as
@@ -35,6 +36,11 @@ public class ProjectImportTask extends AbstractIpsTask {
      * path to project dir file
      */
     private String projectDir = "";
+
+    /**
+     * whether to copy the project content to workspace or not
+     */
+    private boolean copy = true;
 
     public ProjectImportTask() {
         super("ProjectImportTask");
@@ -58,19 +64,28 @@ public class ProjectImportTask extends AbstractIpsTask {
         return this.projectDir;
     }
 
+    public boolean isCopy() {
+        return copy;
+    }
+
+    public void setCopy(boolean copy) {
+        this.copy = copy;
+    }
+
     /**
      * Assembles the Path to the .project File
      * 
      * @return File
      */
     private File getProjectFile() {
-        return new File(this.getDir() + "/.project");
+        return new File(this.getDir(), IProjectDescription.DESCRIPTION_FILE_NAME);
 
     }
 
     /**
      * Executes the Ant-Task {@inheritDoc}
      */
+    @Override
     public void executeInternal() throws Exception {
 
         // Check Dir-Attribute
@@ -94,6 +109,10 @@ public class ProjectImportTask extends AbstractIpsTask {
             }
         }
 
+        if (!copy) {
+            description.setLocation(Path.fromPortableString(getDir()));
+        }
+
         // create new project with name provided in description
         IProject project = workspace.getRoot().getProject(description.getName());
 
@@ -104,10 +123,10 @@ public class ProjectImportTask extends AbstractIpsTask {
         System.out.println("importing: " + project.getName());
         project.create(description, monitor);
 
-        // copy files
-
-        RecursiveCopy copyUtil = new RecursiveCopy();
-        copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+        if (copy) {
+            RecursiveCopy copyUtil = new RecursiveCopy();
+            copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+        }
 
         project.open(monitor);
         project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());

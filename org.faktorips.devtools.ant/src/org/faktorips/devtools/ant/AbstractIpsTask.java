@@ -35,8 +35,9 @@ public abstract class AbstractIpsTask extends Task {
      * 
      * {@inheritDoc}
      */
-    public final void execute() throws BuildException {
-
+    @Override
+    public final void execute() {
+        // CSOFF: IllegalCatch
         System.out.println(getTaskName() + ": execution started");
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         System.out.print("Installed Faktor-IPS Features: ");
@@ -58,12 +59,13 @@ public abstract class AbstractIpsTask extends Task {
         } catch (BuildException e) {
             throw e;
         } catch (CoreException e) {
-            throw new BuildException(e.getStatus().toString());
+            throw new BuildException(e.getStatus().toString(), e);
         } catch (Exception e) {
             throw new BuildException(e);
         } finally {
             System.out.println(getTaskName() + ": execution finished");
         }
+        // CSON: IllegalCatch
     }
 
     /**
