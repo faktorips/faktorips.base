@@ -145,9 +145,11 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         for (String name : this.properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if (propertyDef == null) {
-                throw new IllegalStateException("The property: " + name //$NON-NLS-1$
-                        + " of this builder set configuration is not defined in the provided for the builder set: " //$NON-NLS-1$
-                        + builderSetInfo.getBuilderSetId());
+                /*
+                 * Ignore properties without property definition. Let a migration remove them as
+                 * necessary.
+                 */
+                continue;
             }
             String valueAsString = this.properties.get(name);
             if (!propertyDef.isAvailable(ipsProject)) {
