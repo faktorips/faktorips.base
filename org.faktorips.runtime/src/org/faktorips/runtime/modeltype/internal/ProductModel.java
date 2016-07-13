@@ -80,7 +80,9 @@ public class ProductModel extends ModelType implements IProductModel {
     @Override
     protected List<Method> getDeclaredMethods() {
         List<Method> result = super.getDeclaredMethods();
-        result.addAll(generationDeclaration.getDeclaredMethods());
+        if (isChangingOverTime()) {
+            result.addAll(generationDeclaration.getDeclaredMethods());
+        }
         return result;
     }
 

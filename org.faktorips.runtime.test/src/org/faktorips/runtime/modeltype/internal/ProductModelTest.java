@@ -23,15 +23,14 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
-import org.faktorips.runtime.modeltype.IProductModel;
 import org.faktorips.runtime.modeltype.IProductAssociationModel;
 import org.junit.Test;
 
 public class ProductModelTest {
 
-    private final IProductModel productModel = Models.getProductModel(Product.class);
+    private final ProductModel productModel = (ProductModel)Models.getProductModel(Product.class);
 
-    private final IProductModel superProductModel = Models.getProductModel(SuperProduct.class);
+    private final ProductModel superProductModel = (ProductModel)Models.getProductModel(SuperProduct.class);
 
     @Test
     public void testGetName() throws Exception {
