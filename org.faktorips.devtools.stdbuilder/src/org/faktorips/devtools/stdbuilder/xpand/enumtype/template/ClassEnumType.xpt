@@ -15,6 +15,8 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 
 /**
+* «description»
+* 
 * @generated
 */
 «getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
@@ -77,7 +79,7 @@ public final class «name» «EXPAND CommonDefinitions::extendedInterfaces» «E
 	*
 	* @generated
 	*/
-	public final static long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 «ENDDEFINE»
 
 «DEFINE hashCode FOR XEnumType-»
