@@ -367,9 +367,36 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @throws CoreException If an error occurs while searching the given IPS project for the super
      *             enumeration types.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     * @deprecated use {@link #findAllEnumAttributes(boolean, IIpsProject)} instead, as it returns
+     *             the inherited attributes in correct order.
      */
+    @Deprecated
     public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(boolean includeLiteralName,
             IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * <strong>plus</strong> all <tt>IEnumAttribute</tt>s that belong to super types of this
+     * <tt>IEnumType</tt>.
+     * <p>
+     * If attributes are inherited, the original attributes are <strong>not</strong> included.
+     * <p>
+     * If there are multiple attributes with the same name and none of them is marked as inherited,
+     * all of those attributes (or "duplicates") are contained in the resulting list. This case is
+     * necessary to detect errors during object validation.
+     * 
+     * @see #getEnumAttributes(boolean)
+     * @see #getEnumAttributesIncludeSupertypeCopies(boolean)
+     * 
+     * @param includeLiteralName If this flag is <tt>true</tt> all
+     *            <tt>IEnumLiteralNameAttribute</tt>s will be contained in the returned list.
+     * @param ipsProject The IPS project which IPS object path is used for the search of the super
+     *            enumeration types. This is not necessarily the project this <tt>IEnumType</tt> is
+     *            part of.
+     * 
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     */
+    public List<IEnumAttribute> findAllEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject);
 
     /**
      * Looks up the enumeration attribute for which the <tt>identifier</tt> property is
@@ -384,10 +411,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <tt>true</tt>. Returns <tt>null</tt> if none is found.
      * 
      * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
-     * 
-     * @throws CoreException If an exception occurs during the look up.
      */
-    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject);
 
     /**
      * Returns the index of the given <tt>IEnumAttribute</tt> or -1 if the given

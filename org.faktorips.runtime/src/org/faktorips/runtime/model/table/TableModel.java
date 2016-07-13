@@ -47,7 +47,7 @@ public class TableModel extends AbstractModelElement {
 
         Class<?> tableRowClass = (Class<?>)((ParameterizedType)tableObjectClass.getGenericSuperclass())
                 .getActualTypeArguments()[0];
-        this.columnModels = TableColumnModel.createModelsFrom(this, columnNames, tableRowClass);
+        this.columnModels = TableColumnModel.createModelsFrom(this, tableObjectClass, tableRowClass);
         messagesHelper = createMessageHelper(tableObjectClass.getAnnotation(IpsDocumented.class),
                 tableObjectClass.getClassLoader());
     }

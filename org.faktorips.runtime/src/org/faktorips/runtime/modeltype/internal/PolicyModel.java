@@ -11,7 +11,6 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,36 +20,34 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.Models;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
+import org.faktorips.runtime.modeltype.IPolicyAssociationModel;
+import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
 import org.faktorips.runtime.modeltype.IPolicyModel;
-import org.faktorips.runtime.modeltype.IPolicyModelAssociation;
-import org.faktorips.runtime.modeltype.IPolicyModelAttribute;
-import org.faktorips.runtime.modeltype.internal.read.ModelPartCollector;
-import org.faktorips.runtime.modeltype.internal.read.PolicyModelAssociationCollector;
-import org.faktorips.runtime.modeltype.internal.read.PolicyModelAttributeCollector;
+import org.faktorips.runtime.modeltype.internal.read.PolicyAssociationModelCollector;
+import org.faktorips.runtime.modeltype.internal.read.PolicyAttributeModelCollector;
 import org.faktorips.runtime.modeltype.internal.read.TypeModelPartsReader;
 
 public class PolicyModel extends ModelType implements IPolicyModel {
 
     public static final String KIND_NAME = "PolicyCmptType";
 
-    private final LinkedHashMap<String, IPolicyModelAttribute> attributes;
+    private final LinkedHashMap<String, IPolicyAttributeModel> attributes;
 
-    private final LinkedHashMap<String, IPolicyModelAssociation> associations;
+    private final LinkedHashMap<String, IPolicyAssociationModel> associations;
 
     public PolicyModel(String name, AnnotatedDeclaration annotatedDeclararation) {
         super(name, annotatedDeclararation);
-        PolicyModelAttributeCollector attributeCollector = new PolicyModelAttributeCollector();
-        PolicyModelAssociationCollector associationCollector = new PolicyModelAssociationCollector();
+        PolicyAttributeModelCollector attributeCollector = new PolicyAttributeModelCollector();
+        PolicyAssociationModelCollector associationCollector = new PolicyAssociationModelCollector();
         initParts(annotatedDeclararation, attributeCollector, associationCollector);
         attributes = attributeCollector.createParts(this);
         associations = associationCollector.createParts(this);
     }
 
     private void initParts(AnnotatedDeclaration annotatedDeclararation,
-            PolicyModelAttributeCollector attributeCollector,
-            PolicyModelAssociationCollector associationCollector) {
-        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(Arrays.<ModelPartCollector<?, ?>> asList(
-                attributeCollector, associationCollector));
+            PolicyAttributeModelCollector attributeCollector,
+            PolicyAssociationModelCollector associationCollector) {
+        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector);
         typeModelPartsReader.init(annotatedDeclararation);
         typeModelPartsReader.read(annotatedDeclararation);
     }
@@ -79,8 +76,8 @@ public class PolicyModel extends ModelType implements IPolicyModel {
     }
 
     @Override
-    public IPolicyModelAttribute getDeclaredAttribute(String name) {
-        IPolicyModelAttribute attr = attributes.get(name);
+    public IPolicyAttributeModel getDeclaredAttribute(String name) {
+        IPolicyAttributeModel attr = attributes.get(name);
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
         }
@@ -88,50 +85,50 @@ public class PolicyModel extends ModelType implements IPolicyModel {
     }
 
     @Override
-    public IPolicyModelAttribute getDeclaredAttribute(int index) {
-        return (IPolicyModelAttribute)super.getDeclaredAttribute(index);
+    public IPolicyAttributeModel getDeclaredAttribute(int index) {
+        return (IPolicyAttributeModel)super.getDeclaredAttribute(index);
     }
 
     @Override
-    public List<IPolicyModelAttribute> getDeclaredAttributes() {
-        return new ArrayList<IPolicyModelAttribute>(attributes.values());
+    public List<IPolicyAttributeModel> getDeclaredAttributes() {
+        return new ArrayList<IPolicyAttributeModel>(attributes.values());
     }
 
     @Override
-    public IPolicyModelAttribute getAttribute(String name) {
-        return (IPolicyModelAttribute)super.getAttribute(name);
+    public IPolicyAttributeModel getAttribute(String name) {
+        return (IPolicyAttributeModel)super.getAttribute(name);
     }
 
     @Override
-    public List<IPolicyModelAttribute> getAttributes() {
-        AttributeCollector<IPolicyModelAttribute> attrCollector = new AttributeCollector<IPolicyModelAttribute>();
+    public List<IPolicyAttributeModel> getAttributes() {
+        AttributeCollector<IPolicyAttributeModel> attrCollector = new AttributeCollector<IPolicyAttributeModel>();
         attrCollector.visitHierarchy(this);
         return attrCollector.getResult();
     }
 
     @Override
-    public IPolicyModelAssociation getDeclaredAssociation(String name) {
+    public IPolicyAssociationModel getDeclaredAssociation(String name) {
         return associations.get(name);
     }
 
     @Override
-    public IPolicyModelAssociation getDeclaredAssociation(int index) {
-        return (IPolicyModelAssociation)super.getDeclaredAssociation(index);
+    public IPolicyAssociationModel getDeclaredAssociation(int index) {
+        return (IPolicyAssociationModel)super.getDeclaredAssociation(index);
     }
 
     @Override
-    public List<IPolicyModelAssociation> getDeclaredAssociations() {
-        return new ArrayList<IPolicyModelAssociation>(new LinkedHashSet<IPolicyModelAssociation>(associations.values()));
+    public List<IPolicyAssociationModel> getDeclaredAssociations() {
+        return new ArrayList<IPolicyAssociationModel>(new LinkedHashSet<IPolicyAssociationModel>(associations.values()));
     }
 
     @Override
-    public IPolicyModelAssociation getAssociation(String name) {
-        return (IPolicyModelAssociation)super.getAssociation(name);
+    public IPolicyAssociationModel getAssociation(String name) {
+        return (IPolicyAssociationModel)super.getAssociation(name);
     }
 
     @Override
-    public List<IPolicyModelAssociation> getAssociations() {
-        AssociationsCollector<IPolicyModelAssociation> asscCollector = new AssociationsCollector<IPolicyModelAssociation>();
+    public List<IPolicyAssociationModel> getAssociations() {
+        AssociationsCollector<IPolicyAssociationModel> asscCollector = new AssociationsCollector<IPolicyAssociationModel>();
         asscCollector.visitHierarchy(this);
         return asscCollector.getResult();
     }

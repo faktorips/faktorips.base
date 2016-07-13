@@ -58,7 +58,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumAttributeIsUsedAsNameInFaktorIpsUi() throws CoreException {
+    public void testFindEnumAttributeIsUsedAsNameInFaktorIpsUi() {
         assertFalse(inheritedAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
         inheritedAttribute.setUsedAsNameInFaktorIpsUi(true);
         inheritedAttribute.setInherited(true);

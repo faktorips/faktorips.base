@@ -1,0 +1,179 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+
+«DEFINE main FOR XEnumType»
+«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+/**
+* «description»
+* 
+* @generated
+*/
+«getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
+public final class «name» «EXPAND CommonDefinitions::extendedInterfaces» «EXPAND CommonDefinitions::implementedInterfaces»{
+
+	«EXPAND serialVersionUID»
+	«EXPAND CommonEnumType::messageHelperVar»
+	«EXPAND enumValue FOREACH enumValues»	
+	«EXPAND valuesConstant»	
+	«EXPAND indexField»	
+	«EXPAND CommonEnumType::fields»
+	«EXPAND constructors»
+	«EXPAND CommonEnumType::getters»
+	«EXPAND CommonEnumType::toString»
+	«EXPAND equals»
+	«EXPAND hashCode»
+	«EXPAND enumValueId»
+	«EXPAND compareTo»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE compareTo FOR XEnumType-»
+	«IF generateMethodCompareTo»
+		/**
+		 * @generated
+		 */
+		@Override
+		public int compareTo(«name» o) {
+			return «varNameIndex» - o.«varNameIndex»;
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE indexField FOR XEnumType-»
+	«IF indexFieldRequired»
+		/**
+		 * @generated
+		 */
+		private final int «varNameIndex»;
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE enumValueId FOR XEnumType-»
+	«IF identifierAttribute.isDeclaredIn(this)»
+		/**
+		 * «localizedJDoc("METHOD_GET_ENUM_VALUE_BY_ID")»
+		 * 
+		 * @generated
+		 */
+		Object getEnumValueId() {
+			return «identifierAttribute.memberVarName»;
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE serialVersionUID FOR XEnumType-»
+	/**
+	* «localizedJDoc("SERIALVERSIONUID")»
+	*
+	* @generated
+	*/
+	public static final long serialVersionUID = 1L;
+«ENDDEFINE»
+
+«DEFINE hashCode FOR XEnumType-»
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int hashCode() {
+		return «methodNameGetIdentifierAttribute»().hashCode();
+	}
+«ENDDEFINE»
+
+
+«DEFINE constructors FOR XEnumType-»
+	«EXPAND protectedConstructor»
+	«EXPAND publicConstructor»
+«ENDDEFINE»
+
+«DEFINE publicConstructor FOR XEnumType-»
+	/**
+	* «localizedJDoc("CONSTRUCTOR", name)»
+	*
+	* @generated
+	*/
+	public «method(name, constructorParameters)»{
+		«EXPAND CommonEnumType::fieldInitializations(indexFieldRequired)-»
+	}
+«ENDDEFINE»
+
+«DEFINE protectedConstructor FOR XEnumType-»
+	/**
+	* «localizedJDoc("PROTECTED_CONSTRUCTOR", name)»
+	*
+	* @generated
+	*/
+	protected «method(name, stringConstructorParameters)»{
+		«EXPAND stringFieldInitializations-»
+	}
+«ENDDEFINE»
+
+«DEFINE stringFieldInitializations FOR XEnumType-»
+	this.«varNameIndex» = «varNameIndex»;
+	«FOREACH allAttributesWithField AS attribute-»
+		this.«attribute.memberVarName» = «attribute.memberVarAssignmentFromStringParameter»;
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE equals FOR XEnumType-»
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @generated
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof «name») {
+			return this.«methodNameGetIdentifierAttribute»().equals(((«name») obj).«methodNameGetIdentifierAttribute»());
+		}
+		return false;
+	}
+«ENDDEFINE»
+
+«DEFINE messageHelperVar FOR XEnumType-»
+	/**
+	* @generated
+	*/
+	private static final «MessagesHelper()» «varNameMessageHelper» = new «MessagesHelper()»(«unqualifiedClassName».class.getName(), «unqualifiedClassName».class.getClassLoader(), «defaultLocale»);
+«ENDDEFINE»
+
+«DEFINE valuesConstant FOR XEnumType-»
+	«IF !enumValues.isEmpty»
+		/**
+		* «localizedJDoc("CONSTANT_VALUES")»
+		*
+		* @generated
+		*/
+		public static final «List_(name)» VALUES = «Arrays()».asList(
+		«FOREACH enumValues AS enumValue SEPARATOR ", "-»
+			«enumValue.memberVarNameLiteralNameAttribute»
+		«ENDFOREACH-»
+		);
+		
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE enumValue FOR XEnumValue-»
+	/**«localizedJDoc("ENUMVALUE")»
+	* @generated
+	*/
+	public static final «enumType.name» «field(memberVarNameLiteralNameAttribute)» = new «enumType.name»(«index», 
+		«FOREACH enumAttributeValuesWithField AS attributeValue SEPARATOR ", "-»
+			«attributeValue.memberVariableValue»
+		«ENDFOREACH-»
+	);
+«ENDDEFINE»

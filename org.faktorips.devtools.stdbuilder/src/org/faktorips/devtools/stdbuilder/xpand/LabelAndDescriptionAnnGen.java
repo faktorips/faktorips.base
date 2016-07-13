@@ -9,6 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.ENUM_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.TABLE_CLASS;
+
 import java.util.EnumSet;
 
 import org.faktorips.codegen.JavaCodeFragment;
@@ -22,9 +27,8 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 
 public class LabelAndDescriptionAnnGen implements IAnnotationGenerator {
 
-    private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(
-            AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS,
-            AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS);
+    private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(TABLE_CLASS,
+            POLICY_CMPT_DECL_CLASS, PRODUCT_CMPT_DECL_CLASS, ENUM_CLASS);
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {

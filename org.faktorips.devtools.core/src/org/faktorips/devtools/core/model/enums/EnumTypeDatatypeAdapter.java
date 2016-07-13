@@ -124,7 +124,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         }
     }
 
-    private IEnumAttribute getNameAttribute(IIpsProject ipsProject) throws CoreException {
+    private IEnumAttribute getNameAttribute(IIpsProject ipsProject) {
         if (nameAttribute == null || !nameAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject)) {
             nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
         }

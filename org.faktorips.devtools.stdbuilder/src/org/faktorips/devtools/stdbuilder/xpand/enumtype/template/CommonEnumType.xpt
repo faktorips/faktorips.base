@@ -1,0 +1,77 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE messageHelperVar FOR XEnumType-»
+	«IF messageHelperNeeded-»
+	/**
+	* @generated
+	*/
+	private static final «MessagesHelper()» «varNameMessageHelper» = new «MessagesHelper()»(«unqualifiedClassName».class.getName(), «unqualifiedClassName».class.getClassLoader(), «defaultLocale»);	
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE fields FOR XEnumType-»
+	«FOREACH allAttributesWithField AS attribute-»
+		«EXPAND field FOR attribute-»
+	«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE field FOR XEnumAttribute»
+	/**
+	* @generated
+	*/
+	private final «datatypeNameForConstructor» «field(memberVarName)»;
+«ENDDEFINE»
+
+«DEFINE getters FOR XEnumType-»
+	«EXPAND getter FOREACH allAttributesWithoutLiteralName-»
+«ENDDEFINE»
+
+«DEFINE getter FOR XEnumAttribute»
+	/**
+	* «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name)»«ELSE»«localizedJDoc("GETTER", name)»«ENDIF»
+	*
+	* @generated
+	*/
+	«getAnnotations(AnnotatedJavaElementType::ENUM_ATTRIBUTE_GETTER)-»
+	«IF inherited || !isDeclaredIn(enumType)»@Override«ENDIF-»
+	public «datatypeName» «IF multilingual»«method(methodNameGetter, Locale(), "locale")»«ELSE»«method(methodNameGetter)»«ENDIF» {
+		«IF multilingual-»
+			«IF enumType.extensible-»
+				return «memberVarName».get(locale);
+			«ELSE-»
+				return «enumType.varNameMessageHelper».getMessage("«name»_" + «enumType.identifierAttribute.methodNameGetter»(), locale);
+			«ENDIF-»
+		«ELSE-»
+			return «memberVarName»;
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+
+«DEFINE fieldInitializations(boolean hasIndex) FOR XEnumType-»
+	«IF hasIndex-»
+		this.«varNameIndex» = «varNameIndex»;
+	«ENDIF-»
+	«FOREACH allAttributesWithField AS field-»
+		this.«field.memberVarName» = «field.memberVarName»;
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE toString FOR XEnumType-»
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		return "«name»: " + «identifierAttribute.memberVarName» + '(' + «IF displayNameAttribute.multilingual»«displayNameAttribute.methodNameGetter»(«defaultLocale»)«ELSE»«displayNameAttribute.memberVarName»«ENDIF» + ')';
+	}
+«ENDDEFINE»

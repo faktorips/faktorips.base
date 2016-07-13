@@ -9,6 +9,17 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.ENUM_ATTRIBUTE_GETTER;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.ENUM_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.TABLE_CLASS;
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -36,13 +47,11 @@ import org.w3c.dom.Element;
  */
 public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
 
-    private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(
-            AnnotatedJavaElementType.TABLE_CLASS, AnnotatedJavaElementType.TABLE_ROW_CLASS_COLUMN_GETTER,
-            AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
-            AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
-            AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS, AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS,
-            AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
-            AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER);
+    private static final EnumSet<AnnotatedJavaElementType> RELEVANT_TYPES = EnumSet.of(TABLE_CLASS,
+            TABLE_ROW_CLASS_COLUMN_GETTER, PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER,
+            POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, POLICY_CMPT_DECL_CLASS, PRODUCT_CMPT_DECL_CLASS,
+            POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER, PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+            ENUM_ATTRIBUTE_GETTER, ENUM_CLASS);
 
     @Override
     public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {

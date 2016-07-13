@@ -20,9 +20,8 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -35,13 +34,11 @@ import org.faktorips.fl.CompilationResultImpl;
 
 public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
-    private StandardBuilderSet builderSet;
     private ExtendedExprCompiler exprCompiler;
 
     public EnumNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory, StandardBuilderSet builderSet,
             ExtendedExprCompiler exprCompiler) {
         super(factory, builderSet);
-        this.builderSet = builderSet;
         this.exprCompiler = exprCompiler;
     }
 
@@ -65,16 +62,11 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     }
 
     protected void addNewInstanceForEnumType(JavaCodeFragment fragment, EnumTypeDatatypeAdapter datatype, String value) {
-        EnumTypeBuilder enumTypeBuilder = getEnumTypeBuilder();
-        enumTypeBuilder.setExtendedExprCompiler(exprCompiler);
+        XEnumType enumType = getBuilderSet().getModelNode(datatype.getEnumType(), XEnumType.class);
         try {
-            fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value));
+            fragment.append(enumType.getNewInstanceCodeFragement(datatype, value, exprCompiler));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    public EnumTypeBuilder getEnumTypeBuilder() {
-        return builderSet.getBuilderById(BuilderKindIds.ENUM_TYPE, EnumTypeBuilder.class);
     }
 }

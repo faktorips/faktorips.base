@@ -9,3 +9,9 @@
  implements «FOREACH implementedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
+
+«DEFINE extendedInterfaces FOR XClass-»
+	«IF extendsInterface-»
+extends «FOREACH implementedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»

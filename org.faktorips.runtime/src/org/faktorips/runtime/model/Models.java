@@ -17,6 +17,7 @@ import org.faktorips.runtime.caching.Memoizer;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.enumtype.EnumModel;
 import org.faktorips.runtime.model.table.TableModel;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
@@ -37,6 +38,15 @@ public class Models {
                 @Override
                 public TableModel compute(Class<? extends ITable> tableObjectClass) {
                     return new TableModel(tableObjectClass);
+                }
+            });
+
+    private static final Memoizer<Class<?>, EnumModel> ENUM_MODEL_CACHE = new Memoizer<Class<?>, EnumModel>(
+            new AbstractComputable<Class<?>, EnumModel>(EnumModel.class) {
+
+                @Override
+                public EnumModel compute(Class<?> enumObjectClass) {
+                    return new EnumModel(enumObjectClass);
                 }
             });
 
@@ -181,6 +191,21 @@ public class Models {
             throw new IllegalArgumentException("The given " + modelObjectClass
                     + " is not annotated as product or policy component type.");
         }
+    }
+
+    /**
+     * @param enumObjectClass a generated Faktor-IPS enum class.
+     * @return a {@link EnumModel} describing the attributes of the given Faktor-IPS enum.
+     */
+    public static EnumModel getEnumModel(Class<?> enumObjectClass) {
+        return get(ENUM_MODEL_CACHE, enumObjectClass);
+    }
+
+    /**
+     * @return a {@link EnumModel} describing the attributes of the given Faktor-IPS enum.
+     */
+    public static EnumModel getEnumModel(Object enumInstance) {
+        return getEnumModel(enumInstance.getClass());
     }
 
 }

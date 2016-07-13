@@ -12,7 +12,6 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -25,14 +24,13 @@ import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
+import org.faktorips.runtime.modeltype.IProductAssociationModel;
+import org.faktorips.runtime.modeltype.IProductAttributeModel;
 import org.faktorips.runtime.modeltype.IProductModel;
-import org.faktorips.runtime.modeltype.IProductModelAssociation;
-import org.faktorips.runtime.modeltype.IProductModelAttribute;
 import org.faktorips.runtime.modeltype.ITableUsageModel;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
-import org.faktorips.runtime.modeltype.internal.read.ModelPartCollector;
-import org.faktorips.runtime.modeltype.internal.read.ProductModelAssociationCollector;
-import org.faktorips.runtime.modeltype.internal.read.ProductModelAttributeCollector;
+import org.faktorips.runtime.modeltype.internal.read.ProductAssociationModelCollector;
+import org.faktorips.runtime.modeltype.internal.read.ProductAttributeModelCollector;
 import org.faktorips.runtime.modeltype.internal.read.TableUsageCollector;
 import org.faktorips.runtime.modeltype.internal.read.TypeModelPartsReader;
 
@@ -42,9 +40,9 @@ public class ProductModel extends ModelType implements IProductModel {
 
     private final AnnotatedDeclaration generationDeclaration;
 
-    private final LinkedHashMap<String, IProductModelAttribute> attributes;
+    private final LinkedHashMap<String, IProductAttributeModel> attributes;
 
-    private final LinkedHashMap<String, IProductModelAssociation> associations;
+    private final LinkedHashMap<String, IProductAssociationModel> associations;
 
     private final LinkedHashMap<String, ITableUsageModel> tableUsages;
 
@@ -53,8 +51,8 @@ public class ProductModel extends ModelType implements IProductModel {
         generationDeclaration = isChangingOverTime() ? AnnotatedDeclaration.from(annotatedDeclaration.get(
                 IpsChangingOverTime.class).value()) : null;
 
-        ProductModelAttributeCollector attributeCollector = new ProductModelAttributeCollector();
-        ProductModelAssociationCollector associationCollector = new ProductModelAssociationCollector();
+        ProductAttributeModelCollector attributeCollector = new ProductAttributeModelCollector();
+        ProductAssociationModelCollector associationCollector = new ProductAssociationModelCollector();
         TableUsageCollector tableUsageCollector = new TableUsageCollector();
         initParts(attributeCollector, associationCollector, tableUsageCollector);
         attributes = attributeCollector.createParts(this);
@@ -62,11 +60,11 @@ public class ProductModel extends ModelType implements IProductModel {
         tableUsages = tableUsageCollector.createParts(this);
     }
 
-    private void initParts(ProductModelAttributeCollector attributeCollector,
-            ProductModelAssociationCollector associationCollector,
+    private void initParts(ProductAttributeModelCollector attributeCollector,
+            ProductAssociationModelCollector associationCollector,
             TableUsageCollector tableUsageCollector) {
-        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(Arrays.<ModelPartCollector<?, ?>> asList(
-                attributeCollector, associationCollector, tableUsageCollector));
+        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector,
+                tableUsageCollector);
         typeModelPartsReader.init(getAnnotatedDeclaration());
         typeModelPartsReader.read(getAnnotatedDeclaration());
         if (isChangingOverTime()) {
@@ -170,13 +168,13 @@ public class ProductModel extends ModelType implements IProductModel {
     }
 
     @Override
-    public IProductModelAttribute getDeclaredAttribute(int index) {
+    public IProductAttributeModel getDeclaredAttribute(int index) {
         return getDeclaredAttributes().get(index);
     }
 
     @Override
-    public IProductModelAttribute getDeclaredAttribute(String name) {
-        IProductModelAttribute attr = attributes.get(name);
+    public IProductAttributeModel getDeclaredAttribute(String name) {
+        IProductAttributeModel attr = attributes.get(name);
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
         }
@@ -184,46 +182,46 @@ public class ProductModel extends ModelType implements IProductModel {
     }
 
     @Override
-    public List<IProductModelAttribute> getDeclaredAttributes() {
-        return new ArrayList<IProductModelAttribute>(attributes.values());
+    public List<IProductAttributeModel> getDeclaredAttributes() {
+        return new ArrayList<IProductAttributeModel>(attributes.values());
     }
 
     @Override
-    public IProductModelAttribute getAttribute(String name) {
-        return (IProductModelAttribute)super.getAttribute(name);
+    public IProductAttributeModel getAttribute(String name) {
+        return (IProductAttributeModel)super.getAttribute(name);
     }
 
     @Override
-    public List<IProductModelAttribute> getAttributes() {
-        AttributeCollector<IProductModelAttribute> attrCollector = new AttributeCollector<IProductModelAttribute>();
+    public List<IProductAttributeModel> getAttributes() {
+        AttributeCollector<IProductAttributeModel> attrCollector = new AttributeCollector<IProductAttributeModel>();
         attrCollector.visitHierarchy(this);
         return attrCollector.getResult();
     }
 
     @Override
-    public IProductModelAssociation getDeclaredAssociation(int index) {
-        return (IProductModelAssociation)super.getDeclaredAssociation(index);
+    public IProductAssociationModel getDeclaredAssociation(int index) {
+        return (IProductAssociationModel)super.getDeclaredAssociation(index);
     }
 
     @Override
-    public IProductModelAssociation getDeclaredAssociation(String name) {
+    public IProductAssociationModel getDeclaredAssociation(String name) {
         return associations.get(name);
     }
 
     @Override
-    public List<IProductModelAssociation> getDeclaredAssociations() {
-        return new ArrayList<IProductModelAssociation>(new LinkedHashSet<IProductModelAssociation>(
+    public List<IProductAssociationModel> getDeclaredAssociations() {
+        return new ArrayList<IProductAssociationModel>(new LinkedHashSet<IProductAssociationModel>(
                 associations.values()));
     }
 
     @Override
-    public IProductModelAssociation getAssociation(String name) {
-        return (IProductModelAssociation)super.getAssociation(name);
+    public IProductAssociationModel getAssociation(String name) {
+        return (IProductAssociationModel)super.getAssociation(name);
     }
 
     @Override
-    public List<IProductModelAssociation> getAssociations() {
-        AssociationsCollector<IProductModelAssociation> asscCollector = new AssociationsCollector<IProductModelAssociation>();
+    public List<IProductAssociationModel> getAssociations() {
+        AssociationsCollector<IProductAssociationModel> asscCollector = new AssociationsCollector<IProductAssociationModel>();
         asscCollector.visitHierarchy(this);
         return asscCollector.getResult();
     }

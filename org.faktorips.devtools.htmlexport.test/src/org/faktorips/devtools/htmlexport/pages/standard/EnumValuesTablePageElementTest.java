@@ -70,7 +70,7 @@ public class EnumValuesTablePageElementTest {
     private EnumValuesTablePageElement pageElement;
 
     @Before
-    public void setup() throws CoreException {
+    public void setup() {
         List<IEnumValue> valuelist = new ArrayList<IEnumValue>();
         List<IEnumAttribute> attributeList = new ArrayList<IEnumAttribute>();
         valuelist.add(enumValue1);
@@ -81,12 +81,12 @@ public class EnumValuesTablePageElementTest {
         doReturn(ipsProject).when(enumAttribute1).getIpsProject();
         doReturn(ipsProject).when(doc).getIpsProject();
         doReturn(valuelist).when(enumType).getEnumValues();
-        doReturn(attributeList).when(enumType).findAllEnumAttributesIncludeSupertypeOriginals(true, ipsProject);
+        doReturn(attributeList).when(enumType).findAllEnumAttributes(true, ipsProject);
 
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_EmptyResult() throws CoreException {
+    public void testCreateRowWithIpsObjectPart_EmptyResult() {
         pageElement = new EnumValuesTablePageElement(enumType, doc);
 
         List<IPageElement> resultList = pageElement.createRowWithIpsObjectPart(enumValue1);
@@ -129,7 +129,7 @@ public class EnumValuesTablePageElementTest {
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_filledResultNoEnumAttributeValue() throws CoreException {
+    public void testCreateRowWithIpsObjectPart_filledResultNoEnumAttributeValue() {
         doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(null);
 
         pageElement = new EnumValuesTablePageElement(enumType, doc);
@@ -140,7 +140,7 @@ public class EnumValuesTablePageElementTest {
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_filledResultNoEnumAttributeValueValue() throws CoreException {
+    public void testCreateRowWithIpsObjectPart_filledResultNoEnumAttributeValueValue() {
         doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(enumAttribute1);
         doReturn(null).when(enumAttributeValue1).getValue();
 

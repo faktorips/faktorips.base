@@ -10,6 +10,7 @@
 package org.faktorips.runtime.modeltype.internal.read;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
@@ -31,8 +32,8 @@ public class TypeModelPartsReader {
 
     private List<ModelPartCollector<?, ?>> collectors;
 
-    public TypeModelPartsReader(List<ModelPartCollector<?, ?>> collectors) {
-        this.collectors = collectors;
+    public TypeModelPartsReader(ModelPartCollector<?, ?>... collectors) {
+        this.collectors = Arrays.asList(collectors);
     }
 
     public void init(AnnotatedDeclaration annotatedDeclaration) {

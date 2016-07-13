@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.modeltype.IModelElement;
-import org.faktorips.runtime.modeltype.internal.ModelType;
 
 public abstract class ModelPartCollector<T extends IModelElement, D extends PartDescriptor<T>> {
 
@@ -38,11 +37,11 @@ public abstract class ModelPartCollector<T extends IModelElement, D extends Part
         }
     }
 
-    public LinkedHashMap<String, T> createParts(ModelType modelType) {
+    public LinkedHashMap<String, T> createParts(IModelElement parentModel) {
         LinkedHashMap<String, T> result = new LinkedHashMap<String, T>();
         for (Entry<String, D> descriptorEntry : descriptors.entrySet()) {
             D descriptor = descriptorEntry.getValue();
-            T part = descriptor.create(modelType);
+            T part = descriptor.create(parentModel);
             addPart(result, part);
         }
         return result;

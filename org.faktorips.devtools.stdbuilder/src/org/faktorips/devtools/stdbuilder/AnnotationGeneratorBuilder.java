@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.ExtensionPropertyAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.LabelAndDescriptionAnnGen;
 import org.faktorips.devtools.stdbuilder.xpand.PublishedInterfaceAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.attribute.AttributeAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptAssociationAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptDeclClassAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptAssociationAnnGenFactory;
@@ -41,7 +41,7 @@ public class AnnotationGeneratorBuilder {
                 // JPA support
                 new PolicyCmptImplClassJpaAnnGenFactory(),
                 // Jaxb support
-                new PolicyCmptImplClassJaxbAnnGenFactory(),
+                new JaxbAnnGenFactory(),
                 // since version java doc
                 new SinceVersionJavaDocTagGenerator.Factory(),
                 // tables and table rows
@@ -63,7 +63,9 @@ public class AnnotationGeneratorBuilder {
                 // labels and descriptions
                 new LabelAndDescriptionAnnGen.Factory(),
                 // table usage
-                new TableUsageAnnGenFactory() };
+                new TableUsageAnnGenFactory(),
+                // enums
+                new EnumAnnGenFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

@@ -238,13 +238,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // because the violation type depends on the runtime xml test case
             // violation type: violated
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
-            codeBuilder.varDeclaration(Modifier.PRIVATE, isUseTypesafeCollections() ? List.class.getName() + "<"
-                    + String.class.getName() + ">" : List.class.getName(),
+            codeBuilder.varDeclaration(Modifier.PRIVATE, List.class.getName() + "<" + String.class.getName() + ">",
                     getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, testRuleParams[i]));
             // violation type: not violated
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
-            codeBuilder.varDeclaration(Modifier.PRIVATE, isUseTypesafeCollections() ? List.class.getName() + "<"
-                    + String.class.getName() + ">" : List.class.getName(),
+            codeBuilder.varDeclaration(Modifier.PRIVATE, List.class.getName() + "<" + String.class.getName() + ">",
                     getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, testRuleParams[i]));
         }
     }
@@ -475,14 +473,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * <p>
      * 
      * <pre>
-     *  try { 
+     *  try {
      *      String className = childElement.getAttribute(&quot;class&quot;);
      *      inputTcPolicyA_1 =([PolicyCmptTypeParameter.name]) Class.forName(className, true,
      *          [PolicyCmptTypeParameter.name].class.getClassLoader()).newInstance();
      *      inputTcPolicyA_1.initFromXml(childElement, true, getRepository(),
-     *          &lt;objectReferenceStoreName&gt;); 
-     * } catch (Exception e) { 
-     *      throw new RuntimeException(e); 
+     *          &lt;objectReferenceStoreName&gt;);
+     * } catch (Exception e) {
+     *      throw new RuntimeException(e);
      * }
      * </pre>
      */
@@ -577,7 +575,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.append(rulesVariableNameNotViolated);
             body.append(" = new ");
             body.appendClassName(ArrayList.class.getName());
-            if (isUseTypesafeCollections()) {
+            if (true) {
                 body.append("<");
                 body.appendClassName(String.class.getName());
                 body.append(">");
@@ -586,14 +584,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.append(rulesVariableNameViolated);
             body.append(" = new ");
             body.appendClassName(ArrayList.class.getName());
-            if (isUseTypesafeCollections()) {
+            if (true) {
                 body.append("<");
                 body.appendClassName(String.class.getName());
                 body.append(">");
             }
             body.appendln("();");
             body.appendClassName(List.class.getName());
-            if (isUseTypesafeCollections()) {
+            if (true) {
                 body.append("<");
                 body.appendClassName(Element.class.getName());
                 body.append(">");
@@ -607,7 +605,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln("\", \"type\", \"testrule\");");
             body.append("for (");
             body.appendClassName(Iterator.class.getName());
-            if (isUseTypesafeCollections()) {
+            if (true) {
                 body.append("<");
                 body.appendClassName(Element.class.getName());
                 body.append(">");
@@ -616,11 +614,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.append(ruleListName);
             body.appendln(".iterator(); iter.hasNext();){");
             body.appendClassName(Element.class.getName());
-            if (isUseTypesafeCollections()) {
-                body.appendln(" ruleElement = iter.next();");
-            } else {
-                body.appendln(" ruleElement = (Element)iter.next();");
-            }
+            body.appendln(" ruleElement = iter.next();");
             body.appendln("String violationType = ruleElement.getAttribute(\"violationType\");");
             body.appendln("String messageCode = ruleElement.getAttribute(\"validationRuleMessageCode\");");
             body.appendln("if (\"violated\".equals(violationType)){");
@@ -749,7 +743,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < ruleListNames.length; i++) {
             body.append("for (");
             body.appendClassName(Iterator.class.getName());
-            if (isUseTypesafeCollections()) {
+            if (true) {
                 body.append("<");
                 body.appendClassName(String.class.getName());
                 body.append(">");
@@ -757,11 +751,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.append(" iter = ");
             body.append(ruleListNames[i]);
             body.appendln(".iterator(); iter.hasNext();){");
-            if (isUseTypesafeCollections()) {
-                body.appendln("String msgCode = iter.next();");
-            } else {
-                body.appendln("String msgCode = (String)iter.next();");
-            }
+            body.appendln("String msgCode = iter.next();");
             body.append("if (messageList.getMessageByCode(msgCode) ");
             body.append(compareOperations[i]);
             body.appendln(" null){");
@@ -836,17 +826,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             javaDoc = getJavaDocCommentForOverriddenMethod();
             method = new JavaCodeFragmentBuilder();
             method.annotationLn(Override.class);
-            method.method(
-                    Modifier.PUBLIC,
-                    "void",
-                    "initProperties",
-                    new String[] { "pathFromAggregateRoot", "modelObject", "propMap" },
-                    new String[] {
-                            String.class.getName(),
-                            IModelObject.class.getName(),
-                            Map.class.getName()
-                                    + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
-                                            + String.class.getName() + ">" : "") }, body, javaDoc, ANNOTATION_GENERATED);
+            method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot",
+                    "modelObject", "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
+                    Map.class.getName() + "<" + String.class.getName() + ", " + String.class.getName() + ">" }, body,
+                    javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             builder.appendln("}");
         }
@@ -905,9 +888,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 String constName = generateTestAttributeConstant(parameter, testAttribute);
 
                 childCodeFragment.append(" value = ");
-                if (!isUseTypesafeCollections()) {
-                    childCodeFragment.append("(String) ");
-                }
                 childCodeFragment.append("propMap.get(");
                 childCodeFragment.append(constName);
                 childCodeFragment.appendln(");");
@@ -959,10 +939,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
         constantBuilder.varDefinition("public static final String", constName, "\"" + testAttribute + "\"");
         return constName;
-    }
-
-    private boolean isUseTypesafeCollections() {
-        return getBuilderSet().isUseTypesafeCollections();
     }
 
     @Override

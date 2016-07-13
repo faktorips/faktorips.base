@@ -13,9 +13,10 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
-import org.faktorips.runtime.modeltype.internal.AbstractModelAttribute;
+import org.faktorips.runtime.modeltype.internal.AbstractAttributeModel;
 import org.faktorips.runtime.modeltype.internal.ModelType;
 
 abstract class AbstractAttributeDescriptor<T extends IModelTypeAttribute> extends PartDescriptor<T> {
@@ -45,7 +46,8 @@ abstract class AbstractAttributeDescriptor<T extends IModelTypeAttribute> extend
     }
 
     @Override
-    public T create(ModelType modelType) {
+    public T create(IModelElement parentElement) {
+        ModelType modelType = (ModelType)parentElement;
         if (isValid()) {
             return createValid(modelType);
         } else {
@@ -57,7 +59,7 @@ abstract class AbstractAttributeDescriptor<T extends IModelTypeAttribute> extend
                 IModelTypeAttribute attribute = superType.getAttribute(getName());
                 if (attribute != null) {
                     @SuppressWarnings("unchecked")
-                    T overwritingAttribute = (T)((AbstractModelAttribute)attribute)
+                    T overwritingAttribute = (T)((AbstractAttributeModel)attribute)
                             .createOverwritingAttributeFor(modelType);
                     return overwritingAttribute;
                 }

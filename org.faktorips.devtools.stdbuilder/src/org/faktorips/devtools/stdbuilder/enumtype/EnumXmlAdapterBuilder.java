@@ -18,7 +18,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -43,11 +43,8 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     private final IJavaClassNameProvider javaClassNamingProvider;
 
-    public EnumTypeBuilder enumTypeBuilder;
-
-    public EnumXmlAdapterBuilder(DefaultBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
+    public EnumXmlAdapterBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
-        this.enumTypeBuilder = enumTypeBuilder;
         javaClassNamingProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
             @Override
             public String getImplClassName(IIpsSrcFile ipsSrcFile) {
@@ -61,6 +58,11 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
             }
 
         };
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     @Override
@@ -80,7 +82,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (!((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport()) {
+        if (!getBuilderSet().isGenerateJaxbSupport()) {
             return;
         }
         super.build(ipsSrcFile);
@@ -115,7 +117,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         superClassName.append("<"); //$NON-NLS-1$
         superClassName.append(datatypeHelper.getJavaClassName());
         superClassName.append(", "); //$NON-NLS-1$
-        superClassName.append(enumTypeBuilder.getQualifiedClassName(getEnumType()));
+        superClassName.append(getEnumModelNode().getQualifiedClassName());
         superClassName.append(">"); //$NON-NLS-1$
         mainSection.setSuperClass(superClassName.toString());
 
@@ -175,13 +177,13 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return null;"); //$NON-NLS-1$
         body.appendCloseBracket();
         body.append("return value."); //$NON-NLS-1$
-        body.append(enumTypeBuilder.getMethodNameGetIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append(getEnumModelNode().getIdentifierAttribute().getMethodNameGetter());
         body.append("();"); //$NON-NLS-1$
 
         builder.javaDoc(getLocalizedText("METHOD_MARSHAL_JAVADOC"));
         appendOverrideAnnotation(builder, false);
         builder.method(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), "marshal", new String[] { "value" }, //$NON-NLS-1$ //$NON-NLS-2$
-                new String[] { enumTypeBuilder.getQualifiedClassName(getEnumType()) }, body, null);
+                new String[] { getEnumModelNode().getQualifiedClassName() }, body, null);
     }
 
     /**
@@ -206,13 +208,13 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.appendCloseBracket();
         body.append("return "); //$NON-NLS-1$
         body.append("repository.getEnumValue("); //$NON-NLS-1$
-        body.appendClassName(enumTypeBuilder.getQualifiedClassName(getEnumType()));
+        body.appendClassName(getEnumModelNode().getQualifiedClassName());
         body.append(".class, "); //$NON-NLS-1$
         body.append("id);"); //$NON-NLS-1$
 
         builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"));
         appendOverrideAnnotation(builder, false);
-        builder.method(Modifier.PUBLIC, enumTypeBuilder.getQualifiedClassName(getEnumType()), "unmarshal", //$NON-NLS-1$
+        builder.method(Modifier.PUBLIC, getEnumModelNode().getQualifiedClassName(), "unmarshal", //$NON-NLS-1$
                 new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$
 
     }
@@ -244,4 +246,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         return true;
     }
 
+    private XEnumType getEnumModelNode() {
+        return getBuilderSet().getModelNode(getEnumType(), XEnumType.class);
+    }
 }

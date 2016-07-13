@@ -898,4 +898,11 @@ public abstract class AbstractGeneratorModelNode {
         return getClass().getSimpleName() + " [" + ipsObjectPartContainer + "]";
     }
 
+    public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+        return getIpsProject().getDatatypeHelper(datatype);
+    }
+
+    public DatatypeHelper getDatatypeHelper(String qName) {
+        return getIpsProject().findDatatypeHelper(qName);
+    }
 }

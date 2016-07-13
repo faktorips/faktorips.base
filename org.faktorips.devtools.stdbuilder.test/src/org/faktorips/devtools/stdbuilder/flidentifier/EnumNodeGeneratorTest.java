@@ -13,20 +13,27 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.core.internal.model.enums.EnumAttribute;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.util.TextRegion;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,54 +42,51 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumNodeGeneratorTest {
+public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
 
     private static final String ENUM_VALUE_NAME = "EnumValueName";
-
-    private static final String ENUM_DATATYPE_NAME = "EnumDatatypeName";
+    private static final String ENUM_VALUE_NAME_LITERAL = ENUM_VALUE_NAME + "_LITERAL";
+    private static final String ENUM_TYPE_NAME = "TextEnum";
+    private static final String PACKAGE_NAME = "model";
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
 
-    @Mock
-    private StandardBuilderSet builderSet;
-
-    @Mock
-    private IIpsProject ipsProject;
-
-    @Mock
     private ExtendedExprCompiler exprCompiler;
 
     @Mock
     private DatatypeHelper helper;
 
-    @Mock
-    private EnumTypeDatatypeAdapter enumDatatype;
+    private IIpsProject project;
 
-    @Mock
-    private EnumDatatype enumDataType;
-
-    @Mock
-    private EnumTypeBuilder enumTypeBuilder;
-
-    private EnumNodeGenerator enumNodeGenerator;
+    private EnumDatatype enumDatatype;
 
     private EnumValueNode enumValueNode;
+    private EnumNodeGenerator enumNodeGenerator;
+    private IdentifierNodeFactory nodeFactory;
 
     @Before
     public void createEnumValueNodeJavaBuilder() throws Exception {
+        project = newIpsProject();
+
+        exprCompiler = project.newExpressionCompiler();
+
         enumNodeGenerator = new EnumNodeGenerator(factory, builderSet, exprCompiler);
     }
 
     @Test
-    public void testGetCompilationResultForEnumTypeDatatypeAdapter() throws Exception {
-        when(enumDatatype.getName()).thenReturn(ENUM_DATATYPE_NAME);
-        enumValueNode = new IdentifierNodeFactory(new TextRegion(enumDatatype.getName(), 0, enumDatatype.getName()
-                .length()), ipsProject).createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment(enumValueNode.getEnumValueName());
-        when(enumNodeGenerator.getEnumTypeBuilder()).thenReturn(enumTypeBuilder);
-        when(enumTypeBuilder.getNewInstanceCodeFragement(enumDatatype, enumValueNode.getEnumValueName())).thenReturn(
-                javaCodeFragment);
+    public void testGetCompilationResultForEnumDatatypeAdapter() throws Exception {
+        EnumType enumType = newEnumType(project, PACKAGE_NAME + '.' + ENUM_TYPE_NAME);
+        EnumAttribute identifierAttribute = newIdentifierAttribute(enumType, "id", Datatype.STRING);
+        IEnumLiteralNameAttribute literalNameAttribute = enumType.newEnumLiteralNameAttribute();
+
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumValue.setEnumAttributeValue(identifierAttribute, ValueFactory.createStringValue(ENUM_VALUE_NAME));
+        enumValue.setEnumAttributeValue(literalNameAttribute, ValueFactory.createStringValue(ENUM_VALUE_NAME_LITERAL));
+
+        enumDatatype = new EnumTypeDatatypeAdapter(enumType, null);
+        nodeFactory = newIdentifierNodeFactory(enumDatatype.getName());
+        enumValueNode = nodeFactory.createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
 
         CompilationResult<JavaCodeFragment> compilationResult = enumNodeGenerator.getCompilationResultForCurrentNode(
                 enumValueNode, null);
@@ -90,19 +94,28 @@ public class EnumNodeGeneratorTest {
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult);
         assertNotNull(compilationResult.getCodeFragment());
-        assertEquals(ENUM_VALUE_NAME, compilationResult.getCodeFragment().getSourcecode());
+        assertEquals(ENUM_TYPE_NAME + '.' + ENUM_VALUE_NAME_LITERAL, compilationResult.getCodeFragment()
+                .getSourcecode());
+    }
+
+    private IdentifierNodeFactory newIdentifierNodeFactory(String name) {
+        return new IdentifierNodeFactory(new TextRegion(name, 0, name.length()), ipsProject);
+    }
+
+    private EnumAttribute newIdentifierAttribute(EnumType enumType, String name, StringDatatype string)
+            throws CoreException {
+        EnumAttribute identifierAttribute = (EnumAttribute)enumType.newEnumAttribute();
+        identifierAttribute.setName(name);
+        identifierAttribute.setIdentifier(true);
+        identifierAttribute.setDatatype(string.getName());
+        return identifierAttribute;
     }
 
     @Test
     public void testGetCompilationResultForEnumDatatype() throws Exception {
-        when(enumDataType.getName()).thenReturn(ENUM_DATATYPE_NAME);
-        enumValueNode = new IdentifierNodeFactory(new TextRegion(enumDataType.getName(), 0, enumDataType.getName()
-                .length()), ipsProject).createEnumValueNode(ENUM_VALUE_NAME, enumDataType);
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
-        when(enumNodeGenerator.getIpsProject()).thenReturn(ipsProject);
-        when(enumNodeGenerator.getIpsProject().getDatatypeHelper(enumDataType)).thenReturn(helper);
-        when(helper.newInstance(enumValueNode.getEnumValueName())).thenReturn(
-                javaCodeFragment.append(enumValueNode.getEnumValueName()));
+        enumDatatype = newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class })[0];
+        nodeFactory = newIdentifierNodeFactory(enumDatatype.getName());
+        enumValueNode = nodeFactory.createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
 
         CompilationResult<JavaCodeFragment> compilationResult = enumNodeGenerator.getCompilationResultForCurrentNode(
                 enumValueNode, null);
@@ -110,6 +123,7 @@ public class EnumNodeGeneratorTest {
         assertFalse(compilationResult.failed());
         assertNotNull(compilationResult);
         assertNotNull(compilationResult.getCodeFragment());
-        assertEquals(ENUM_VALUE_NAME, compilationResult.getCodeFragment().getSourcecode());
+        assertEquals(TestEnumType.class.getSimpleName() + ".valueOf(\"" + ENUM_VALUE_NAME + "\")", compilationResult
+                .getCodeFragment().getSourcecode());
     }
 }

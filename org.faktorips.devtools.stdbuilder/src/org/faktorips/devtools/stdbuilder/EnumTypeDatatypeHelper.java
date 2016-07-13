@@ -17,7 +17,8 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -29,16 +30,20 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
 
-    private EnumTypeBuilder enumTypeBuilder;
+    private XEnumType enumType;
     private EnumTypeDatatypeAdapter enumTypeAdapter;
 
-    public EnumTypeDatatypeHelper(EnumTypeBuilder enumTypeBuilder, EnumTypeDatatypeAdapter enumTypeAdapter) {
+    /**
+     * enumType must be the generator model node of enumTypeAdapter.getEnumType
+     */
+    public EnumTypeDatatypeHelper(XEnumType enumType, EnumTypeDatatypeAdapter enumTypeAdapter) {
         super(enumTypeAdapter);
 
-        ArgumentCheck.notNull(enumTypeBuilder, this);
+        enumTypeAdapter.getEnumType();
+        ArgumentCheck.notNull(enumType, this);
         ArgumentCheck.notNull(enumTypeAdapter, this);
 
-        this.enumTypeBuilder = enumTypeBuilder;
+        this.enumType = enumType;
         this.enumTypeAdapter = enumTypeAdapter;
     }
 
@@ -50,13 +55,6 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     /**
-     * Returns the {@link EnumTypeBuilder} wrapped by this helper.
-     */
-    public EnumTypeBuilder getEnumTypeBuilder() {
-        return enumTypeBuilder;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -65,7 +63,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
             return new JavaCodeFragment("null");
         }
         try {
-            return enumTypeBuilder.getNewInstanceCodeFragement(enumTypeAdapter, value);
+            return enumType.getNewInstanceCodeFragement(enumTypeAdapter, value, null);
 
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -85,7 +83,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
      */
     @Override
     public String getJavaClassName() {
-        return enumTypeBuilder.getQualifiedClassName(enumTypeAdapter.getEnumType().getIpsSrcFile());
+        return enumType.getQualifiedClassName();
     }
 
     @Override
@@ -98,12 +96,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
      */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
-        try {
-            return enumTypeBuilder.getCallGetValueByIdentifierCodeFragment(enumTypeAdapter.getEnumType(), expression,
-                    false, null);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return enumType.getCallGetValueByIdentifierCodeFragment(expression, false, null);
     }
 
     /**
@@ -112,25 +105,26 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
      */
     @Override
     public JavaCodeFragment getToStringExpression(String fieldName) {
-        try {
-            JavaCodeFragment fragment = new JavaCodeFragment();
-            IEnumType enumType = enumTypeAdapter.getEnumType();
-            String getterName = enumTypeBuilder.getMethodNameGetIdentifierAttribute(enumType, enumType.getIpsProject());
-            Datatype idColumnDatatype = enumTypeBuilder.getDatatypeForIdentifierAttribute(enumType,
-                    enumType.getIpsProject());
-            DatatypeHelper idColumnDatatypeHelper = enumType.getIpsProject().getDatatypeHelper(idColumnDatatype);
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        String getterName = enumType.getIdentifierAttribute().getMethodNameGetter();
+        Datatype idColumnDatatype = enumType.getIdentifierAttribute().getDatatype();
+        DatatypeHelper idColumnDatatypeHelper = enumType.getIpsProject().getDatatypeHelper(idColumnDatatype);
 
-            // check for null as default value may be null and enum value set may contain null
-            fragment.append("");
-            fragment.append(fieldName);
-            fragment.append("==null?null:(");
-            fragment.append(idColumnDatatypeHelper.getToStringExpression(fieldName + "." + getterName + "()"));
-            fragment.append(")");
+        // check for null as default value may be null and enum value set may contain null
+        fragment.append("");
+        fragment.append(fieldName);
+        fragment.append("==null?null:(");
+        fragment.append(idColumnDatatypeHelper.getToStringExpression(fieldName + "." + getterName + "()"));
+        fragment.append(")");
 
-            return fragment;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return fragment;
     }
 
+    /**
+     * @see XEnumType#getCallGetValueByIdentifierCodeFragment(String, JavaCodeFragment)
+     */
+    public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(String expressionValue,
+            JavaCodeFragment repositoryExp) {
+        return enumType.getCallGetValueByIdentifierCodeFragment(expressionValue, repositoryExp);
+    }
 }

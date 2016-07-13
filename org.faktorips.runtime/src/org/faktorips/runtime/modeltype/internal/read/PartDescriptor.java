@@ -35,9 +35,9 @@ public abstract class PartDescriptor<T extends IModelElement> {
      * Is called by the collector to create a part of type T using the previously collected
      * information.
      * 
-     * @param modelType The parent of the part that should be created
+     * @param parentElement The parent of the part that should be created
      * @return The newly created part
      */
-    public abstract T create(ModelType modelType);
+    public abstract T create(IModelElement parentElement);
 
 }

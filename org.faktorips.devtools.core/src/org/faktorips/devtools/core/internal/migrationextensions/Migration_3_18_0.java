@@ -14,8 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -53,6 +55,21 @@ public class Migration_3_18_0 extends DefaultMigration {
         MessageList messageList = super.migrate(monitor);
         IIpsProject ipsProject = getIpsProject();
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        setUniqueQualifiersWhereNecessary(ipsProjectProperties);
+        removeDiscontinuedProperties(ipsProjectProperties);
+        ipsProject.setProperties(ipsProjectProperties);
+        return messageList;
+    }
+
+    private void removeDiscontinuedProperties(IIpsProjectProperties ipsProjectProperties) {
+        IIpsArtefactBuilderSetConfigModel builderSetConfig = ipsProjectProperties.getBuilderSetConfig();
+        if (builderSetConfig instanceof IpsArtefactBuilderSetConfigModel) {
+            ((IpsArtefactBuilderSetConfigModel)builderSetConfig).removeProperty("useJavaEnumTypes"); //$NON-NLS-1$
+            ((IpsArtefactBuilderSetConfigModel)builderSetConfig).removeProperty("useTypesafeCollections"); //$NON-NLS-1$
+        }
+    }
+
+    private void setUniqueQualifiersWhereNecessary(IIpsProjectProperties ipsProjectProperties) {
         IIpsObjectPath ipsObjectPath = ipsProjectProperties.getIpsObjectPath();
         IIpsSrcFolderEntry[] sourceFolderEntries = ipsObjectPath.getSourceFolderEntries();
         if (sourceFolderEntries.length > 1) {
@@ -61,8 +78,6 @@ public class Migration_3_18_0 extends DefaultMigration {
                 ipsSrcFolderEntry.setUniqueQualifier(ipsSrcFolderEntry.getIpsPackageFragmentRootName());
             }
         }
-        ipsProject.setProperties(ipsProjectProperties);
-        return messageList;
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

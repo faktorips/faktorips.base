@@ -1,0 +1,144 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::enumtype::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+
+«DEFINE main FOR XEnumType»
+«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+/**
+* «description»
+*
+* @generated
+*/
+«getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
+public enum «name» «EXPAND CommonDefinitions::implementedInterfaces»{
+	
+	«EXPAND enumValues-»
+	
+	«EXPAND CommonEnumType::messageHelperVar-»
+	«EXPAND staticIdMap-»
+	«EXPAND initKeyMaps-»
+	
+	«EXPAND CommonEnumType::fields»
+	«EXPAND constructors-»
+	
+	«EXPAND methodGetValueBy(this) FOREACH allUniqueAttributesWithoutLiteralName-»
+	«EXPAND methodIsValueBy(this) FOREACH allUniqueAttributesWithoutLiteralName-»
+
+	«EXPAND CommonEnumType::getters»
+	«EXPAND CommonEnumType::toString»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE enumValues FOR XEnumType-»
+	«FOREACH enumValues AS enumValue SEPARATOR ",\n"»
+		«EXPAND enumValue FOR enumValue-»
+	«ENDFOREACH-»
+	;
+«ENDDEFINE»
+
+«DEFINE enumValue FOR XEnumValue-»
+	/**
+	* @generated
+	*/
+	«literalNameAttributeValue.field(memberVarNameLiteralNameAttribute)»(
+		«FOREACH enumAttributeValuesWithField AS attributeValue SEPARATOR ", "-»
+			«attributeValue.memberVariableValue-»
+		«ENDFOREACH-»
+	)
+«ENDDEFINE»
+
+«DEFINE staticIdMap FOR XEnumType-»
+	/**
+	* «localizedJDoc("ID_MAP")»
+	*
+	* @generated
+	*/
+	«LET identifierAttribute.datatypeNameUseWrappers AS keyClassName-»
+	private static final «Map(keyClassName, unqualifiedClassName)-» «varNameIdMap-»;
+	«ENDLET»
+	
+«ENDDEFINE»
+
+«DEFINE initKeyMaps FOR XEnumType-»
+	/**
+	* «localizedJDoc("STATIC")»
+	*
+	* @generated
+	*/
+	static{
+		«LET identifierAttribute.datatypeNameUseWrappers AS keyClassName-»
+		«varNameIdMap» = new «HashMap(keyClassName, unqualifiedClassName)-»();
+		«ENDLET-»
+		for(«name» value : values()){
+			«varNameIdMap».put(value.«identifierAttribute.memberVarName», value);
+		}
+	}
+«ENDDEFINE»
+
+«DEFINE constructors FOR XEnumType-»
+	/**
+	* «localizedJDoc("CONSTRUCTOR", name)»
+	*
+	* @generated
+	*/
+	private «method(name, constructorParameters)»{
+		«EXPAND CommonEnumType::fieldInitializations(false)-»
+	}
+«ENDDEFINE»
+
+«DEFINE methodGetValueBy(XEnumType enumType) FOR XEnumAttribute-»
+	/**
+	* «localizedJDoc("METHOD_GET_VALUE_BY_XXX", memberVarName)»
+	*
+	* @generated
+	*/
+	public static final «enumType.name» «IF multilingual-»«method(methodNameGetValueBy, datatypeName, memberVarName, Locale(), "locale")»«ELSE»«method(methodNameGetValueBy, datatypeName, memberVarName)»«ENDIF-»{
+		«IF identifier-»
+			return «enumType.varNameIdMap».get(«memberVarName»);
+		«ELSE-»
+			for(«enumType.name» currentValue : values()){
+				if( 
+				currentValue.
+				«IF multilingual-»
+					«methodNameGetter»(locale).equals(«memberVarName»)
+				«ELSE-»
+					«memberVarName»«EXPAND equals(memberVarName)-»
+				«ENDIF-»
+				){
+					return currentValue;
+				}
+			}
+			return null;
+		«ENDIF-»
+	}
+«ENDDEFINE»
+
+«DEFINE equals(String varName) FOR XEnumAttribute-»
+	«IF datatype.primitive-»==«varName»«ELSE».equals(«varName»)«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE methodIsValueBy(XEnumType enumType) FOR XEnumAttribute-»
+	/**
+	* «localizedJDoc("METHOD_IS_VALUE_BY_XXX")»
+	*
+	* @generated
+	*/
+	public static final boolean «IF multilingual-»«method(methodNameIsValueBy, datatypeName, memberVarName, Locale(), "locale")»«ELSE»«method(methodNameIsValueBy, datatypeName, memberVarName)»«ENDIF-»{
+		«IF multilingual-»
+			return «methodNameGetValueBy»(«memberVarName», locale) != null;
+		«ELSE-»
+			return «methodNameGetValueBy»(«memberVarName») != null;
+		«ENDIF-»
+	}
+«ENDDEFINE»

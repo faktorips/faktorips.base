@@ -45,7 +45,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public DatatypeHelper getDatatypeHelper() {
-        return getAttribute().getIpsProject().findDatatypeHelper(getAttribute().getDatatype());
+        return getDatatypeHelper(getAttribute().getDatatype());
     }
 
     public String getMethodNameSetter() {
@@ -192,14 +192,15 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     /**
-     * Extension to {@link #getAnnotationsForPublishedInterface(AnnotatedJavaElementType, boolean)} for
-     * attribute methods that are generated in either published interface or implementation class
-     * depending on the {@link Modifier}. For published attributes, this method inherits the
-     * behavior of {@link #getAnnotationsForPublishedInterface(AnnotatedJavaElementType, boolean)}. If the
-     * attribute is not published, this method only returns annotations if the builder is currently
-     * generating an implementation class.
+     * Extension to {@link #getAnnotationsForPublishedInterface(AnnotatedJavaElementType, boolean)}
+     * for attribute methods that are generated in either published interface or implementation
+     * class depending on the {@link Modifier}. For published attributes, this method inherits the
+     * behavior of {@link #getAnnotationsForPublishedInterface(AnnotatedJavaElementType, boolean)}.
+     * If the attribute is not published, this method only returns annotations if the builder is
+     * currently generating an implementation class.
      */
-    public String getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
+    public String getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType type,
+            boolean isGeneratingInterface) {
         if (isPublished()) {
             return getAnnotationsForPublishedInterface(type, isGeneratingInterface);
         } else {

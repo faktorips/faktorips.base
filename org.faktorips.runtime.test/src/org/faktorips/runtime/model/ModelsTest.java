@@ -27,9 +27,11 @@ import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsEnum;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
+import org.faktorips.runtime.model.enumtype.EnumModel;
 import org.faktorips.runtime.model.table.TableModel;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IPolicyModel;
@@ -144,6 +146,34 @@ public class ModelsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGetModelType_noType() {
         Models.getModelType(String.class);
+    }
+
+    @Test
+    public void testGetEnumModel() {
+        EnumModel model = Models.getEnumModel(TestEnum.class);
+
+        assertThat(model, is(notNullValue()));
+        assertThat(model.getName(), is(equalTo("my.TestEnum")));
+    }
+
+    @Test
+    public void testGetEnumModel_isReturningCachedInstance() {
+        EnumModel model = Models.getEnumModel(TestEnum.class);
+
+        assertThat(Models.getEnumModel(TestEnum.class), is(sameInstance(model)));
+    }
+
+    @Test
+    public void testGetEnumModel_byInstance() {
+        EnumModel model = Models.getEnumModel(new TestEnum());
+
+        assertThat(model, is(notNullValue()));
+        assertThat(model.getName(), is(equalTo("my.TestEnum")));
+    }
+
+    @IpsEnum(name = "my.TestEnum", attributeNames = {})
+    private static class TestEnum {
+
     }
 
     @IpsProductCmptType(name = "MyProduct")

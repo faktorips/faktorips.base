@@ -185,4 +185,9 @@ public abstract class AbstractModelElement implements IModelElement {
         }
         return source;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
