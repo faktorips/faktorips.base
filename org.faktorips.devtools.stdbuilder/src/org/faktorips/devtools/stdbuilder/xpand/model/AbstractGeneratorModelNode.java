@@ -191,6 +191,10 @@ public abstract class AbstractGeneratorModelNode {
         return description;
     }
 
+    public boolean isDescribed() {
+        return StringUtils.isNotBlank(getDescription());
+    }
+
     public String getDescriptionForJDoc() {
         String description = getDescription();
         return StringUtils.isEmpty(description) ? "" : "<p>\n" + description;

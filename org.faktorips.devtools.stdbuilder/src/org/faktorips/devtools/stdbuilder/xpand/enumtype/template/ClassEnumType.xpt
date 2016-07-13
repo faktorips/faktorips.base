@@ -15,8 +15,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 
 /**
-* «description»
-* 
+«IF described-»
+*  «description»
+*
+«ENDIF-»
 * @generated
 */
 «getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
