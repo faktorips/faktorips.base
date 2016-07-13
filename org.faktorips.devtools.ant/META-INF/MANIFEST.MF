@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.faktorips.devtools.ant;singleton:=true
 Bundle-Version: 3.18.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.apache.ant,
- org.eclipse.core.runtime.compatibility,
  org.eclipse.ant.core,
  org.eclipse.ui.ide,
  org.eclipse.ui.workbench,
