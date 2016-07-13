@@ -17,8 +17,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,6 +37,7 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
@@ -216,7 +215,15 @@ public class ComponentPropertiesSection extends IpsSection {
 
         productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
         toolkit.setEnabled(productCmptTypeControl.getTextControl(), false);
-        productCmptTypeControl.getTextControl().addModifyListener(new MyModifyListener());
+        getBindingContext().add(
+                new PropertyChangeBinding<String>(productCmptTypeControl, product,
+                        IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE, String.class) {
+
+                    @Override
+                    protected void propertyChanged(String oldValue, String newValue) {
+                        editor.checkForInconsistenciesToModel();
+                    }
+                });
     }
 
     private void initTemplateRow(UIToolkit toolkit) {
@@ -233,6 +240,15 @@ public class ComponentPropertiesSection extends IpsSection {
         templateControl.setSearchTemplates(true);
         templateControl.setProductCmptsToExclude(new IProductCmpt[] { product });
         toolkit.setEnabled(templateControl.getTextControl(), false);
+        getBindingContext().add(
+                new PropertyChangeBinding<String>(templateControl, product, IProductCmpt.PROPERTY_TEMPLATE,
+                        String.class) {
+
+                    @Override
+                    protected void propertyChanged(String oldValue, String newValue) {
+                        editor.checkForInconsistenciesToModel();
+                    }
+                });
     }
 
     private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {
@@ -289,25 +305,6 @@ public class ComponentPropertiesSection extends IpsSection {
         } else {
             productCmptTypeControl.setButtonEnabled(IpsUIPlugin.isEditable(product.getIpsSrcFile()));
         }
-    }
-
-    /**
-     * FIXME
-     * 
-     * SW 13.1.2015: I would like to remove this listener and use databinding. The problem is that
-     * there is no viewmodel/PMO (which should contain the checkForInconsistenciesToModel() method).
-     * Thus there is no way changing this, except refactoring the whole editor.
-     */
-    private class MyModifyListener implements ModifyListener {
-
-        @Override
-        public void modifyText(ModifyEvent e) {
-            productCmptTypeControl.getTextControl().removeModifyListener(this);
-            getBindingContext().updateUI();
-            editor.checkForInconsistenciesToModel();
-            productCmptTypeControl.getTextControl().addModifyListener(this);
-        }
-
     }
 
     /**
