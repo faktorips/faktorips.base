@@ -209,7 +209,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
             @Override
             public IIpsObject findIpsObject() {
-                return product.findPolicyCmptType(product.getIpsProject());
+                return product.findProductCmptType(product.getIpsProject());
             }
         });
 
