@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,6 +24,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.DatatypeDependency;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -62,6 +66,18 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public TableStructure() {
         super();
+    }
+
+    @Override
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+        ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
+        for (IColumn column : columns) {
+            String datatype = column.getDatatype();
+            IDependency dependency = new DatatypeDependency(getQualifiedNameType(), datatype);
+            dependencies.add(dependency);
+            addDetails(details, dependency, column, IColumn.PROPERTY_DATATYPE);
+        }
+        return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
     @Override
