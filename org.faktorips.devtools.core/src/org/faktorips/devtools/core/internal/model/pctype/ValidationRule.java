@@ -211,8 +211,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
         Set<String> usedMarkerIds = getUsedMarkerIds();
         usedMarkerIds.removeAll(definedMarkerIds);
         if (!usedMarkerIds.isEmpty()) {
-            String text = NLS.bind(Messages.ValidationRule_msg_InvalidMarkerId, usedMarkerIds, markerEnumUtil
-                    .getMarkerEnumType().getQualifiedName());
+            String text = NLS.bind(Messages.ValidationRule_msg_InvalidMarkerId, usedMarkerIds,
+                    markerEnumUtil.getMarkerEnumTypeName());
             Message msg = new Message(IValidationRule.MSGCODE_INVALID_MARKER_ID, text, Message.ERROR, this,
                     PROPERTY_MESSAGE_CODE);
             list.add(msg);

@@ -298,6 +298,16 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateMarker_InvalidMarkerEnum() throws CoreException {
+        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
+
+        MessageList msgList = validationRule.validate(ipsProject);
+
+        assertFalse(msgList.isEmpty());
+        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_INVALID_MARKER_ID));
+    }
+
+    @Test
     public void testConstantAttributesCantBeValidated() throws CoreException {
         IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
         a.setName("a1");

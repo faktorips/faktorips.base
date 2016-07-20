@@ -96,6 +96,17 @@ public class MarkerEnumUtil {
     }
 
     /**
+     * Returns the {@link IEnumType marker enum}.
+     */
+    public String getMarkerEnumTypeName() {
+        if (markerDefinition != null) {
+            return markerDefinition.getQualifiedName();
+        } else {
+            return Messages.MarkerEnumUtil_invalidMarkerEnum;
+        }
+    }
+
+    /**
      * Return the {@link ValueDatatype} of the {@link IEnumType marker enum}.
      */
     public ValueDatatype getEnumDatatype() {
