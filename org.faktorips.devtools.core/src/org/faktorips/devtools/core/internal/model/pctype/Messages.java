@@ -120,5 +120,6 @@ public class Messages extends NLS {
     public static String Attribute_proposalForRuleName;
     public static String Attribute_proposalForMsgCode;
     public static String Attribute_msg_Overwritten_datatype_different;
+    public static String MarkerEnumUtil_invalidMarkerEnum;
 
 }
