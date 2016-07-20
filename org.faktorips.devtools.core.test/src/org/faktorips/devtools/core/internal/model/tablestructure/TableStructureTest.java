@@ -10,10 +10,13 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -25,7 +28,13 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.model.DatatypeDependency;
+import org.faktorips.devtools.core.model.DependencyDetail;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -543,6 +552,30 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         int numOfIndices = table.getNumOfIndices();
 
         assertEquals(2, numOfIndices);
+    }
+
+    @Test
+    public void testDependsOn_Datatype() throws Exception {
+        EnumType depEnumType = newEnumType(project, "DependantEnumType");
+        TableStructure tableStructure = newTableStructure(project, "AnyTableStructure");
+        IColumn column1 = tableStructure.newColumn();
+        column1.setDatatype(ValueDatatype.STRING.getQualifiedName());
+        IColumn column2 = tableStructure.newColumn();
+        column2.setDatatype(depEnumType.getQualifiedName());
+
+        IDependency[] dependencies = tableStructure.dependsOn();
+
+        assertThat(dependencies.length, is(2));
+        assertThat(dependencies[0], is((IDependency)new DatatypeDependency(tableStructure.getQualifiedNameType(),
+                ValueDatatype.STRING.getQualifiedName())));
+        assertThat(dependencies[1], is((IDependency)new DatatypeDependency(tableStructure.getQualifiedNameType(),
+                depEnumType.getQualifiedName())));
+        List<IDependencyDetail> detail1 = tableStructure.getDependencyDetails(dependencies[0]);
+        assertThat(detail1.size(), is(1));
+        assertThat(detail1, hasItem(new DependencyDetail(column1, IColumn.PROPERTY_DATATYPE)));
+        List<IDependencyDetail> detail2 = tableStructure.getDependencyDetails(dependencies[1]);
+        assertThat(detail2.size(), is(1));
+        assertThat(detail2, hasItem(new DependencyDetail(column2, IColumn.PROPERTY_DATATYPE)));
     }
 
 }

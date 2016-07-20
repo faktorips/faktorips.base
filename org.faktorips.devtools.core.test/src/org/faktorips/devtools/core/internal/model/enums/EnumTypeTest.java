@@ -10,10 +10,13 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -26,9 +29,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -1150,6 +1155,31 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         detail = new DependencyDetail(subSubEnumType, IEnumType.PROPERTY_SUPERTYPE);
         assertEquals(1, details.size());
         assertTrue(details.contains(detail));
+    }
+
+    @Test
+    public void testDependsOn_Datatypes() throws CoreException {
+        EnumType depEnumType = newEnumType(ipsProject, "DependantEnumType");
+        EnumType enumType = newEnumType(ipsProject, "AnyEnumType");
+        IEnumAttribute enumAttribute1 = enumType.newEnumAttribute();
+        enumAttribute1.setDatatype(ValueDatatype.STRING.getQualifiedName());
+        IEnumAttribute enumAttribute2 = enumType.newEnumAttribute();
+        enumAttribute2.setDatatype(depEnumType.getQualifiedName());
+
+        IDependency[] dependencies = enumType.dependsOn();
+
+        assertThat(dependencies.length, is(2));
+        assertThat(dependencies[0], is((IDependency)new DatatypeDependency(enumType.getQualifiedNameType(),
+                ValueDatatype.STRING.getQualifiedName())));
+        assertThat(
+                dependencies[1],
+                is((IDependency)new DatatypeDependency(enumType.getQualifiedNameType(), depEnumType.getQualifiedName())));
+        List<IDependencyDetail> detail1 = enumType.getDependencyDetails(dependencies[0]);
+        assertThat(detail1.size(), is(1));
+        assertThat(detail1, hasItem(new DependencyDetail(enumAttribute1, IEnumAttribute.PROPERTY_DATATYPE)));
+        List<IDependencyDetail> detail2 = enumType.getDependencyDetails(dependencies[1]);
+        assertThat(detail2.size(), is(1));
+        assertThat(detail2, hasItem(new DependencyDetail(enumAttribute2, IEnumAttribute.PROPERTY_DATATYPE)));
     }
 
     @Test

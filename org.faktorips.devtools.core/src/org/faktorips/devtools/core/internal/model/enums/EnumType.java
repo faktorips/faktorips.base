@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -1000,13 +1001,20 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+        ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
         if (hasSuperEnumType()) {
             IDependency superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(),
                     new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
             addDetails(details, superEnumTypeDependency, this, PROPERTY_SUPERTYPE);
-            return new IDependency[] { superEnumTypeDependency };
+            dependencies.add(superEnumTypeDependency);
         }
-        return new IDependency[0];
+        for (IEnumAttribute enumAttribute : enumAttributes) {
+            String datatype = enumAttribute.getDatatype();
+            IDependency dependency = new DatatypeDependency(getQualifiedNameType(), datatype);
+            dependencies.add(dependency);
+            addDetails(details, dependency, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
+        }
+        return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
     @Override
