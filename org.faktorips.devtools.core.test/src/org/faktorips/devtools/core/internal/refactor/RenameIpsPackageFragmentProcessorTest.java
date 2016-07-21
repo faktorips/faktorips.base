@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.StringUtil;
@@ -66,7 +65,6 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     private IProductCmptType productCmptType1;
     private IProductCmptType productCmptType2;
     private ProductCmpt productC;
-    private IProductPartsContainer[] refs;
     private IIpsPackageFragment source;
 
     @Override
@@ -109,9 +107,6 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         IProductCmptGeneration productCGen = productC.getProductCmptGeneration(0);
         productCGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
         productC.getIpsSrcFile().save(true, null);
-
-        refs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
-        assertEquals(3, refs.length);
 
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
         policyCmptType.getIpsSrcFile().save(true, null);

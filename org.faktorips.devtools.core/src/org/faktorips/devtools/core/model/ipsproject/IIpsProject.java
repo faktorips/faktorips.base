@@ -50,7 +50,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -703,19 +702,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an exception occurs while searching
      */
     public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes) throws CoreException;
-
-    /**
-     * Returns all product component generation that refer to the given object, identified by the
-     * qualified name type. Returns an empty array if none is found.
-     */
-    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType);
-
-    /**
-     * Returns the super type of the given policy component type, and all policy component types
-     * that refer to the given policy component type. Returns an empty array if no references or
-     * super types are found.
-     */
-    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType);
 
     /**
      * Returns all data types accessible on the project's path.

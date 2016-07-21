@@ -23,7 +23,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -33,7 +36,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
@@ -68,7 +70,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
     private IProductCmptType productCmptType1;
     private IProductCmptType productCmptType2;
     private ProductCmpt productC;
-    private IProductPartsContainer[] refs;
+    private IDependency[] refs;
+    private DependencyGraph dependencyGraph;
 
     @Override
     @Before
@@ -107,8 +110,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         productCGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
         productC.getIpsSrcFile().save(true, null);
 
-        refs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
-        assertEquals(3, refs.length);
+        dependencyGraph = ((IpsModel)ipsProject.getIpsModel()).getDependencyGraph(ipsProject);
+        refs = dependencyGraph.getDependants(coverage.getQualifiedNameType());
 
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
         policyCmptType.getIpsSrcFile().save(true, null);
@@ -423,8 +426,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(targetFile.exists());
 
         IProductCmpt targetObject = (IProductCmpt)targetFile.getIpsObject();
-        IProductPartsContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
-                targetObject.getQualifiedNameType());
+        dependencyGraph.reInit();
+        IDependency[] targetRefs = dependencyGraph.getDependants(targetObject.getQualifiedNameType());
 
         assertEquals(refs.length, targetRefs.length);
 

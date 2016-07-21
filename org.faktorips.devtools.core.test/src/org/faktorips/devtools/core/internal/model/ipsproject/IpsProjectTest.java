@@ -32,8 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -91,11 +89,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -1462,117 +1456,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject2 = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProject.getProject());
         // test if he changed object path is also available with the new instance
         assertEquals("some.name", ipsProject2.getIpsObjectPath().getBasePackageNameForMergableJavaClasses());
-    }
-
-    @Test
-    public void testFindReferencingProductCmptGenerations() throws CoreException {
-        IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
-        assertEquals(roots.length, 1);
-
-        IIpsPackageFragment pack = roots[0].getIpsPackageFragment(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
-        IProductCmpt tobereferenced = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT,
-                "tobereferenced");
-        IProductCmpt noref = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "noref");
-        IProductCmpt ref1 = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "ref1");
-        IProductCmpt refStatic = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "refStatic");
-        ITableContents tableContents = (ITableContents)this.newIpsObject(pack, IpsObjectType.TABLE_CONTENTS, "table");
-
-        IProductCmptGeneration gen1 = (IProductCmptGeneration)ref1.newGeneration();
-        IProductCmptGeneration genNoref = (IProductCmptGeneration)noref.newGeneration();
-        IProductCmptGeneration genTobereferenced = (IProductCmptGeneration)tobereferenced.newGeneration();
-
-        IProductPartsContainer[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced
-                .getQualifiedNameType());
-        assertEquals(0, result.length);
-
-        GregorianCalendar cal = new GregorianCalendar(2005, 1, 1);
-        gen1.setValidFrom(cal);
-        genNoref.setValidFrom(cal);
-        genTobereferenced.setValidFrom(cal);
-        gen1.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
-        refStatic.newLink("staticLink").setTarget(tobereferenced.getQualifiedName());
-
-        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
-        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)refStatic));
-        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen1));
-        assertEquals(2, result.length);
-
-        IProductCmptGeneration gen2 = (IProductCmptGeneration)ref1.newGeneration();
-        gen1.newLink("secondLink").setTarget(tobereferenced.getQualifiedName());
-        gen2.setValidFrom(cal);
-        gen2.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
-        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
-
-        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)refStatic));
-        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen1));
-        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen2));
-        assertEquals(3, result.length);
-
-        ITableContentUsage tableUsage = gen1.newTableContentUsage();
-        tableUsage.setTableContentName(tableContents.getQualifiedName());
-        result = ipsProject.findReferencingProductCmptGenerations(tableContents.getQualifiedNameType());
-
-        assertThat(Arrays.asList(result), hasItem((IProductPartsContainer)gen1));
-        assertEquals(1, result.length);
-
-    }
-
-    @Test
-    public void testFindReferencingPolicyCmptTypes() throws CoreException {
-        IPolicyCmptType pcTypeReferenced = newPolicyCmptType(root, "tobereferenced");
-        IPolicyCmptType pcType = newPolicyCmptType(root, "TestPCType");
-        IPolicyCmptTypeAssociation relation = pcType.newPolicyCmptTypeAssociation();
-        relation.setTarget(pcTypeReferenced.getQualifiedName());
-
-        IPolicyCmptType pcType2 = newPolicyCmptType(root, "TestPCType2");
-        IPolicyCmptTypeAssociation relation2 = pcType2.newPolicyCmptTypeAssociation();
-        relation2.setTarget(pcTypeReferenced.getQualifiedName());
-
-        IPolicyCmptType pcType3 = newPolicyCmptType(root, "TestPCType3");
-        IPolicyCmptTypeAssociation relation3 = pcType3.newPolicyCmptTypeAssociation();
-        relation3.setTarget(pcTypeReferenced.getQualifiedName());
-
-        IPolicyCmptType pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");
-
-        IPolicyCmptType pcTypeSuper = newPolicyCmptType(root, "TestPCTypeSuper");
-        pcTypeReferenced.setSupertype("TestPCTypeSuper");
-
-        IPolicyCmptType[] results = ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
-        assertEquals(4, results.length);
-
-        HashSet<IPolicyCmptType> resultSet = new HashSet<IPolicyCmptType>();
-        resultSet.add(results[0]);
-        resultSet.add(results[1]);
-        resultSet.add(results[2]);
-        resultSet.add(results[3]);
-        HashSet<IPolicyCmptType> expectedSet = new HashSet<IPolicyCmptType>();
-        expectedSet.add(pcType);
-        expectedSet.add(pcType2);
-        expectedSet.add(pcType3);
-        expectedSet.add(pcTypeSuper);
-
-        assertEquals(expectedSet, resultSet);
-        assertFalse(resultSet.contains(pcTypeNoRef));
-        assertFalse(resultSet.contains(null));
-
-        // test references with faulty supertype
-        pcTypeReferenced.setSupertype("incorrectQualifiedName");
-
-        results = ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
-        assertEquals(3, results.length);
-
-        resultSet = new HashSet<IPolicyCmptType>();
-        resultSet.add(results[0]);
-        resultSet.add(results[1]);
-        resultSet.add(results[2]);
-        expectedSet = new HashSet<IPolicyCmptType>();
-        expectedSet.add(pcType);
-        expectedSet.add(pcType2);
-        expectedSet.add(pcType3);
-
-        assertEquals(expectedSet, resultSet);
-        assertFalse(resultSet.contains(pcTypeNoRef));
-        assertFalse(resultSet.contains(null));
     }
 
     @Test

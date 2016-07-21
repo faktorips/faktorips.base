@@ -65,7 +65,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -89,13 +88,8 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -196,7 +190,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsProjectProperties getProperties() {
         if (TRACE_IPSPROJECT_PROPERTIES) {
             System.out
-                    .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
+            .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
         }
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
@@ -1426,82 +1420,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Find all product cmpt generations which refer to other procuct coponents and table contents.
-     */
-    @Override
-    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType) {
-
-        Set<IProductPartsContainer> result = new LinkedHashSet<IProductPartsContainer>();
-        String qualifiedName = qualifiedNameType.getName();
-        IIpsSrcFile[] allProductCmpts = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        if (IpsObjectType.PRODUCT_CMPT.equals(qualifiedNameType.getIpsObjectType())) {
-            for (IIpsSrcFile ipsSrcFile : allProductCmpts) {
-                findReferencingProductCmptGenerationsToProductCmpts((IProductCmpt)ipsSrcFile.getIpsObject(),
-                        qualifiedName, result);
-            }
-        } else if (IpsObjectType.TABLE_CONTENTS.equals(qualifiedNameType.getIpsObjectType())) {
-            for (IIpsSrcFile ipsSrcFile : allProductCmpts) {
-                findReferencingProductCmptsToTableContents((IProductCmpt)ipsSrcFile.getIpsObject(), qualifiedName,
-                        result);
-                findReferencingProductCmptGenerationsToTableContents((IProductCmpt)ipsSrcFile.getIpsObject(),
-                        qualifiedName, result);
-            }
-        }
-        IProductPartsContainer[] resultArray = new IProductPartsContainer[result.size()];
-        result.toArray(resultArray);
-
-        return resultArray;
-    }
-
-    /**
-     * + Finds all product cmpt generations of the given product cmpt which refers to the given
-     * product cmpt. The result will be added to the given set.
-     */
-    private void findReferencingProductCmptGenerationsToProductCmpts(IProductCmpt toBeSearched,
-            String qualifiedProductCmptName,
-            Set<IProductPartsContainer> result) {
-        List<IProductCmptLink> links = toBeSearched.getLinksIncludingGenerations();
-        for (IProductCmptLink link : links) {
-            if (link.getTarget().equals(qualifiedProductCmptName)) {
-                result.add(link.getProductCmptLinkContainer());
-            }
-        }
-    }
-
-    private void findReferencingProductCmptsToTableContents(IProductCmpt toBeSearched,
-            String qualifiedTableContentsName,
-            Set<IProductPartsContainer> result) {
-        ITableContentUsage[] tcus = toBeSearched.getTableContentUsages();
-        for (ITableContentUsage tcu : tcus) {
-            if (tcu.getTableContentName().equals(qualifiedTableContentsName)) {
-                result.add(toBeSearched);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Finds all product cmpt generations of the given product cmpt which refers to the given table
-     * contents. The result will be added to the given set.
-     */
-    private void findReferencingProductCmptGenerationsToTableContents(IProductCmpt toBeSearched,
-            String qualifiedTableContentsName,
-            Set<IProductPartsContainer> result) {
-
-        int max = toBeSearched.getNumOfGenerations();
-        for (int i = 0; i < max; i++) {
-            IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
-            ITableContentUsage[] tcus = generation.getTableContentUsages();
-            for (ITableContentUsage tcu : tcus) {
-                if (tcu.getTableContentName().equals(qualifiedTableContentsName)) {
-                    result.add(generation);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
      * @deprecated since 3.15: this method is not supported anymore. Use
      *             {@link #findAllIpsSrcFiles(IpsObjectType...)} instead.
      */
@@ -1521,32 +1439,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         return filesToIpsObjects(resultSrcFiles, ITestCase.class);
-    }
-
-    @Override
-    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) {
-        ArrayList<IIpsObject> list = new ArrayList<IIpsObject>();
-        // get referenced PCTypes
-        IIpsSrcFile[] pcTypes = findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
-        for (IIpsSrcFile pcType2 : pcTypes) {
-            List<IPolicyCmptTypeAssociation> relations = ((IPolicyCmptType)pcType2.getIpsObject())
-                    .getPolicyCmptTypeAssociations();
-            for (IPolicyCmptTypeAssociation relation : relations) {
-                if (relation.getTarget().equals(pcType.getQualifiedName())) {
-                    list.add(pcType2.getIpsObject());
-                }
-            }
-        }
-
-        String superType = pcType.getSupertype();
-        if (!(superType.length() == 0)) {
-            IIpsObject ipsObject = findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, superType);
-            if (ipsObject != null) {
-                list.add(ipsObject);
-            }
-        }
-
-        return list.toArray(new PolicyCmptType[0]);
     }
 
     @Override
