@@ -44,6 +44,8 @@ public class Messages extends NLS {
     public static String ConfiguredDefault_msgValueNotInValueset;
     public static String ConfiguredDefault_msgValueIsEmptyString;
     public static String ConfiguredValueSet_msgInvalidAttributeValueset;
+    public static String ConfiguredDefault_caption;
+    public static String ConfiguredValueSet_caption;
 
     public static String Formula_msgExpressionMissing;
     public static String Formula_msgFormulaSignatureMissing;

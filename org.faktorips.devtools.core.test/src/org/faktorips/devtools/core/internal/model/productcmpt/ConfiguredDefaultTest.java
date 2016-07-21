@@ -22,8 +22,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
@@ -443,4 +445,19 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         return defaultValue.getPropertyValueContainer().getPropertyValue(defaultValue.getPolicyCmptTypeAttribute(),
                 IConfiguredValueSet.class);
     }
+
+    @Test
+    public void testGetCaption() throws CoreException {
+        attribute.setLabelValue(Locale.US, "Attribute Label");
+
+        assertEquals(NLS.bind(Messages.ConfiguredDefault_caption, "Attribute Label"),
+                configuredDefaultValue.getCaption(Locale.US));
+    }
+
+    @Test
+    public void testGetLastResortCaption() {
+        assertEquals(NLS.bind(Messages.ConfiguredDefault_caption, "attribute"),
+                configuredDefaultValue.getLastResortCaption());
+    }
+
 }

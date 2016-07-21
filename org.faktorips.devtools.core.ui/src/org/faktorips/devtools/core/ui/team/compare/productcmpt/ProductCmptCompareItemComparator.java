@@ -12,13 +12,11 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import java.util.Comparator;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredDefault;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
+import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -46,6 +44,8 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
     private static final Class<?>[] TYPE_ORDER = new Class<?>[] { IPropertyValue.class, IProductCmptLink.class,
         IProductCmptGeneration.class };
 
+    private static final PropertyValueComparator PROPERTY_VALUE_COMPARATOR = new PropertyValueComparator();
+
     /**
      * {@inheritDoc}
      */
@@ -66,33 +66,7 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
     }
 
     private int comparePropertyValues(IPropertyValue element1, IPropertyValue element2) {
-        int comparedPropertyTypes = element1.getProductCmptPropertyType().compareTo(
-                element2.getProductCmptPropertyType());
-        if (comparedPropertyTypes == 0) {
-            return compareSamePropertyType(element1, element2);
-        } else {
-            return comparedPropertyTypes;
-        }
-    }
-
-    /**
-     * Within the same property type the items should be compared by name
-     */
-    private int compareSamePropertyType(IPropertyValue element1, IPropertyValue element2) {
-        int comparedName = element1.getPropertyName().compareTo(element2.getPropertyName());
-        if (comparedName == 0) {
-            return compareSamePropertyTypeAndName(element1, element2);
-        } else {
-            return comparedName;
-        }
-    }
-
-    /**
-     * Two elements with the same property type and the same name may be a {@link ConfiguredDefault}
-     * and {@link ConfiguredValueSet}. So we just need to compare the {@link PropertyValueType}.
-     */
-    private int compareSamePropertyTypeAndName(IPropertyValue element1, IPropertyValue element2) {
-        return element1.getPropertyValueType().compareTo(element2.getPropertyValueType());
+        return PROPERTY_VALUE_COMPARATOR.compare(element1, element2);
     }
 
     private int typeIndexOf(IIpsElement part) {

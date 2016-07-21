@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Ordering;
 
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -257,14 +258,13 @@ public class PropertyValueCollection {
     }
 
     /**
-     * Returns a list of all {@link IPropertyValue}s in this container. Parts of the same
-     * {@link ProductCmptPropertyType} retain their natural order. The different
-     * {@link ProductCmptPropertyType}s are always in the same order.
-     * 
+     * Returns a list of all {@link IPropertyValue}s in this container. Parts are sorted by
+     * {@link ProductCmptPropertyType} and their name.
+     *
      * @return all property values this container manages.
      */
     public List<IPropertyValue> getAllPropertyValues() {
-        return classToInstancesMap.values();
+        return Ordering.from(new PropertyValueComparator()).sortedCopy(classToInstancesMap.values());
     }
 
     /**

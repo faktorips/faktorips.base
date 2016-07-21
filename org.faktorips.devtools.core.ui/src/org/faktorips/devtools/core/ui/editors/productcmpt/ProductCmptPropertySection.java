@@ -25,6 +25,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -351,6 +352,25 @@ public abstract class ProductCmptPropertySection extends IpsSection {
                 return new ConfiguredValueSetEditComposite((IPolicyCmptTypeAttribute)property,
                         (IConfiguredValueSet)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
+
+            @Override
+            public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
+                // Label is for both parts of policy attribute, so label is only the name/label of
+                // the policy attribute
+                try {
+                    IProductCmptProperty property = propertyValue.findProperty(propertyValue.getIpsProject());
+                    String label;
+                    if (property != null) {
+                        label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
+                    } else {
+                        label = propertyValue.getPropertyName();
+                    }
+                    return toolkit.createLabel(parent, label);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+
         },
 
         CONFIGURED_DEFAULT() {

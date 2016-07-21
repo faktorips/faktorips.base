@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -269,4 +270,15 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         }
         return new IIpsElement[0];
     }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return NLS.bind(Messages.ConfiguredValueSet_caption, getAttributeLabel(locale));
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        return NLS.bind(Messages.ConfiguredValueSet_caption, getAttributeLabel(null));
+    }
+
 }

@@ -224,8 +224,8 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         entries = ((IPropertyValueContainerToTypeDelta)delta.getChildren().get(0)).getEntries();
         assertEquals(3, entries.length);
         assertEquals(attribute3.getName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
-        assertEquals("a_super", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
-        assertEquals("a1", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
+        assertEquals("a_super", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
@@ -286,8 +286,8 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         entries = delta.getEntries();
         assertEquals(3, entries.length);
         assertEquals(attribute3.getName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
-        assertEquals("a_super", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
-        assertEquals("a1", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
+        assertEquals("a_super", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());

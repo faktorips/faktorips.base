@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -163,5 +165,15 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     @Override
     protected void templateValueChanged() {
         this.value = getValue();
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return NLS.bind(Messages.ConfiguredDefault_caption, getAttributeLabel(locale));
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        return NLS.bind(Messages.ConfiguredDefault_caption, getAttributeLabel(null));
     }
 }

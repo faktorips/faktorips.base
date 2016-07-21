@@ -24,12 +24,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
@@ -43,6 +45,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -577,4 +580,34 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate(template.getQualifiedName());
         return templateValueSet;
     }
+
+    @Test
+    public void testFindPcTypeAttribute() throws CoreException {
+        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
+        policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
+
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
+        a1.setName("a1");
+        IPolicyCmptTypeAttribute a2 = policyCmptSupertype.newPolicyCmptTypeAttribute();
+        a2.setName("a2");
+
+        generation = productCmpt.getProductCmptGeneration(0);
+        IConfiguredDefault defaultValue = generation.newPropertyValue(a1, IConfiguredDefault.class);
+        assertEquals(a1, defaultValue.findPcTypeAttribute(ipsProject));
+    }
+
+    @Test
+    public void testGetCaption() throws CoreException {
+        attribute.setLabelValue(Locale.US, "Attribute Label");
+
+        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "Attribute Label"),
+                configuredValueSet.getCaption(Locale.US));
+    }
+
+    @Test
+    public void testGetLastResortCaption() {
+        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "attribute"),
+                configuredValueSet.getLastResortCaption());
+    }
+
 }

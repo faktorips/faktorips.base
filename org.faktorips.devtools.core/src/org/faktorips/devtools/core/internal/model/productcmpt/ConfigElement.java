@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -196,21 +195,15 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
         return findValueDatatype(getIpsProject());
     }
 
-    @Override
-    public String getCaption(Locale locale) throws CoreException {
-        ArgumentCheck.notNull(locale);
-
-        String caption = null;
+    public String getAttributeLabel(Locale locale) {
         IAttribute attribute = findPcTypeAttribute(getIpsProject());
-        if (attribute != null) {
-            caption = attribute.getLabelValue(locale);
+        if (attribute != null && locale != null) {
+            String labelValue = attribute.getLabelValue(locale);
+            if (StringUtils.isNotEmpty(labelValue)) {
+                return labelValue;
+            }
         }
-        return caption;
-    }
-
-    @Override
-    public String getLastResortCaption() {
-        return StringUtils.capitalize(getPolicyCmptTypeAttribute());
+        return getPropertyName();
     }
 
     @Override
