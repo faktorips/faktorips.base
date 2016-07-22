@@ -214,6 +214,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         cells[0] = new TextPageElement(getContext().getLabel(policyCmptTypeAttribute), getContext());
 
         if (productCmpt.allowGenerations()) {
+            // TODO FIPS-5085 static attributes in product?
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
@@ -226,12 +227,31 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
                     continue;
                 }
+                if (configuredDefault == null || configuredDefault.getValue() == null) {
+                    cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
+                    continue;
+                }
 
                 IValueSet valueSet = configuredValueSet.getValueSet();
                 String defaultValue = configuredDefault.getValue();
 
                 cells[i + 1] = createValueSetCell(valueSet, defaultValue);
 
+            }
+        } else {
+            // TODO FIPS-5085 refactor duplicate code
+            IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(policyCmptTypeAttribute,
+                    IConfiguredValueSet.class);
+            IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(policyCmptTypeAttribute,
+                    IConfiguredDefault.class);
+
+            if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
+                cells[1] = new TextPageElement(NOT_AVAILABLE, getContext());
+            } else {
+                IValueSet valueSet = configuredValueSet.getValueSet();
+                String defaultValue = configuredDefault.getValue();
+
+                cells[1] = createValueSetCell(valueSet, defaultValue);
             }
         }
         addSubElement(new TableRowPageElement(cells, getContext()));
@@ -649,7 +669,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         String value;
         value = getContext().getDatatypeFormatter().formatValue(
                 productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
-                attributeValue == null ? null : attributeValue.getPropertyValue().toString());
+                attributeValue == null ? null : attributeValue.getPropertyValue());
         return value;
     }
 
