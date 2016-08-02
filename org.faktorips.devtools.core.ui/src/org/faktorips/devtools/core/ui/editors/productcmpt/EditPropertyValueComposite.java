@@ -80,7 +80,7 @@ import org.faktorips.devtools.core.util.TemplatedValueUtil;
  * @see EditField
  */
 public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
-Composite {
+        Composite {
 
     private final P property;
 
@@ -295,7 +295,7 @@ Composite {
                 this.getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
 

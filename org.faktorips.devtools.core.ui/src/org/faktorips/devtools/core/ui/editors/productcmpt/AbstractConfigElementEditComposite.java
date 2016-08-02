@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 public abstract class AbstractConfigElementEditComposite<V extends IConfigElement> extends
-EditPropertyValueComposite<IPolicyCmptTypeAttribute, V> {
+        EditPropertyValueComposite<IPolicyCmptTypeAttribute, V> {
 
     public AbstractConfigElementEditComposite(IPolicyCmptTypeAttribute property, V propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
