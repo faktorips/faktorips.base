@@ -477,26 +477,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                     throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
                             + part.getId());
                 }
-            } else {
-                if (isLegacyElement(partEl)) {
-                    // while reading legacy XML we need to ignore all IDs
-                    initPartContainersFromXml(partEl, Collections.<String, IIpsObjectPart> emptyMap());
-                }
             }
         }
-    }
-
-    /**
-     * This method may be overwritten in subclasses to define legacy XML elements which content
-     * should be processed. That means that this element could not be used by any
-     * {@link IIpsObjectPart} but the nested elements may be interesting.
-     * 
-     * @param element The element that may be legacy
-     * 
-     * @return true if the initialization continues with the child elements.
-     */
-    protected boolean isLegacyElement(Element element) {
-        return false;
     }
 
     private HashMap<String, IIpsObjectPart> createIdPartMap() {
@@ -607,7 +589,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             } else {
                 return null;
             }
-
         } else if (nodeName.equals(IDescription.XML_TAG_NAME)) {
             if (this instanceof IDescribedElement) {
                 return newDescription(id);

@@ -54,7 +54,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -108,7 +107,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+                            IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -433,11 +432,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else {
             return propertyValueCollection.newPropertyValue(xmlTagName, id);
         }
-    }
-
-    @Override
-    protected boolean isLegacyElement(Element element) {
-        return ValueToXmlHelper.LEGACY_XML_TAG_CONFIG_ELEMENT.equals(element.getNodeName());
     }
 
     /**

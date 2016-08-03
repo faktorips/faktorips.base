@@ -64,7 +64,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.TypeValidations;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -380,11 +379,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
         template = element.getAttribute(PROPERTY_TEMPLATE);
-    }
-
-    @Override
-    protected boolean isLegacyElement(Element element) {
-        return ValueToXmlHelper.LEGACY_XML_TAG_CONFIG_ELEMENT.equals(element.getNodeName());
     }
 
     /**

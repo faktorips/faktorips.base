@@ -237,8 +237,11 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         if (LEGACY_TAG_NAME.equals(element.getNodeName())) {
+            // overwrite ID in legacy mode
             super.initPropertiesFromXml(element, getNextPartId());
-            IIpsObjectPart newPart = newPart(element, getNextPartId());
+            // the legacy part only have one XML element for the ConfiguredVallueSet and nested
+            // ValueSet. So we create the a child with the same XML element
+            IIpsObjectPart newPart = newPart(element, id);
             newPart.initFromXml(element);
         } else {
             super.initPropertiesFromXml(element, id);

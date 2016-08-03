@@ -19,15 +19,23 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -202,6 +210,48 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         attr.setAttribute("AV1");
         assertTrue(valueContainer.removePropertyValue(attr));
         assertFalse(valueContainer.removePropertyValue(attr));
+    }
+
+    @Test
+    public void testGetAllPropertyValues_Sorted() throws Exception {
+        // create in pseudo random order. The suffix 1 must be before suffix 2!
+        valueContainer.clear();
+        IAttributeValue attributeValue1 = valueContainer.newPropertyValue(nextId(), IAttributeValue.class);
+        attributeValue1.setAttribute("a1");
+        IConfiguredDefault configuredDefault1 = valueContainer.newPropertyValue(nextId(), IConfiguredDefault.class);
+        configuredDefault1.setPolicyCmptTypeAttribute("pc1");
+        IAttributeValue attributeValue2 = valueContainer.newPropertyValue(nextId(), IAttributeValue.class);
+        attributeValue2.setAttribute("a2");
+        IFormula formula1 = valueContainer.newPropertyValue(nextId(), IFormula.class);
+        formula1.setFormulaSignature("f1");
+        ITableContentUsage tableContentUsage1 = valueContainer.newPropertyValue(nextId(), ITableContentUsage.class);
+        tableContentUsage1.setStructureUsage("t1");
+        IConfiguredValueSet configuredValueSet1 = valueContainer.newPropertyValue(nextId(), IConfiguredValueSet.class);
+        configuredValueSet1.setPolicyCmptTypeAttribute("pc1");
+        IValidationRuleConfig validationRuleConfig1 = valueContainer.newPropertyValue(nextId(),
+                IValidationRuleConfig.class);
+        validationRuleConfig1.setValidationRuleName("v1");
+        IFormula formula2 = valueContainer.newPropertyValue(nextId(), IFormula.class);
+        formula2.setFormulaSignature("f2");
+        IConfiguredValueSet configuredValueSet2 = valueContainer.newPropertyValue(nextId(), IConfiguredValueSet.class);
+        configuredValueSet2.setPolicyCmptTypeAttribute("pc2");
+        IConfiguredDefault configuredDefault2 = valueContainer.newPropertyValue(nextId(), IConfiguredDefault.class);
+        configuredDefault2.setPolicyCmptTypeAttribute("pc2");
+        ITableContentUsage tableContentUsage2 = valueContainer.newPropertyValue(nextId(), ITableContentUsage.class);
+        tableContentUsage2.setStructureUsage("t2");
+        IValidationRuleConfig validationRuleConfig2 = valueContainer.newPropertyValue(nextId(),
+                IValidationRuleConfig.class);
+        validationRuleConfig2.setValidationRuleName("v2");
+
+        List<IPropertyValue> allPropertyValues = valueContainer.getAllPropertyValues();
+
+        assertEquals(Arrays.asList(attributeValue1, attributeValue2, configuredValueSet1, configuredDefault1,
+                configuredValueSet2, configuredDefault2, formula1, formula2, tableContentUsage1, tableContentUsage2,
+                validationRuleConfig1, validationRuleConfig2), allPropertyValues);
+    }
+
+    protected String nextId() {
+        return UUID.randomUUID().toString();
     }
 
 }

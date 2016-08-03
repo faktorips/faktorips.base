@@ -210,6 +210,9 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         minCard.setText(""); //$NON-NLS-1$
         maxCard.setText(""); //$NON-NLS-1$
         defaultCard.setText(""); //$NON-NLS-1$
+        if (templateStatusToolBar != null) {
+            templateStatusToolBar.setEnabled(!pmo.isEmpty());
+        }
     }
 
     public void refresh() {

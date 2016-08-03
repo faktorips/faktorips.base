@@ -21,6 +21,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Ordering;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
@@ -36,6 +37,8 @@ import org.faktorips.util.ClassToInstancesMap;
  * @since 3.4
  */
 public class PropertyValueCollection {
+
+    private static final PropertyValueComparator COMPARATOR = new PropertyValueComparator();
 
     private final ClassToInstancesMap<IPropertyValue> classToInstancesMap;
     private final IPropertyValueContainer propertyValueContainer;
@@ -186,11 +189,13 @@ public class PropertyValueCollection {
      * @return the newly created part or <code>null</code> if the given XML tag corresponds to no
      *         {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
      */
-    public IPropertyValue newPropertyValue(String xmlTagName, String partId) {
+    public IIpsObjectPart newPropertyValue(String xmlTagName, String partId) {
         PropertyValueType propertyType = PropertyValueType.getTypeForXmlTag(xmlTagName);
         if (propertyType != null) {
             IPropertyValue newPropertyValue = newPropertyValue(partId, propertyType.getInterfaceClass());
             return newPropertyValue;
+        } else if (LegacyConfigElement.XML_TAG.equals(xmlTagName)) {
+            return new LegacyConfigElement(propertyValueContainer);
         }
         return null;
     }
@@ -264,7 +269,7 @@ public class PropertyValueCollection {
      * @return all property values this container manages.
      */
     public List<IPropertyValue> getAllPropertyValues() {
-        return Ordering.from(new PropertyValueComparator()).sortedCopy(classToInstancesMap.values());
+        return Ordering.from(COMPARATOR).sortedCopy(classToInstancesMap.values());
     }
 
     /**

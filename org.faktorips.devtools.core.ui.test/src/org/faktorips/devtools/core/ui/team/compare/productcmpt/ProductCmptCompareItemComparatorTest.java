@@ -134,12 +134,12 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         children = compareItemGen1.getChildren();
         assertEquals(10, children.length);
         ProductCmptCompareItem compareItemAttribute1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemTableUsage = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemFormula = (ProductCmptCompareItem)children[2];
-        ProductCmptCompareItem compareItemValueSet1 = (ProductCmptCompareItem)children[3];
-        ProductCmptCompareItem compareItemDefault1 = (ProductCmptCompareItem)children[4];
-        ProductCmptCompareItem compareItemValueSet2 = (ProductCmptCompareItem)children[5];
-        ProductCmptCompareItem compareItemDefault2 = (ProductCmptCompareItem)children[6];
+        ProductCmptCompareItem compareItemValueSet1 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemDefault1 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemValueSet2 = (ProductCmptCompareItem)children[3];
+        ProductCmptCompareItem compareItemDefault2 = (ProductCmptCompareItem)children[4];
+        ProductCmptCompareItem compareItemFormula = (ProductCmptCompareItem)children[5];
+        ProductCmptCompareItem compareItemTableUsage = (ProductCmptCompareItem)children[6];
         ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[7];
         ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[8];
         ProductCmptCompareItem compareItemRelation3 = (ProductCmptCompareItem)children[9];

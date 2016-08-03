@@ -50,35 +50,7 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this {@link ProductCmptPropertyType} can be safely casted to
      * {@link IAttributeValue}.
      */
-    PRODUCT_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_productAttribute) {
-
-    },
-
-    /**
-     * The {@link IProductCmptProperty} is an {@link ITableStructureUsage} of an
-     * {@link IProductCmptType}.
-     * <p>
-     * An {@link IProductCmptProperty} with this type can be safely casted to
-     * {@link ITableStructureUsage}.
-     * <p>
-     * An {@link IPropertyValue} with this type can be safely casted to {@link ITableContentUsage}.
-     */
-    TABLE_STRUCTURE_USAGE(Messages.ProductCmptPropertyType_tableUsage) {
-
-    },
-
-    /**
-     * The {@link IProductCmptProperty} is an {@link IProductCmptTypeMethod} of an
-     * {@link IProductCmptType} that is marked as <em>formula signature</em>.
-     * <p>
-     * An {@link IProductCmptProperty} with this type can be safely casted to
-     * {@link IProductCmptTypeMethod}.
-     * <p>
-     * An {@link IPropertyValue} with this type can be safely casted to {@link IFormula}.
-     */
-    FORMULA_SIGNATURE_DEFINITION(Messages.ProductCmptPropertyType_fomula) {
-
-    },
+    PRODUCT_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_productAttribute),
 
     /**
      * The {@link IProductCmptProperty} is an {@link IPolicyCmptTypeAttribute} of an
@@ -90,9 +62,29 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this type can either be a {@link IConfiguredValueSet} or
      * {@link IConfiguredDefault}
      */
-    POLICY_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_defaultValueAndValueSet) {
+    POLICY_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_defaultValueAndValueSet),
 
-    },
+    /**
+     * The {@link IProductCmptProperty} is an {@link IProductCmptTypeMethod} of an
+     * {@link IProductCmptType} that is marked as <em>formula signature</em>.
+     * <p>
+     * An {@link IProductCmptProperty} with this type can be safely casted to
+     * {@link IProductCmptTypeMethod}.
+     * <p>
+     * An {@link IPropertyValue} with this type can be safely casted to {@link IFormula}.
+     */
+    FORMULA_SIGNATURE_DEFINITION(Messages.ProductCmptPropertyType_fomula),
+
+    /**
+     * The {@link IProductCmptProperty} is an {@link ITableStructureUsage} of an
+     * {@link IProductCmptType}.
+     * <p>
+     * An {@link IProductCmptProperty} with this type can be safely casted to
+     * {@link ITableStructureUsage}.
+     * <p>
+     * An {@link IPropertyValue} with this type can be safely casted to {@link ITableContentUsage}.
+     */
+    TABLE_STRUCTURE_USAGE(Messages.ProductCmptPropertyType_tableUsage),
 
     /**
      * The {@link IProductCmptProperty} is an {@link IValidationRule} of an {@link IPolicyCmptType}.
@@ -103,9 +95,7 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this type can be safely casted to
      * {@link IValidationRuleConfig}.
      */
-    VALIDATION_RULE(Messages.ProductCmptPropertyType_ValidationRule) {
-
-    };
+    VALIDATION_RULE(Messages.ProductCmptPropertyType_ValidationRule);
 
     private final String name;
 
