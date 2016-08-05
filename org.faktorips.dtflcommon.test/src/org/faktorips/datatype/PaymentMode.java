@@ -77,7 +77,7 @@ public class PaymentMode implements NullObjectSupport {
 
     @Override
     public boolean isNotNull() {
-        return !isNotNull();
+        return !isNull();
     }
 
     static class PaymentModeNull extends PaymentMode implements NullObject {
