@@ -9,12 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 
-public class PropertyValueComparator implements Comparator<IPropertyValue> {
+public class PropertyValueComparator implements Comparator<IPropertyValue>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public int compare(IPropertyValue element1, IPropertyValue element2) {

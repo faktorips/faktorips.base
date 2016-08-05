@@ -39,8 +39,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class ConfiguredDefaultEditComposite extends AbstractConfigElementEditComposite<IConfiguredDefault> {
 
-    private AnyValueSetControl valueSetControl;
-
     public ConfiguredDefaultEditComposite(IPolicyCmptTypeAttribute property, IConfiguredDefault propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
@@ -80,13 +78,6 @@ public class ConfiguredDefaultEditComposite extends AbstractConfigElementEditCom
     private void addOverlaysToEditFields(List<EditField<?>> editFields) {
         for (EditField<?> editField : editFields) {
             addChangingOverTimeDecorationIfRequired(editField);
-        }
-    }
-
-    public void setEnumValueSetProvider(IEnumValueSetProvider enumValueSetProvider) {
-        // anyValueSetControl might be null in case of a Range ValueSet
-        if (valueSetControl != null) {
-            valueSetControl.setEnumValueSetProvider(enumValueSetProvider);
         }
     }
 

@@ -82,7 +82,11 @@ public class PropertyValueCollection {
 
                     @Override
                     public IPropertyValue apply(PropertyValueType type) {
-                        return getPropertyValue(property, type.getInterfaceClass());
+                        if (type != null) {
+                            return getPropertyValue(property, type.getInterfaceClass());
+                        } else {
+                            return null;
+                        }
                     }
                 }), Predicates.notNull()));
     }
