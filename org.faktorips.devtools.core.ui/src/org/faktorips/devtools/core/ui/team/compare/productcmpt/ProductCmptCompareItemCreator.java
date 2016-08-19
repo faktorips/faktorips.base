@@ -14,6 +14,7 @@ import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -68,6 +69,8 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
                 IIpsElement[] children = productCmpt.getChildren();
                 for (IIpsElement element : children) {
                     if (element instanceof IIpsObjectGeneration) {
+                        continue;
+                    } else if (element instanceof IDescription) {
                         continue;
                     }
                     new ProductCmptCompareItem(productCmptItem, element);
