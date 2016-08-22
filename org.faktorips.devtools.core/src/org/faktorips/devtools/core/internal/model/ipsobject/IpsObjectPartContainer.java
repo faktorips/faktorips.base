@@ -444,8 +444,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected void initPartContainersFromXml(Element element) {
         HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
-        Set<String> idSet = new HashSet<String>();
         reinitPartCollections();
+        initPartContainersFromXml(element, idPartMap);
+    }
+
+    protected void initPartContainersFromXml(Element element, Map<String, IIpsObjectPart> idPartMap) {
+        Set<String> idSet = new HashSet<String>();
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
@@ -456,7 +460,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (partEl.getNodeName().equals(XML_EXT_PROPERTIES_ELEMENT)) {
                 continue;
             }
-            String id = partEl.getAttribute("id").trim(); //$NON-NLS-1$
+            String id = partEl.getAttribute(IIpsObjectPart.PROPERTY_ID).trim();
             IIpsObjectPart part = idPartMap.get(id);
             if (part == null) {
                 part = newPart(partEl, getNextPartId());
@@ -466,7 +470,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                     throw new IllegalArgumentException("Could not re-add part " + part); //$NON-NLS-1$
                 }
             }
-            // part might be null if the element does not represent a part!
+            // part might be null if the partEl does not represent a IpsObjectPart!
             if (part != null) {
                 part.initFromXml(partEl);
                 if (!idSet.add(part.getId())) {
@@ -475,7 +479,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                 }
             }
         }
-        return;
     }
 
     private HashMap<String, IIpsObjectPart> createIdPartMap() {
@@ -586,7 +589,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             } else {
                 return null;
             }
-
         } else if (nodeName.equals(IDescription.XML_TAG_NAME)) {
             if (this instanceof IDescribedElement) {
                 return newDescription(id);

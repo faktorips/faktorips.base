@@ -29,12 +29,16 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     private final IPropertyValueContainer propertyValueContainer;
 
+    private final PropertyValueType type;
+
     private ValueWithoutPropertyEntry predecessor;
 
-    public MissingPropertyValueEntry(IPropertyValueContainer propertyValueContainer, IProductCmptProperty property) {
+    public MissingPropertyValueEntry(IPropertyValueContainer propertyValueContainer, IProductCmptProperty property,
+            PropertyValueType type) {
         super(null);
         this.propertyValueContainer = propertyValueContainer;
         this.property = property;
+        this.type = type;
     }
 
     /**
@@ -44,7 +48,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
      */
     @Override
     public PropertyValueType getPropertyType() {
-        return property.getProductCmptPropertyType().getValueType();
+        return type;
     }
 
     /**
@@ -95,7 +99,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public void fix() {
-        IPropertyValue newPropertyValue = propertyValueContainer.newPropertyValue(property);
+        IPropertyValue newPropertyValue = propertyValueContainer.newPropertyValue(property, type.getInterfaceClass());
         if (hasPredecessorValue()) {
             // if there was a predecessor value we copy the whole value
             IPropertyValue predecessorValue = getPredecessor().getPropertyValue();

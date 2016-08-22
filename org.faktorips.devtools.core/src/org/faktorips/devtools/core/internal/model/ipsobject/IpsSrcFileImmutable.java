@@ -109,7 +109,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
         StringBuilder builder = new StringBuilder();
         try {
             while ((line = bufferedReader.readLine()) != null) {
-                builder.append(line);
+                builder.append(line).append("\n"); //$NON-NLS-1$
             }
         } catch (IOException e) {
             IpsPlugin.log(e);

@@ -24,7 +24,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -145,7 +146,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                                 HtmlExportMessages.ProductGenerationAttributeTable_validationRulesActive)
                                 : getContext().getMessage(
                                         HtmlExportMessages.ProductGenerationAttributeTable_validationRulesInactive),
-                        TextType.BLOCK, getContext());
+                                        TextType.BLOCK, getContext());
                 cells[i + 1].addStyles(Style.CENTER);
 
             }
@@ -213,22 +214,44 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         cells[0] = new TextPageElement(getContext().getLabel(policyCmptTypeAttribute), getContext());
 
         if (productCmpt.allowGenerations()) {
+            // TODO FIPS-5085 static attributes in product?
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
-                IConfigElement configElement = productCmptGeneration
-                        .getConfigElement(policyCmptTypeAttribute.getName());
+                IConfiguredValueSet configuredValueSet = productCmptGeneration
+                        .getConfiguredValueSet(policyCmptTypeAttribute.getName());
+                IConfiguredDefault configuredDefault = productCmptGeneration
+                        .getConfiguredDefault(policyCmptTypeAttribute.getName());
 
-                if (configElement == null || configElement.getValueSet() == null) {
+                if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
+                    cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
+                    continue;
+                }
+                if (configuredDefault == null || configuredDefault.getValue() == null) {
                     cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
                     continue;
                 }
 
-                IValueSet valueSet = configElement.getValueSet();
-                String defaultValue = configElement.getValue();
+                IValueSet valueSet = configuredValueSet.getValueSet();
+                String defaultValue = configuredDefault.getValue();
 
                 cells[i + 1] = createValueSetCell(valueSet, defaultValue);
 
+            }
+        } else {
+            // TODO FIPS-5085 refactor duplicate code
+            IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(policyCmptTypeAttribute,
+                    IConfiguredValueSet.class);
+            IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(policyCmptTypeAttribute,
+                    IConfiguredDefault.class);
+
+            if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
+                cells[1] = new TextPageElement(NOT_AVAILABLE, getContext());
+            } else {
+                IValueSet valueSet = configuredValueSet.getValueSet();
+                String defaultValue = configuredDefault.getValue();
+
+                cells[1] = createValueSetCell(valueSet, defaultValue);
             }
         }
         addSubElement(new TableRowPageElement(cells, getContext()));
@@ -242,7 +265,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 + COLON_SEPARATOR
                 + getContext().getDatatypeFormatter().formatValue(
                         valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue), TextType.BLOCK,
-                getContext()));
+                        getContext()));
 
         if (valueSet.isEnum()) {
             pageElement.addPageElements(createEnumValueSetCell((IEnumValueSet)valueSet));
@@ -563,8 +586,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         IPageElement cardinalities = new TextPageElement(
                 productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
-                        + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
-                        + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
+                + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
+                + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
 
         return new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(targetLink, cardinalities);
     }

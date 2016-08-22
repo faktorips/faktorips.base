@@ -10,21 +10,23 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
+import java.util.List;
+
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
 
 /**
  * An abstraction of properties (defined by a type) that are configured by product components. Such
- * properties have exactly one value-instance ({@link IPropertyValue}).
- * <p>
- * As of yet, not all aspects that are configured by a product component are
- * {@link IProductCmptProperty}s. e.g. {@link ProductCmptTypeAssociation} as there are multiple
- * {@link IProductCmptLink} instances for a single association.
+ * properties have one or more value-instance ({@link IPropertyValue}). For example a
+ * {@link IPolicyAttributeModel} has two {@link IPropertyValue} namely {@link IConfiguredValueSet}
+ * and {@link IConfiguredDefault}.
  * 
  * @author Jan Ortmann
  * @author Stefan Widmaier
@@ -41,6 +43,14 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      * @see ProductCmptPropertyType
      */
     public ProductCmptPropertyType getProductCmptPropertyType();
+
+    /**
+     * Returns the list of value types that are supported by this property value.
+     * 
+     * @return a list {@link PropertyValueType} which are supported by this
+     *         {@link IProductCmptProperty}
+     */
+    public List<PropertyValueType> getPropertyValueTypes();
 
     /**
      * Returns the name of the property. That name is unique in the corresponding

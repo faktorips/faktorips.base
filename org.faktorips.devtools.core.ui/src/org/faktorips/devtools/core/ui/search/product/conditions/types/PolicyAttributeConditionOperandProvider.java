@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
@@ -26,10 +26,11 @@ final class PolicyAttributeConditionOperandProvider implements IOperandProvider 
 
     @Override
     public Object getSearchOperand(IProductPartsContainer productPartsContainer) {
-        List<IConfigElement> configElements = productPartsContainer.getProductParts(IConfigElement.class);
-        for (IConfigElement configElement : configElements) {
-            if (configElement.getPolicyCmptTypeAttribute().equals(attribute.getName())) {
-                return configElement.getValueSet();
+        List<IConfiguredValueSet> configuredValueSets = productPartsContainer
+                .getProductParts(IConfiguredValueSet.class);
+        for (IConfiguredValueSet configValueSet : configuredValueSets) {
+            if (configValueSet.getPolicyCmptTypeAttribute().equals(attribute.getName())) {
+                return configValueSet.getValueSet();
             }
         }
         return null;

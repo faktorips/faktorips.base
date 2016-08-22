@@ -58,7 +58,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -392,7 +392,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
 
         IProductCmptGeneration generation = comfortMotorProduct.getGenerationEffectiveOn(new GregorianCalendar());
-        IConfigElement configElement = generation.newConfigElement(salesNameAttribute);
+        IConfiguredDefault configElement = generation.newPropertyValue(salesNameAttribute, IConfiguredDefault.class);
         configElement.setValue("Foo");
 
         IpsPlugin ipsPlugin = IpsPlugin.getDefault();
@@ -424,7 +424,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                     comfortMotorProduct.getQualifiedName());
             ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
             generation = copiedProductCmpt.getGenerationEffectiveOn(new GregorianCalendar());
-            configElement = generation.getConfigElement("salesName");
+            configElement = generation.getConfiguredDefault("salesName");
 
             verify(testDeepCopyOperationFixup, times(5)).fix(any(IProductCmpt.class), any(IProductCmpt.class)); // comfortMotorProduct
             // +

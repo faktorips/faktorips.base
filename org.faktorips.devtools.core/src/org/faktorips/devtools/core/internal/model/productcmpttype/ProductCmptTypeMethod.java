@@ -10,12 +10,16 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -142,6 +146,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             return ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION;
         }
         return null;
+    }
+
+    @Override
+    public List<PropertyValueType> getPropertyValueTypes() {
+        return Arrays.asList(PropertyValueType.FORMULA);
     }
 
     @Override

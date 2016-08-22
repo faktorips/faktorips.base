@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -87,9 +88,9 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(testAttribute.getAttribute().equals(newAttributeName));
 
         // Check for product component configuration element update.
-        assertNull(productCmptGeneration.getConfigElement(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
-        assertNotNull(productCmptGeneration.getConfigElement(newAttributeName));
-        assertEquals(newAttributeName, productCmptGenerationConfigElement.getPolicyCmptTypeAttribute());
+        assertNull(productCmptGeneration.getPropertyValue(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, IConfiguredDefault.class));
+        assertNotNull(productCmptGeneration.getPropertyValue(newAttributeName, IConfiguredDefault.class));
+        assertEquals(newAttributeName, productCmptGenerationConfiguredDefault.getPolicyCmptTypeAttribute());
     }
 
     @Test
@@ -142,7 +143,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         // Create a product component on that new product component type.
         IProductCmpt otherProductCmpt = newProductCmpt(otherProductCmptType, "OtherExampleProduct");
         IProductCmptGeneration otherGeneration = (IProductCmptGeneration)otherProductCmpt.newGeneration();
-        IConfigElement otherConfigElement = otherGeneration.newConfigElement(otherAttribute);
+        IConfigElement otherConfigElement = otherGeneration.newPropertyValue(otherAttribute, IConfiguredDefault.class);
 
         // Create another test case type based on the new policy component type.
         ITestCaseType otherTestCaseType = newTestCaseType(ipsProject, "OtherTestCaseType");
@@ -159,7 +160,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
         // The new configuration element may not have been modified.
         assertEquals(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, otherConfigElement.getName());
-        assertNull(otherGeneration.getConfigElement(newAttributeName));
+        assertNull(otherGeneration.getPropertyValue(newAttributeName, IConfiguredDefault.class));
 
         // The new test attribute may not have been modified.
         assertEquals(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, otherTestAttribute.getAttribute());
@@ -187,7 +188,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         superTestAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
 
         // Create a configuration element for this new attribute.
-        IConfigElement superConfigElement = productCmptGeneration.newConfigElement(superAttribute);
+        IConfigElement superConfigElement = productCmptGeneration.newPropertyValue(superAttribute,
+                IConfiguredDefault.class);
 
         // Run the refactoring.
         String newAttributeName = "test";
@@ -199,9 +201,9 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(superTestAttribute.getAttribute().equals(newAttributeName));
 
         // Check for product component configuration element update.
-        assertNotNull(productCmptGeneration.getConfigElement(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
-        assertNull(productCmptGeneration.getConfigElement("superAttribute"));
-        assertNotNull(productCmptGeneration.getConfigElement(newAttributeName));
+        assertNotNull(productCmptGeneration.getPropertyValue(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, IConfiguredDefault.class));
+        assertNull(productCmptGeneration.getPropertyValue("superAttribute", IConfiguredDefault.class));
+        assertNotNull(productCmptGeneration.getPropertyValue(newAttributeName, IConfiguredDefault.class));
         assertEquals(newAttributeName, superConfigElement.getPolicyCmptTypeAttribute());
     }
 

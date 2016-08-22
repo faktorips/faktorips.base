@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -239,7 +239,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
             // and the attribute is changeable
             if (modelAttribute.isProductRelevant() && generation != null
                     && modelAttribute.getAttributeType().equals(AttributeType.CHANGEABLE)) {
-                IConfigElement ce = generation.getConfigElement(modelAttribute.getName());
+                IConfiguredDefault ce = generation.getConfiguredDefault(modelAttribute.getName());
                 if (ce != null) {
                     setValue(ce.getValue());
                     defaultSet = true;

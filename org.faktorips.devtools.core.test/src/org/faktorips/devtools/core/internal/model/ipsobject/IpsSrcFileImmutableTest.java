@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -54,7 +54,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
-        generation.newConfigElement();
+        generation.newAttributeValue();
         generation.newLink("");
 
         // save contents
@@ -109,14 +109,14 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         IProductCmptGeneration generation2 = prodImm2.getFirstGeneration();
 
         // compare configelements in first generation
-        List<?> configElements1 = Arrays.asList(generation1.getConfigElements());
-        List<?> configElements2 = Arrays.asList(generation2.getConfigElements());
+        List<?> configElements1 = Arrays.asList(generation1.getConfiguredDefaults());
+        List<?> configElements2 = Arrays.asList(generation2.getConfiguredDefaults());
         assertEquals(configElements1.size(), configElements1.size());
         iterator1 = configElements1.iterator();
         iterator2 = configElements2.iterator();
         while (iterator1.hasNext()) {
-            IConfigElement configElement1 = (IConfigElement)iterator1.next();
-            IConfigElement configElement2 = (IConfigElement)iterator2.next();
+            IConfiguredDefault configElement1 = (IConfiguredDefault)iterator1.next();
+            IConfiguredDefault configElement2 = (IConfiguredDefault)iterator2.next();
             assertEquals(configElement1.getId(), configElement2.getId());
             assertEquals(configElement1.getValue(), configElement2.getValue());
         }
@@ -142,7 +142,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
         // nothing was saved
         IProductCmpt prodImm2 = (IProductCmpt)new IpsSrcFileImmutable("ProdImm2.ipsproduct", file.getContents())
-                .getIpsObject();
+        .getIpsObject();
         assertEquals(1, prodImm2.getNumOfGenerations());
     }
 

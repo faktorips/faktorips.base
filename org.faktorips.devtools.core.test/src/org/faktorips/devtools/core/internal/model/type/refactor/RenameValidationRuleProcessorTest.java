@@ -25,6 +25,7 @@ import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
         ipsRenameProcessor = new RenameValidationRuleProcessor(validationRule);
         validationRule.setName(OLD_NAME);
         validationRule.setConfigurableByProductComponent(true);
-        productCmptGeneration.newPropertyValue(validationRule);
+        productCmptGeneration.newPropertyValues(validationRule);
         testRule = testCase.newTestRule();
         testRule.setValidationRule(OLD_NAME);
     }
@@ -80,7 +81,8 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
         assertEquals(NEW_NAME, validationRule.getName());
         assertNull(policyCmptType.getValidationRule(OLD_NAME));
         assertEquals(validationRule, policyCmptType.getValidationRule(NEW_NAME));
-        assertEquals(NEW_NAME, productCmptGeneration.getPropertyValue(validationRule).getName());
+        assertEquals(NEW_NAME, productCmptGeneration.getPropertyValue(validationRule, IValidationRuleConfig.class)
+                .getName());
         assertEquals(NEW_NAME, testCaseType.findValidationRule(NEW_NAME, ipsProject).getName());
         assertEquals(NEW_NAME, testRule.getValidationRule());
     }
@@ -88,14 +90,16 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     @Test
     public void testRefactorIpsModel_MultipleProductCmptGen() throws CoreException {
         IProductCmptGeneration productCmptGeneration2 = (IProductCmptGeneration)productCmpt.newGeneration();
-        productCmptGeneration2.newPropertyValue(validationRule);
+        productCmptGeneration2.newPropertyValues(validationRule);
         performRenameRefactoring(validationRule, NEW_NAME);
 
         assertEquals(NEW_NAME, validationRule.getName());
         assertNull(policyCmptType.getValidationRule(OLD_NAME));
         assertEquals(validationRule, policyCmptType.getValidationRule(NEW_NAME));
-        assertEquals(NEW_NAME, productCmptGeneration.getPropertyValue(validationRule).getName());
-        assertEquals(NEW_NAME, productCmptGeneration2.getPropertyValue(validationRule).getName());
+        assertEquals(NEW_NAME, productCmptGeneration.getPropertyValue(validationRule, IValidationRuleConfig.class)
+                .getName());
+        assertEquals(NEW_NAME, productCmptGeneration2.getPropertyValue(validationRule, IValidationRuleConfig.class)
+                .getName());
     }
 
     @Test

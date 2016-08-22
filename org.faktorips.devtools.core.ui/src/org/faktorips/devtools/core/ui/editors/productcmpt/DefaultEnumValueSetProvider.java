@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 
 /**
@@ -25,10 +26,10 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
  */
 public class DefaultEnumValueSetProvider implements IEnumValueSetProvider {
 
-    private final IConfigElement configElement;
+    private final IConfiguredValueSet configuredValueSet;
 
-    public DefaultEnumValueSetProvider(IConfigElement configElement) {
-        this.configElement = configElement;
+    public DefaultEnumValueSetProvider(IConfiguredValueSet configuredValueSet) {
+        this.configuredValueSet = configuredValueSet;
     }
 
     /**
@@ -38,7 +39,8 @@ public class DefaultEnumValueSetProvider implements IEnumValueSetProvider {
     @Override
     public IEnumValueSet getSourceEnumValueSet() {
         try {
-            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(configElement.getIpsProject());
+            IPolicyCmptTypeAttribute attribute = configuredValueSet.findPcTypeAttribute(configuredValueSet
+                    .getIpsProject());
             IEnumValueSet sourceSet = (IEnumValueSet)attribute.getValueSet();
             return sourceSet;
         } catch (CoreException e) {
@@ -47,11 +49,11 @@ public class DefaultEnumValueSetProvider implements IEnumValueSetProvider {
     }
 
     /**
-     * Returns the {@link IConfigElement} this provider was created with. {@inheritDoc}
+     * Returns the {@link IConfigElement} this provider was created with.
      */
     @Override
-    public IConfigElement getTargetConfigElement() {
-        return configElement;
+    public IConfiguredValueSet getTargetConfiguredValueSet() {
+        return configuredValueSet;
     }
 
     @Override

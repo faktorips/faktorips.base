@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
@@ -58,11 +57,12 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * <code>IpsSrcFileImmutable</code> (<code>FilteredBufferedResourceNode</code>) is created
      * reading remote contents via an input stream. {@inheritDoc}
      */
+    // CSOFF: CaclomaticComplexity
     @Override
     public IStructureComparator getStructure(Object input) {
         if (input instanceof IAdaptable) {
             IAdaptable adaptableInput = (IAdaptable)input;
-            IResource resource = (IResource)adaptableInput.getAdapter(IPath.class);
+            IResource resource = (IResource)adaptableInput.getAdapter(IResource.class);
             if (resource != null) {
                 IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
                 if (element instanceof IIpsSrcFile) {
@@ -104,6 +104,8 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
         }
         return null;
     }
+
+    // CSON: CaclomaticComplexity
 
     /**
      * Returns a tree of <code>AbstractCompareItem</code>s. Each <code>AbstractCompareItem</code>

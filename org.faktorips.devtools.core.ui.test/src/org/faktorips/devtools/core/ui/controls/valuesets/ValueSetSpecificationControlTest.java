@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -69,13 +69,12 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         attr.setValueSetType(ValueSetType.UNRESTRICTED);
         attr.getValueSet().setContainsNull(false);
 
-        IConfigElement configElement = generation.newConfigElement();
-        configElement.setPolicyCmptTypeAttribute("attr");
-        configElement.setValueSetType(ValueSetType.UNRESTRICTED);
-        configElement.getValueSet().setAbstract(false);
-        configElement.getValueSet().setContainsNull(true);
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attr, IConfiguredValueSet.class);
+        configValueSet.setValueSetType(ValueSetType.UNRESTRICTED);
+        configValueSet.getValueSet().setAbstract(false);
+        configValueSet.getValueSet().setContainsNull(true);
 
-        assertHasNullNotAllowedMessage(configElement);
+        assertHasNullNotAllowedMessage(configValueSet);
     }
 
     @Test
@@ -119,8 +118,8 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.INTEGER.getName());
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3", null), "mockId"));
-        IConfigElement configElement = generation.newConfigElement(attribute);
-        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configElement);
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
 
         assertThat(valueSetPmo.isContainsNullEnabled(), is(true));
     }
@@ -132,8 +131,8 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.INTEGER.getName());
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3"), "mockId"));
-        IConfigElement configElement = generation.newConfigElement(attribute);
-        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configElement);
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
 
         assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
     }

@@ -50,13 +50,13 @@ public class DoubleHelper extends AbstractDatatypeHelper {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
-        fragment.appendClassName(Double.class);
-        fragment.append('(');
-        fragment.append(value);
-        fragment.append(')');
-        return fragment;
+        JavaCodeFragment ment = new JavaCodeFragment();
+        ment.append("new "); //$NON-NLS-1$
+        ment.appendClassName(Double.class);
+        ment.append('(');
+        ment.append(value);
+        ment.append(')');
+        return ment;
     }
 
     @Override
@@ -71,16 +71,11 @@ public class DoubleHelper extends AbstractDatatypeHelper {
             JavaCodeFragment containsNullExp,
             boolean useTypesafeCollections) {
 
-        JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
-        frag.append(".valueOf("); //$NON-NLS-1$
-        frag.append(lowerBoundExp);
-        frag.append(", "); //$NON-NLS-1$
-        frag.append(upperBoundExp);
-        frag.append(", "); //$NON-NLS-1$
-        frag.append(containsNullExp);
-        frag.append(")"); //$NON-NLS-1$
-        return frag;
+        return new JavaCodeFragment().appendClassName(getRangeJavaClassName(useTypesafeCollections))
+                .append(".valueOf(") //$NON-NLS-1$
+                .append(lowerBoundExp).append(", ") //$NON-NLS-1$
+                .append(upperBoundExp).append(", ") //$NON-NLS-1$
+                .append(stepExp).append(", ") //$NON-NLS-1$
+                .append(containsNullExp).append(")"); //$NON-NLS-1$
     }
-
 }

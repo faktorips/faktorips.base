@@ -15,8 +15,11 @@ XML_TAG_VALUE_SET(AbstractGeneratorModelNode this):
 XML_TAG_ATTRIBUTE_VALUE(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_ATTRIBUTE_VALUE";
 	
-XML_TAG_CONFIG_ELEMENT(AbstractGeneratorModelNode this):
-	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_CONFIG_ELEMENT";
+XML_TAG_CONFIGURED_DEFAULT(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_CONFIGURED_DEFAULT";
+	
+XML_TAG_CONFIGURED_VALUE_SET(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_CONFIGURED_VALUE_SET";
 	
 XML_TAG_ALL_VALUES(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_TAG_ALL_VALUES";
@@ -45,5 +48,11 @@ XML_ATTRIBUTE_ATTRIBUTE(AbstractGeneratorModelNode this):
 	
 XML_ATTRIBUTE_CONTAINS_NULL(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".XML_ATTRIBUTE_CONTAINS_NULL";
+
+CONFIGURED_VALUE_SET_PREFIX(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".CONFIGURED_VALUE_SET_PREFIX";
+	
+CONFIGURED_DEFAULT_PREFIX(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::ValueToXmlHelper.name) + ".CONFIGURED_DEFAULT_PREFIX";
 
 	

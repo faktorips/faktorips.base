@@ -36,7 +36,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -70,6 +71,8 @@ public class InferTemplateProcessorTest {
 
     @Mock
     private IValueSet valueSetCopy;
+
+    private String defaultValue = "10";
 
     @Mock
     private PropertyValueHistograms histograms;
@@ -116,7 +119,9 @@ public class InferTemplateProcessorTest {
 
     private List<IPropertyValue> attributeValues;
 
-    private List<IPropertyValue> configElements;
+    private List<IPropertyValue> configuredDefaults;
+
+    private List<IPropertyValue> configuredValueSets;
 
     private List<IPropertyValue> templateTableUsages;
 
@@ -148,27 +153,35 @@ public class InferTemplateProcessorTest {
         when(productCmpt2.getIpsSrcFile()).thenReturn(productDirtySrcFile);
         when(productDirtySrcFile.isDirty()).thenReturn(true);
         when(templateGeneration.getIpsSrcFile()).thenReturn(templateSrcFile);
+
         attributeValues = mockPropertyValueInTemplates(IAttributeValue.class);
         propertyValues = mockHistograms(IAttributeValue.class, attributeValues);
-        configElements = mockPropertyValueInTemplates(IConfigElement.class);
-        setUpConfigElements();
-        propertyValues.addAll(mockHistograms(IConfigElement.class, configElements));
+
+        configuredDefaults = mockPropertyValueInTemplates(IConfiguredDefault.class);
+        propertyValues.addAll(mockHistograms(IConfiguredDefault.class, configuredDefaults));
+
+        configuredValueSets = mockPropertyValueInTemplates(IConfiguredValueSet.class);
+        setUpConfiguredValueSets();
+        propertyValues.addAll(mockHistograms(IConfiguredValueSet.class, configuredValueSets));
+
         templateTableUsages = mockPropertyValueInTemplates(ITableContentUsage.class);
         propertyValues.addAll(mockHistograms(ITableContentUsage.class, templateTableUsages));
+
         templateFormulas = mockPropertyValueInTemplates(IFormula.class);
         propertyValues.addAll(mockHistograms(IFormula.class, templateFormulas));
+
         ruleConfigs = mockPropertyValueInTemplates(IValidationRuleConfig.class);
         propertyValues.addAll(mockHistograms(IValidationRuleConfig.class, ruleConfigs));
 
         doReturn(singleValueCopy).when(singleValue).copy(any(IAttributeValue.class));
     }
 
-    private void setUpConfigElements() {
+    private void setUpConfiguredValueSets() {
         IIpsModel ipsModel = mock(IIpsModel.class);
-        for (IPropertyValue propertyValue : configElements) {
+        for (IPropertyValue propertyValue : configuredValueSets) {
             when(ipsModel.getNextPartId(propertyValue)).thenReturn(UUID.randomUUID().toString());
             when(propertyValue.getIpsModel()).thenReturn(ipsModel);
-            when(valueSet.copy(eq((IConfigElement)propertyValue), anyString())).thenReturn(valueSetCopy);
+            when(valueSet.copy(eq((IConfiguredValueSet)propertyValue), anyString())).thenReturn(valueSetCopy);
         }
     }
 
@@ -234,9 +247,13 @@ public class InferTemplateProcessorTest {
         verify(attributeValues.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         verify(attributeValues.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        verify((IConfigElement)configElements.get(0)).setValueSet(valueSetCopy);
-        verify(configElements.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(configElements.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        verify((IConfiguredDefault)configuredDefaults.get(0)).setValue(defaultValue);
+        verify(configuredDefaults.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        verify(configuredDefaults.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+
+        verify((IConfiguredValueSet)configuredValueSets.get(0)).setValueSet(valueSetCopy);
+        verify(configuredValueSets.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        verify(configuredValueSets.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         verify((ITableContentUsage)templateTableUsages.get(0)).setTableContentName("ITableContentUsage0Value");
         verify(templateTableUsages.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
@@ -295,7 +312,7 @@ public class InferTemplateProcessorTest {
                     }
                 }
             };
-        } else if (type.equals(IConfigElement.class)) {
+        } else if (type.equals(IConfiguredValueSet.class)) {
             return new Function<IPropertyValue, Object>() {
 
                 @Override
@@ -310,6 +327,21 @@ public class InferTemplateProcessorTest {
                         when(mockValueSet.compareTo(mockValueSet)).thenReturn(0);
                         when(mockValueSet.compareTo(any(IValueSet.class))).thenReturn(-1);
                         return mockValueSet;
+                    }
+                }
+            };
+        } else if (type.equals(IConfiguredDefault.class)) {
+            return new Function<IPropertyValue, Object>() {
+
+                @Override
+                public Object apply(IPropertyValue propertyValue) {
+                    String propertyName = propertyValue.getPropertyName();
+                    // all first properties have the same value
+                    // all other properties have unique values
+                    if (propertyName.endsWith("0")) {
+                        return defaultValue;
+                    } else {
+                        return UUID.randomUUID().toString();
                     }
                 }
             };

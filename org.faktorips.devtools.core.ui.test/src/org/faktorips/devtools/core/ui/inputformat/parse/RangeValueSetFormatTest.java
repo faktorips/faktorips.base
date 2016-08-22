@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -45,7 +45,7 @@ public class RangeValueSetFormatTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private ConfigElement configElement;
+    private ConfiguredValueSet configValueSet;
 
     @Mock
     private IIpsModel ipsModel;
@@ -66,14 +66,14 @@ public class RangeValueSetFormatTest {
 
     @Before
     public void setUp() throws Exception {
-        rangeVSFormat = new RangeValueSetFormat(configElement, uiPlugin);
+        rangeVSFormat = new RangeValueSetFormat(configValueSet, uiPlugin);
 
         when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
                 new DefaultInputFormat(null));
-        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configElement.getValueSet()).thenReturn(range);
-        when(configElement.getIpsModel()).thenReturn(ipsModel);
-        when(configElement.getIpsObject()).thenReturn(ipsObject);
+        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
+        when(configValueSet.getValueSet()).thenReturn(range);
+        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
     }
 
     @Test
@@ -205,18 +205,18 @@ public class RangeValueSetFormatTest {
 
     @Test
     public void testFormatInternal_RangeIncludesNull() {
-        IValueSet valueSet = new RangeValueSet(configElement, "partId", "1", "10", "1");
+        IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "1", "10", "1");
         valueSet.setContainsNull(true);
-        when(configElement.getValueSet()).thenReturn(valueSet);
+        when(configValueSet.getValueSet()).thenReturn(valueSet);
 
         assertEquals("[1 ... 10 / 1] " + NULL_PRESENTATION, rangeVSFormat.formatInternal(valueSet));
     }
 
     @Test
     public void testFormatInternal_RangeExcludesNull() {
-        IValueSet valueSet = new RangeValueSet(configElement, "partId", "1", "10", "1");
+        IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "1", "10", "1");
         valueSet.setContainsNull(false);
-        when(configElement.getValueSet()).thenReturn(valueSet);
+        when(configValueSet.getValueSet()).thenReturn(valueSet);
 
         assertEquals("[1 ... 10 / 1]", rangeVSFormat.formatInternal(valueSet));
     }

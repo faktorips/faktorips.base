@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -198,7 +199,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 continue;
             }
             for (IPropertyValueContainer container : getPropertyValueContainers(productCmpt)) {
-                IAttributeValue attributeValue = (IAttributeValue)container.getPropertyValue(getOriginalName());
+                IAttributeValue attributeValue = container.getPropertyValue(getOriginalName(), IAttributeValue.class);
                 if (attributeValue != null) {
                     attributeValue.setAttribute(getNewName());
                 }
@@ -259,9 +260,12 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 continue;
             }
             for (IPropertyValueContainer container : getPropertyValueContainers(productCmpt)) {
-                IConfigElement configElement = (IConfigElement)container.getPropertyValue(getOriginalName());
-                if (configElement != null) {
-                    configElement.setPolicyCmptTypeAttribute(getNewName());
+                List<IPropertyValue> configElements = container.getPropertyValues(getOriginalName());
+                for (IPropertyValue propertyValue : configElements) {
+                    if (propertyValue instanceof IConfigElement) {
+                        IConfigElement configElement = (IConfigElement)propertyValue;
+                        configElement.setPolicyCmptTypeAttribute(getNewName());
+                    }
                 }
             }
         }

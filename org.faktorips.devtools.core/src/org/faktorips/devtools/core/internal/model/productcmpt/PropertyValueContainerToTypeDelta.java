@@ -37,19 +37,19 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.ArgumentCheck;
@@ -60,7 +60,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann
  */
 public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite implements
-        IPropertyValueContainerToTypeDelta {
+IPropertyValueContainerToTypeDelta {
 
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
@@ -127,8 +127,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private boolean matchingLinkIsMissing(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
-        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()),
-                new Predicate<IProductCmptLink>() {
+        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()), new Predicate<IProductCmptLink>() {
 
             @Override
             public boolean apply(IProductCmptLink link) {
@@ -155,72 +154,56 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     protected abstract void createAdditionalEntriesAndChildren() throws CoreException;
 
     private void createEntriesForProperties() {
-        for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
-            Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
-                    .findProductCmptPropertyMap(propertyType, getIpsProject());
-            checkForMissingPropertyValues(propertiesMap);
-            checkForInconsistentPropertyValues(propertiesMap, propertyType);
-        }
+        Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
+                .findProductCmptPropertyMap(getIpsProject());
+        checkForMissingPropertyValues(propertiesMap);
+        checkForInconsistentPropertyValues(propertiesMap);
     }
 
     private void checkForMissingPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {
             if (propertyValueContainer.isContainerFor(property)
-                    && propertyValueContainer.getPropertyValue(property) == null) {
-                // no value found for the property with the given type, but we might have a type
-                // mismatch
-                if (propertyValueContainer.getPropertyValue(property.getPropertyName()) == null) {
-                    MissingPropertyValueEntry missingPropertyValueEntry = new MissingPropertyValueEntry(
-                            propertyValueContainer, property);
-                    addEntry(missingPropertyValueEntry);
-                }
-                // we create the entry for the type mismatch in checkForInconsistentPropertyValues()
-                // if we created it here, too, we would create two entries for the same aspect
+                    && propertyValueContainer.getPropertyValues(property.getPropertyName()).isEmpty()) {
+                createMissingEntry(property);
             }
         }
     }
 
-    private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
-            ProductCmptPropertyType propertyType) {
+    private void createMissingEntry(IProductCmptProperty property) {
+        for (PropertyValueType type : property.getPropertyValueTypes()) {
+            MissingPropertyValueEntry missingPropertyValueEntry = new MissingPropertyValueEntry(propertyValueContainer,
+                    property, type);
+            addEntry(missingPropertyValueEntry);
+        }
+    }
 
-        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueType()
-                .getInterfaceClass());
+    private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
+        List<? extends IPropertyValue> values = propertyValueContainer.getAllPropertyValues();
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
-            if (property == null) {
-                // the map contains only properties for the current property type
-                // so we have to search if the property exists with a different type.
-                IProductCmptProperty property2 = productCmptType.findProductCmptProperty(value.getPropertyName(),
-                        getIpsProject());
-                if (property2 != null) {
-                    // property2 must have a different type, otherwise it would have been in the
-                    // property map!
+            if (property == null || !propertyValueContainer.isContainerFor(property)) {
+                ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(value);
+                addEntry(valueWithoutPropertyEntry);
+            } else {
+                if (!property.getPropertyValueTypes().contains(value.getPropertyValueType())) {
                     PropertyTypeMismatchEntry propertyTypeMismatchEntry = new PropertyTypeMismatchEntry(
-                            propertyValueContainer, property2, value);
+                            propertyValueContainer, property, value);
                     addEntry(propertyTypeMismatchEntry);
                 } else {
-                    ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(value);
-                    addEntry(valueWithoutPropertyEntry);
-                }
-            } else {
-                if (!propertyValueContainer.isContainerFor(property)) {
-                    // the relevance changed (changingOverTime selected or unselected)
-                    ValueWithoutPropertyEntry deltaEntry = new ValueWithoutPropertyEntry(value);
-                    addEntry(deltaEntry);
-                }
-                if (ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
-                    checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)value);
-                }
-                if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
-                    checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
-                    checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
-                    checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    if (PropertyValueType.CONFIGURED_VALUESET.equals(value.getPropertyValueType())) {
+                        checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfiguredValueSet)value);
+                    }
+                    if (PropertyValueType.ATTRIBUTE_VALUE.equals(value.getPropertyValueType())) {
+                        checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                        checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                        checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    }
                 }
             }
         }
     }
 
-    private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
+    private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
         if (attribute.getValueSet().isUnrestricted()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;

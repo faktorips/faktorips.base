@@ -77,7 +77,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         IFormula ce = productCmptGen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
-        IFormula staticFormula = (IFormula)productCmpt.newPropertyValue(staticMethod);
+        IFormula staticFormula = productCmpt.newPropertyValue(staticMethod, IFormula.class);
         staticFormula.setFormulaSignature("StaticAgeCalculation");
         staticFormula.setExpression("42");
         productCmpt.getIpsSrcFile().save(true, null);

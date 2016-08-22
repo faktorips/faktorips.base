@@ -277,7 +277,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // relevant!
 
         // test property type = null
-        Map<String, IProductCmptProperty> propertyMap = productCmptType.findProductCmptPropertyMap(null, ipsProject);
+        Map<String, IProductCmptProperty> propertyMap = productCmptType.findProductCmptPropertyMap(ipsProject);
         assertEquals(8, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
@@ -342,25 +342,25 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
             throws CoreException {
 
         // Create types
-        IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
-        IProductCmptType productTypeA = policyTypeA.findProductCmptType(ipsProject);
-        IPolicyCmptType policyTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
-        IProductCmptType productTypeB = policyTypeB.findProductCmptType(ipsProject);
-        policyTypeB.setSupertype(policyTypeA.getQualifiedName());
-        productTypeB.setSupertype(productTypeA.getQualifiedName());
+        IPolicyCmptType superPolicyType = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
+        IProductCmptType superProductType = superPolicyType.findProductCmptType(ipsProject);
+        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyTypeB", "ProductTypeB");
+        IProductCmptType productType = policyType.findProductCmptType(ipsProject);
+        policyType.setSupertype(superPolicyType.getQualifiedName());
+        productType.setSupertype(superProductType.getQualifiedName());
 
         // Create attributes
-        IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
-        attributeA.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeA.setProductRelevant(true);
+        IPolicyCmptTypeAttribute superAttribute = superPolicyType.newPolicyCmptTypeAttribute("test");
+        superAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        superAttribute.setProductRelevant(true);
 
-        IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
-        attributeB.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeB.setProductRelevant(false);
-        attributeB.setOverwrite(true);
+        IPolicyCmptTypeAttribute overriddingAttribute = policyType.newPolicyCmptTypeAttribute("test");
+        overriddingAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        overriddingAttribute.setProductRelevant(false);
+        overriddingAttribute.setOverwrite(true);
 
         // Verify
-        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productTypeB).findProductCmptPropertyMap(
+        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productType).findProductCmptPropertyMap(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
         assertTrue(propertyMap.isEmpty());
     }
@@ -570,7 +570,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, validationRuleMap.size());
 
         Map<String, IProductCmptProperty> allPropertiesMap = ((ProductCmptType)productTypeB)
-                .findProductCmptPropertyMap(null, ipsProject);
+                .findProductCmptPropertyMap(ipsProject);
         assertSame(attributeB, allPropertiesMap.get("attribute"));
         assertSame(validationRule, allPropertiesMap.get("validationRule"));
         assertEquals(2, allPropertiesMap.size());

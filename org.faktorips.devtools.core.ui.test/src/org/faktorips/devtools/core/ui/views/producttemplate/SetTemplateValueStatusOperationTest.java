@@ -23,6 +23,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -43,8 +44,8 @@ public class SetTemplateValueStatusOperationTest extends AbstractIpsPluginTest {
         p1.setTemplate(t.getQualifiedName());
         p2.setTemplate(t.getQualifiedName());
 
-        IPropertyValue p1Value = p1.newPropertyValue(attribute);
-        IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        IPropertyValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
+        IPropertyValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
 
         List<IPropertyValue> propertyValues = Lists.newArrayList(p1Value, p2Value);
         IProgressMonitor monitor = new NullProgressMonitor();

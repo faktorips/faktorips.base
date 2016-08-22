@@ -39,6 +39,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_ValueSet;
 
+    public static String ProductCmptCompareItem_Default;
+
     public static String ProductCmptCompareItem_VRule_active;
 
     public static String ProductCmptCompareItem_VRule_inactive;

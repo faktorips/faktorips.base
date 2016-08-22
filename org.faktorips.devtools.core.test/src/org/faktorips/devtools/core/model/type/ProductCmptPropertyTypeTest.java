@@ -14,74 +14,55 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import org.faktorips.abstracttest.SingletonMockHelper;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.junit.After;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ProductCmptPropertyTypeTest {
+public class ProductCmptPropertyTypeTest extends AbstractIpsPluginTest {
 
-    @Mock
-    private ProductCmptTypeAttribute pctAttr;
-
-    @Mock
-    private ProductCmptTypeAttribute pctAttr2;
-
-    @Mock
-    private IProductCmpt templateCmpt;
-
-    @Mock
-    private AttributeValue templateValue;
-
-    @Mock(extraInterfaces = IProductCmpt.class)
-    private ProductCmpt prodCmpt;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private IIpsProject ipsProject;
 
-    private SingletonMockHelper singletonMockHelper;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
+    private IProductCmptTypeAttribute pctAttr;
+    private IProductCmptTypeAttribute pctAttr2;
+    private IProductCmpt prodCmpt;
+    private IProductCmpt templateCmpt;
 
+    private IAttributeValue templateValue;
+
+    @Override
     @Before
-    public void setUp() {
-        IpsModel ipsModel = mock(IpsModel.class);
-        IpsPlugin ipsPlugin = mock(IpsPlugin.class);
-        when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
-        singletonMockHelper = new SingletonMockHelper();
-        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+    public void setUp() throws Exception {
+        super.setUp();
 
-        when(prodCmpt.getIpsProject()).thenReturn(ipsProject);
-        when(pctAttr.isMultiValueAttribute()).thenReturn(true);
-        when(pctAttr.getPropertyName()).thenReturn("PropName");
-        when(pctAttr2.getPropertyName()).thenReturn("PropName2");
-    }
+        ipsProject = newIpsProject();
 
-    @After
-    public void teartDown() {
-        singletonMockHelper.reset();
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        prodCmpt = newProductCmpt(productCmptType, "TestProduct");
+
+        pctAttr = productCmptType.newProductCmptTypeAttribute("propName");
+        pctAttr.setMultiValueAttribute(true);
+
+        pctAttr2 = productCmptType.newProductCmptTypeAttribute("propName2");
     }
 
     @Test
     public void testCreatePropertyValue_MultiValueAttributeWithDefaultValue() {
-        when(pctAttr.getDefaultValue()).thenReturn("defaultValue123");
+        pctAttr.setDefaultValue("defaultValue123");
         IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
                 pctAttr, "partID");
 
@@ -92,7 +73,7 @@ public class ProductCmptPropertyTypeTest {
 
     @Test
     public void testCreatePropertyValue_EmptyMultiValueAttributeIfDefaultValueIsNull() {
-        when(pctAttr.getDefaultValue()).thenReturn(null);
+        pctAttr.setDefaultValue(null);
         IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
                 pctAttr, "partID");
 
@@ -101,11 +82,13 @@ public class ProductCmptPropertyTypeTest {
     }
 
     @Test
-    public void testCreatePropertyValue_TemplateValueStatusShouldBeInheritedWhenUsingTemplate() {
-        when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
-        when(prodCmpt.isPartOfTemplateHierarchy()).thenReturn(true);
-        when(prodCmpt.findTemplate(ipsProject)).thenReturn(templateCmpt);
-        when(templateCmpt.getPropertyValue(pctAttr2.getPropertyName())).thenReturn(templateValue);
+    public void testCreatePropertyValue_TemplateValueStatusShouldBeInheritedWhenUsingTemplate() throws CoreException {
+        templateCmpt = newProductTemplate(productCmptType, "template");
+        prodCmpt.setTemplate(templateCmpt.getQualifiedName());
+
+        templateValue = templateCmpt.newPropertyValue(pctAttr2, IAttributeValue.class);
+        templateValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
         IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
                 pctAttr2, "partID");
 

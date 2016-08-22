@@ -85,18 +85,23 @@ final class ProductComponentXmlUtil {
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if (ValueToXmlHelper.XML_TAG_CONFIG_ELEMENT.equals(node.getNodeName())) {
-                    Element childElement = (Element)nl.item(i);
-                    elementMap.put(childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE), childElement);
+                Element childElement = (Element)node;
+                String attributeName = childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
+                /*
+                 * Change in XML structure for 3.19. ConfigElement split was up into
+                 * ConfiguredDefault and ConfiguredValueSet. To be able to add both elements to the
+                 * map, prefix the attribute name with a marker String.
+                 */
+                if (ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT.equals(node.getNodeName())) {
+                    elementMap.put(ValueToXmlHelper.CONFIGURED_DEFAULT_PREFIX + attributeName, childElement);
+                } else if (ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET.equals(node.getNodeName())) {
+                    elementMap.put(ValueToXmlHelper.CONFIGURED_VALUE_SET_PREFIX + attributeName, childElement);
                 } else if (ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE.equals(node.getNodeName())) {
-                    Element childElement = (Element)nl.item(i);
-                    elementMap.put(childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE), childElement);
+                    elementMap.put(attributeName, childElement);
                 } else if (ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE.equals(node.getNodeName())) {
-                    Element childElement = (Element)nl.item(i);
                     String structureUsage = childElement.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_STRUCTURE_USAGE);
                     elementMap.put(structureUsage, childElement);
                 }
-
             }
         }
         return elementMap;

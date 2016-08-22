@@ -23,15 +23,19 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.junit.Before;
@@ -40,6 +44,12 @@ import org.junit.Test;
 public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new ProductCmptCompareItemCreator();
+
+    private IPolicyCmptTypeAttribute attribute1;
+    private IPolicyCmptTypeAttribute attribute2;
+
+    private IProductCmptTypeAttribute pAttribute;
+
     private IProductCmptGeneration generation1;
     private IProductCmptGeneration generation2;
     private IProductCmptGeneration generation3;
@@ -48,9 +58,10 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
     private ProductCmptCompareItem compareItemRoot;
     private IProductCmpt product;
-    private IIpsPackageFragmentRoot root;
-    private IConfigElement configElement1;
-    private IConfigElement configElement2;
+    private IConfiguredDefault configDefault1;
+    private IConfiguredDefault configDefault2;
+    private IConfiguredValueSet configValueSet1;
+    private IConfiguredValueSet configValueSet2;
     private IAttributeValue attributeValue;
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
@@ -60,9 +71,16 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject(new ArrayList<Locale>());
-        root = proj.getIpsPackageFragmentRoots()[0];
-        product = newProductCmpt(root, "TestProductCmpt");
-        IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
+
+        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(proj, "policyType", "productType");
+        attribute1 = policyCmptType.newPolicyCmptTypeAttribute("attribute1");
+        attribute2 = policyCmptType.newPolicyCmptTypeAttribute("attribute2");
+
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(proj);
+        pAttribute = productCmptType.newProductCmptTypeAttribute("pAttribute");
+
+        product = newProductCmpt(productCmptType, "TestProductCmpt");
+        IProductCmpt productReferenced = newProductCmpt(productCmptType, "TestProductCmptReferenced");
 
         GregorianCalendar calendar = new GregorianCalendar();
         generation1 = (IProductCmptGeneration)product.newGeneration(calendar);
@@ -73,15 +91,17 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         calendar.add(Calendar.MONTH, 2);
         generation3 = (IProductCmptGeneration)product.newGeneration(calendar);
 
-        configElement1 = generation1.newConfigElement();
-        configElement1.setPolicyCmptTypeAttribute("configElement1"); // set name to ensure sorting
-        // order
-        configElement2 = generation1.newConfigElement();
-        configElement2.setPolicyCmptTypeAttribute("configElement2");
-        configElement2.setValueSetType(ValueSetType.ENUM);
-        attributeValue = generation1.newAttributeValue();
-        attributeValue.setAttribute("attributeValue");
+        // names of the policy attributes ensure sorting order
+        configDefault1 = generation1.newPropertyValue(attribute1, IConfiguredDefault.class);
+        configDefault2 = generation1.newPropertyValue(attribute2, IConfiguredDefault.class);
+        configDefault1.setValue("10");
+        configValueSet1 = generation1.newPropertyValue(attribute1, IConfiguredValueSet.class);
+        configValueSet2 = generation1.newPropertyValue(attribute2, IConfiguredValueSet.class);
+        configValueSet2.setValueSetType(ValueSetType.ENUM);
+
+        attributeValue = generation1.newPropertyValue(pAttribute, IAttributeValue.class);
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "TestWert"));
+
         relation1 = generation1.newLink(productReferenced.getQualifiedName());
         relation2 = generation1.newLink(productReferenced.getQualifiedName());
 
@@ -99,13 +119,15 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
         ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];
         children = compareItem.getChildren();
-        // productcomponent contains 3 generations
-        assertEquals(3, children.length);
+        // product component contains 4 generations, 1 automatically generated by newProductCmpt, 3
+        // manually generated generations
+        assertEquals(4, children.length);
 
-        ProductCmptCompareItem compareItemGen = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareItemGen = (ProductCmptCompareItem)children[1];
         children = compareItemGen.getChildren();
-        // Generation has 3 ConfigElements and 2 Relations
-        assertEquals(5, children.length);
+        // first manually generated generation has 2 ConfigElementComposites, 1 AttributeValue and 2
+        // relations
+        assertEquals(7, children.length);
     }
 
     @Test
@@ -140,9 +162,10 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(compareItemRoot, compareItem.getParent());
 
         children = compareItem.getChildren();
-        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[2];
+        // first generation is not setted up
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[3];
 
         assertNotNull(compareItemGen1.getParent());
         assertEquals(compareItem, compareItemGen1.getParent());
@@ -153,18 +176,18 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
         // CompareItemComparator sorts Configelements above Relations
         children = compareItemGen1.getChildren();
-        ProductCmptCompareItem compareItemConfigElement1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemConfigElement2 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemConfigElement3 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemConfigElementComposite1 = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareItemConfigElementComposite2 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemAttributeValue = (ProductCmptCompareItem)children[2];
         ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[3];
         ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[4];
 
-        assertNotNull(compareItemConfigElement1.getParent());
-        assertEquals(compareItemGen1, compareItemConfigElement1.getParent());
-        assertNotNull(compareItemConfigElement2.getParent());
-        assertEquals(compareItemGen1, compareItemConfigElement2.getParent());
-        assertNotNull(compareItemConfigElement3.getParent());
-        assertEquals(compareItemGen1, compareItemConfigElement3.getParent());
+        assertNotNull(compareItemConfigElementComposite1.getParent());
+        assertEquals(compareItemGen1, compareItemConfigElementComposite1.getParent());
+        assertNotNull(compareItemConfigElementComposite2.getParent());
+        assertEquals(compareItemGen1, compareItemConfigElementComposite2.getParent());
+        assertNotNull(compareItemAttributeValue.getParent());
+        assertEquals(compareItemGen1, compareItemAttributeValue.getParent());
         assertNotNull(compareItemRelation1.getParent());
         assertEquals(compareItemGen1, compareItemRelation1.getParent());
         assertNotNull(compareItemRelation2.getParent());
@@ -180,9 +203,9 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(product, compareItem.getIpsElement());
 
         children = compareItem.getChildren();
-        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[3];
 
         assertEquals(generation1, compareItemGen1.getIpsElement());
         assertEquals(generation2, compareItemGen2.getIpsElement());
@@ -191,19 +214,22 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         children = compareItemGen1.getChildren();
         /*
          * Die Kinder jedes CompareItems werden sortiert. Dabei werden ProduktAttribute
-         * (compareItem3) vorVertragsAttribute (compareItem1 und -2) gestellt.
+         * (compareItem3) vor VertragsAttribute (compareItem1 und -2) gestellt.
          */
-        ProductCmptCompareItem compareItemConfigElement3 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemConfigElement1 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemConfigElement2 = (ProductCmptCompareItem)children[2];
-        ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[3];
-        ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[4];
+        ProductCmptCompareItem compareItemAttributeValue = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareItemValueSet1 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemDefault1 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemValueSet2 = (ProductCmptCompareItem)children[3];
+        ProductCmptCompareItem compareItemDefault2 = (ProductCmptCompareItem)children[4];
+        ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[5];
+        ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[6];
 
-        assertEquals(configElement1, compareItemConfigElement1.getIpsElement());
-        assertEquals(configElement2, compareItemConfigElement2.getIpsElement());
-        assertEquals(attributeValue, compareItemConfigElement3.getIpsElement());
+        assertEquals(configValueSet1, compareItemValueSet1.getIpsElement());
+        assertEquals(configDefault1, compareItemDefault1.getIpsElement());
+        assertEquals(configValueSet2, compareItemValueSet2.getIpsElement());
+        assertEquals(configDefault2, compareItemDefault2.getIpsElement());
+        assertEquals(attributeValue, compareItemAttributeValue.getIpsElement());
         assertEquals(relation1, compareItemRelation1.getIpsElement());
         assertEquals(relation2, compareItemRelation2.getIpsElement());
     }
-
 }

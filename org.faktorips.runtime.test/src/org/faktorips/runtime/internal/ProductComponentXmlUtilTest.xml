@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Generation description="" validFrom="2006-01-01">
-	<ConfigElement attribute="attribute1" value="2">
+	<ConfiguredDefault attribute="attribute1" value="2">
+	</ConfiguredDefault>
+	<ConfiguredValueSet attribute="attribute1">
 		<ValueSet>
 			<AllValues />
 		</ValueSet>
-	</ConfigElement>
-	<ConfigElement attribute="attribute2" value="m">
+	</ConfiguredValueSet>
+	<ConfiguredDefault attribute="attribute2" value="m">
+	</ConfiguredDefault>
+	<ConfiguredValueSet attribute="attribute2" value="m">
 		<ValueSet>
 			<AllValues />
 		</ValueSet>
-	</ConfigElement>
+	</ConfiguredValueSet>
 	<AttributeValue attribute="attribute3" value="42" />
 	<TableContentUsage id="2" structureUsage="rateTable">
 		<TableContentName isNull="false">RateTable2007

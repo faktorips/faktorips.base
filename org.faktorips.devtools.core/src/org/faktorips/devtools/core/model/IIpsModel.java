@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -93,8 +93,8 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Creates an ID for a new {@link IIpsObjectPart} in an {@link IIpsObjectPartContainer}. The
      * given parentPart is the parent of the newly created part. For example, if you want to create
-     * a {@link IValueSet} as part of a {@link IConfigElement} you call this method with the
-     * {@link IConfigElement} as parameter to get the ID for the new {@link IValueSet}.
+     * a {@link IValueSet} as part of a {@link IConfiguredDefault} you call this method with the
+     * {@link IConfiguredDefault} as parameter to get the ID for the new {@link IValueSet}.
      * 
      * @param parentPart The parent part of the new part for which we need the ID
      * @return the new unique ID that can be used for a new part

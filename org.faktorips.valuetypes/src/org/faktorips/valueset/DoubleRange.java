@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import java.math.BigDecimal;
+
 /**
  * A Range class where upper and lower bounds are Doubles.
  * 
@@ -19,10 +21,13 @@ package org.faktorips.valueset;
 public class DoubleRange extends DefaultRange<Double> {
 
     private static final long serialVersionUID = 3093772484960108819L;
-    private static final String ASTERISK_STAR = "*";
+
+    public DoubleRange(Double lower, Double upper, Double step, boolean containsNull) {
+        super(lower, upper, step, containsNull);
+    }
 
     public DoubleRange(Double lower, Double upper, boolean containsNull) {
-        super(lower, upper, containsNull);
+        this(lower, upper, null, containsNull);
     }
 
     public DoubleRange(Double lower, Double upper) {
@@ -36,21 +41,11 @@ public class DoubleRange extends DefaultRange<Double> {
      * 
      * @param containsNull defines if null is part of the range or not
      */
-    public static DoubleRange valueOf(String lower, String upper, boolean containsNull) {
-        Double min = null;
-        if (lower != null) {
-            if (!ASTERISK_STAR.equals(lower)) {
-                min = Double.valueOf(lower);
-            }
-        }
-
-        Double max = null;
-        if (upper != null) {
-            if (!ASTERISK_STAR.equals(upper)) {
-                max = Double.valueOf(upper);
-            }
-        }
-        return new DoubleRange(min, max, containsNull);
+    public static DoubleRange valueOf(String lower, String upper, String stepString, boolean containsNull) {
+        Double min = lower == null || lower.isEmpty() ? null : Double.valueOf(lower);
+        Double max = upper == null || upper.isEmpty() ? null : Double.valueOf(upper);
+        Double step = stepString == null || stepString.isEmpty() ? null : Double.valueOf(stepString);
+        return new DoubleRange(min, max, step, containsNull);
     }
 
     /**
@@ -60,6 +55,42 @@ public class DoubleRange extends DefaultRange<Double> {
      */
     public static DoubleRange valueOf(Double lower, Double upper, boolean containsNull) {
         return new DoubleRange(lower, upper, containsNull);
+    }
+
+    /**
+     * Creates an DoubleRange based on the indicated Double values.
+     * 
+     * @param containsNull defines if null is part of the range or not
+     */
+    public static DoubleRange valueOf(Double lower, Double upper, Double step, boolean containsNull) {
+        return new DoubleRange(lower, upper, step, containsNull);
+    }
+
+    @Override
+    protected boolean checkIfValueCompliesToStepIncrement(Double value, Double bound) {
+        if (getStep() == 0) {
+            throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
+        }
+        double diff = Math.abs(bound - value);
+        // Need to convert to BigDecimal to avoid floating point problems
+        BigDecimal remaining = BigDecimal.valueOf(diff).remainder(BigDecimal.valueOf(getStep()));
+        return remaining.equals(BigDecimal.valueOf(0, remaining.scale()));
+    }
+
+    @Override
+    protected int sizeForDiscreteValuesExcludingNull() {
+        double diff = Math.abs(getUpperBound() - getLowerBound());
+        return 1 + Double.valueOf(diff / getStep()).intValue();
+    }
+
+    @Override
+    protected Double getNextValue(Double currentValue) {
+        return currentValue + getStep();
+    }
+
+    @Override
+    protected Double getNullValue() {
+        return null;
     }
 
 }

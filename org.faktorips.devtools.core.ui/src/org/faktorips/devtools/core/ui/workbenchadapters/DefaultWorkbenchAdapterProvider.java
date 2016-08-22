@@ -35,7 +35,8 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredDefault;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.productcmpt.Expression;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
@@ -190,7 +191,8 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
 
         // ProductCmpt
         register(AttributeValue.class, new AttributeValueWorkbenchAdapter());
-        register(ConfigElement.class, new ConfigElementWorkbenchAdapter());
+        register(ConfiguredValueSet.class, new ConfigElementWorkbenchAdapter());
+        register(ConfiguredDefault.class, new ConfigElementWorkbenchAdapter());
         register(Expression.class, formulaWA);
         register(ProductCmptLink.class, new ProductCmptLinkWorkbenchAdapter());
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContentsUsage.gif", true); //$NON-NLS-1$

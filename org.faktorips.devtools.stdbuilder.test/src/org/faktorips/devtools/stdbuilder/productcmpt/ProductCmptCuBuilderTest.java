@@ -74,15 +74,15 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testIsContainingAvailableFormula_anyEmptyFormula() throws Exception {
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
+        productCmpt.newPropertyValues(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
 
         assertFalse(builder.isContainingAvailableFormula(productCmpt));
     }
 
     @Test
     public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
-        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
-                mock(IProductCmptType.class), "Id"));
+        IFormula newFormula = productCmpt.newPropertyValue(
+                new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
 
         assertTrue(builder.isContainingAvailableFormula(productCmpt));
@@ -90,9 +90,9 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
-        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
-                mock(IProductCmptType.class), "Id"));
+        productCmpt.newPropertyValues(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
+        IFormula newFormula = productCmpt.newPropertyValue(
+                new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
 
         assertTrue(builder.isContainingAvailableFormula(productCmpt));

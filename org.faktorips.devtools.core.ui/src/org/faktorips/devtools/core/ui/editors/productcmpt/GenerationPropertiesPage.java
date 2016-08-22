@@ -326,7 +326,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .showView(ModelDescriptionView.EXTENSION_ID);
+                    .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -375,7 +375,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                .getNumOfGenerations() - 1];
+                                                                                                    .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }
@@ -650,19 +650,28 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         @Override
         public boolean isFiltered(IProductCmptProperty property) {
             IProductCmptGeneration gen = getActiveGeneration();
-            if (gen.getPropertyValue(property) != null) {
-                return isInherited(gen.getPropertyValue(property));
+            if (!gen.getPropertyValues(property).isEmpty()) {
+                return isInherited(gen.getPropertyValues(property));
             }
 
             IProductCmpt cmpt = gen.getProductCmpt();
-            if (cmpt.getPropertyValue(property) != null) {
-                return isInherited(cmpt.getPropertyValue(property));
+            if (!cmpt.getPropertyValues(property).isEmpty()) {
+                return isInherited(cmpt.getPropertyValues(property));
             }
             return false;
         }
 
-        private boolean isInherited(IPropertyValue propertyValue) {
-            return propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED;
+        /**
+         * If there is more than one property value for a property (e.g. ConfigElement) we only hide
+         * the fields if all property values are inherited.
+         */
+        private boolean isInherited(List<IPropertyValue> values) {
+            for (IPropertyValue propertyValue : values) {
+                if (propertyValue.getTemplateValueStatus() != TemplateValueStatus.INHERITED) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

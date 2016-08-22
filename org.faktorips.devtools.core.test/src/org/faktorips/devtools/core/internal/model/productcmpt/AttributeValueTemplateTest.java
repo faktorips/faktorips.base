@@ -87,12 +87,12 @@ public class AttributeValueTemplateTest extends AbstractIpsPluginTest {
     }
 
     private void setUpSuperTemplate() {
-        superTemplate.newPropertyValue(attrA);
-        superTemplate.newPropertyValue(attrB);
-        superTemplate.newPropertyValue(attrC);
-        superTemplate.newPropertyValue(attrX);
-        superTemplate.newPropertyValue(attrY);
-        superTemplate.newPropertyValue(attrZ);
+        superTemplate.newPropertyValues(attrA);
+        superTemplate.newPropertyValues(attrB);
+        superTemplate.newPropertyValues(attrC);
+        superTemplate.newPropertyValues(attrX);
+        superTemplate.newPropertyValues(attrY);
+        superTemplate.newPropertyValues(attrZ);
 
         superA = superTemplate.getAttributeValue("a");
         superA.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -119,12 +119,12 @@ public class AttributeValueTemplateTest extends AbstractIpsPluginTest {
     }
 
     private void setUpRegularTemplate() {
-        regularTemplate.newPropertyValue(attrA);
-        regularTemplate.newPropertyValue(attrB);
-        regularTemplate.newPropertyValue(attrC);
-        regularTemplate.newPropertyValue(attrX);
-        regularTemplate.newPropertyValue(attrY);
-        regularTemplate.newPropertyValue(attrZ);
+        regularTemplate.newPropertyValues(attrA);
+        regularTemplate.newPropertyValues(attrB);
+        regularTemplate.newPropertyValues(attrC);
+        regularTemplate.newPropertyValues(attrX);
+        regularTemplate.newPropertyValues(attrY);
+        regularTemplate.newPropertyValues(attrZ);
 
         regularA = regularTemplate.getAttributeValue("a");
         regularA.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
@@ -149,12 +149,12 @@ public class AttributeValueTemplateTest extends AbstractIpsPluginTest {
     }
 
     private void setUpProductCmpt() {
-        productCmpt.newPropertyValue(attrA);
-        productCmpt.newPropertyValue(attrB);
-        productCmpt.newPropertyValue(attrC);
-        productCmpt.newPropertyValue(attrX);
-        productCmpt.newPropertyValue(attrY);
-        productCmpt.newPropertyValue(attrZ);
+        productCmpt.newPropertyValues(attrA);
+        productCmpt.newPropertyValues(attrB);
+        productCmpt.newPropertyValues(attrC);
+        productCmpt.newPropertyValues(attrX);
+        productCmpt.newPropertyValues(attrY);
+        productCmpt.newPropertyValues(attrZ);
 
         prodCmptA = productCmpt.getAttributeValue("a");
         prodCmptA.setTemplateValueStatus(TemplateValueStatus.INHERITED);

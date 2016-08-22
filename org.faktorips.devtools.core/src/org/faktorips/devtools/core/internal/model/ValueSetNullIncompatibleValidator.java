@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.util.message.MessageList;
 
@@ -22,7 +22,7 @@ import org.faktorips.util.message.MessageList;
  * <li>
  * overwriting attributes (product- and policy side). The preset value set is the value set of the
  * overwritten attribute.</li>
- * <li>{@link ConfigElement configuration elements} that specialize the value set of a policy
+ * <li>{@link ConfiguredValueSet configuration elements} that specialize the value set of a policy
  * attribute. The preset value set is the policy attribute's value set.</li>
  * </ul>
  */

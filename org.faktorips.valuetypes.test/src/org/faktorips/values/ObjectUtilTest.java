@@ -26,6 +26,8 @@ public class ObjectUtilTest {
         assertTrue(ObjectUtil.isNull(null));
         assertTrue(ObjectUtil.isNull(Money.NULL));
         assertFalse(ObjectUtil.isNull(Money.euro(42, 0)));
+        assertTrue(ObjectUtil.isNull(TestEnumWithNullSupport.NULL));
+        assertFalse(ObjectUtil.isNull(TestEnumWithNullSupport.A));
     }
 
     @Test
@@ -56,6 +58,24 @@ public class ObjectUtilTest {
         ObjectUtil.checkInstanceOf(12, Number.class);
         ObjectUtil.checkInstanceOf(12, Integer.class);
         ObjectUtil.checkInstanceOf(new Long(12), Number.class);
+    }
+
+    private static class TestEnumWithNullSupport implements NullObjectSupport {
+
+        public static final TestEnumWithNullSupport A = new TestEnumWithNullSupport();
+
+        public static final TestEnumWithNullSupport NULL = new TestEnumWithNullSupport();
+
+        @Override
+        public boolean isNull() {
+            return this == NULL;
+        }
+
+        @Override
+        public boolean isNotNull() {
+            return !isNull();
+        }
+
     }
 
 }

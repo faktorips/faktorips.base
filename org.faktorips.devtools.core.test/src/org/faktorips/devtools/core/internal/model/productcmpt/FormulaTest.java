@@ -11,12 +11,12 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItems;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +78,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setChangingOverTime(false);
         structureUsage.setRoleName("RateTable");
-        ITableContentUsage contentUsage = (ITableContentUsage)productCmpt.newPropertyValue(structureUsageGen);
+        ITableContentUsage contentUsage = productCmpt.newPropertyValue(structureUsageGen, ITableContentUsage.class);
 
         ITableContentUsage[] tableContentUsages = formula.getTableContentUsages();
         assertEquals(2, tableContentUsages.length);
@@ -99,7 +99,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setChangingOverTime(false);
         structureUsage.setRoleName("RateTable");
-        ITableContentUsage contentUsage = (ITableContentUsage)productCmpt.newPropertyValue(structureUsageGen);
+        ITableContentUsage contentUsage = productCmpt.newPropertyValue(structureUsageGen, ITableContentUsage.class);
 
         ITableContentUsage[] tableContentUsages = formula.getTableContentUsages();
         assertEquals(1, tableContentUsages.length);

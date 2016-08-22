@@ -118,6 +118,7 @@ public class Migration_3_11_0Test extends AbstractIpsPluginTest {
         }
     }
 
+    @Override
     public Document getTestDocument(String resourceName) {
         InputStream is = null;
         try {

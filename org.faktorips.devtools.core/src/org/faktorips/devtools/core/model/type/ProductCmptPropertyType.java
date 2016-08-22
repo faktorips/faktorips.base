@@ -15,12 +15,12 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -50,22 +50,19 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this {@link ProductCmptPropertyType} can be safely casted to
      * {@link IAttributeValue}.
      */
-    PRODUCT_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_productAttribute, PropertyValueType.ATTRIBUTE_VALUE) {
-
-    },
+    PRODUCT_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_productAttribute),
 
     /**
-     * The {@link IProductCmptProperty} is an {@link ITableStructureUsage} of an
-     * {@link IProductCmptType}.
+     * The {@link IProductCmptProperty} is an {@link IPolicyCmptTypeAttribute} of an
+     * {@link IPolicyCmptType}.
      * <p>
      * An {@link IProductCmptProperty} with this type can be safely casted to
-     * {@link ITableStructureUsage}.
+     * {@link IPolicyCmptTypeAttribute}.
      * <p>
-     * An {@link IPropertyValue} with this type can be safely casted to {@link ITableContentUsage}.
+     * An {@link IPropertyValue} with this type can either be a {@link IConfiguredValueSet} or
+     * {@link IConfiguredDefault}
      */
-    TABLE_STRUCTURE_USAGE(Messages.ProductCmptPropertyType_tableUsage, PropertyValueType.TABLE_CONTENT_USAGE) {
-
-    },
+    POLICY_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_defaultValueAndValueSet),
 
     /**
      * The {@link IProductCmptProperty} is an {@link IProductCmptTypeMethod} of an
@@ -76,23 +73,18 @@ public enum ProductCmptPropertyType {
      * <p>
      * An {@link IPropertyValue} with this type can be safely casted to {@link IFormula}.
      */
-    FORMULA_SIGNATURE_DEFINITION(Messages.ProductCmptPropertyType_fomula, PropertyValueType.FORMULA) {
-
-    },
+    FORMULA_SIGNATURE_DEFINITION(Messages.ProductCmptPropertyType_fomula),
 
     /**
-     * The {@link IProductCmptProperty} is an {@link IPolicyCmptTypeAttribute} of an
-     * {@link IPolicyCmptType}.
+     * The {@link IProductCmptProperty} is an {@link ITableStructureUsage} of an
+     * {@link IProductCmptType}.
      * <p>
      * An {@link IProductCmptProperty} with this type can be safely casted to
-     * {@link IPolicyCmptTypeAttribute}.
+     * {@link ITableStructureUsage}.
      * <p>
-     * An {@link IPropertyValue} with this type can be safely casted to {@link IConfigElement}.
+     * An {@link IPropertyValue} with this type can be safely casted to {@link ITableContentUsage}.
      */
-    POLICY_CMPT_TYPE_ATTRIBUTE(Messages.ProductCmptPropertyType_defaultValueAndValueSet,
-            PropertyValueType.CONFIG_ELEMENT) {
-
-    },
+    TABLE_STRUCTURE_USAGE(Messages.ProductCmptPropertyType_tableUsage),
 
     /**
      * The {@link IProductCmptProperty} is an {@link IValidationRule} of an {@link IPolicyCmptType}.
@@ -103,17 +95,12 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this type can be safely casted to
      * {@link IValidationRuleConfig}.
      */
-    VALIDATION_RULE(Messages.ProductCmptPropertyType_ValidationRule, PropertyValueType.VALIDATION_RULE_CONFIG) {
-
-    };
+    VALIDATION_RULE(Messages.ProductCmptPropertyType_ValidationRule);
 
     private final String name;
 
-    private final PropertyValueType valueType;
-
-    private ProductCmptPropertyType(String name, PropertyValueType valueType) {
+    private ProductCmptPropertyType(String name) {
         this.name = name;
-        this.valueType = valueType;
     }
 
     /**
@@ -121,10 +108,6 @@ public enum ProductCmptPropertyType {
      */
     public String getName() {
         return name;
-    }
-
-    public PropertyValueType getValueType() {
-        return valueType;
     }
 
     public boolean isMatchingPropertyValue(String propertyName, IPropertyValue propertyValue) {

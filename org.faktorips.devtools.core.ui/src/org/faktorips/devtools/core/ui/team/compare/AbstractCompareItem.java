@@ -77,11 +77,11 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * The parent of this <code>AbstractCompareItem</code>. May be null if this CompareItem is root.
      */
-    private AbstractCompareItem parent = null;
+    private final AbstractCompareItem parent;
     /**
      * The referenced <code>IIpsElement</code>.
      */
-    private IIpsElement ipsElement = null;
+    private final IIpsElement ipsElement;
     /**
      * Boolean that indicates if this <code>AbstractCompareItem</code> is root of a structure. True
      * if the parent of this <code>AbstractCompareItem</code> is null, false otherwise.

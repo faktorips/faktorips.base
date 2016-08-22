@@ -27,7 +27,11 @@ public class ObjectUtil {
      * @see NullObject
      */
     public static final boolean isNull(Object o) {
-        return o == null || (o instanceof NullObject);
+        return o == null || isNullObject(o);
+    }
+
+    protected static boolean isNullObject(Object o) {
+        return o instanceof NullObject || (o instanceof NullObjectSupport && ((NullObjectSupport)o).isNull());
     }
 
     /**

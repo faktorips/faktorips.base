@@ -19,15 +19,23 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -59,7 +67,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         super.setUp();
         when(parent.getIpsObject()).thenReturn(ipsObject);
         when(parent.getIpsProject()).thenReturn(ipsProject);
-        valueContainer = new PropertyValueCollection();
+        valueContainer = new PropertyValueCollection(parent);
 
         AttributeValue part1 = new AttributeValue(parent, "ID1");
         part1.setAttribute("AV1");
@@ -89,15 +97,11 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         assertAttributesSize(4);
 
         valueContainer.addPropertyValue(new AttributeValue(parent, "ID4"));
-        assertAttributesSize(5);
+        assertAttributesSize(4);
     }
 
     @Test
     public void testRemovePart() {
-        valueContainer.addPropertyValue(new AttributeValue(parent, "ID1"));
-        assertAttributesSize(4);
-
-        valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
         assertAttributesSize(3);
 
         valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
@@ -136,16 +140,16 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(property.getPropertyName()).thenReturn("AV1");
         when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
-        IPropertyValue value = valueContainer.getPropertyValue(property);
+        IPropertyValue value = valueContainer.getPropertyValue(property, IAttributeValue.class);
         assertNotNull(value);
-        IPropertyValue value2 = valueContainer.getPropertyValue("AV1");
+        IPropertyValue value2 = valueContainer.getPropertyValue("AV1", IAttributeValue.class);
         assertSame("Parts", value, value2);
 
         ProductCmptTypeAttribute illegalTypeAttr = mock(ProductCmptTypeAttribute.class);
         when(illegalTypeAttr.getPropertyName()).thenReturn("AVIllegal");
         when(illegalTypeAttr.getProductCmptPropertyType()).thenReturn(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
-        value = valueContainer.getPropertyValue(illegalTypeAttr);
+        value = valueContainer.getPropertyValue(illegalTypeAttr, IAttributeValue.class);
         assertNull(value);
     }
 
@@ -155,12 +159,12 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(attribute.getPropertyName()).thenReturn("AV5");
         when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
-        IAttributeValue value = valueContainer.newPropertyValue(parent, attribute, "ID5", IAttributeValue.class);
+        IAttributeValue value = valueContainer.newPropertyValue(attribute, "ID5", IAttributeValue.class);
         assertNotNull(value);
         value.setAttribute("AV5");
         assertAttributesSize(4);
 
-        IPropertyValue value2 = valueContainer.getPropertyValue("AV5");
+        IPropertyValue value2 = valueContainer.getPropertyValue("AV5", IAttributeValue.class);
         assertSame("Parts", value, value2);
     }
 
@@ -171,26 +175,25 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
 
         assertSize(3);
-        IFormula formula = valueContainer.newPropertyValue(parent, property, "MethodID1", IFormula.class);
+        IFormula formula = valueContainer.newPropertyValue(property, "MethodID1", IFormula.class);
         assertNotNull(formula);
         formula.setFormulaSignature("Method1");
         assertSize(4);
 
-        IPropertyValue value2 = valueContainer.getPropertyValue("Method1");
+        IPropertyValue value2 = valueContainer.getPropertyValue("Method1", IFormula.class);
         assertSame("Parts", formula, value2);
     }
 
     @Test
-    public void testNewPartThisXML() {
-        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, Formula.TAG_NAME, "MethodID1");
+    public void testNewPropertyValueThisXML() {
+        IFormula formula = (IFormula)valueContainer.newPropertyValue(Formula.TAG_NAME, "MethodID1");
         assertNotNull(formula);
 
-        IProductCmptLink link = (IProductCmptLink)valueContainer.newPropertyValue(parent, ProductCmptLink.TAG_NAME,
-                "LinkID1");
+        IProductCmptLink link = (IProductCmptLink)valueContainer.newPropertyValue(ProductCmptLink.TAG_NAME, "LinkID1");
         // Link must be null as valueContainer cannot create parts that are not IPropertyValues
         assertNull(link);
 
-        IIpsObjectPart part = valueContainer.newPropertyValue(parent, "TestIllegalXMLTag", "valueID1");
+        IIpsObjectPart part = valueContainer.newPropertyValue("TestIllegalXMLTag", "valueID1");
         assertNull(part);
     }
 
@@ -207,6 +210,48 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         attr.setAttribute("AV1");
         assertTrue(valueContainer.removePropertyValue(attr));
         assertFalse(valueContainer.removePropertyValue(attr));
+    }
+
+    @Test
+    public void testGetAllPropertyValues_Sorted() throws Exception {
+        // create in pseudo random order. The suffix 1 must be before suffix 2!
+        valueContainer.clear();
+        IAttributeValue attributeValue1 = valueContainer.newPropertyValue(nextId(), IAttributeValue.class);
+        attributeValue1.setAttribute("a1");
+        IConfiguredDefault configuredDefault1 = valueContainer.newPropertyValue(nextId(), IConfiguredDefault.class);
+        configuredDefault1.setPolicyCmptTypeAttribute("pc1");
+        IAttributeValue attributeValue2 = valueContainer.newPropertyValue(nextId(), IAttributeValue.class);
+        attributeValue2.setAttribute("a2");
+        IFormula formula1 = valueContainer.newPropertyValue(nextId(), IFormula.class);
+        formula1.setFormulaSignature("f1");
+        ITableContentUsage tableContentUsage1 = valueContainer.newPropertyValue(nextId(), ITableContentUsage.class);
+        tableContentUsage1.setStructureUsage("t1");
+        IConfiguredValueSet configuredValueSet1 = valueContainer.newPropertyValue(nextId(), IConfiguredValueSet.class);
+        configuredValueSet1.setPolicyCmptTypeAttribute("pc1");
+        IValidationRuleConfig validationRuleConfig1 = valueContainer.newPropertyValue(nextId(),
+                IValidationRuleConfig.class);
+        validationRuleConfig1.setValidationRuleName("v1");
+        IFormula formula2 = valueContainer.newPropertyValue(nextId(), IFormula.class);
+        formula2.setFormulaSignature("f2");
+        IConfiguredValueSet configuredValueSet2 = valueContainer.newPropertyValue(nextId(), IConfiguredValueSet.class);
+        configuredValueSet2.setPolicyCmptTypeAttribute("pc2");
+        IConfiguredDefault configuredDefault2 = valueContainer.newPropertyValue(nextId(), IConfiguredDefault.class);
+        configuredDefault2.setPolicyCmptTypeAttribute("pc2");
+        ITableContentUsage tableContentUsage2 = valueContainer.newPropertyValue(nextId(), ITableContentUsage.class);
+        tableContentUsage2.setStructureUsage("t2");
+        IValidationRuleConfig validationRuleConfig2 = valueContainer.newPropertyValue(nextId(),
+                IValidationRuleConfig.class);
+        validationRuleConfig2.setValidationRuleName("v2");
+
+        List<IPropertyValue> allPropertyValues = valueContainer.getAllPropertyValues();
+
+        assertEquals(Arrays.asList(attributeValue1, attributeValue2, configuredValueSet1, configuredDefault1,
+                configuredValueSet2, configuredDefault2, formula1, formula2, tableContentUsage1, tableContentUsage2,
+                validationRuleConfig1, validationRuleConfig2), allPropertyValues);
+    }
+
+    protected String nextId() {
+        return UUID.randomUUID().toString();
     }
 
 }

@@ -49,7 +49,7 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile();
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         part = generation;
-        subpart = generation.newConfigElement();
+        subpart = generation.newAttributeValue();
     }
 
     @Test

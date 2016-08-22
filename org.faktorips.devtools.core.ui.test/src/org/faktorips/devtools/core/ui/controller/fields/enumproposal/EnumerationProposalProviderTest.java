@@ -19,7 +19,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -59,7 +59,7 @@ public class EnumerationProposalProviderTest {
         when(enumValueSet.getValueSetOwner()).thenReturn(owner);
         when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(enumValueSet.getValuesAsList())
-                .thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", null }));
+        .thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", null }));
 
         when(inputFormat.format("aaaaa")).thenReturn("aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("bbbbb");
@@ -247,7 +247,7 @@ public class EnumerationProposalProviderTest {
     }
 
     private void initEnumerationPPWithConfigElement() {
-        owner = mock(IConfigElement.class);
+        owner = mock(IConfiguredValueSet.class);
         when(owner.getValueSet()).thenReturn(enumValueSet);
         when(enumValueSet.getValueSetOwner()).thenReturn(owner);
 

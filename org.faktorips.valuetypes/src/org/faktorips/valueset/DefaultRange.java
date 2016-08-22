@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.faktorips.values.NullObject;
-import org.faktorips.values.NullObjectSupport;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * Default implementation of the <code>Range</code> interface. Implementations of this range that
@@ -149,8 +149,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         if (!checkIfValueCompliesToStepIncrement(getLowerBound(), getUpperBound())) {
             throw new IllegalArgumentException(
                     "The step doesn't fit into the specified bounds. The step has to comply to "
-                            + "the condition: the value of the expression abs(upperBound - lowerBound) / "
-                            + "step needs to be an integer.");
+                            + "the condition: the value of the expression 'abs(upperBound - lowerBound) / "
+                            + "step' needs to be an integer.");
         }
     }
 
@@ -259,19 +259,15 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     private boolean isLowerBoundNull() {
-        return lowerBound == null
-                || (getLowerBound() instanceof NullObjectSupport ? ((NullObjectSupport)getLowerBound()).isNull()
-                        : false);
+        return isNullValue(lowerBound);
     }
 
     private boolean isUpperBoundNull() {
-        return upperBound == null
-                || (getUpperBound() instanceof NullObjectSupport ? ((NullObjectSupport)getUpperBound()).isNull()
-                        : false);
+        return isNullValue(upperBound);
     }
 
     private boolean isStepNull() {
-        return step == null || (step instanceof NullObjectSupport ? ((NullObjectSupport)step).isNull() : false);
+        return isNullValue(step);
     }
 
     public boolean contains(T value) {
@@ -297,8 +293,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     private boolean isNullValue(T value) {
-        return value == null || value instanceof NullObject
-                || (value instanceof NullObjectSupport && ((NullObjectSupport)value).isNull());
+        return ObjectUtil.isNull(value);
     }
 
     /**

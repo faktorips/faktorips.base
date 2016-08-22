@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -299,7 +301,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                     String text = Messages.ValidationRule_msgDuplicateEntries;
                     list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
                             new ObjectProperty[] { new ObjectProperty(this, "validatedAttributes", i), //$NON-NLS-1$
-                            new ObjectProperty(this, "validatedAttributes", r) })); //$NON-NLS-1$
+                                    new ObjectProperty(this, "validatedAttributes", r) })); //$NON-NLS-1$
                 }
             }
         }
@@ -539,6 +541,11 @@ public class ValidationRule extends TypePart implements IValidationRule {
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.VALIDATION_RULE;
+    }
+
+    @Override
+    public List<PropertyValueType> getPropertyValueTypes() {
+        return Arrays.asList(PropertyValueType.VALIDATION_RULE_CONFIG);
     }
 
     @Override

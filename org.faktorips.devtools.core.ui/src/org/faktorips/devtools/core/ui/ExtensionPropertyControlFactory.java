@@ -138,7 +138,7 @@ public class ExtensionPropertyControlFactory {
         // sort the array of found extension property definitions by their SortOrder
         ExtPropControlData[] sortedExtensionPropertyDefinitions;
         sortedExtensionPropertyDefinitions = extPropControlData.toArray(new ExtPropControlData[extPropControlData
-                .size()]);
+                                                                                               .size()]);
         Arrays.sort(sortedExtensionPropertyDefinitions);
 
         // create controls

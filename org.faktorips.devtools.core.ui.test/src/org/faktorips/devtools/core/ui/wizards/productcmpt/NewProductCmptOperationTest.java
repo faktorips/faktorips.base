@@ -58,7 +58,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_SetProductCmptProperties() throws CoreException, InvocationTargetException,
-            InterruptedException {
+    InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmpt template = newProductTemplate(ipsProject, "template");
@@ -83,7 +83,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_SetGenerationPropertiesIfNotInCopyMode() throws CoreException, InvocationTargetException,
-            InterruptedException {
+    InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         createProductCmptTypeAttribute(productCmptType, "testAttribute", Datatype.STRING, "");
@@ -106,7 +106,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_CreatePropertyValuesWithDefaultsFromModelIfNotInCopyMode() throws CoreException,
-            InvocationTargetException, InterruptedException {
+    InvocationTargetException, InterruptedException {
 
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicyCmptType",
                 "TestProductCmptType");
@@ -127,14 +127,15 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
         IIpsSrcFile newSrcFile = getDefaultIpsPackageFragment().getIpsSrcFile(pmo.getName(), pmo.getIpsObjectType());
         IProductCmpt newProductCmpt = (IProductCmpt)newSrcFile.getIpsObject();
         IProductCmptGeneration newProductCmptGeneration = newProductCmpt.getFirstGeneration();
-        assertEquals("defaultPolicyValue", newProductCmptGeneration.getConfigElement("testPolicyAttribute").getValue());
+        assertEquals("defaultPolicyValue", newProductCmptGeneration.getConfiguredDefault("testPolicyAttribute")
+                .getValue());
         assertEquals("defaultProductValue", newProductCmptGeneration.getAttributeValue("testProductAttribute")
                 .getValueHolder().getStringValue());
     }
 
     @Test
     public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_SaveIfNotDirtyBefore() throws CoreException,
-            InvocationTargetException, InterruptedException {
+    InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
@@ -160,7 +161,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_DoNotSaveIfDirtyBefore() throws CoreException,
-            InvocationTargetException, InterruptedException {
+    InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
@@ -187,7 +188,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_DoNotAddLinkToProductCmptGenerationIfValidatorFails() throws CoreException,
-            InvocationTargetException, InterruptedException {
+    InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");

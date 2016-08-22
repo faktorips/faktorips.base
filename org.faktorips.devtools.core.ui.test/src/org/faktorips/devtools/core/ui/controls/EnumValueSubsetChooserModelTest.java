@@ -31,7 +31,7 @@ import java.util.List;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
@@ -65,7 +65,8 @@ public class EnumValueSubsetChooserModelTest {
 
     private EnumValueSet getEnumValueSetMock() {
         IpsModel ipsModelMock = mock(IpsModel.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-        ConfigElement configElement = mock(ConfigElement.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        ConfiguredValueSet configElement = mock(ConfiguredValueSet.class,
+                withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
         EnumValueSet enumValueSet = new EnumValueSet(configElement, "asd");
         EnumValueSet enumValueSetSpy = spy(enumValueSet);
         doReturn(ipsModelMock).when(enumValueSetSpy).getIpsModel();

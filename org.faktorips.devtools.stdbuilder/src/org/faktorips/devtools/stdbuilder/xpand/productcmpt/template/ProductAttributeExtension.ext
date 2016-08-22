@@ -8,7 +8,6 @@ xmlValueType(XProductAttribute this) :
 getFromElement(XProductAttribute this, String paramConfigElement, String paramValue) :
 	multilingual ? getInternationalStringFromElement(paramConfigElement, paramValue) : getValueFromElement(paramConfigElement, paramValue);
 	
-	
 addToElement(XProductAttribute this, String valueParam, String elementParam, String tagNameParam) :
 	multilingual ? addInternationalStringToElement(valueParam, elementParam, tagNameParam) : addValueToElement(valueParam, elementParam, tagNameParam);
 	
@@ -17,4 +16,5 @@ getMultiValueFromXML(XProductAttribute this, String paramConfigElement) :
 
 addMultiValueToElement(XProductAttribute this, String paramConfigElement, String nameParam) :
 	multilingual ? addInternationalStringsToElement(paramConfigElement, nameParam) : addValuesToElement(paramConfigElement, nameParam);
+	
 	

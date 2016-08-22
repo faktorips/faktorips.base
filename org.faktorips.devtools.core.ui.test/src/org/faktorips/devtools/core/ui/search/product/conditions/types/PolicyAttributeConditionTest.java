@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -120,21 +120,21 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testOperandProvider() throws CoreException {
-        IPolicyCmptTypeAttribute attribut = policyCmptType.newPolicyCmptTypeAttribute();
-        attribut.setName("zahlweise");
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("zahlweise");
 
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
         ProductCmptGeneration generation = (ProductCmptGeneration)productCmpt.newGeneration();
 
-        IConfigElement configElement = generation.newConfigElement(attribut);
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
 
         String lower = "100";
         String upper = "200";
         String step = "10";
-        IValueSet expectedValueSet = new RangeValueSet(attribut, attribut.getId(), lower, upper, step);
-        configElement.setValueSetCopy(expectedValueSet);
+        IValueSet expectedValueSet = new RangeValueSet(attribute, attribute.getId(), lower, upper, step);
+        configValueSet.setValueSetCopy(expectedValueSet);
 
-        IOperandProvider operandProvider = condition.createOperandProvider(attribut);
+        IOperandProvider operandProvider = condition.createOperandProvider(attribute);
 
         IRangeValueSet foundRangeSet = (IRangeValueSet)operandProvider.getSearchOperand(generation);
 

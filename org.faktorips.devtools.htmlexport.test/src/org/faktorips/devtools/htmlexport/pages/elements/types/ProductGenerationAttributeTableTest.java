@@ -62,7 +62,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         tableStructureUsage1.setChangingOverTime(false);
 
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
-        productCmpt.newPropertyValue(tableStructureUsage1);
+        productCmpt.newPropertyValues(tableStructureUsage1);
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
         ITableStructureUsage tableStructureUsage2 = productCmptType.newTableStructureUsage();
@@ -85,7 +85,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         formulaProductCmpt.setChangingOverTime(false);
 
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
-        productCmpt.newPropertyValue(formulaProductCmpt);
+        productCmpt.newPropertyValues(formulaProductCmpt);
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
         IProductCmptTypeMethod formulaProductCmptGen = productCmptType.newFormulaSignature("ProduktFormelGen");

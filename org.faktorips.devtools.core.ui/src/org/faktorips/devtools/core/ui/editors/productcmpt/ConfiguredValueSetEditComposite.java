@@ -15,57 +15,37 @@ import java.util.List;
 import com.google.common.base.Function;
 
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.BooleanValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
+import org.faktorips.devtools.core.ui.controller.fields.ConfiguredValueSetField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * Provides controls that allow the user to edit the value set and the default value of an
  * {@link IConfigElement}.
  * 
- * @since 3.6
- * 
- * @author Alexander Weickmann
+ * @since 3.19
  * 
  * @see IConfigElement
  * @see IValueSet
  */
-public class ConfigElementEditComposite extends EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
-
-    private ExtensionPropertyControlFactory extPropControlFactory;
+public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditComposite<IConfiguredValueSet> {
 
     private AnyValueSetControl valueSetControl;
 
-    public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
+    public ConfiguredValueSetEditComposite(IPolicyCmptTypeAttribute property, IConfiguredValueSet propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
-
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
-        extPropControlFactory = new ExtensionPropertyControlFactory(propertyValue);
         initControls();
-    }
-
-    @Override
-    protected void setLayout() {
-        super.setLayout();
-        GridLayout clientLayout = (GridLayout)getLayout();
-        clientLayout.numColumns = 2;
-        // Space between Labels and fields. Also allows error markers to be drawn.
-        clientLayout.horizontalSpacing = 7;
     }
 
     @Override
@@ -78,33 +58,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         }
         editFields.add(valueSetEditField);
         createTemplateStatusButton(valueSetEditField);
-        EditField<String> defaultValueEditField = createDefaultValueEditField();
-        // TODO FIPS-4556 just fill grid cell as long we do not have templates for default values
-        getToolkit().createHorizontalSpacer(this, 0);
-        editFields.add(defaultValueEditField);
-        createEditFieldsForExtensionProperties();
         addOverlaysToEditFields(editFields);
-    }
-
-    private EditField<String> createDefaultValueEditField() {
-        createLabel(Messages.ConfigElementEditComposite_defaultValue);
-
-        ValueDatatype datatype = getProperty() == null ? null : findDatatypeForDefaultValueEditField();
-        if (datatype == null) {
-            // No datatype found - use String as default
-            datatype = Datatype.STRING;
-        }
-        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
-                .getValueSet(), getPropertyValue().getIpsProject());
-        getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
-        return editField;
-    }
-
-    private ValueDatatype findDatatypeForDefaultValueEditField() {
-        ValueDatatype datatype = null;
-        datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
-        return datatype;
     }
 
     private boolean isBooleanDatatype() {
@@ -119,38 +73,22 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 getPropertyValue());
         BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
 
-        getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+        getBindingContext().bindContent(field, getPropertyValue(), IConfiguredValueSet.PROPERTY_VALUE_SET);
 
         return field;
     }
 
-    private ConfigElementField createValueSetField() {
+    private ConfiguredValueSetField createValueSetField() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
-        ConfigElementField editField = new ConfigElementField(getPropertyValue(), valueSetControl);
-        getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+        ConfiguredValueSetField editField = new ConfiguredValueSetField(getPropertyValue(), valueSetControl);
+        getBindingContext().bindContent(editField, getPropertyValue(), IConfiguredValueSet.PROPERTY_VALUE_SET);
 
         return editField;
-    }
-
-    /**
-     * Creates a {@link Label} whose width corresponds to the width of the broadest label of this
-     * section.
-     */
-    private void createLabel(String text) {
-        getToolkit().createLabel(this, text);
-    }
-
-    private void createEditFieldsForExtensionProperties() {
-        extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
-                IExtensionPropertyDefinition.POSITION_TOP);
-        extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
-        extPropControlFactory.bind(getBindingContext());
     }
 
     private void addOverlaysToEditFields(List<EditField<?>> editFields) {
@@ -167,7 +105,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     @Override
-    protected Function<IConfigElement, String> getToolTipFormatter() {
-        return PropertyValueFormatter.CONFIG_ELEMENT;
+    protected Function<IConfiguredValueSet, String> getToolTipFormatter() {
+        return PropertyValueFormatter.CONFIGURED_VALUESET;
     }
 }

@@ -69,6 +69,9 @@ public interface IAttributeValue extends IPropertyValue {
      */
     public static final String MSGCODE_HIDDEN_ATTRIBUTE = MSGCODE_PREFIX + "HiddenAttribute"; //$NON-NLS-1$
 
+    @Override
+    public String getPropertyValue();
+
     /**
      * Returns the attribute's value.
      * <p>

@@ -23,7 +23,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -31,7 +30,6 @@ import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -59,12 +57,9 @@ import org.faktorips.values.LocalizedString;
  */
 public class AttributeValueEditComposite extends EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
 
-    private ExtensionPropertyControlFactory extProContFact;
-
     public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
         super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
-        extProContFact = new ExtensionPropertyControlFactory(propertyValue);
         initControls();
     }
 
@@ -78,7 +73,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     @Override
     protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
         createValueEditField(editFields);
-        createControlForExtensionProperty();
+        createEditFieldsForExtensionProperties();
     }
 
     private void createValueEditField(List<EditField<?>> editFields) {
@@ -144,14 +139,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         getBindingContext().bindContent(editField, valueHolderPMO,
                 MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
         return editField;
-    }
-
-    private void createControlForExtensionProperty() {
-        extProContFact
-        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
-        extProContFact.createControls(this, getToolkit(), getPropertyValue(),
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
-        extProContFact.bind(getBindingContext());
     }
 
     @Override

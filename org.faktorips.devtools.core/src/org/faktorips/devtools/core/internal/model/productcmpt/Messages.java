@@ -32,7 +32,7 @@ public class Messages extends NLS {
     public static String AttributeValue_ValueNotAllowed;
     public static String AttributeValue_HiddenAttributeMismatch;
 
-    public static String ConfigElement_error_msg_abstractValueSet;
+    public static String ConfiguredValueSet_error_msg_abstractValueSet;
     public static String ConfigElement_msgTypeMismatch;
     public static String ConfigElement_policyCmptTypeNotFound;
     public static String ConfigElement_valueSetIsNotASubset;
@@ -40,10 +40,12 @@ public class Messages extends NLS {
     public static String ConfigElement_msgDatatypeMissing;
     public static String ConfigElement_msgUndknownDatatype;
     public static String ConfigElement_msgInvalidDatatype;
-    public static String ConfigElement_msgValueNotParsable;
-    public static String ConfigElement_msgValueNotInValueset;
-    public static String ConfigElement_msgValueIsEmptyString;
-    public static String ConfigElement_msgInvalidAttributeValueset;
+    public static String ConfiguredDefault_msgValueNotParsable;
+    public static String ConfiguredDefault_msgValueNotInValueset;
+    public static String ConfiguredDefault_msgValueIsEmptyString;
+    public static String ConfiguredValueSet_msgInvalidAttributeValueset;
+    public static String ConfiguredDefault_caption;
+    public static String ConfiguredValueSet_caption;
 
     public static String Formula_msgExpressionMissing;
     public static String Formula_msgFormulaSignatureMissing;

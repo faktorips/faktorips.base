@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AttributeProperty;
@@ -109,6 +111,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE;
+    }
+
+    @Override
+    public List<PropertyValueType> getPropertyValueTypes() {
+        return Arrays.asList(PropertyValueType.ATTRIBUTE_VALUE);
     }
 
     @Override

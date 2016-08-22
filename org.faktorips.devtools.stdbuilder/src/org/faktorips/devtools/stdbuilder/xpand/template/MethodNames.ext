@@ -164,6 +164,9 @@ getTable(String name) :
 getValueFromElement(String paramConfigElement, String paramValue) :
 	"getValueFromElement(" + paramConfigElement + ", " + paramValue + ")";
 	
+getValueFromElement(String paramConfigElement) :
+	"getValueFromElement(" + paramConfigElement+ ")";
+	
 getInternationalStringFromElement(String paramConfigElement, String paramValue) :
 	"getInternationalStringFromElement(" + paramConfigElement + ", " + paramValue + ")";
 
@@ -173,6 +176,9 @@ getEnumValueSetFromElement(String paramConfigElement, String paramValueSet) :
 getRangeFromElement(String paramConfigElement, String paramValueSet) :
 	"getRangeFromElement(" + paramConfigElement + ", " + paramValueSet + ")";
 
+addValueAndReturnElement(String valueParam, String elementParam, String tagNameParam) :
+	"addValueAndReturnElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
+	
 addValueToElement(String valueParam, String elementParam, String tagNameParam) :
 	"addValueToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
 

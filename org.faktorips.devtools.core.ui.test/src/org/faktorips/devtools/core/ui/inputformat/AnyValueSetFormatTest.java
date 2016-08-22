@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
@@ -52,7 +52,7 @@ public class AnyValueSetFormatTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private ConfigElement configElement;
+    private ConfiguredValueSet configValueSet;
 
     @Mock
     private IIpsModel ipsModel;
@@ -73,35 +73,35 @@ public class AnyValueSetFormatTest {
 
     @Before
     public void setUp() throws Exception {
-        enumValueSet = new EnumValueSet(configElement, "ID");
-        when(configElement.getValueSet()).thenReturn(enumValueSet);
-        when(configElement.getIpsProject()).thenReturn(ipsProject);
-        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configElement.getIpsModel()).thenReturn(ipsModel);
-        when(configElement.getIpsObject()).thenReturn(ipsObject);
+        enumValueSet = new EnumValueSet(configValueSet, "ID");
+        when(configValueSet.getValueSet()).thenReturn(enumValueSet);
+        when(configValueSet.getIpsProject()).thenReturn(ipsProject);
+        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
+        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
         when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(cachedInputFormat);
-        format = new AnyValueSetFormat(configElement, uiPlugin);
-        rangeValueSet = new RangeValueSet(configElement, "ID");
-        unrestrictedValueSet = new UnrestrictedValueSet(configElement, "ID");
+        format = new AnyValueSetFormat(configValueSet, uiPlugin);
+        rangeValueSet = new RangeValueSet(configValueSet, "ID");
+        unrestrictedValueSet = new UnrestrictedValueSet(configValueSet, "ID");
     }
 
     @Test
     public void testParseInternalEmptyUnrestrictedValueSet() throws Exception {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
         IValueSet parseInternal = format.parseInternal("");
 
         assertNotNull(parseInternal);
         assertTrue(parseInternal instanceof UnrestrictedValueSet);
-        assertEquals(configElement, parseInternal.getParent());
+        assertEquals(configValueSet, parseInternal.getParent());
     }
 
     @Test
     public void testParseInternalEmptyUnrestrictedValueSetAlreadyUnrestricted() throws Exception {
-        IValueSet unrestrictedValueSet = new UnrestrictedValueSet(configElement, "");
-        when(configElement.getValueSet()).thenReturn(unrestrictedValueSet);
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        IValueSet unrestrictedValueSet = new UnrestrictedValueSet(configValueSet, "");
+        when(configValueSet.getValueSet()).thenReturn(unrestrictedValueSet);
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
         IValueSet parseInternal = format.parseInternal("");
@@ -118,19 +118,19 @@ public class AnyValueSetFormatTest {
 
     @Test
     public void testParseInternalUnrestrictedValueSet() throws Exception {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
         IValueSet parseInternal = format.parseInternal(Messages.ValueSetFormat_unrestricted);
 
         assertNotNull(parseInternal);
         assertTrue(parseInternal instanceof UnrestrictedValueSet);
-        assertEquals(configElement, parseInternal.getParent());
+        assertEquals(configValueSet, parseInternal.getParent());
     }
 
     @Test
     public void testParseInternal_ReturnOriginValueSetIfValueSetFormatIsNull() throws Exception {
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.RANGE, ValueSetType.UNRESTRICTED));
 
         IValueSet parseInternal = format.parseInternal("|aabc|");
@@ -140,7 +140,7 @@ public class AnyValueSetFormatTest {
 
     @Test
     public void testFormatInternal_delegateEnum() throws Exception {
-        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(enumValueSet, configElement);
+        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(enumValueSet, configValueSet);
 
         String formattedValue = format.formatInternal(delegatingValueSet);
 
@@ -149,7 +149,7 @@ public class AnyValueSetFormatTest {
 
     @Test
     public void testFormatInternal_delegateRange() throws Exception {
-        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(rangeValueSet, configElement);
+        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(rangeValueSet, configValueSet);
 
         String formattedValue = format.formatInternal(delegatingValueSet);
 
@@ -158,7 +158,7 @@ public class AnyValueSetFormatTest {
 
     @Test
     public void testFormatInternal_delegateUnrestricted() throws Exception {
-        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(unrestrictedValueSet, configElement);
+        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(unrestrictedValueSet, configValueSet);
 
         String formattedValue = format.formatInternal(delegatingValueSet);
 

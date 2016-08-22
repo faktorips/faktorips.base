@@ -10,17 +10,14 @@
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
-import java.util.List;
-
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
@@ -68,19 +65,23 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
                 ProductCmptCompareItem root = new ProductCmptCompareItem(null, file);
                 IProductCmpt productCmpt = (IProductCmpt)file.getIpsObject();
                 ProductCmptCompareItem productCmptItem = new ProductCmptCompareItem(root, productCmpt);
-                List<IPropertyValue> propertyValues = productCmpt.getAllPropertyValues();
-                for (IPropertyValue propertyValue : propertyValues) {
-                    new ProductCmptCompareItem(productCmptItem, propertyValue);
+
+                IIpsElement[] children = productCmpt.getChildren();
+                for (IIpsElement element : children) {
+                    if (element instanceof IIpsObjectGeneration) {
+                        continue;
+                    } else if (element instanceof IDescription) {
+                        continue;
+                    }
+                    new ProductCmptCompareItem(productCmptItem, element);
                 }
-                for (IProductCmptLink link : productCmpt.getLinksAsList()) {
-                    new ProductCmptCompareItem(productCmptItem, link);
-                }
+
                 // Generations of product
                 IIpsObjectGeneration[] gens = productCmpt.getGenerationsOrderedByValidDate();
                 for (IIpsObjectGeneration gen : gens) {
                     ProductCmptCompareItem generationItem = new ProductCmptCompareItem(productCmptItem, gen);
-                    IIpsElement[] children = gen.getChildren();
-                    for (IIpsElement element : children) {
+                    IIpsElement[] genChildren = gen.getChildren();
+                    for (IIpsElement element : genChildren) {
                         new ProductCmptCompareItem(generationItem, element);
                     }
                 }

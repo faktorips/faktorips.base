@@ -25,10 +25,12 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -338,7 +340,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             }
         },
 
-        CONFIG_ELEMENT() {
+        CONFIGURED_VALUESET() {
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,
@@ -347,9 +349,50 @@ public abstract class ProductCmptPropertySection extends IpsSection {
                     BindingContext bindingContext,
                     UIToolkit toolkit) {
 
-                return new ConfigElementEditComposite((IPolicyCmptTypeAttribute)property,
-                        (IConfigElement)propertyValue, propertySection, parent, bindingContext, toolkit);
+                return new ConfiguredValueSetEditComposite((IPolicyCmptTypeAttribute)property,
+                        (IConfiguredValueSet)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
+
+            @Override
+            public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
+                // Label is for both parts of policy attribute, so label is only the name/label of
+                // the policy attribute
+                try {
+                    IProductCmptProperty property = propertyValue.findProperty(propertyValue.getIpsProject());
+                    String label;
+                    if (property != null) {
+                        label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
+                    } else {
+                        label = propertyValue.getPropertyName();
+                    }
+                    return toolkit.createLabel(parent, label);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+
+        },
+
+        CONFIGURED_DEFAULT() {
+            @Override
+            public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
+                    IPropertyValue propertyValue,
+                    ProductCmptPropertySection propertySection,
+                    Composite parent,
+                    BindingContext bindingContext,
+                    UIToolkit toolkit) {
+
+                return new ConfiguredDefaultEditComposite((IPolicyCmptTypeAttribute)property,
+                        (IConfiguredDefault)propertyValue, propertySection, parent, bindingContext, toolkit);
+            }
+
+            @Override
+            public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
+                // We do not show any label for default values, the label is already set by the
+                // value set
+                return toolkit.createVerticalSpacer(parent, 0);
+            }
+
         };
 
         /**
@@ -367,8 +410,10 @@ public abstract class ProductCmptPropertySection extends IpsSection {
                     return FORMULA;
                 case TABLE_CONTENT_USAGE:
                     return TABLE_CONTENT_USAGE;
-                case CONFIG_ELEMENT:
-                    return CONFIG_ELEMENT;
+                case CONFIGURED_VALUESET:
+                    return CONFIGURED_VALUESET;
+                case CONFIGURED_DEFAULT:
+                    return CONFIGURED_DEFAULT;
             }
             return null;
         }

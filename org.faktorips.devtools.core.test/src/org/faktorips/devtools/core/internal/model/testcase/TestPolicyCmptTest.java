@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -590,8 +590,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration(new GregorianCalendar(1742,
                 11, 1));
-        IConfigElement ce = generation.newConfigElement();
-        ce.setPolicyCmptTypeAttribute(attr.getName());
+        IConfiguredDefault ce = generation.newPropertyValue(attr, IConfiguredDefault.class);
         ce.setValue("attrCoverage_Default_Product");
 
         // create test case type side

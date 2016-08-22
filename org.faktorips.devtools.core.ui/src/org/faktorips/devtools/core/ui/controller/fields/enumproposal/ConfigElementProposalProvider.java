@@ -18,27 +18,28 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
+import org.faktorips.devtools.core.ui.controller.fields.ConfiguredValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /**
- * An implementation of {@link AbstractProposalProvider} for {@link ConfigElementField}s. It
+ * An implementation of {@link AbstractProposalProvider} for {@link ConfiguredValueSetField}s. It
  * provides proposals for all {@link IValueSetOwner}s allowing enum {@link ValueSetType}.
  */
 public class ConfigElementProposalProvider extends AbstractProposalProvider {
 
-    public ConfigElementProposalProvider(IConfigElement configElement, ValueDatatype valueDatatype,
+    public ConfigElementProposalProvider(IConfiguredValueSet configuredValueSet, ValueDatatype valueDatatype,
             IInputFormat<String> inputFormat) {
-        super(configElement, valueDatatype, inputFormat);
+        super(configuredValueSet, valueDatatype, inputFormat);
     }
 
     @Override
-    public IConfigElement getValueSetOwner() {
-        return (IConfigElement)super.getValueSetOwner();
+    public IConfiguredValueSet getValueSetOwner() {
+        return (IConfiguredValueSet)super.getValueSetOwner();
     }
 
     protected IConfigElement getConfigElement() {

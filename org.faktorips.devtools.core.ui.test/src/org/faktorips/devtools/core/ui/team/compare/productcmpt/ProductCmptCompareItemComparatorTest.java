@@ -21,15 +21,18 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,9 +44,14 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
 
     private ProductCmptCompareItem compareItemRoot;
 
+    private IConfiguredDefault configuredDefaultProd;
+
     private IFormula formula;
-    private IConfigElement policyAttribute;
-    private IAttributeValue productAttribute;
+    private IConfiguredDefault configuredDefault1;
+    private IConfiguredValueSet configuredValueSet1;
+    private IConfiguredDefault configuredDefault2;
+    private IConfiguredValueSet configuredValueSet2;
+    private IAttributeValue attributeValue;
     private ITableContentUsage tableUsage;
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
@@ -54,23 +62,38 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject(new ArrayList<Locale>());
-        IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
-        IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
-        IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
-        IProductCmpt productReferenced2 = newProductCmpt(root, "TestProductCmptReferenced2");
 
+        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(proj, "policyCmptType", "productCmptType");
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute1");
+        IPolicyCmptTypeAttribute policyAttribute2 = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute2");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(proj);
+
+        // 3 products + 3 generations
+        IProductCmpt product = newProductCmpt(productCmptType, "TestProductCmpt");
+        IProductCmpt productReferenced = newProductCmpt(productCmptType, "TestProductCmptReferenced");
+        IProductCmpt productReferenced2 = newProductCmpt(productCmptType, "TestProductCmptReferenced2");
+
+        // something for product
+        configuredDefaultProd = product.newPropertyValue(policyAttribute, IConfiguredDefault.class);
+
+        // + generation (product)
         GregorianCalendar calendar = new GregorianCalendar();
         generation1 = (IProductCmptGeneration)product.newGeneration(calendar);
         calendar = new GregorianCalendar();
         calendar.add(Calendar.MONTH, 1);
+        // + generation (product)
         product.newGeneration(calendar);
         calendar = new GregorianCalendar();
         calendar.add(Calendar.MONTH, 2);
+        // + generation (product)
         product.newGeneration(calendar);
 
         formula = generation1.newFormula();
-        policyAttribute = generation1.newConfigElement();
-        productAttribute = generation1.newAttributeValue();
+        configuredDefault1 = generation1.newPropertyValue(policyAttribute, IConfiguredDefault.class);
+        configuredValueSet1 = generation1.newPropertyValue(policyAttribute, IConfiguredValueSet.class);
+        configuredDefault2 = generation1.newPropertyValue(policyAttribute2, IConfiguredDefault.class);
+        configuredValueSet2 = generation1.newPropertyValue(policyAttribute2, IConfiguredValueSet.class);
+        attributeValue = generation1.newAttributeValue();
         tableUsage = generation1.newTableContentUsage();
         tableUsage.setTableContentName("TestTableContents");
 
@@ -92,13 +115,15 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         Object[] children = compareItemRoot.getChildren();
         ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];
 
-        // generations
+        // 1 config composite (configuredDefault) 4 generations
         children = compareItem.getChildren();
-        assertEquals(3, children.length);
-        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[2];
+        assertEquals(5, children.length);
+        ProductCmptCompareItem compareItemDefaultProd = (ProductCmptCompareItem)children[0];
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemGen2 = (ProductCmptCompareItem)children[3];
+        ProductCmptCompareItem compareItemGen3 = (ProductCmptCompareItem)children[4];
 
+        assertEquals(configuredDefaultProd, compareItemDefaultProd.getIpsElement());
         assertEquals(-1, comparator.compare(compareItemGen1, compareItemGen2));
         assertEquals(-1, comparator.compare(compareItemGen2, compareItemGen3));
         assertEquals(-2, comparator.compare(compareItemGen1, compareItemGen3));
@@ -107,25 +132,33 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
 
         // relations and attributes
         children = compareItemGen1.getChildren();
-        assertEquals(7, children.length);
+        assertEquals(10, children.length);
         ProductCmptCompareItem compareItemAttribute1 = (ProductCmptCompareItem)children[0];
-        ProductCmptCompareItem compareItemAttribute2 = (ProductCmptCompareItem)children[1];
-        ProductCmptCompareItem compareItemAttribute3 = (ProductCmptCompareItem)children[2];
-        ProductCmptCompareItem compareItemAttribute4 = (ProductCmptCompareItem)children[3];
-        ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[4];
-        ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[5];
-        ProductCmptCompareItem compareItemRelation3 = (ProductCmptCompareItem)children[6];
+        ProductCmptCompareItem compareItemValueSet1 = (ProductCmptCompareItem)children[1];
+        ProductCmptCompareItem compareItemDefault1 = (ProductCmptCompareItem)children[2];
+        ProductCmptCompareItem compareItemValueSet2 = (ProductCmptCompareItem)children[3];
+        ProductCmptCompareItem compareItemDefault2 = (ProductCmptCompareItem)children[4];
+        ProductCmptCompareItem compareItemFormula = (ProductCmptCompareItem)children[5];
+        ProductCmptCompareItem compareItemTableUsage = (ProductCmptCompareItem)children[6];
+        ProductCmptCompareItem compareItemRelation1 = (ProductCmptCompareItem)children[7];
+        ProductCmptCompareItem compareItemRelation2 = (ProductCmptCompareItem)children[8];
+        ProductCmptCompareItem compareItemRelation3 = (ProductCmptCompareItem)children[9];
 
         // attributes are sorted by type: productAttribute, tableUsage, formula, policyAttribute
-        assertEquals(compareItemAttribute1.getIpsElement(), productAttribute);
-        assertEquals(compareItemAttribute2.getIpsElement(), tableUsage);
-        assertEquals(compareItemAttribute3.getIpsElement(), formula);
-        assertEquals(compareItemAttribute4.getIpsElement(), policyAttribute);
+        assertEquals(attributeValue, compareItemAttribute1.getIpsElement());
+        assertEquals(tableUsage, compareItemTableUsage.getIpsElement());
+        assertEquals(formula, compareItemFormula.getIpsElement());
+        assertEquals(configuredValueSet1, compareItemValueSet1.getIpsElement());
+        assertEquals(configuredDefault1, compareItemDefault1.getIpsElement());
+        assertEquals(configuredDefault1.getPropertyName(), configuredValueSet1.getPropertyName());
+        assertEquals(configuredDefault2, compareItemDefault2.getIpsElement());
+        assertEquals(configuredValueSet2, compareItemValueSet2.getIpsElement());
+        assertEquals(configuredDefault2.getPropertyName(), configuredValueSet2.getPropertyName());
 
         // maintain order of relations as defined at creation (rel3 inserted before rel1)
-        assertEquals(compareItemRelation1.getIpsElement(), relation3);
-        assertEquals(compareItemRelation2.getIpsElement(), relation1);
-        assertEquals(compareItemRelation3.getIpsElement(), relation2);
+        assertEquals(relation3, compareItemRelation1.getIpsElement());
+        assertEquals(relation1, compareItemRelation2.getIpsElement());
+        assertEquals(relation2, compareItemRelation3.getIpsElement());
     }
 
 }

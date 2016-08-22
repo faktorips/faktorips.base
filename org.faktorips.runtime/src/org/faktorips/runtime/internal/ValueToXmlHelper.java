@@ -32,7 +32,15 @@ public class ValueToXmlHelper {
     public static final String XML_TAG_VALUE_SET = "ValueSet"; //$NON-NLS-1$
     public static final String XML_TAG_DATA = "Data"; //$NON-NLS-1$
 
-    public static final String XML_TAG_CONFIG_ELEMENT = "ConfigElement";
+    /**
+     * Since 3.19 the ConfigElement was separated in ConfiguredDefault and ConfiguredValueSet. We
+     * need this for reading legacy XML.
+     */
+    public static final String LEGACY_XML_TAG_CONFIG_ELEMENT = "ConfigElement";
+    public static final String CONFIGURED_DEFAULT_PREFIX = "@default_";
+    public static final String CONFIGURED_VALUE_SET_PREFIX = "@valueSet_";
+    public static final String XML_TAG_CONFIGURED_DEFAULT = "ConfiguredDefault";
+    public static final String XML_TAG_CONFIGURED_VALUE_SET = "ConfiguredValueSet";
     public static final String XML_TAG_ATTRIBUTE_VALUE = "AttributeValue";
     public static final String XML_ATTRIBUTE_ATTRIBUTE = "attribute";
 
@@ -132,6 +140,15 @@ public class ValueToXmlHelper {
             Document ownerDocument,
             boolean useCDataSection) {
         Element valueEl = ownerDocument.createElement(tagName);
+        setValue(value, ownerDocument, useCDataSection, valueEl);
+        return valueEl;
+    }
+
+    public static void setValue(String value, Element valueEl) {
+        setValue(value, valueEl.getOwnerDocument(), false, valueEl);
+    }
+
+    private static void setValue(String value, Document ownerDocument, boolean useCDataSection, Element valueEl) {
         valueEl.setAttribute(XML_ATTRIBUTE_IS_NULL, value == null ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
         if (value != null) {
             if (useCDataSection) {
@@ -140,7 +157,6 @@ public class ValueToXmlHelper {
                 valueEl.appendChild(ownerDocument.createTextNode(value));
             }
         }
-        return valueEl;
     }
 
     /**

@@ -34,12 +34,14 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -92,6 +94,8 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     private final List<EditField<?>> editFields = new ArrayList<EditField<?>>();
 
+    private final ExtensionPropertyControlFactory extPropControlFactory;
+
     protected EditPropertyValueComposite(P property, V propertyValue, IpsSection parentSection, Composite parent,
             BindingContext bindingContext, UIToolkit toolkit) {
 
@@ -102,6 +106,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         this.parentSection = parentSection;
         this.bindingContext = bindingContext;
         this.toolkit = toolkit;
+        extPropControlFactory = new ExtensionPropertyControlFactory(propertyValue);
     }
 
     /**
@@ -349,6 +354,14 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     private void bindProblemMarker(EditField<?> editField) {
         getBindingContext().bindProblemMarker(editField, getPropertyValue(),
                 IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+    }
+
+    protected void createEditFieldsForExtensionProperties() {
+        extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
+                IExtensionPropertyDefinition.POSITION_TOP);
+        extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extPropControlFactory.bind(getBindingContext());
     }
 
     private static class MoveDecorationFocusListener implements FocusListener {
