@@ -84,8 +84,12 @@ public class XPolicyAttribute extends XAttribute {
     /**
      * Returns true for all attributes except for constant and overridden attributes.
      */
-    public boolean isGenerateGetter() {
-        return !isConstant() && (!isOverwrite() || isAttributeTypeChangedByOverwrite() || isDerivedOnTheFly());
+    public boolean isGenerateGetter(boolean generatingInterface) {
+        if (isConstant()) {
+            return false;
+        } else {
+            return !isOverwrite() || generatingInterface || !isGeneratePublishedInterfaces() || isDerivedOnTheFly();
+        }
     }
 
     /**

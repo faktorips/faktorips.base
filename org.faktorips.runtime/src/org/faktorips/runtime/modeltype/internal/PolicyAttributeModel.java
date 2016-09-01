@@ -25,6 +25,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
+import org.faktorips.runtime.modeltype.IPolicyModel;
 import org.faktorips.runtime.modeltype.internal.ModelType.AnnotatedElementMatcher;
 import org.faktorips.valueset.ValueSet;
 
@@ -41,7 +42,25 @@ public class PolicyAttributeModel extends AbstractAttributeModel implements IPol
         super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
                 getter.getReturnType(), changingOverTime);
         this.getter = getter;
-        this.setter = setter;
+        this.setter = initSetter(modelType, setter);
+    }
+
+    private Method initSetter(PolicyModel modelType, Method initialSetter) {
+        Method result = initialSetter;
+        if (initialSetter == null) {
+            // maybe only the getter is overridden and we can get the setter from a super class
+            IPolicyModel superType = modelType.getSuperType();
+            if (superType != null) {
+                try {
+                    IPolicyAttributeModel attribute = superType.getAttribute(getName());
+                    result = ((PolicyAttributeModel)attribute).setter;
+                } catch (IllegalArgumentException e) {
+                    // there really is no setter
+                    result = null;
+                }
+            }
+        }
+        return result;
     }
 
     @Override
