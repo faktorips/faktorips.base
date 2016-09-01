@@ -54,7 +54,7 @@
 «ENDDEFINE»
 
 «DEFINE getter FOR XPolicyAttribute-» 
-	«IF generateGetter && !(overwrite && genInterface() && !attributeTypeChangedByOverwrite)-»
+	«IF isGenerateGetter(genInterface())-»
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
@@ -68,12 +68,14 @@
 			«IF generateField-»
 				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
-				«IF generateDefaultForDerivedAttribute-»
+				«IF generateDefaultForOnTheFlyDerivedAttribute-»
 					return «defaultValueCode»;
+				«ELSEIF !generatePublishedInterfaces && overwrite-»
+					return super.«methodNameGetter-»();
 				«ELSE-»
-			        «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
-			        «EXPAND formulaParameterDeclaration FOR formulaSignature-»
-			        return «getPropertyValueContainer(false)».«EXPAND formulaCall FOR formulaSignature-»;			
+					«localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
+					«EXPAND formulaParameterDeclaration FOR formulaSignature-»
+					return «getPropertyValueContainer(false)».«EXPAND formulaCall FOR formulaSignature-»;
 				«ENDIF-»
 			«ENDIF-»
 		}

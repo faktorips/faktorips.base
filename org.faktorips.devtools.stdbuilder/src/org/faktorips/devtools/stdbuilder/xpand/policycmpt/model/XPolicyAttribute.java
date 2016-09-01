@@ -82,10 +82,33 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns true for all attributes except for constant and overridden attributes.
+     * Returns whether a getter is to be generated:
+     * <ul>
+     * <li>if an interface is generated or interface generation is turned off (so that we can add
+     * all model information in annotations)
+     * <li>if the attribute does not overwrite a supertype attribute</li>
+     * <li>if the attribute does overwrite a derived-on-the-fly attribute and is itself marked as
+     * changeable</li>
+     * <li>if the attribute is derived-on-the-fly (because it has to be manually implemented)</li>
+     * </ul>
      */
-    public boolean isGenerateGetter() {
-        return !isConstant() && (!isOverwrite() || isAttributeTypeChangedByOverwrite() || isDerivedOnTheFly());
+    public boolean isGenerateGetter(boolean generatingInterface) {
+        if (isConstant()) {
+            return false;
+        } else {
+            boolean getterIsDefinedHere = !isOverwrite() || generatingInterface || !isGeneratePublishedInterfaces();
+            boolean attributeIsOrOverridesDerivedOnTheFly = isDerivedOnTheFly() || isOverwritingDerivedOnTheFly();
+            return getterIsDefinedHere || attributeIsOrOverridesDerivedOnTheFly;
+        }
+    }
+
+    private boolean isOverwritingDerivedOnTheFly() {
+        if (isOverwrite()) {
+            XPolicyAttribute overwrittenAttribute = getOverwrittenAttribute();
+            return overwrittenAttribute.isDerivedOnTheFly() || overwrittenAttribute.isOverwritingDerivedOnTheFly();
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -249,13 +272,18 @@ public class XPolicyAttribute extends XAttribute {
         return newEnumExpression.getSourcecode();
     }
 
-    public boolean isGenerateDefaultForDerivedAttribute() {
-        try {
-            IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(getIpsProject());
-            return !getAttribute().isProductRelevant() || formulaSignature == null
-                    || formulaSignature.validate(getIpsProject()).containsErrorMsg();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+    public boolean isGenerateDefaultForOnTheFlyDerivedAttribute() {
+        if (!isDerivedOnTheFly()) {
+            return false;
+        } else if (!getAttribute().isProductRelevant()) {
+            return true;
+        } else {
+            try {
+                IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(getIpsProject());
+                return formulaSignature == null || formulaSignature.validate(getIpsProject()).containsErrorMsg();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
     }
 
@@ -361,7 +389,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isAttributeTypeChangedByOverwrite() {
-        return isOverwrite() && isChangeable() && getOverwrittenAttribute().isDerivedOnTheFly();
+        return isOverwrite() && isChangeable() && isOverwritingDerivedOnTheFly();
     }
 
     /**
