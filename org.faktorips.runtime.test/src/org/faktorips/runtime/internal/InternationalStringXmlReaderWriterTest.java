@@ -10,11 +10,13 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -25,41 +27,89 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
 import org.junit.Test;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class InternationalStringXmlReaderWriterTest {
 
+    private static final String XML = "<InternationalString defaultLocale=\"de\">" //
+            + "<LocalizedString locale=\"de\" text=\"blabla\"/>" //
+            + "<LocalizedString locale=\"en\" text=\"english\"/>" //
+            + "</InternationalString>";
+
+    private static final String WRAPPED_XML = "<Parent><Child><InternationalString defaultLocale=\"de\">" //
+            + "<LocalizedString locale=\"de\" text=\"blabla\"/>" //
+            + "<LocalizedString locale=\"en\" text=\"english\"/>" //
+            + "</InternationalString></Child></Parent>";
+
     @Test
-    public void testFromXml_XmlSnippet() throws Exception {
-        String xmlSnippet = "<InternationalString>\n" //
-                + "<LocalizedString locale=\"de\" text=\"blabla\"/>\n" //
-                + "<LocalizedString locale=\"en\" text=\"english\"/>\n" //
-                + "</InternationalString>";
-
-        DefaultInternationalString internationalString = fromXml(xmlSnippet);
-
-        assertThat(internationalString.getLocalizedStrings(), hasItem(new LocalizedString(Locale.GERMAN, "blabla")));
-        assertThat(internationalString.getLocalizedStrings(), hasItem(new LocalizedString(Locale.ENGLISH, "english")));
+    public void testFromXml() throws Exception {
+        Collection<LocalizedString> localizedStrings = InternationalStringXmlReaderWriter.fromXml(asElement(XML));
+        assertThat(localizedStrings, hasItem(new LocalizedString(Locale.GERMAN, "blabla")));
+        assertThat(localizedStrings, hasItem(new LocalizedString(Locale.ENGLISH, "english")));
     }
 
-    /**
-     * Reads an {@link DefaultInternationalString} from an XML snippet represented by the String parameter.
-     * 
-     * @param xmlSnippet The XML representation of the {@link DefaultInternationalString}
-     * @return An {@link DefaultInternationalString} loaded from the XML snippet
-     */
-    public static DefaultInternationalString fromXml(String xmlSnippet) {
+    @Test
+    public void testFromXml_WrappedElement() throws Exception {
+        Collection<LocalizedString> localizedStrings = InternationalStringXmlReaderWriter.fromXml(
+                asElement(WRAPPED_XML), "Child");
+        assertThat(localizedStrings, hasItem(new LocalizedString(Locale.GERMAN, "blabla")));
+        assertThat(localizedStrings, hasItem(new LocalizedString(Locale.ENGLISH, "english")));
+    }
+
+    @Test
+    public void testDefaultLocaleFromXml() throws Exception {
+        Locale l = InternationalStringXmlReaderWriter.defaultLocaleFromXml(asElement(XML));
+        assertThat(l, is(Locale.GERMAN));
+    }
+
+    @Test
+    public void testDefaultLocaleFromXml_WrappedElement() throws Exception {
+        Locale l = InternationalStringXmlReaderWriter.defaultLocaleFromXml(asElement(WRAPPED_XML), "Child");
+        assertThat(l, is(Locale.GERMAN));
+    }
+
+    @Test
+    public void testToXml() throws Exception {
+        Collection<LocalizedString> localizedString = new ArrayList<LocalizedString>();
+        localizedString.add(new LocalizedString(Locale.GERMAN, "bla"));
+        localizedString.add(new LocalizedString(Locale.ENGLISH, "blubb"));
+        DefaultInternationalString internationalString = new DefaultInternationalString(localizedString, Locale.GERMAN);
+        Element element = InternationalStringXmlReaderWriter.toXml(newDocument(), internationalString);
+        assertThat(element.getAttribute(InternationalStringXmlReaderWriter.XML_ATTR_DEFAULT_LOCALE), is("de"));
+        assertThat(element.getChildNodes().getLength(), is(2));
+        assertThat(element.getChildNodes().item(0).getNodeName(),
+                is(InternationalStringXmlReaderWriter.XML_ELEMENT_LOCALIZED_STRING));
+        assertThat(element.getChildNodes().item(1).getNodeName(),
+                is(InternationalStringXmlReaderWriter.XML_ELEMENT_LOCALIZED_STRING));
+    }
+
+    @Test
+    public void testSetDefaultLocaleInXml() {
+        Document doc = newDocument();
+        Element element = doc.createElement("someElement");
+        InternationalStringXmlReaderWriter.setDefaultLocaleInXml(element, Locale.FRENCH);
+        assertThat(element.getAttribute(InternationalStringXmlReaderWriter.XML_ATTR_DEFAULT_LOCALE), is("fr"));
+    }
+
+    @Test
+    public void testSetDefaultLocaleInXml_NonElement() {
+        Document doc = newDocument();
+        Attr attr = doc.createAttribute("someAttribute");
+        InternationalStringXmlReaderWriter.setDefaultLocaleInXml(attr, Locale.FRENCH);
+        // Nothing to verify, non-element node should just be ignored without throwing an exception
+    }
+
+    private static Element asElement(String xmlSnippet) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder;
         try {
             builder = factory.newDocumentBuilder();
             Document document = builder.parse(new ByteArrayInputStream(xmlSnippet.getBytes()));
-            Element rootElement = document.getDocumentElement();
-            Collection<LocalizedString> collection = InternationalStringXmlReaderWriter.fromXml(rootElement);
-            return new DefaultInternationalString(collection);
+            return document.getDocumentElement();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {
@@ -68,4 +118,16 @@ public class InternationalStringXmlReaderWriterTest {
             throw new RuntimeException(e);
         }
     }
+
+    private static final Document newDocument() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

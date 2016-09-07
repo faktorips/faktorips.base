@@ -11,6 +11,8 @@
 package org.faktorips.values;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -60,6 +62,16 @@ public class ObjectUtilTest {
         ObjectUtil.checkInstanceOf(new Long(12), Number.class);
     }
 
+
+    @Test
+    public void testDefaultIfNull() {
+        assertNull(ObjectUtil.defaultIfNull(null, null));
+        Object o = new Object();
+        assertSame(o, ObjectUtil.defaultIfNull(null, o));
+        assertSame(o, ObjectUtil.defaultIfNull(o, ""));
+        assertSame(o, ObjectUtil.defaultIfNull(o, null));
+    }
+
     private static class TestEnumWithNullSupport implements NullObjectSupport {
 
         public static final TestEnumWithNullSupport A = new TestEnumWithNullSupport();
@@ -75,7 +87,6 @@ public class ObjectUtilTest {
         public boolean isNotNull() {
             return !isNull();
         }
-
     }
 
 }

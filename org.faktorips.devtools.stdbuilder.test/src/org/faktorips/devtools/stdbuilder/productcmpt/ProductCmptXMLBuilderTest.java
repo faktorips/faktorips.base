@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -28,7 +30,9 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -37,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
@@ -66,6 +71,10 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
+
+        IProductCmptTypeAttribute internationalStringAttribute = productCmptType.newProductCmptTypeAttribute("i18n");
+        internationalStringAttribute.setMultilingual(true);
+        internationalStringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -113,6 +122,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         link.setTarget(refTarget.getQualifiedName());
         staticLink = productCmpt.newLink("staticRole");
         staticLink.setTarget(refTarget.getQualifiedName());
+
+        gen.newAttributeValue(internationalStringAttribute);
 
         productCmpt.getIpsSrcFile().save(true, null);
         refTarget.getIpsSrcFile().save(true, null);
@@ -169,7 +180,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testSetRuntimeIdForStaticLinks() throws CoreException, IOException, SAXException,
-    ParserConfigurationException {
+            ParserConfigurationException {
         incrementalBuild();
         IFile xmlFile = getXmlFile(productCmpt);
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
@@ -183,7 +194,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testDeleteDummyGenerationsIfProductCmptTypeDoesNotAllowGenerations() throws CoreException, IOException,
-    SAXException, ParserConfigurationException {
+            SAXException, ParserConfigurationException {
         incrementalBuild();
         assertNumberOfGenerations(productCmpt, 1);
 
@@ -195,7 +206,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testDoNotCopyUndefinedLinks() throws CoreException, IOException, SAXException,
-    ParserConfigurationException {
+            ParserConfigurationException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         templateGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
@@ -244,7 +255,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     private void assertNoLinks(IFile file) throws SAXException, IOException, ParserConfigurationException,
-    CoreException {
+            CoreException {
         Document document = getDocumentBuilder().parse(file.getContents());
         Element prodCmpt = document.getDocumentElement();
 
@@ -279,6 +290,57 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+
+    @Test
+    public void testBuild_SetsDefaultLocaleInInternationalString() throws CoreException, IOException, SAXException,
+            ParserConfigurationException {
+        // Precondition
+        Locale defaultLocale = ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
+        assertThat(defaultLocale, is(notNullValue()));
+
+        incrementalBuild();
+
+        Element root = parseProductCmptElement();
+        NodeList internationalStrings = root.getElementsByTagName(InternationalString.XML_TAG);
+        assertThat(internationalStrings.getLength(), is(1));
+        Element internationalString = (Element)internationalStrings.item(0);
+        assertThat(internationalString.getAttribute(InternationalString.XML_ATTR_DEFAULT_LOCALE),
+                is(defaultLocale.getLanguage()));
+
+    }
+
+    /**
+     * Tests a {@link Locale} that is very likely different from the one derived e.g. from system
+     * properties.
+     */
+    @Test
+    public void testBuild_SetsDefaultLocaleInInternationalStringExoticDefaultLocale() throws CoreException,
+            IOException, SAXException, ParserConfigurationException {
+        // Precondition
+        Locale defaultLocale = Locale.KOREAN;
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addSupportedLanguage(defaultLocale);
+        properties.setDefaultLanguage(defaultLocale);
+        ipsProject.setProperties(properties);
+        assertThat(defaultLocale, is(notNullValue()));
+
+        incrementalBuild();
+
+        Element root = parseProductCmptElement();
+        NodeList internationalStrings = root.getElementsByTagName(InternationalString.XML_TAG);
+        assertThat(internationalStrings.getLength(), is(1));
+        Element internationalString = (Element)internationalStrings.item(0);
+        assertThat(internationalString.getAttribute(InternationalString.XML_ATTR_DEFAULT_LOCALE),
+                is(defaultLocale.getLanguage()));
+
+    }
+
+    private Element parseProductCmptElement() throws SAXException, IOException, ParserConfigurationException,
+    CoreException {
+        IFile xmlFile = getXmlFile(productCmpt);
+        Document document = getDocumentBuilder().parse(xmlFile.getContents());
+        return document.getDocumentElement();
     }
 
 }

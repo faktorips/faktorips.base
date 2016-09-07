@@ -80,11 +80,13 @@ public class ValueFactoryTest extends AbstractIpsPluginTest {
         assertNotNull(value);
         assertEquals(ValueType.INTERNATIONAL_STRING, ValueType.getValueType(value));
         assertNotNull(value.getContent());
+        assertTrue(value.getContent() instanceof InternationalString);
 
         value = ValueFactory.createValue(false, "foo");
         assertNotNull(value);
         assertEquals(ValueType.STRING, ValueType.getValueType(value));
         assertNotNull(value.getContent());
+        assertTrue(value.getContent() instanceof String);
         assertEquals("foo", value.getContentAsString());
 
     }

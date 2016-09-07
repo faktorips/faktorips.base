@@ -16,7 +16,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -125,14 +128,29 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     public void testAddTableUsageToElement() {
         Element element = getTestDocument().getDocumentElement();
         NodeList childNodes = element.getChildNodes();
-        assertEquals(25, childNodes.getLength());
+        assertEquals(27, childNodes.getLength());
 
         ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(26, childNodes.getLength());
-        Node namedItem = childNodes.item(25).getAttributes().getNamedItem("structureUsage");
+        assertEquals(28, childNodes.getLength());
+        Node namedItem = childNodes.item(27).getAttributes().getNamedItem("structureUsage");
         assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(25).getFirstChild().getTextContent();
+        String nodeValue = childNodes.item(27).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
+    }
+
+    @Test
+    public void testGetInternationalStringFromElement() {
+        Element attributeValueElement = (Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName("AttributeValue").item(0);
+
+        DefaultInternationalString internationalString = ValueToXmlHelper.getInternationalStringFromElement(
+                attributeValueElement, "Value");
+
+        assertEquals("Wrong default locale", new Locale("hy"), internationalString.getDefaultLocale());
+        assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(new Locale("as")));
+        assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(new Locale("hy")));
+        assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(new Locale("ko")));
+
     }
 }

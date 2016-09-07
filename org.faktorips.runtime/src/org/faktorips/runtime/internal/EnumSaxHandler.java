@@ -17,6 +17,7 @@ import java.util.Locale;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
+import org.faktorips.values.ObjectUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -42,6 +43,8 @@ public class EnumSaxHandler extends DefaultHandler {
 
     private InternationalString internationalString;
 
+    private Locale defaultLocale;
+
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ENUM_VALUE_NAME.equals(qName)) {
@@ -50,6 +53,10 @@ public class EnumSaxHandler extends DefaultHandler {
             stringBuilder = new StringBuilder();
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
             localizedStrings = new ArrayList<LocalizedString>();
+            String language = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_DEFAULT_LOCALE);
+            if (language != null) {
+                defaultLocale = new Locale(language);
+            }
         } else if (InternationalStringXmlReaderWriter.XML_ELEMENT_LOCALIZED_STRING.equals(qName)) {
             Locale locale = new Locale(attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_LOCALE));
             String text = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_TEXT);
@@ -77,7 +84,8 @@ public class EnumSaxHandler extends DefaultHandler {
             enumValues.add(enumValue);
             enumValue = null;
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
-            internationalString = new DefaultInternationalString(localizedStrings);
+            internationalString = new DefaultInternationalString(localizedStrings, ObjectUtil.defaultIfNull(
+                    defaultLocale, Locale.getDefault()));
         }
     }
 

@@ -18,9 +18,9 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * An {@link DefaultInternationalString} could be used for string properties that could be translated in
- * different languages. The {@link DefaultInternationalString} consists of a set of {@link LocalizedString
- * localized strings}.
+ * An {@link DefaultInternationalString} could be used for string properties that could be
+ * translated in different languages. The {@link DefaultInternationalString} consists of a set of
+ * {@link LocalizedString localized strings}.
  */
 public class DefaultInternationalString implements InternationalString {
 
@@ -28,18 +28,21 @@ public class DefaultInternationalString implements InternationalString {
 
     private final Map<Locale, LocalizedString> localizedStringMap;
 
+    private final Locale defaultLocale;
+
     /**
-     * Creates a new {@link DefaultInternationalString} with the given {@link LocalizedString localized
-     * strings}.
+     * Creates a new {@link DefaultInternationalString} with the given {@link LocalizedString
+     * localized strings}.
      * 
      * @param localizedStrings the localized strings making up this DefaultInternationalString.
      */
-    public DefaultInternationalString(Collection<LocalizedString> localizedStrings) {
+    public DefaultInternationalString(Collection<LocalizedString> localizedStrings, Locale defaultLocale) {
         Map<Locale, LocalizedString> initialMap = new LinkedHashMap<Locale, LocalizedString>();
         for (LocalizedString localizedString : localizedStrings) {
             initialMap.put(localizedString.getLocale(), localizedString);
         }
         localizedStringMap = Collections.unmodifiableMap(initialMap);
+        this.defaultLocale = defaultLocale;
     }
 
     /**
@@ -47,13 +50,23 @@ public class DefaultInternationalString implements InternationalString {
      */
     public String get(Locale locale) {
         LocalizedString localizedString = localizedStringMap.get(locale);
+        if (localizedString == null && !"".equals(locale.getCountry()) && !"".equals(locale.getLanguage())) {
+            localizedString = localizedStringMap.get(new Locale(locale.getLanguage()));
+        }
+        if (localizedString == null) {
+            localizedString = localizedStringMap.get(defaultLocale);
+        }
         return localizedString == null ? null : localizedString.getValue();
     }
 
+    public Locale getDefaultLocale() {
+        return defaultLocale;
+    }
+
     /**
-     * Returning all values of this {@link DefaultInternationalString} ordered by insertion. Note that a
-     * copy of the original values is returned. Modifying the returned collection will not modify
-     * this DefaultInternationalString.
+     * Returning all values of this {@link DefaultInternationalString} ordered by insertion. Note
+     * that a copy of the original values is returned. Modifying the returned collection will not
+     * modify this DefaultInternationalString.
      */
     public Collection<LocalizedString> getLocalizedStrings() {
         return new LinkedHashSet<LocalizedString>(localizedStringMap.values());
@@ -61,8 +74,9 @@ public class DefaultInternationalString implements InternationalString {
 
     @Override
     public int hashCode() {
-        final int prime = 37;
+        final int prime = 31;
         int result = 1;
+        result = prime * result + ((defaultLocale == null) ? 0 : defaultLocale.hashCode());
         result = prime * result + ((localizedStringMap == null) ? 0 : localizedStringMap.hashCode());
         return result;
     }
@@ -79,6 +93,13 @@ public class DefaultInternationalString implements InternationalString {
             return false;
         }
         DefaultInternationalString other = (DefaultInternationalString)obj;
+        if (defaultLocale == null) {
+            if (other.defaultLocale != null) {
+                return false;
+            }
+        } else if (!defaultLocale.equals(other.defaultLocale)) {
+            return false;
+        }
         if (localizedStringMap == null) {
             if (other.localizedStringMap != null) {
                 return false;
@@ -108,7 +129,9 @@ public class DefaultInternationalString implements InternationalString {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("InternationalString ["); //$NON-NLS-1$
+        builder.append("InternationalString defaultLocale="); //$NON-NLS-1$
+        builder.append(defaultLocale);
+        builder.append(" ["); //$NON-NLS-1$
         if (localizedStringMap != null) {
             for (LocalizedString localizedString : getLocalizedStrings()) {
                 builder.append(localizedString.toString());
