@@ -10,7 +10,11 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.Collection;
+import java.util.Locale;
+
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.LocalizedString;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -201,7 +205,9 @@ public class ValueToXmlHelper {
      * @param tagName The name of the child
      */
     public static DefaultInternationalString getInternationalStringFromElement(Element el, String tagName) {
-        return new DefaultInternationalString(InternationalStringXmlReaderWriter.fromXml(el, tagName));
+        Collection<LocalizedString> localizedStrings = InternationalStringXmlReaderWriter.fromXml(el, tagName);
+        Locale defaultLocale = InternationalStringXmlReaderWriter.defaultLocaleFromXml(el, tagName);
+        return new DefaultInternationalString(localizedStrings, defaultLocale);
     }
 
     /**
@@ -241,7 +247,9 @@ public class ValueToXmlHelper {
      * @param el The xml element storing the international string.
      */
     public static DefaultInternationalString getInternationalStringFromElement(Element el) {
-        return new DefaultInternationalString(InternationalStringXmlReaderWriter.fromXml(el));
+        Collection<LocalizedString> localizedString = InternationalStringXmlReaderWriter.fromXml(el);
+        Locale defaultLocale = InternationalStringXmlReaderWriter.defaultLocaleFromXml(el);
+        return new DefaultInternationalString(localizedString, defaultLocale);
     }
 
     public static Range getRangeFromElement(Element el, String tagName) {

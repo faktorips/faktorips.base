@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
+import org.faktorips.runtime.internal.InternationalStringXmlReaderWriter;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -43,6 +44,7 @@ import org.faktorips.util.message.ObjectProperty;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Implementation of <tt>IEnumAttributeValue</tt>, see the corresponding interface for more details.
@@ -112,7 +114,18 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         super.propertiesToXml(element);
         element.setAttribute(IS_NULL, Boolean.toString(isNullValue()));
         if (getValue() != null) {
-            element.appendChild(getValue().toXml(element.getOwnerDocument()));
+            Node valueNode = getValue().toXml(element.getOwnerDocument());
+            element.appendChild(valueNode);
+            /*
+             * Default locale is needed only for runtime. As the XML is used for the designtime and
+             * the runtime, defaultLocale is always generated (and ignored during design time).
+             * 
+             * TODO FIPS-4776 Generate default locale only for runtime XML
+             */
+            if (getValueType() == ValueType.INTERNATIONAL_STRING) {
+                Locale defaultLocale = getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale();
+                InternationalStringXmlReaderWriter.setDefaultLocaleInXml(valueNode, defaultLocale);
+            }
         }
     }
 

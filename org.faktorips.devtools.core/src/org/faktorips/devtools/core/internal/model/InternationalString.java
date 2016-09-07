@@ -30,14 +30,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A {@link InternationalString} could be used for string properties that could be translated in
- * different languages. The {@link InternationalString} consists of a set of {@link LocalizedString}
- * . To get notyfied about changes to any {@link LocalizedString} in this
- * {@link InternationalString} you could register as an {@link Observer}.
+ * A {@link InternationalString} can be used for string properties that can be translated in
+ * different languages. It contains a set of {@link LocalizedString}. To get notified about changes
+ * to any {@link LocalizedString} in this {@link InternationalString} you can register as an
+ * {@link Observer}.
  * <p>
  * The {@link InternationalString} implements the {@link XmlSupport}. To be able to use more than
  * one {@link InternationalString} property in one object use the
  * {@link InternationalStringXmlHelper}.
+ * <p>
+ * Note that this class does not support a default locale as none is needed at design time. However,
+ * at runtime {@link org.faktorips.values.DefaultInternationalString} is initialized from the XML
+ * written by this class and the {@code DefaultInternationalString} class needs a default locale.
+ * {@code org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder} is used to add the
+ * default locale to a product component's XML.
  * 
  * @author dirmeier
  */
@@ -48,6 +54,16 @@ public class InternationalString extends Observable implements IInternationalStr
     public static final String XML_ELEMENT_LOCALIZED_STRING = "LocalizedString"; //$NON-NLS-1$
 
     public static final String XML_ATTR_LOCALE = "locale"; //$NON-NLS-1$
+
+    /**
+     * The name of the attribute for the default locale. Although this class does not support a
+     * default locale, such a locale is needed when
+     * {@link org.faktorips.values.DefaultInternationalString} is initialized from the XML written
+     * by this class.
+     * 
+     * @see InternationalString
+     */
+    public static final String XML_ATTR_DEFAULT_LOCALE = "defaultLocale"; //$NON-NLS-1$
 
     public static final String XML_ATTR_TEXT = "text"; //$NON-NLS-1$
 
@@ -63,7 +79,8 @@ public class InternationalString extends Observable implements IInternationalStr
     private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<Locale, LocalizedString>();
 
     /**
-     * The default constructor. Consider to register a {@link Observer} to get notified for changes
+     * The default constructor. Consider to register a {@link Observer} to get notified about
+     * changes.
      */
     public InternationalString() {
         // default constructor
@@ -72,7 +89,7 @@ public class InternationalString extends Observable implements IInternationalStr
     /**
      * Construct the object and register the given observer.
      * 
-     * @param observer The observer you want to register to get notyfied for changes
+     * @param observer The observer you want to register to get notified about changes
      */
     public InternationalString(Observer observer) {
         this();

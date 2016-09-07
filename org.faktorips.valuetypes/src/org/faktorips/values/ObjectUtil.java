@@ -68,4 +68,15 @@ public class ObjectUtil {
         }
     }
 
+    /**
+     * Returns the given object if it is not {@code null} or the given default if it is.
+     * 
+     * @param maybeNull the object that is returned if it is not {@code null}
+     * @param defaultIfNull the default value returned if the first parameter is {@code null}
+     * @return given object if it is not {@code null} or the given default if it is
+     */
+    public static <T> T defaultIfNull(T maybeNull, T defaultIfNull) {
+        return maybeNull == null ? defaultIfNull : maybeNull;
+    }
+
 }

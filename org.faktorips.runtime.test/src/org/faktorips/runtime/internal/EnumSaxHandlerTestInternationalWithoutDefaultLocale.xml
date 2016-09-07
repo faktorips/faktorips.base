@@ -4,19 +4,19 @@
     <EnumValue id="0">
         <EnumAttributeValue id="0" isNull="false">a</EnumAttributeValue>
         <EnumAttributeValue id="1" isNull="false">
-            <InternationalString defaultLocale="de">
-                <LocalizedString locale="de" text="deText"/>
-                <LocalizedString locale="en" text="enText"/>
-            </InternationalString>
+        	<InternationalString>
+        		<LocalizedString locale="de" text="deText"/>
+        		<LocalizedString locale="en" text="enText"/>
+        	</InternationalString>
         </EnumAttributeValue>
     </EnumValue>
     <EnumValue id="1">
         <EnumAttributeValue id="0" isNull="false">b</EnumAttributeValue>
         <EnumAttributeValue id="1" isNull="false">
-            <InternationalString defaultLocale="en">
-                <LocalizedString locale="de" text="deText2"/>
-                <LocalizedString locale="en" text="enText2"/>
-            </InternationalString>
+        	<InternationalString>
+        		<LocalizedString locale="de" text="deText2"/>
+        		<LocalizedString locale="en" text="enText2"/>
+        	</InternationalString>
         </EnumAttributeValue>
     </EnumValue>
 </EnumContent>

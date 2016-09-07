@@ -65,4 +65,12 @@
 	        <AllValues containsNull="false" />
 	    </ValueSet>
 	</ConfigElement>
+    <AttributeValue attribute="A" id="1">
+        <Value isNull="false" valueType="SingleValue">
+            <InternationalString defaultLocale="hy">
+                <LocalizedString locale="hy" text="hyfds"/>
+                <LocalizedString locale="as" text="asfdsa"/>
+            </InternationalString>
+        </Value>
+    </AttributeValue>
 </DocElement>
