@@ -13,7 +13,6 @@ package org.faktorips.values;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -32,28 +32,48 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DefaultInternationalStringTest {
+
+    private static final Locale DEFAULT_LOCALE = Locale.GERMAN;
     private static final String ENGLISH_TEXT = "english text";
     private static final String GERMAN_TEXT = "deutscher Text";
+    private static final String KOREAN_TEXT = "'koreanischer' Text";
 
     private DefaultInternationalString internationalString;
     private LocalizedString englishLocalizedString;
     private LocalizedString germanLocalizedString;
+    private LocalizedString koreanLocalizedString;
 
     @Before
     public void setUp() {
         englishLocalizedString = new LocalizedString(Locale.ENGLISH, ENGLISH_TEXT);
         germanLocalizedString = new LocalizedString(Locale.GERMAN, GERMAN_TEXT);
+        koreanLocalizedString = new LocalizedString(Locale.KOREAN, KOREAN_TEXT);
         List<LocalizedString> list = new ArrayList<LocalizedString>();
         list.add(englishLocalizedString);
         list.add(germanLocalizedString);
-        internationalString = new DefaultInternationalString(list);
+        internationalString = new DefaultInternationalString(list, DEFAULT_LOCALE);
     }
 
     @Test
     public void testGetter() {
         assertEquals(ENGLISH_TEXT, internationalString.get(Locale.ENGLISH));
+        assertEquals(ENGLISH_TEXT, internationalString.get(Locale.UK));
+        assertEquals(ENGLISH_TEXT, internationalString.get(Locale.US));
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.GERMAN));
-        assertNull(internationalString.get(Locale.CHINESE));
+        assertEquals(GERMAN_TEXT, internationalString.get(Locale.GERMANY));
+        assertEquals(GERMAN_TEXT, internationalString.get(Locale.CHINESE));
+        assertEquals(GERMAN_TEXT, internationalString.get(new Locale("")));
+        DefaultInternationalString internationalString2 = new DefaultInternationalString(Arrays.asList(
+                koreanLocalizedString, englishLocalizedString), Locale.KOREAN);
+        assertEquals(KOREAN_TEXT, internationalString2.get(Locale.KOREAN));
+        assertEquals(KOREAN_TEXT, internationalString2.get(Locale.KOREA));
+        assertEquals(ENGLISH_TEXT, internationalString2.get(Locale.ENGLISH));
+        assertEquals(ENGLISH_TEXT, internationalString2.get(Locale.UK));
+        assertEquals(ENGLISH_TEXT, internationalString2.get(Locale.US));
+        assertEquals(KOREAN_TEXT, internationalString2.get(Locale.GERMAN));
+        assertEquals(KOREAN_TEXT, internationalString2.get(Locale.GERMANY));
+        assertEquals(KOREAN_TEXT, internationalString2.get(Locale.CHINESE));
+        assertEquals(KOREAN_TEXT, internationalString2.get(new Locale("")));
     }
 
     @Test
@@ -78,20 +98,20 @@ public class DefaultInternationalStringTest {
         List<LocalizedString> list = new ArrayList<LocalizedString>();
         list.add(english2);
         list.add(german2);
-        InternationalString internationalString2 = new DefaultInternationalString(list);
+        InternationalString internationalString2 = new DefaultInternationalString(list, DEFAULT_LOCALE);
 
         assertEquals(internationalString, internationalString2);
         assertEquals(internationalString2, internationalString);
         assertEquals(internationalString.hashCode(), internationalString2.hashCode());
 
         list.add(new LocalizedString(Locale.CHINESE, "abc"));
-        internationalString2 = new DefaultInternationalString(list);
+        internationalString2 = new DefaultInternationalString(list, DEFAULT_LOCALE);
         assertFalse(internationalString.equals(internationalString2));
         assertFalse(internationalString2.equals(internationalString));
 
         list.clear();
         list.add(german2);
-        internationalString2 = new DefaultInternationalString(list);
+        internationalString2 = new DefaultInternationalString(list, DEFAULT_LOCALE);
         assertFalse(internationalString.equals(internationalString2));
         assertFalse(internationalString2.equals(internationalString));
     }

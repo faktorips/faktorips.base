@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.Locale;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.values.InternationalString;
+import org.faktorips.values.DefaultInternationalString;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,7 +89,6 @@ public class EnumSaxHandlerTest {
      * Tests if the handler works correctly if the characters() method will be called multiple times
      * for a tag content. This happens for example if the value within a tag contains carriage
      * return characters.
-     * 
      */
     @Test
     public void testCRContent() throws Exception {
@@ -102,12 +102,6 @@ public class EnumSaxHandlerTest {
         assertEquals("a\rb\rc", value);
     }
 
-    /**
-     * Tests if the handler works correctly if the characters() method will be called multiple times
-     * for a tag content. This happens for example if the value within a tag contains carriage
-     * return characters.
-     * 
-     */
     @Test
     public void testInternationalContent() throws Exception {
         is = createInputStream("International.xml");
@@ -118,12 +112,38 @@ public class EnumSaxHandlerTest {
         List<Object> values = enumValueList.get(0);
         assertEquals(2, values.size());
         assertEquals("a", values.get(0));
-        assertEquals("deText", ((InternationalString)values.get(1)).get(Locale.GERMAN));
-        assertEquals("enText", ((InternationalString)values.get(1)).get(Locale.ENGLISH));
+        assertTrue(values.get(1) instanceof DefaultInternationalString);
+        DefaultInternationalString i11lString = (DefaultInternationalString)values.get(1);
+        assertEquals(Locale.GERMAN, i11lString.getDefaultLocale());
+        assertEquals("deText", i11lString.get(Locale.GERMAN));
+        assertEquals("enText", i11lString.get(Locale.ENGLISH));
+        assertEquals("deText", i11lString.get(Locale.CHINESE));
+
         values = enumValueList.get(1);
         assertEquals(2, values.size());
         assertEquals("b", values.get(0));
-        assertEquals("deText2", ((InternationalString)values.get(1)).get(Locale.GERMAN));
-        assertEquals("enText2", ((InternationalString)values.get(1)).get(Locale.ENGLISH));
+        assertTrue(values.get(1) instanceof DefaultInternationalString);
+        i11lString = (DefaultInternationalString)values.get(1);
+        assertEquals(Locale.ENGLISH, i11lString.getDefaultLocale());
+        assertEquals("deText2", i11lString.get(Locale.GERMAN));
+        assertEquals("enText2", i11lString.get(Locale.ENGLISH));
+        assertEquals("enText2", i11lString.get(Locale.JAPANESE));
+    }
+
+    @Test
+    public void testInternationalContentWithoutDefaultLocale() throws Exception {
+        is = createInputStream("InternationalWithoutDefaultLocale.xml");
+        saxParser.parse(is, handler);
+
+        List<List<Object>> enumValueList = handler.getEnumValueList();
+        assertTrue(enumValueList.get(0).get(1) instanceof DefaultInternationalString);
+        DefaultInternationalString i11lString = (DefaultInternationalString)enumValueList.get(0).get(1);
+        assertEquals(Locale.getDefault(), i11lString.getDefaultLocale());
+        // defect xml -> use default locale. All we test here is that we can still read it and get
+        // an international string with a default locale.
+
+        assertTrue(enumValueList.get(1).get(1) instanceof DefaultInternationalString);
+        i11lString = (DefaultInternationalString)enumValueList.get(1).get(1);
+        assertEquals(Locale.getDefault(), i11lString.getDefaultLocale());
     }
 }

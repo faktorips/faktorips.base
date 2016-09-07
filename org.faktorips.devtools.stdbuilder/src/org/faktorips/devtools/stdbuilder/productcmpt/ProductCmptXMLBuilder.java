@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.transform.TransformerException;
 
@@ -21,11 +22,13 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -83,12 +86,25 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             Element root = productCmpt.toXml(document);
 
             writeValidFrom(productCmpt, root);
+            updateInternationalStringDefaultLocale(getDefaultLocale(productCmpt.getIpsProject()), root);
             updateLinks(productCmpt, root);
             updateGenerations(productCmpt, document, root);
             compileFormulas(productCmpt, document, root);
             build(ipsSrcFile, root);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private Locale getDefaultLocale(IIpsProject ipsProject) {
+        return ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
+    }
+
+    private void updateInternationalStringDefaultLocale(Locale defaultLocale, Element root) {
+        NodeList internationalStrings = root.getElementsByTagName(InternationalString.XML_TAG);
+        for (int i = 0; i < internationalStrings.getLength(); i++) {
+            Element internationalString = (Element)internationalStrings.item(i);
+            internationalString.setAttribute(InternationalString.XML_ATTR_DEFAULT_LOCALE, defaultLocale.getLanguage());
         }
     }
 
