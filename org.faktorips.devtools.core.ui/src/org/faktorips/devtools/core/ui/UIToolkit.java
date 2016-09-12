@@ -416,9 +416,27 @@ public class UIToolkit {
      */
     public Label createLabel(Composite parent, String text, boolean grab) {
         Label label = createLabel(parent, text);
-        ((GridData)label.getLayoutData()).grabExcessHorizontalSpace = grab;
-        ((GridData)label.getLayoutData()).grabExcessVerticalSpace = grab;
+        grabHorizontalSpace(label, grab);
+        grabVerticalSpace(label, grab);
         return label;
+    }
+
+    /**
+     * Assumes the control has a GridData object as layout data. Sets "grabExcessHorizontalSpace" to
+     * the given value.
+     */
+    public void grabHorizontalSpace(Control c, boolean grab) {
+        GridData gd = (GridData)c.getLayoutData();
+        gd.grabExcessHorizontalSpace = grab;
+    }
+
+    /**
+     * Assumes the control has a GridData object as layout data. Sets "grabExcessVerticalSpace" to
+     * the given value.
+     */
+    public void grabVerticalSpace(Control c, boolean grab) {
+        GridData gd = (GridData)c.getLayoutData();
+        gd.grabExcessVerticalSpace = grab;
     }
 
     /**

@@ -80,26 +80,27 @@ public class GeneralInfoSection extends IpsSection {
                 productCmptType.getIpsProject(), composite, toolkit, false);
         getBindingContext().bindContent(supertypeRefControl, productCmptType, IType.PROPERTY_SUPERTYPE);
 
-        Composite modifyerComposite = toolkit.createGridComposite(client, 3, false, false);
+        Composite modifierComposite = toolkit.createGridComposite(client, 3, false, false);
 
         // Abstract flag
         Checkbox abstractCheckbox = toolkit
-                .createCheckbox(modifyerComposite, Messages.GeneralInfoSection_abstractLabel);
+                .createCheckbox(modifierComposite, Messages.GeneralInfoSection_abstractLabel);
         ((GridData)abstractCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
         getBindingContext().bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
 
         // ChangingOverTime flag
-        String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptNamePlural();
-        Checkbox changingOverTimeCheckbox = toolkit.createCheckbox(modifyerComposite,
+        String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
+        Checkbox changingOverTimeCheckbox = toolkit.createCheckbox(modifierComposite,
                 NLS.bind(Messages.GeneralInfoSection_changingOverTimeLabel, changingOverTimePluralName));
         ((GridData)changingOverTimeCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
         getBindingContext().bindContent(changingOverTimeCheckbox, productCmptType,
                 IProductCmptType.PROPERTY_CHANGING_OVER_TIME);
 
         // Layer Supertype flag
-        Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifyerComposite,
+        Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifierComposite,
                 Messages.GeneralInfoSection_label_layerSupertype);
+        toolkit.grabHorizontalSpace(layerSupertypeCheckbox, false);
         // layerSupertypeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
         getBindingContext().bindContent(layerSupertypeCheckbox, productCmptType,
                 IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
@@ -108,13 +109,15 @@ public class GeneralInfoSection extends IpsSection {
         extFactory.bind(getBindingContext());
 
         // Configured Checkbox
-        Composite configComposite = toolkit.createGridComposite(client, 1, true, false);
-        // the text field should be directly beneath the checkbox
-        ((GridLayout)configComposite.getLayout()).verticalSpacing = 0;
-        Checkbox configuratedCheckbox = toolkit.createCheckbox(configComposite,
+        Checkbox configuratedCheckbox = toolkit.createCheckbox(modifierComposite,
                 Messages.GeneralInfoSection_configuresLabel);
+        toolkit.grabHorizontalSpace(configuratedCheckbox, false);
         getBindingContext().bindContent(configuratedCheckbox, productCmptType,
                 IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
+
+        Composite configComposite = toolkit.createGridComposite(client, 1, false, false);
+        // the text field should be directly beneath the checkbox
+        ((GridLayout)configComposite.getLayout()).verticalSpacing = 0;
 
         // Reference to PolicyCmptType
         Composite policyCmptTypeComposite = toolkit.createGridComposite(configComposite, 2, false, false);

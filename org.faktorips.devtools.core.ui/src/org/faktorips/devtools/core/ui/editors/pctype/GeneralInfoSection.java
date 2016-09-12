@@ -75,21 +75,23 @@ public class GeneralInfoSection extends IpsSection {
         extFactory.createControls(composite, toolkit, policyCmptType, IExtensionPropertyDefinition.POSITION_TOP);
         extFactory.bind(getBindingContext());
 
-        Composite modifyerComposite = toolkit.createGridComposite(client, 1, false, false);
+        Composite modifierComposite = toolkit.createGridComposite(client, 1, false, false);
 
         // Abstract flag
-        Checkbox abstractCheckbox = toolkit.createCheckbox(modifyerComposite,
+        Checkbox abstractCheckbox = toolkit.createCheckbox(modifierComposite,
                 Messages.GeneralInfoSection_labelAbstractClass);
+        toolkit.grabHorizontalSpace(abstractCheckbox, false);
         getBindingContext().bindContent(abstractCheckbox, policyCmptType, IType.PROPERTY_ABSTRACT);
 
-        // Reference to ProductCmptType
-        Composite refComposite = toolkit.createGridComposite(client, 1, true, false);
-        // the text field should be directly beneath the checkbox
-        ((GridLayout)refComposite.getLayout()).verticalSpacing = 0;
-
-        Checkbox refCheckbox = toolkit.createCheckbox(refComposite, Messages.GeneralInfoSection_labelProduct);
+        Checkbox refCheckbox = toolkit.createCheckbox(modifierComposite, Messages.GeneralInfoSection_labelProduct);
+        toolkit.grabHorizontalSpace(refCheckbox, false);
         getBindingContext().bindContent(refCheckbox, policyCmptType,
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
+
+        // Reference to ProductCmptType
+        Composite refComposite = toolkit.createGridComposite(client, 1, false, false);
+        // the text field should be directly beneath the checkbox
+        ((GridLayout)refComposite.getLayout()).verticalSpacing = 0;
 
         Composite productCmptTypeComposite = toolkit.createGridComposite(refComposite, 2, false, false);
         ((GridLayout)productCmptTypeComposite.getLayout()).marginLeft = 16;
@@ -125,5 +127,4 @@ public class GeneralInfoSection extends IpsSection {
         extFactory.createControls(composite, toolkit, policyCmptType, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());
     }
-
 }
