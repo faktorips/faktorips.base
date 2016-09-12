@@ -4,8 +4,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -53,15 +55,19 @@ public class ProductAttributeModelTest {
         assertThat(productModel.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foo")));
         assertThat(productModel.getAttribute("attr2").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)"bar")));
+                is(equalTo((Object)42)));
         assertThat(productModel.getAttribute("attrGen").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foobar")));
+        assertThat(productModel.getAttribute("multiString").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)Arrays.asList("hello", "world"))));
         productComponent = new SubProdukt();
         productModel = Models.getProductModel(SubProdukt.class);
         assertThat(productModel.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foo")));
+        assertThat(productModel.getAttribute("multiString").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)Arrays.asList("hello", "world"))));
         assertThat(productModel.getAttribute("attr2").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)"baz")));
+                is(equalTo((Object)23)));
         assertThat(productModel.getAttribute("attr3").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foofoo")));
         assertThat(productModel.getAttribute("attrGen").getValue(productComponent, effectiveDate),
@@ -75,12 +81,16 @@ public class ProductAttributeModelTest {
         Produkt productComponent = new Produkt();
         IProductModel productModel = Models.getProductModel(Produkt.class);
         assertThat(productModel.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
-        assertThat(productModel.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)"bar")));
+        assertThat(productModel.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)42)));
         assertThat(productModel.getAttribute("attrGen").getValue(productComponent, null), is(equalTo((Object)"foobar")));
+        assertThat(productModel.getAttribute("multiString").getValue(productComponent, null),
+                is(equalTo((Object)Arrays.asList("hello", "world"))));
         productComponent = new SubProdukt();
         productModel = Models.getProductModel(SubProdukt.class);
         assertThat(productModel.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
-        assertThat(productModel.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)"baz")));
+        assertThat(productModel.getAttribute("multiString").getValue(productComponent, null),
+                is(equalTo((Object)Arrays.asList("hello", "world"))));
+        assertThat(productModel.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)23)));
         assertThat(productModel.getAttribute("attr3").getValue(productComponent, null), is(equalTo((Object)"foofoo")));
         assertThat(productModel.getAttribute("attrGen").getValue(productComponent, null), is(equalTo((Object)"foobaz")));
     }
@@ -90,17 +100,49 @@ public class ProductAttributeModelTest {
         IProductModel productModel = Models.getProductModel(Produkt.class);
         assertThat(productModel.getAttribute("attr1").isChangingOverTime(), is(false));
         assertThat(productModel.getAttribute("attr2").isChangingOverTime(), is(false));
+        assertThat(productModel.getAttribute("multiString").isChangingOverTime(), is(false));
         assertThat(productModel.getAttribute("attrGen").isChangingOverTime(), is(true));
         productModel = Models.getProductModel(SubProdukt.class);
         assertThat(productModel.getAttribute("attr1").isChangingOverTime(), is(false));
         assertThat(productModel.getAttribute("attr2").isChangingOverTime(), is(false));
+        assertThat(productModel.getAttribute("multiString").isChangingOverTime(), is(false));
         assertThat(productModel.getAttribute("attr3").isChangingOverTime(), is(false));
         assertThat(productModel.getAttribute("attrGen").isChangingOverTime(), is(true));
     }
 
+    @Test
+    public void testIsMultiValue() {
+        IProductModel productModel = Models.getProductModel(Produkt.class);
+        assertThat(productModel.getAttribute("attr1").isMultiValue(), is(false));
+        assertThat(productModel.getAttribute("attr2").isMultiValue(), is(false));
+        assertThat(productModel.getAttribute("multiString").isMultiValue(), is(true));
+        assertThat(productModel.getAttribute("attrGen").isMultiValue(), is(false));
+        productModel = Models.getProductModel(SubProdukt.class);
+        assertThat(productModel.getAttribute("attr1").isMultiValue(), is(false));
+        assertThat(productModel.getAttribute("attr2").isMultiValue(), is(false));
+        assertThat(productModel.getAttribute("multiString").isMultiValue(), is(true));
+        assertThat(productModel.getAttribute("attr3").isMultiValue(), is(false));
+        assertThat(productModel.getAttribute("attrGen").isMultiValue(), is(false));
+    }
+
+    @Test
+    public void testGetDatatype() throws ClassNotFoundException {
+        IProductModel productModel = Models.getProductModel(Produkt.class);
+        assertThat(productModel.getAttribute("attr1").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productModel.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));
+        assertThat(productModel.getAttribute("attrGen").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productModel.getAttribute("multiString").getDatatype(), is(equalTo((Object)String.class)));
+        productModel = Models.getProductModel(SubProdukt.class);
+        assertThat(productModel.getAttribute("attr1").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productModel.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));
+        assertThat(productModel.getAttribute("attrGen").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productModel.getAttribute("multiString").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productModel.getAttribute("attr3").getDatatype(), is(equalTo((Object)String.class)));
+    }
+
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
-    @IpsAttributes({ "attr1", "attr2", "attrGen" })
+    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen" })
     private class Produkt extends ProductComponent {
 
         private final ProduktGen produktGen = new ProduktGen(this);
@@ -115,8 +157,13 @@ public class ProductAttributeModelTest {
         }
 
         @IpsAttribute(name = "attr2", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
-        public String getAttr2() {
-            return "bar";
+        public Integer getAttr2() {
+            return 42;
+        }
+
+        @IpsAttribute(name = "multiString", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
+        public List<String> getMultiString() {
+            return Arrays.asList("hello", "world");
         }
 
         @Override
@@ -163,8 +210,8 @@ public class ProductAttributeModelTest {
 
         @Override
         @IpsAttribute(name = "attr2", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
-        public String getAttr2() {
-            return "baz";
+        public Integer getAttr2() {
+            return 23;
         }
 
         @IpsAttribute(name = "attr3", type = AttributeType.CONSTANT, valueSetType = ValueSetType.AllValues)
