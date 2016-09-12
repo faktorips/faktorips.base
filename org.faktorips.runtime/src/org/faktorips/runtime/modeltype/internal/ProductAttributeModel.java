@@ -10,7 +10,10 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Calendar;
+import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
@@ -25,7 +28,7 @@ public class ProductAttributeModel extends AbstractAttributeModel implements IPr
 
     public ProductAttributeModel(ModelType modelType, boolean changingOverTime, Method getter, Method setter) {
         super(modelType, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
-                getter.getReturnType(), changingOverTime);
+                getInnermostGenericClass(getter.getGenericReturnType()), changingOverTime);
         this.getter = getter;
         this.setter = setter;
     }
@@ -43,6 +46,22 @@ public class ProductAttributeModel extends AbstractAttributeModel implements IPr
     @Override
     public Object getValue(IProductComponent productComponent, Calendar effectiveDate) {
         return invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
+    }
+
+    private static final Class<?> getInnermostGenericClass(Type type) {
+        if (type instanceof Class) {
+            return (Class<?>)type;
+        }
+        if (type instanceof ParameterizedType) {
+            return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0]);
+        } else {
+            throw new IllegalArgumentException("can't find class for " + type.toString());
+        }
+    }
+
+    @Override
+    public Boolean isMultiValue() {
+        return getter.getReturnType().equals(List.class);
     }
 
 }
