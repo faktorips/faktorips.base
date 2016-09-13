@@ -82,13 +82,24 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns true for all attributes except for constant and overridden attributes.
+     * Returns true for all attributes except for constant and overriding (as long as they are not
+     * overriding a derived-on-the-fly-attribute) attributes.
      */
     public boolean isGenerateGetter(boolean generatingInterface) {
         if (isConstant()) {
             return false;
         } else {
-            return !isOverwrite() || generatingInterface || !isGeneratePublishedInterfaces() || isDerivedOnTheFly();
+            return !isOverwrite() || generatingInterface || !isGeneratePublishedInterfaces() || isDerivedOnTheFly()
+                    || isOverwritingDerivedOnTheFly();
+        }
+    }
+
+    private boolean isOverwritingDerivedOnTheFly() {
+        if (isOverwrite()) {
+            XPolicyAttribute overwrittenAttribute = getOverwrittenAttribute();
+            return overwrittenAttribute.isDerivedOnTheFly() || overwrittenAttribute.isOverwritingDerivedOnTheFly();
+        } else {
+            return false;
         }
     }
 
@@ -365,7 +376,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isAttributeTypeChangedByOverwrite() {
-        return isOverwrite() && isChangeable() && getOverwrittenAttribute().isDerivedOnTheFly();
+        return isOverwrite() && isChangeable() && isOverwritingDerivedOnTheFly();
     }
 
     /**
@@ -502,10 +513,10 @@ public class XPolicyAttribute extends XAttribute {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         if (enumDatatype.getEnumType().isInextensibleEnum()) {
             javaCodeFragment.appendClassName(Arrays.class).append(".asList(").append(getJavaClassName())
-                    .append(".values())");
+             .append(".values())");
         } else {
             javaCodeFragment.append(repositoryExpression).append(".").append("getEnumValues(")
-                    .append(getJavaClassName()).append(".class)");
+             .append(getJavaClassName()).append(".class)");
         }
         addImport(javaCodeFragment.getImportDeclaration());
         return javaCodeFragment.getSourcecode();
