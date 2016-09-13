@@ -11,6 +11,7 @@
 package org.faktorips.codegen.dthelpers.joda;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.codegen.JavaCodeFragment;
@@ -31,6 +32,31 @@ public class BaseJodaDatatypeHelperTest {
         assertTrue(valueOfExpression.getSourcecode().contains("JodaUtil"));
         assertTrue(valueOfExpression.getSourcecode().contains("myParseMethod"));
         assertTrue(valueOfExpression.getSourcecode().contains("myExpression"));
+    }
+
+    @Test
+    public void testGetToStringExpression() {
+        BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper(null, null);
+        JavaCodeFragment toStringExpression = baseJodaDatatypeHelper.getToStringExpression("myField");
+        assertTrue(toStringExpression.getSourcecode().contains("myField"));
+        assertTrue(toStringExpression.getSourcecode().contains("toString()"));
+    }
+
+    @Test
+    public void testGetToStringExpression_withParam() {
+        BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper(null, null) {
+            @Override
+            protected void appendToStringParameter(JavaCodeFragment fragment) {
+                fragment.addImport(BaseJodaDatatypeHelperTest.class.getName());
+                fragment.append("FooBar");
+            }
+        };
+        JavaCodeFragment toStringExpression = baseJodaDatatypeHelper.getToStringExpression("myField");
+        assertTrue(toStringExpression.getImportDeclaration().isCovered(BaseJodaDatatypeHelperTest.class));
+        assertTrue(toStringExpression.getSourcecode().contains("myField"));
+        assertTrue(toStringExpression.getSourcecode().contains("toString"));
+        assertTrue(toStringExpression.getSourcecode().contains("FooBar"));
+        assertFalse(toStringExpression.getSourcecode().contains("toString()"));
     }
 
     @Test
