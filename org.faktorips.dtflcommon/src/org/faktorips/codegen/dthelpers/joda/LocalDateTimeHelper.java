@@ -10,6 +10,7 @@
 package org.faktorips.codegen.dthelpers.joda;
 
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 
 /**
@@ -21,12 +22,22 @@ public class LocalDateTimeHelper extends BaseJodaDatatypeHelper {
 
     private static final String PARSE_METHOD = "toLocalDateTime"; //$NON-NLS-1$
 
+    private static final String DATE_TIME_NO_MILLIS = "dateTimeNoMillis"; //$NON-NLS-1$
+
     public LocalDateTimeHelper() {
         super(ORG_JODA_TIME_LOCAL_DATE_TIME, PARSE_METHOD);
     }
 
     public LocalDateTimeHelper(LocalDateTimeDatatype d) {
         super(d, ORG_JODA_TIME_LOCAL_DATE_TIME, PARSE_METHOD);
+    }
+
+    @Override
+    protected void appendToStringParameter(JavaCodeFragment fragment) {
+        fragment.appendClassName(ORG_JODA_TIME_FORMAT_ISO_DATE_TIME_FORMAT);
+        fragment.append('.');
+        fragment.append(DATE_TIME_NO_MILLIS);
+        fragment.append("()"); //$NON-NLS-1$
     }
 
 }
