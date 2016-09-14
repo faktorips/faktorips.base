@@ -44,7 +44,9 @@ public class LabelAndDescriptionPropertiesBuilder extends AbstractLocalizedPrope
 
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
-        return true;
+        // as these labels and descriptions are used to read model data, product objects are not
+        // relevant
+        return !ipsSrcFile.getIpsObjectType().isProductDefinitionType();
     }
 
     @Override
