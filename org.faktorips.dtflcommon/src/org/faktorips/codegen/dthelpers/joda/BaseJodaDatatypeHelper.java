@@ -13,6 +13,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractTimeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * Base class for Joda-Time {@link DatatypeHelper} implementations
@@ -55,10 +56,9 @@ public class BaseJodaDatatypeHelper extends AbstractTimeHelper {
     @Override
     public JavaCodeFragment getToStringExpression(String fieldName) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append(fieldName);
-        fragment.append("==null?null:"); //$NON-NLS-1$
-        fragment.append(fieldName);
-        fragment.append(".toString("); //$NON-NLS-1$
+        fragment.appendClassName(ObjectUtil.class).append(".isNull(").append(fieldName) //$NON-NLS-1$
+                .append(")").append(" ? null : ") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(fieldName).append(".toString("); //$NON-NLS-1$
         appendToStringParameter(fragment);
         fragment.append(")"); //$NON-NLS-1$
         return fragment;
