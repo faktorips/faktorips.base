@@ -249,6 +249,23 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertEquals("English description.", pc.getDescription(Locale.CHINESE));
     }
 
+    @Test
+    public void testWriteDescriptionToXml() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+        Document newDocument = newDocument();
+
+        Element productElement = pc.toXml(newDocument);
+
+        NodeList desriptionNodes = productElement.getElementsByTagName("Description");
+        assertEquals(3, desriptionNodes.getLength());
+        assertEquals("en", ((Element)desriptionNodes.item(0)).getAttribute("locale"));
+        assertEquals("English description.", ((Element)desriptionNodes.item(0)).getTextContent());
+        assertEquals("fr", ((Element)desriptionNodes.item(1)).getAttribute("locale"));
+        assertEquals("Je ne parle pas français.", ((Element)desriptionNodes.item(1)).getTextContent());
+        assertEquals("de", ((Element)desriptionNodes.item(2)).getAttribute("locale"));
+        assertEquals("Deutsche Beschreibung.", ((Element)desriptionNodes.item(2)).getTextContent());
+    }
+
     /**
      * Test class for testing the {@link ProductComponent#toXml(Document) toXml} method. This class
      * is used instead of {@link TestProductComponent} because the method

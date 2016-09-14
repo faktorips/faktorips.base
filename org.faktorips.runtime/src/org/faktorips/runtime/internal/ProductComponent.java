@@ -40,6 +40,10 @@ import org.w3c.dom.NodeList;
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
 
+    private static final String ATTRIBUTE_LOCALE = "locale";
+
+    private static final String XML_ELEMENT_DESCRIPTION = "Description";
+
     private static final String IS_NULL = "isNull";
 
     private static final String VALID_FROM = "validFrom";
@@ -290,12 +294,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     private void initDescriptions(Element cmptElement) {
-        NodeList descriptionElements = cmptElement.getElementsByTagName("Description");
+        NodeList descriptionElements = cmptElement.getElementsByTagName(XML_ELEMENT_DESCRIPTION);
         List<LocalizedString> descriptions = new ArrayList<LocalizedString>(descriptionElements.getLength());
         for (int i = 0; i < descriptionElements.getLength(); i++) {
             Element descriptionElement = (Element)descriptionElements.item(i);
 
-            String localeCode = descriptionElement.getAttribute("locale");
+            String localeCode = descriptionElement.getAttribute(ATTRIBUTE_LOCALE);
             Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
             String text = descriptionElement.getTextContent();
             descriptions.add(new LocalizedString(locale, text));
@@ -343,6 +347,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeFormulaToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
+        writeDescriptionToXml(prodCmptElement);
         if (includeGenerations) {
             List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
             for (IProductComponentGeneration generation : generations) {
@@ -406,6 +411,18 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
         ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
+    }
+
+    private void writeDescriptionToXml(Element prodCmptElement) {
+        if (description != null) {
+            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
+                Element descriptionElement = prodCmptElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
+                descriptionElement.setAttribute(ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
+                descriptionElement.setTextContent(localizedString.getValue());
+                prodCmptElement.appendChild(descriptionElement);
+            }
+        }
+
     }
 
     @Override
