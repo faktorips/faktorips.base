@@ -13,6 +13,7 @@ package org.faktorips.runtime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.internal.DateTime;
@@ -118,5 +119,16 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * @since 3.15
      */
     public boolean isChangingOverTime();
+
+    /**
+     * Returns the description for this product component in the specified locale. If there is no
+     * description in the specified locale, it tries to find the description in the locale's
+     * language. If there is also no description in the locale's language it returns the empty
+     * string.
+     * 
+     * @return the description for the given locale/language or an empty string if no description
+     *         exists for the given locale
+     */
+    public String getDescription(Locale locale);
 
 }
