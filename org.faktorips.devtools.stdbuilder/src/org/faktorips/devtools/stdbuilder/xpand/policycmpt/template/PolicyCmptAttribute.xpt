@@ -65,19 +65,17 @@
 		public «javaClassName» «method(methodNameGetter)»
 		«IF genInterface()-»;«ELSE-»
 		{
-			«IF !generatePublishedInterfaces && overwrite-»
-				return super.«methodNameGetter-»();
+			«IF generateField-»
+				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
-				«IF generateField-»
-					return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
+				«IF generateDefaultForOnTheFlyDerivedAttribute-»
+					return «defaultValueCode»;
+				«ELSEIF !generatePublishedInterfaces && overwrite-»
+					return super.«methodNameGetter-»();
 				«ELSE-»
-					«IF generateDefaultForDerivedAttribute-»
-						return «defaultValueCode»;
-					«ELSE-»
-			   	     «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
-			   	     «EXPAND formulaParameterDeclaration FOR formulaSignature-»
-			   	     return «getPropertyValueContainer(false)».«EXPAND formulaCall FOR formulaSignature-»;			
-					«ENDIF-»
+					«localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
+					«EXPAND formulaParameterDeclaration FOR formulaSignature-»
+					return «getPropertyValueContainer(false)».«EXPAND formulaCall FOR formulaSignature-»;
 				«ENDIF-»
 			«ENDIF-»
 		}
