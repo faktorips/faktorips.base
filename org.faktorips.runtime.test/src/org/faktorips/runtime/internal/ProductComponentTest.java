@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -122,13 +123,14 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     public void testWriteTableUsageToXml() {
         Element prodCmptElement = getTestDocument().getDocumentElement();
         NodeList childNodes = prodCmptElement.getChildNodes();
-        assertEquals(9, childNodes.getLength());
+        assertEquals(15, childNodes.getLength());
 
         pc.writeTableUsageToXml(prodCmptElement, "structureUsageValue", "tableContentNameValue");
 
-        Node namedItem = childNodes.item(9).getAttributes().getNamedItem("structureUsage");
-        String nodeValue = childNodes.item(9).getFirstChild().getTextContent();
-        assertEquals(10, childNodes.getLength());
+        Node node = childNodes.item(15);
+        Node namedItem = node.getAttributes().getNamedItem("structureUsage");
+        String nodeValue = node.getFirstChild().getTextContent();
+        assertEquals(16, childNodes.getLength());
         assertEquals("structureUsageValue", namedItem.getNodeValue());
         assertEquals("tableContentNameValue", nodeValue);
     }
@@ -215,6 +217,53 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
         when(repository.isModifiable()).thenReturn(true);
         pc.setValidFrom(null);
+    }
+
+    @Test
+    public void testDescription_existingLanguage() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+
+        assertEquals("English description.", pc.getDescription(Locale.ENGLISH));
+        assertEquals("Deutsche Beschreibung.", pc.getDescription(Locale.GERMAN));
+        assertEquals("Je ne parle pas français.", pc.getDescription(Locale.FRENCH));
+    }
+
+    @Test
+    public void testDescription_existingLanguage_fallback() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+
+        assertEquals("English description.", pc.getDescription(Locale.US));
+        assertEquals("English description.", pc.getDescription(Locale.UK));
+        assertEquals("English description.", pc.getDescription(Locale.CANADA));
+        assertEquals("Deutsche Beschreibung.", pc.getDescription(Locale.GERMANY));
+        assertEquals("Je ne parle pas français.", pc.getDescription(Locale.FRANCE));
+        assertEquals("Je ne parle pas français.", pc.getDescription(Locale.CANADA_FRENCH));
+    }
+
+    @Test
+    public void testDescription_nonExistingLanguage() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+
+        // English is currently considered the default language as it is defined as the first
+        // language in the XML
+        assertEquals("English description.", pc.getDescription(Locale.CHINESE));
+    }
+
+    @Test
+    public void testWriteDescriptionToXml() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+        Document newDocument = newDocument();
+
+        Element productElement = pc.toXml(newDocument);
+
+        NodeList desriptionNodes = productElement.getElementsByTagName("Description");
+        assertEquals(3, desriptionNodes.getLength());
+        assertEquals("en", ((Element)desriptionNodes.item(0)).getAttribute("locale"));
+        assertEquals("English description.", ((Element)desriptionNodes.item(0)).getTextContent());
+        assertEquals("fr", ((Element)desriptionNodes.item(1)).getAttribute("locale"));
+        assertEquals("Je ne parle pas français.", ((Element)desriptionNodes.item(1)).getTextContent());
+        assertEquals("de", ((Element)desriptionNodes.item(2)).getAttribute("locale"));
+        assertEquals("Deutsche Beschreibung.", ((Element)desriptionNodes.item(2)).getTextContent());
     }
 
     /**

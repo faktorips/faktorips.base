@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.w3c.dom.Element;
 
 /**
  * ProductComponent for testing purposes.
@@ -36,6 +37,12 @@ public class TestProductComponent extends ProductComponent {
     @Override
     public boolean isChangingOverTime() {
         return true;
+    }
+
+    @Override
+    protected void writePropertiesToXml(Element element) {
+        // not implemented, but overwrites the super-implementation that throws an exception to
+        // allow testing of other parts written to XML.
     }
 
 }
