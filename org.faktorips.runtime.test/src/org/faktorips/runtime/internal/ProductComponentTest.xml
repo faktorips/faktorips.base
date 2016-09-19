@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ProductCmpt description="" policyCmptType="productChange.SubPolicy">
+<ProductCmpt policyCmptType="productChange.SubPolicy">
+    <Description id="6df2003d-10ee-4224-9747-9c10ff4de310" locale="en">English description.</Description>
+    <Description id="c5a54eab-a8e8-460e-8c3e-eb6ee40ab655" locale="fr">Je ne parle pas français.</Description>
+    <Description id="873e2d9d-f58f-4a77-ac54-ec3f5f774d6f" locale="de">Deutsche Beschreibung.</Description>
     <Generation description="" validFrom="2005-05-01">
         <ConfigElement attribute="Faktor" value="2">
             <ValueSet>

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -23,8 +24,12 @@ import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
+import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Base class for all product components.
@@ -34,6 +39,10 @@ import org.w3c.dom.Element;
  * undesired.
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
+
+    private static final String ATTRIBUTE_LOCALE = "locale";
+
+    private static final String XML_ELEMENT_DESCRIPTION = "Description";
 
     private static final String IS_NULL = "isNull";
 
@@ -75,6 +84,11 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * Handles the formulas
      */
     private final FormulaHandler formulaHandler;
+
+    /**
+     * The description for this product component in all configured languages.
+     */
+    private InternationalString description;
 
     /**
      * Creates a new product component with the indicate id, kind id and version id.
@@ -193,6 +207,16 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return formulaHandler.getFormulaEvaluator();
     }
 
+    @Override
+    public String getDescription(Locale locale) {
+        String string = description.get(locale);
+        if (string == null) {
+            return IpsStringUtils.EMPTY;
+        } else {
+            return string;
+        }
+    }
+
     /**
      * Initializes the generation with the data from the xml element.
      * 
@@ -214,6 +238,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         doInitFormulaFromXml(cmptElement);
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         initExtensionPropertiesFromXml(cmptElement);
+        initDescriptions(cmptElement);
     }
 
     /**
@@ -268,6 +293,22 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         // allow in subclasses calls to super.doInitReferencesFromXml().
     }
 
+    private void initDescriptions(Element cmptElement) {
+        NodeList descriptionElements = cmptElement.getElementsByTagName(XML_ELEMENT_DESCRIPTION);
+        List<LocalizedString> descriptions = new ArrayList<LocalizedString>(descriptionElements.getLength());
+        for (int i = 0; i < descriptionElements.getLength(); i++) {
+            Element descriptionElement = (Element)descriptionElements.item(i);
+
+            String localeCode = descriptionElement.getAttribute(ATTRIBUTE_LOCALE);
+            Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
+            String text = descriptionElement.getTextContent();
+            descriptions.add(new LocalizedString(locale, text));
+        }
+        // FIXME: FIPS-5146 use the correct default locale
+        description = new DefaultInternationalString(descriptions, descriptions.isEmpty() ? null : descriptions.get(0)
+                .getLocale());
+    }
+
     @Override
     public String toString() {
         return id;
@@ -306,6 +347,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeFormulaToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
+        writeDescriptionToXml(prodCmptElement);
         if (includeGenerations) {
             List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
             for (IProductComponentGeneration generation : generations) {
@@ -369,6 +411,18 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
         ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
+    }
+
+    private void writeDescriptionToXml(Element prodCmptElement) {
+        if (description != null) {
+            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
+                Element descriptionElement = prodCmptElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
+                descriptionElement.setAttribute(ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
+                descriptionElement.setTextContent(localizedString.getValue());
+                prodCmptElement.appendChild(descriptionElement);
+            }
+        }
+
     }
 
     @Override
