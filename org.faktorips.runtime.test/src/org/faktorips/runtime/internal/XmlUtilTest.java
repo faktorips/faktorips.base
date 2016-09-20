@@ -90,4 +90,28 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals(2, testElements.size());
     }
 
+    @Test
+    public void testGetElements_multipleInOrder() {
+        Document doc = getTestDocument();
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
+
+        List<Element> elements = XmlUtil.getElements(docElement, "ChildA");
+
+        assertEquals(3, elements.size());
+        for (int i = 0; i <= 2; i++) {
+            assertEquals(Integer.toString(i), elements.get(i).getAttribute("id"));
+        }
+    }
+
+    @Test
+    public void testGetElements_noneFound() {
+        Document doc = getTestDocument();
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
+
+        List<Element> elements = XmlUtil.getElements(docElement, "FooBar");
+
+        assertNotNull(elements);
+        assertEquals(0, elements.size());
+    }
+
 }

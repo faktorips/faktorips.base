@@ -8,4 +8,7 @@
 	<ChildA id="1" type="testtype1"/>
 	<ChildA id="2" type="testtype2"/>
 	<ChildB>testValue</ChildB>
+	<ChildC>
+		<ChildA id="3" type="deep"/>
+	</ChildC>
 </DocElement>

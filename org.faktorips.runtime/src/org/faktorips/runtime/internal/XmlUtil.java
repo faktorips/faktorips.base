@@ -26,7 +26,7 @@ import org.w3c.dom.Text;
  */
 public class XmlUtil {
 
-    public final static Element getFirstElement(Node parent, String tagName) {
+    public static final Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -42,7 +42,7 @@ public class XmlUtil {
     /**
      * Returns the first Element node
      */
-    public final static Element getFirstElement(Node parent) {
+    public static final Element getFirstElement(Node parent) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -62,7 +62,7 @@ public class XmlUtil {
      * @return The element at the specified index
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
      */
-    public final static Element getElement(Node parent, String tagName, int index) {
+    public static final Element getElement(Node parent, String tagName, int index) {
         NodeList nl = parent.getChildNodes();
         int count = 0;
         for (int i = 0; i < nl.getLength(); i++) {
@@ -80,10 +80,32 @@ public class XmlUtil {
     }
 
     /**
+     * Returns all child elements with the given tag name. Considers only direct children. Use
+     * {@link Element#getElementsByTagName(String)} to search <em>all</em> descendants.
+     * 
+     * @param parent The parent node.
+     * @param tagName the element tag name.
+     * @return all child elements with the matching tag name
+     */
+    public static final List<Element> getElements(Node parent, String tagName) {
+        List<Element> elements = new ArrayList<Element>();
+        NodeList nl = parent.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            if (nl.item(i) instanceof Element) {
+                Element element = (Element)nl.item(i);
+                if (element.getNodeName().equals(tagName)) {
+                    elements.add(element);
+                }
+            }
+        }
+        return elements;
+    }
+
+    /**
      * Returns the node's text child node or <code>null</code> if the node hasn't got a text node.
      * 
      */
-    public final static Text getTextNode(Node node) {
+    public static final Text getTextNode(Node node) {
         node.normalize();
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -97,7 +119,7 @@ public class XmlUtil {
     /**
      * Returns the node's first CDATA section or <code>null</code> if the node hasn't got one.
      */
-    public final static CDATASection getFirstCDataSection(Node node) {
+    public static final CDATASection getFirstCDataSection(Node node) {
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i).getNodeType() == Node.CDATA_SECTION_NODE) {
@@ -111,7 +133,7 @@ public class XmlUtil {
      * Returns the node's first CDATA section if the node has one. If not, this returns the node's
      * text child node or <code>null</code> if the node hasn't got a text node.
      */
-    public final static String getCDATAorTextContent(Node node) {
+    public static final String getCDATAorTextContent(Node node) {
         if (getFirstCDataSection(node) != null) {
             return getFirstCDataSection(node).getData();
         } else if (getTextNode(node) != null) {
@@ -127,7 +149,7 @@ public class XmlUtil {
      * @param elem The first element (root or parent) element the search begins
      * @param nodeName The name searching for
      */
-    public final static String getValueFromNode(Element elem, String nodeName) {
+    public static final String getValueFromNode(Element elem, String nodeName) {
         String value = null;
         Node el = getFirstElement(elem, nodeName);
         if (el != null) {
@@ -140,7 +162,7 @@ public class XmlUtil {
     /**
      * Returns a list of element's with the following criteria:
      * <ul>
-     * <li>the node name must be equals to the given node name
+     * <li>the node name must be equal to the given node name
      * <li>the node must contain an attribute with the attribute name
      * <li>the value of the attribute (with the given name) must be equal to the given value
      * </ul>

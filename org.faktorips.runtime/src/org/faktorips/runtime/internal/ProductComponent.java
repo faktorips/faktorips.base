@@ -29,7 +29,6 @@ import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Base class for all product components.
@@ -294,17 +293,15 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     private void initDescriptions(Element cmptElement) {
-        NodeList descriptionElements = cmptElement.getElementsByTagName(XML_ELEMENT_DESCRIPTION);
-        List<LocalizedString> descriptions = new ArrayList<LocalizedString>(descriptionElements.getLength());
-        for (int i = 0; i < descriptionElements.getLength(); i++) {
-            Element descriptionElement = (Element)descriptionElements.item(i);
-
+        List<Element> descriptionElements = XmlUtil.getElements(cmptElement, XML_ELEMENT_DESCRIPTION);
+        List<LocalizedString> descriptions = new ArrayList<LocalizedString>(descriptionElements.size());
+        for (Element descriptionElement : descriptionElements) {
             String localeCode = descriptionElement.getAttribute(ATTRIBUTE_LOCALE);
             Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
             String text = descriptionElement.getTextContent();
             descriptions.add(new LocalizedString(locale, text));
         }
-        // FIXME: FIPS-5146 use the correct default locale
+        // FIXME: FIPS-5152 use the correct default locale from the repository
         description = new DefaultInternationalString(descriptions, descriptions.isEmpty() ? null : descriptions.get(0)
                 .getLocale());
     }
