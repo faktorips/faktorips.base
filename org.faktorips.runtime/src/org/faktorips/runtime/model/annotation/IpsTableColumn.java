@@ -14,11 +14,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.model.table.TableColumnModel;
+import org.faktorips.runtime.model.table.TableColumn;
 
 /**
  * Preserves design time information about a table structure's column for runtime reference via
- * {@link TableColumnModel}.
+ * {@link TableColumn}.
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

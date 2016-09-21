@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractPropertiesGenerator;
-import org.faktorips.runtime.modeltype.internal.DocumentationType;
+import org.faktorips.runtime.model.type.DocumentationKind;
 
 public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
 
@@ -59,19 +59,19 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
             ILabeledElement labeledElement = (ILabeledElement)ipsObjectPart;
             String label = labeledElement.getLabelValue(getLocale());
             if (StringUtils.isNotBlank(label)) {
-                labelsAndDescriptions.put(ipsObjectPart, DocumentationType.LABEL, label);
+                labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.LABEL, label);
             }
             if (labeledElement.isPluralLabelSupported()) {
                 String pluralLabelValue = labeledElement.getPluralLabelValue(getLocale());
                 if (StringUtils.isNotBlank(pluralLabelValue)) {
-                    labelsAndDescriptions.put(ipsObjectPart, DocumentationType.PLURAL_LABEL, pluralLabelValue);
+                    labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.PLURAL_LABEL, pluralLabelValue);
                 }
             }
         }
         if (ipsObjectPart instanceof IDescribedElement) {
             IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getLocale());
             if (description != null && StringUtils.isNotBlank(description.getText())) {
-                labelsAndDescriptions.put(ipsObjectPart, DocumentationType.DESCRIPTION, description.getText());
+                labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.DESCRIPTION, description.getText());
             }
         }
     }

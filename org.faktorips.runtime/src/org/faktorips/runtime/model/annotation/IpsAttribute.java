@@ -14,13 +14,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.modeltype.IModelTypeAttribute;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
+import org.faktorips.runtime.model.type.Attribute;
+import org.faktorips.runtime.model.type.AttributeKind;
+import org.faktorips.runtime.model.type.ValueSetKind;
 
 /**
  * Preserves design time information about a model attribute for runtime reference via
- * {@link IModelTypeAttribute}.
+ * {@link Attribute}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD })
@@ -28,8 +28,8 @@ public @interface IpsAttribute {
 
     String name();
 
-    AttributeType type();
+    AttributeKind kind();
 
-    ValueSetType valueSetType();
+    ValueSetKind valueSetKind();
 
 }

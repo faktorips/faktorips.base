@@ -12,11 +12,11 @@ package org.faktorips.runtime.model.annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.model.type.ModelElement;
 
 /**
  * Preserves design time information about an extension property for runtime reference via
- * {@link IModelElement#getExtensionPropertyValue(String)}.
+ * {@link ModelElement#getExtensionPropertyValue(String)}.
  */
 // TODO switch to @Repeating once we have Java 8:
 // https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html

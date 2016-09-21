@@ -19,7 +19,7 @@ import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.runtime.model.annotation.IpsEnum;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
 
 public class EnumDeclClassAnnGen implements IAnnotationGenerator {
@@ -46,7 +46,7 @@ public class EnumDeclClassAnnGen implements IAnnotationGenerator {
         for (XEnumAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
         }
-        codeFragmentBuilder.annotationLn(IpsEnum.class,
+        codeFragmentBuilder.annotationLn(IpsEnumType.class,
                 "name = \"" + name + "\", attributeNames = {\"" + StringUtils.join(attributeNames, "\", \"") + "\"}");
         return codeFragmentBuilder.getFragment();
     }

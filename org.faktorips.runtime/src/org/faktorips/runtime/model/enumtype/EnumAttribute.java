@@ -1,0 +1,168 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.runtime.model.enumtype;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+
+import org.faktorips.runtime.model.annotation.IpsEnumType;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.model.type.DocumentationKind;
+import org.faktorips.runtime.model.type.ModelElement;
+import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader;
+import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NamesAccessor;
+import org.faktorips.runtime.util.MessagesHelper;
+
+/**
+ * Description of an attribute of an {@link EnumType}.
+ */
+public class EnumAttribute extends ModelElement {
+
+    private final EnumType enumType;
+
+    private final Class<?> datatype;
+
+    private final Method getterMethod;
+
+    private final IpsEnumAttribute annotation;
+
+    public EnumAttribute(EnumType enumType, String name, Method getterMethod) {
+        super(name, getterMethod.getAnnotation(IpsExtensionProperties.class));
+        this.enumType = enumType;
+        this.datatype = getterMethod.getReturnType();
+        this.getterMethod = getterMethod;
+        this.annotation = getterMethod.getAnnotation(IpsEnumAttribute.class);
+    }
+
+    /**
+     * The class for this attribute's values.
+     */
+    public Class<?> getDatatype() {
+        return datatype;
+    }
+
+    /**
+     * Whether this attribute's value is unique over all the enum's values.
+     */
+    public boolean isUnique() {
+        return annotation.unique();
+    }
+
+    /**
+     * Whether this attribute is used to identify an enum value.
+     */
+    public boolean isIdentifier() {
+        return annotation.identifier();
+    }
+
+    /**
+     * Whether this attribute is used to display an enum value for human readability.
+     */
+    public boolean isDisplayName() {
+        return annotation.displayName();
+    }
+
+    /**
+     * Returns the value for this attribute from the enum value. If the attribute
+     * {@linkplain #isMultilingual() is multilingual}, the {@linkplain Locale#getDefault() default
+     * Locale} is used.
+     * 
+     * @see EnumAttribute#getValue(Object, Locale) for getting a multilingual value for a
+     *      specific locale
+     */
+    public Object getValue(Object enumInstance) {
+        return getValue(enumInstance, Locale.getDefault());
+    }
+
+    /**
+     * Whether the values of this attribute are dependent on {@link Locale}.
+     */
+    public boolean isMultilingual() {
+        return getterMethod.getParameterTypes().length == 1;
+    }
+
+    /**
+     * Returns the value for this attribute from the enum value. If the attribute
+     * {@linkplain #isMultilingual() is multilingual}, the given locale is used, otherwise it is
+     * ignored.
+     * 
+     * @see EnumAttribute#getValue(Object) for getting a locale independent value
+     */
+    public Object getValue(Object enumInstance, Locale locale) {
+        try {
+            if (isMultilingual()) {
+                return getterMethod.invoke(enumInstance, locale);
+            } else {
+                return getterMethod.invoke(enumInstance);
+            }
+        } catch (IllegalAccessException e) {
+            throw cantGetValueException(e, locale);
+        } catch (IllegalArgumentException e) {
+            throw cantGetValueException(e, locale);
+        } catch (InvocationTargetException e) {
+            throw cantGetValueException(e, locale);
+        }
+    }
+
+    private RuntimeException cantGetValueException(Exception e, Locale locale) {
+        return new RuntimeException("Can't get value for attribute \"" + getName() + "\""
+                + (isMultilingual() ? " for locale " + locale : ""), e);
+    }
+
+    @Override
+    protected String getMessageKey(DocumentationKind messageType) {
+        return messageType.getKey(enumType.getName(), EnumType.KIND_NAME, getName());
+    }
+
+    @Override
+    protected MessagesHelper getMessageHelper() {
+        return enumType.getMessageHelper();
+    }
+
+    protected static LinkedHashMap<String, EnumAttribute> createFrom(EnumType enumType, Class<?> enumClass) {
+        Class<IpsEnumType> parentAnnotation = IpsEnumType.class;
+        NamesAccessor<IpsEnumType> getNamesOfPartsFromParentAnnotation = new NamesAccessor<IpsEnumType>() {
+
+            @Override
+            public String[] getNames(IpsEnumType annotation) {
+                return annotation.attributeNames();
+            }
+        };
+        Class<IpsEnumAttribute> childAnnotation = IpsEnumAttribute.class;
+        NameAccessor<IpsEnumAttribute> getNameOfPartFromChildAnnotation = new NameAccessor<IpsEnumAttribute>() {
+
+            @Override
+            public String getName(IpsEnumAttribute annotation) {
+                return annotation.name();
+            }
+        };
+        ModelElementCreator<EnumAttribute> createEnumAttributeModel = new ModelElementCreator<EnumAttribute>() {
+            @Override
+            public EnumAttribute create(ModelElement modelType, String name, Method getterMethod) {
+                return new EnumAttribute((EnumType)modelType, name, getterMethod);
+            }
+        };
+        // @formatter:off
+        SimpleTypeModelPartsReader<EnumAttribute, IpsEnumType, IpsEnumAttribute> modelPartsReader = new SimpleTypeModelPartsReader<EnumAttribute, IpsEnumType, IpsEnumAttribute>(
+                parentAnnotation,
+                getNamesOfPartsFromParentAnnotation,
+                childAnnotation,
+                getNameOfPartFromChildAnnotation,
+                createEnumAttributeModel);
+
+        return modelPartsReader.createParts(enumClass, enumType);
+        // @formatter:on
+    }
+}

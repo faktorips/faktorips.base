@@ -10,10 +10,16 @@
 
 package org.faktorips.runtime.modeltype;
 
+import org.faktorips.runtime.model.type.Attribute;
+import org.faktorips.runtime.model.type.AttributeKind;
+import org.faktorips.runtime.model.type.ValueSetKind;
+
 /**
  * 
  * @author Daniel Hohenberger
+ * @deprecated Use {@link Attribute} directly. Will be removed in Faktor-IPS 3.20+
  */
+@Deprecated
 public interface IModelTypeAttribute extends IModelElement {
 
     /**
@@ -53,7 +59,10 @@ public interface IModelTypeAttribute extends IModelElement {
 
     /**
      * Enum defining the possible value set types.
+     * 
+     * @deprecated Use {@link ValueSetKind}
      */
+    @Deprecated
     public static enum ValueSetType {
         Enum,
         Range,
@@ -62,7 +71,10 @@ public interface IModelTypeAttribute extends IModelElement {
 
     /**
      * Enum defining the possible attribute types.
+     * 
+     * @deprecated Use {@link AttributeKind}
      */
+    @Deprecated
     public static enum AttributeType {
 
         CHANGEABLE("changeable"),

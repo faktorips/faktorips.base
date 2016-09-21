@@ -42,7 +42,7 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
      * @param initialCapacityForTablesByQname not used anymore!
      * @param initialCapacityForEnumContentByClassName not used anymore!
      * 
-     * @deprecated use the default constructor and set the cache size by calling
+     * @deprecated Use the default constructor and set the cache size by calling
      *             {@link #setInitialSize(Class, int)} instead
      */
     @Deprecated

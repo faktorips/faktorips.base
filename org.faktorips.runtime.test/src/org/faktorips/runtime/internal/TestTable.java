@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
-import org.faktorips.runtime.model.table.TableStructureType;
+import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.values.Decimal;
 
 /**
@@ -22,7 +22,7 @@ import org.faktorips.values.Decimal;
  * 
  * @generated
  */
-@IpsTableStructure(name = "tables.TestTable", type = TableStructureType.MULTIPLE_CONTENTS, columns = { "company",
+@IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = { "company",
         "gender", "rate" })
 public class TestTable extends Table<TestTableRow> {
 

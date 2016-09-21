@@ -50,7 +50,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageKey;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
-import org.faktorips.runtime.modeltype.internal.DocumentationType;
+import org.faktorips.runtime.model.type.DocumentationKind;
 import org.junit.Test;
 
 public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
@@ -220,7 +220,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         assertThat(labelAndDescriptionGenerator.getLocalizedProperties().size(), is(equalTo(1)));
         assertThat(
                 labelAndDescriptionGenerator.getLocalizedProperties().getMessage(
-                        new MessageKey(pcType2, DocumentationType.LABEL).getKey()), is(equalTo("foobar")));
+                        new MessageKey(pcType2, DocumentationKind.LABEL).getKey()), is(equalTo("foobar")));
     }
 
     @Test
@@ -250,8 +250,8 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         assertThat(
                 labelAndDescriptionGenerator.getLocalizedProperties()
                         .getKeysForIpsObject(pcType.getQualifiedNameType()),
-                hasItems(new MessageKey(association, DocumentationType.LABEL), new MessageKey(association,
-                        DocumentationType.PLURAL_LABEL)));
+                hasItems(new MessageKey(association, DocumentationKind.LABEL), new MessageKey(association,
+                        DocumentationKind.PLURAL_LABEL)));
     }
 
     private void setLabel(ILabeledElement labeledElement, String value) {
