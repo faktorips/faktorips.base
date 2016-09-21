@@ -15,12 +15,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.model.table.TableModel;
-import org.faktorips.runtime.model.table.TableStructureType;
+import org.faktorips.runtime.model.table.TableStructure;
+import org.faktorips.runtime.model.table.TableStructureKind;
 
 /**
  * Preserves design time information about a table structure for runtime reference via
- * {@link TableModel}.
+ * {@link TableStructure}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -34,7 +34,7 @@ public @interface IpsTableStructure {
     /**
      * Whether this table structure allows multiple contents.
      */
-    TableStructureType type();
+    TableStructureKind type();
 
     /**
      * The names of the columns, in order. Additional information is available in

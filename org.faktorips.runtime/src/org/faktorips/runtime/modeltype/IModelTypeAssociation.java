@@ -12,10 +12,13 @@ package org.faktorips.runtime.modeltype;
 
 import java.util.Locale;
 
+import org.faktorips.runtime.model.type.Association;
+import org.faktorips.runtime.model.type.AssociationKind;
+
 /**
- * 
- * @author Daniel Hohenberger
+ * @deprecated Use {@link Association} directly. Will be removed in Faktor-IPS 3.20+
  */
+@Deprecated
 public interface IModelTypeAssociation extends IModelElement {
 
     /**
@@ -148,7 +151,10 @@ public interface IModelTypeAssociation extends IModelElement {
 
     /**
      * Enum defining the possible association types.
+     * 
+     * @deprecated Use {@link AssociationKind}
      */
+    @Deprecated
     public enum AssociationType {
         Association,
         Composition,

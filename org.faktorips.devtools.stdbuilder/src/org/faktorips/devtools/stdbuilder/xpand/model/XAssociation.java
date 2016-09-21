@@ -27,7 +27,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
+import org.faktorips.runtime.model.type.AssociationKind;
 import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
@@ -343,16 +343,16 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * are returned as composition.
      * 
      * @return type of the association
-     * @see AssociationType
+     * @see AssociationKind
      */
-    public AssociationType getAssociationType() {
+    public AssociationKind getAssociationKind() {
         org.faktorips.devtools.core.model.type.AssociationType associationType = getAssociation().getAssociationType();
         if (associationType.isMasterToDetail()) {
-            return AssociationType.Composition;
+            return AssociationKind.Composition;
         } else if (associationType.isCompositionDetailToMaster()) {
-            return AssociationType.CompositionToMaster;
+            return AssociationKind.CompositionToMaster;
         } else if (associationType.isAssoziation()) {
-            return AssociationType.Association;
+            return AssociationKind.Association;
         } else {
             // should not occur
             return null;

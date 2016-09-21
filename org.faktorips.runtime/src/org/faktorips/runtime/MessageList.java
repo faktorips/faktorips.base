@@ -123,7 +123,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Returns the number of messages in the list.
      * 
-     * @deprecated use #size() instead
+     * @deprecated Use #size() instead
      */
     @Deprecated
     public int getNoOfMessages() {

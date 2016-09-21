@@ -38,10 +38,10 @@ import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
-import org.faktorips.runtime.model.Models;
-import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.modeltype.IPolicyModel;
-import org.faktorips.runtime.modeltype.IProductModel;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.type.PolicyCmptType;
+import org.faktorips.runtime.model.type.ProductCmptType;
+import org.faktorips.runtime.model.type.Type;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
@@ -612,18 +612,18 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt);
 
     @Override
-    public IModelType getModelType(Class<?> modelObjectClass) {
-        return Models.getModelType(modelObjectClass);
+    public Type getModelType(Class<?> modelObjectClass) {
+        return IpsModel.getType(modelObjectClass);
     }
 
     @Override
-    public IPolicyModel getModelType(IModelObject modelObject) {
-        return Models.getPolicyModel(modelObject);
+    public PolicyCmptType getModelType(IModelObject modelObject) {
+        return IpsModel.getPolicyCmptType(modelObject);
     }
 
     @Override
-    public IProductModel getModelType(IProductComponent productComponent) {
-        return Models.getProductModel(productComponent);
+    public ProductCmptType getModelType(IProductComponent productComponent) {
+        return IpsModel.getProductCmptType(productComponent);
     }
 
     @Override

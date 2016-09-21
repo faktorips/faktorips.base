@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.model.type;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -20,13 +21,12 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.runtime.modeltype.IPolicyAttributeModel;
 
 /**
  * An abstraction of properties (defined by a type) that are configured by product components. Such
  * properties have one or more value-instance ({@link IPropertyValue}). For example a
- * {@link IPolicyAttributeModel} has two {@link IPropertyValue} namely {@link IConfiguredValueSet}
- * and {@link IConfiguredDefault}.
+ * {@link IPolicyCmptTypeAttribute} has two {@linkplain IPropertyValue IPropertyValues} namely
+ * {@link IConfiguredValueSet} and {@link IConfiguredDefault}.
  * 
  * @author Jan Ortmann
  * @author Stefan Widmaier

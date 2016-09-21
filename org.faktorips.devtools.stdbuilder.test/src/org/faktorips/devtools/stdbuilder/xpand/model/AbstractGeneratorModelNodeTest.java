@@ -74,9 +74,10 @@ public class AbstractGeneratorModelNodeTest {
     }
 
     @Test
-    public void addImportByInternalClass() {
-        xClass.addImport(org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType.class);
-        verify(modelContext).addImport("org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType");
+    public void addImportByInnerClass() {
+        xClass.addImport(org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNodeTest.Inner.class);
+        verify(modelContext).addImport(
+                "org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNodeTest.Inner");
     }
 
     @Test
@@ -187,6 +188,9 @@ public class AbstractGeneratorModelNodeTest {
         AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
 
         assertTrue(modelNode.isGenerateConvenienceGetters());
+    }
+
+    public static class Inner {
     }
 
 }

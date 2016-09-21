@@ -14,12 +14,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.modeltype.IModelTypeAssociation;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
+import org.faktorips.runtime.model.type.Association;
+import org.faktorips.runtime.model.type.AssociationKind;
 
 /**
  * Preserves design time information about a model association for runtime reference via
- * {@link IModelTypeAssociation}.
+ * {@link Association}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -35,7 +35,7 @@ public @interface IpsAssociation {
      */
     String pluralName() default "";
 
-    AssociationType type();
+    AssociationKind kind();
 
     /**
      * The association's target.

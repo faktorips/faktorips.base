@@ -13,11 +13,15 @@ package org.faktorips.runtime.modeltype;
 import java.util.Locale;
 import java.util.Set;
 
+import org.faktorips.runtime.model.type.ModelElement;
+
 /**
  * Base Interface for all model elements.
  * 
  * @author Daniel Hohenberger
+ * @deprecated Use {@link ModelElement} directly. Will be removed in Faktor-IPS 3.20+
  */
+@Deprecated
 public interface IModelElement {
 
     /**

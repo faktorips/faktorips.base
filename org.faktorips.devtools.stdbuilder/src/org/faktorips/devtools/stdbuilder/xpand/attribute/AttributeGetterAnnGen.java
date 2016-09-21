@@ -19,8 +19,8 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute.ValueSetType;
+import org.faktorips.runtime.model.type.AttributeKind;
+import org.faktorips.runtime.model.type.ValueSetKind;
 
 /**
  * Generates the {@link IpsAttribute} annotation on attribute getter methods.
@@ -37,14 +37,14 @@ public class AttributeGetterAnnGen implements IAnnotationGenerator {
         JavaCodeFragmentBuilder attributeAnnArg = new JavaCodeFragmentBuilder();
         attributeAnnArg.append("name = \"");
         attributeAnnArg.append(attribute.getName());
-        attributeAnnArg.append("\", type = ");
-        attributeAnnArg.appendClassName(AttributeType.class);
+        attributeAnnArg.append("\", kind = ");
+        attributeAnnArg.appendClassName(AttributeKind.class);
         attributeAnnArg.append(".");
-        attributeAnnArg.append(getAttributeType(attribute).name());
-        attributeAnnArg.append(", valueSetType = ");
-        attributeAnnArg.appendClassName(ValueSetType.class);
+        attributeAnnArg.append(getAttributeKind(attribute).name());
+        attributeAnnArg.append(", valueSetKind = ");
+        attributeAnnArg.appendClassName(ValueSetKind.class);
         attributeAnnArg.append(".");
-        attributeAnnArg.append(getValueSetType(attribute).name());
+        attributeAnnArg.append(getValueSetKind(attribute).name());
 
         annotationCode.annotationLn(IpsAttribute.class, attributeAnnArg.getFragment());
 
@@ -59,27 +59,27 @@ public class AttributeGetterAnnGen implements IAnnotationGenerator {
         return annotationCode.getFragment();
     }
 
-    private AttributeType getAttributeType(IAttribute attribute) {
+    private AttributeKind getAttributeKind(IAttribute attribute) {
         if (attribute instanceof IPolicyCmptTypeAttribute) {
-            return AttributeType.forName(((IPolicyCmptTypeAttribute)attribute).getAttributeType().getId());
+            return AttributeKind.forName(((IPolicyCmptTypeAttribute)attribute).getAttributeType().getId());
         } else {
-            return AttributeType.CONSTANT;
+            return AttributeKind.CONSTANT;
         }
     }
 
-    private ValueSetType getValueSetType(IAttribute attribute) {
-        ValueSetType valueSetType = null;
+    private ValueSetKind getValueSetKind(IAttribute attribute) {
+        ValueSetKind valueSetKind = null;
         switch (attribute.getValueSet().getValueSetType()) {
             case ENUM:
-                valueSetType = ValueSetType.Enum;
+                valueSetKind = ValueSetKind.Enum;
                 break;
             case RANGE:
-                valueSetType = ValueSetType.Range;
+                valueSetKind = ValueSetKind.Range;
                 break;
             default:
-                valueSetType = ValueSetType.AllValues;
+                valueSetKind = ValueSetKind.AllValues;
         }
-        return valueSetType;
+        return valueSetKind;
     }
 
     @Override

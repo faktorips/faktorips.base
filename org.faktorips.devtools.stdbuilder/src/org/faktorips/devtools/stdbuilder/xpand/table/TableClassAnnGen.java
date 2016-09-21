@@ -20,7 +20,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XColumn;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
-import org.faktorips.runtime.model.table.TableStructureType;
+import org.faktorips.runtime.model.table.TableStructureKind;
 
 /**
  * Generates annotations for the IPS meta model information to the generated implementation class of
@@ -34,11 +34,11 @@ public class TableClassAnnGen implements IAnnotationGenerator {
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
         XTable table = (XTable)modelNode;
 
-        String tableStructureType = table.addImport(TableStructureType.class) + ".";
+        String tableStructureType = table.addImport(TableStructureKind.class) + ".";
         if (table.isSingleContentTable()) {
-            tableStructureType += TableStructureType.SINGLE_CONTENT.toString();
+            tableStructureType += TableStructureKind.SINGLE_CONTENT.toString();
         } else {
-            tableStructureType += TableStructureType.MULTIPLE_CONTENTS.toString();
+            tableStructureType += TableStructureKind.MULTIPLE_CONTENTS.toString();
         }
 
         List<String> columnNames = new ArrayList<String>();

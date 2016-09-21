@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
+import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -44,7 +44,7 @@ public class AbstractAssociationAnnGenTest {
 
     // expected outcomes
     private String annAssociation = "@IpsAssociation(name = \"" + ASSOCIATION + "\", pluralName = \""
-            + ASSOCIATION_PLURAL + "\", type = AssociationType.Composition, targetClass = " + ASSOCIATION_TARGET
+            + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = " + ASSOCIATION_TARGET
             + ".class, min = " + MIN_CARD + ", max = " + MAX_CARD + ")" + System.getProperty("line.separator");
     private String annDerivedUnion = "@IpsDerivedUnion" + System.getProperty("line.separator");
     private String annSubsetOfDerivedUnion = "@IpsSubsetOfDerivedUnion(\"" + DERIVED_UNION + "\")"
@@ -104,7 +104,7 @@ public class AbstractAssociationAnnGenTest {
     }
 
     /**
-     * This method mocks a XAssociation representing {@value AssociationType#Composition} with
+     * This method mocks a XAssociation representing {@value AssociationKind#Composition} with
      * singular name {@value #ASSOCIATION}, plural name {@value #ASSOCIATION_PLURAL}, target class
      * name {@value #ASSOCIATION_TARGET}. The minimal cardinality is {@value #MIN_CARD}, max
      * cardinality is {@value #MAX_CARD}.
@@ -113,11 +113,11 @@ public class AbstractAssociationAnnGenTest {
         XAssociation association = mock(XAssociation.class);
         when(association.getName(false)).thenReturn(ASSOCIATION);
         when(association.getName(true)).thenReturn(ASSOCIATION_PLURAL);
-        when(association.getAssociationType()).thenReturn(AssociationType.Composition);
+        when(association.getAssociationKind()).thenReturn(AssociationKind.Composition);
         when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
         when(association.getMinCardinality()).thenReturn(MIN_CARD);
         when(association.getMaxCardinality()).thenReturn(MAX_CARD);
-        when(association.addImport(AssociationType.class)).thenReturn("AssociationType");
+        when(association.addImport(AssociationKind.class)).thenReturn("AssociationType");
         return association;
     }
 }

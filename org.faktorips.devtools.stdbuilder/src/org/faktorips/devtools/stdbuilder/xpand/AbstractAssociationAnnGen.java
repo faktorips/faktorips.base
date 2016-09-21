@@ -18,7 +18,7 @@ import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
 import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation.AssociationType;
+import org.faktorips.runtime.model.type.AssociationKind;
 
 public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator {
 
@@ -47,8 +47,8 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
                 + association.getName(false) + "\"" + ", ");
 
         paramsBuilder.append("pluralName = \"" + association.getName(true) + "\"" + ", ");
-        paramsBuilder.append("type = ").appendClassName(AssociationType.class)
-                .append("." + association.getAssociationType() + ", ");
+        paramsBuilder.append("kind = ").appendClassName(AssociationKind.class)
+                .append("." + association.getAssociationKind() + ", ");
         paramsBuilder.append("targetClass = ").appendClassName(association.getTargetQualifiedClassName())
                 .append(".class, ");
 

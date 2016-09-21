@@ -20,7 +20,7 @@ import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
-import org.faktorips.runtime.model.Models;
+import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
@@ -31,6 +31,7 @@ import org.faktorips.runtime.test.IpsTestSuite;
  * 
  * @author Jan Ortmann
  */
+@SuppressWarnings("deprecation")
 public interface IRuntimeRepository {
 
     /**
@@ -375,7 +376,7 @@ public interface IRuntimeRepository {
      * Returns the <code>IModelType</code> containing the meta information for the given model
      * object class.
      * 
-     * @deprecated use {@link Models#getModelType(Class)}
+     * @deprecated Use {@link IpsModel#getType(Class)}
      */
     @Deprecated
     public IModelType getModelType(Class<?> modelObjectClass);
@@ -385,7 +386,7 @@ public interface IRuntimeRepository {
      * object. This is a convenience method calling <code>getModelType</code> with the model
      * object's class.
      * 
-     * @deprecated use {@link Models#getPolicyModel(IModelObject)}
+     * @deprecated Use {@link IpsModel#getPolicyCmptType(IModelObject)}
      */
     @Deprecated
     public IModelType getModelType(IModelObject modelObject);
@@ -395,7 +396,7 @@ public interface IRuntimeRepository {
      * component. This is a convenience method calling <code>getModelType</code> with the product
      * component class.
      * 
-     * @deprecated use {@link Models#getProductModel(IProductComponent)}
+     * @deprecated Use {@link IpsModel#getProductCmptType(IProductComponent)}
      */
     @Deprecated
     public IModelType getModelType(IProductComponent productComponent);

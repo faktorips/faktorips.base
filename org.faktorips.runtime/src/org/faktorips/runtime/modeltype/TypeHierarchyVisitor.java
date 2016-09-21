@@ -19,7 +19,10 @@ import java.util.Set;
  * visitor.
  * 
  * @author Jan Ortmann
+ * @deprecated Use {@link org.faktorips.runtime.model.type.TypeHierarchyVisitor} instead. Will be
+ *             removed in Faktor-IPS 3.20+
  */
+@Deprecated
 public abstract class TypeHierarchyVisitor {
 
     private Set<IModelType> visitedTypes = new HashSet<IModelType>();

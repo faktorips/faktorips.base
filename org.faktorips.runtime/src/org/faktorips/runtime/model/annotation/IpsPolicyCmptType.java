@@ -14,11 +14,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.faktorips.runtime.modeltype.internal.ModelType;
+import org.faktorips.runtime.model.type.Type;
 
 /**
  * Preserves design time information about a {@code IPolicyCmptType} for runtime reference via
- * {@link ModelType}.
+ * {@link Type}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

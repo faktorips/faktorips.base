@@ -1,0 +1,286 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+
+package org.faktorips.runtime.model.type;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
+import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
+import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.type.read.ProductAssociationModelCollector;
+import org.faktorips.runtime.model.type.read.ProductAttributeModelCollector;
+import org.faktorips.runtime.model.type.read.TableUsageCollector;
+import org.faktorips.runtime.model.type.read.TypeModelPartsReader;
+
+/**
+ * Corresponds to a design time {@code IProductCmptType}.
+ */
+public class ProductCmptType extends Type {
+
+    /**
+     * The name of the design time implementation class. Don't ask about the 2.
+     */
+    public static final String KIND_NAME = "ProductCmptType2";
+
+    private final AnnotatedDeclaration generationDeclaration;
+
+    private final LinkedHashMap<String, ProductAttribute> attributes;
+
+    private final LinkedHashMap<String, ProductAssociation> associations;
+
+    private final LinkedHashMap<String, TableUsage> tableUsages;
+
+    public ProductCmptType(String name, AnnotatedDeclaration annotatedDeclaration) {
+        super(name, annotatedDeclaration);
+        generationDeclaration = isChangingOverTime() ? AnnotatedDeclaration.from(annotatedDeclaration.get(
+                IpsChangingOverTime.class).value()) : null;
+
+        ProductAttributeModelCollector attributeCollector = new ProductAttributeModelCollector();
+        ProductAssociationModelCollector associationCollector = new ProductAssociationModelCollector();
+        TableUsageCollector tableUsageCollector = new TableUsageCollector();
+        initParts(attributeCollector, associationCollector, tableUsageCollector);
+        attributes = attributeCollector.createParts(this);
+        associations = associationCollector.createParts(this);
+        tableUsages = tableUsageCollector.createParts(this);
+    }
+
+    private void initParts(ProductAttributeModelCollector attributeCollector,
+            ProductAssociationModelCollector associationCollector,
+            TableUsageCollector tableUsageCollector) {
+        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector,
+                tableUsageCollector);
+        typeModelPartsReader.init(getAnnotatedDeclaration());
+        typeModelPartsReader.read(getAnnotatedDeclaration());
+        if (isChangingOverTime()) {
+            typeModelPartsReader.read(generationDeclaration);
+        }
+    }
+
+    @Override
+    protected String getKindName() {
+        return KIND_NAME;
+    }
+
+    @Override
+    protected List<Method> getDeclaredMethods() {
+        List<Method> result = super.getDeclaredMethods();
+        if (isChangingOverTime()) {
+            result.addAll(generationDeclaration.getDeclaredMethods());
+        }
+        return result;
+    }
+
+    /**
+     * Returns whether this product component type is changing over time.
+     * 
+     * @return <code>true</code> if it has generations else <code>false</code>
+     */
+    public boolean isChangingOverTime() {
+        return getAnnotatedDeclaration().is(IpsChangingOverTime.class);
+    }
+
+    /**
+     * Returns whether this product component type is a configuration for a policy component type.
+     * 
+     * @return <code>true</code> if this type configures a policy component type, <code>false</code>
+     *         if not
+     */
+    public boolean isConfigurationForPolicyCmptType() {
+        return getAnnotatedDeclaration().is(IpsConfigures.class);
+    }
+
+    /**
+     * Returns the policy component type which is configured by this product component type. If this
+     * product component class has no configuration it throws a {@link NullPointerException}.
+     * 
+     * @see #isConfigurationForPolicyCmptType()
+     * 
+     * @return The configured policy component type
+     * @throws NullPointerException if the product component type is not a configuration for a
+     *             policy component type
+     */
+    public PolicyCmptType getPolicyCmptType() {
+        return IpsModel.getPolicyCmptType(getAnnotatedDeclaration().get(IpsConfigures.class).value()
+                .asSubclass(IModelObject.class));
+    }
+
+    /**
+     * Returns the {@link TableUsage} for the specified name. May look in super types if there is no
+     * table usage in this type.
+     * 
+     * @param name The name of the table usage
+     * @return The {@link TableUsage} with the specified name
+     */
+    public TableUsage getTableUsage(String name) {
+        TableUsageFinder finder = new TableUsageFinder(name);
+        finder.visitHierarchy(this);
+        if (finder.tableUsage == null) {
+            throw new IllegalArgumentException("The type " + this
+                    + " (or one of it's super types) hasn't got a table usage \"" + name + "\"");
+        }
+        return finder.tableUsage;
+    }
+
+    /**
+     * Returns a list of {@link TableUsage TableUsages} which are declared in this type. In contrast
+     * to {@link #getTableUsages()} this does not return table usages of super types.
+     * 
+     * @return A list of {@link TableUsage TableUsages} declared in this type
+     */
+    public List<TableUsage> getDeclaredTableUsages() {
+        return new ArrayList<TableUsage>(tableUsages.values());
+    }
+
+    public TableUsage getDeclaredTableUsage(String name) {
+        TableUsage tableUsage = tableUsages.get(name);
+        if (tableUsage == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared table usage " + name);
+        }
+        return tableUsage;
+    }
+
+    /**
+     * Returns a list of {@link TableUsage TableUsages} which are declared in this type or in any
+     * super type.
+     * 
+     * @return All {@link TableUsage TableUsages} accessible in this product type.
+     */
+    public List<TableUsage> getTableUsages() {
+        TableUsagesCollector tuCollector = new TableUsagesCollector();
+        tuCollector.visitHierarchy(this);
+        return tuCollector.result;
+    }
+
+    public Class<?> getGenerationJavaClass() {
+        if (generationDeclaration != null) {
+            return generationDeclaration.getImplementationClass();
+        } else {
+            return null;
+        }
+    }
+
+    public Class<?> getGenerationJavaInterface() {
+        if (generationDeclaration != null) {
+            return generationDeclaration.getPublishedInterface();
+        } else {
+            return null;
+        }
+    }
+
+    public Class<?> getGenerationDeclarationClass() {
+        return getGenerationJavaInterface() == null ? getGenerationJavaClass() : getGenerationJavaInterface();
+    }
+
+    @Override
+    public ProductCmptType getSuperType() {
+        Class<?> superclass = getJavaClass().getSuperclass();
+        return IpsModel.isProductCmptType(superclass) ? IpsModel.getProductCmptType(superclass
+                .asSubclass(IProductComponent.class)) : null;
+    }
+
+    @Override
+    public ProductAttribute getDeclaredAttribute(int index) {
+        return getDeclaredAttributes().get(index);
+    }
+
+    @Override
+    public ProductAttribute getDeclaredAttribute(String name) {
+        ProductAttribute attr = attributes.get(name);
+        if (attr == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
+        }
+        return attr;
+    }
+
+    @Override
+    public List<ProductAttribute> getDeclaredAttributes() {
+        return new ArrayList<ProductAttribute>(attributes.values());
+    }
+
+    @Override
+    public ProductAttribute getAttribute(String name) {
+        return (ProductAttribute)super.getAttribute(name);
+    }
+
+    @Override
+    public List<ProductAttribute> getAttributes() {
+        AttributeCollector<ProductAttribute> attrCollector = new AttributeCollector<ProductAttribute>();
+        attrCollector.visitHierarchy(this);
+        return attrCollector.getResult();
+    }
+
+    @Override
+    public ProductAssociation getDeclaredAssociation(int index) {
+        return (ProductAssociation)super.getDeclaredAssociation(index);
+    }
+
+    @Override
+    public ProductAssociation getDeclaredAssociation(String name) {
+        return associations.get(name);
+    }
+
+    @Override
+    public List<ProductAssociation> getDeclaredAssociations() {
+        return new ArrayList<ProductAssociation>(new LinkedHashSet<ProductAssociation>(associations.values()));
+    }
+
+    @Override
+    public ProductAssociation getAssociation(String name) {
+        return (ProductAssociation)super.getAssociation(name);
+    }
+
+    @Override
+    public List<ProductAssociation> getAssociations() {
+        AssociationsCollector<ProductAssociation> asscCollector = new AssociationsCollector<ProductAssociation>();
+        asscCollector.visitHierarchy(this);
+        return asscCollector.getResult();
+    }
+
+    static class TableUsagesCollector extends TypeHierarchyVisitor {
+
+        private List<TableUsage> result = new ArrayList<TableUsage>();
+
+        @Override
+        public boolean visitType(Type type) {
+            result.addAll(((ProductCmptType)type).getDeclaredTableUsages());
+            return true;
+        }
+
+    }
+
+    static class TableUsageFinder extends TypeHierarchyVisitor {
+
+        private String tableUsageName;
+        private TableUsage tableUsage = null;
+
+        public TableUsageFinder(String name) {
+            super();
+            this.tableUsageName = name;
+        }
+
+        @Override
+        public boolean visitType(Type type) {
+            try {
+                tableUsage = ((ProductCmptType)type).getDeclaredTableUsage(tableUsageName);
+                return false;
+            } catch (IllegalArgumentException e) {
+                return true;
+            }
+        }
+    }
+}

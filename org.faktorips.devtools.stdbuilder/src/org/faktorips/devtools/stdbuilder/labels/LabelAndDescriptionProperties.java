@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
-import org.faktorips.runtime.modeltype.internal.DocumentationType;
+import org.faktorips.runtime.model.type.DocumentationKind;
 
 public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
 
@@ -34,7 +34,7 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
         return MessageKey.create(key);
     }
 
-    public void put(IIpsObjectPartContainer ipsObjectPart, DocumentationType messageType, String messageText) {
+    public void put(IIpsObjectPartContainer ipsObjectPart, DocumentationKind messageType, String messageText) {
         MessageKey messageKey = new MessageKey(ipsObjectPart, messageType);
         put(messageKey, messageText);
     }
@@ -57,7 +57,7 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
         private final String ipsObjectQname;
         private final IpsObjectType type;
 
-        public MessageKey(IIpsObjectPartContainer ipsObjectPart, DocumentationType messageType) {
+        public MessageKey(IIpsObjectPartContainer ipsObjectPart, DocumentationKind messageType) {
             IIpsObject ipsObject = ipsObjectPart.getIpsObject();
             ipsObjectQname = ipsObject.getQualifiedName();
             type = ipsObject.getIpsObjectType();

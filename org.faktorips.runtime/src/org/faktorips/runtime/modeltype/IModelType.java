@@ -12,10 +12,15 @@ package org.faktorips.runtime.modeltype;
 
 import java.util.List;
 
+import org.faktorips.runtime.model.type.Type;
+
 /**
  * A {@link IModelType} represents a type of Faktor-IPS. It provides all meta data for the type as
  * well as for properties like attributes or associations.
+ * 
+ * @deprecated Use {@link Type} directly. Will be removed in Faktor-IPS 3.20+
  */
+@Deprecated
 public interface IModelType extends IModelElement {
 
     /**
