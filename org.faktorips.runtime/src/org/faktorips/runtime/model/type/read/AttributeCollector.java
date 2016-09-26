@@ -20,7 +20,7 @@ import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.type.Attribute;
 
 public abstract class AttributeCollector<T extends Attribute, D extends AbstractAttributeDescriptor<T>> extends
-        ModelPartCollector<T, D> {
+        TypePartCollector<T, D> {
 
     public AttributeCollector(List<AnnotationProcessor<?, D>> annotationAccessors) {
         super(annotationAccessors);

@@ -18,13 +18,13 @@ import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ProductAttribute;
 import org.faktorips.runtime.model.type.Type;
 
-public class ProductAttributeModelCollector extends
-        AttributeCollector<ProductAttribute, ProductAttributeModelCollector.ProductAttributeDescriptor> {
+public class ProductAttributeCollector extends
+        AttributeCollector<ProductAttribute, ProductAttributeCollector.ProductAttributeDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
-    public ProductAttributeModelCollector() {
+    public ProductAttributeCollector() {
         super(Arrays.asList(new ProductIpsAttributeProcessor(),
                 new IpsAttributeSetterProcessor<ProductAttributeDescriptor>()));
     }

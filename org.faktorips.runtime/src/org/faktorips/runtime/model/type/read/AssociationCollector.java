@@ -21,7 +21,7 @@ import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.type.Association;
 
 public abstract class AssociationCollector<T extends Association, D extends AbstractAssociationDescriptor<T>> extends
-        ModelPartCollector<T, D> {
+        TypePartCollector<T, D> {
 
     public AssociationCollector(List<AnnotationProcessor<?, D>> annotationAccessors) {
         super(annotationAccessors);

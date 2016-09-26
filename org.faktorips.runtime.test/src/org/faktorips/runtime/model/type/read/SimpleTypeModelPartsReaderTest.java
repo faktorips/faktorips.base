@@ -13,9 +13,9 @@ import java.util.LinkedHashMap;
 
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NamesAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,10 +59,10 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts() throws Exception {
-        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
-        LinkedHashMap<String, DummyElement> parts = simpleTypeModelPartsReader.createParts(Parent.class,
+        LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(Parent.class,
                 PartHolder2.class, parentModel);
 
         assertThat(parts, is(notNullValue()));
@@ -76,40 +76,40 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_tooMany() throws Exception {
-        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Cannot find part Track in " + PartHolder3.class.getCanonicalName());
 
-        simpleTypeModelPartsReader.createParts(Parent.class, PartHolder3.class, parentModel);
+        simpleTypePartsReader.createParts(Parent.class, PartHolder3.class, parentModel);
     }
 
     @Test
     public void testCreateParts_tooFew() throws Exception {
-        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("No getter method found for annotated part \"Trick\"");
 
-        simpleTypeModelPartsReader.createParts(Parent.class, PartHolder1.class, parentModel);
+        simpleTypePartsReader.createParts(Parent.class, PartHolder1.class, parentModel);
     }
 
     @Test
     public void testCreateParts_manyTooFew() throws Exception {
-        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("No getter methods found for annotated parts \"Trick\", \"Track\"");
 
-        simpleTypeModelPartsReader.createParts(Parent2.class, PartHolder1.class, parentModel);
+        simpleTypePartsReader.createParts(Parent2.class, PartHolder1.class, parentModel);
     }
 
     @Test
     public void testCreateParts_Interface() throws Exception {
-        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
-        LinkedHashMap<String, DummyElement> parts = simpleTypeModelPartsReader.createParts(ParentInterface.class,
+        LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(ParentInterface.class,
                 ParentInterface.class, parentModel);
 
         assertThat(parts, is(notNullValue()));
@@ -123,10 +123,10 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_SubInterface() throws Exception {
-        SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypeModelPartsReader = new SimpleTypeModelPartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
-        LinkedHashMap<String, DummyElement> parts = simpleTypeModelPartsReader.createParts(SubInterface.class,
+        LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(SubInterface.class,
                 SubInterface.class, parentModel);
 
         assertThat(parts, is(notNullValue()));

@@ -17,7 +17,7 @@ import java.util.Map.Entry;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ModelElement;
 
-public abstract class ModelPartCollector<T extends ModelElement, D extends PartDescriptor<T>> {
+public abstract class TypePartCollector<T extends ModelElement, D extends PartDescriptor<T>> {
 
     protected static final String[] NO_NAMES = new String[0];
 
@@ -25,7 +25,7 @@ public abstract class ModelPartCollector<T extends ModelElement, D extends PartD
 
     private List<AnnotationProcessor<?, D>> annotationProcessors;
 
-    public ModelPartCollector(List<AnnotationProcessor<?, D>> annotationAccessors) {
+    public TypePartCollector(List<AnnotationProcessor<?, D>> annotationAccessors) {
         this.annotationProcessors = annotationAccessors;
     }
 

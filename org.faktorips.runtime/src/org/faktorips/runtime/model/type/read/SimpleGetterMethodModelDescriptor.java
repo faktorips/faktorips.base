@@ -12,7 +12,7 @@ package org.faktorips.runtime.model.type.read;
 import java.lang.reflect.Method;
 
 import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
 
 class SimpleGetterMethodModelDescriptor<T extends ModelElement> extends PartDescriptor<T> {
     private Method getterMethod;

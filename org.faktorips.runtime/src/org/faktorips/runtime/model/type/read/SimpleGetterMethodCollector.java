@@ -18,12 +18,12 @@ import java.util.Map.Entry;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NamesAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 
 class SimpleGetterMethodCollector<E extends ModelElement, P extends Annotation, C extends Annotation> extends
-ModelPartCollector<E, SimpleGetterMethodModelDescriptor<E>> {
+TypePartCollector<E, SimpleGetterMethodModelDescriptor<E>> {
     private Class<P> annotationClass;
     private NamesAccessor<P> namesAccessor;
     private ModelElementCreator<E> modelElementCreator;

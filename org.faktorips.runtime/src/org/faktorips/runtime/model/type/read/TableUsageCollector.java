@@ -21,7 +21,7 @@ import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.TableUsage;
 import org.faktorips.runtime.model.type.Type;
 
-public class TableUsageCollector extends ModelPartCollector<TableUsage, TableUsageCollector.TableUsageDescriptor> {
+public class TableUsageCollector extends TypePartCollector<TableUsage, TableUsageCollector.TableUsageDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs

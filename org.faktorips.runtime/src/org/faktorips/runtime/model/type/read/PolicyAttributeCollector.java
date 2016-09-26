@@ -20,13 +20,13 @@ import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.Type;
 
-public class PolicyAttributeModelCollector extends
-AttributeCollector<PolicyAttribute, PolicyAttributeModelCollector.PolicyAttributeDescriptor> {
+public class PolicyAttributeCollector extends
+AttributeCollector<PolicyAttribute, PolicyAttributeCollector.PolicyAttributeDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
-    public PolicyAttributeModelCollector() {
+    public PolicyAttributeCollector() {
         super(Arrays.asList(new IpsAttributeProcessor<PolicyAttributeDescriptor>(),
                 new IpsAttributeSetterProcessor<PolicyAttributeDescriptor>()));
     }
