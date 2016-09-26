@@ -19,10 +19,10 @@ import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NamesAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -155,14 +155,14 @@ public class EnumAttribute extends ModelElement {
             }
         };
         // @formatter:off
-        SimpleTypeModelPartsReader<EnumAttribute, IpsEnumType, IpsEnumAttribute> modelPartsReader = new SimpleTypeModelPartsReader<EnumAttribute, IpsEnumType, IpsEnumAttribute>(
+        SimpleTypePartsReader<EnumAttribute, IpsEnumType, IpsEnumAttribute> partsReader = new SimpleTypePartsReader<EnumAttribute, IpsEnumType, IpsEnumAttribute>(
                 parentAnnotation,
                 getNamesOfPartsFromParentAnnotation,
                 childAnnotation,
                 getNameOfPartFromChildAnnotation,
                 createEnumAttributeModel);
 
-        return modelPartsReader.createParts(enumClass, enumType);
+        return partsReader.createParts(enumClass, enumType);
         // @formatter:on
     }
 }

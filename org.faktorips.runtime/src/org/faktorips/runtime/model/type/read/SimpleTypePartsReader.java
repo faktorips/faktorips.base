@@ -19,13 +19,13 @@ import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ModelElement;
 
 /**
- * A simpler {@link TypeModelPartsReader} that creates it's own {@link ModelPartCollector} for the
+ * A simpler {@link TypePartsReader} that creates it's own {@link TypePartCollector} for the
  * case that a {@link ModelElement} is defined with annotations on a single getter method and all
  * child elements are listed in an annotation on their parent element.
  */
-public class SimpleTypeModelPartsReader<E extends ModelElement, P extends Annotation, C extends Annotation> {
+public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation, C extends Annotation> {
     private SimpleGetterMethodCollector<E, P, C> collector;
-    private TypeModelPartsReader typeModelPartsReader;
+    private TypePartsReader typePartsReader;
     private Class<P> parentAnnotation;
 
     /**
@@ -39,12 +39,12 @@ public class SimpleTypeModelPartsReader<E extends ModelElement, P extends Annota
      *            by the {@code nameAccessor} and a reference to the method annotated with the
      *            {@code childAnnotation}
      */
-    public SimpleTypeModelPartsReader(Class<P> parentAnnotation, NamesAccessor<P> namesAccessor,
+    public SimpleTypePartsReader(Class<P> parentAnnotation, NamesAccessor<P> namesAccessor,
             Class<C> childAnnotation, NameAccessor<C> nameAccessor, ModelElementCreator<E> modelElementCreator) {
         this.parentAnnotation = parentAnnotation;
         collector = new SimpleGetterMethodCollector<E, P, C>(parentAnnotation, namesAccessor, childAnnotation,
                 nameAccessor, modelElementCreator);
-        typeModelPartsReader = new TypeModelPartsReader(collector);
+        typePartsReader = new TypePartsReader(collector);
     }
 
     /**
@@ -69,9 +69,9 @@ public class SimpleTypeModelPartsReader<E extends ModelElement, P extends Annota
     public LinkedHashMap<String, E> createParts(Class<?> classWithChildNameList,
             Class<?> classWithGetterMethods,
             ModelElement parentModel) {
-        typeModelPartsReader.init(AnnotatedDeclaration.from(classWithChildNameList));
+        typePartsReader.init(AnnotatedDeclaration.from(classWithChildNameList));
         readMethodsFromAnnotatedParentInterfaces(classWithGetterMethods);
-        typeModelPartsReader.read(AnnotatedDeclaration.from(classWithGetterMethods));
+        typePartsReader.read(AnnotatedDeclaration.from(classWithGetterMethods));
         return collector.createParts(parentModel);
     }
 
@@ -84,7 +84,7 @@ public class SimpleTypeModelPartsReader<E extends ModelElement, P extends Annota
                 superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(superInterfaceWithParentAnnotation);
             }
             while (!superInterfaces.isEmpty()) {
-                typeModelPartsReader.read(AnnotatedDeclaration.from(superInterfaces.pop()));
+                typePartsReader.read(AnnotatedDeclaration.from(superInterfaces.pop()));
             }
         }
     }

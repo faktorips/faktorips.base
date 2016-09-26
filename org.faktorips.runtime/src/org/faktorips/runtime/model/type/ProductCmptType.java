@@ -22,10 +22,10 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
-import org.faktorips.runtime.model.type.read.ProductAssociationModelCollector;
-import org.faktorips.runtime.model.type.read.ProductAttributeModelCollector;
+import org.faktorips.runtime.model.type.read.ProductAssociationCollector;
+import org.faktorips.runtime.model.type.read.ProductAttributeCollector;
 import org.faktorips.runtime.model.type.read.TableUsageCollector;
-import org.faktorips.runtime.model.type.read.TypeModelPartsReader;
+import org.faktorips.runtime.model.type.read.TypePartsReader;
 
 /**
  * Corresponds to a design time {@code IProductCmptType}.
@@ -50,8 +50,8 @@ public class ProductCmptType extends Type {
         generationDeclaration = isChangingOverTime() ? AnnotatedDeclaration.from(annotatedDeclaration.get(
                 IpsChangingOverTime.class).value()) : null;
 
-        ProductAttributeModelCollector attributeCollector = new ProductAttributeModelCollector();
-        ProductAssociationModelCollector associationCollector = new ProductAssociationModelCollector();
+        ProductAttributeCollector attributeCollector = new ProductAttributeCollector();
+        ProductAssociationCollector associationCollector = new ProductAssociationCollector();
         TableUsageCollector tableUsageCollector = new TableUsageCollector();
         initParts(attributeCollector, associationCollector, tableUsageCollector);
         attributes = attributeCollector.createParts(this);
@@ -59,15 +59,15 @@ public class ProductCmptType extends Type {
         tableUsages = tableUsageCollector.createParts(this);
     }
 
-    private void initParts(ProductAttributeModelCollector attributeCollector,
-            ProductAssociationModelCollector associationCollector,
+    private void initParts(ProductAttributeCollector attributeCollector,
+            ProductAssociationCollector associationCollector,
             TableUsageCollector tableUsageCollector) {
-        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector,
+        TypePartsReader typePartsReader = new TypePartsReader(attributeCollector, associationCollector,
                 tableUsageCollector);
-        typeModelPartsReader.init(getAnnotatedDeclaration());
-        typeModelPartsReader.read(getAnnotatedDeclaration());
+        typePartsReader.init(getAnnotatedDeclaration());
+        typePartsReader.read(getAnnotatedDeclaration());
         if (isChangingOverTime()) {
-            typeModelPartsReader.read(generationDeclaration);
+            typePartsReader.read(generationDeclaration);
         }
     }
 

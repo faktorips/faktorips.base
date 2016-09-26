@@ -20,9 +20,9 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
-import org.faktorips.runtime.model.type.read.PolicyAssociationModelCollector;
-import org.faktorips.runtime.model.type.read.PolicyAttributeModelCollector;
-import org.faktorips.runtime.model.type.read.TypeModelPartsReader;
+import org.faktorips.runtime.model.type.read.PolicyAssociationCollector;
+import org.faktorips.runtime.model.type.read.PolicyAttributeCollector;
+import org.faktorips.runtime.model.type.read.TypePartsReader;
 
 /**
  * Corresponds to a design time {@code IPolicyCmptType}.
@@ -37,19 +37,19 @@ public class PolicyCmptType extends Type {
 
     public PolicyCmptType(String name, AnnotatedDeclaration annotatedDeclararation) {
         super(name, annotatedDeclararation);
-        PolicyAttributeModelCollector attributeCollector = new PolicyAttributeModelCollector();
-        PolicyAssociationModelCollector associationCollector = new PolicyAssociationModelCollector();
+        PolicyAttributeCollector attributeCollector = new PolicyAttributeCollector();
+        PolicyAssociationCollector associationCollector = new PolicyAssociationCollector();
         initParts(annotatedDeclararation, attributeCollector, associationCollector);
         attributes = attributeCollector.createParts(this);
         associations = associationCollector.createParts(this);
     }
 
     private void initParts(AnnotatedDeclaration annotatedDeclararation,
-            PolicyAttributeModelCollector attributeCollector,
-            PolicyAssociationModelCollector associationCollector) {
-        TypeModelPartsReader typeModelPartsReader = new TypeModelPartsReader(attributeCollector, associationCollector);
-        typeModelPartsReader.init(annotatedDeclararation);
-        typeModelPartsReader.read(annotatedDeclararation);
+            PolicyAttributeCollector attributeCollector,
+            PolicyAssociationCollector associationCollector) {
+        TypePartsReader typePartsReader = new TypePartsReader(attributeCollector, associationCollector);
+        typePartsReader.init(annotatedDeclararation);
+        typePartsReader.read(annotatedDeclararation);
     }
 
     @Override

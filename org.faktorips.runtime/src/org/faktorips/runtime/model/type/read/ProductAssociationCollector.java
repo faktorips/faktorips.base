@@ -17,13 +17,13 @@ import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ProductAssociation;
 import org.faktorips.runtime.model.type.Type;
 
-public class ProductAssociationModelCollector extends
-AssociationCollector<ProductAssociation, ProductAssociationModelCollector.ProductAssociationDescriptor> {
+public class ProductAssociationCollector extends
+AssociationCollector<ProductAssociation, ProductAssociationCollector.ProductAssociationDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
-    public ProductAssociationModelCollector() {
+    public ProductAssociationCollector() {
         super(Arrays
                 .<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new ProductIpsAssociationProcessor()));
     }

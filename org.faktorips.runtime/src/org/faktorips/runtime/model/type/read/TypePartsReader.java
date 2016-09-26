@@ -28,24 +28,24 @@ import org.faktorips.runtime.model.annotation.IpsAttributes;
  * requested parts.
  * 
  */
-public class TypeModelPartsReader {
+public class TypePartsReader {
 
-    private List<ModelPartCollector<?, ?>> collectors;
+    private List<TypePartCollector<?, ?>> collectors;
 
-    public TypeModelPartsReader(ModelPartCollector<?, ?>... collectors) {
+    public TypePartsReader(TypePartCollector<?, ?>... collectors) {
         this.collectors = Arrays.asList(collectors);
     }
 
     public void init(AnnotatedDeclaration annotatedDeclaration) {
-        for (ModelPartCollector<?, ?> modelPartCollector : collectors) {
-            modelPartCollector.initDescriptors(annotatedDeclaration);
+        for (TypePartCollector<?, ?> typePartCollector : collectors) {
+            typePartCollector.initDescriptors(annotatedDeclaration);
         }
     }
 
     public void read(AnnotatedDeclaration annotatedDeclaration) {
         for (AnnotatedElement annotatedElement : annotatedDeclaration.getDeclaredElements()) {
-            for (ModelPartCollector<?, ?> modelPartCollector : collectors) {
-                modelPartCollector.readAnnotations(annotatedDeclaration, annotatedElement);
+            for (TypePartCollector<?, ?> typePartCollector : collectors) {
+                typePartCollector.readAnnotations(annotatedDeclaration, annotatedElement);
             }
         }
     }

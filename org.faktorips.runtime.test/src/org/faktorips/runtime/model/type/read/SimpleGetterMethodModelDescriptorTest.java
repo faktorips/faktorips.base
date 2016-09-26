@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
 import org.faktorips.runtime.util.MessagesHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;

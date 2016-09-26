@@ -14,7 +14,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
 
 class SimpleGetterMethodAnnotationProcessor<A extends Annotation, D extends SimpleGetterMethodModelDescriptor<?>>
         extends AnnotationProcessor<A, D> {

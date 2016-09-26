@@ -19,10 +19,10 @@ import org.faktorips.runtime.model.annotation.IpsTableColumn;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.ModelElementCreator;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NamesAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -88,20 +88,20 @@ public class TableColumn extends ModelElement {
                 return annotation.name();
             }
         };
-        ModelElementCreator<TableColumn> createTableColumnModel = new ModelElementCreator<TableColumn>() {
+        ModelElementCreator<TableColumn> createTableColumn = new ModelElementCreator<TableColumn>() {
             @Override
-            public TableColumn create(ModelElement modelType, String name, Method getterMethod) {
-                return new TableColumn((TableStructure)modelType, name, getterMethod.getReturnType(), getterMethod);
+            public TableColumn create(ModelElement modelElement, String name, Method getterMethod) {
+                return new TableColumn((TableStructure)modelElement, name, getterMethod.getReturnType(), getterMethod);
             }
         };
         // @formatter:off
-        SimpleTypeModelPartsReader<TableColumn, IpsTableStructure, IpsTableColumn> modelPartsReader = new SimpleTypeModelPartsReader<TableColumn, IpsTableStructure, IpsTableColumn>(
+        SimpleTypePartsReader<TableColumn, IpsTableStructure, IpsTableColumn> partsReader = new SimpleTypePartsReader<TableColumn, IpsTableStructure, IpsTableColumn>(
                 parentAnnotation,
                 getNamesOfPartsFromParentAnnotation,
                 childAnnotation,
                 getNameOfPartFromChildAnnotation,
-                createTableColumnModel);
-        return modelPartsReader.createParts(tableObjectClass, tableRowClass, tableStructure);
+                createTableColumn);
+        return partsReader.createParts(tableObjectClass, tableRowClass, tableStructure);
         // @formatter:on
     }
 

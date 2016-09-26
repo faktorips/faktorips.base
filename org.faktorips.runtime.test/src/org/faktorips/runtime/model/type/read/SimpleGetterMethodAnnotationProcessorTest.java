@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 
-import org.faktorips.runtime.model.type.read.SimpleTypeModelPartsReader.NameAccessor;
+import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
