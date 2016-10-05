@@ -547,6 +547,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
         Money other = (Money)o;
         if (isNull() && other.isNull()) {
             return true;
+        } else if (isNull() || other.isNull()) {
+            return false;
         } else {
             return internalAmount == other.internalAmount && currency.equals(other.currency);
         }

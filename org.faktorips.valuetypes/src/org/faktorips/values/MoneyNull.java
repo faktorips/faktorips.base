@@ -19,7 +19,7 @@ package org.faktorips.values;
 public class MoneyNull extends Money implements NullObject {
 
     static final String STRING_REPRESENTATION = "MoneyNull";
-    
+
     private static final long serialVersionUID = -3546233368167459967L;
 
     MoneyNull() {
