@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Currency;
-
 import org.junit.Test;
 
 public class MoneyNullTest {
 
-    private static final Money ONE_HUNDRED = new Money(100, Currency.getInstance("EUR"));
+    private static final Money ONE_HUNDRED = Money.euro(100);
+
+    // especially interesting, as Money.NULL has also the value 0;
+    private static final Money ZERO = Money.euro(0);
 
     @Test(expected = NullPointerException.class)
     public void testCompareTo_null() {
@@ -27,6 +28,8 @@ public class MoneyNullTest {
     public void testCompareTo_Money() {
         assertEquals(-1, Money.NULL.compareTo(ONE_HUNDRED));
         assertEquals(1, ONE_HUNDRED.compareTo(Money.NULL));
+        assertEquals(-1, Money.NULL.compareTo(ZERO));
+        assertEquals(1, ZERO.compareTo(Money.NULL));
     }
 
     @Test
@@ -44,6 +47,8 @@ public class MoneyNullTest {
     public void testEquals_Money() {
         assertFalse(Money.NULL.equals(ONE_HUNDRED));
         assertFalse(ONE_HUNDRED.equals(Money.NULL));
+        assertFalse(Money.NULL.equals(ZERO));
+        assertFalse(ZERO.equals(Money.NULL));
     }
 
     @Test
