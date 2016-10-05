@@ -88,20 +88,22 @@ public class SearchBar {
 
         private SearchFilter filter;
 
+        private String filterString;
+
         public SearchPmo() {
             filter = new SearchFilter();
         }
 
         public String getPattern() {
-            return filter.getPattern();
+            return filterString;
         }
 
         public void setPattern(String pattern) {
             String oldPattern = getPattern();
             filter.setPattern(pattern);
+            filterString = pattern;
             notifyListeners(new PropertyChangeEvent(this, PROPERTY_PATTERN, oldPattern, pattern));
         }
-
     }
 
     private static class SearchFilter extends ViewerFilter {
@@ -111,10 +113,6 @@ public class SearchBar {
 
         public SearchFilter() {
             searchPattern.setPattern(StringUtils.EMPTY);
-        }
-
-        public String getPattern() {
-            return searchPattern.getPattern();
         }
 
         public void setPattern(String pattern) {
