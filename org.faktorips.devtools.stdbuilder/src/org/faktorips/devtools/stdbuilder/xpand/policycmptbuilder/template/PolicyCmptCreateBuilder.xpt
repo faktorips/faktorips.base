@@ -3,11 +3,9 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyCmptCreateMethodNames»
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyBuilderMethodNames»
 
 «REM» Methods to initialize a builder. 
 If a published interface is generated, this method is generated in the builder factory class. If not, this method should be in the policy class and static.«ENDREM»
@@ -19,10 +17,10 @@ If a published interface is generated, this method is generated in the builder f
 	*
 	* @generated
 	*/
-	public «IF static-»static«ENDIF-» «implClassName» «with()»() {
-		return «implClassName».«from("new " + policyImplClassName + "()", "null")»;
+	public «IF static-»static«ENDIF-» «implClassName» «builder()» {
+		return «implClassName».«from("new " + typeImplClassName + "()", "null")»;
 	}
-	
+
 	«REM» new policy, with repository «ENDREM»
 	/**
 	* «localizedJDoc("METHOD_WITH_NO_ARG", implClassName)»
@@ -30,8 +28,8 @@ If a published interface is generated, this method is generated in the builder f
 	*
 	* @generated
 	*/
-	public «IF static-»static«ENDIF-» «implClassName» «with()»(«IRuntimeRepository()» runtimeRepository) {
-		return «implClassName».«from("new " + policyImplClassName + "()", "runtimeRepository")»;
+	public «IF static-»static«ENDIF-» «implClassName» «builder(IRuntimeRepository() + " runtimeRepository")» {
+		return «implClassName».«from("new " + typeImplClassName + "()", "runtimeRepository")»;
 	}	
 	
 	«IF configured-»
@@ -40,8 +38,8 @@ If a published interface is generated, this method is generated in the builder f
 		*
 		* @generated
 		*/
-		public «IF static-»static«ENDIF-» «implClassName» «with()»(«productCmptClassName» productCmpt) {
-			return «implClassName».«from("new " + policyImplClassName + "(productCmpt)", "productCmpt." + getRepository())»;
+		public «IF static-»static«ENDIF-» «implClassName» «builder(productCmptClassName + " productCmpt")» {
+			return «implClassName».«from("new " + typeImplClassName + "(productCmpt)", "productCmpt." + getRepository())»;
 		}
 		
 		«REM» policy from repository with id «ENDREM»
@@ -51,7 +49,7 @@ If a published interface is generated, this method is generated in the builder f
 		*
 		* @generated
 		*/	
-		public «IF static-»static«ENDIF-» «implClassName» «with()»(«IRuntimeRepository()» runtimeRepository, String productCmptId) {
+		public «IF static-»static«ENDIF-» «implClassName» «builder(IRuntimeRepository() + " runtimeRepository", "String productCmptId")» {
 			«productCmptClassName» product = («productCmptClassName») runtimeRepository.«getProductComponent("productCmptId")»;
 			if(product == null){
 				throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_PRODCMPT_FOUND")»");
@@ -61,9 +59,9 @@ If a published interface is generated, this method is generated in the builder f
 					if(generation == null) {
 							throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_GENERATION_FOUND")»");
 					}
-					«policyImplClassName» policy = «castToImplementation(policyImplClassName)» generation.create«policyName»();	
+					«typeImplClassName» policy = «castToImplementation(typeImplClassName)» generation.create«policyName»();	
 				«ELSE-»
-					«policyImplClassName» policy = «castToImplementation(policyImplClassName)» product.create«policyName»();
+					«typeImplClassName» policy = «castToImplementation(typeImplClassName)» product.create«policyName»();
 				«ENDIF-»
 				
 				policy.«initialize()»;
@@ -78,7 +76,7 @@ If a published interface is generated, this method is generated in the builder f
 		*
 		* @generated
 		*/
-		public «IF static-»static«ENDIF-» «implClassName» «with()»(«IRuntimeRepository()» runtimeRepository, String productCmptId, «Calendar()» validityDate) {
+		public «IF static-»static«ENDIF-» «implClassName» «builder(IRuntimeRepository() + " runtimeRepository", "String productCmptId", Calendar() + " validityDate")» {
 			«productCmptClassName» product = («productCmptClassName») runtimeRepository.«getProductComponent("productCmptId")»;
 			if(product == null) {
 				throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_PRODCMPT_FOUND")»");
@@ -87,7 +85,7 @@ If a published interface is generated, this method is generated in the builder f
 			if(generation == null) {
 				throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_GENERATION_FOUND")»");
 			}
-			«policyImplClassName» policy = «castToImplementation(policyImplClassName)» generation.create«policyName»();	
+			«typeImplClassName» policy = «castToImplementation(typeImplClassName)» generation.create«policyName»();	
 			policy.«initialize()»;
 			return «implClassName».«from("policy", "runtimeRepository")»;
 		}
@@ -103,7 +101,7 @@ If a published interface is generated, this method is generated in the builder f
 	* @generated
 	*/
 	«overrideAnnotationForPublishedMethodImplementationOr(hasNonAbstractSupertype())-»
-	public «implClassName» «builder()»() «IF genInterface()-»;
+	public «implClassName» «modify()» «IF genInterface()-»;
 	«ELSE-»
 		{
 			«IF configured-»
@@ -120,7 +118,7 @@ If a published interface is generated, this method is generated in the builder f
 	* @generated
 	*/
 	«overrideAnnotationForPublishedMethodImplementationOr(hasNonAbstractSupertype())-»
-	public «implClassName» «builder()»(«IRuntimeRepository()» runtimeRepository) «IF genInterface()-»;
+	public «implClassName» «modify(IRuntimeRepository() + " runtimeRepository")» «IF genInterface()-»;
 	«ELSE-»
 		{
 			return «implClassName».«from("this", "runtimeRepository")»;

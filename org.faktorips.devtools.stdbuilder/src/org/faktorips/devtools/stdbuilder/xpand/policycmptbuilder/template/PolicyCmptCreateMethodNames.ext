@@ -1,5 +1,6 @@
 extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
 extension org::faktorips::devtools::stdbuilder::xpand::template::Constants reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::builder::template::CommonBuilderNames reexport;
 
 // ---------------------------------
 // Methods in IProductComponentLink
@@ -8,42 +9,5 @@ extension org::faktorips::devtools::stdbuilder::xpand::template::Constants reexp
 getAssociationName() : 
 	"getAssociationName()";
 	
-// ---------------------------------
-// Methods in IProductComponent
-// ---------------------------------
-
-getGenerationBase(String paramName) :
-	"getGenerationBase(" + paramName + ")";
 	
-getLatestProductComponentGeneration() : 
-	"getLatestProductComponentGeneration()";
-	
-// ---------------------------------
-// Methods in IConfigurableModelObject
-// ---------------------------------
 
-getProductComponentFromId(String argument) :
-	"getProductComponent("+argument +")";
-
-// ---------------------------------
-// Methods in IRuntimeRepository
-// ---------------------------------
-
-getProductComponent(String idParam):
-	"getProductComponent(" + idParam + ")";
-
-// ---------------------------------
-// Methods in BuilderUtil
-// ---------------------------------
-
-createBuilderFor(String class, String castClass):
-	"createBuilderFor(" + class + ", " + castClass + ")";
-	
-createBuilderFor(String class, String paramRepo, String castClass):
-	"createBuilderFor(" + class + ", " + paramRepo + ", " + castClass + ")";
-	
-with():
-	"with";
-	
-builder():
-	"builder";

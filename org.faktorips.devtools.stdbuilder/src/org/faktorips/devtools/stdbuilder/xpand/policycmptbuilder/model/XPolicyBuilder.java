@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -70,7 +71,8 @@ public class XPolicyBuilder extends XPolicyCmptClass implements
      * 
      * @return name of the policy class
      */
-    public String getPolicyImplClassName() {
+    @Override
+    public String getTypeImplClassName() {
         return nameProvider.getTypeClassName();
     }
 
@@ -89,6 +91,7 @@ public class XPolicyBuilder extends XPolicyCmptClass implements
     /**
      * @return the variable name of the policy by uncapitalizing the class name.
      */
+    @Override
     public String getVariableName() {
         return nameProvider.getVariableName(getPolicyName());
     }
@@ -168,31 +171,12 @@ public class XPolicyBuilder extends XPolicyCmptClass implements
         return getProductCmptNode().getImplClassName();
     }
 
-    /**
-     * This method returns the name of the policy field if this builder doesn't have super type,
-     * else returns the name of the getter method from the super type and append the String to cast
-     * it to the required policy class.
-     * 
-     * @return the name of the policy field or super call
-     */
-    public String getPolicyFieldName() {
-        if (hasSupertype()) {
-            if (isGeneratePublishedInterfaces()) {
-                return "((" + getPolicyImplClassName() + ") get())";
-            } else {
-                return "get()";
-            }
-        } else {
-            return getVariableName();
-        }
-    }
-
     public String getMethodNameAssociation(XPolicyBuilderAssociation association) {
         return StringUtils.uncapitalize(association.getName());
     }
 
     public String getMethodNameGetPolicyFromProductCmpt() {
-        return "get" + getPolicyName() + "FromProductComponent";
+        return new JavaNamingConvention().getGetterMethodName(getPolicyName() + "FromProductComponent");
     }
 
     /**

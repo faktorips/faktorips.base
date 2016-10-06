@@ -1,11 +1,9 @@
 «IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyCmptCreateMethodNames»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template::ProductBuilderNames»
 
 «REM» Methods to initialize a builder.
@@ -17,8 +15,8 @@ If no published interfaces are generated, with methods are static methods in the
 	*
 	* @generated
 	*/	
-	public «IF static-»static«ENDIF-» «implClassName» «with()»(«InMemoryRuntimeRepository()» runtimeRepository, String id, String kindId,String versionId) {
-		«productImplClassName» product = new «productImplClassName»(runtimeRepository, id, kindId, versionId);
+	public «IF static-»static«ENDIF-» «implClassName» «builder(InMemoryRuntimeRepository() + " runtimeRepository", "String id", "String kindId", "String versionId")» {
+		«typeImplClassName» product = new «typeImplClassName»(runtimeRepository, id, kindId, versionId);
 		product.«setValidFrom("new " + DateTime() + "(1900,1,1)")»;
 		runtimeRepository.«putProductComponent("product")»;
 				
@@ -33,15 +31,15 @@ If no published interfaces are generated, with methods are static methods in the
 			return new «implClassName»(product, runtimeRepository);
 		«ENDIF»
 	}
-	
+
 	/**
 	* «localizedJDoc("METHOD_WITH_IDS",productName)»
 	«IF changingOverTime-»* «localizedJDoc("METHOD_WITH_IDS_DEFAULT_GEN")»«ENDIF-»
 	*
 	* @generated
 	*/	
-	public «IF static-»static«ENDIF-» «implClassName» «with()»(«InMemoryRuntimeRepository()» runtimeRepository, String id, String kindId, String versionId, «DateTime()» validFrom) {
-		«productImplClassName» product = new «productImplClassName»(runtimeRepository,id,kindId,versionId);
+	public «IF static-»static«ENDIF-» «implClassName» «builder(InMemoryRuntimeRepository() + " runtimeRepository", "String id", "String kindId", "String versionId", DateTime() + " validFrom")» {
+		«typeImplClassName» product = new «typeImplClassName»(runtimeRepository,id,kindId,versionId);
 		product.«setValidFrom("validFrom")»;
 		runtimeRepository.«putProductComponent("product")»;
 		
@@ -57,12 +55,12 @@ If no published interfaces are generated, with methods are static methods in the
 	}
 
 	/**
-	* «localizedJDoc("METHOD_WITH_PRODID", productImplClassName)»
+	* «localizedJDoc("METHOD_WITH_PRODID", typeImplClassName)»
 	*
 	* @generated
 	*/
-	public «IF static-»static«ENDIF-» «implClassName» «with()»(«InMemoryRuntimeRepository()» runtimeRepository, String prodCmptId) {
-		«productImplClassName» product =  («productImplClassName») runtimeRepository.getProductComponent(prodCmptId);
+	public «IF static-»static«ENDIF-» «implClassName» «builder(InMemoryRuntimeRepository() + " runtimeRepository", "String prodCmptId")» {
+		«typeImplClassName» product =  («typeImplClassName») runtimeRepository.getProductComponent(prodCmptId);
 		
 		if(product == null){
 			throw new «RuntimeException()»("«localizedText("EXCEPTION_NO_PRODCMPT_FOUND")»");
@@ -80,10 +78,10 @@ If no published interfaces are generated, with methods are static methods in the
 	* @generated
 	*/
 	«overrideAnnotationForPublishedMethodImplementationOr(hasNonAbstractSupertype())-»
-	public «implClassName» «builder()»() «IF genInterface()-»;
+	public «implClassName» «modify()» «IF genInterface()-»;
 	«ELSE-»
 		{
 			return «implClassName».«from("this", "(" + InMemoryRuntimeRepository() + ") this.getRepository()")»;
 		}
 	«ENDIF»
-«ENDDEFINE»
+«ENDDEFINE»2

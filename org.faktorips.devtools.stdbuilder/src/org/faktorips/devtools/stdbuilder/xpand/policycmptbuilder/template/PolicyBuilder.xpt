@@ -7,7 +7,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyBuilderMethodNames»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::builder::template::CommonBuilderNames»
 
 «DEFINE main FOR XPolicyBuilder»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
@@ -69,7 +69,7 @@
 		/**
 		* @generated
 		*/
-		private final «policyImplClassName» «field(variableName)»;	
+		private final «typeImplClassName» «field(variableName)»;	
 		
 		/**
 		*@generated
@@ -86,7 +86,7 @@
 	*
 	* @generated
 	*/
-	protected «method(implClassName,policyImplClassName, "policy", IRuntimeRepository(), "runtimeRepository")»{
+	protected «method(implClassName,typeImplClassName, "policy", IRuntimeRepository(), "runtimeRepository")»{
 		«IF hasSupertype()-»
 			super(policy, runtimeRepository);
 		«ELSE-»
@@ -124,7 +124,7 @@
 		*/
 		«IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant-»@Override«ENDIF-»
 		public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
-			«builder.policyFieldName».«methodNameSetter»(«fieldName»);
+			«safeGetResult(builder)».«methodNameSetter»(«fieldName»);
 			return this;
 		}		
 	«ENDIF-»
@@ -142,7 +142,7 @@
 		*/
 		@Override
 		public «builder.implClassName» «method(fieldName, javaClassName, fieldName)-»{
-			«builder.policyFieldName».«methodNameSetter»(«fieldName»);
+			«safeGetResult(builder)».«methodNameSetter»(«fieldName»);
 			return this;
 		}
 	«ENDIF»
@@ -155,11 +155,11 @@
 	* @generated
 	*/
 	«IF hasSupertype()-»@Override«ENDIF-»
-	public «policyPublishedInterfaceName» get() {
+	public «policyPublishedInterfaceName» «getResult()» {
 		«IF hasSupertype()-»
-			return («policyPublishedInterfaceName») super.get();
+			return («policyPublishedInterfaceName») super.«getResult()»;
 		«ELSE-»
-			return «policyFieldName»;
+			return «safeGetResult()»;
 		«ENDIF»
 	}
 «ENDDEFINE»
@@ -180,7 +180,7 @@
 	* @generated
 	*/
 	public static Class<?> getPolicyClass() {
-		return «policyImplClassName».class;
+		return «typeImplClassName».class;
 	}
 «ENDDEFINE»
 
@@ -192,7 +192,7 @@
 	* @generated
 	*/
 	public static «implClassName» «from()»(«policyPublishedInterfaceName» policy) {
-		return new «implClassName»(«castToImplementation(policyImplClassName)»policy, null);
+		return new «implClassName»(«castToImplementation(typeImplClassName)»policy, null);
 	}
 	
 	/**
@@ -201,7 +201,7 @@
 	* @generated
 	*/
 	public static «implClassName» «from()»(«policyPublishedInterfaceName» policy, «IRuntimeRepository()» runtimeRepository) {
-		return new «implClassName»(«castToImplementation(policyImplClassName)»policy, runtimeRepository);
+		return new «implClassName»(«castToImplementation(typeImplClassName)»policy, runtimeRepository);
 	}
 «ENDDEFINE»
 	
@@ -213,19 +213,19 @@
 		* @generated
 		*/
 		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
-		public AssociationBuilder associate(){
-			return new AssociationBuilder(this);
+		public «AssociationBuilder()» associate(){
+			return new «AssociationBuilder()»(this);
 		}
 	«ENDIF»
 	«IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 -»
 		/**
-		* «localizedJDoc("METHOD_ASSOCIATIONS")»
+		* «localizedJDoc("METHOD_ADD_ASSOCIATION")»
 		*
 		* @generated
 		*/
 		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
-		public AssociationsBuilder associations(){
-			return new AssociationsBuilder(this);	
+		public «AddAssociationBuilder()» «add()»{
+			return new «AddAssociationBuilder()»(this);	
 		}
 	«ENDIF»
 	«EXPAND PolicyAssociationBuilder::main-»

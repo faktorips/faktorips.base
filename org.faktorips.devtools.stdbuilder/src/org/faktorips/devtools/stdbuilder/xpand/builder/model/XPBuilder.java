@@ -51,4 +51,10 @@ public interface XPBuilder<B extends XPBuilder<B, AS, AT>, AS extends XAssociati
 
     Map<String, AS> getSuperBuilderAssociationsAsMap();
 
+    boolean isGeneratePublishedInterfaces();
+
+    String getTypeImplClassName();
+
+    String getVariableName();
+
 }

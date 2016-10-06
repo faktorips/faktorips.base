@@ -1,16 +1,11 @@
 extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
 extension org::faktorips::devtools::stdbuilder::xpand::template::Constants reexport;
-
-
-
 extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::builder::template::CommonBuilderNames reexport;
 
 // ---------------------------------
-// Methods in ProductBuilder
+// Methods in IRuntimeRepository
 // ---------------------------------
-
-putProductComponent(String productName):
-	"putProductComponent("+productName +")";	
 
 putProductCmptGeneration(String generationName) :
 	"putProductCmptGeneration(" +generationName+ ")";
@@ -24,33 +19,12 @@ getLatestProductComponentGeneration(String product):
 getExistingProductComponent(String id):
 	"getExistingProductComponent(" + id + ")";
 
+// ---------------------------------
+// Methods in ProductComponent / Generation
+// ---------------------------------
+
+
 setValidFrom(String arg):
   "setValidFrom ("+ arg +")";
 
-// ---------------------------------
-// Methods in IConfigurableModelObject
-// ---------------------------------
 
-getProductComponentFromId(String argument) :
-	"getProductComponent("+argument +")";
-
-
-// ---------------------------------
-// Methods in BuilderUtil
-// ---------------------------------
-
-createBuilderFor(String class, String castClass):
-	"createBuilderFor(" + class + ", " + castClass + ")";
-	
-createBuilderFor(String class, String paramRepo, String castClass):
-	"createBuilderFor(" + class + ", " + paramRepo + ", " + castClass + ")";
-
-
-from():
-	"from";
-	
-from(String generationName):
-	from() + "(" + generationName + ")";
-	
-from(String productName, String runtimeRepository):
-	from() + "(" + productName + ", " + runtimeRepository + ")";

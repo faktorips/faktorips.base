@@ -1,0 +1,95 @@
+import org::faktorips::devtools::stdbuilder::xpand::builder::model;
+
+extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::template::Constants reexport;
+
+getResult():
+	"getResult()";
+
+/**
+ * This method returns the name of the policy field if this builder doesn't have super type,
+ * else returns the name of the getter method from the super type and append the String to cast
+ * it to the required policy class.
+ * 
+ * @return the name of the policy field or super call
+ */
+safeGetResult(XPBuilder this):
+    if (hasSupertype()) then (
+        if (generatePublishedInterfaces) then
+            "((" + typeImplClassName + ")" + getResult() + ")"
+          else 
+            getResult()
+     ) else 
+        variableName;
+    
+
+from():
+	"from";
+
+from(String p1):
+	from() + "(" + p1 + ")";
+	
+from(String p1, String runtimeRepository):
+	from() + "(" + p1 + ", " + runtimeRepository + ")";
+
+
+builder():
+	"builder()";
+
+builder(String p1):
+	"builder(" + p1 + ")";
+
+builder(String p1, String p2):
+	"builder(" + p1 + ", " + p2 + ")";
+
+builder(String p1, String p2, String p3):
+	"builder(" + p1 + ", " + p2 + ", " + p3 + ")";
+
+builder(String p1, String p2, String p3, String p4):
+	"builder(" + p1 + ", " + p2 + ", " + p3 + ", " + p4 + ")";
+
+builder(String p1, String p2, String p3, String p4, String p5):
+	"builder(" + p1 + ", " + p2 + ", " + p3 + ", " + p4 + ", " + p5 + ")";
+
+modify():
+	"modify()";
+
+modify(String p1):
+	"modify(" + p1 + ")";
+
+add():
+	"add()";
+
+// ---------------------------------
+// Class Names
+// ---------------------------------
+
+AddAssociationBuilder():
+	"AddAssociationBuilder";
+	
+AssociationBuilder():
+	"AssociationBuilder";
+
+// ---------------------------------
+// Methods in IProductComponent
+// ---------------------------------
+
+getGenerationBase(String paramName) :
+	"getGenerationBase(" + paramName + ")";
+	
+getLatestProductComponentGeneration() : 
+	"getLatestProductComponentGeneration()";
+	
+// ---------------------------------
+// Methods in IConfigurableModelObject
+// ---------------------------------
+
+getProductComponentFromId(String argument) :
+	"getProductComponent("+argument +")";
+
+// ---------------------------------
+// Methods in IRuntimeRepository
+// ---------------------------------
+
+getProductComponent(String idParam):
+	"getProductComponent(" + idParam + ")";

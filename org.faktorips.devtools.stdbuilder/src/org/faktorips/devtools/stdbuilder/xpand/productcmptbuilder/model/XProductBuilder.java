@@ -68,7 +68,8 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
      * 
      * @return name of the product class
      */
-    public String getProductImplClassName() {
+    @Override
+    public String getTypeImplClassName() {
         return nameProvider.getTypeClassName();
     }
 
@@ -87,6 +88,7 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
     /**
      * @return the variable name of the product by uncapitalizing the class name.
      */
+    @Override
     public String getVariableName() {
         return nameProvider.getVariableName(getProductName());
     }
@@ -193,25 +195,6 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
         }
     }
 
-    /**
-     * This method returns the name of the policy field if this builder doesn't have super type,
-     * else returns the name of the getter method from the super type and append the String to cast
-     * it to the required policy class.
-     * 
-     * @return the name of the policy field or super call
-     */
-    public String getProductFieldName() {
-        if (hasSupertype()) {
-            if (isGeneratePublishedInterfaces()) {
-                return "((" + getProductImplClassName() + ") " + "get())";
-            } else {
-                return "get()";
-            }
-        } else {
-            return getVariableName();
-        }
-    }
-
     public String getProdGenFieldName() {
         if (hasSupertype()) {
             if (isGeneratePublishedInterfaces()) {
@@ -221,14 +204,6 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
             }
         } else {
             return "currentGeneration";
-        }
-    }
-
-    public String getProdOrGenFieldName(Boolean changing) {
-        if (changing) {
-            return getProdGenFieldName();
-        } else {
-            return getProductFieldName();
         }
     }
 

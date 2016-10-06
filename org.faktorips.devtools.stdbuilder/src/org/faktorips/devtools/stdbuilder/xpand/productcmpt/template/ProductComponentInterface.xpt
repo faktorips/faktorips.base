@@ -30,7 +30,7 @@
 				/**
 				* @generated
 				*/
-				public final static «productBuilderModelNode.factoryImplClassName» BUILD = new «productBuilderModelNode.factoryImplClassName»();	
+				public final static «productBuilderModelNode.factoryImplClassName» NEW = new «productBuilderModelNode.factoryImplClassName»();	
 			«ENDIF-»
 		 
 		 	«FOREACH attributes AS this-»

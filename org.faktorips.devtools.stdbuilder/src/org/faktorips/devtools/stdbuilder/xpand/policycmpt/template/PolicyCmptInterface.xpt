@@ -30,7 +30,7 @@
 				/**
 				* @generated
 				*/
-				public final static «policyBuilderModelNode.factoryImplClassName» BUILD = new «policyBuilderModelNode.factoryImplClassName»();	
+				public final static «policyBuilderModelNode.factoryImplClassName» NEW = new «policyBuilderModelNode.factoryImplClassName»();	
 			«ENDIF-»
 						
 			«EXPAND PolicyCmptAssociation::constants FOREACH associations»

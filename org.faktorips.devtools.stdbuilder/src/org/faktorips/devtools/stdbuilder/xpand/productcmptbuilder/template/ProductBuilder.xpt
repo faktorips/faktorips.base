@@ -1,10 +1,7 @@
 «IMPORT org::faktorips::devtools::core::builder::naming»
-«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template::ProductBuilderNames»
 
@@ -75,7 +72,7 @@
 		/**
 		* @generated
 		*/
-		private final «productImplClassName» «field(productFieldName)»;
+		private final «typeImplClassName» «field(variableName)»;
 		
 		«IF changingOverTime-»
 			/**
@@ -103,9 +100,9 @@
 	* @generated
 	*/
 	«IF changingOverTime-»
-		protected «method(implClassName, productImplClassName, "product", InMemoryRuntimeRepository(), "runtimeRepository", prodGenImplClassName, "currentGeneration")»{
+		protected «method(implClassName, typeImplClassName, "product", InMemoryRuntimeRepository(), "runtimeRepository", prodGenImplClassName, "currentGeneration")»{
 	«ELSE-»
-		protected «method(implClassName, productImplClassName, "product", InMemoryRuntimeRepository(), "runtimeRepository")»{
+		protected «method(implClassName, typeImplClassName, "product", InMemoryRuntimeRepository(), "runtimeRepository")»{
 	«ENDIF-»
 		«IF hasSupertype()-»«REM» supertype has to be changing too«ENDREM»
 			super(product, runtimeRepository «IF changingOverTime-», currentGeneration«ENDIF»);
@@ -116,7 +113,7 @@
 				runtimeRepository.«getExistingProductComponent("product.getId()")»;
 			
 				this.runtimeRepository = runtimeRepository;
-				this.«productFieldName» = product;
+				this.«variableName» = product;
 				«IF changingOverTime» this.«prodGenFieldName» = currentGeneration;«ENDIF-»
 			}
 		«ENDIF-»
@@ -134,7 +131,7 @@
 		«IF changingOverTime-»
 			«builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
 		«ELSE-»
-			«builder.productFieldName».«methodNameSetter»(«fieldName»);
+			«safeGetResult(builder)».«methodNameSetter»(«fieldName»);
 		«ENDIF-»
 		return this;
 	}
@@ -154,7 +151,7 @@
 		«IF changingOverTime-»
 			«builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
 		«ELSE-»
-			«builder.productFieldName».«methodNameSetter»(«fieldName»);
+			«safeGetResult(builder)».«methodNameSetter»(«fieldName»);
 		«ENDIF-»
 		return this;
 	}
@@ -175,10 +172,10 @@
 	public «implClassName» «methodNameGeneration»(int year, int month, int day){
 		«DateTime()» genDate= new «DateTime()»(year, month, day);
 		«prodGenImplClassName» generation = («prodGenImplClassName») «getRepository()»
-				.«getProductCmptGeneration(productFieldName + ".getId()", "genDate.toGregorianCalendar(" + TimeZone() + ".getDefault())")»;
+				.«getProductCmptGeneration(safeGetResult() + ".getId()", "genDate.toGregorianCalendar(" + TimeZone() + ".getDefault())")»;
 		
 		if (generation == null || !genDate.equals(generation.getValidFrom())) {
-			generation = new «prodGenImplClassName»(«productFieldName»);
+			generation = new «prodGenImplClassName»(«safeGetResult()»);
 			generation.«setValidFrom("new " + DateTime() +"(year, month, day)")»;
 			«IF hasSupertype()-»
 				super.«getRepository()».«putProductCmptGeneration("generation")»;
@@ -198,7 +195,7 @@
 	«IF needOverrideForProductGenSetter-»@Override«ENDIF-»
 	public «implClassName» «methodNameSetLatestGeneration»() {
 		«methodNameSetGeneration»((«prodGenImplClassName») «getRepository()»
-			.«getLatestProductComponentGeneration("get()")»);
+			.«getLatestProductComponentGeneration(safeGetResult())»);
 	
 		«REM»Nullpointer exception earlier in getLaterstProductComponentGeneration, if no such generation exists....«ENDREM-»
 		return this;	
@@ -223,11 +220,11 @@
 	* @generated
 	*/			
 	«IF hasSupertype()-»@Override«ENDIF-»
-	public «productPublishedInterfaceName» get() {
+	public «productPublishedInterfaceName» «getResult()» {
 		«IF hasSupertype()-»
-			return («productPublishedInterfaceName») super.get();
+			return («productPublishedInterfaceName») super.«getResult()»;
 		«ELSE-»
-			return «productFieldName»;
+			return «safeGetResult()»;
 		«ENDIF»
 	}
 	
@@ -256,7 +253,7 @@
 			«IF hasSupertype()-»
 				return («prodGenPublishedInterfaceName») super.«methodNameGetLatestGeneration»();
 			«ELSE-»
-				return («prodGenPublishedInterfaceName») runtimeRepository.«getLatestProductComponentGeneration(productFieldName)»;
+				return («prodGenPublishedInterfaceName») runtimeRepository.«getLatestProductComponentGeneration(safeGetResult())»;
 			«ENDIF»
 		}
 	«ENDIF-»
@@ -270,7 +267,7 @@
 	* @generated
 	*/
 	public static Class<?> getProductClass() {
-		return «productImplClassName».class;
+		return «typeImplClassName».class;
 	}
 «ENDDEFINE»
 
@@ -283,7 +280,7 @@
 		* @generated
 		*/
 		public static «implClassName» «from()»(«productPublishedInterfaceName» product, «InMemoryRuntimeRepository()» runtimeRepository, «prodGenImplClassName» currentGeneration) {
-			return new «implClassName»(«castToImplementation(productImplClassName)» product, runtimeRepository, currentGeneration);
+			return new «implClassName»(«castToImplementation(typeImplClassName)» product, runtimeRepository, currentGeneration);
 		}
 	«ENDIF-»
 	
@@ -295,9 +292,9 @@
 	*/
 	public static «implClassName» «from()»(«productPublishedInterfaceName» product, «InMemoryRuntimeRepository()» runtimeRepository) {
 		«IF changingOverTime-»
-			return new «implClassName»(«castToImplementation(productImplClassName)»product, runtimeRepository, («prodGenImplClassName») runtimeRepository.«getLatestProductComponentGeneration("product")»);
+			return new «implClassName»(«castToImplementation(typeImplClassName)»product, runtimeRepository, («prodGenImplClassName») runtimeRepository.«getLatestProductComponentGeneration("product")»);
 		«ELSE-»
-			return new «implClassName»(«castToImplementation(productImplClassName)»product, runtimeRepository);
+			return new «implClassName»(«castToImplementation(typeImplClassName)»product, runtimeRepository);
 		«ENDIF»
 	}
 «ENDDEFINE»
@@ -310,20 +307,20 @@
 		* @generated
 		*/
 		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
-		public AssociationBuilder associate(){
-			return new AssociationBuilder(this);
+		public «AssociationBuilder()» associate(){
+			return new «AssociationBuilder()»(this);
 		}
 	«ENDIF»
 
 	«IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 -»
 		/**
-		* «localizedJDoc("METHOD_ASSOCIATIONS")»
+		* «localizedJDoc("METHOD_ADD_ASSOCIATION")»
 		*
 		* @generated
 		*/
 		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
-		public AssociationsBuilder associations(){
-			return new AssociationsBuilder(this);	
+		public «AddAssociationBuilder()» «add()» {
+			return new «AddAssociationBuilder()»(this);	
 		}
 	«ENDIF»
 	«EXPAND ProductAssociationBuilder::main-»
