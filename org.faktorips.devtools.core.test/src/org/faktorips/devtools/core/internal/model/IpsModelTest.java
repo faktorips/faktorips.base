@@ -27,6 +27,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,8 +41,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
@@ -564,6 +570,43 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         // save() of the ips source file
         assertEquals(2, modifyListener.modifiedFiles.size());
         assertChangedFileIn(typeA.getIpsSrcFile(), modifyListener.modifiedFiles);
+    }
+
+    @Test
+    public void testRunAndQueueChangeEvents_ErrorHandling() throws CoreException {
+        IIpsProject project = newIpsProject();
+        final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
+        final IDescription typeADescription = typeA.newDescription();
+        typeADescription.setLocale(Locale.US);
+        typeADescription.setText("foo");
+        typeA.getIpsSrcFile().save(true, null);
+        final List<IStatus> logs = new LinkedList<IStatus>();
+        ILog log = IpsPlugin.getDefault().getLog();
+        log.addLogListener(new ILogListener() {
+
+            @Override
+            public void logging(IStatus status, String plugin) {
+                logs.add(status);
+            }
+        });
+
+        IWorkspaceRunnable action = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                typeADescription.setText("blabla");
+                throw new CoreException(new Status(Status.ERROR, "MyPlugin", "MyMessage"));
+            }
+
+        };
+
+        model.runSafe(action, ResourcesPlugin.getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, null,
+                Collections.singleton(typeADescription.getIpsSrcFile()));
+
+        assertEquals("foo", typeADescription.getText());
+        assertEquals(1, logs.size());
+        assertEquals(Status.ERROR, logs.get(0).getSeverity());
+        assertEquals("MyMessage", logs.get(0).getMessage());
     }
 
     private void assertChangedFileIn(IIpsSrcFile ipsSrcFile, List<IIpsSrcFile> changedFiles) {

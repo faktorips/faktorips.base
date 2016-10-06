@@ -22,16 +22,18 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.util.Histogram;
 
 public class PropertyValueHistograms {
 
-    private final Map<String, Histogram<Object, IPropertyValue>> propertyValueHistorgram = new HashMap<String, Histogram<Object, IPropertyValue>>();
+    private final Map<ITemplatedValueIdentifier, Histogram<Object, IPropertyValue>> propertyValueHistorgram = new HashMap<ITemplatedValueIdentifier, Histogram<Object, IPropertyValue>>();
 
-    private PropertyValueHistograms(Multimap<String, IPropertyValue> propertyToValues) {
-        for (Entry<String, Collection<IPropertyValue>> propertyValuesEntry : propertyToValues.asMap().entrySet()) {
-            String name = propertyValuesEntry.getKey();
+    private PropertyValueHistograms(Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues) {
+        for (Entry<ITemplatedValueIdentifier, Collection<IPropertyValue>> propertyValuesEntry : propertyToValues
+                .asMap().entrySet()) {
+            ITemplatedValueIdentifier name = propertyValuesEntry.getKey();
             Collection<IPropertyValue> propertyValues = propertyValuesEntry.getValue();
             populateHistogram(name, propertyValues);
         }
@@ -42,7 +44,7 @@ public class PropertyValueHistograms {
         return propertyValue.getPropertyValueType();
     }
 
-    private void populateHistogram(String name, Collection<IPropertyValue> propertyValues) {
+    private void populateHistogram(ITemplatedValueIdentifier name, Collection<IPropertyValue> propertyValues) {
         if (!propertyValues.isEmpty()) {
             PropertyValueType valueType = getPropertyValueType(propertyValues);
             propertyValueHistorgram.put(name, new Histogram<Object, IPropertyValue>(valueType.getValueGetter(),
@@ -51,7 +53,7 @@ public class PropertyValueHistograms {
     }
 
     public static PropertyValueHistograms createFor(List<IProductCmpt> cmpts) {
-        Multimap<String, IPropertyValue> propertyToValues = LinkedListMultimap.create();
+        Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues = LinkedListMultimap.create();
         for (IProductCmpt productCmpt : cmpts) {
             addAllPropertyValues(propertyToValues, productCmpt);
             IProductCmptGeneration productCmptGeneration = productCmpt.getLatestProductCmptGeneration();
@@ -61,14 +63,14 @@ public class PropertyValueHistograms {
         return new PropertyValueHistograms(propertyToValues);
     }
 
-    private static void addAllPropertyValues(Multimap<String, IPropertyValue> propertyToValues,
+    private static void addAllPropertyValues(Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues,
             IPropertyValueContainer propertyValueContainer) {
         for (IPropertyValue propertyValue : propertyValueContainer.getAllPropertyValues()) {
-            propertyToValues.put(propertyValue.getPropertyName(), propertyValue);
+            propertyToValues.put(propertyValue.getIdentifier(), propertyValue);
         }
     }
 
-    public Histogram<Object, IPropertyValue> get(String propertyName) {
+    public Histogram<Object, IPropertyValue> get(ITemplatedValueIdentifier propertyName) {
         return propertyValueHistorgram.get(propertyName);
     }
 

@@ -372,10 +372,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
                 ipsSrcFile.discardChanges();
             }
+            IpsPlugin.logAndShowErrorDialog(e);
         } catch (CoreRuntimeException e) {
             for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
                 ipsSrcFile.discardChanges();
             }
+            IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 

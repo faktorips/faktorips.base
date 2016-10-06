@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink.LinkIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.util.Histogram;
@@ -120,7 +121,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         monitor.beginTask(Messages.InferTemplateOperation_progress_inferringTemplate, propertyValueHistograms.size()
                 + productCmptLinkHistograms.size() + generationLinkHistograms.size() + (productCmpts.size() * 2));
         try {
-            srcFileChanged(templateGeneration.getIpsSrcFile());
+            preSrcFileChanged(templateGeneration.getIpsSrcFile());
             updateProductCmpts();
             for (PropertyValueType type : PropertyValueType.values()) {
                 updatePropertyValues(type.getInterfaceClass(), type.getValueSetter());
@@ -143,7 +144,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
 
     private void updateProductCmpts() {
         for (IProductCmpt productCmpt : productCmpts) {
-            srcFileChanged(productCmpt.getIpsSrcFile());
+            preSrcFileChanged(productCmpt.getIpsSrcFile());
             productCmpt.setTemplate(getTemplateName());
             monitor.worked(1);
         }
@@ -181,7 +182,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
             if (bestValue.isPresent()) {
                 Object value = bestValue.getValue();
                 setter.accept(propertyValue, value);
-                updateOriginPropertyValues(propertyValue.getPropertyName(), value);
+                updateOriginPropertyValues(propertyValue.getIdentifier(), value);
             } else {
                 propertyValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
             }
@@ -195,7 +196,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
      * instead.
      */
     private <P extends IPropertyValue> BestValue<Object> getBestValueFor(P propertyValue) {
-        Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(propertyValue.getPropertyName());
+        Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(propertyValue.getIdentifier());
         BestValue<Object> bestValue = histogram.getBestValue(getIpsProjectProperties()
                 .getInferredTemplatePropertyValueThreshold());
         return bestValue;
@@ -205,16 +206,16 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         return templateGeneration.getIpsProject().getProperties();
     }
 
-    private void updateOriginPropertyValues(String propertyName, Object value) {
-        Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(propertyName);
+    private void updateOriginPropertyValues(ITemplatedValueIdentifier identifier, Object value) {
+        Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(identifier);
         Set<IPropertyValue> elements = histogram.getElements(value);
         for (IPropertyValue propertyValue : elements) {
-            srcFileChanged(propertyValue.getIpsSrcFile());
+            preSrcFileChanged(propertyValue.getIpsSrcFile());
             propertyValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         }
     }
 
-    private void srcFileChanged(IIpsSrcFile ipsSrcFile) {
+    private void preSrcFileChanged(IIpsSrcFile ipsSrcFile) {
         if (!ipsSrcFile.isDirty()) {
             srcFilesToSave.add(ipsSrcFile);
         }

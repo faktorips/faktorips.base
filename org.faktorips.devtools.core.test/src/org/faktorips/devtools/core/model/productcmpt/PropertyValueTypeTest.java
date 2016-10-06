@@ -181,6 +181,9 @@ public class PropertyValueTypeTest {
         BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.CONFIGURED_DEFAULT.getValueSetter();
         valueConsumer.accept(configuredDefault, "10");
         verify(configuredDefault).setValue("10");
+
+        valueConsumer.accept(configuredDefault, null);
+        verify(configuredDefault).setValue(null);
     }
 
     @Test

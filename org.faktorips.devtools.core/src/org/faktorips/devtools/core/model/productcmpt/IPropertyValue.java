@@ -12,12 +12,12 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import com.google.common.base.Preconditions;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * Base interface for properties stored in product component generations like formulas, table
@@ -113,21 +113,29 @@ public interface IPropertyValue extends ITemplatedValue {
 
         @Override
         public int hashCode() {
-            return propertyName.hashCode();
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            return result;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) {
+        public boolean equals(Object obj) {
+            if (this == obj) {
                 return true;
             }
-            if (o == null) {
+            if (obj == null) {
                 return false;
             }
-            if (getClass() != o.getClass()) {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            return StringUtils.equals(propertyName, ((PropertyValueIdentifier)o).propertyName);
+            PropertyValueIdentifier other = (PropertyValueIdentifier)obj;
+            if (!ObjectUtil.equals(propertyName, other.propertyName)) {
+                return false;
+            }
+            return type == other.type;
         }
 
         @Override
@@ -135,6 +143,14 @@ public interface IPropertyValue extends ITemplatedValue {
             ArgumentCheck.isInstanceOf(container, IPropertyValueContainer.class);
             IPropertyValueContainer propertyValueContainer = (IPropertyValueContainer)container;
             return propertyValueContainer.getPropertyValue(propertyName, type.getInterfaceClass());
+        }
+
+        public String getPropertyName() {
+            return propertyName;
+        }
+
+        public PropertyValueType getType() {
+            return type;
         }
 
     }

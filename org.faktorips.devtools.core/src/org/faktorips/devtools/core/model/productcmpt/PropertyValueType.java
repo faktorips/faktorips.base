@@ -371,7 +371,7 @@ public enum PropertyValueType {
 
                 @Override
                 public void accept(IPropertyValue propertyValue, Object value) {
-                    if (value instanceof String && propertyValue instanceof IConfiguredDefault) {
+                    if ((value == null || value instanceof String) && propertyValue instanceof IConfiguredDefault) {
                         String defaultValue = (String)value;
                         IConfiguredDefault element = (IConfiguredDefault)propertyValue;
                         element.setValue(defaultValue);

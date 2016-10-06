@@ -42,9 +42,11 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue.PropertyValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.Histogram;
@@ -186,18 +188,20 @@ public class InferTemplateProcessorTest {
     }
 
     private List<IPropertyValue> mockPropertyValueInTemplates(Class<? extends IPropertyValue> propValueClass) {
-        List<IPropertyValue> propertyValues = mockPropertyValues(propValueClass, templateSrcFile);
+        List<IPropertyValue> propertyValues = mockPropertyValues(templateSrcFile, propValueClass);
         doReturn(propertyValues).when(templateGeneration).getPropertyValuesIncludingProductCmpt(propValueClass);
         return propertyValues;
     }
 
-    private List<IPropertyValue> mockPropertyValues(Class<? extends IPropertyValue> propValueClass, IIpsSrcFile srcFile) {
+    private List<IPropertyValue> mockPropertyValues(IIpsSrcFile srcFile, Class<? extends IPropertyValue> propValueClass) {
         List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
         for (int i = 0; i < 3; i++) {
             String name = propValueClass.getSimpleName() + i;
             IPropertyValue propertyValue = mock(IPropertyValue.class, withSettings().extraInterfaces(propValueClass)
                     .name(name));
             when(propertyValue.getPropertyName()).thenReturn(name);
+            when(propertyValue.getIdentifier()).thenReturn(
+                    new PropertyValueIdentifier(name, PropertyValueType.getTypeForValueClass(propValueClass)));
             when(propertyValue.getIpsSrcFile()).thenReturn(srcFile);
             propertyValues.add(propertyValue);
         }
@@ -207,14 +211,14 @@ public class InferTemplateProcessorTest {
     private List<IPropertyValue> mockHistograms(Class<? extends IPropertyValue> propValueClass,
             List<IPropertyValue> templateValues) {
         // values for first product
-        List<IPropertyValue> mockPropertyValues = mockPropertyValues(propValueClass, productSrcFile);
+        List<IPropertyValue> mockPropertyValues = mockPropertyValues(productSrcFile, propValueClass);
         // values for second product
-        mockPropertyValues.addAll(mockPropertyValues(propValueClass, productDirtySrcFile));
+        mockPropertyValues.addAll(mockPropertyValues(productDirtySrcFile, propValueClass));
         for (IPropertyValue templateValue : templateValues) {
             Function<IPropertyValue, Object> elementToValueFunction = getValueFunction(propValueClass);
             Histogram<Object, IPropertyValue> histogram = new Histogram<Object, IPropertyValue>(elementToValueFunction,
                     histrogramValues(mockPropertyValues, templateValue.getPropertyName()));
-            when(histograms.get(templateValue.getPropertyName())).thenReturn(histogram);
+            when(histograms.get(templateValue.getIdentifier())).thenReturn(histogram);
         }
         return mockPropertyValues;
     }
