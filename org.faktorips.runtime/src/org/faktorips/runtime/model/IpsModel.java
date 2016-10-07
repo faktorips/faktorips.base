@@ -15,8 +15,10 @@ import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.AbstractComputable;
 import org.faktorips.runtime.caching.Memoizer;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.type.PolicyCmptType;
@@ -35,7 +37,12 @@ public class IpsModel {
 
                 @Override
                 public TableStructure compute(Class<? extends ITable> tableObjectClass) {
-                    return new TableStructure(tableObjectClass);
+                    if (tableObjectClass.isAnnotationPresent(IpsTableStructure.class)) {
+                        return new TableStructure(tableObjectClass);
+                    } else {
+                        throw new IllegalArgumentException("The class " + tableObjectClass.getName()
+                                + "is not annotated as IpsTableStructure.");
+                    }
                 }
             });
 
@@ -44,7 +51,12 @@ public class IpsModel {
 
                 @Override
                 public EnumType compute(Class<?> enumObjectClass) {
-                    return new EnumType(enumObjectClass);
+                    if (enumObjectClass.isAnnotationPresent(IpsEnumType.class)) {
+                        return new EnumType(enumObjectClass);
+                    } else {
+                        throw new IllegalArgumentException("The class " + enumObjectClass.getName()
+                                + " is not annotated as IpsEnumType.");
+                    }
                 }
             });
 
@@ -203,7 +215,11 @@ public class IpsModel {
      * @return a {@link EnumType} describing the attributes of the given Faktor-IPS enum.
      */
     public static EnumType getEnumType(Object enumInstance) {
-        return getEnumType(enumInstance.getClass());
+        if (enumInstance instanceof Enum) {
+            return getEnumType(((Enum<?>)enumInstance).getDeclaringClass());
+        } else {
+            return getEnumType(enumInstance.getClass());
+        }
     }
 
 }

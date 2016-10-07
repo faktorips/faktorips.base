@@ -133,23 +133,23 @@ public class IpsModelTest {
     }
 
     @Test
-        public void testGetType_policy() {
-            Type model = IpsModel.getType(TestPolicy.class);
-    
-            assertThat(model, is(instanceOf(PolicyCmptType.class)));
-        }
+    public void testGetType_policy() {
+        Type model = IpsModel.getType(TestPolicy.class);
+
+        assertThat(model, is(instanceOf(PolicyCmptType.class)));
+    }
 
     @Test
-        public void testGetType_product() {
-            Type model = IpsModel.getType(TestProduct.class);
-    
-            assertThat(model, is(instanceOf(ProductCmptType.class)));
-        }
+    public void testGetType_product() {
+        Type model = IpsModel.getType(TestProduct.class);
+
+        assertThat(model, is(instanceOf(ProductCmptType.class)));
+    }
 
     @Test(expected = IllegalArgumentException.class)
-        public void testGetType_noType() {
-            IpsModel.getType(String.class);
-        }
+    public void testGetType_noType() {
+        IpsModel.getType(String.class);
+    }
 
     @Test
     public void testGetEnumType() {
@@ -174,9 +174,32 @@ public class IpsModelTest {
         assertThat(model.getName(), is(equalTo("my.TestEnum")));
     }
 
+    @Test
+    public void testGetEnumType_byEnumWithOverrideMethod() {
+        EnumType model = IpsModel.getEnumType(TestJava5Enum.Test1);
+
+        assertThat(model, is(notNullValue()));
+        assertThat(model.getName(), is(equalTo("my.TestJava5Enum")));
+    }
+
     @IpsEnumType(name = "my.TestEnum", attributeNames = {})
     private static class TestEnum {
+    }
 
+    @IpsEnumType(name = "my.TestJava5Enum", attributeNames = {})
+    private enum TestJava5Enum {
+        Test1() {
+            @Override
+            public void test() {
+            }
+        },
+        Test2() {
+            @Override
+            public void test() {
+            }
+        };
+
+        public abstract void test();
     }
 
     @IpsProductCmptType(name = "MyProduct")
@@ -285,20 +308,20 @@ public class IpsModelTest {
     }
 
     @Test
-        public void testGetType_onPublishedInterface() {
-            Type model = IpsModel.getType(IMyPolicy.class);
-    
-            assertNotNull(model);
-            assertEquals("MyPolicy", model.getName());
-        }
+    public void testGetType_onPublishedInterface() {
+        Type model = IpsModel.getType(IMyPolicy.class);
+
+        assertNotNull(model);
+        assertEquals("MyPolicy", model.getName());
+    }
 
     @Test
-        public void testGetType_onImplementingClass() {
-            Type model = IpsModel.getType(MyPolicy.class);
-    
-            assertNotNull(model);
-            assertEquals("MyPolicy", model.getName());
-        }
+    public void testGetType_onImplementingClass() {
+        Type model = IpsModel.getType(MyPolicy.class);
+
+        assertNotNull(model);
+        assertEquals("MyPolicy", model.getName());
+    }
 
     @Test
     public void testGetPolicyCmptType_onPublishedInterface() {
