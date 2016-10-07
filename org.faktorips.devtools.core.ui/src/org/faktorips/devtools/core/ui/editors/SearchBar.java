@@ -42,11 +42,14 @@ public class SearchBar {
 
     private BindingContext bindingContext;
 
+    private UIToolkit toolkit;
+
     /**
      * Create the search bar. The {@link TableViewer} to be filtered is usually created a little
      * later and then set with {@link #setFilterTo(TableViewer)}.
      */
     public SearchBar(Composite formBody, UIToolkit toolkit) {
+        this.toolkit = toolkit;
         Composite searchPanel = toolkit.createLabelEditColumnComposite(formBody);
         GridLayout layout = (GridLayout)searchPanel.getLayout();
         // avoid double boarder
@@ -80,6 +83,10 @@ public class SearchBar {
             }
         });
         tableViewer.addFilter(searchPmo.filter);
+    }
+
+    public void setEnabled(boolean enabled) {
+        toolkit.setEnabled(searchField, enabled);
     }
 
     public static class SearchPmo extends PresentationModelObject {
@@ -147,5 +154,4 @@ public class SearchBar {
         }
 
     }
-
 }

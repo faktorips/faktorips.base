@@ -165,6 +165,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     private final IEditorSite editorSite;
 
+    private SearchBar searchBar;
+
     /**
      * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
      * <tt>IEnumValueContainer</tt>.
@@ -223,7 +225,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        SearchBar searchBar = new SearchBar(client, toolkit);
+        searchBar = new SearchBar(client, toolkit);
         enumValuesTable = toolkit.createTable(client, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
                 | SWT.FULL_SELECTION);
         enumValuesTableViewer = new TableViewer(enumValuesTable);
@@ -270,6 +272,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
         });
         createTableValidationHoverService();
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        searchBar.setEnabled(true);
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {

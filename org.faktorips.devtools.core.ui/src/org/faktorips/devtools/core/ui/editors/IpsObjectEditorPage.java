@@ -268,7 +268,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         dataChangeable = true;
     }
 
-    private void setDataChangeable(boolean changeable) {
+    protected void setDataChangeable(boolean changeable) {
         if (changeable == dataChangeable) {
             return;
         }

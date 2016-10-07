@@ -86,6 +86,7 @@ public class ContentPage extends IpsObjectEditorPage {
     private static final int DEFAULT_COLUMN_WIDTH = 125;
 
     private TableViewer tableViewer;
+    private SearchBar searchBar;
 
     private SelectionStatusBarPublisher selectionStatusBarPublisher;
 
@@ -131,7 +132,7 @@ public class ContentPage extends IpsObjectEditorPage {
             createExtensionProperty(formBody, toolkit);
         }
 
-        final SearchBar searchBar = new SearchBar(formBody, toolkit);
+        searchBar = new SearchBar(formBody, toolkit);
 
         final Table table = createTable(formBody);
         initTableViewer(table, toolkit);
@@ -564,6 +565,12 @@ public class ContentPage extends IpsObjectEditorPage {
 
     IRow getRow(int rowIndex) {
         return ((TableRows)getActiveGeneration()).getRow(rowIndex);
+    }
+
+    @Override
+    protected void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        searchBar.setEnabled(true);
     }
 
     private class TableImportExportActionInEditor extends TableImportExportAction {
