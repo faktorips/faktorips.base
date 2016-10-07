@@ -108,7 +108,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         super.performRefresh();
 
         enumAttributesComposite.updateInheritButtonEnabledState();
-        enumAttributesComposite.setCanDelete(!(getEnumType().isInextensibleEnum()));
     }
 
     /**
@@ -120,6 +119,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private final IEnumType enumType;
 
         private EnumValuesSection enumValuesSection;
+        private boolean isChangeable = true;
 
         /**
          * Button that opens a dialog that enables the user to inherit attributes from the super
@@ -127,10 +127,13 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          */
         private Button inheritButton;
 
-        public EnumAttributesComposite(IEnumType enumType, IWorkbenchPartSite site, Composite parent, UIToolkit toolkit) {
-            super(enumType, parent, site, EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_DELETE,
-                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
-                    Option.PULL_UP_REFACTORING_SUPPORTED, Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+        public EnumAttributesComposite(IEnumType enumType, IWorkbenchPartSite site, Composite parent,
+                UIToolkit toolkit) {
+            super(enumType, parent, site,
+                    EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_DELETE, Option.CAN_MOVE,
+                            Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                            Option.PULL_UP_REFACTORING_SUPPORTED, Option.JUMP_TO_SOURCE_CODE_SUPPORTED),
+                    toolkit);
             this.enumType = enumType;
             addSelectionChangedListener(this);
         }
@@ -244,10 +247,20 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
              * "Constructors must not invoke overridable methods"
              */
             IEnumType enumTypeFromSuperclass = (IEnumType)getIpsObject();
-            boolean superEnumTypeExists = enumTypeFromSuperclass.hasExistingSuperEnumType(enumTypeFromSuperclass
-                    .getIpsProject());
-            inheritButton.setEnabled(superEnumTypeExists
-                    && IpsUIPlugin.isEditable(enumTypeFromSuperclass.getIpsSrcFile()));
+            boolean superEnumTypeExists = enumTypeFromSuperclass
+                    .hasExistingSuperEnumType(enumTypeFromSuperclass.getIpsProject());
+            inheritButton
+                    .setEnabled(superEnumTypeExists && IpsUIPlugin.isEditable(enumTypeFromSuperclass.getIpsSrcFile()));
+        }
+
+        @Override
+        public void setDataChangeable(boolean flag) {
+            isChangeable = flag;
+            super.setDataChangeable(flag);
+        }
+
+        private boolean getIsChangeable() {
+            return isChangeable;
         }
 
         /**
@@ -256,7 +269,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          */
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
-            setCanDelete(true);
+            setCanDelete(getIsChangeable());
             if (getSelectedPart() instanceof IEnumLiteralNameAttribute) {
                 setCanDelete(false);
             }
