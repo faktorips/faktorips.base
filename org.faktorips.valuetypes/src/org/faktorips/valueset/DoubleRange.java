@@ -37,6 +37,17 @@ public class DoubleRange extends DefaultRange<Double> {
     /**
      * Creates an DoubleRange based on the indicated Strings. The Strings are parsed with the
      * Double.valueOf() method. An asterisk (*) is interpreted as the maximum/minimum available
+     * Double value. The step is set to <code>null</code>
+     * 
+     * @param containsNull defines if null is part of the range or not
+     */
+    public static DoubleRange valueOf(String lower, String upper, boolean containsNull) {
+        return valueOf(lower, upper, null, containsNull);
+    }
+
+    /**
+     * Creates an DoubleRange based on the indicated Strings. The Strings are parsed with the
+     * Double.valueOf() method. An asterisk (*) is interpreted as the maximum/minimum available
      * Double value.
      * 
      * @param containsNull defines if null is part of the range or not
