@@ -63,15 +63,29 @@ public class PolicyCmptType extends Type {
      * of the configuring product.
      * 
      * @return <code>true</code> if this policy component type is configured else <code>false</code>
+     * @deprecated Typo in method name. Use {@link #isConfiguredByProductCmptType()}. Will be
+     *             removed in 3.19
      */
+    @Deprecated
     public boolean isConfiguredByPolicyCmptType() {
+        return isConfiguredByProductCmptType();
+    }
+
+    /**
+     * Returns whether this policy component type is configured by a product component type. If this
+     * method returns <code>true</code> you could use {@link #getProductCmptType()} to get the type
+     * of the configuring product.
+     * 
+     * @return <code>true</code> if this policy component type is configured else <code>false</code>
+     */
+    public boolean isConfiguredByProductCmptType() {
         return getAnnotatedDeclaration().is(IpsConfiguredBy.class);
     }
 
     /**
      * Returns the {@link ProductCmptType} that configures this policy component type. Throws an
      * {@link IllegalArgumentException} if this policy component type is not configured. Use
-     * {@link #isConfiguredByPolicyCmptType()} to check whether it is configured or not.
+     * {@link #isConfiguredByProductCmptType()} to check whether it is configured or not.
      * 
      * @return the {@link ProductCmptType} that configures this policy component type
      * @throws NullPointerException if this policy component type is not configured
