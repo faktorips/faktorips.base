@@ -64,14 +64,14 @@ public class PolicyCmptType extends Type {
      * 
      * @return <code>true</code> if this policy component type is configured else <code>false</code>
      */
-    public boolean isConfiguredByPolicyCmptType() {
+    public boolean isConfiguredByProductCmptType() {
         return getAnnotatedDeclaration().is(IpsConfiguredBy.class);
     }
 
     /**
      * Returns the {@link ProductCmptType} that configures this policy component type. Throws an
      * {@link IllegalArgumentException} if this policy component type is not configured. Use
-     * {@link #isConfiguredByPolicyCmptType()} to check whether it is configured or not.
+     * {@link #isConfiguredByProductCmptType()} to check whether it is configured or not.
      * 
      * @return the {@link ProductCmptType} that configures this policy component type
      * @throws NullPointerException if this policy component type is not configured

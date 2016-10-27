@@ -42,8 +42,8 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testIsConfiguredByPolicyCmptType() throws Exception {
-        assertThat(policyCmptType.isConfiguredByPolicyCmptType(), is(true));
-        assertThat(superPolicyCmptType.isConfiguredByPolicyCmptType(), is(false));
+        assertThat(policyCmptType.isConfiguredByProductCmptType(), is(true));
+        assertThat(superPolicyCmptType.isConfiguredByProductCmptType(), is(false));
     }
 
     @Test
