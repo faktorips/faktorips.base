@@ -656,7 +656,7 @@ public abstract class AbstractGeneratorModelNode {
             }
             JavaCodeFragment annotationFragment = generator.createAnnotation(this);
             addImport(annotationFragment.getImportDeclaration());
-            result.append(annotationFragment.getSourcecode()).append("\n");
+            result.append(annotationFragment.getSourcecode());
         }
         return result.toString();
     }
