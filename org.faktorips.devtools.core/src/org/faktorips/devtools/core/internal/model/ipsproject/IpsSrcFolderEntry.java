@@ -407,10 +407,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return QNameUtil.concat(getBasePackageNameForDerivedJavaClasses(), getUniqueQualifier());
     }
 
-    private String getUniqueQualifier() {
+    @Override
+    public String getUniqueQualifier() {
         return uniqueQualifier;
     }
 
+    @Override
     public void setUniqueQualifier(String uniqueQualifier) {
         this.uniqueQualifier = uniqueQualifier;
     }

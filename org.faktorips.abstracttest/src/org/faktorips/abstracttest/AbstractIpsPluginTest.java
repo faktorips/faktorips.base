@@ -382,8 +382,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
         properties
-        .setMinRequiredVersionNumber(
-                "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .setMinRequiredVersionNumber(
+                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(properties);
     }
 
@@ -424,7 +424,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
-        }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+                }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
     protected void setAutoBuild(boolean autoBuild) throws CoreException {
@@ -458,7 +458,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         newRootFolder.create(false, true, null);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newSourceFolderEntry(newRootFolder);
+        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(newRootFolder);
+        entry.setUniqueQualifier(name);
         ipsProject.setIpsObjectPath(path);
 
         return ipsProject.findIpsPackageFragmentRoot(name);

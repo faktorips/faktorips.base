@@ -155,4 +155,24 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      */
     public String getValidationMessagesBundle();
 
+    /**
+     * Returns the unique qualifier that is used to get unique base packages for source entries with
+     * same base package.
+     * 
+     * @return The specified unique qualifier name
+     * @see #getUniqueBasePackageNameForMergableArtifacts()
+     * @see #getUniqueBasePackageNameForDerivedArtifacts()
+     */
+    public String getUniqueQualifier();
+
+    /**
+     * Specify the unique qualifier to get unique base packages for source entries with same base
+     * package.
+     * 
+     * @param uniqueQualifier A unique qualifier
+     * @see #getUniqueBasePackageNameForMergableArtifacts()
+     * @see #getUniqueBasePackageNameForDerivedArtifacts()
+     */
+    public void setUniqueQualifier(String uniqueQualifier);
+
 }
