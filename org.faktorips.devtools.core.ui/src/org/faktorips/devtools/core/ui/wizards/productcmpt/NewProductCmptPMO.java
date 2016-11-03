@@ -257,7 +257,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         IIpsSrcFileViewItem oldTemplate = this.selectedTemplate;
         this.selectedTemplate = selectedTemplate;
         updateSubtypeList();
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_TEMPLATE, oldTemplate, selectedType));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_TEMPLATE, oldTemplate, selectedTemplate));
     }
 
     public List<IProductCmptType> getSubtypes() {
