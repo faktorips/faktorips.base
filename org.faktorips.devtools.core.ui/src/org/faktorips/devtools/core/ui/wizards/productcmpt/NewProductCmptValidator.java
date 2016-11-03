@@ -168,7 +168,8 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
             IProductCmptTypeAssociation addToAssociation = getPmo().getAddToAssociation();
             IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(getPmo()
                     .getIpsProject());
-            if (!getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
+            if (getPmo().getSelectedType() == null
+                    || !getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
                 result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
                         Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
                                 .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
