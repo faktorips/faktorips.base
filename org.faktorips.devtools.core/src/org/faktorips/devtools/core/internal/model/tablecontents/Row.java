@@ -103,18 +103,19 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
-        getTableRows().updateUniqueKeyCacheFor(this, getUniqueKeys());
+        ITableStructure tableStructure = findTableStructure();
+        if (tableStructure != null) {
+            getTableRows().updateUniqueKeyCacheFor(this, tableStructure.getUniqueKeys());
+        }
         objectHasChanged();
     }
 
-    private IIndex[] getUniqueKeys() {
-        IIndex[] uniqueKeys;
+    protected ITableStructure findTableStructure() {
         try {
-            uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
+            return getTableContents().findTableStructure(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        return uniqueKeys;
     }
 
     public void setValueInternal(int column, String newValue) {
@@ -149,7 +150,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        ITableStructure tableStructure = ((TableContents)getTableContents()).findTableStructure(ipsProject);
+        ITableStructure tableStructure = findTableStructure();
         if (tableStructure == null) {
             return;
         }

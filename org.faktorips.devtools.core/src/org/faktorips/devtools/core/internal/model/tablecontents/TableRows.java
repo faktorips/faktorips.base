@@ -82,19 +82,20 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         for (String value : columns) {
             newRow.setValueInternal(column++, value);
         }
-        updateUniqueKeyCacheFor(newRow, getUniqueKeys());
+        ITableStructure tableStructure = findTableStructure();
+        if (tableStructure != null) {
+            updateUniqueKeyCacheFor(newRow, tableStructure.getUniqueKeys());
+        }
 
         return newRow;
     }
 
-    private IIndex[] getUniqueKeys() {
-        IIndex[] uniqueKeys;
+    protected ITableStructure findTableStructure() {
         try {
-            uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
+            return getTableContents().findTableStructure(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        return uniqueKeys;
     }
 
     /**
@@ -170,7 +171,10 @@ public class TableRows extends IpsObjectPart implements ITableRows {
                     Row updateRow = rows.get(i);
                     updateRow.setRowNumber(i);
                 }
-                removeUniqueKeyCacheFor(row, getUniqueKeys());
+                ITableStructure tableStructure = findTableStructure();
+                if (tableStructure != null) {
+                    removeUniqueKeyCacheFor(row, tableStructure.getUniqueKeys());
+                }
             }
             return true;
         }
@@ -280,23 +284,20 @@ public class TableRows extends IpsObjectPart implements ITableRows {
 
     /**
      * Returns whether the unique key validation is run automatically every time the table rows are
-     * validated. If the table structure has a lot of defined ranges and/or the table contents are
-     * very large, this will be false. Validation can then be triggered manually via
-     * {@link #validateUniqueKeysManually()}.
+     * validated. If the table structure cannot be found or has a lot of defined ranges and/or the
+     * table contents are very large, this will be false. Validation can then be triggered manually
+     * via {@link #validateUniqueKeysManually()} if table structure is present.
      */
     public boolean isUniqueKeyValidatedAutomatically() {
-        try {
-            return isUniqueKeyValidatedAutomatically(getTableContents().findTableStructure(getIpsProject()));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        ITableStructure tableStructure = findTableStructure();
+        return tableStructure != null && isUniqueKeyValidatedAutomatically(tableStructure);
     }
 
     private boolean isUniqueKeyValidatedAutomatically(ITableStructure tableStructure) {
         // 5000 seems to be a good threshold currently, as sample contents with 11 keys and < 450
         // lines validate in less than 2 seconds on my machine. Might be necessary to increase with
         // growing performance or allow setting by customers to fit their hardware...
-        return tableStructure.getRanges().length * rows.size() <= 5000;
+        return tableStructure == null || tableStructure.getRanges().length * rows.size() <= 5000;
     }
 
     private void validateUniqueKeys(MessageList list,
@@ -324,10 +325,10 @@ public class TableRows extends IpsObjectPart implements ITableRows {
      * future validations until {@link #validateUniqueKeysManually()} is run again.
      */
     public void validateUniqueKeysManually() {
-        try {
+        ITableStructure tableStructure = findTableStructure();
+        if (tableStructure != null) {
             lastUniqueKeyValidationResult = new MessageList();
             IIpsProject ipsProject = getTableContents().getIpsProject();
-            ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
             ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure,
                     ipsProject);
             validateUniqueKeys(lastUniqueKeyValidationResult, tableStructure, datatypes, true);
@@ -336,8 +337,6 @@ public class TableRows extends IpsObjectPart implements ITableRows {
             if (!dirty) {
                 getIpsSrcFile().markAsClean();
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -345,7 +344,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
      * returns <code>true</code> if the unique key validation is enabled
      */
     public boolean isUniqueKeyValidationEnabled() {
-        return uniqueKeyValidator != null;
+        return findTableStructure() != null && uniqueKeyValidator != null;
     }
 
     /**
