@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,13 +30,13 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 public class Row extends AtomicIpsObjectPart implements IRow {
 
@@ -68,17 +69,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     private void initValues() {
-        initValues(getNumOfColumnsViaTableContents());
-    }
-
-    /**
-     * Initializes the row's values with blanks
-     */
-    private void initValues(int numOfColumns) {
-        values = new ArrayList<String>(numOfColumns + 5);
-        for (int i = 0; i < numOfColumns; i++) {
-            values.add(null);
-        }
+        values = new ArrayList<String>(Arrays.asList(new String[getNumOfColumnsViaTableContents()]));
     }
 
     @Override
@@ -141,19 +132,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     void removeColumn(int column) {
         values.remove(column);
-    }
-
-    /**
-     * Returns the element's first text node.
-     */
-    private Text getTextNode(Element valueElement) {
-        NodeList nl = valueElement.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Text) {
-                return (Text)nl.item(i);
-            }
-        }
-        return null;
     }
 
     /**
@@ -337,17 +315,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         for (int i = 0; i < values.size(); i++) {
             if (i < nl.getLength()) {
                 Element valueElement = (Element)nl.item(i);
-                String isNull = valueElement.getAttribute("isNull"); //$NON-NLS-1$
-                if (Boolean.valueOf(isNull).booleanValue()) {
-                    values.set(i, null);
-                } else {
-                    Text textNode = getTextNode(valueElement);
-                    if (textNode == null) {
-                        values.set(i, ""); //$NON-NLS-1$
-                    } else {
-                        values.set(i, textNode.getNodeValue());
-                    }
-                }
+                String content = ValueToXmlHelper.getValueFromElement(valueElement);
+                values.set(i, content);
             }
         }
     }
@@ -355,14 +324,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        Document doc = element.getOwnerDocument();
-        for (int i = 0; i < values.size(); i++) {
-            Element valueElement = doc.createElement(VALUE_TAG_NAME);
-            valueElement.setAttribute("isNull", values.get(i) == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            if (values.get(i) != null) {
-                valueElement.appendChild(doc.createTextNode(values.get(i)));
-            }
-            element.appendChild(valueElement);
+        for (String value : values) {
+            ValueToXmlHelper.addValueToElement(value, element, VALUE_TAG_NAME);
         }
     }
 

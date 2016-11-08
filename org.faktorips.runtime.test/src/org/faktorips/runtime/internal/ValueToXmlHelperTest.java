@@ -49,6 +49,16 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testAddValueToElement_NullValue() {
+        Document doc = getTestDocument();
+        Element node = doc.createElement("ParentEl");
+        assertEquals(0, node.getChildNodes().getLength());
+        ValueToXmlHelper.addValueToElement(null, node, "Property");
+        assertNull(ValueToXmlHelper.getValueFromElement(node, "Property"));
+        assertFalse(node.hasAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL));
+    }
+
+    @Test
     public void testGetValueFromElement() {
         Document doc = getTestDocument();
 

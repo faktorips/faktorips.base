@@ -153,8 +153,9 @@ public class ValueToXmlHelper {
     }
 
     private static void setValue(String value, Document ownerDocument, boolean useCDataSection, Element valueEl) {
-        valueEl.setAttribute(XML_ATTRIBUTE_IS_NULL, value == null ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
-        if (value != null) {
+        if (value == null) {
+            valueEl.setAttribute(XML_ATTRIBUTE_IS_NULL, Boolean.TRUE.toString());
+        } else {
             if (useCDataSection) {
                 valueEl.appendChild(ownerDocument.createCDATASection(value));
             } else {

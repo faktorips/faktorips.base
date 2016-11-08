@@ -13,13 +13,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 
 /**
- * Adds {@link IpsSrcFolderEntry#setUniqueQualifier(String)} if necessary.
+ * Adds {@link IpsSrcFolderEntry#setUniqueQualifier(String)} if necessary and regenerate XML files
+ * to decrease XML file size.
  */
 public class Migration_3_19_0 extends DefaultMigration {
 
@@ -39,9 +39,8 @@ public class Migration_3_19_0 extends DefaultMigration {
 
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        if (IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType())) {
-            srcFile.markAsDirty();
-        }
+        // save all IpsSrcFiles because the XML changed with FIPS-5187
+        srcFile.markAsDirty();
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

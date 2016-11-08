@@ -70,12 +70,6 @@ public class XmlUtil {
         protected Transformer initialValue() {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             try {
-                transformerFactory.setAttribute("indent-number", Integer.valueOf(4)); //$NON-NLS-1$
-            } catch (IllegalArgumentException e) {
-                // no problem, we're using a older version
-                IpsPlugin.log(e);
-            }
-            try {
                 return transformerFactory.newTransformer();
             } catch (TransformerConfigurationException e) {
                 IpsPlugin.log(e);
@@ -195,8 +189,7 @@ public class XmlUtil {
         Transformer transformer = getTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-        // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1"); //$NON-NLS-1$ //$NON-NLS-2$
         DOMSource source = new DOMSource(node);
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
@@ -211,7 +204,7 @@ public class XmlUtil {
     // Unused exception suppressed because of deprecation.
     // CSOFF: ThrowsCount
     public static final Document getDocument(InputStream is) throws SAXException, IOException,
-            ParserConfigurationException {
+    ParserConfigurationException {
         return getDefaultDocumentBuilder().parse(is);
     }
 

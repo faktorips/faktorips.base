@@ -11,7 +11,7 @@
 	</NullTestElement>
 	<EmptyTestElement/>
 	<TextNodeElement>
-		<Property isNull="false">42</Property>
+		<Property>42</Property>
 	</TextNodeElement>
   <ConfigElement>
     <ValueSet id="1" description="">
