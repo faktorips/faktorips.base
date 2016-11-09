@@ -10,14 +10,11 @@
 
 package org.faktorips.devtools.core.productrelease;
 
-import org.faktorips.devtools.core.internal.productrelease.CvsTeamOperations;
-import org.faktorips.devtools.core.internal.productrelease.CvsTeamOperationsFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * Implementations create {@link ITeamOperations} for {@link IIpsProject IIpsProjects} configured
- * for specific version control systems. For example the {@link CvsTeamOperationsFactory} creates a
- * {@link CvsTeamOperations} for projects using CVS.
+ * for specific version control systems.
  */
 public interface ITeamOperationsFactory {
 

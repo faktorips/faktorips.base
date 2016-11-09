@@ -575,12 +575,6 @@
       </containerType>
    </extension>
    <extension
-         point="org.faktorips.devtools.core.teamOperationsFactory">
-      <factory
-            class="org.faktorips.devtools.core.internal.productrelease.CvsTeamOperationsFactory">
-      </factory>
-   </extension>
-   <extension
          point="org.faktorips.devtools.core.versionProvider">
       <versionProvider
             class="org.faktorips.devtools.core.internal.model.BundleVersionProviderFactory"
