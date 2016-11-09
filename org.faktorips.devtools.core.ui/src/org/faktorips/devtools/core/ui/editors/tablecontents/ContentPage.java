@@ -326,7 +326,14 @@ public class ContentPage extends IpsObjectEditorPage {
             TableUtil.increaseHeightOfTableRows(table, getTableContents().getNumOfColumns(), 5);
 
             tableViewer = new TableViewer(table);
-            tableViewer.setUseHashlookup(true);
+            /*
+             * SetUseHashlookup in combination with SWT.VIRTUAL does't work.
+             * 
+             * 
+             * https://bugs.eclipse.org/bugs/show_bug.cgi?id=269721
+             * 
+             * tableViewer.setUseHashlookup(true);
+             */
             tableViewer.setContentProvider(new TableContentsContentProvider());
             TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
             tableViewer.setLabelProvider(labelProvider);

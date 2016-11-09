@@ -245,7 +245,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
         if (tableViewer.getInput() instanceof ITableContents) {
             ITableContents tableContents = (ITableContents)tableViewer.getInput();
             IRow newRow = tableContents.getTableRows().newRow();
-            tableViewer.add(newRow);
+            tableViewer.refresh();
             return newRow;
         } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
