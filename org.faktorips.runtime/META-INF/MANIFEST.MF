@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Runtime
 Bundle-SymbolicName: org.faktorips.runtime
-Bundle-Version: 3.18.3.qualifier
+Bundle-Version: 3.18.4.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.valuetypes,
  org.junit;bundle-version="3.8.2";resolution:=optional
