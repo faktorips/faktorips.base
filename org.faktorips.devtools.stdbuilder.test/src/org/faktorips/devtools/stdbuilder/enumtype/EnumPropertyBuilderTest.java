@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -135,7 +134,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
 
         enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
 
-        verify(enumPropertyGenerator, times(1)).getStream(anyString());
+        verify(enumPropertyGenerator, times(1)).getStream();
     }
 
     @Test
@@ -148,7 +147,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
 
         enumPropertyBuilder.generatePropertyFile(enumPropertyGenerator);
 
-        verify(enumPropertyGenerator, times(0)).getStream(anyString());
+        verify(enumPropertyGenerator, times(0)).getStream();
     }
 
     @Test

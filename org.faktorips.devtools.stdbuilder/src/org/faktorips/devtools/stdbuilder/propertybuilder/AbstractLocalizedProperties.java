@@ -30,8 +30,8 @@ public abstract class AbstractLocalizedProperties {
         this.defaultLang = defaultLang;
     }
 
-    public void store(OutputStream outputStream, String comments) {
-        messagesProperties.store(outputStream, comments);
+    public void store(OutputStream outputStream) {
+        messagesProperties.store(outputStream);
     }
 
     public int size() {

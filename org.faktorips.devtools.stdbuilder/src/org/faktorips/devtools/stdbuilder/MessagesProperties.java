@@ -10,16 +10,17 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,7 +28,7 @@ import org.faktorips.util.IoUtil;
 
 public class MessagesProperties {
 
-    private final Properties properties;
+    private final SortedProperties properties;
 
     private boolean modified = false;
 
@@ -59,7 +60,8 @@ public class MessagesProperties {
      * @param messageText the text of the message
      */
     public void put(String messageKey, String messageText) {
-        if (!messageText.equals(properties.setProperty(messageKey, messageText))) {
+        if (!messageText.equals(properties.getProperty(messageKey))) {
+            properties.setProperty(messageKey, messageText);
             setModified(true);
         }
     }
@@ -98,19 +100,19 @@ public class MessagesProperties {
             setModified(false);
         } catch (IOException e) {
             StdBuilderPlugin.log(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
-                    "Error occured while reading validation messages file", e));
+                    "Error occured while reading file", e));
         } finally {
             IoUtil.close(stream);
         }
     }
 
-    public void store(OutputStream outputStream, String comments) {
+    public void store(OutputStream outputStream) {
         try {
-            properties.store(outputStream, comments);
+            properties.store(outputStream, null);
             setModified(false);
         } catch (IOException e) {
             StdBuilderPlugin.log(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
-                    "Error occured while saving validation messages file", e));
+                    "Error occured while saving message file", e));
         } finally {
             IoUtil.close(outputStream);
         }
@@ -144,19 +146,45 @@ public class MessagesProperties {
 
         @Override
         public synchronized Enumeration<Object> keys() {
-            Enumeration<Object> keysEnum = super.keys();
-            Vector<Object> keyList = new Vector<Object>();
-            while (keysEnum.hasMoreElements()) {
-                keyList.add(keysEnum.nextElement());
-            }
-            Collections.sort(keyList, new Comparator<Object>() {
+            return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+        }
 
-                @Override
-                public int compare(Object o1, Object o2) {
-                    return o1.toString().compareTo(o2.toString());
+        @Override
+        public void store(final OutputStream out, final String comments) throws IOException {
+            // The comment is ignored as the benefit from the comment is questionable. Additionally,
+            // the first line being the time stamp makes removing the time stamp a lot easier.
+            super.store(new StripFirstLineStream(out), null);
+        }
+
+        /**
+         * @deprecated not supported; use {@link #store(OutputStream, String)} instead
+         */
+        @Deprecated
+        @Override
+        public void store(Writer writer, String comments) throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        private static class StripFirstLineStream extends FilterOutputStream {
+
+            private static final String LINE_SEP = System.getProperty("line.separator");
+            private static final char LAST_CHAR_LINE_SEP = LINE_SEP.charAt(LINE_SEP.length() - 1);
+
+            private boolean firstlineSeen = false;
+
+            public StripFirstLineStream(final OutputStream out) {
+                super(out);
+            }
+
+            @Override
+            public void write(final int b) throws IOException {
+                if (firstlineSeen) {
+                    super.write(b);
+                } else if (b == LAST_CHAR_LINE_SEP) {
+                    firstlineSeen = true;
                 }
-            });
-            return keyList.elements();
+            }
+
         }
 
     }

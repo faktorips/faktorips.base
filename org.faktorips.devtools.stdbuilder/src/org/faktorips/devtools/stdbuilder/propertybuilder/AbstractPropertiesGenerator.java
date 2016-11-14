@@ -46,7 +46,7 @@ public abstract class AbstractPropertiesGenerator {
     void storeMessagesToFile(IFile propertyFile, AbstractLocalizedProperties messages, String comments)
             throws CoreException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        messages.store(outputStream, comments);
+        messages.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
         builder.writeToFile(propertyFile, inputStream, true, true);
     }
