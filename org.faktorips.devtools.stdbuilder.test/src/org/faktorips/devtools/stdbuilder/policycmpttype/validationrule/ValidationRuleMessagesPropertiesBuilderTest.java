@@ -17,7 +17,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -262,7 +261,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
         builderSpy.afterBuildProcess(ipsProject, 0);
 
-        verify(generatorMock).saveIfModified(anyString());
+        verify(generatorMock).saveIfModified();
     }
 
     @Test

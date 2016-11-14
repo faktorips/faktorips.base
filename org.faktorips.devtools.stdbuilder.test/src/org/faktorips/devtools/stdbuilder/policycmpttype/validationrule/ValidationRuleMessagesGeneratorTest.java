@@ -111,7 +111,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         assertTrue(validationMessages.isModified());
         assertEquals(2, validationMessages.size());
 
-        messagesGenerator.saveIfModified("");
+        messagesGenerator.saveIfModified();
 
         verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
 
@@ -132,7 +132,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
-        messagesGenerator.saveIfModified("");
+        messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
@@ -147,7 +147,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         reset(propertyFile);
 
-        messagesGenerator.saveIfModified("");
+        messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
         verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
@@ -160,7 +160,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
-        messagesGenerator.saveIfModified("");
+        messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
@@ -173,14 +173,14 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         reset(propertyFile);
 
-        messagesGenerator.saveIfModified("");
+        messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
         verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
 
         messagesGenerator.loadMessages();
         messagesGenerator.generate(pcType);
-        messagesGenerator.saveIfModified("");
+        messagesGenerator.saveIfModified();
 
         verify(propertyFile, never()).setContents(any(InputStream.class), anyBoolean(), anyBoolean(),
                 any(NullProgressMonitor.class));

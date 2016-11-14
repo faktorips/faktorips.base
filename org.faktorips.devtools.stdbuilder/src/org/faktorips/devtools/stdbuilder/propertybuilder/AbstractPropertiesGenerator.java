@@ -43,11 +43,7 @@ public abstract class AbstractPropertiesGenerator {
         }
     }
 
-    /**
-     * @param comments is ignored
-     */
-    void storeMessagesToFile(IFile propertyFile, AbstractLocalizedProperties messages, String comments)
-            throws CoreException {
+    void storeMessagesToFile(IFile propertyFile, AbstractLocalizedProperties messages) throws CoreException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -57,11 +53,10 @@ public abstract class AbstractPropertiesGenerator {
     /**
      * Saving the properties to the file adding the given comment. The file must already exists.
      * 
-     * @param comment The comment for the properties file
      * @return true if file was modified otherwise false
      * @throws CoreException in case of any exception during writing to file
      */
-    public boolean saveIfModified(String comment) throws CoreException {
+    public boolean saveIfModified() throws CoreException {
         if (getLocalizedProperties().isModified()) {
             IFile file = getMessagesPropertiesFile();
             if (!file.exists()) {
@@ -69,7 +64,7 @@ public abstract class AbstractPropertiesGenerator {
                 file.setDerived(builder.buildsDerivedArtefacts()
                         && builder.getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             }
-            storeMessagesToFile(file, getLocalizedProperties(), comment);
+            storeMessagesToFile(file, getLocalizedProperties());
             return true;
         } else {
             return false;
