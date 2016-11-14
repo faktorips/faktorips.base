@@ -118,9 +118,9 @@ public class EnumPropertyGenerator {
         messagesProperties.load(stream);
     }
 
-    public InputStream getStream(String comment) {
+    public InputStream getStream() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        messagesProperties.store(outputStream, comment);
+        messagesProperties.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
         return inputStream;
     }

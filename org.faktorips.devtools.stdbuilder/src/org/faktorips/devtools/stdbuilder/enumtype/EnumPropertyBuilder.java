@@ -107,9 +107,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
             if (file != null) {
                 createFolderIfNotThere((IFolder)file.getParent());
                 createFileIfNotTher(file);
-                InputStream inputStream = enumPropertyGenerator.getStream(getLocalizedStringSet().getString(
-                        "MULTILINGUAL_PROPERTY_COMMENT", getBuilderSet().getLanguageUsedInGeneratedSourceCode(),
-                        enumType.getName(), enumPropertyGenerator.getLocale().getDisplayLanguage()));
+                InputStream inputStream = enumPropertyGenerator.getStream();
                 writeToFile(file, inputStream, true, true);
             }
         } catch (CoreException e) {

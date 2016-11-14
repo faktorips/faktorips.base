@@ -86,7 +86,7 @@ public class ValidationRuleMessagePropertiesTest {
         validationMessages.put(rule3, "312");
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        validationMessages.store(outputStream, "");
+        validationMessages.store(outputStream);
         validationMessages.load(new ByteArrayInputStream(outputStream.toByteArray()));
 
         Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME1,
