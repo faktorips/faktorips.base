@@ -35,8 +35,6 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
 
     public static final String MESSAGES_EXTENSION = "properties";
 
-    private static final String MESSAGES_COMMENT = "MESSAGES_COMMENT";
-
     private final Map<IFile, AbstractPropertiesGenerator> propertiesGeneratorMap = new HashMap<IFile, AbstractPropertiesGenerator>();
 
     public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet) {
@@ -98,9 +96,8 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
             for (ISupportedLanguage supportedLanguage : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
-                String comment = getLocalizedText(MESSAGES_COMMENT, ipsProject.getName() + "/" + srcRoot.getName());
                 AbstractPropertiesGenerator messagesGenerator = getMessagesGenerator(srcRoot, supportedLanguage);
-                messagesGenerator.saveIfModified(comment);
+                messagesGenerator.saveIfModified();
             }
         }
     }
