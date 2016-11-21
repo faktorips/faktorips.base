@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
-        IProductCmptLinkContainer {
+IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -34,13 +34,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * could not be found.
      */
     public static final String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to identify the message that informs about a link to a product
-     * component that doesn't have an effective date that is before or equal to the effective date
-     * of the referencing product component generation.
-     */
-    public static final String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
 
     /**
      * Returns the product component this generation belongs to.

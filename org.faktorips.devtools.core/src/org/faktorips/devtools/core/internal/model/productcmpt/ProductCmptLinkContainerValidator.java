@@ -19,6 +19,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -40,7 +42,8 @@ import org.faktorips.util.message.ObjectProperty;
  * does not exceed the maximum cardinality defined by the type association.</li>
  * </ul>
  * <li>no duplicate targets exist. That is a product component is never linked (or used) more than
- * once by this container.</li> </ul>
+ * once by this container.</li> <li>a link has an effective date that is before or equal to the
+ * effective date of the referencing product component link container.</li></ul>
  * 
  */
 public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
@@ -82,6 +85,11 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         addMessageIfLessLinksThanMinCard(association, relations, list);
         addMessageIfMoreLinksThanMaxCard(association, relations, list);
         addMessageIfDuplicateTargetPresent(association, relations, list);
+
+        IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
+        if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
+            addMessageIfTargetNotValidOnValidFromDate(association, relations, list);
+        }
     }
 
     protected void addMessageIfDuplicateTargetPresent(IAssociation association,
@@ -143,6 +151,40 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         MessageList relMessages = getErrorMessagesFor(association);
         if (!relMessages.isEmpty()) {
             messageList.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
+        }
+    }
+
+    protected void addMessageIfTargetNotValidOnValidFromDate(IAssociation association,
+            List<IProductCmptLink> links,
+            MessageList msgList) {
+
+        for (IProductCmptLink link : links) {
+            // associations of type association will be excluded from this constraint. If the type
+            // of the association
+            // cannot be determined then the link will not be evaluated
+            if (association == null || association.isAssoziation()) {
+                continue;
+            }
+            IProductCmpt productCmpt;
+            try {
+                productCmpt = link.findTarget(linkContainer.getIpsProject());
+                if (productCmpt != null) {
+                    if (linkContainer.getValidFrom() != null
+                            && productCmpt.getGenerationEffectiveOn(linkContainer.getValidFrom()) == null) {
+                        String dateString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat()
+                                .format(linkContainer.getValidFrom().getTime());
+                        String generationName = IpsPlugin.getDefault().getIpsPreferences()
+                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                        String text = NLS.bind(
+                                Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
+                                new Object[] { productCmpt.getQualifiedName(), generationName, dateString });
+                        msgList.add(new Message(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE,
+                                text, Message.ERROR, link));
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -43,6 +44,8 @@ public class ProductCmptLinkContainerValidatorTest {
     @Mock
     private IIpsProject ipsProject;
     @Mock
+    private IIpsProjectProperties props;
+    @Mock
     private IProductCmptLinkContainer linkContainer;
     @Mock
     private IProductCmptType prodCmptType;
@@ -53,6 +56,9 @@ public class ProductCmptLinkContainerValidatorTest {
 
     @Before
     public void setUp() throws CoreException {
+        when(ipsProject.getReadOnlyProperties()).thenReturn(props);
+        when(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()).thenReturn(false);
+
         MessageList messageList = new MessageList();
         messageList.add(Message.newError("code1", "errorText"));
         messageList.add(Message.newWarning("code2", "warningText"));
@@ -127,6 +133,24 @@ public class ProductCmptLinkContainerValidatorTest {
         MessageList messageList = callValidator();
 
         assertTrue(messageList.getMessages(Message.WARNING).isEmpty());
+    }
+
+    @Test
+    public void testNotValidateValidFromIfPropertyFalse() {
+        when(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()).thenReturn(false);
+        validator = spy(validator);
+        callValidator();
+        verify(validator, never()).addMessageIfTargetNotValidOnValidFromDate(eq(association),
+                anyListOf(IProductCmptLink.class), any(MessageList.class));
+    }
+
+    @Test
+    public void testValidateValidFromIfPropertyTrue() {
+        when(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()).thenReturn(true);
+        validator = spy(validator);
+        callValidator();
+        verify(validator, times(1)).addMessageIfTargetNotValidOnValidFromDate(eq(association),
+                anyListOf(IProductCmptLink.class), any(MessageList.class));
     }
 
 }

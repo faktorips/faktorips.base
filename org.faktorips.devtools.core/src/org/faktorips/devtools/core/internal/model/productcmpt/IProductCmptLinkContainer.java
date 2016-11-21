@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -69,6 +70,13 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * 
      */
     public static final String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicates that a link references to a product component that
+     * doesn't have an effective date that is before or equal to the effective date of the
+     * referencing link container.
+     */
+    public static final String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if this container is responsible for the given association. For
@@ -187,5 +195,10 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * UNDEFINED}
      */
     public void removeUndefinedLinks();
+
+    /**
+     * Returns the point in time from that on this generation contains the object's data.
+     */
+    public GregorianCalendar getValidFrom();
 
 }

@@ -17,8 +17,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -29,7 +27,6 @@ import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -50,7 +47,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
@@ -107,7 +103,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -492,39 +488,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
 
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
-
-        IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
-        if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
-            validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(list, ipsProject);
-        }
-    }
-
-    protected void validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(MessageList msgList,
-            IIpsProject ipsProject) throws CoreException {
-
-        IProductCmptLink[] links = getLinks();
-        for (IProductCmptLink link : links) {
-            IAssociation association = link.findAssociation(ipsProject);
-            // associations of type association will be excluded from this constraint. If the type
-            // of the association
-            // cannot be determined then the link will not be evaluated
-            if (association == null || association.isAssoziation()) {
-                continue;
-            }
-            IProductCmpt productCmpt = link.findTarget(ipsProject);
-            if (productCmpt != null) {
-                if (getValidFrom() != null && productCmpt.getGenerationEffectiveOn(getValidFrom()) == null) {
-                    String dateString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat()
-                            .format(getValidFrom().getTime());
-                    String generationName = IpsPlugin.getDefault().getIpsPreferences()
-                            .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-                    String text = NLS.bind(
-                            Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate, new Object[] {
-                                    productCmpt.getQualifiedName(), generationName, dateString });
-                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.ERROR, link));
-                }
-            }
-        }
     }
 
     @Override

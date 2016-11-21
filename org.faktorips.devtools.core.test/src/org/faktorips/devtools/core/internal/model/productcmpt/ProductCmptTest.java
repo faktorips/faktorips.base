@@ -42,6 +42,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
@@ -87,8 +88,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -106,6 +109,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAttribute attr1;
     private IProductCmptTypeAttribute attr2;
     private IProductCmptType productCmptType;
+    private IProductCmptLink link;
+    private ProductCmpt target;
 
     @Override
     @Before
@@ -384,6 +389,74 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNull(validationMessages.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
         assertNull(validationMessages2.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
+    }
+
+    @Test
+    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_illegalDates() throws CoreException,
+    Exception {
+        setUpLinkForDateValidityCheck();
+        productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+        target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
+
+        assertThat(productCmpt.validate(ipsProject),
+                hasMessageCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+    }
+
+    private void setUpLinkForDateValidityCheck() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        productCmpt = newProductCmpt(type, "Product1");
+        target = newProductCmpt(type, "TargetProduct");
+
+        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTarget(type.getQualifiedName());
+        association.setChangingOverTime(false);
+
+        link = productCmpt.newLink(association);
+
+        link.setTarget(target.getQualifiedName());
+        link.setMinCardinality(0);
+        link.setMaxCardinality(1);
+    }
+
+    @Test
+    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_projectSetting() throws CoreException,
+            Exception {
+        setUpLinkForDateValidityCheck();
+        productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+        target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
+
+        assertThat(productCmpt.validate(ipsProject),
+                hasMessageCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+
+        // assert that there is no validation error if the optional constraint
+        // "referencedProductComponentsAreValidOnThisGenerationsValidFromDate" is turned off
+        IIpsProjectProperties oldProps = ipsProject.getProperties();
+        IIpsProjectProperties newProps = new IpsProjectProperties(ipsProject, (IpsProjectProperties)oldProps);
+        newProps.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(false);
+        ipsProject.setProperties(newProps);
+
+        assertThat(productCmpt.validate(ipsProject),
+                lacksMessageCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+
+        // cleanup
+        ipsProject.setProperties(oldProps);
+    }
+
+    @Test
+    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_legalDates() throws CoreException,
+    Exception {
+        setUpLinkForDateValidityCheck();
+        productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+        target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+
+        assertThat(productCmpt.validate(ipsProject),
+                lacksMessageCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+
+        target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
+
+        assertThat(productCmpt.validate(ipsProject),
+                lacksMessageCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
     }
 
     @Test

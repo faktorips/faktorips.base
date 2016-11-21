@@ -529,7 +529,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
 
         MessageList msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        assertNotNull(msgList.getMessageByCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
 
         // assert that there is no validation error if the optional constraint
         // "referencedProductComponentsAreValidOnThisGenerationsValidFromDate" is turned off
@@ -538,18 +538,18 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         newProps.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(false);
         ipsProject.setProperties(newProps);
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        assertNull(msgList.getMessageByCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
         ipsProject.getProperties()
         .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        assertNull(msgList.getMessageByCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        assertNull(msgList.getMessageByCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
     }
 
     @Test
