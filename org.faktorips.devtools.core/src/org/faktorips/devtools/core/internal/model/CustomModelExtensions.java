@@ -27,15 +27,14 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ICustomModelExtensions;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
@@ -70,7 +69,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
         List<IProductCmptNamingStrategyFactory> strategyFactories = extensionPoints.createExecutableExtensions(
                 ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY, ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
-                "factoryClass", IProductCmptNamingStrategyFactory.class); //$NON-NLS-1$ 
+                "factoryClass", IProductCmptNamingStrategyFactory.class); //$NON-NLS-1$
         for (IProductCmptNamingStrategyFactory factory : strategyFactories) {
             productCmptNamingStrategies.put(factory.getExtensionId(), factory);
         }
@@ -108,12 +107,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
             if (key.isAssignableFrom(object.getClass())) {
                 List<IExtensionPropertyDefinition> propertiesPerClass = typeExtensionPropertiesMap.get(key);
                 for (IExtensionPropertyDefinition extensionPropertyDefinition : propertiesPerClass) {
-                    if (extensionPropertyDefinition instanceof IExtensionPropertyDefinition2) {
-                        IExtensionPropertyDefinition2 def2 = (IExtensionPropertyDefinition2)extensionPropertyDefinition;
-                        if (def2.isApplicableFor(object)) {
-                            result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
-                        }
-                    } else {
+                    if (extensionPropertyDefinition.isApplicableFor(object)) {
                         result.put(extensionPropertyDefinition.getPropertyId(), extensionPropertyDefinition);
                     }
                 }
@@ -158,7 +152,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     private void initExtensionPropertiesFromConfiguration() {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionRegistry registry = IpsPlugin.getDefault().getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "objectExtensionProperty"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
 
@@ -183,7 +177,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         }
     }
 
-    private IExtensionPropertyDefinition createExtensionProperty(IExtension extension) {
+    protected ExtensionPropertyDefinition createExtensionProperty(IExtension extension) {
         IConfigurationElement[] configElements = extension.getConfigurationElements();
         if (configElements.length != 1 || !"property".equalsIgnoreCase(configElements[0].getName())) { //$NON-NLS-1$
             IpsPlugin.log(new IpsStatus("Illegal definition of external property " //$NON-NLS-1$
@@ -211,6 +205,12 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         extProperty.setName(extension.getLabel());
         extProperty.setDefaultValue(element.getAttribute("defaultValue")); //$NON-NLS-1$
         extProperty.setPosition(element.getAttribute("position")); //$NON-NLS-1$
+        String retentionString = element.getAttribute("retention"); //$NON-NLS-1$
+        if (StringUtils.isEmpty(retentionString)) {
+            extProperty.setRetention(RetentionPolicy.RUNTIME);
+        } else {
+            extProperty.setRetention(RetentionPolicy.valueOf(retentionString));
+        }
         if (StringUtils.isNotEmpty(element.getAttribute("order"))) { //$NON-NLS-1$
             extProperty.setSortOrder(Integer.parseInt(element.getAttribute("order"))); //$NON-NLS-1$
         }

@@ -10,20 +10,26 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestConfigurationElement;
+import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractCustomValidation;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -32,8 +38,12 @@ import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCm
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.model.extproperties.BooleanExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition.RetentionPolicy;
+import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -142,6 +152,29 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
         Class<?> subClass = IAttributeValue.class;
         assertFalse(modelExtensions.getExtensionPropertyDefinitions(subClass, false).contains(extProperty));
+    }
+
+    @Test
+    public void testCreateExtensionProperty() throws Exception {
+        StringExtensionPropertyDefinition definition = new StringExtensionPropertyDefinition();
+        HashMap<String, String> attributes = new HashMap<String, String>();
+        attributes.put("extendedType", ProductCmptTypeAttribute.class.getCanonicalName());
+        attributes.put("defaultValue", "test123");
+        attributes.put("position", "top");
+        attributes.put("order", "1234");
+        attributes.put("retention", "DEFINITION");
+        TestConfigurationElement propertyDef1 = new TestConfigurationElement("property", attributes, null,
+                new IConfigurationElement[] {}, Collections.<String, Object> singletonMap("class", definition));
+        IExtension extension = TestMockingUtils.mockExtension("TestExtProperty", propertyDef1);
+
+        ExtensionPropertyDefinition extensionProperty = modelExtensions.createExtensionProperty(extension);
+
+        assertEquals(extensionProperty, definition);
+        assertEquals(extensionProperty.getExtendedType(), ProductCmptTypeAttribute.class);
+        assertEquals(extensionProperty.getDefaultValue(null), "test123");
+        assertEquals(extensionProperty.getPosition(), "top");
+        assertEquals(extensionProperty.getOrder(), 1234);
+        assertEquals(extensionProperty.getRetention(), RetentionPolicy.DEFINITION);
     }
 
     private BooleanExtensionPropertyDefinition createExtensionProperty(Class<?> extendedType) {

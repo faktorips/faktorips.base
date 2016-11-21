@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -78,9 +79,27 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
     public int getOrder();
 
     /**
-     * Returns the default value for the property.
+     * Returns the default value configured by this definition.
+     * <p>
+     * Note that since 3.10 the default value may vary from container to
+     * {@link IIpsObjectPartContainer container}. To retrieve the default value for a specific
+     * {@link IIpsObjectPartContainer} instance call
+     * {@link #getDefaultValue(IIpsObjectPartContainer)}.
      */
     public Object getDefaultValue();
+
+    /**
+     * Returns the initial value (default value) of the extension property when it is created for
+     * the given {@link IIpsObjectPartContainer}.
+     * <p>
+     * The extension property's default value is dependent on a concrete
+     * {@link IIpsObjectPartContainer} instance. Thus the default value may vary from container to
+     * container, even for the same extension property definition.
+     * 
+     * @param ipsObjectPartContainer The part for which the extension property is created
+     * @return The default value that is set when the new extension property is created
+     */
+    public Object getDefaultValue(IIpsObjectPartContainer ipsObjectPartContainer);
 
     /**
      * Stores the value in the XML element. Simple values should be appended as CDATA sections to
@@ -160,5 +179,37 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * property.
      */
     public String getName();
+
+    /**
+     * This method is called by the extension property framework to decide whether this extension
+     * property is applicable for the given {@link IIpsObjectPartContainer part} or not.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer part} for which the
+     *            extension property should be active or inactive
+     * @return <code>true</code> if this extension property is active for the given part
+     */
+    public boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer);
+
+    /**
+     * Indicates how long extension properties are to be retained and thus where they can be
+     * accessed.
+     * <p>
+     * DEFINITION-level extension properties are retained and accessible during design-time in model
+     * or product definitions (but not at runtime).
+     * <p>
+     * RUNTIME-level extension properties are retained and accessible at runtime (via runtime
+     * libraries). This includes the DEFINITION-level.
+     * <p>
+     * The retention policy is only a recommendation for the code generator. The code generator may
+     * override the retention policy (e.g. for performance reasons) and extend the scope (use
+     * RUNTIME where DEFINITION is defined).
+     * <p>
+     * The default is RUNTIME.
+     * 
+     * @return The defined {@link RetentionPolicy}
+     */
+    public RetentionPolicy getRetention();
+
+    public boolean isRetainedAtRuntime();
 
 }

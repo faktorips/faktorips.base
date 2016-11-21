@@ -33,7 +33,6 @@ import javax.xml.parsers.DocumentBuilder;
 import org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyHandler.ExtensionPropertyMap;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -67,7 +66,7 @@ public class ExtensionPropertyHandlerTest {
     private IExtensionPropertyDefinition extPropDef;
 
     @Mock
-    private IExtensionPropertyDefinition2 extPropDef2;
+    private IExtensionPropertyDefinition extPropDef2;
 
     @Mock
     private Element xmlRootElement;
@@ -110,6 +109,7 @@ public class ExtensionPropertyHandlerTest {
 
         when(extPropDef.getPropertyId()).thenReturn(MY_ID);
         when(extPropDef.getDefaultValue()).thenReturn(MY_DEFAULT_VALUE);
+        when(extPropDef.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE);
         when(extPropDef.beforeSetValue(any(IIpsObjectPartContainer.class), any())).thenReturn(true);
 
         when(extPropDef2.getPropertyId()).thenReturn(MY_ID2);
@@ -124,7 +124,7 @@ public class ExtensionPropertyHandlerTest {
         when(xmlExtPropElement.getOwnerDocument()).thenReturn(xmlDocument);
         when(xmlValueElement.getOwnerDocument()).thenReturn(xmlDocument);
         when(xmlDocument.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT))
-                .thenReturn(xmlExtPropElement);
+        .thenReturn(xmlExtPropElement);
         when(xmlDocument.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(xmlValueElement);
 
         when(xmlExtPropElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
@@ -436,7 +436,7 @@ public class ExtensionPropertyHandlerTest {
     @Test
     public void testToXML_saveInvalidPropertiesToXML() {
         doReturn(new ArrayList<IExtensionPropertyDefinition>()).when(ipsObjectPartContainer)
-                .getExtensionPropertyDefinitions();
+        .getExtensionPropertyDefinitions();
         when(extensionProperty.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
         when(extensionProperty2.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
         when(extensionProperty3.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);

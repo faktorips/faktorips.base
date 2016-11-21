@@ -55,20 +55,28 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
 
     @Override
     public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
-        IExtensionPropertyAccess extensionPropertyAccess = modelNode.getIpsObjectPartContainer();
-        for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyAccess
-                .getExtensionPropertyDefinitions()) {
+        IExtensionPropertyAccess partContainer = modelNode.getIpsObjectPartContainer();
+        for (IExtensionPropertyDefinition extensionPropertyDefinition : partContainer.getExtensionPropertyDefinitions()) {
             /*
              * If an extension property is not available in the current installation, obtaining it's
              * value may fail, see
              * org.faktorips.devtools.core.internal.model.ipsobject.ExtensionPropertyHandler
              * .getExtPropertyValue(String)
              */
-            if (extensionPropertyAccess.isExtPropertyDefinitionAvailable(extensionPropertyDefinition.getPropertyId())) {
+            if (isRelevant(extensionPropertyDefinition, partContainer)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * @return whether the extension property definition is both available and retained at runtime.
+     */
+    private boolean isRelevant(IExtensionPropertyDefinition extensionPropertyDefinition,
+            IExtensionPropertyAccess partContainer) {
+        return extensionPropertyDefinition.isRetainedAtRuntime()
+                && partContainer.isExtPropertyDefinitionAvailable(extensionPropertyDefinition.getPropertyId());
     }
 
     @Override
@@ -77,8 +85,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
         List<JavaCodeFragment> annotations = new ArrayList<JavaCodeFragment>();
         for (IExtensionPropertyDefinition extensionPropertyDefinition : ipsObjectPartContainer
                 .getExtensionPropertyDefinitions()) {
-            String propertyId = extensionPropertyDefinition.getPropertyId();
-            if (ipsObjectPartContainer.isExtPropertyDefinitionAvailable(propertyId)) {
+            if (isRelevant(extensionPropertyDefinition, ipsObjectPartContainer)) {
                 annotations.add(createAnnotation(ipsObjectPartContainer, extensionPropertyDefinition));
             }
         }

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model.extproperties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -30,7 +29,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class ExtensionPropertyDefinition implements IExtensionPropertyDefinition2 {
+public abstract class ExtensionPropertyDefinition implements IExtensionPropertyDefinition {
 
     // protected because setter has to be implemented in subclasses. !BAD DESIGN!
     // CSOFF: VisibilityModifier
@@ -44,6 +43,8 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     private String name;
 
     private String position;
+
+    private RetentionPolicy retention;
 
     private int order = DEFAULT_ORDER;
 
@@ -163,6 +164,20 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
 
     @Override
+    public RetentionPolicy getRetention() {
+        return retention;
+    }
+
+    public void setRetention(RetentionPolicy retention) {
+        this.retention = retention;
+    }
+
+    @Override
+    public boolean isRetainedAtRuntime() {
+        return getRetention() == RetentionPolicy.RUNTIME;
+    }
+
+    @Override
     public int compareTo(IExtensionPropertyDefinition other) {
         if (order == other.getOrder()) {
             return propertyId.compareTo(other.getPropertyId());
@@ -173,6 +188,11 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     @Override
     public String toString() {
         return "ExtendedType:" + getExtendedType().getName() + ", PropertyId: " + getPropertyId(); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    public enum RetentionPolicy {
+        DEFINITION,
+        RUNTIME;
     }
 
 }

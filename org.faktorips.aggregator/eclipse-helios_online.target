@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Helios)" sequenceNumber="130">
+<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Helios)" sequenceNumber="127">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
@@ -31,7 +31,6 @@
 <unit id="org.eclipse.gef.feature.group" version="3.6.2.v20110128-0100-777B381A4Bz06565376E32322"/>
 <unit id="org.eclipse.cvs.feature.group" version="1.2.1.r362_v20101111-7B77FKv99HL0GvIAF99I8H14B7E"/>
 <unit id="org.eclipse.rcp.feature.group" version="3.6.2.r362_v20101104-9SAxFMKFkSAqi8axkv1ZjegmiBLY"/>
-<unit id="org.eclipse.team.svn.feature.group" version="0.7.9.I20110207-1700"/>
 <repository location="https://update.faktorzehn.org/p2repositories/helios"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">

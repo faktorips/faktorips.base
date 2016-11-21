@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -124,6 +125,25 @@ public class ExtensionPropertyAnnGenTest {
                         + ")" + LINE_SEPARATOR)));
     }
 
+    @Test
+    public void testIsGenerateAnnotationFor_RetentionDefinition_Single() {
+        AbstractGeneratorModelNode modelNode = modelNode(withExtension("foo", "bar", RetentionPolicy.DEFINITION));
+
+        assertThat(extensionPropertyAnnotationGenerator.isGenerateAnnotationFor(modelNode), is(false));
+    }
+
+    @Test
+    public void testCreateAnnotation_RetentionDefinition_Mixed() {
+        AbstractGeneratorModelNode modelNode = modelNode(withExtension("foo", "bar"),
+                withExtension("foobar", "baz", RetentionPolicy.DEFINITION));
+
+        JavaCodeFragment annotation = extensionPropertyAnnotationGenerator.createAnnotation(modelNode);
+
+        assertThat(annotation, is(notNullValue()));
+        assertThat(annotation.getSourcecode(), is(equalTo("@IpsExtensionProperties("
+                + "@IpsExtensionProperty(id = \"foo\", value = \"bar\")" + ")" + LINE_SEPARATOR)));
+    }
+
     @Ignore("Complex XML is not supported at the moment")
     @Test
     public void testCreateAnnotation_xml() {
@@ -150,22 +170,32 @@ public class ExtensionPropertyAnnGenTest {
     }
 
     private WithExtension withExtension(String id, Object value) {
-        return new WithExtension(id, value, true);
+        return withExtension(id, value, true);
     }
 
     private WithExtension withExtension(String id, Object value, boolean available) {
-        return new WithExtension(id, value, available);
+        return withExtension(id, value, available, RetentionPolicy.RUNTIME);
+    }
+
+    private WithExtension withExtension(String id, Object value, RetentionPolicy retentionType) {
+        return withExtension(id, value, true, retentionType);
+    }
+
+    private WithExtension withExtension(String id, Object value, boolean available, RetentionPolicy retentionType) {
+        return new WithExtension(id, value, available, retentionType);
     }
 
     private static final class WithExtension {
         private final String id;
         private final Object value;
         private final boolean available;
+        public final RetentionPolicy retention;
 
-        public WithExtension(String id, Object value, boolean available) {
+        public WithExtension(String id, Object value, boolean available, RetentionPolicy retentionType) {
             this.id = id;
             this.value = value;
             this.available = available;
+            retention = retentionType;
         }
     }
 
@@ -179,6 +209,8 @@ public class ExtensionPropertyAnnGenTest {
         for (WithExtension withExtension : withExtensions) {
             IExtensionPropertyDefinition extension = mock(MockExtensionPropertyDefinition.class);
             when(extension.getPropertyId()).thenReturn(withExtension.id);
+            when(extension.getRetention()).thenReturn(withExtension.retention);
+            when(extension.isRetainedAtRuntime()).thenReturn(withExtension.retention == RetentionPolicy.RUNTIME);
             doCallRealMethod().when(extension).valueToXml(any(Element.class), any());
             when(ipsObjectPartContainer.getExtPropertyValue(withExtension.id)).thenReturn(withExtension.value);
             when(ipsObjectPartContainer.isExtPropertyDefinitionAvailable(withExtension.id)).thenReturn(

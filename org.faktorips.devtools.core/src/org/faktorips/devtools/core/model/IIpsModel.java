@@ -26,7 +26,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -224,7 +223,7 @@ public interface IIpsModel extends IIpsElement {
      * Note: This method simply returns every {@link IExtensionPropertyDefinition} that is
      * registered for the given type. It does not respect whether it is applicable for the given
      * {@link IIpsObjectPartContainer} by calling
-     * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}. Better use
+     * {@link IExtensionPropertyDefinition#isApplicableFor(IIpsObjectPartContainer)}. Better use
      * {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
      * 
      * 
@@ -258,7 +257,7 @@ public interface IIpsModel extends IIpsElement {
      * This operation simply returns every {@link IExtensionPropertyDefinition} that is registered
      * for the given class. It does not respect whether these definitions are applicable for a given
      * {@link IIpsObjectPartContainer} by calling
-     * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}.
+     * {@link IExtensionPropertyDefinition#isApplicableFor(IIpsObjectPartContainer)}.
      * <p>
      * Clients are advised to use {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)}
      * instead, except if they explicitly want the behavior provided by this operation.
@@ -282,7 +281,7 @@ public interface IIpsModel extends IIpsElement {
      * Note: This method simply returns every {@link IExtensionPropertyDefinition} that is
      * registered for the given type. It does not respect whether it is applicable for the given
      * {@link IIpsObjectPartContainer} by calling
-     * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}. Better use
+     * {@link IExtensionPropertyDefinition#isApplicableFor(IIpsObjectPartContainer)}. Better use
      * {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
      * 
      * @param type The published interface of the IPS object or part e.g.

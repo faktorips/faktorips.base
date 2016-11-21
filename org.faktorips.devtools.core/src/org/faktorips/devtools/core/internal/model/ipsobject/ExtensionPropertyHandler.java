@@ -22,7 +22,6 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -146,11 +145,7 @@ public class ExtensionPropertyHandler {
     }
 
     private Object getExtensionPropertyDefaultValue(IExtensionPropertyDefinition property) {
-        if (property instanceof IExtensionPropertyDefinition2) {
-            return ((IExtensionPropertyDefinition2)property).getDefaultValue(ipsObjectPartContainer);
-        } else {
-            return property.getDefaultValue();
-        }
+        return property.getDefaultValue(ipsObjectPartContainer);
     }
 
     /**
