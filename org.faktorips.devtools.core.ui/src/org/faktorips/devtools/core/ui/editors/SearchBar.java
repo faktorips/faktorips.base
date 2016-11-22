@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
+import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
 
 /**
  * Search bar for {@link TableViewer}, filtering the table viewer's content my matching the entered
@@ -60,7 +61,9 @@ public class SearchBar {
         searchField.setMessage(Messages.SearchBar_searchFieldHint);
         searchPmo = new SearchPmo();
         bindingContext = new BindingContext();
-        bindingContext.bindContent(searchField, searchPmo, SearchPmo.PROPERTY_PATTERN);
+        DefaultEditField<?> editField = (DefaultEditField<?>)bindingContext.bindContent(searchField, searchPmo,
+                SearchPmo.PROPERTY_PATTERN);
+        editField.setSupportsNullStringRepresentation(false);
         formBody.addDisposeListener(new DisposeListener() {
 
             @Override
@@ -95,7 +98,7 @@ public class SearchBar {
 
         private SearchFilter filter;
 
-        private String filterString;
+        private String filterString = StringUtils.EMPTY;
 
         public SearchPmo() {
             filter = new SearchFilter();
