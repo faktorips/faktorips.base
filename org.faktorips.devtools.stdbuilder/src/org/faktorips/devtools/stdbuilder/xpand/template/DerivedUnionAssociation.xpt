@@ -52,7 +52,9 @@
      * 
      * @generated
      */
-     «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+     «IF isDefinedIn(currentContextType) -»
+	     «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+     «ENDIF-»
      «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
     public «targetInterfaceName» «methodNameGetter»() {
      	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextType) AS this-»
