@@ -32,6 +32,10 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
  */
 public class JAXBContextFactory {
 
+    private JAXBContextFactory() {
+        // prevents constructor call
+    }
+
     /**
      * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the
      * given repository. If the repository references other repositories (directly or indirectly),
@@ -73,7 +77,7 @@ public class JAXBContextFactory {
      * @throws NullPointerException if one of the parametes is <code>null</code>.
      */
     public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl) throws JAXBException,
-            ClassNotFoundException {
+    ClassNotFoundException {
         Set<String> classNames = repository.getAllModelTypeImplementationClasses();
         List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
         for (String className : classNames) {
