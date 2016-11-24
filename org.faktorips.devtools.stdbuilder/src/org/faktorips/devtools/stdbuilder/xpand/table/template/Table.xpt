@@ -15,7 +15,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 
 /**
-* «localizedJDoc("CLASS_DESCRIPTION")»
+* «localizedJDoc("CLASS_DESCRIPTION")» «descriptionForJDoc»
 *
 * @generated
 */
