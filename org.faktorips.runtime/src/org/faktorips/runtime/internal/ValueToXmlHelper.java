@@ -27,7 +27,8 @@ import org.w3c.dom.Text;
  * 
  * @author Jan Ortmann
  */
-public class ValueToXmlHelper {
+public enum ValueToXmlHelper {
+    /* no instances */;
 
     /**
      * Used for both the value of a config element and the values of an enum value set.
@@ -60,10 +61,6 @@ public class ValueToXmlHelper {
     public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
-
-    private ValueToXmlHelper() {
-        // Utility class not to be instantiated.
-    }
 
     /**
      * Adds the value to the given xml element. Takes care of proper null handling. By value we mean

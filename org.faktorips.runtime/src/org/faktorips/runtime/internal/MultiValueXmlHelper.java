@@ -26,17 +26,11 @@ import org.w3c.dom.NodeList;
  * @author dirmeier
  * @author widmaier
  */
-public final class MultiValueXmlHelper {
+public enum MultiValueXmlHelper {
+    /* no instances */;
 
     public static final String XML_TAG_MULTIVALUE = "MultiValue"; //$NON-NLS-1$
     public static final String XML_TAG_VALUE = "Value"; //$NON-NLS-1$
-
-    /**
-     * Helper class should not be instantiated
-     */
-    private MultiValueXmlHelper() {
-        // do not instantiate
-    }
 
     /**
      * Reads String values from the a XML structure. Given the below XML (in this case an

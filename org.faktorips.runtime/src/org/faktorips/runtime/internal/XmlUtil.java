@@ -24,7 +24,8 @@ import org.w3c.dom.Text;
  * 
  * @author Jan Ortmann
  */
-public class XmlUtil {
+public enum XmlUtil {
+    /* no instances */;
 
     public static final Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
@@ -184,10 +185,6 @@ public class XmlUtil {
             }
         }
         return result;
-    }
-
-    private XmlUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

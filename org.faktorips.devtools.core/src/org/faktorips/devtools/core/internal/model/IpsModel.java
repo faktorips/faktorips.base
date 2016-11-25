@@ -109,8 +109,6 @@ import org.xml.sax.SAXException;
  * Implementation of <tt>IIpsModel</tt>.
  * 
  * @see IIpsModel
- * 
- * @author Jan Ortmann
  */
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
 
@@ -291,7 +289,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getWorkspace().addResourceChangeListener(
                 this,
                 IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE
-                        | IResourceChangeEvent.PRE_REFRESH);
+                | IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -1228,7 +1226,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                .size()];
+                                                                                              .size()];
         int i = 0;
         for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
                 .hasNext();) {
@@ -1502,7 +1500,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
             System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
                     new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
-                            Thread.currentThread().getName() }));
+                    Thread.currentThread().getName() }));
         }
     }
 
@@ -1741,8 +1739,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     listener.modificationStatusHasChanged(event);
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
                         System.out
-                                .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                        + listener);
+                        .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
+                                + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {

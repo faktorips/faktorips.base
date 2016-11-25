@@ -61,6 +61,7 @@ import org.faktorips.values.NullObject;
  * In the message "The sum insured must be at least {0}." the sum insured must be inserted at
  * runtime depending on the chosen product.
  */
+@UtilityClass
 public class MessagesHelper {
 
     /** The qualified name. */

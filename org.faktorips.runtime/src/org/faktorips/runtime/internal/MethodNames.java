@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+
 /**
  * Gives access to the method names defined in the runtime that the generated code refers to, e.g.
  * by implementing a method with the given name. The reference to the actual method is documented in
@@ -19,7 +20,8 @@ package org.faktorips.runtime.internal;
  * 
  * @author Jan Ortmann
  */
-public class MethodNames {
+public enum MethodNames {
+    /* no instances */;
 
     /**
      * @see org.faktorips.runtime.IConfigurableModelObject#getEffectiveFromAsCalendar()

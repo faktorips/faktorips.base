@@ -19,13 +19,10 @@ import java.util.Iterator;
  * here to minimize the dependencies for the generated code.
  * 
  */
-public class IpsStringUtils {
+public enum IpsStringUtils {
+    /* no instances */;
 
     public static final String EMPTY = "";
-
-    private IpsStringUtils() {
-        // Utility class not to be instantiated.
-    }
 
     /**
      * Returns <code>true</code> if s is either null or the empty string, otherwise

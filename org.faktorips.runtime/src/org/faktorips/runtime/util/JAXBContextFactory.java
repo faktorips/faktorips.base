@@ -20,22 +20,26 @@ import javax.xml.bind.JAXBException;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
+import org.faktorips.runtime.jaxb.IpsJAXBContext;
 
 /**
- * Provides static factory methods to create a JAXBContext that can marshal / unmarshall all model
+ * Provides static factory methods to create a JAXBContext that can marshal / unmarshal all model
  * classes defined in a given runtime repository.
  * 
  * @see JAXBContext
  * @see IRuntimeRepository
  * 
- * @author Jan Ortmann
+ * @deprecated use {@link IRuntimeRepository#newJAXBContext()} instead; that method uses a
+ *             {@link IpsJAXBContext} that includes all necessary adapters.
  */
-public class JAXBContextFactory {
+@Deprecated
+public enum JAXBContextFactory {
+    /* no instances */;
 
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the
-     * given repository. If the repository references other repositories (directly or indirectly),
-     * the context can also handle the classes defined in these other repositories.
+     * Creates a new JAXBContext that can marshal / unmarshal all model classes defined in the given
+     * repository. If the repository references other repositories (directly or indirectly), the
+     * context can also handle the classes defined in these other repositories.
      * 
      * Note: The repository contains the model classed by name, so this method needs to actually
      * load the classes. If the repository gives access to a class loader (e.g.
@@ -58,9 +62,9 @@ public class JAXBContextFactory {
     }
 
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the
-     * given repository. If the repository references other repositories (directly or indirectly),
-     * the context can also handle the classes defined in these other repositories.
+     * Creates a new JAXBContext that can marshal / unmarshal all model classes defined in the given
+     * repository. If the repository references other repositories (directly or indirectly), the
+     * context can also handle the classes defined in these other repositories.
      * 
      * Note: The repository contains the model classed by name, so this method needs to actually
      * load the classes. This method uses the given class loader do load the classes.
@@ -70,10 +74,10 @@ public class JAXBContextFactory {
      * 
      * @throws ClassNotFoundException If one of the model classes was not found.
      * @throws JAXBException The exception thrown by {@link JAXBContext#newInstance(Class...)}
-     * @throws NullPointerException if one of the parametes is <code>null</code>.
+     * @throws NullPointerException if one of the parameters is <code>null</code>.
      */
     public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl) throws JAXBException,
-            ClassNotFoundException {
+    ClassNotFoundException {
         Set<String> classNames = repository.getAllModelTypeImplementationClasses();
         List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
         for (String className : classNames) {

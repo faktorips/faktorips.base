@@ -16,7 +16,7 @@ package org.faktorips.runtime;
  * is also an expression. A problem arises when a call to a table within the generated java
  * expression returns null instead of a table row. Since this causes a NullPointerException when a
  * getter-method is called upon the row instance special care has to be taken to circumvent this
- * situation. Therefor a table function call within the formula language is generated as java code
+ * situation. Therefore a table function call within the formula language is generated as java code
  * within the execute method of an anonymous class of this interface. Within the execute method the
  * null situation can be handled within an if block. Example:
  * <p>
@@ -36,8 +36,11 @@ package org.faktorips.runtime;
     </code>
  * 
  * 
- * @author Peter Erzberger
+ * @deprecated Not used by formula functions any more. Use special finder methods
+ *             #findRowNullRowReturnedForEmtpyResult instead. This interface will be removed in next
+ *             Faktor-IPS releases.
  */
+@Deprecated
 public interface TableFunctionExecution {
 
     /**

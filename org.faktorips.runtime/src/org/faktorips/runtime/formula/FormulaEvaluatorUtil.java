@@ -16,6 +16,7 @@ import java.util.List;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.util.UtilityClass;
 
 /**
  * Provides methods that can be used in formula evaluation.
@@ -25,15 +26,10 @@ import org.faktorips.runtime.IProductComponent;
  * 
  * @since 3.6
  * @see IFormulaEvaluator
- * @author Daniel Schwering, Faktor Zehn AG
  */
-public class FormulaEvaluatorUtil {
-
-    /**
-     * no instance
-     */
-    private FormulaEvaluatorUtil() {
-    }
+@UtilityClass
+public enum FormulaEvaluatorUtil {
+    /* no instances */;
 
     /**
      * Returns the (first) {@link IConfigurableModelObject} in the list that is configured by a

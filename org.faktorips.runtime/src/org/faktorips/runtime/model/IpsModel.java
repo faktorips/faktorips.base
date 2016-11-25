@@ -24,13 +24,16 @@ import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.runtime.model.type.Type;
+import org.faktorips.runtime.util.UtilityClass;
 
 /**
  * Repository of Faktor-IPS model information. This class should be used to obtain model instances
  * from runtime classes or their instances instead of using the constructors. By caching model
  * information, this class operates more efficiently if model information is retrieved repeatedly.
  */
-public class IpsModel {
+@UtilityClass
+public enum IpsModel {
+    /* no instances */;
 
     private static final Memoizer<Class<? extends ITable>, TableStructure> TABLE_MODEL_CACHE = new Memoizer<Class<? extends ITable>, TableStructure>(
             new AbstractComputable<Class<? extends ITable>, TableStructure>(TableStructure.class) {
@@ -88,10 +91,6 @@ public class IpsModel {
                     }
                 }
             });
-
-    private IpsModel() {
-        // prevent default constructor
-    }
 
     private static <K, V> V get(Memoizer<K, V> memoizer, K key) {
         try {

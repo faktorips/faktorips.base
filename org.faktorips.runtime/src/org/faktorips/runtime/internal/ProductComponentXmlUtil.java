@@ -27,7 +27,8 @@ import org.w3c.dom.NodeList;
  * 
  * @author dirmeier
  */
-final class ProductComponentXmlUtil {
+enum ProductComponentXmlUtil {
+    /* no instances */;
 
     /*
      * Package private so ProductComponentGeneration can access the constants.
@@ -35,10 +36,6 @@ final class ProductComponentXmlUtil {
     static final String XML_TAG_FORMULA = "Formula";
     static final String XML_TAG_EXPRESSION = "Expression";
     static final String XML_ATTRIBUTE_FORMULA_SIGNATURE = "formulaSignature";
-
-    private ProductComponentXmlUtil() {
-        // do not instantiate
-    }
 
     /**
      * Returns a map containing the xml elements representing relations found in the indicated
