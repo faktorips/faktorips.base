@@ -30,6 +30,8 @@
 	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
+	 	«getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType::PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())-»
+	 	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
 		public abstract «javaClassName» «method(methodNameGetter)»;
 «ENDDEFINE»
 
