@@ -23,7 +23,8 @@
 «ENDDEFINE»
 
 «DEFINE field FOR XEnumAttribute»
-	/**
+	/** 
+	«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
 	* @generated
 	*/
 	private final «datatypeNameForConstructor» «field(memberVarName)»;
@@ -36,7 +37,7 @@
 «DEFINE getter FOR XEnumAttribute»
 	/**
 	* «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name)»«ELSE»«localizedJDoc("GETTER", name)»«ENDIF»
-	*
+	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	* @generated
 	*/
 	«getAnnotations(AnnotatedJavaElementType::ENUM_ATTRIBUTE_GETTER)-»

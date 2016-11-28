@@ -16,11 +16,12 @@ package «getPackageName(BuilderAspect::INTERFACE)»;
 
 /**
 «IF described-»
-*  «description»
-*
+ *  «description»
+ *
 «ENDIF-»
-* @generated
-*/
+ «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+ * @generated
+ */
 «getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
 public interface «name» «EXPAND CommonDefinitions::extendedInterfaces»{
 	«EXPAND getterMethod FOREACH declaredAttributesWithoutLiteralName-»
@@ -31,11 +32,11 @@ public interface «name» «EXPAND CommonDefinitions::extendedInterfaces»{
 «DEFINE getterMethod FOR XEnumAttribute-»
 	/**
 	«IF multilingual-»
-		* «localizedJDoc("GETTER_MULTILINGUAL", name)»
+	* «localizedJDoc("GETTER_MULTILINGUAL", name)»
 	«ELSE-»
-		* «localizedJDoc("GETTER", name)»
+	* «localizedJDoc("GETTER", name)»
 	«ENDIF-»
-	*
+	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	* @generated
 	*/
 	«getAnnotations(AnnotatedJavaElementType::ENUM_ATTRIBUTE_GETTER)-»
