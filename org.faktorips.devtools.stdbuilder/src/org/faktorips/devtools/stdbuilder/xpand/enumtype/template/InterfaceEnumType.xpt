@@ -18,7 +18,7 @@ package «getPackageName(BuilderAspect::INTERFACE)»;
 «IF described-»
 *  «description»
 *
-«ENDIF-»
+«ENDIF-»«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 * @generated
 */
 «getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
@@ -34,8 +34,7 @@ public interface «name» «EXPAND CommonDefinitions::extendedInterfaces»{
 		* «localizedJDoc("GETTER_MULTILINGUAL", name)»
 	«ELSE-»
 		* «localizedJDoc("GETTER", name)»
-	«ENDIF-»
-	*
+	«ENDIF-» «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	* @generated
 	*/
 	«getAnnotations(AnnotatedJavaElementType::ENUM_ATTRIBUTE_GETTER)-»

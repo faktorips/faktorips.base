@@ -18,7 +18,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «IF described-»
 *  «description»
 *
-«ENDIF-»
+«ENDIF-»«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 * @generated
 */
 «getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
