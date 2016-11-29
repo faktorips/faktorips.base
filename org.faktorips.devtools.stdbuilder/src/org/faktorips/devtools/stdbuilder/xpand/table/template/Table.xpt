@@ -16,8 +16,8 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 /**
 * «localizedJDoc("CLASS_DESCRIPTION")» «descriptionForJDoc»
-*
-* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+* @generated
 */
 «getAnnotations(AnnotatedJavaElementType::TABLE_CLASS)»
 public class «name» extends «Table_(tableRowName)»{
@@ -46,8 +46,8 @@ public class «name» extends «Table_(tableRowName)»{
 «DEFINE fields FOR XIndex-»
 	/**
 	* «localizedJDoc("FIELD_KEY_MAP")»
-	*
-	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+    * @generated
 	*/
 	private «structureClass» «keySearchStructureName»;
 «ENDDEFINE»
@@ -199,8 +199,8 @@ public class «name» extends «Table_(tableRowName)»{
 «DEFINE findRow (XTable table) FOR XIndex»
 	/**
 	* «IF uniqueKey»«localizedJDoc("METHOD_FIND_ROW")»«ELSE»«localizedJDoc("METHOD_FIND_ROWS")»«ENDIF»	
-	*
-	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+    * @generated
 	*/
 	public «table.getMethodReturnTypeFindRow(this)» «method(table.getMethodNameFindRow(this), methodParametersFindRow)»{
 		«EXPAND findRowMethodPart FOR this-»«IF uniqueKey-».getUnique(null);
@@ -212,8 +212,8 @@ public class «name» extends «Table_(tableRowName)»{
 «DEFINE findRowNullRowReturnedForEmtpyResult(XTable table) FOR XIndex»
 	/**
 	* «localizedJDoc("METHOD_FIND_RETURN_NULL_ROW")»
-	*
-	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+    * @generated
 	*/
 	public «table.tableRowName» «method(table.getMethodNameFindRowNullRowReturned(this), methodParametersFindRow)»{
 		«EXPAND findRowMethodPart FOR this-».getUnique(«table.tableRowName».NULL_ROW);
@@ -226,8 +226,8 @@ public class «name» extends «Table_(tableRowName)»{
 	*
 	* @return «localizedJDoc("METHOD_FIND_EXISTING_ROW_RETURN")»
 	* @throws «localizedJDoc("METHOD_FIND_EXISTING_ROW_THROW")»
-	*
-	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+    * @generated
 	*/
 	public «table.tableRowName» «method(table.getMethodNameFindExistingRow(this), methodParametersFindRow)»{
 		try{

@@ -19,7 +19,8 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 *  «description»
 *
 «ENDIF-»
-* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+* @generated
 */
 «getAnnotations(AnnotatedJavaElementType::ENUM_CLASS)»
 public final class «name» «EXPAND CommonDefinitions::extendedInterfaces» «EXPAND CommonDefinitions::implementedInterfaces»{

@@ -41,7 +41,8 @@ public class «name» {
 «DEFINE attribute FOR XColumn-»
 	«IF datatypeName != null-»
 		/**
-		* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+		«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+		* @generated
 		*/
 		private final «datatypeName» «attributeName»;
 	«ENDIF-»
@@ -67,7 +68,8 @@ public «method(name, constructorParameters)»{
 
 «DEFINE getterMethod FOR XColumn-»
 	/**
-	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+	«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	* @generated
 	*/
 	«getAnnotations(AnnotatedJavaElementType::TABLE_ROW_CLASS_COLUMN_GETTER)»
 	public «datatypeName» «method(methodNameGetter)»{

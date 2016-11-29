@@ -24,7 +24,8 @@
 
 «DEFINE field FOR XEnumAttribute»
 	/** 
-	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-» @generated
+	«getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)-»
+	* @generated
 	*/
 	private final «datatypeNameForConstructor» «field(memberVarName)»;
 «ENDDEFINE»
