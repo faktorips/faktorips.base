@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -32,12 +33,18 @@ public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
             String baseImage = attribute.getModifier().isPublished() ? PUBLISHED_BASE_IMAGE : PUBLIC_BASE_IMAGE;
 
             String[] overlays = new String[4];
-            if (!attribute.isChangingOverTime()) {
+
+            if (attribute instanceof IProductCmptTypeAttribute && !attribute.isChangingOverTime()) {
                 overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
             }
+
             if (attribute instanceof IPolicyCmptTypeAttribute
                     && ((IPolicyCmptTypeAttribute)attribute).isProductRelevant()) {
                 overlays[1] = OverlayIcons.PRODUCT_OVR;
+
+                if (!attribute.isChangingOverTime()) {
+                    overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                }
             }
             if (attribute.isOverwrite()) {
                 overlays[3] = OverlayIcons.OVERRIDE_OVR;

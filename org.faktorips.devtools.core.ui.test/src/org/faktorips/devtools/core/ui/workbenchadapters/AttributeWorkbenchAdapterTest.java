@@ -56,11 +56,11 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
 
         ImageDescriptor imageDescriptor = superAdapter.getImageDescriptor(superAttribute);
         assertNotNull(imageDescriptor);
-        assertTrue(createImageDescriptorWithOverlays(false, false).equals(imageDescriptor));
+        assertTrue(createImageDescriptorWithOverlays(false, false, false).equals(imageDescriptor));
 
         imageDescriptor = superAdapter.getImageDescriptor(normalAttribute);
         assertNotNull(imageDescriptor);
-        assertTrue(createImageDescriptorWithOverlays(true, false).equals(imageDescriptor));
+        assertTrue(createImageDescriptorWithOverlays(true, false, false).equals(imageDescriptor));
     }
 
     @Test
@@ -72,25 +72,46 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
 
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)productCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
         ImageDescriptor imageDescriptor = adapter.getImageDescriptor(productCmptTypeAttribute);
-        assertEquals(createImageDescriptorWithOverlays(false, true), imageDescriptor);
+        assertEquals(createImageDescriptorWithOverlays(false, true, false), imageDescriptor);
     }
 
     @Test
-    public void testGetImageDescriptor_staticOverlayForStaticPolicyAttribute() throws CoreException {
+    public void testGetImageDescriptor_staticOverlayForStaticPolicyAttribute_productRelevant() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicyType");
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setProductCmptType("TestProductType");
+        newProductCmpt(ipsProject, "TestProductType");
+
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("testAttribute");
+        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setChangingOverTime(false);
+
+        IWorkbenchAdapter adapter = (IWorkbenchAdapter)policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
+        ImageDescriptor imageDescriptor = adapter.getImageDescriptor(policyCmptTypeAttribute);
+        assertEquals(createImageDescriptorWithOverlays(false, true, true), imageDescriptor);
+    }
+
+    @Test
+    public void testGetImageDescriptor_staticOverlayForStaticPolicyAttribute_notProductRelevant() throws CoreException {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicyType");
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("testAttribute");
         policyCmptTypeAttribute.setChangingOverTime(false);
 
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
         ImageDescriptor imageDescriptor = adapter.getImageDescriptor(policyCmptTypeAttribute);
-        assertEquals(createImageDescriptorWithOverlays(false, true), imageDescriptor);
+        assertEquals(createImageDescriptorWithOverlays(false, false, false), imageDescriptor);
     }
 
-    private ImageDescriptor createImageDescriptorWithOverlays(boolean override, boolean nonChangingOverTime) {
+    private ImageDescriptor createImageDescriptorWithOverlays(boolean override,
+            boolean nonChangingOverTime,
+            boolean productRelevant) {
         String baseImage = AttributeWorkbenchAdapter.PUBLISHED_BASE_IMAGE;
         String[] overlays = new String[4];
         if (nonChangingOverTime) {
             overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+        }
+        if (productRelevant) {
+            overlays[1] = OverlayIcons.PRODUCT_OVR;
         }
         if (override) {
             overlays[3] = OverlayIcons.OVERRIDE_OVR;
