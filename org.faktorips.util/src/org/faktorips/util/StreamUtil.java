@@ -14,11 +14,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.faktorips.annotation.UtilityClass;
+
 /**
  * A utility class for streams.
- * 
- * @author Peter Erzberger
  */
+@UtilityClass
 public class StreamUtil {
 
     /**

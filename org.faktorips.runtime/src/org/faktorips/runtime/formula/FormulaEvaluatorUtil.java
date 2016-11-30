@@ -13,10 +13,10 @@ package org.faktorips.runtime.formula;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.annotation.UtilityClass;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.util.UtilityClass;
 
 /**
  * Provides methods that can be used in formula evaluation.

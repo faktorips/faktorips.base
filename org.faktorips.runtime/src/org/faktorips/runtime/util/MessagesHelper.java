@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.faktorips.annotation.UtilityClass;
 import org.faktorips.values.NullObject;
 
 /**

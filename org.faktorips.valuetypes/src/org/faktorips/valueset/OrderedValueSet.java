@@ -18,8 +18,6 @@ import java.util.Set;
 
 /**
  * Implementation of the <code>org.faktorips.valueset.ValueSet</code> interface for ordered values.
- * 
- * @author Daniel Hohenberger
  */
 public class OrderedValueSet<E> implements ValueSet<E> {
 

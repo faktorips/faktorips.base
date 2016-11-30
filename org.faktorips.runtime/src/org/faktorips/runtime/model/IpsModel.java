@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.runtime.model;
 
+import org.faktorips.annotation.UtilityClass;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.ITable;
@@ -24,7 +25,6 @@ import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.runtime.model.type.Type;
-import org.faktorips.runtime.util.UtilityClass;
 
 /**
  * Repository of Faktor-IPS model information. This class should be used to obtain model instances

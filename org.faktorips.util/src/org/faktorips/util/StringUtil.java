@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.annotation.UtilityClass;
 
 /**
  * A collection of utility methods for Strings.
- * 
- * @author Jan Ortmann
  */
+@UtilityClass
 public class StringUtil {
 
     public static final String BLANK = " ";

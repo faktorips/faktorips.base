@@ -12,6 +12,7 @@ package org.faktorips.util;
 
 import java.util.Collection;
 
+import org.faktorips.annotation.UtilityClass;
 import org.w3c.dom.Node;
 
 /**
@@ -22,9 +23,8 @@ import org.w3c.dom.Node;
  * method is called and put into the IllegalArgumentException that is thrown. In this way you can
  * provide some information in which context the check has failed and avoid to create a String
  * object in the default case, when the check passes successfully.
- * 
- * @author Jan Ortmann
  */
+@UtilityClass
 public class ArgumentCheck {
 
     /**

@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.faktorips.util;
 
+import org.faktorips.annotation.UtilityClass;
+
+@UtilityClass
 public class IntegerUtils {
 
     // Utility class that should not be instantiated

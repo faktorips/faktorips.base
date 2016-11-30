@@ -4,8 +4,10 @@ Bundle-Name: Faktor-IPS Valuetypes for Java5
 Bundle-SymbolicName: org.faktorips.valuetypes
 Bundle-Version: 3.19.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
-Export-Package: org.faktorips.values,org.faktorips.values.xml,org.fakt
- orips.valueset
+Export-Package: org.faktorips.annotation,
+ org.faktorips.values,
+ org.faktorips.values.xml,
+ org.faktorips.valueset
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.xml.bind,

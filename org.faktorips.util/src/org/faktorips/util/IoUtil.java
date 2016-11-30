@@ -13,7 +13,14 @@ package org.faktorips.util;
 import java.io.Closeable;
 import java.io.IOException;
 
+import org.faktorips.annotation.UtilityClass;
+
+@UtilityClass
 public class IoUtil {
+
+    private IoUtil() {
+        // prevents constructor call
+    }
 
     /**
      * Tries to close the given {@link Closeable}.
