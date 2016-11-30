@@ -11,12 +11,12 @@
 package org.faktorips.values;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A collection of general utility methods for lists.
- * 
- * @author Jan Ortmann
  */
 public class ListUtil {
 
@@ -54,6 +54,17 @@ public class ListUtil {
         @SuppressWarnings("unchecked")
         List<? extends R> convertList = (List<? extends R>)list;
         return convertList;
+    }
+
+    /**
+     * Creates a new unmodifiable list from the given values.
+     * 
+     * @param values The values that should be part of the new list
+     * 
+     * @return A new unmodifiable list containing all values
+     */
+    public static final <T> List<T> unmodifiableList(T... values) {
+        return Collections.unmodifiableList(Arrays.asList(values));
     }
 
 }
