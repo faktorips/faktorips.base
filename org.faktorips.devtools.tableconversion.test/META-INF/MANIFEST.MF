@@ -7,10 +7,9 @@ Bundle-Vendor: Faktor Zehn AG
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Fragment-Host: org.faktorips.devtools.tableconversion
-Require-Bundle: org.eclipse.core.runtime,
- org.faktorips.devtools.core,
- org.faktorips.abstracttest,
- org.faktorips.valuetypes
+Require-Bundle: org.faktorips.abstracttest,
+ org.hamcrest.core;bundle-version="1.3.0",
+ org.mockito.mockito-all;bundle-version="1.9.5"
 Import-Package: org.junit;version="4.5.0",
  org.junit.matchers;version="4.5.0",
  org.junit.runner;version="4.5.0"
