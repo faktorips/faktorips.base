@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,11 +25,11 @@ public class LegacyConfigElement extends IpsObjectPart {
 
     public static final String XML_TAG = ValueToXmlHelper.LEGACY_XML_TAG_CONFIG_ELEMENT;
 
-    private final IPropertyValueContainer propertyValueContainer;
+    private final PropertyValueCollection collection;
 
-    public LegacyConfigElement(IPropertyValueContainer container) {
+    public LegacyConfigElement(PropertyValueCollection collection) {
         super();
-        this.propertyValueContainer = container;
+        this.collection = collection;
     }
 
     @Override
@@ -60,13 +59,7 @@ public class LegacyConfigElement extends IpsObjectPart {
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-        if (propertyValueContainer instanceof ProductCmpt) {
-            return ((ProductCmpt)propertyValueContainer).newPartThis(xmlTag, getNextPartId());
-        } else if (propertyValueContainer instanceof ProductCmptGeneration) {
-            return ((ProductCmptGeneration)propertyValueContainer).newPartThis(xmlTag, getNextPartId());
-        } else {
-            return null;
-        }
+        return collection.newPropertyValue(xmlTag.getNodeName(), getNextPartId());
     }
 
     @Override
