@@ -199,7 +199,7 @@ public class PropertyValueCollection {
             IPropertyValue newPropertyValue = newPropertyValue(partId, propertyType.getInterfaceClass());
             return newPropertyValue;
         } else if (LegacyConfigElement.XML_TAG.equals(xmlTagName)) {
-            return new LegacyConfigElement(propertyValueContainer);
+            return new LegacyConfigElement(this);
         }
         return null;
     }
