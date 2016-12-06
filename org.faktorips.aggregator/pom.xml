@@ -8,19 +8,21 @@
 		<git.user>${user.name}</git.user>
 	</properties>
 
+	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.aggregator</artifactId>
 	<version>3.21.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
-		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.build</artifactId>
-		<version>1.6.0</version>
+		<groupId>de.faktorzehn</groupId>
+		<artifactId>faktorzehn-tycho-build</artifactId>
+		<version>1.1.0</version>
 	</parent>
 
 	<!-- These are all modules that are included in the Faktor-IPS build -->
 
 	<modules>
+		<module>targets</module>
 		<module>features</module>
 		<module>plugins</module>
 		<module>nexus</module>
@@ -52,17 +54,50 @@
 					<artifacts>${project.artifactId},faktorips-nexus-base</artifacts>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<configuration>
+					<target>
+						<artifact>
+							<groupId>org.faktorips</groupId>
+							<artifactId>eclipse-luna-4.4</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
+						</artifact>
+					</target>
+					<environments>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
 		</plugins>
 
 		<!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY -->
-		<!-- and we have some problems with the babel dependencies because not 
-			every host is included in target -->
-
-		<!-- <plugins> <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>target-platform-configuration</artifactId>
-			<version>${tycho-version}</version> <configuration> <target> <artifact> 
-			<groupId>org.faktorips</groupId>
-			<artifactId>org.faktorips.aggregator.target</artifactId> <version>3.5.2</version>
-			</artifact> </target> </configuration> </plugin> </plugins> -->
+		<!-- and we have some problems with the babel dependencies because not every host is included in target -->
 	</build>
 
 	<profiles>

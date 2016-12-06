@@ -164,7 +164,7 @@ public class Migration2_2_to2_3 {
                             ICompilationUnit cu = (ICompilationUnit)packageEl;
                             IType type = cu.findPrimaryType();
                             if (type instanceof SourceType) {
-                                ASTParser parser = ASTParser.newParser(AST.JLS3);
+                                ASTParser parser = ASTParser.newParser(AST.JLS8);
                                 parser.setSource(cu);
                                 CompilationUnit rootNode = (CompilationUnit)parser.createAST(monitor);
                                 rootNode.recordModifications();
@@ -176,7 +176,7 @@ public class Migration2_2_to2_3 {
                                     for (MethodDeclaration methodDecl : typeDecl.getMethods()) {
                                         String methodName = methodDecl.getName().getFullyQualifiedName();
                                         if (methodName.startsWith("initPropertiesFromXml")) { //$NON-NLS-1$
-                                            List parameterList = methodDecl.parameters();
+                                            List<?> parameterList = methodDecl.parameters();
                                             if (parameterList.size() == 1) {
                                                 SingleVariableDeclaration parameter = (SingleVariableDeclaration)parameterList
                                                         .get(0);

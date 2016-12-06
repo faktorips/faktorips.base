@@ -374,8 +374,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                            + extension.getExtensionPointUniqueIdentifier()
-                            + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
+                                    + extension.getExtensionPointUniqueIdentifier()
+                                    + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
@@ -539,8 +539,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                            + extension.getExtensionPointUniqueIdentifier()
-                            + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
+                                    + extension.getExtensionPointUniqueIdentifier()
+                                    + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
                 }
                 if (tableFormat.getClass().getName().equals(configElClass)) {
                     // the current configuration element corresponds to the given table format
@@ -774,8 +774,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isEmpty(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                + extension.getExtensionPointUniqueIdentifier()
-                                + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                                        + extension.getExtensionPointUniqueIdentifier()
+                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertyEditFieldFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElements[0], CONFIG_PROPERTY_CLASS, IExtensionPropertyEditFieldFactory.class);
@@ -814,8 +814,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isBlank(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                + extension.getExtensionPointUniqueIdentifier()
-                                + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                                        + extension.getExtensionPointUniqueIdentifier()
+                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertySectionFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, IExtensionPropertySectionFactory.class);
@@ -1215,7 +1215,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public void setDefaultValidityDate(GregorianCalendar workingDate) {
         String pluginId = getBundle().getSymbolicName();
-        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        IEclipsePreferences node = InstanceScope.INSTANCE.getNode(pluginId);
         node.putLong(PREFERENCE_ID_DEFAULT_VALIDITY_DATE, workingDate.getTimeInMillis());
         defaultValidityDate.setTimeInMillis(workingDate.getTimeInMillis());
     }
@@ -1358,8 +1358,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                  * using the default IPS object editor.
                  */
                 ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                        Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+                        .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                                Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
                 return editorPart;
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);

@@ -15,6 +15,7 @@ import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaTextTools;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -36,28 +37,29 @@ import org.faktorips.devtools.core.ui.internal.text.HTMLTextPresenter;
  * ContentAssistHandler is replaced by JFace field assist support. So this class encapsulate the
  * calls to the deprecated API.
  */
+@SuppressWarnings({ "deprecation", "javadoc" })
 public class CompletionUtil {
 
     /** Preference key for content assist auto activation. */
-    private final static String AUTOACTIVATION = PreferenceConstants.CODEASSIST_AUTOACTIVATION;
+    private static final String AUTOACTIVATION = PreferenceConstants.CODEASSIST_AUTOACTIVATION;
 
     /** Preference key for content assist auto activation delay. */
-    private final static String AUTOACTIVATION_DELAY = PreferenceConstants.CODEASSIST_AUTOACTIVATION_DELAY;
+    private static final String AUTOACTIVATION_DELAY = PreferenceConstants.CODEASSIST_AUTOACTIVATION_DELAY;
 
     /** Preference key for content assist proposal color. */
-    private final static String PROPOSALS_FOREGROUND = PreferenceConstants.CODEASSIST_PROPOSALS_FOREGROUND;
+    private static final String PROPOSALS_FOREGROUND = JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR;
 
     /** Preference key for content assist proposal color. */
-    private final static String PROPOSALS_BACKGROUND = PreferenceConstants.CODEASSIST_PROPOSALS_BACKGROUND;
+    private static final String PROPOSALS_BACKGROUND = JFacePreferences.CONTENT_ASSIST_BACKGROUND_COLOR;
 
     /** Preference key for content assist parameters color. */
-    private final static String PARAMETERS_FOREGROUND = PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND;
+    private static final String PARAMETERS_FOREGROUND = PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND;
 
     /** Preference key for content assist parameters color. */
-    private final static String PARAMETERS_BACKGROUND = PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND;
+    private static final String PARAMETERS_BACKGROUND = PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND;
 
     /** Preference key for content assist auto insert. */
-    private final static String AUTOINSERT = PreferenceConstants.CODEASSIST_AUTOINSERT;
+    private static final String AUTOINSERT = PreferenceConstants.CODEASSIST_AUTOINSERT;
 
     /** Preference key for prefix completion. */
     private static final String PREFIX_COMPLETION = PreferenceConstants.CODEASSIST_PREFIX_COMPLETION;
@@ -93,7 +95,7 @@ public class CompletionUtil {
 
     /**
      * Encapsulate the deprecated call to
-     * {@link ContentAssistHandler#createHandlerForCombo(Combo, SubjectControlContentAssistant)
+     * {@link ContentAssistHandler#createHandlerForCombo(Combo, SubjectControlContentAssistant)}
      * avoid the deprecated warning in a lot of source sections.
      */
     public static ContentAssistHandler createHandlerForCombo(Combo combo,
@@ -119,8 +121,8 @@ public class CompletionUtil {
      * Configure the given content assistant from the given store.
      */
     public static void configure(ContentAssistant assistant, IPreferenceStore store) {
-        JavaTextTools textTools = getJavaTextTools();
-        IColorManager manager = textTools.getColorManager();
+        JavaTextTools tools = getJavaTextTools();
+        IColorManager manager = tools.getColorManager();
 
         boolean enabled = store.getBoolean(AUTOACTIVATION);
         assistant.enableAutoActivation(enabled);

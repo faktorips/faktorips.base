@@ -46,7 +46,7 @@ public class IpsWorkspacePreferences {
 
     /** Stores the given boolean with the given id in the preferences. */
     public void putBoolean(String preferenceId, boolean b) {
-        IEclipsePreferences node = new InstanceScope().getNode(PLUGIN_ID);
+        IEclipsePreferences node = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
         node.putBoolean(preferenceId, b);
     }
 }

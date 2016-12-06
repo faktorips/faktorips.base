@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xpand2.output.FileHandle;
-import org.eclipse.xpand2.output.FileHandleImpl;
 import org.eclipse.xpand2.output.Outlet;
 import org.eclipse.xpand2.output.PostProcessor;
 import org.eclipse.xpand2.output.VetoException;
@@ -108,26 +107,6 @@ public class StringOutlet extends Outlet {
     @Override
     public int getFilesWrittenAndClosed() {
         return filesWrittenAndClosed;
-    }
-
-    /**
-     * Need this implementation because the original implementation in
-     * {@link Outlet#shouldWrite(FileHandleImpl)} uses the implementation instead of the interface.
-     * 
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean shouldWrite(FileHandleImpl fileHandleImpl) {
-        return shouldWrite((FileHandle)fileHandleImpl);
-    }
-
-    public boolean shouldWrite(FileHandle fileHandleImpl) {
-        for (VetoStrategy vs : vetoStrategies) {
-            if (vs.hasVeto(fileHandleImpl)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

@@ -852,7 +852,7 @@ public class CodeGenUtil {
          */
         private static final int JLS;
         static {
-            int jls = AST.JLS3;
+            int jls = AST.JLS8;
             try {
                 Field field = AST.class.getField("JLS4");
                 jls = (Integer)field.get(null);

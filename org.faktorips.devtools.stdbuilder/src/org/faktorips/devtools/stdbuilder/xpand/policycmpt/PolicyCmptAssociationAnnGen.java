@@ -26,10 +26,15 @@ public class PolicyCmptAssociationAnnGen extends AbstractAssociationAnnGen {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        JavaCodeFragment annotation = super.createAnnotation(modelNode);
+        JavaCodeFragment superAnnotations = super.createAnnotation(modelNode);
 
-        return new JavaCodeFragmentBuilder().append(annotation)
-                .append(createAnnInverseAssociation(getXPolicyAssociation(modelNode))).getFragment();
+        XPolicyAssociation xPolicyAssociation = getXPolicyAssociation(modelNode);
+        if (xPolicyAssociation.hasInverseAssociation()) {
+            return new JavaCodeFragmentBuilder().append(superAnnotations)
+                    .append(createAnnInverseAssociation(xPolicyAssociation)).getFragment();
+        } else {
+            return superAnnotations;
+        }
     }
 
     protected XPolicyAssociation getXPolicyAssociation(AbstractGeneratorModelNode modelNode) {
@@ -44,13 +49,9 @@ public class PolicyCmptAssociationAnnGen extends AbstractAssociationAnnGen {
     }
 
     protected JavaCodeFragment createAnnInverseAssociation(XPolicyAssociation association) {
-        try {
-            XPolicyAssociation inverseAssociation = association.getInverseAssociation();
-            return new JavaCodeFragmentBuilder().annotationLn(IpsInverseAssociation.class,
-                    "\"" + inverseAssociation.getName(false) + "\"").getFragment();
-        } catch (NullPointerException e) {
-            return new JavaCodeFragment();
-        }
+        XPolicyAssociation inverseAssociation = association.getInverseAssociation();
+        return new JavaCodeFragmentBuilder().annotationLn(IpsInverseAssociation.class,
+                "\"" + inverseAssociation.getName(false) + "\"").getFragment();
 
     }
 }

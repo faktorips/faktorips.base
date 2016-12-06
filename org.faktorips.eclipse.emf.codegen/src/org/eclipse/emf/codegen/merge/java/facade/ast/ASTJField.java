@@ -308,7 +308,7 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
         performSplit();
 
         this.type = type;
-        setNodeProperty(variableDeclarationFragment, 0, VariableDeclarationFragment.EXTRA_DIMENSIONS_PROPERTY);
+        setNodeProperty(variableDeclarationFragment, 0, VariableDeclarationFragment.EXTRA_DIMENSIONS2_PROPERTY);
         setTrackedNodeProperty(getASTNode(), type, FieldDeclaration.TYPE_PROPERTY, ASTNode.SIMPLE_TYPE);
     }
 

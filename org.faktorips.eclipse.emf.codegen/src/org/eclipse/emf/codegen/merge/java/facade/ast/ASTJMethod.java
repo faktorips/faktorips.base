@@ -109,7 +109,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     @Override
     public void setReturnType(String type) {
         this.returnType = type;
-        setNodeProperty(getASTNode(), 0, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY);
+        setNodeProperty(getASTNode(), 0, MethodDeclaration.EXTRA_DIMENSIONS2_PROPERTY);
         setTrackedNodeProperty(getASTNode(), type, MethodDeclaration.RETURN_TYPE2_PROPERTY, ASTNode.SIMPLE_TYPE);
     }
 
@@ -255,7 +255,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
         if (exceptions == EMPTY_STRING_ARRAY) {
 
             @SuppressWarnings("unchecked")
-            List<Name> exceptionsList = getASTNode().thrownExceptions();
+            List<Name> exceptionsList = getASTNode().thrownExceptionTypes();
 
             exceptions = new String[exceptionsList.size()];
             int j = 0;
@@ -271,7 +271,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     public void setExceptions(String[] exceptionTypes) {
         this.exceptions = exceptionTypes;
         this.addedExceptions = null;
-        setListNodeProperty(getASTNode(), exceptionTypes, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY,
+        setListNodeProperty(getASTNode(), exceptionTypes, MethodDeclaration.THROWN_EXCEPTION_TYPES_PROPERTY,
                 ASTNode.SIMPLE_NAME);
     }
 
@@ -281,7 +281,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
             addedExceptions = new ArrayList<String>();
         }
         addedExceptions.add(exceptionType);
-        addValueToListProperty(getASTNode(), exceptionType, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY,
+        addValueToListProperty(getASTNode(), exceptionType, MethodDeclaration.THROWN_EXCEPTION_TYPES_PROPERTY,
                 ASTNode.SIMPLE_NAME);
     }
 

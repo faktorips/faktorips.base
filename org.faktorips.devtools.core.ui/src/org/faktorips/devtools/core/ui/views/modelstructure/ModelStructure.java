@@ -279,8 +279,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
             };
             openParentAssociationTypeEditorAction
-            .setText(Messages.ModelStructure_contextMenuOpenAssociationTargetingTypeEditor
-                    + ((AssociationComponentNode)node).getTargetingType().getName());
+                    .setText(Messages.ModelStructure_contextMenuOpenAssociationTargetingTypeEditor
+                            + ((AssociationComponentNode)node).getTargetingType().getName());
             manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
         }
     }

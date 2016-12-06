@@ -82,7 +82,7 @@ public class Migration_3_7_0 extends DefaultMigration {
                 Document document = new Document(source);
 
                 // creation of DOM/AST from a ICompilationUnit
-                ASTParser parser = ASTParser.newParser(AST.JLS3);
+                ASTParser parser = ASTParser.newParser(AST.JLS8);
                 parser.setSource(compilationUnit);
                 CompilationUnit astRoot = (CompilationUnit)parser.createAST(null);
 
@@ -149,7 +149,7 @@ public class Migration_3_7_0 extends DefaultMigration {
                 Document document = new Document(source);
 
                 // creation of DOM/AST from a ICompilationUnit
-                ASTParser parser = ASTParser.newParser(AST.JLS3);
+                ASTParser parser = ASTParser.newParser(AST.JLS8);
                 parser.setSource(compilationUnit);
                 CompilationUnit astRoot = (CompilationUnit)parser.createAST(null);
 

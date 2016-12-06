@@ -1,3 +1,5 @@
+package org.faktorips.devtools.core.internal.migrationextensions;
+
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
@@ -7,7 +9,6 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.migrationextensions;
 
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -35,11 +36,15 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
 
+/**
+ * These tests are located in the stdbuilder project because they need a full build with active
+ * builder plugin
+ * 
+ */
 public class Migration_3_20_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -49,7 +54,7 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
     private void setUpMigration() throws CoreException {
         ipsProject = newIpsProject();
         IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setBuilderSetId(StandardBuilderSet.ID);
+        properties.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         outputFolder = ipsProject.getProject().getFolder("extension/org/faktorips/sample/model/internal/my");
         ipsProject.setProperties(properties);
         migration = (Migration_3_20_0)new Migration_3_20_0.Factory().createIpsProjectMigrationOpertation(ipsProject,

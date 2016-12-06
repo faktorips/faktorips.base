@@ -109,7 +109,7 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
                                         ICompilationUnit cu = (ICompilationUnit)packageEl;
                                         IType type = cu.findPrimaryType();
                                         if (type instanceof SourceType) {
-                                            ASTParser parser = ASTParser.newParser(AST.JLS3);
+                                            ASTParser parser = ASTParser.newParser(AST.JLS8);
                                             parser.setSource(cu);
                                             CompilationUnit rootNode = (CompilationUnit)parser.createAST(monitor);
                                             rootNode.recordModifications();

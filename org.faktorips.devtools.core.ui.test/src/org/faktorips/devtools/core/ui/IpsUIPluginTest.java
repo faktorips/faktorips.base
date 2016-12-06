@@ -224,7 +224,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     private void clearDefaultValidityDate() {
         String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        IEclipsePreferences node = InstanceScope.INSTANCE.getNode(pluginId);
         node.remove(IpsUIPlugin.PREFERENCE_ID_DEFAULT_VALIDITY_DATE);
     }
 

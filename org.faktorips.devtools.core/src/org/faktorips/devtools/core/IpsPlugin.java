@@ -235,7 +235,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the plugin's version identifier.
      */
     public Version getVersionIdentifier() {
-        String version = (String)getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        String version = getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
         return Version.parseVersion(version);
     }
 
@@ -584,7 +584,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                         try {
                             @SuppressWarnings("unchecked")
                             IFunctionResolverFactory<JavaCodeFragment> functionResolverFactory = (IFunctionResolverFactory<JavaCodeFragment>)configElement
-                            .createExecutableExtension("class"); //$NON-NLS-1$
+                                    .createExecutableExtension("class"); //$NON-NLS-1$
                             Integer sortOrder;
                             try {
                                 sortOrder = Integer.valueOf(configElement.getAttribute("sortorder")); //$NON-NLS-1$
@@ -596,7 +596,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                         } catch (CoreException e) {
                             log(new IpsStatus(
                                     "Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                                    + extension.getUniqueIdentifier(), e));
+                                            + extension.getUniqueIdentifier(), e));
                         }
                     }
                 }

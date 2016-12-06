@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -425,7 +425,7 @@ public class MessageList implements Iterable<Message> {
      * @param messageCode the messageCode to find
      */
     public void wrapUpMessages(String messageCode) {
-        Map<String, Message> messageTextMap = new HashMap<String, Message>();
+        Map<String, Message> messageTextMap = new LinkedHashMap<String, Message>();
         for (Iterator<Message> iterator = messages.iterator(); iterator.hasNext();) {
             Message message = iterator.next();
             if (message.getCode().equals(messageCode)) {

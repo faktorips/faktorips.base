@@ -87,14 +87,10 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     }
 
     /**
-     * Implementation of {@link IProductCmptProperty#hasCategory()}.
-     * <p>
      * This method is implemented in {@link TypePart} because - as we cannot use multiple
      * inheritance - we are not able to add a base implementation for product component properties
      * to our class hierarchy. Type parts that implement the {@link IProductCmptProperty} interface
      * immediately gain this implementation.
-     * 
-     * @see IProductCmptProperty
      */
     public boolean hasCategory() {
         return !category.isEmpty();

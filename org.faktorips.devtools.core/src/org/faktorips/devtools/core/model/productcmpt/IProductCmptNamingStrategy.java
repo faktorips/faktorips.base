@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
@@ -129,7 +128,6 @@ public interface IProductCmptNamingStrategy {
      * @param productCmpt The previous product component version.
      * 
      * @see DateBasedProductCmptNamingStrategy
-     * @see IpsPreferences#getWorkingDate()
      */
     public String getNextVersionId(IProductCmpt productCmpt, GregorianCalendar validFrom);
 

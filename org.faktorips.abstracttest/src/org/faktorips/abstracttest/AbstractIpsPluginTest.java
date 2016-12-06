@@ -389,7 +389,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.STRING.getName(),
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
-        String version = (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version");
+        String version = Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version");
         properties.setMinRequiredVersionNumber("org.faktorips.feature", version); //$NON-NLS-1$
         ipsProject.setProperties(properties);
     }
@@ -431,7 +431,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
-        }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+                }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
     protected void setAutoBuild(boolean autoBuild) throws CoreException {
