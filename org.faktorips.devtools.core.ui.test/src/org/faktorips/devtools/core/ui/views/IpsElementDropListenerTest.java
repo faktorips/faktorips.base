@@ -16,11 +16,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.util.Locale;
+import java.util.UUID;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -77,6 +82,31 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
         assertEquals(1, resultType.length);
         assertTrue(resultType[0] instanceof IIpsElement);
 
+    }
+
+    @Test
+    public void testGetTransferedElements_nestedProjects() throws CoreException {
+        String parent = "P" + UUID.randomUUID().toString();
+        String child = "X" + UUID.randomUUID().toString();
+        IProject parentProject = newPlatformProject(parent);
+        IFolder childFolder = parentProject.getFolder(child);
+        childFolder.create(false, true, null);
+
+        IProjectDescription description = ResourcesPlugin.getWorkspace().newProjectDescription(child);
+        description.setLocation(childFolder.getLocation());
+        IIpsProject childProject = newIpsProjectBuilder().name(child).description(description)
+                .supportedLocales(Locale.GERMAN).build();
+
+        PolicyCmptType type = newPolicyCmptType(childProject, "first.second.Name");
+
+        TransferData typeData = getData();
+        FileTransfer mockedTransfer = mock(FileTransfer.class);
+        when(mockedTransfer.nativeToJava(typeData)).thenReturn(new String[] { getPath(type.getEnclosingResource()) });
+        TestListener l = new TestListener(mockedTransfer);
+        Object[] resultType = l.getTransferedElements(typeData);
+
+        assertEquals(1, resultType.length);
+        assertTrue(resultType[0] instanceof IIpsElement);
     }
 
     private String getPath(IResource res) {
