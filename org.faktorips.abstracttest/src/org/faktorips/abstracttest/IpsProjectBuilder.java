@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -40,6 +41,8 @@ public class IpsProjectBuilder {
 
     private String name;
 
+    private IProjectDescription description;
+
     /**
      * Following methods can be overridden by subclasses of {@link AbstractIpsPluginTest}:
      * <ul>
@@ -61,6 +64,11 @@ public class IpsProjectBuilder {
 
     public IpsProjectBuilder name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public IpsProjectBuilder description(IProjectDescription description) {
+        this.description = description;
         return this;
     }
 
@@ -96,7 +104,7 @@ public class IpsProjectBuilder {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
-                IProject project = new PlatformProjectBuilder().name(name).build();
+                IProject project = new PlatformProjectBuilder().name(name).description(description).build();
                 ipsPluginTest.addJavaCapabilities(project);
                 ipsPluginTest.addIpsCapabilities(project);
             }
@@ -118,7 +126,7 @@ public class IpsProjectBuilder {
 
     private void setProductCmptNamingStrategy(IIpsProject ipsProject, IIpsProjectProperties properties) {
         IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategyFactory()
-                .newProductCmptNamingStrategy(ipsProject);
+        .newProductCmptNamingStrategy(ipsProject);
         properties.setProductCmptNamingStrategy(productCmptNamingStrategy);
     }
 

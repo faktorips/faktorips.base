@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -24,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.util.NestedProjectFileUtil;
 
 public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdapter {
 
@@ -32,10 +31,6 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
 
     public IpsFileTransferViewerDropAdapter(Viewer viewer) {
         super(viewer);
-    }
-
-    private IFile getFile(String filename) {
-        return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
     }
 
     private IProductCmpt getProductCmpt(IIpsElement element) {
@@ -84,7 +79,7 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
         List<IProductCmpt> result = new ArrayList<IProductCmpt>();
 
         for (String filename : filenames) {
-            IFile file = getFile(filename);
+            IFile file = NestedProjectFileUtil.getFile(filename);
             if (file == null) {
                 return null;
             }

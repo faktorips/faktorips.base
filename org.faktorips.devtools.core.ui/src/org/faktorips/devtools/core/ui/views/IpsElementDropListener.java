@@ -26,6 +26,7 @@ import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.util.NestedProjectFileUtil;
 
 /**
  * Abstract default implementation of a drop target listener. Drag over and drag leave are ignored
@@ -96,12 +97,9 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
         }
         ArrayList<Object> elements = new ArrayList<Object>();
         for (String filename : filenames) {
-            Path path = new Path(filename);
+            addElementFromResource(elements, NestedProjectFileUtil.getFile(filename));
 
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-            addElementFromResource(elements, file);
-
-            IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
+            IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(new Path(filename));
             addElementFromResource(elements, container);
         }
         return elements.toArray(new Object[elements.size()]);

@@ -14,11 +14,9 @@ import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,6 +42,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.core.util.NestedProjectFileUtil;
 
 /**
  * Provides drop support for {@linkplain TestCaseSection}.
@@ -432,12 +431,8 @@ class DropToLinkHelper {
     }
 
     private IProductCmpt getProductCmpt(String filename) {
-        IFile file = getFile(filename);
+        IFile file = NestedProjectFileUtil.getFile(filename);
         return (IProductCmpt)file.getAdapter(IProductCmpt.class);
-    }
-
-    private IFile getFile(String filename) {
-        return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
     }
 
     private TestCaseSection getTestCaseSection() {

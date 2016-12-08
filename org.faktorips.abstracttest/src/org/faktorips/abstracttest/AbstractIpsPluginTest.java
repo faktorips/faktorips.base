@@ -37,6 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -305,6 +306,13 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         return new PlatformProjectBuilder().name(name).build();
     }
 
+    /**
+     * Creates a new platform project with the given name and description and opens it.
+     */
+    protected IProject newPlatformProject(String name, IProjectDescription description) throws CoreException {
+        return new PlatformProjectBuilder().name(name).description(description).build();
+    }
+
     /*
      * TODO AW 03-12-2012: Attempt to move project creation code to IpsProjectBuilder and
      * PlatformProjectBuilder - The following methods could not be moved because they can be
@@ -381,9 +389,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.STRING.getName(),
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
-        properties
-                .setMinRequiredVersionNumber(
-                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String version = (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version");
+        properties.setMinRequiredVersionNumber("org.faktorips.feature", version); //$NON-NLS-1$
         ipsProject.setProperties(properties);
     }
 
@@ -424,7 +431,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
-                }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+        }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
     protected void setAutoBuild(boolean autoBuild) throws CoreException {
