@@ -44,11 +44,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Class for calculation the content of the model explorer tree. The returned lists of package
- * fragments are dependant on the current layout style indicated by the <code>isFlatLayout</code>
- * flag.
- * 
- * @author Stefan Widmaier
+ * Content provider for the model explorer tree. The returned lists of package fragments are
+ * dependent on the current layout style indicated by the <code>isFlatLayout</code> flag.
  */
 public class ModelContentProvider implements ITreeContentProvider {
 

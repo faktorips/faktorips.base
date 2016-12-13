@@ -78,7 +78,8 @@ public class JavaCodeFragment extends CodeFragment {
      * Returns the import declaration needed to compile the sourcecode.
      */
     public ImportDeclaration getImportDeclaration() {
-        return new ImportDeclaration(importDecl); // defensive copy
+        // defensive copy
+        return new ImportDeclaration(importDecl);
     }
 
     /**

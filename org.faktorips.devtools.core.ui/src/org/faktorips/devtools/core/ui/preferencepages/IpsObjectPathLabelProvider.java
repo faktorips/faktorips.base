@@ -27,8 +27,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Label provider for IPS object path
- * 
- * @author Roman Grutza
  */
 public class IpsObjectPathLabelProvider extends LabelProvider {
 
@@ -98,7 +96,7 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
                 return (Image)resourceManager.get(imageDescriptor);
             }
         }
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("folder_open.gif"); //$NON-NLS-1$ 
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("folder_open.gif"); //$NON-NLS-1$
         return (Image)resourceManager.get(imageDescriptor);
     }
 

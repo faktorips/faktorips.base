@@ -13,15 +13,17 @@ import java.net.URI;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
- * Eclipse has a problem with nested projects. If a file is found in multiple (e.g. parent and
- * child) projects, the one in the alphabetically first project is returned.
- * {@link NestedProjectFileUtil#getFile(String)} looks for all files and returns the one with the
- * shortest path - the one from the innermost nested project.
+ * {@link IWorkspaceRoot#getFileForLocation(IPath)} may return unexpected results if there are
+ * nested projects. If a file is found in multiple (e.g. parent and child) projects, the one in the
+ * alphabetically first project is returned. {@link NestedProjectFileUtil#getFile(String)} searches
+ * for all files and returns the one with the shortest path, thus the one from the innermost nested
+ * project.
  */
 public enum NestedProjectFileUtil {
     /* no instances */;
