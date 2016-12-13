@@ -82,15 +82,6 @@ public class JavaCodeFragmentBuilderTest {
     }
 
     @Test
-    public void testAnnotationLnClassValue() {
-        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotationLn("AnAnnotation", "value", List.class); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment() //$NON-NLS-1$
-                .getSourcecode());
-        assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
-    }
-
-    @Test
     public void testAnnotationClassValueLn() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationClassValueLn("AnAnnotation", "value", List.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$

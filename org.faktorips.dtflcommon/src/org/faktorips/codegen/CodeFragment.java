@@ -15,8 +15,8 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.SystemUtils;
 
 /**
- * Represents a language independant sourcecode fragment. A sourcecode fragment consists of the
- * sourcecode text and possibly additional parts like import statements. The default implementation
+ * Represents a language independent source code fragment. A source code fragment consists of the
+ * source code text and possibly additional parts like import statements. The default implementation
  * is the {@link JavaCodeFragment}.
  * 
  * @see JavaCodeFragmentBuilder
@@ -26,17 +26,17 @@ public class CodeFragment {
     private static final String INDENT_HELPER = "                                                         "; //$NON-NLS-1$
 
     // true if lines after a call to appendOpenBracket() are indented or not
-    // the default is false, as Faktor-IPS formats the generated sourcecode via the Eclipse
+    // the default is false, as Faktor-IPS formats the generated source code via the Eclipse
     // formatter.
     private boolean indent = false;
 
-    // buffer holding the sourcecode text
+    // buffer holding the source code text
     private StringBuilder sourcecode;
 
     // number of blanks used for indentation
     private int indentation = 4;
 
-    // the indentation level at the end of the sourcecode
+    // the indentation level at the end of the source code
     private int indentLevel = 0;
 
     /**
@@ -101,7 +101,7 @@ public class CodeFragment {
     }
 
     /**
-     * Appends the given String to the sourcecode.
+     * Appends the given String to the source code.
      */
     public CodeFragment append(String s) {
         indentIfBol();
@@ -110,7 +110,7 @@ public class CodeFragment {
     }
 
     /**
-     * Encloses the given String with doublequotes (") and appends it to the sourcecode.
+     * Encloses the given String with double quotes (") and appends it to the source code.
      */
     public CodeFragment appendQuoted(String s) {
         append('"');
@@ -120,7 +120,7 @@ public class CodeFragment {
     }
 
     /**
-     * Appends the given char to the sourcecode.
+     * Appends the given char to the source code.
      */
     public CodeFragment append(char c) {
         if (indent) {
@@ -131,7 +131,7 @@ public class CodeFragment {
     }
 
     /**
-     * Appends a line separator to the sourcecode.
+     * Appends a line separator to the source code.
      */
     public CodeFragment appendln() {
         sourcecode.append(SystemUtils.LINE_SEPARATOR);
@@ -139,7 +139,7 @@ public class CodeFragment {
     }
 
     /**
-     * Appends the given String and a line separator to the sourcecode.
+     * Appends the given String and a line separator to the source code.
      */
     public CodeFragment appendln(String s) {
         if (indent) {
@@ -152,7 +152,7 @@ public class CodeFragment {
     }
 
     /**
-     * Appends the given String as is to the sourcecode without indenting it.
+     * Appends the given String as is to the source code without indenting it.
      */
     public CodeFragment appendlnUnindented(String arg) {
         sourcecode.append(arg);
@@ -161,7 +161,7 @@ public class CodeFragment {
     }
 
     /**
-     * Appends the given char to the sourcecode.
+     * Appends the given char to the source code.
      */
     public CodeFragment appendln(char c) {
         indentIfBol();
@@ -231,8 +231,8 @@ public class CodeFragment {
     }
 
     /**
-     * Returns true if the last character in the sourcecode is a line separator and so any text
-     * appended to the sourcecode goes to a new line (bol = begin of line).
+     * Returns true if the last character in the source code is a line separator and so any text
+     * appended to the source code goes to a new line (bol = begin of line).
      */
     public boolean bol() {
         int length = sourcecode.length();
@@ -263,7 +263,7 @@ public class CodeFragment {
     }
 
     /*
-     * Appends the proper indentation if the sourcecode ens with a line separator.
+     * Appends the proper indentation if the source code ends with a line separator.
      */
     private void indentIfBol() {
         if (!indent) {

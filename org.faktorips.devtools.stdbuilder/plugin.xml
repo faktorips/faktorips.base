@@ -72,12 +72,12 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
                defaultValue="Generic JPA 2.0"
-               description="The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1', 'EclipseLink 2.5' and 'Generic JPA 2.0'."
+               description="The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0' and 'Generic JPA 2.1'."
                label="Persistence Provider"
                name="persistenceProvider"
                type="enum">
             <discreteValues>
-               <!-- see IPersistenceProvider#PROVIDER_IMPLEMENTATION_* -->
+               <!-- see org.faktorips.devtools.stdbuilder.StandardBuilderSet.initSupportedPersistenceProviderMap() -->
                 <value
                      value="None">
                </value>
@@ -89,6 +89,9 @@
                </value>
                <value
                      value="Generic JPA 2.0">
+               </value>
+               <value
+                     value="Generic JPA 2.1">
                </value>
             </discreteValues>               
          </builderSetPropertyDef>         

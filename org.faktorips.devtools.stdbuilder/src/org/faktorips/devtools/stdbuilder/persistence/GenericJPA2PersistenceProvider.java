@@ -17,8 +17,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
 
 /**
  * Persistence provider for standard generic JPA 2 support
- * 
- * @author Joerg Ortmann
  */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
