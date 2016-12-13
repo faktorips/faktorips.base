@@ -21,8 +21,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 /**
  * Interface for {@link DropTargetListener} capable to provide {@link IIpsElement} from the dragged
  * data.
- * 
- * @author Thorsten Günther
  */
 public interface IIpsElementDropListener extends DropTargetListener {
 

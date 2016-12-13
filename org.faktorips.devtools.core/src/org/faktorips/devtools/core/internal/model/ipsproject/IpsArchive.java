@@ -53,13 +53,10 @@ import org.faktorips.util.IoUtil;
 import org.faktorips.util.StreamUtil;
 
 /**
- * An ips archive is an archive for ips objects. It is physically stored in a jar file. This class
- * gives read-only access to the archive's content. A new archive can be created with the
- * CreateIpsArchiveOperation.
+ * An archive for IPS objects. It is physically stored in a jar file. This class gives read-only
+ * access to the archive's content. A new archive can be created with the CreateIpsArchiveOperation.
  * 
  * @see org.faktorips.devtools.core.model.CreateIpsArchiveOperation
- * 
- * @author Jan Ortmann
  */
 public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 

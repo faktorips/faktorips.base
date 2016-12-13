@@ -29,10 +29,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.util.NestedProjectFileUtil;
 
 /**
- * Abstract default implementation of a drop target listener. Drag over and drag leave are ignored
- * by this implementation, dargOperationChanged too.
- * 
- * @author Thorsten Guenther
+ * Abstract default implementation of a drop target listener. {@link #dragOver(DropTargetEvent)},
+ * {@link #dragLeave(DropTargetEvent)} and {@link #dragOperationChanged(DropTargetEvent)} are
+ * ignored by this implementation.
  */
 public abstract class IpsElementDropListener implements IIpsElementDropListener {
 
