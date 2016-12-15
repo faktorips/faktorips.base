@@ -66,7 +66,7 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
         converterParams.append(".class"); //$NON-NLS-1$
         fragmentBuilder.annotationLn(ANNOTATION_CONVERTER, converterParams);
 
-        fragmentBuilder.annotationLn(ANNOTATION_CONVERT, converterName);
+        fragmentBuilder.annotationLn(ANNOTATION_CONVERT, '"' + converterName + '"');
 
         return fragmentBuilder.getFragment();
     }
