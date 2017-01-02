@@ -19,29 +19,10 @@ import java.util.List;
  * A list of <code>Message</code>s.
  * 
  * @see Message
- * 
- * @author Jan Ortmann
  */
 public class MessageList implements Serializable, Iterable<Message> {
 
     private static final long serialVersionUID = 5518835977871253111L;
-
-    /**
-     * Creates a copy from the message list and replaces all references to the old object with the
-     * new object.
-     * 
-     * @param list the list to copy
-     * @param oldObject the old object reference that should be replaced.
-     * @param newObject the object reference to set
-     */
-    public final static MessageList createCopy(MessageList list, Object oldObject, Object newObject) {
-        MessageList newList = new MessageList();
-        int numOfMsg = list.getNoOfMessages();
-        for (int i = 0; i < numOfMsg; i++) {
-            newList.add(Message.createCopy(list.getMessage(i), oldObject, newObject));
-        }
-        return newList;
-    }
 
     private List<Message> messages = new ArrayList<Message>(0);
 
@@ -55,36 +36,49 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Creates a message list that contains the given message.
      * 
-     * @throws IllegalArgumentException if msg is null.
+     * @throws NullPointerException if message is null.
      */
-    public MessageList(Message msg) {
-        add(msg);
+    public MessageList(Message message) {
+        add(message);
+    }
+
+    /**
+     * Creates a copy from the message list and replaces all references to the old object with the
+     * new object.
+     * 
+     * @param list the list to copy
+     * @param oldObject the old object reference that should be replaced.
+     * @param newObject the object reference to set
+     */
+    public static final MessageList createCopy(MessageList list, Object oldObject, Object newObject) {
+        MessageList newList = new MessageList();
+        for (Message message : list) {
+            newList.add(Message.createCopy(message, oldObject, newObject));
+        }
+        return newList;
     }
 
     /**
      * Adds the message to the list.
      * 
-     * @throws NullPointerException if msg is null.
+     * @throws NullPointerException if message is null.
      */
-    public void add(Message msg) {
-        if (msg == null) {
+    public void add(Message message) {
+        if (message == null) {
             throw new NullPointerException();
         }
-        messages.add(msg);
+        messages.add(message);
     }
 
     /**
      * Adds the messages in the given list to this list.
-     * 
-     * @throws IllegalArgumentException if msgList is null.
      */
-    public void add(MessageList msgList) {
-        if (msgList == null) {
+    public void add(MessageList messageList) {
+        if (messageList == null) {
             return;
         }
-        int max = msgList.getNoOfMessages();
-        for (int i = 0; i < max; i++) {
-            add(msgList.getMessage(i));
+        for (Message message : messageList) {
+            add(message);
         }
     }
 
@@ -92,23 +86,21 @@ public class MessageList implements Serializable, Iterable<Message> {
      * Copies the messages from the given list to this list and sets the message's invalid object
      * properties.
      * 
-     * @param msgList the list to copy the messages from.
+     * @param messageList the list to copy the messages from.
      * @param invalidObjectProperty the object and it's property that the messages refer to.
      * @param override <code>true</code> if the invalidObjectProperty should be set in all messages.
      *            <code>false</code> if the invalidObjectProperty is set only for messages that do
      *            not contain any invalid object property information.
      */
-    public void add(MessageList msgList, ObjectProperty invalidObjectProperty, boolean override) {
-        if (msgList == null) {
+    public void add(MessageList messageList, ObjectProperty invalidObjectProperty, boolean override) {
+        if (messageList == null) {
             return;
         }
-        int max = msgList.getNoOfMessages();
-        for (int i = 0; i < max; i++) {
-            Message msg = msgList.getMessage(i);
-            if (override || msg.getInvalidObjectProperties().size() == 0) {
-                add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), invalidObjectProperty));
+        for (Message message : messageList) {
+            if (override || message.getInvalidObjectProperties().size() == 0) {
+                add(new Message(message.getCode(), message.getText(), message.getSeverity(), invalidObjectProperty));
             } else {
-                add(msg);
+                add(message);
             }
         }
     }
@@ -152,9 +144,9 @@ public class MessageList implements Serializable, Iterable<Message> {
      * Returns the first message with the given severity or null if none is found.
      */
     public Message getFirstMessage(Severity severity) {
-        for (Message msg : messages) {
-            if (msg.getSeverity() == severity) {
-                return msg;
+        for (Message message : messages) {
+            if (message.getSeverity() == severity) {
+                return message;
             }
         }
         return null;
@@ -165,9 +157,9 @@ public class MessageList implements Serializable, Iterable<Message> {
      * the list does not contain such a message.
      */
     public Message getMessageByCode(String code) {
-        for (Message msg : messages) {
-            if (msg.getCode().equals(code)) {
-                return msg;
+        for (Message message : messages) {
+            if (message.getCode().equals(code)) {
+                return message;
             }
         }
         return null;
@@ -183,9 +175,9 @@ public class MessageList implements Serializable, Iterable<Message> {
         if (code == null) {
             return sublist;
         }
-        for (Message msg : messages) {
-            if (code.equals(msg.getCode())) {
-                sublist.add(msg);
+        for (Message message : messages) {
+            if (code.equals(message.getCode())) {
+                sublist.add(message);
             }
         }
         return sublist;
@@ -197,9 +189,9 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     public Severity getSeverity() {
         Severity severity = Severity.NONE;
-        for (Message msg : messages) {
-            if (msg.getSeverity().compareTo(severity) > 0) {
-                severity = msg.getSeverity();
+        for (Message message : messages) {
+            if (message.getSeverity().compareTo(severity) > 0) {
+                severity = message.getSeverity();
             }
         }
         return severity;
@@ -212,7 +204,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     public String getText() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuffer s = new StringBuffer();
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             if (i > 0) {
                 s.append(lineSeparator);
             }
@@ -226,8 +218,8 @@ public class MessageList implements Serializable, Iterable<Message> {
      * Returns true if one the messages in the list is an error message, otherwise false.
      */
     public boolean containsErrorMsg() {
-        for (int i = 0; i < getNoOfMessages(); i++) {
-            if (getMessage(i).getSeverity() == Severity.ERROR) {
+        for (Message message : messages) {
+            if (message.getSeverity() == Severity.ERROR) {
                 return true;
             }
         }
@@ -249,18 +241,17 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
-        for (int i = 0; i < getNoOfMessages(); i++) {
-            Message msg = getMessage(i);
-            List<ObjectProperty> op = msg.getInvalidObjectProperties();
+        for (Message message : messages) {
+            List<ObjectProperty> op = message.getInvalidObjectProperties();
             for (ObjectProperty objectProperty : op) {
                 if (objectProperty.getObject().equals(object)) {
                     if (property == null) {
-                        result.add(msg);
+                        result.add(message);
                         break;
                     }
                     if (property.equals(objectProperty.getProperty())) {
                         if (index < 0 || objectProperty.getIndex() == index) {
-                            result.add(msg);
+                            result.add(message);
                             break;
                         }
                     }
@@ -301,8 +292,8 @@ public class MessageList implements Serializable, Iterable<Message> {
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuffer s = new StringBuffer();
-        for (int i = 0; i < getNoOfMessages(); i++) {
-            s.append(getMessage(i).toString() + lineSeparator);
+        for (Message message : messages) {
+            s.append(message.toString() + lineSeparator);
         }
         return s.toString();
     }
