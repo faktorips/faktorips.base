@@ -160,7 +160,7 @@
             <Property name="localDateDatatypeHelperVariant" value="joda">
 
 
-                <!--Define what helper variant is used for local date datatypes (LocalDate, LocalDateTime, LocalTime), i.e. Joda or Java8-->
+                <!--Define what helper variant is used for local date data types (LocalDate, LocalDateTime, LocalTime), i.e. Joda or Java8-->
             </Property>
             <Property name="toXMLSupport" value="false">
 

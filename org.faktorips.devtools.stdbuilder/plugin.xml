@@ -175,7 +175,7 @@
                defaultValue="joda"
                description="%localDateDatatypeHelperVariantDescription"
                disableValue="joda"
-               label="Local date datetype helper variant"
+               label="LocalDate data type helper variant"
                name="localDateDatatypeHelperVariant"
                type="enum">
             <discreteValues>

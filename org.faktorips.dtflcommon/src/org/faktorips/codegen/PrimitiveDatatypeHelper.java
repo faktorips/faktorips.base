@@ -11,7 +11,7 @@
 package org.faktorips.codegen;
 
 /**
- * Extended DatatypeHelper variant for datatypes representing Java's primitives.
+ * Extended DatatypeHelper variant for data types representing Java's primitives.
  */
 public interface PrimitiveDatatypeHelper extends DatatypeHelper {
 
