@@ -47,7 +47,7 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
         MessageList result = new MessageList();
         validateProject(result);
         validateStructure(result);
-        validateTableContentName();
+        validateTableContentName(result);
         return result;
     }
 
@@ -83,9 +83,9 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
         }
     }
 
-    private void validateTableContentName() {
+    private void validateTableContentName(MessageList result) {
         if (getPmo().getIpsProject() != null) {
-            validateIpsObjectName(NewTableContentsPMO.PROPERTY_NAME);
+            result.add(validateIpsObjectName(NewTableContentsPMO.PROPERTY_NAME));
         }
     }
 
