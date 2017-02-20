@@ -451,10 +451,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             MenuManager cleanUpMenu = new MenuManager(Messages.ModelExplorer_submenuCleanUp,
                     "org.faktorips.devtools.core.ui.views.modelexplorer.cleanup"); //$NON-NLS-1$
 
-            if (modelExplorer.isModelExplorer()) {
-                cleanUpMenu.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(),
-                        (IStructuredSelection)treeViewer.getSelection()));
-            }
+            cleanUpMenu.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(), (IStructuredSelection)treeViewer
+                    .getSelection()));
 
             cleanUpMenu.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
 
