@@ -46,6 +46,14 @@ import org.osgi.framework.Bundle;
  * @author Thorsten Guenther
  */
 class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
+    private static final String ICONS_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
+    private static final String PATH_ELOCALTOOL = ICONS_PATH + "elcl16/"; // Enabled  toolbar icons.//$NON-NLS-1$
+    private static final String PATH_DLOCALTOOL = ICONS_PATH + "dlcl16/"; // Disabled  toolbar icons.//$NON-NLS-1$
+    private static final String PATH_ETOOL = ICONS_PATH + "etool16/"; // Enabled toolbar icons.//$NON-NLS-1$
+    private static final String PATH_DTOOL = ICONS_PATH + "dtool16/"; // Disabled toolbar icons.//$NON-NLS-1$
+    private static final String PATH_OBJECT = ICONS_PATH + "obj16/"; // Model object icons//$NON-NLS-1$
+    private static final String PATH_WIZBAN = ICONS_PATH + "wizban/"; // Wizard icons//$NON-NLS-1$
+    private static final String PATH_EVIEW = ICONS_PATH + "eview16/"; // View icons, since eclipse 3.7  //$NON-NLS-1$
 
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
@@ -91,20 +99,11 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
     }
 
     /**
-     * Declares all IDE-specific workbench images. This includes both "shared" images (named in
-     * {@link IDE.SharedImages})
+     * Declares all IDE-specific workbench images. This includes both "shared" images.
      * 
      * @see IWorkbenchConfigurer#declareImage
      */
     private void declareWorkbenchImages() {
-
-        final String ICONS_PATH = "$nl$/icons/full/";//$NON-NLS-1$
-        final String PATH_ELOCALTOOL = ICONS_PATH + "elcl16/"; // Enabled  toolbar icons.//$NON-NLS-1$
-        final String PATH_DLOCALTOOL = ICONS_PATH + "dlcl16/"; // Disabled  toolbar icons.//$NON-NLS-1$
-        final String PATH_ETOOL = ICONS_PATH + "etool16/"; // Enabled toolbar icons.//$NON-NLS-1$
-        final String PATH_DTOOL = ICONS_PATH + "dtool16/"; // Disabled toolbar icons.//$NON-NLS-1$
-        final String PATH_OBJECT = ICONS_PATH + "obj16/"; // Model object icons//$NON-NLS-1$
-        final String PATH_WIZBAN = ICONS_PATH + "wizban/"; // Wizard icons//$NON-NLS-1$
 
         Bundle ideBundle = Platform.getBundle("org.eclipse.ui.ide"); //$NON-NLS-1$
 
@@ -198,6 +197,15 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
                 + "problem_category.gif", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_LINKTO_HELP, PATH_ELOCALTOOL
                 + "linkto_help.gif", false); //$NON-NLS-1$
+
+        declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW, PATH_EVIEW
+                + "problems_view.gif", true); //$NON-NLS-1$
+
+        declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW_ERROR, PATH_EVIEW
+                + "problems_view_error.gif", true); //$NON-NLS-1$
+
+        declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW_WARNING, PATH_EVIEW
+                + "problems_view_warning.gif", true); //$NON-NLS-1$
 
         // synchronization indicator objects
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_WBET_STAT,
