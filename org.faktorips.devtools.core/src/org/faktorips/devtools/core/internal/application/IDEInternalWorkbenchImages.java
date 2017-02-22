@@ -109,11 +109,17 @@ public final class IDEInternalWorkbenchImages {
 
     public static final String IMG_ETOOL_PROBLEM_CATEGORY = "IMG_ETOOL_PROBLEM_CATEGORY"; //$NON-NLS-1$
 
+    public static final String IMG_ETOOL_PROBLEMS_VIEW = "IMG_ETOOL_PROBLEMS_VIEW"; //$NON-NLS-1$
+
+    public static final String IMG_ETOOL_PROBLEMS_VIEW_ERROR = "IMG_ETOOL_PROBLEMS_VIEW_ERROR"; //$NON-NLS-1$
+
+    public static final String IMG_ETOOL_PROBLEMS_VIEW_WARNING = "IMG_ETOOL_PROBLEMS_VIEW_WARNING"; //$NON-NLS-1$
+
     // Local tool bars
 
     public static final String IMG_LCL_CLOSE_VIEW = "IMG_LCL_CLOSE_VIEW"; //$NON-NLS-1$
 
-    public static final String IMG_LCL_CLOSE_VIEW_HOVER = "IMG_LCL_CLOSE_VIEW_HOVER"; //$NON-NLS-1$ 
+    public static final String IMG_LCL_CLOSE_VIEW_HOVER = "IMG_LCL_CLOSE_VIEW_HOVER"; //$NON-NLS-1$
 
     public static final String IMG_LCL_LINKTO_HELP = "IMG_LCL_LINKTO_HELP"; //$NON-NLS-1$
 
