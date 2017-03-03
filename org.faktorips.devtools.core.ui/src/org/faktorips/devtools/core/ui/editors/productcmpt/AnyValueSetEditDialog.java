@@ -65,7 +65,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
         this.configuredValueSet = configuredValueSet;
         this.viewOnly = viewOnly;
         allowedValuesSetTypes = allowedTypes;
-        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configuredValueSet.getId(), new Point(INITIAL_WIDTH,
+        enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configuredValueSet.getPropertyName(), new Point(INITIAL_WIDTH,
                 INITIAL_HEIGHT), null);
     }
 

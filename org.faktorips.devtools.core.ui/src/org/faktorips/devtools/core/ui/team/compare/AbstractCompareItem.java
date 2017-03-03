@@ -56,7 +56,7 @@ import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompar
  * @author Stefan Widmaier, Faktor Zehn AG
  */
 public abstract class AbstractCompareItem implements IStreamContentAccessor, IStructureComparator, ITypedElement,
-        IDocumentRange {
+IDocumentRange {
 
     protected static final String COLON_BLANK = ": "; //$NON-NLS-1$
     protected static final String COLON = ":"; //$NON-NLS-1$
@@ -321,7 +321,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     protected boolean isEqualIpsObjectPart(IIpsObjectPart part1, IIpsObjectPart part2) {
-        return part1.getId().equals(part2.getId());
+        return part1.getName().equals(part2.getName());
     }
 
     /**
