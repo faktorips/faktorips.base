@@ -10,11 +10,11 @@
         <Value id="prop2" isNull="false"><![CDATA[ABC]]></Value>
     </ExtensionProperties> 	
 	<Rows id="0">
-    	<Row id="0" c0="18" c1="0.5">
+    	<Row c0="18" c1="0.5">
     		<Value isNull="false">18</Value>
     		<Value isNull="false">0.5</Value>
     	</Row>
-    	<Row id="1" c0="19" c2="0.6">
+    	<Row c0="19" c2="0.6">
     		<Value isNull="false">19</Value>
     		<Value isNull="false">0.6</Value>
     	</Row>

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
@@ -127,6 +128,8 @@ public class TableContentsSaxHandler extends DefaultHandler {
             String idValue = attributes.getValue(IIpsObjectPart.PROPERTY_ID);
             if (idValue != null) {
                 currentId = idValue;
+            } else {
+                currentId = UUID.randomUUID().toString();
             }
         }
     }

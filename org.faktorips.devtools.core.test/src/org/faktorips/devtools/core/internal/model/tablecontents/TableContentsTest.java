@@ -10,12 +10,15 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -58,6 +61,7 @@ import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class TableContentsTest extends AbstractDependencyTest {
 
@@ -493,5 +497,46 @@ public class TableContentsTest extends AbstractDependencyTest {
         tableContents.validateChildren(list, project);
 
         verify(tableRows, never()).validateThis((MessageList)any(), eq(project));
+    }
+
+    @Test
+    public void testToXML_UUID_removal() {
+        IRow tr1 = table.getTableRows().newRow();
+        IRow tr2 = table.getTableRows().newRow();
+        assertNotNull(tr1.getId());
+        assertNotNull(tr2.getId());
+
+        Element xml = table.toXml(newDocument());
+
+        NodeList rowNodeList = xml.getElementsByTagName(Row.TAG_NAME);
+        assertEquals(2, rowNodeList.getLength());
+        Element row1 = (Element)rowNodeList.item(0);
+        Element row2 = (Element)rowNodeList.item(1);
+        assertFalse(row1.hasAttribute("id"));
+        assertFalse(row2.hasAttribute("id"));
+    }
+
+    @Test
+    public void testInitFromInputStream_UUID_creation() throws CoreException {
+        // create valid TableContents
+        TableContents tempTc = newTableContents(project, "UUIDTestTC");
+        table.setTableStructure(structure.getQualifiedName());
+        tempTc.getTableRows().newRow();
+        tempTc.getTableRows().newRow();
+        // save to file
+        tempTc.getIpsSrcFile().save(false, null);
+
+        // create actual TableContents to test init with
+        TableContents testTc = new TableContents(tempTc.getIpsSrcFile());
+        // force init of rows (lazily loaded)
+        ITableRows tableRows = testTc.getTableRows();
+
+        assertEquals(2, tableRows.getRows().length);
+        IRow row1 = tableRows.getRow(0);
+        IRow row2 = tableRows.getRow(1);
+        assertNotNull(row1.getId());
+        assertNotNull(row2.getId());
+        // check that a new UUID is created for each row
+        assertThat(row1.getId(), is(not(row2.getId())));
     }
 }

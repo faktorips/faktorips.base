@@ -22,6 +22,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -325,6 +326,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.removeAttribute(IpsObjectPart.PROPERTY_ID);
         for (String value : values) {
             ValueToXmlHelper.addValueToElement(value, element, VALUE_TAG_NAME);
         }
