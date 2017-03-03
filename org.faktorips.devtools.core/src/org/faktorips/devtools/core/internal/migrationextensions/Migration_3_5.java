@@ -126,7 +126,7 @@ public class Migration_3_5 extends DefaultMigration {
     public static class Factory implements IIpsProjectMigrationOperationFactory {
 
         @Override
-        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
                 String featureId) {
             return new Migration_3_5(ipsProject, featureId);
         }

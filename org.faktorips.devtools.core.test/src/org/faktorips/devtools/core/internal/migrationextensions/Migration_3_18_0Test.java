@@ -32,7 +32,7 @@ public class Migration_3_18_0Test extends AbstractIpsPluginTest {
 
     private void setUpMigration() throws CoreException {
         ipsProject = newIpsProject();
-        migration = (Migration_3_18_0)new Migration_3_18_0.Factory().createIpsProjectMigrationOpertation(ipsProject,
+        migration = (Migration_3_18_0)new Migration_3_18_0.Factory().createIpsProjectMigrationOperation(ipsProject,
                 "irrelevant");
     }
 

@@ -15,5 +15,6 @@ Require-Bundle: org.faktorips.abstracttest,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
-Import-Package: org.junit;version="4.5.0",
+Import-Package: org.faktorips.devtools.stdbuilder,
+ org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0"
