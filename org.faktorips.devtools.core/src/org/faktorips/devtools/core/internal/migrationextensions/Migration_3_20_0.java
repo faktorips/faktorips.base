@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -21,33 +22,36 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
  * Adds {@link IpsSrcFolderEntry#setUniqueQualifier(String)} if necessary and regenerate XML files
  * to decrease XML file size.
  */
-public class Migration_3_19_0 extends DefaultMigration {
+public class Migration_3_20_0 extends DefaultMigration {
 
-    private Migration_3_19_0(IIpsProject projectToMigrate, String featureId) {
+    private Migration_3_20_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
     @Override
     public String getTargetVersion() {
-        return "3.19.0"; //$NON-NLS-1$
+        return "3.20.0"; //$NON-NLS-1$
     }
 
     @Override
     public String getDescription() {
-        return Messages.Migration_3_19_0_description;
+        return Messages.Migration_3_20_0_description;
     }
 
     @Override
-    protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        // save all IpsSrcFiles because the XML changed with FIPS-5187
-        srcFile.markAsDirty();
+    protected void migrate(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
+        if (IpsObjectType.ENUM_CONTENT.equals(ipsObjectType) || IpsObjectType.TABLE_CONTENTS.equals(ipsObjectType)
+                || IpsObjectType.PRODUCT_CMPT.equals(ipsObjectType)) {
+            ipsSrcFile.markAsDirty();
+        }
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
         @Override
         public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
                 String featureId) {
-            return new Migration_3_19_0(ipsProject, featureId);
+            return new Migration_3_20_0(ipsProject, featureId);
         }
     }
 }

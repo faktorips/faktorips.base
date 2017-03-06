@@ -41,7 +41,7 @@ public abstract class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         InputStream is = file.getContents(true);
-        build(ipsSrcFile, getContentAsString(is, ipsSrcFile.getIpsProject().getXmlFileCharset()));
+        build(ipsSrcFile, is);
     }
 
     /**

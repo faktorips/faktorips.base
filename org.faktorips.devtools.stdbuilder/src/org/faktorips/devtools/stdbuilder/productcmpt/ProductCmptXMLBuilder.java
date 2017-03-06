@@ -80,20 +80,16 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) {
-        try {
-            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-            Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-            Element root = productCmpt.toXml(document);
+        IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+        Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
+        Element root = productCmpt.toXml(document);
 
-            writeValidFrom(productCmpt, root);
-            updateInternationalStringDefaultLocale(getDefaultLocale(productCmpt.getIpsProject()), root);
-            updateLinks(productCmpt, root);
-            updateGenerations(productCmpt, document, root);
-            compileFormulas(productCmpt, document, root);
-            build(ipsSrcFile, root);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        writeValidFrom(productCmpt, root);
+        updateInternationalStringDefaultLocale(getDefaultLocale(productCmpt.getIpsProject()), root);
+        updateLinks(productCmpt, root);
+        updateGenerations(productCmpt, document, root);
+        compileFormulas(productCmpt, document, root);
+        build(ipsSrcFile, root);
     }
 
     private Locale getDefaultLocale(IIpsProject ipsProject) {
@@ -220,7 +216,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private void build(IIpsSrcFile ipsSrcFile, Element root) throws CoreException {
+    private void build(IIpsSrcFile ipsSrcFile, Element root) {
         try {
             String nodeToString = XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset());
             build(ipsSrcFile, nodeToString);

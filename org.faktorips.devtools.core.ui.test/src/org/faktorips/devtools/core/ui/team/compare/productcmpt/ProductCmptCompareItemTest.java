@@ -10,10 +10,13 @@
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -23,6 +26,7 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -231,5 +235,37 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(attributeValue, compareItemAttributeValue.getIpsElement());
         assertEquals(relation1, compareItemRelation1.getIpsElement());
         assertEquals(relation2, compareItemRelation2.getIpsElement());
+    }
+
+    @Test
+    public void testEquals_self() {
+        ProductCmptCompareItem productCompareItem = (ProductCmptCompareItem)compareItemRoot.getChildren()[0];
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)productCompareItem.getChildren()[1];
+
+        assertThat(productCompareItem.equals(new ProductCmptCompareItem(compareItemRoot, product)), is(true));
+        assertThat(compareItemGen1.equals(new ProductCmptCompareItem(productCompareItem, generation1)), is(true));
+    }
+
+    @Test
+    public void testEquals_sameIdIsNotEnough() throws Exception {
+        ProductCmptCompareItem productCompareItem = (ProductCmptCompareItem)compareItemRoot.getChildren()[0];
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)productCompareItem.getChildren()[1];
+
+        Method newGenerationInternalMethod = TimedIpsObject.class.getDeclaredMethod("newGenerationInternal",
+                String.class);
+        newGenerationInternalMethod.setAccessible(true);
+        IProductCmptGeneration generation1b = (IProductCmptGeneration)newGenerationInternalMethod.invoke(product,
+                generation1.getId());
+        generation1b.setValidFrom(new GregorianCalendar(2017, Calendar.MONTH, 1));
+        assertThat(compareItemGen1.equals(new ProductCmptCompareItem(productCompareItem, generation1b)), is(false));
+    }
+
+    @Test
+    public void testEquals_sameName() throws Exception {
+        ProductCmptCompareItem productCompareItem = (ProductCmptCompareItem)compareItemRoot.getChildren()[0];
+        ProductCmptCompareItem compareItemGen1 = (ProductCmptCompareItem)productCompareItem.getChildren()[1];
+
+        generation2.setValidFrom(generation1.getValidFrom());
+        assertThat(compareItemGen1.equals(new ProductCmptCompareItem(productCompareItem, generation2)), is(true));
     }
 }

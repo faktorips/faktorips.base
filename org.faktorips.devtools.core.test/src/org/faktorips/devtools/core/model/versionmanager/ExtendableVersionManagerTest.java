@@ -109,7 +109,7 @@ public class ExtendableVersionManagerTest {
         registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
                 new IIpsProjectMigrationOperationFactory() {
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation1;
                     }
@@ -118,7 +118,7 @@ public class ExtendableVersionManagerTest {
                 new IIpsProjectMigrationOperationFactory() {
 
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation2;
                     }

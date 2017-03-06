@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -22,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.util.ArgumentCheck;
@@ -47,47 +47,60 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         return (DefaultBuilderSet)super.getBuilderSet();
     }
 
-    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException {
+    private ByteArrayInputStream convertContentAsStream(String content, String charSet) {
 
         try {
             return new ByteArrayInputStream(content.getBytes(charSet));
         } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 
     /**
-     * Copies the xml content (which is either the given string <code>newContent</code> or the
-     * content of the given <code>IIpsSrcFile</code> if <code>newContent</code> is <code>null</code>
-     * ).
+     * Writes the new XML content to the output file for the given {@link IIpsSrcFile} creating it
+     * if necessary and keeping the old version in the local history otherwise.
      * 
-     * @param ipsSrcFile The sourcefile to process.
-     * @param newContent The content of the sourcefile to process. Must not be <code>null</code>.
+     * @param ipsSrcFile The source file to process
+     * @param newContent The content of the source file to process. Must not be <code>null</code>
      * 
-     * @throws CoreException If any errors occur during the build.
-     * @throws NullPointerException When <code>newContent</code> is <code>null</code>.
+     * @throws CoreRuntimeException if any errors occur during the build
+     * @throws NullPointerException when <code>newContent</code> is <code>null</code>
      */
-    protected void build(IIpsSrcFile ipsSrcFile, String newContent) throws CoreException {
+    protected void build(IIpsSrcFile ipsSrcFile, String newContent) {
         ArgumentCheck.notNull(newContent);
 
         String charSet = ipsSrcFile.getIpsProject().getXmlFileCharset();
+        build(ipsSrcFile, convertContentAsStream(newContent, charSet));
+    }
+
+    /**
+     * Writes the new XML content to the output file for the given {@link IIpsSrcFile} creating it
+     * if necessary and keeping the old version in the local history otherwise.
+     * 
+     * @param ipsSrcFile The source file to process
+     * @param newContent The content of the source file to process. Must not be <code>null</code>
+     * 
+     * @throws CoreRuntimeException if any errors occur during the build
+     * @throws NullPointerException when <code>newContent</code> is <code>null</code>
+     */
+    protected void build(IIpsSrcFile ipsSrcFile, InputStream newContent) {
+        ArgumentCheck.notNull(newContent);
+
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         try {
             IFile copy = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(copy);
-            ByteArrayInputStream content = convertContentAsStream(newContent, charSet);
-            if (!newlyCreated) {
-                String currentContent = getContentAsString(copy.getContents(), charSet);
-                if (!newContent.equals(currentContent)) {
-                    writeToFile(copy, content, true, true);
-                }
-            } else {
-                writeToFile(copy, content, true, false);
-            }
+            writeToFile(copy, newContent, true, !newlyCreated);
         } catch (CoreException e) {
-            throw new CoreException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
+            throw new CoreRuntimeException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
                     + file.getName(), e));
         }
+    }
+
+    @Override
+    public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
+            throws CoreException {
+        super.writeToFile(file, new UUIDFilterStream(inputStream), force, keepHistory);
     }
 
     /**
@@ -137,14 +150,6 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     @Override
     public String getName() {
         return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
-    }
-
-    protected String getContentAsString(InputStream is, String charSet) throws CoreException {
-        try {
-            return StringUtil.readFromInputStream(is, charSet);
-        } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
-        }
     }
 
     @Override
