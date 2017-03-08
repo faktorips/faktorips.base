@@ -100,6 +100,37 @@ public class IpsRemoveImportsOperationTest {
         assertEquals(input, removeUnusedImports);
     }
 
+    /**
+     * Testing the problem occurred with FIPS-3327
+     */
+    @Test
+    public void testRemoveUnusedImports_PackageNameContainsImport() throws Exception {
+        String input = "package importschnittstelle;\n" + //
+                "import lasdü.DasBrauchIch;\n" + //
+                "DasBrauchIch";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals("package importschnittstelle;\nimport lasdü.DasBrauchIch;\nDasBrauchIch", removeUnusedImports);
+    }
+
+    /**
+     * Testing the problem occurred with FIPS-3327
+     */
+    @Test
+    public void testRemoveUnusedImports_PackageNameContainsImport2() throws Exception {
+        String input = "package test.versimport .schnittstelle;\n" + //
+                "import lasdü.DasBrauchIch;\n" + //
+                "DasBrauchIch";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals("package test.versimport .schnittstelle;\nimport lasdü.DasBrauchIch;\nDasBrauchIch",
+                removeUnusedImports);
+    }
+
     @Test
     public void testJavaDocImportReference() throws Exception {
         String input = "import blablabla.blas.DasBrauchIch;\n" + //
