@@ -150,4 +150,48 @@ public class IpsRemoveImportsOperationTest {
         assertEquals(expected, removeUnusedImports);
     }
 
+    /**
+     * Testing the problem occurred with FIPS-1436
+     */
+    @Test
+    public void testWith_WindowsLineEndings() throws Exception {
+        String input = "import blablabla.blas.DasBrauchIch;\r\n" + //
+                "import blablabla.blas.DasBrauchIchNicht;\r\n" + //
+                "import blablabla.blas.DasBrauchIch2;\r\n" + //
+                "\r\n" + //
+                "DasBrauchIch und DasBrauchIch2";
+
+        String expected = "import blablabla.blas.DasBrauchIch;\r\n" + //
+                "import blablabla.blas.DasBrauchIch2;\r\n" + //
+                "\r\n" + //
+                "DasBrauchIch und DasBrauchIch2";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals(expected, removeUnusedImports);
+    }
+
+    /**
+     * Testing the problem occurred with FIPS-1436
+     */
+    @Test
+    public void testWith_MacLineEndings() throws Exception {
+        String input = "import blablabla.blas.DasBrauchIch;\r" + //
+                "import blablabla.blas.DasBrauchIchNicht;\r" + //
+                "import blablabla.blas.DasBrauchIch2;\r" + //
+                "\r" + //
+                "DasBrauchIch und DasBrauchIch2";
+
+        String expected = "import blablabla.blas.DasBrauchIch;\r" + //
+                "import blablabla.blas.DasBrauchIch2;\r" + //
+                "\r" + //
+                "DasBrauchIch und DasBrauchIch2";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals(expected, removeUnusedImports);
+    }
+
 }

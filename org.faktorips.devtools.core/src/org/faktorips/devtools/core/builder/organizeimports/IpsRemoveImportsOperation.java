@@ -40,7 +40,7 @@ public class IpsRemoveImportsOperation {
     private static Pattern relevantWordPattern = Pattern.compile("(?<![\\p{L}0-9_$\\.])" + wordPatternString); //$NON-NLS-1$
 
     private static Pattern importPattern = Pattern
-            .compile("(?<!\\S) *import\\s[\\.\\s\\p{L}0-9_$]*\\.[\\s]*" + wordPatternString + "[\\s]*; *[\\r\\n]?"); //$NON-NLS-1$ //$NON-NLS-2$
+            .compile("(?<!\\S) *import\\s[\\.\\s\\p{L}0-9_$]*\\.[\\s]*" + wordPatternString + "[\\s]*; *\\r?\\n?"); //$NON-NLS-1$ //$NON-NLS-2$
 
     public String removeUnusedImports(String input) {
         String withoutComments = removeComments(input);
