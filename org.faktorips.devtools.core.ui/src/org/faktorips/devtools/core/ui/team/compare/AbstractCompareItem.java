@@ -29,7 +29,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -56,7 +55,7 @@ import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompar
  * @author Stefan Widmaier, Faktor Zehn AG
  */
 public abstract class AbstractCompareItem implements IStreamContentAccessor, IStructureComparator, ITypedElement,
-IDocumentRange {
+        IDocumentRange {
 
     protected static final String COLON_BLANK = ": "; //$NON-NLS-1$
     protected static final String COLON = ":"; //$NON-NLS-1$
@@ -72,7 +71,7 @@ IDocumentRange {
      * <code>ChangesOverTimeNamingConvention</code>. Since <code>AbstractCompareItem</code>s do not
      * change over time, an initialization in the constructor is sufficient.
      */
-    protected final String changingNamingConventionGenerationString;
+    private final String changingNamingConventionGenerationString;
 
     /**
      * The parent of this <code>AbstractCompareItem</code>. May be null if this CompareItem is root.
@@ -92,7 +91,7 @@ IDocumentRange {
      * The list of children of this <code>AbstractCompareItem</code>. This list is empty if this
      * compare-item is a leaf in its tree.
      */
-    protected List<AbstractCompareItem> children = new ArrayList<AbstractCompareItem>();
+    private final List<AbstractCompareItem> childItems = new ArrayList<AbstractCompareItem>();
 
     /**
      * The range this <code>AbstractCompareItem</code>'s string representation inhabits in the
@@ -103,12 +102,12 @@ IDocumentRange {
      * @see #init()
      * @see #initTreeContentString(StringBuffer, int)
      */
-    protected Position range = new Position(0, 0);
+    private final Position range = new Position(0, 0);
 
     /**
      * {@link DateFormat} used to convert the validFrom date of generations into a String.
      */
-    protected DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+    private final DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
 
     /**
      * If this compareitem is the root of its structure, this document contains the string
@@ -171,7 +170,7 @@ IDocumentRange {
     protected int initTreeContentString(StringBuffer sb, int offset) {
         int startIndex = sb.length();
         sb.append(getContentString());
-        for (AbstractCompareItem item : children) {
+        for (AbstractCompareItem item : getChildItems()) {
             sb.append(NEWLINE);
             item.initTreeContentString(sb, sb.length() - startIndex + offset);
             if (item.needsTextSeparator()) {
@@ -215,7 +214,7 @@ IDocumentRange {
      * 
      */
     private void addChild(AbstractCompareItem child) {
-        children.add(child);
+        getChildItems().add(child);
     }
 
     /**
@@ -262,14 +261,14 @@ IDocumentRange {
      */
     @Override
     public Object[] getChildren() {
-        return children.toArray();
+        return getChildItems().toArray();
     }
 
     /**
      * Returns whether this ProductCmptCompareItem has children.
      */
     protected boolean hasChildren() {
-        return !children.isEmpty();
+        return !getChildItems().isEmpty();
     }
 
     /**
@@ -325,16 +324,18 @@ IDocumentRange {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * This hashCode method is not very strong but there seems to be no way to improve with
-     * acceptable performance.
+     * If the compared element is an {@link IIpsObjectPart}, that part's name's hash code.<br>
+     * If the compared element is an {@link IIpsObject}, that object's type's hash code.<br>
+     * Else 0, to compare items solely by their content.
      */
     @Override
     public int hashCode() {
-        if (ipsElement instanceof IpsObjectPart) {
-            IpsObjectPart part = (IpsObjectPart)ipsElement;
-            return part.getId().hashCode();
+        if (ipsElement instanceof IIpsObjectPart) {
+            IIpsObjectPart part = (IIpsObjectPart)ipsElement;
+            return part.getName().hashCode();
+        } else if (ipsElement instanceof IIpsObject) {
+            IIpsObject ipsObject = (IIpsObject)ipsElement;
+            return ipsObject.getIpsObjectType().hashCode();
         } else {
             return 0;
         }
@@ -432,11 +433,27 @@ IDocumentRange {
      */
     private void initStrings() {
         contentString = initContentString();
-        contentStringWithoutWhiteSpace = StringUtils.deleteWhitespace(contentString);
+        contentStringWithoutWhiteSpace = initContentStringWithoutWhiteSpace();
         name = initName();
-        for (AbstractCompareItem item : children) {
+        for (AbstractCompareItem item : getChildItems()) {
             item.initStrings();
         }
+    }
+
+    protected String initContentStringWithoutWhiteSpace() {
+        return StringUtils.deleteWhitespace(contentString);
+    }
+
+    protected String getChangingNamingConventionGenerationString() {
+        return changingNamingConventionGenerationString;
+    }
+
+    protected List<AbstractCompareItem> getChildItems() {
+        return childItems;
+    }
+
+    public DateFormat getDateFormat() {
+        return dateFormat;
     }
 
 }

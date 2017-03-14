@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -37,6 +36,12 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * columnWidthsInTabs[2] contains the width of the second content column in tabs.
      */
     private int[] columnWidthsInTabs = null;
+
+    /**
+     * A row's content string separating the column values with a "|" character, and with all
+     * whitespace removed. Used for hashcode() and equals().
+     */
+    private String rowContentStringColumnSeparated;
 
     /**
      * Creates an <code>TableContentsCompareItem</code> using the given parent and
@@ -68,6 +73,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             IRow row = (IRow)getIpsElement();
             ITableContents table = (ITableContents)row.getIpsObject();
             int[] columnWidths = getColumnWidths();
+            StringBuffer sbColSep = new StringBuffer();
 
             /*
              * Do not display Rownumber at the start of the line since textcompare/RangeDifferencing
@@ -80,24 +86,29 @@ public class TableContentsCompareItem extends AbstractCompareItem {
                 String value = getRowValueAt(row, colCounter);
                 sb.append(value);
                 sb.append(getNeededTabs(columnWidths[colCounter + 1], value));
+                sb.append("\u007C "); //$NON-NLS-1$
+                sbColSep.append(value);
+                sbColSep.append('\u007C');
             }
-        } else if (getIpsElement() instanceof IIpsObjectGeneration) {
-            // for now do not display generation in text representation
-            // IIpsObjectGeneration gen= (IIpsObjectGeneration) getIpsElement();
-            // sb.append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
-            // sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
-            // sb.append(TAB).append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom).append(BLANK);
-            // sb.append(dateFormat.format(gen.getValidFrom().getTime()));
+            rowContentStringColumnSeparated = sbColSep.toString();
         } else if (getIpsElement() instanceof ITableContents) {
             ITableContents table = (ITableContents)getIpsElement();
             sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
             sb.append(QUOTE).append(table.getName()).append(QUOTE).append(NEWLINE);
             sb.append(TAB).append(Messages.TableContentsCompareItem_TableStructure).append(COLON_BLANK).append(QUOTE)
-                    .append(table.getTableStructure()).append(QUOTE);
+            .append(table.getTableStructure()).append(QUOTE);
         } else if (getIpsElement() instanceof IIpsSrcFile) {
             sb.append(Messages.TableContentsCompareItem_SrcFile);
         }
         return sb.toString();
+    }
+
+    @Override
+    protected String initContentStringWithoutWhiteSpace() {
+        if (rowContentStringColumnSeparated != null) {
+            return rowContentStringColumnSeparated;
+        }
+        return super.initContentStringWithoutWhiteSpace();
     }
 
     /**
@@ -110,7 +121,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */
     private StringBuffer getNeededTabs(int widthInTabs, String value) {
         StringBuffer sb = new StringBuffer();
-        int neededTabs = widthInTabs - value.length() / TableContentsCompareViewer.TAB_WIDTH;
+        int neededTabs = widthInTabs - (value.length() + 2) / TableContentsCompareViewer.TAB_WIDTH;
         for (int tabCounter = 0; tabCounter < neededTabs; tabCounter++) {
             sb.append(TAB);
         }
@@ -127,12 +138,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             IRow row = (IRow)getIpsElement();
             // translate 0 based index to 1 based row number
             sb.append(Messages.TableContentsCompareItem_Row).append(COLON_BLANK).append(row.getRowNumber() + 1);
-        } else if (getIpsElement() instanceof IIpsObjectGeneration) {
-            IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-            String validFrom = gen.getValidFrom() != null ? dateFormat.format(gen.getValidFrom().getTime()) : IpsPlugin
-                    .getDefault().getIpsPreferences().getNullPresentation();
-            sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(validFrom)
-                    .append(QUOTE);
+        } else if (getIpsElement() instanceof ITableRows) {
+            sb.append(Messages.TableContentsCompareItem_rows);
         } else if (getIpsElement() instanceof ITableContents) {
             ITableContents table = (ITableContents)getIpsElement();
             sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
@@ -165,7 +172,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     public void init() {
         if (isRoot()) {
             if (hasChildren()) {
-                IIpsElement element = (children.get(0)).getIpsElement();
+                IIpsElement element = (getChildItems().get(0)).getIpsElement();
                 if (element instanceof ITableContents) {
                     initColumnWidths((ITableContents)element);
                 }
@@ -176,9 +183,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
 
     /**
      * Introduces a special compare for compareItems representing rows. Returns true only if both
-     * compareitems contain <code>IRow</code> objects and if both rows have the same rownumber and
-     * if both rows (tables) have the same number of columns and if the two values for every column
-     * equal each other. Returns false otherwise.
+     * compareitems contain <code>IRow</code> objects and if both rows have the same content String
+     * representation.
      * <p>
      * If the compareitems do not contain rows, equals() returns the same value as the equals()
      * method in <code>AbstractCompareItem</code>.
@@ -188,45 +194,24 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     @Override
     public boolean equals(Object o) {
         if (o instanceof TableContentsCompareItem) {
-            if (getIpsElement() instanceof IRow && ((TableContentsCompareItem)o).getIpsElement() instanceof IRow) {
-                IRow row = (IRow)getIpsElement();
-                IRow otherRow = (IRow)((TableContentsCompareItem)o).getIpsElement();
-                ITableContents table = (ITableContents)row.getIpsObject();
-                ITableContents otherTable = (ITableContents)otherRow.getIpsObject();
-                // also compare IDs of rows (not rownumbers)
-                if (table.getNumOfColumns() != otherTable.getNumOfColumns()
-                        || !row.getName().equals(otherRow.getName())) {
-                    return false;
-                }
-                for (int i = 0; i < table.getNumOfColumns(); i++) {
-                    if (!getRowValueAt(row, i).equals(getRowValueAt(otherRow, i))) {
-                        return false;
-                    }
-                }
-                return true;
+            TableContentsCompareItem otherTableContentsCompareItem = (TableContentsCompareItem)o;
+            if (getIpsElement() instanceof IRow && otherTableContentsCompareItem.getIpsElement() instanceof IRow) {
+                return rowContentStringColumnSeparated
+                        .equals(otherTableContentsCompareItem.rowContentStringColumnSeparated);
             }
         }
         return super.equals(o);
     }
 
     /**
-     * If this compareItem contains an <code>IRow</code> as IpsElement, hashCode() returns the sum
-     * of the hashcodes of all row-values plus the hashcode of the rownumber (as a string).
-     * Otherwise returns the same value as hashCode() in <code>AbstractCompareItem</code>.
-     * {@inheritDoc}
+     * If this compareItem contains an <code>IRow</code> as IpsElement, hashCode() returns the hash
+     * code of {@link #getContentStringWithoutWhiteSpace()}. Otherwise returns the same value as
+     * hashCode() in <code>AbstractCompareItem</code>. {@inheritDoc}
      */
     @Override
     public int hashCode() {
         if (getIpsElement() instanceof IRow) {
-            IRow row = (IRow)getIpsElement();
-            ITableContents table = (ITableContents)row.getIpsObject();
-            int hashCode = 0;
-            // use IDs of rows in hashcode
-            hashCode += row.getName().hashCode(); // use ID
-            for (int i = 0; i < table.getNumOfColumns(); i++) {
-                hashCode += getRowValueAt(row, i).hashCode();
-            }
-            return hashCode;
+            return rowContentStringColumnSeparated.hashCode();
         } else {
             return super.hashCode();
         }

@@ -82,7 +82,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     protected int initTreeContentString(StringBuffer sb, int offset) {
         int startIndex = sb.length();
         sb.append(getContentString());
-        for (AbstractCompareItem compareItem : children) {
+        for (AbstractCompareItem compareItem : getChildItems()) {
             ProductCmptCompareItem child = (ProductCmptCompareItem)compareItem;
             if (child.getIpsElement() instanceof IProductCmpt) {
                 /*
@@ -126,7 +126,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         initRules(partContainer, sb, offset, startIndex);
         if (getIpsElement() instanceof IProductCmpt) {
             // call this method recursively for all generations in a product component
-            List<ProductCmptCompareItem> genItems = getCompareItemsOfClass(children, IProductCmptGeneration.class);
+            List<ProductCmptCompareItem> genItems = getCompareItemsOfClass(getChildItems(), IProductCmptGeneration.class);
             for (ProductCmptCompareItem genItem : genItems) {
                 sb.append(NEWLINE);
                 genItem.initPropertyValueContainerContentString((IPropertyValueContainer)genItem.getIpsElement(), sb,
@@ -139,7 +139,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private void initAttributes(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
-        List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
+        List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(getChildItems(), IAttributeValue.class);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getAttributeListHeader(partContainer));
@@ -154,7 +154,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             StringBuffer sb,
             int offset,
             int startIndex) {
-        List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(children, IConfigElement.class);
+        List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(getChildItems(), IConfigElement.class);
         if (!configElements.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getConfigElementListHeader(partContainer));
@@ -166,7 +166,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private void initFormulas(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
-        List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(children, IFormula.class);
+        List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(getChildItems(), IFormula.class);
         if (!formulas.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getFormulaListHeader(partContainer));
@@ -178,7 +178,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private void initLinks(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
-        List<ProductCmptCompareItem> links = getCompareItemsOfClass(children, IProductCmptLink.class);
+        List<ProductCmptCompareItem> links = getCompareItemsOfClass(getChildItems(), IProductCmptLink.class);
         if (!links.isEmpty()) {
             sb.append(NEWLINE);
             String linksHeader = getLinkListHeader(partContainer);
@@ -199,7 +199,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private void initTableUsages(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
-        List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
+        List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(getChildItems(), ITableContentUsage.class);
         if (!tableUsages.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getTableUsageListHeader(partContainer));
@@ -211,7 +211,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private void initRules(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
-        List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
+        List<ProductCmptCompareItem> rules = getCompareItemsOfClass(getChildItems(), IValidationRuleConfig.class);
         if (!rules.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getRuleListHeader(partContainer));
@@ -397,14 +397,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     private void initContentStringForGeneration(StringBuffer sb, IIpsObjectGeneration gen) {
         sb.append(getGenerationDateText(gen));
-        sb.append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
+        sb.append(TAB).append(getChangingNamingConventionGenerationString()).append(COLON_BLANK);
         sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
         sb.append(getGenerationDateText(gen));
         sb.append(TAB)
         .append(TAB)
         .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
         .append(BLANK);
-        sb.append(dateFormat.format(gen.getValidFrom().getTime()));
+        sb.append(getDateFormat().format(gen.getValidFrom().getTime()));
     }
 
     private void initContentStringForProductCmpt(StringBuffer sb, IProductCmpt product) {
@@ -509,7 +509,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             .append(vRuleConfig.getPropertyName()).append(QUOTE);
         } else if (getIpsElement() instanceof IIpsObjectGeneration) {
             IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-            sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE)
+            sb.append(getChangingNamingConventionGenerationString()).append(COLON_BLANK).append(QUOTE)
             .append(getGenerationDateText(gen)).append(QUOTE);
         } else if (getIpsElement() instanceof IProductCmpt) {
             IProductCmpt product = (IProductCmpt)getIpsElement();
@@ -570,8 +570,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * @see ProductCmptCompareItemComparator
      */
     private void sortChildren() {
-        Collections.sort(children, new ProductCmptCompareItemComparator());
-        for (AbstractCompareItem element : children) {
+        Collections.sort(getChildItems(), new ProductCmptCompareItemComparator());
+        for (AbstractCompareItem element : getChildItems()) {
             ((ProductCmptCompareItem)element).sortChildren();
         }
     }

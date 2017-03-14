@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
@@ -146,9 +147,6 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         TableContentsCompareItem tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
         TableContentsCompareItem genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         TableContentsCompareItem rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
-        // rows equal in contentString (ignored whitespace) but not in content
-        assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
-        assertFalse(rowItem1.equals(rowItem2));
 
         // fill row (different ID) with same contents
         row2b.setValue(0, "65");
@@ -160,9 +158,9 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[1]; // second row (row2b)
         // compare rows with same content and differing rownumber
-        assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
+        assertEquals(rowItem1.getContentString(), rowItem2.getContentString());
         assertFalse(rowItem1.getIpsElement().getName().equals(rowItem2.getIpsElement().getName()));
-        assertFalse(rowItem1.equals(rowItem2));
+        assertTrue(rowItem1.equals(rowItem2));
 
         // change contents
         row2.setValue(0, "x");
@@ -174,7 +172,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing content
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
+        assertFalse(rowItem1.getContentString().equals(rowItem2.getContentString()));
         assertFalse(rowItem1.equals(rowItem2));
 
         // add column
@@ -185,7 +183,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing columnNumber
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
+        assertFalse(rowItem1.getContentString().equals(rowItem2.getContentString()));
         assertFalse(rowItem1.equals(rowItem2));
     }
 
@@ -225,10 +223,6 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         TableContentsCompareItem tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
         TableContentsCompareItem genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         TableContentsCompareItem rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
-        // rows equal in contentString (ignored whitespace) but not in content
-        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2
-                .getContentStringWithoutWhiteSpace().hashCode());
-        assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
 
         // fill row (different rownumber) with same contents
         row2b.setValue(0, "65");
@@ -240,10 +234,9 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[1]; // second row (row2b)
         // compare rows with same content and different ID
-        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2
-                .getContentStringWithoutWhiteSpace().hashCode());
+        assertEquals(rowItem1.getContentString().hashCode(), rowItem2.getContentString().hashCode());
         assertFalse(rowItem1.getIpsElement().getName().equals(rowItem2.getIpsElement().getName()));
-        assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
+        assertTrue(rowItem1.hashCode() == rowItem2.hashCode());
 
         // change contents
         row2.setValue(0, "x");
@@ -255,8 +248,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing content
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode() == rowItem2
-                .getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.getContentString().hashCode() == rowItem2.getContentString().hashCode());
         assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
 
         // add column
@@ -267,8 +259,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2 = (TableContentsCompareItem)tableItem2.getChildren()[0];
         rowItem2 = (TableContentsCompareItem)genItem2.getChildren()[0];
         // compare rows with differing columnNumber
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode() == rowItem2
-                .getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.getContentString().hashCode() == rowItem2.getContentString().hashCode());
         assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
 
         Differencer differencer = new Differencer();
