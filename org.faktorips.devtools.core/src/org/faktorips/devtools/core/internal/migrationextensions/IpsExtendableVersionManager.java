@@ -78,7 +78,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
         Version currentVersion = Version.parseVersion(getCurrentVersion());
         for (Version version : versionsWithMigration) {
             if (version.compareTo(projectsVersion) > 0 && version.compareTo(currentVersion) <= 0) {
-                result.add(getRegisteredMigrations().get(version).createIpsProjectMigrationOperation(projectToMigrate,
+                result.add(getRegisteredMigrations().get(version).createIpsProjectMigrationOpertation(projectToMigrate,
                         getFeatureId()));
             }
         }

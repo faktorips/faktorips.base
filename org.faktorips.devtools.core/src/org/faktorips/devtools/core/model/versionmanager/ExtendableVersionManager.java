@@ -205,7 +205,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
 
         for (Version version : versionsWithMigration) {
             if (version.compareTo(projectsVersion) > 0 && version.compareTo(getVersion()) <= 0) {
-                result.add(registeredMigrations.get(version).createIpsProjectMigrationOperation(projectToMigrate,
+                result.add(registeredMigrations.get(version).createIpsProjectMigrationOpertation(projectToMigrate,
                         getFeatureId()));
             }
         }

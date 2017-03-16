@@ -101,7 +101,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
                 new IIpsProjectMigrationOperationFactory() {
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation1;
                     }
@@ -110,7 +110,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
                 new IIpsProjectMigrationOperationFactory() {
 
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation2;
                     }

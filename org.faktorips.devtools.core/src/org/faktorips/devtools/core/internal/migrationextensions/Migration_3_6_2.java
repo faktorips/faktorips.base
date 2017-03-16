@@ -129,7 +129,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
         @Override
-        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
+        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
                 String featureId) {
 
             return new Migration_3_6_2(ipsProject, featureId);

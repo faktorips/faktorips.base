@@ -52,7 +52,7 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
         properties.setBuilderSetId(StandardBuilderSet.ID);
         outputFolder = ipsProject.getProject().getFolder("extension/org/faktorips/sample/model/internal/my");
         ipsProject.setProperties(properties);
-        migration = (Migration_3_20_0)new Migration_3_20_0.Factory().createIpsProjectMigrationOperation(ipsProject,
+        migration = (Migration_3_20_0)new Migration_3_20_0.Factory().createIpsProjectMigrationOpertation(ipsProject,
                 "irrelevant");
     }
 

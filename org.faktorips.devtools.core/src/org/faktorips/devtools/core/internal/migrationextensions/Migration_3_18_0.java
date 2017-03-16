@@ -82,7 +82,7 @@ public class Migration_3_18_0 extends DefaultMigration {
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
         @Override
-        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject,
+        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
                 String featureId) {
             return new Migration_3_18_0(ipsProject, featureId);
         }

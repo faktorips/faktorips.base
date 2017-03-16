@@ -14,6 +14,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public interface IIpsProjectMigrationOperationFactory {
 
-    AbstractIpsProjectMigrationOperation createIpsProjectMigrationOperation(IIpsProject ipsProject, String featureId);
+    AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject, String featureId);
 
 }
