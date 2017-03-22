@@ -57,7 +57,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
     public MessageList validateTypeSelection() {
         MessageList result = new MessageList();
 
-        if (getPmo().getIpsProject() == null || !getPmo().getIpsProject().isProductDefinitionProject()) {
+        if (getPmo().getIpsProject() == null) {
             result.add(new Message(MSG_INVALID_PROJECT, Messages.NewProdutCmptValidator_msg_invalidProject,
                     Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_IPS_PROJECT));
         }
@@ -155,9 +155,9 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
         if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
             messageList
-                    .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                    Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
-                    Message.WARNING));
+            .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                            Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
+                            Message.WARNING));
         }
         return messageList;
     }
@@ -172,7 +172,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                     || !getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
                 result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
                         Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
-                                .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
+                        .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
             }
         }
         return result;

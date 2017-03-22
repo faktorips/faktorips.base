@@ -43,17 +43,35 @@ public class NewProductCmptValidatorTest {
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateTypeSelection();
-        assertNotNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_PROJECT));
 
+        assertNotNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_PROJECT));
+    }
+
+    @Test
+    public void testValidateAllPagesTypeSelection_validProject() throws Exception {
+        NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
+        NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.isProductDefinitionProject()).thenReturn(true);
+        when(pmo.getIpsProject()).thenReturn(ipsProject);
+
+        MessageList msgList = newProdutCmptValidator.validateTypeSelection();
+
+        assertNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_PROJECT));
+    }
+
+    // FIPS-5387
+    @Test
+    public void testValidateAllPagesTypeSelection_validProject_noProductDefinition() throws Exception {
+        NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
+        NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(pmo.getIpsProject()).thenReturn(ipsProject);
 
-        msgList = newProdutCmptValidator.validateTypeSelection();
-        assertNotNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_PROJECT));
+        when(ipsProject.isProductDefinitionProject()).thenReturn(false);
 
-        when(ipsProject.isProductDefinitionProject()).thenReturn(true);
+        MessageList msgList = newProdutCmptValidator.validateTypeSelection();
 
-        msgList = newProdutCmptValidator.validateTypeSelection();
         assertNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_PROJECT));
     }
 
@@ -346,6 +364,38 @@ public class NewProductCmptValidatorTest {
 
         msgList = newProdutCmptValidator.validateFolderAndPackage();
         assertNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_PACKAGE));
+    }
+
+    @Test
+    public void testValidateAllPagesProductCmptPage_ok() throws Exception {
+        NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
+        NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
+        mockTypeSelection(pmo);
+
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IProductCmptType baseType = mock(IProductCmptType.class);
+        IProductCmptType type = mock(IProductCmptType.class);
+        when(pmo.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.isProductDefinitionProject()).thenReturn(true);
+        when(pmo.getSelectedBaseType()).thenReturn(baseType);
+        when(pmo.getSelectedType()).thenReturn(type);
+        IProductCmptNamingStrategy namingStrategy = mock(IProductCmptNamingStrategy.class);
+        when(ipsProject.getProductCmptNamingStrategy()).thenReturn(namingStrategy);
+
+        when(pmo.getKindId()).thenReturn("anyId");
+        when(pmo.getName()).thenReturn("anyFullName");
+        when(pmo.getQualifiedName()).thenReturn("qualifiedName");
+        when(namingStrategy.getKindId("anyFullName")).thenReturn("anyId");
+        when(pmo.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
+
+        IIpsProjectNamingConventions namingConventions = mock(IIpsProjectNamingConventions.class);
+        when(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, "anyFullName")).thenReturn(
+                new MessageList());
+        when(ipsProject.getNamingConventions()).thenReturn(namingConventions);
+        when(pmo.getEffectiveDate()).thenReturn(new GregorianCalendar());
+
+        MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
+        assertFalse(msgList.containsErrorMsg());
     }
 
 }

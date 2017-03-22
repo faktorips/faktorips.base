@@ -24,7 +24,6 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String NewTableContentsValidator_msg_invalidProject;
     public static String NewTableContentsValidator_msg_noProject;
     public static String NewTableContentsValidator_msg_noStructure;
     public static String NewTableContentsValidator_msgInvalidStructure;

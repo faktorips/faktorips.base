@@ -21,8 +21,6 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
 
     public static final String MSG_NO_PROJECT = MSGCODE_PREFIX + "noProject"; //$NON-NLS-1$
 
-    public static final String MSG_INVALID_PROJECT = MSGCODE_PREFIX + "invalidProject"; //$NON-NLS-1$
-
     public static final String MSG_NO_STRUCTURE = MSGCODE_PREFIX + "noStructure"; //$NON-NLS-1$
 
     public static final String MSG_INVALID_STRUCTURE = MSGCODE_PREFIX + "invalidStructure"; //$NON-NLS-1$
@@ -54,9 +52,6 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
     private void validateProject(MessageList result) {
         if (getPmo().getIpsProject() == null) {
             result.add(new Message(MSG_NO_PROJECT, Messages.NewTableContentsValidator_msg_noProject, Message.ERROR));
-        } else if (!getPmo().getIpsProject().isProductDefinitionProject()) {
-            result.add(new Message(MSG_INVALID_PROJECT, Messages.NewTableContentsValidator_msg_invalidProject,
-                    Message.ERROR));
         }
     }
 
