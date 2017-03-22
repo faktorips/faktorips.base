@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.faktorips.values.ObjectUtil;
+
 /**
  * A list of <code>Message</code>s.
  * 
@@ -153,12 +155,15 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns the first message in the list that has the specified message code. Returns null, if
-     * the list does not contain such a message.
+     * Returns the first message in the list that has the specified message code. Returns
+     * <code>null</code> if the list does not contain such a message.
+     * 
+     * @param code the code to look for. May be <code>null</code>, as messages may have
+     *            <code>null</code> as their message code.
      */
     public Message getMessageByCode(String code) {
         for (Message message : messages) {
-            if (message.getCode().equals(code)) {
+            if (ObjectUtil.equals(message.getCode(), code)) {
                 return message;
             }
         }
@@ -167,16 +172,16 @@ public class MessageList implements Serializable, Iterable<Message> {
 
     /**
      * Returns a new message list containing all the message in this list that have the specified
-     * message code. Returns an empty list if either code is <code>null</code> or this list does
-     * contain any message with the given code.
+     * message code. Returns an empty list if this list does not contain any message with the given
+     * code.
+     * 
+     * @param code the code to look for. May be <code>null</code>, as messages may have
+     *            <code>null</code> as their message code.
      */
     public MessageList getMessagesByCode(String code) {
         MessageList sublist = new MessageList();
-        if (code == null) {
-            return sublist;
-        }
         for (Message message : messages) {
-            if (code.equals(message.getCode())) {
+            if (ObjectUtil.equals(message.getCode(), code)) {
                 sublist.add(message);
             }
         }

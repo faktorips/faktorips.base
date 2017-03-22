@@ -144,13 +144,16 @@ public class MessageListTest {
         Message msg1 = Message.newError("1", "blabla");
         Message msg2 = Message.newError("2", "blabla");
         Message msg3 = Message.newError("2", "blabla");
+        Message msg4 = Message.newError(null, "blabla");
         list.add(msg1);
         list.add(msg2);
         list.add(msg3);
+        list.add(msg4);
 
-        assertTrue(msg1 == list.getMessageByCode("1"));
-        assertTrue(msg2 == list.getMessageByCode("2"));
+        assertSame(msg1, list.getMessageByCode("1"));
+        assertSame(msg2, list.getMessageByCode("2"));
         assertNull(list.getMessageByCode("3"));
+        assertSame(msg4, list.getMessageByCode(null));
     }
 
     @Test
@@ -162,21 +165,27 @@ public class MessageListTest {
         Message msg1 = Message.newError("1", "blabla");
         Message msg2 = Message.newError("2", "blabla");
         Message msg3 = Message.newError("2", "blabla");
+        Message msg4 = Message.newError(null, "blabla");
         list.add(msg1);
         list.add(msg2);
         list.add(msg3);
+        list.add(msg4);
 
-        MessageList sublist = list.getMessagesByCode("1");
-        assertEquals(1, sublist.size());
-        assertSame(msg1, sublist.getMessage(0));
+        MessageList messagesWithCode = list.getMessagesByCode("1");
+        assertEquals(1, messagesWithCode.size());
+        assertSame(msg1, messagesWithCode.getMessage(0));
 
-        sublist = list.getMessagesByCode("2");
-        assertEquals(2, sublist.size());
-        assertSame(msg2, sublist.getMessage(0));
-        assertSame(msg3, sublist.getMessage(1));
+        messagesWithCode = list.getMessagesByCode("2");
+        assertEquals(2, messagesWithCode.size());
+        assertSame(msg2, messagesWithCode.getMessage(0));
+        assertSame(msg3, messagesWithCode.getMessage(1));
 
-        sublist = list.getMessagesByCode("unknown");
-        assertEquals(0, sublist.size());
+        messagesWithCode = list.getMessagesByCode("unknown");
+        assertEquals(0, messagesWithCode.size());
+
+        messagesWithCode = list.getMessagesByCode(null);
+        assertEquals(1, messagesWithCode.size());
+        assertSame(msg4, messagesWithCode.getMessage(0));
     }
 
     @Test
