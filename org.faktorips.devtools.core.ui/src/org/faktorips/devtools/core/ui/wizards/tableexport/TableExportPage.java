@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
-import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Wizard page for configuring table contents ({@link ITableContents}) for export.
@@ -36,6 +36,7 @@ import org.faktorips.util.message.Message;
  */
 public class TableExportPage extends IpsObjectExportPage {
 
+    @SuppressWarnings("hiding")
     public static final String PAGE_NAME = "TableExportPage"; //$NON-NLS-1$
 
     @Override
@@ -110,18 +111,21 @@ public class TableExportPage extends IpsObjectExportPage {
         }
         try {
             ITableContents contents = getTableContents();
-            if (contents == null) {
-                setErrorMessage(Messages.TableExportPage_msgNonExisitingContents);
-                return;
-            }
-            if (!contents.exists()) {
+            if (contents == null || !contents.exists()) {
                 setErrorMessage(Messages.TableExportPage_msgNonExisitingContents);
                 return;
             }
             ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
-            if (structure.validate(structure.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.TableExportPage_msgStructureNotValid);
+            if (structure == null || !structure.exists()) {
+                setErrorMessage(Messages.TableExportPage_msgNonExisitingStructure);
                 return;
+            }
+            MessageList structureValidationMessages = structure.validate(structure.getIpsProject());
+            removeVersionFormatValidation(structureValidationMessages);
+            if (structureValidationMessages.containsErrorMsg()) {
+                setWarningMessage(Messages.TableExportPage_msgStructureNotValid);
+            } else {
+                clearWarningMessage();
             }
             if (structure.getNumOfColumns() > MAX_EXCEL_COLUMNS) {
                 Object[] objects = new Object[3];

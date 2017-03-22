@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.wizards.ipsexport;
 
 import java.io.File;
+import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -39,6 +41,8 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Base wizard page for configuring an IPS object for export.
@@ -254,15 +258,15 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     protected void projectChanged() {
         if ("".equals(projectField.getText())) { //$NON-NLS-1$
-            exportedIpsObjectControl.setIpsProject(null);
+            exportedIpsObjectControl.setIpsProjects();
             return;
         }
         IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
         if (project.exists()) {
-            exportedIpsObjectControl.setIpsProject(project);
+            exportedIpsObjectControl.setIpsProjects(project);
             return;
         }
-        exportedIpsObjectControl.setIpsProject(null);
+        exportedIpsObjectControl.setIpsProjects();
     }
 
     @Override
@@ -340,7 +344,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public void setIpsProject(IIpsProject project) {
         projectControl.setIpsProject(project);
-        exportedIpsObjectControl.setIpsProject(project);
+        exportedIpsObjectControl.setIpsProjects(project);
     }
 
     protected void filenameChanged() {
@@ -382,6 +386,25 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public boolean isExportColumnHeaderRow() {
         return exportWithColumnHeaderRowField.getCheckbox().isChecked();
+    }
+
+    protected void setWarningMessage(String newMessage) {
+        setMessage(newMessage, IMessageProvider.WARNING);
+    }
+
+    protected void clearWarningMessage() {
+        if (getMessageType() == IMessageProvider.WARNING) {
+            setMessage(null);
+        }
+    }
+
+    // FIPS-4865: the version format is not relevant to the export
+    protected void removeVersionFormatValidation(MessageList messages) {
+        for (Iterator<Message> iterator = messages.iterator(); iterator.hasNext();) {
+            if (IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT.equals(iterator.next().getCode())) {
+                iterator.remove();
+            }
+        }
     }
 
 }

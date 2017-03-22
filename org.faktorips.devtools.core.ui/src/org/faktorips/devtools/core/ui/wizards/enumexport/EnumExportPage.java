@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
-import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Wizard page for configuring an enum type or enum content for export.
@@ -85,7 +85,7 @@ public class EnumExportPage extends IpsObjectExportPage {
                 return;
             }
 
-            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).containsErrorMsg()) {
                 setErrorMessage(Messages.EnumExportPage_msgEnumNotValid);
                 return;
             }
@@ -99,10 +99,17 @@ public class EnumExportPage extends IpsObjectExportPage {
             }
 
             IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+            if (enumType == null || !enumType.exists()) {
+                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnumType);
+                return;
+            }
             if (enumValueContainer instanceof IEnumContent) {
-                if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                    setErrorMessage(Messages.EnumExportPage_msgEnumTypeNotValid);
-                    return;
+                MessageList enumTypeValidationMessages = enumType.validate(enumType.getIpsProject());
+                removeVersionFormatValidation(enumTypeValidationMessages);
+                if (enumTypeValidationMessages.containsErrorMsg()) {
+                    setWarningMessage(Messages.EnumExportPage_msgEnumTypeNotValid);
+                } else {
+                    clearWarningMessage();
                 }
             }
 
