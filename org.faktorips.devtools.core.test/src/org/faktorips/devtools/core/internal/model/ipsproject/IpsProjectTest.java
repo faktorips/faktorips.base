@@ -1612,8 +1612,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
 
         // create builder set so that this test case is independent from StandardBuilderSet which is
-        // in a different
-        // plugin
+        // in a different plugin
         IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
 
             @Override
@@ -1708,7 +1707,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(projectBBuilderSet),
                         new TestArtefactBuilderSetInfo(projectABuilderSet) });
 
-        // etablish the dependency so that projectB is dependent from projectA
+        // establish the dependency so that projectB is dependent from projectA
         IpsObjectPath projectBIpsObjectPath = ipsProjectB.getIpsObjectPathInternal();
         ArrayList<IIpsObjectPathEntry> projectBIpsObjectPathEntries = new ArrayList<IIpsObjectPathEntry>(
                 Arrays.asList(projectBIpsObjectPath.getEntries()));
@@ -1740,6 +1739,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // for projectA the validation is expected not to fail since A doesn't depend on B
         msgList = ipsProject.validate();
         assertNull(msgList.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
+
+        // FIPS-5387 : the validation should also work for model projects
+        props = ipsProject.getProperties();
+        props.setProductDefinitionProject(false);
+        ipsProject.setProperties(props);
+        projectBProperties = ipsProjectB.getProperties();
+        projectBProperties.setProductDefinitionProject(false);
+        ipsProjectB.setProperties(projectBProperties);
+
+        msgList = ipsProjectB.validate();
+        assertNotNull(msgList.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
     }
 
     @Test
