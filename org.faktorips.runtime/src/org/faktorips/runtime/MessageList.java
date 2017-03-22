@@ -63,13 +63,12 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Adds the message to the list.
      * 
-     * @throws NullPointerException if message is null.
+     * @param message the {@link Message} to add. Ignored if <code>null</code>.
      */
     public void add(Message message) {
-        if (message == null) {
-            throw new NullPointerException();
+        if (message != null) {
+            messages.add(message);
         }
-        messages.add(message);
     }
 
     /**

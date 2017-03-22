@@ -37,6 +37,20 @@ public class MessageListTest {
     }
 
     @Test
+    public void testAddMessage_null() {
+        MessageList list = new MessageList();
+
+        Message msg1 = Message.newError("1", "blabla");
+        list.add(msg1);
+        assertEquals(1, list.size());
+        assertTrue(msg1 == list.getMessage(0));
+
+        list.add((Message)null);
+        assertEquals(1, list.size());
+        assertTrue(msg1 == list.getMessage(0));
+    }
+
+    @Test
     public void testAddMessageList() {
         MessageList list1 = new MessageList();
         Message msg1 = Message.newError("1", "blabla");
