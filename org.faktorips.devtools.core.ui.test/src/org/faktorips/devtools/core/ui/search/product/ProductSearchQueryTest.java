@@ -67,7 +67,7 @@ public class ProductSearchQueryTest {
     private ProductSearchQuery query;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         when(validCondition.isValid()).thenReturn(true);
         when(invalidCondition.isValid()).thenReturn(false);
 
@@ -76,7 +76,7 @@ public class ProductSearchQueryTest {
 
         when(productCmptType.getQualifiedName()).thenReturn(PRODUCT_CMPT_TYPE_NAME);
 
-        when(ipsModel.getIpsProductDefinitionProjects()).thenReturn(new IIpsProject[] { ipsProject, ipsProject2 });
+        when(ipsModel.getIpsProjects()).thenReturn(new IIpsProject[] { ipsProject, ipsProject2 });
 
         when(ipsProject.findProductCmptType(PRODUCT_CMPT_TYPE_NAME)).thenReturn(productCmptType);
     }
