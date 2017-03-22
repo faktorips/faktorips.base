@@ -20,7 +20,8 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.modeltype,
  org.faktorips.runtime.productdataprovider,
  org.faktorips.runtime.test,
- org.faktorips.runtime.util
+ org.faktorips.runtime.util,
+ org.faktorips.runtime.util.function
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.xml.bind;resolution:=optional,

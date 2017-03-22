@@ -11,9 +11,11 @@
 package org.faktorips.runtime;
 
 /**
- * Enum indicating the kind of severity a message can have
+ * Enum indicating the kind of severity a message can have.
+ * <p>
+ * Values are sorted by increasing severity, so that the {@link Enum#compareTo(Enum) Enum's
+ * compareTo} function can be used.
  */
-
 public enum Severity {
 
     /**

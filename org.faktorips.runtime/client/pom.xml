@@ -64,6 +64,7 @@
 										<include>**/ObjectProperty.java</include>
 										<include>**/IEnumValue.java</include>
 										<include>**/UtilityClass.java</include>
+										<include>**/IPredicate.java</include>
 									</includes>
 								</resource>
 							</resources>

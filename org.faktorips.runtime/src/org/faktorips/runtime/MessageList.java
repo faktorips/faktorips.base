@@ -14,7 +14,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.faktorips.runtime.util.function.IPredicate;
 import org.faktorips.values.ObjectUtil;
 
 /**
@@ -154,6 +156,24 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
+     * Returns the message with the highest severity. If there are multiple such messages, the first
+     * one is returned. If this list {@link #isEmpty()}, <code>null</code> is returned.
+     */
+    public Message getMessageWithHighestSeverity() {
+        Message result = null;
+        for (Message message : messages) {
+            if (result == null) {
+                result = message;
+            } else {
+                if (result.getSeverity().compareTo(message.getSeverity()) < 0) {
+                    result = message;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the first message in the list that has the specified message code. Returns
      * <code>null</code> if the list does not contain such a message.
      * 
@@ -182,6 +202,55 @@ public class MessageList implements Serializable, Iterable<Message> {
         for (Message message : messages) {
             if (ObjectUtil.equals(message.getCode(), code)) {
                 sublist.add(message);
+            }
+        }
+        return sublist;
+    }
+
+    /**
+     * Returns a new message list containing all the message in this list that have the specified
+     * {@link IMarker}. Returns an empty list if this list does not contain any message with the
+     * given {@link IMarker}.
+     * 
+     * @param marker the {@link IMarker} to look for. If <code>null</code>, all messages without a
+     *            {@link IMarker} are returned.
+     */
+    public MessageList getMessagesByMarker(IMarker marker) {
+        MessageList sublist = new MessageList();
+        for (Message message : messages) {
+            Set<? extends IMarker> markers = message.getMarkers();
+            if (marker == null && markers.isEmpty() || markers.contains(marker)) {
+                sublist.add(message);
+            }
+        }
+        return sublist;
+    }
+
+    /**
+     * Returns a new message list containing all the message in this list with a {@link IMarker} the
+     * specified {@link IPredicate} matches. Returns an empty list if this list does not contain any
+     * such message.
+     * <p>
+     * Sample usage:
+     * <code>messages.getMessagesByMarker(new IPredicate&lt;IMarker&gt;(){public boolean test(IMarker t){return t.isRequiredInformationMissing();}});</code>
+     * <p>
+     * Sample usage (Java8):
+     * <code>messages.getMessagesByMarker(IMarker::isRequiredInformationMissing);</code>
+     * 
+     * @param markerPredicate to match a {@link IMarker} with. Must not be <code>null</code>
+     * @throws NullPointerException if markerPredicate is <code>null</code>
+     */
+    public MessageList getMessagesByMarker(IPredicate<IMarker> markerPredicate) {
+        if (markerPredicate == null) {
+            throw new NullPointerException("markerPredicate must not be null");
+        }
+        MessageList sublist = new MessageList();
+        messages: for (Message message : messages) {
+            for (IMarker marker : message.getMarkers()) {
+                if (markerPredicate.test(marker)) {
+                    sublist.add(message);
+                    continue messages;
+                }
             }
         }
         return sublist;
