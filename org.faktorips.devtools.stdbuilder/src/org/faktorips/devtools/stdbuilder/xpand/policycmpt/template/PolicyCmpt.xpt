@@ -284,7 +284,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 *
 			 * @generated
 			 */
-			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())-»
+			 @Override
 			 public void setProductComponent(IProductComponent productComponent) {
 			 	productConfiguration.setProductComponent(productComponent);
 			 }

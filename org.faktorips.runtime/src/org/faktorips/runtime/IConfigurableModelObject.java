@@ -30,6 +30,11 @@ public interface IConfigurableModelObject extends IModelObject {
     public IProductComponent getProductComponent();
 
     /**
+     * Sets the current product component.
+     */
+    public void setProductComponent(IProductComponent productComponent);
+
+    /**
      * Returns the date since when this model object is effective.
      */
     public Calendar getEffectiveFromAsCalendar();

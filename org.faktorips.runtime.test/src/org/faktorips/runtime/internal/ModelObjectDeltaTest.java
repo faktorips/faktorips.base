@@ -555,7 +555,7 @@ public class ModelObjectDeltaTest {
 
     class MyConfigurableModelObject extends MyModelObject implements IConfigurableModelObject {
 
-        private final IProductComponent productComponent;
+        private IProductComponent productComponent;
 
         public MyConfigurableModelObject(String id, IProductComponent productComponent) {
             super(id);
@@ -565,6 +565,11 @@ public class ModelObjectDeltaTest {
         @Override
         public IProductComponent getProductComponent() {
             return productComponent;
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            this.productComponent = productComponent;
         }
 
         @Override

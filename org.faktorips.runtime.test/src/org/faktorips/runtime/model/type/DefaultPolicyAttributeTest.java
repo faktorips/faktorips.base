@@ -202,7 +202,7 @@ public class DefaultPolicyAttributeTest {
     public void testGetValueSet_modelObjectChangingOverTime_noEffectiveDate() {
         ConfVertrag vertrag = new ConfVertrag();
         when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent()))
-        .thenReturn(new ProduktGen());
+                .thenReturn(new ProduktGen());
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -347,7 +347,7 @@ public class DefaultPolicyAttributeTest {
     @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime" })
     private class ConfVertrag implements IConfigurableModelObject {
 
-        private final Produkt produkt;
+        private Produkt produkt;
 
         private String attr1;
         private String attr2;
@@ -428,6 +428,11 @@ public class DefaultPolicyAttributeTest {
 
         @Override
         public void initialize() {
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            produkt = (Produkt)productComponent;
         }
     }
 
