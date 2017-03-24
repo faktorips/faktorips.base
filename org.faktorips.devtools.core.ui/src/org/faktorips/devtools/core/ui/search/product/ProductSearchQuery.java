@@ -82,8 +82,8 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
     private Set<IIpsSrcFile> getAllInstancesOfProductCmptType(IProductCmptType productCmptType) throws CoreException {
         Set<IIpsSrcFile> instancesOfProductComponentType = new HashSet<IIpsSrcFile>();
 
-        IIpsProject[] productDefinitionProjects = getIpsModel().getIpsProductDefinitionProjects();
-        for (IIpsProject project : productDefinitionProjects) {
+        IIpsProject[] ipsProjects = getIpsModel().getIpsProjects();
+        for (IIpsProject project : ipsProjects) {
 
             IProductCmptType type = project.findProductCmptType(productCmptType.getQualifiedName());
 

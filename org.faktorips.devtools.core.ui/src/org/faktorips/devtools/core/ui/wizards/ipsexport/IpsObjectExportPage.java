@@ -125,7 +125,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public IIpsProject getIpsProject() {
         return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-                IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+            IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
     }
 
     protected void validateFormat() {
@@ -170,41 +170,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (!project.exists()) {
             setErrorMessage(Messages.IpsObjectExportPage_msgNonExistingProject);
             return;
-        }
-    }
-
-    /**
-     * File selection with default name. The default name will be derived from the current selected
-     * table contents name.
-     */
-    protected class FileSelectionDialogWithDefault extends FileSelectionControl {
-
-        public FileSelectionDialogWithDefault(Composite parent, UIToolkit toolkit) {
-            super(parent, toolkit, SWT.SAVE);
-        }
-
-        @Override
-        protected void buttonClicked() {
-            String previousFilename = getFilename();
-
-            // if there is no previous filename use the default filename
-            setFilename(StringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
-
-            // if no file was selected (e.g. cancel clicked)
-            // set the previous filename
-            if (askForFilename() == null) {
-                setFilename(previousFilename);
-            }
-        }
-
-        private String getDefaultFilename() {
-            String contentsName = exportedIpsObjectField.getText();
-            ITableFormat format = getFormat();
-            String extension = ""; //$NON-NLS-1$
-            if (format != null) {
-                extension = format.getDefaultExtension();
-            }
-            return StringUtil.unqualifiedName(contentsName) + extension;
         }
     }
 
@@ -404,6 +369,41 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             if (IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT.equals(iterator.next().getCode())) {
                 iterator.remove();
             }
+        }
+    }
+
+    /**
+     * File selection with default name. The default name will be derived from the current selected
+     * table contents name.
+     */
+    protected class FileSelectionDialogWithDefault extends FileSelectionControl {
+
+        public FileSelectionDialogWithDefault(Composite parent, UIToolkit toolkit) {
+            super(parent, toolkit, SWT.SAVE);
+        }
+
+        @Override
+        protected void buttonClicked() {
+            String previousFilename = getFilename();
+
+            // if there is no previous filename use the default filename
+            setFilename(StringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
+
+            // if no file was selected (e.g. cancel clicked)
+            // set the previous filename
+            if (askForFilename() == null) {
+                setFilename(previousFilename);
+            }
+        }
+
+        private String getDefaultFilename() {
+            String contentsName = exportedIpsObjectField.getText();
+            ITableFormat format = getFormat();
+            String extension = ""; //$NON-NLS-1$
+            if (format != null) {
+                extension = format.getDefaultExtension();
+            }
+            return StringUtil.unqualifiedName(contentsName) + extension;
         }
     }
 

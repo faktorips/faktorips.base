@@ -116,10 +116,9 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
                 allowedValues.add(obj.getQualifiedName());
             }
 
-            IIpsProject[] ipsProductDefinitionProjects = IpsPlugin.getDefault().getIpsModel()
-                    .getIpsProductDefinitionProjects();
+            IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
 
-            for (IIpsProject productIpsProject : ipsProductDefinitionProjects) {
+            for (IIpsProject productIpsProject : ipsProjects) {
                 IIpsSrcFile[] srcFiles = productIpsProject.findAllProductCmptSrcFiles(productCmptType, true);
                 for (IIpsSrcFile srcFile : srcFiles) {
                     IIpsObject obj = (IIpsObject)srcFile.getAdapter(IIpsObject.class);

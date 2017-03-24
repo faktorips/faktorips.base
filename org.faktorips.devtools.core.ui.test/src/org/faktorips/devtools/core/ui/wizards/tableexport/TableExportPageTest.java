@@ -191,9 +191,10 @@ public class TableExportPageTest {
 
         tableExportPage.validateObjectToExport();
 
-        assertThat(
-                tableExportPage.getErrorMessage(),
-                is(org.faktorips.devtools.core.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns));
+        String msg = org.faktorips.devtools.core.model.tablecontents.Messages
+                .bind(org.faktorips.devtools.core.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
+                        new Object[] { 1 + Short.MAX_VALUE, "tableStructure", Short.MAX_VALUE });
+        assertThat(tableExportPage.getErrorMessage(), is(msg));
         assertThat(tableExportPage.getMessage(), is(Messages.TableExportPage_msgStructureNotValid));
         assertThat(tableExportPage.getMessageType(), is(IMessageProvider.WARNING));
     }

@@ -190,7 +190,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsProjectProperties getProperties() {
         if (TRACE_IPSPROJECT_PROPERTIES) {
             System.out
-            .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
+                    .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
         }
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
@@ -1606,13 +1606,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Validates for duplicate base package generated entries inside the referenced project
      */
     private void validateDuplicateTocFilePath(MessageList result) {
-        // check for same toc file path in referenced projects (only product definition projects)
+        // check for same toc file path in referenced projects
         List<IPath> tocPaths = collectTocPaths(getIpsArtefactBuilderSet(), this);
         List<IIpsProject> referencedProjects = getDirectlyReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
-            if (!isProductDefinitionProject() || !referencedProject.isProductDefinitionProject()) {
-                continue;
-            }
             IIpsArtefactBuilderSet builderSet = referencedProject.getIpsArtefactBuilderSet();
             List<IPath> tocPathsInRefProject = collectTocPaths(builderSet, referencedProject);
 
