@@ -12,7 +12,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
-    protected String «field(fieldName)» = null;
+    private String «field(fieldName)» = null;
 «ENDDEFINE»
 
 «DEFINE propertyField FOR XTableUsage-»
