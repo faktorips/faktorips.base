@@ -204,7 +204,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        return super.performFinish();
+        return true;
     }
 
     private void clearTestValues() throws CoreException {

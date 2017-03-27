@@ -12,30 +12,46 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class ResizableWizard extends Wizard {
-
-    private final int DEFAULT_WIDTH;
-    private final int DEFAULT_HEIGHT;
+public abstract class ResizableWizard extends Wizard {
 
     protected static final String BOUNDS_HEIGHT_KEY = "width"; //$NON-NLS-1$
     protected static final String BOUNDS_WIDTH_KEY = "height"; //$NON-NLS-1$
 
-    final String fSectionName;
+    private final int defaultWidth;
+    private final int defaultHight;
 
-    public ResizableWizard(String sectionName, IDialogSettings settings) {
-        this(sectionName, settings, 300, 400);
+    private final String dialogId;
+
+    protected ResizableWizard(String dialogId) {
+        this(dialogId, 300, 400);
     }
 
-    protected ResizableWizard(String sectionName, IDialogSettings settings, int defaultWidth, int defaultHeight) {
-        DEFAULT_WIDTH = defaultWidth;
-        DEFAULT_HEIGHT = defaultHeight;
-        fSectionName = sectionName;
+    public ResizableWizard(String dialogId, IDialogSettings settings) {
+        this(dialogId, settings, 300, 400);
+    }
+
+    protected ResizableWizard(String dialogId, int defaultWidth, int defaultHeight) {
+        this(dialogId, IpsUIPlugin.getDefault().getDialogSettings(), defaultWidth, defaultHeight);
+    }
+
+    protected ResizableWizard(String dialogId, IDialogSettings settings, int defaultWidth, int defaultHeight) {
+        this.defaultWidth = defaultWidth;
+        this.defaultHight = defaultHeight;
+        this.dialogId = dialogId;
         setDialogSettings(settings);
+    }
+
+    protected String getDialogId() {
+        return dialogId;
     }
 
     @Override
@@ -49,33 +65,44 @@ public class ResizableWizard extends Wizard {
         int height = Math.max(size.y, layoutData.heightHint);
         layoutData.widthHint = Math.max(width, layoutData.minimumWidth);
         layoutData.heightHint = Math.max(height, layoutData.minimumHeight);
+        pageContainer.addControlListener(new ControlAdapter() {
+
+            @Override
+            public void controlResized(ControlEvent e) {
+                saveSize();
+            }
+
+        });
     }
 
     public void saveSize() {
-        final Rectangle bounds = getContainer().getCurrentPage().getControl().getParent().getClientArea();
-        final IDialogSettings settings = getDialogSettings();
-        if (settings == null) {
-            return;
-        }
+        Control control = getContainer().getCurrentPage().getControl();
+        if (!control.isDisposed()) {
+            final Rectangle bounds = control.getParent().getClientArea();
+            final IDialogSettings settings = getDialogSettings();
+            if (settings == null) {
+                return;
+            }
 
-        IDialogSettings section = settings.getSection(fSectionName);
-        if (section == null) {
-            section = settings.addNewSection(fSectionName);
-        }
+            IDialogSettings section = settings.getSection(getDialogId());
+            if (section == null) {
+                section = settings.addNewSection(getDialogId());
+            }
 
-        section.put(BOUNDS_WIDTH_KEY, bounds.width);
-        section.put(BOUNDS_HEIGHT_KEY, bounds.height);
+            section.put(BOUNDS_WIDTH_KEY, bounds.width);
+            section.put(BOUNDS_HEIGHT_KEY, bounds.height);
+        }
     }
 
     public Point loadSize() {
-        final Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        final Point size = new Point(defaultWidth, defaultHight);
 
         final IDialogSettings settings = getDialogSettings();
         if (settings == null) {
             return size;
         }
 
-        final IDialogSettings section = settings.getSection(fSectionName);
+        final IDialogSettings section = settings.getSection(getDialogId());
         if (section == null) {
             return size;
         }
@@ -89,9 +116,4 @@ public class ResizableWizard extends Wizard {
         return size;
     }
 
-    @Override
-    public boolean performFinish() {
-        saveSize();
-        return true;
-    }
 }

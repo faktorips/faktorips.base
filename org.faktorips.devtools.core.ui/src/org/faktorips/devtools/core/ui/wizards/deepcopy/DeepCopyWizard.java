@@ -246,7 +246,7 @@ public class DeepCopyWizard extends ResizableWizard {
         // this implementation of this method should always return true since this causes the wizard
         // dialog to close.
         // in either case if an exception arises or not it doesn't make sense to keep the dialog up
-        return super.performFinish();
+        return true;
     }
 
     /**

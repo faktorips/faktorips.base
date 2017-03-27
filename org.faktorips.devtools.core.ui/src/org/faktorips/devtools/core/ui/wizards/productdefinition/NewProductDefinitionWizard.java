@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -34,21 +33,20 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 import org.faktorips.util.message.MessageList;
 
-public abstract class NewProductDefinitionWizard extends Wizard implements INewWizard {
+public abstract class NewProductDefinitionWizard extends ResizableWizard implements INewWizard {
 
     private final NewProductDefinitionPMO pmo;
 
+    /**
+     * @param pmo The model containing the settings changeable in the wizard.
+     */
     public NewProductDefinitionWizard(NewProductDefinitionPMO pmo) {
-        super();
+        // to keep compatible API the dialogId is specified by overriding getDialogId()
+        super(null);
         this.pmo = pmo;
-
-        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings().getSection(getDialogId());
-        if (settings == null) {
-            settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(getDialogId());
-        }
-        setDialogSettings(settings);
 
         loadDialogSettings(getDialogSettings());
     }
@@ -59,6 +57,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * 
      * @return the id string of this dialog
      */
+    @Override
     protected abstract String getDialogId();
 
     protected NewProductDefinitionPMO getPmo() {
@@ -89,15 +88,23 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
                     IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
                     initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
                 } else {
-                    IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
-                    if (resource != null) {
-                        IProject project = resource.getProject();
-                        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
-                        IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsProject.getSourceIpsPackageFragmentRoots()[0];
-                        initDefaults(ipsPackageFragmentRoot.getDefaultIpsPackageFragment(), null);
-                    }
+                    initFallback(adaptableObject);
                 }
                 return;
+            }
+        }
+    }
+
+    private void initFallback(IAdaptable adaptableObject) {
+        IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+        if (resource != null) {
+            IProject project = resource.getProject();
+            if (project != null) {
+                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                if (ipsProject.exists()) {
+                    IIpsPackageFragmentRoot root = ipsProject.getSourceIpsPackageFragmentRoots()[0];
+                    initDefaults(root.getDefaultIpsPackageFragment(), null);
+                }
             }
         }
     }

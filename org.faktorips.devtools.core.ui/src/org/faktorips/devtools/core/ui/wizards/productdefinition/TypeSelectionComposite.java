@@ -114,7 +114,7 @@ public class TypeSelectionComposite extends Composite {
         title = toolkit.createLabel(this, StringUtils.EMPTY);
         title.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
-        toolkit.createGridComposite(this, 0, false, true);
+        toolkit.createVerticalSpacer(this, 0);
         Composite searchComposite = toolkit.createLabelEditColumnComposite(this);
         searchText = toolkit.createText(searchComposite);
         toolkit.createLabel(searchComposite, Messages.TypeSelectionComposite_msgLabel_Filter);
