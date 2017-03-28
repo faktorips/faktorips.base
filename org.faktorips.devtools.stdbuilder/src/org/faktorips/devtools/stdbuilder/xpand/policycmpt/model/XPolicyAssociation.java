@@ -90,9 +90,9 @@ public class XPolicyAssociation extends XAssociation {
                                 if (superAssociationWithSameName != null
                                         || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
                                     resultingAssociations
-                                            .addAll(detailToMasterDerivedUnion
-                                                    .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
-                                                            currentType));
+                                    .addAll(detailToMasterDerivedUnion
+                                            .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
+                                                    currentType));
                                 }
                             }
                         }
@@ -561,7 +561,11 @@ public class XPolicyAssociation extends XAssociation {
      * policy instance. e.g. "baseCoverage".
      */
     public String getVisitorSupportLoopVarName() {
-        return getJavaNamingConvention().getMemberVarName(getName());
+        if (getName().equals(getName(true))) {
+            return "a" + StringUtils.capitalize(getJavaNamingConvention().getMemberVarName(getName()));
+        } else {
+            return getJavaNamingConvention().getMemberVarName(getName());
+        }
     }
 
     /**

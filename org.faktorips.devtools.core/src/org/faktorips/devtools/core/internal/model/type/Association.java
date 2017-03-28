@@ -398,12 +398,6 @@ public abstract class Association extends TypePart implements IAssociation {
                 list.newError(MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME, text, this,
                         PROPERTY_TARGET_ROLE_PLURAL);
             }
-
-            if (targetRolePlural.equals(targetRoleSingular)) {
-                String text = Messages.Association_msg_TargetRoleSingularIlleaglySameAsTargetRolePlural;
-                list.add(new Message(MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR, text, Message.ERROR, this,
-                        new String[] { PROPERTY_TARGET_ROLE_SINGULAR, PROPERTY_TARGET_ROLE_PLURAL }));
-            }
         }
 
         if (is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
