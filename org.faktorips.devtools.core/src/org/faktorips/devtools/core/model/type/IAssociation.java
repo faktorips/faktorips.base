@@ -65,13 +65,6 @@ public interface IAssociation extends ITypePart {
     public static final String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an association has the same role name singular and
-     * plural.
-     */
-    public static final String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = MSGCODE_PREFIX
-            + "TargetRoleSingularEqualsTargetRoleSingular"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
      */
     public static final String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX
@@ -108,7 +101,7 @@ public interface IAssociation extends ITypePart {
      * supertype in question.
      */
     public static final String MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT = MSGCODE_PREFIX
-            + "ConstrainedwithTargetSupertypeNotConvenient"; //$NON-NLS-1$ 
+            + "ConstrainedwithTargetSupertypeNotConvenient"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that the association that is constrained with target role
      * plural can't be found.

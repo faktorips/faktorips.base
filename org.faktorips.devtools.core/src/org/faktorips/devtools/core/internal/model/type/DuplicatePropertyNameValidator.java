@@ -324,7 +324,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
 
     private void addAssociations(IType currentType) {
         for (IAssociation ass : currentType.getAssociations()) {
-            if (ass.is1ToMany()) {
+            if (ass.is1ToMany() && !ass.getTargetRoleSingular().equalsIgnoreCase(ass.getTargetRolePlural())) {
                 // target role plural only check if is many association
                 add(ass.getTargetRolePlural(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
             }
