@@ -17,9 +17,25 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.faktorips.runtime.util.function.IPredicate;
 import org.junit.Test;
 
 public class MessageListTest {
+
+    private final IPredicate<IMarker> requiredInformationMarker = new IPredicate<IMarker>() {
+
+        @Override
+        public boolean test(IMarker t) {
+            return t.isRequiredInformationMissing();
+        }
+    };
+    private final IPredicate<IMarker> technicalConstraintViolatedInstance = new IPredicate<IMarker>() {
+
+        @Override
+        public boolean test(IMarker t) {
+            return t instanceof TechnicalConstraintViolated;
+        }
+    };
 
     @Test
     public void testAddMessage() {
@@ -34,6 +50,20 @@ public class MessageListTest {
         list.add(msg2);
         assertEquals(2, list.size());
         assertTrue(msg2 == list.getMessage(1));
+    }
+
+    @Test
+    public void testAddMessage_null() {
+        MessageList list = new MessageList();
+
+        Message msg1 = Message.newError("1", "blabla");
+        list.add(msg1);
+        assertEquals(1, list.size());
+        assertTrue(msg1 == list.getMessage(0));
+
+        list.add((Message)null);
+        assertEquals(1, list.size());
+        assertTrue(msg1 == list.getMessage(0));
     }
 
     @Test
@@ -144,13 +174,16 @@ public class MessageListTest {
         Message msg1 = Message.newError("1", "blabla");
         Message msg2 = Message.newError("2", "blabla");
         Message msg3 = Message.newError("2", "blabla");
+        Message msg4 = Message.newError(null, "blabla");
         list.add(msg1);
         list.add(msg2);
         list.add(msg3);
+        list.add(msg4);
 
-        assertTrue(msg1 == list.getMessageByCode("1"));
-        assertTrue(msg2 == list.getMessageByCode("2"));
+        assertSame(msg1, list.getMessageByCode("1"));
+        assertSame(msg2, list.getMessageByCode("2"));
         assertNull(list.getMessageByCode("3"));
+        assertSame(msg4, list.getMessageByCode(null));
     }
 
     @Test
@@ -162,21 +195,127 @@ public class MessageListTest {
         Message msg1 = Message.newError("1", "blabla");
         Message msg2 = Message.newError("2", "blabla");
         Message msg3 = Message.newError("2", "blabla");
+        Message msg4 = Message.newError(null, "blabla");
         list.add(msg1);
         list.add(msg2);
         list.add(msg3);
+        list.add(msg4);
 
-        MessageList sublist = list.getMessagesByCode("1");
-        assertEquals(1, sublist.size());
-        assertSame(msg1, sublist.getMessage(0));
+        MessageList messagesWithCode = list.getMessagesByCode("1");
+        assertEquals(1, messagesWithCode.size());
+        assertSame(msg1, messagesWithCode.getMessage(0));
 
-        sublist = list.getMessagesByCode("2");
-        assertEquals(2, sublist.size());
-        assertSame(msg2, sublist.getMessage(0));
-        assertSame(msg3, sublist.getMessage(1));
+        messagesWithCode = list.getMessagesByCode("2");
+        assertEquals(2, messagesWithCode.size());
+        assertSame(msg2, messagesWithCode.getMessage(0));
+        assertSame(msg3, messagesWithCode.getMessage(1));
 
-        sublist = list.getMessagesByCode("unknown");
-        assertEquals(0, sublist.size());
+        messagesWithCode = list.getMessagesByCode("unknown");
+        assertEquals(0, messagesWithCode.size());
+
+        messagesWithCode = list.getMessagesByCode(null);
+        assertEquals(1, messagesWithCode.size());
+        assertSame(msg4, messagesWithCode.getMessage(0));
+    }
+
+    @Test
+    public void testGetMessagesByMarker() {
+        MessageList list = new MessageList();
+        IMarker marker1 = new RequiredInformationMissing();
+        IMarker marker2 = new TechnicalConstraintViolated();
+        IMarker marker3 = new TestMarker();
+        assertTrue(list.getMessagesByMarker(marker1).isEmpty());
+
+        Message msg1 = new Message.Builder("foo", Severity.ERROR).markers(marker1).create();
+        Message msg2 = new Message.Builder("bar", Severity.ERROR).markers(marker2).create();
+        Message msg3 = new Message.Builder("baz", Severity.ERROR).markers(marker1, marker2).create();
+        Message msg4 = new Message.Builder("foobar", Severity.ERROR).create();
+        list.add(msg1);
+        list.add(msg2);
+        list.add(msg3);
+        list.add(msg4);
+
+        MessageList messagesWithMarker1 = list.getMessagesByMarker(marker1);
+        assertEquals(2, messagesWithMarker1.size());
+        assertSame(msg1, messagesWithMarker1.getMessage(0));
+        assertSame(msg3, messagesWithMarker1.getMessage(1));
+
+        MessageList messagesWithMarker2 = list.getMessagesByMarker(marker2);
+        assertEquals(2, messagesWithMarker2.size());
+        assertSame(msg2, messagesWithMarker2.getMessage(0));
+        assertSame(msg3, messagesWithMarker2.getMessage(1));
+
+        MessageList messagesWithMarker3 = list.getMessagesByMarker(marker3);
+        assertEquals(0, messagesWithMarker3.size());
+
+        MessageList messagesWithOutMarker = list.getMessagesByMarker((IMarker)null);
+        assertEquals(1, messagesWithOutMarker.size());
+        assertSame(msg4, messagesWithOutMarker.getMessage(0));
+
+    }
+
+    @Test
+    public void testGetMessagesByMarker_withPredicate() {
+        MessageList list = new MessageList();
+        IMarker marker1 = new RequiredInformationMissing();
+        IMarker marker2 = new TechnicalConstraintViolated();
+        IMarker marker3 = new TestMarker(false, false);
+        IMarker marker3_technical = new TestMarker(false, true);
+        IMarker marker3_required = new TestMarker(true, false);
+        assertTrue(list.getMessagesByMarker(technicalConstraintViolatedInstance).isEmpty());
+
+        Message msg0 = new Message.Builder("foobar", Severity.ERROR).create();
+        Message msg1 = new Message.Builder("foo", Severity.ERROR).markers(marker1).create();
+        Message msg2 = new Message.Builder("bar", Severity.ERROR).markers(marker3_technical).create();
+        Message msg3 = new Message.Builder("baz", Severity.ERROR).markers(marker2, marker3).create();
+        Message msg4 = new Message.Builder("bat", Severity.ERROR).markers(marker3_required).create();
+        list.add(msg0);
+        list.add(msg1);
+        list.add(msg2);
+        list.add(msg3);
+        list.add(msg4);
+
+        MessageList messagesWithRequiredInformationMarker = list.getMessagesByMarker(requiredInformationMarker);
+        assertEquals(2, messagesWithRequiredInformationMarker.size());
+        assertSame(msg1, messagesWithRequiredInformationMarker.getMessage(0));
+        assertSame(msg4, messagesWithRequiredInformationMarker.getMessage(1));
+
+        MessageList messagesWithTechnicalConstraintMarker = list
+                .getMessagesByMarker(technicalConstraintViolatedInstance);
+        assertEquals(1, messagesWithTechnicalConstraintMarker.size());
+        assertSame(msg3, messagesWithTechnicalConstraintMarker.getMessage(0));
+    }
+
+    @Test
+    public void testGetMessagesByMarker_withPredicate_noDuplicates() {
+        MessageList list = new MessageList();
+        IMarker marker1 = new RequiredInformationMissing();
+        IMarker marker2 = new TechnicalConstraintViolated();
+        IMarker marker3 = new TestMarker(false, false);
+        assertTrue(list.getMessagesByMarker(technicalConstraintViolatedInstance).isEmpty());
+
+        Message msg0 = new Message.Builder("foobar", Severity.ERROR).create();
+        Message msg1 = new Message.Builder("foo", Severity.ERROR).markers(marker1).create();
+        Message msg2 = new Message.Builder("bar", Severity.ERROR).markers(marker2, marker3).create();
+        list.add(msg0);
+        list.add(msg1);
+        list.add(msg2);
+
+        MessageList messagesWithAnyMarker = list.getMessagesByMarker(new IPredicate<IMarker>() {
+            @Override
+            public boolean test(IMarker t) {
+                return true;
+            }
+        });
+        assertEquals(2, messagesWithAnyMarker.size());
+        assertSame(msg1, messagesWithAnyMarker.getMessage(0));
+        assertSame(msg2, messagesWithAnyMarker.getMessage(1));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetMessagesByMarker_withPredicate_null() {
+        MessageList list = new MessageList();
+        list.getMessagesByMarker((IPredicate<IMarker>)null);
     }
 
     @Test
@@ -277,6 +416,97 @@ public class MessageListTest {
         // empty list
         result = list.getMessagesFor(result, "name");
         assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testGetMessageWithHighestSeverity_empty() {
+        MessageList list = new MessageList();
+
+        assertNull(list.getMessageWithHighestSeverity());
+    }
+
+    @Test
+    public void testGetMessageWithHighestSeverity() {
+        MessageList list = new MessageList();
+        Message error1 = Message.newError(null, "e1");
+        Message error2 = Message.newError(null, "e2");
+        Message warning1 = Message.newWarning(null, "w1");
+        Message warning2 = Message.newWarning(null, "w2");
+        Message info1 = Message.newInfo(null, "i1");
+        Message info2 = Message.newInfo(null, "i2");
+        Message none1 = new Message("n1", Severity.NONE);
+        Message none2 = new Message("n2", Severity.NONE);
+
+        list.add(none1);
+        list.add(none2);
+
+        assertSame(none1, list.getMessageWithHighestSeverity());
+
+        list.add(info2);
+        list.add(info1);
+
+        assertSame(info2, list.getMessageWithHighestSeverity());
+
+        list.add(warning1);
+        list.add(warning2);
+
+        assertSame(warning1, list.getMessageWithHighestSeverity());
+
+        list.add(error1);
+        list.add(error2);
+
+        assertSame(error1, list.getMessageWithHighestSeverity());
+    }
+
+    private static final class RequiredInformationMissing implements IMarker {
+
+        @Override
+        public boolean isRequiredInformationMissing() {
+            return true;
+        }
+
+        @Override
+        public boolean isTechnicalConstraintViolated() {
+            return false;
+        }
+    }
+
+    private static final class TechnicalConstraintViolated implements IMarker {
+
+        @Override
+        public boolean isRequiredInformationMissing() {
+            return false;
+        }
+
+        @Override
+        public boolean isTechnicalConstraintViolated() {
+            return true;
+        }
+    }
+
+    private static final class TestMarker implements IMarker {
+        private final Boolean isRequiredInformationMissing;
+        private final boolean isTechnicalConstraintViolated;
+
+        public TestMarker() {
+            isRequiredInformationMissing = false;
+            isTechnicalConstraintViolated = false;
+        }
+
+        public TestMarker(boolean isRequiredInformationMissing, boolean isTechnicalConstraintViolated) {
+            this.isRequiredInformationMissing = isRequiredInformationMissing;
+            this.isTechnicalConstraintViolated = isTechnicalConstraintViolated;
+        }
+
+        @Override
+        public boolean isRequiredInformationMissing() {
+            return isRequiredInformationMissing;
+        }
+
+        @Override
+        public boolean isTechnicalConstraintViolated() {
+            return isTechnicalConstraintViolated;
+        }
     }
 
 }
