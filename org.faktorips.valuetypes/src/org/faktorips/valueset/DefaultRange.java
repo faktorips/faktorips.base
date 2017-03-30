@@ -299,8 +299,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     /**
      * {@inheritDoc}
      * 
-     * @throws ClassCastException if the provided value class doesn't implement the
-     *             <code>Comparable</code> interface
+     * @throws ClassCastException if the provided value is not of type <code>T</code>
      */
     @SuppressWarnings("unchecked")
     public boolean contains(Object value) {
@@ -308,10 +307,23 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     /**
-     * Returns true if the step is not null.
+     * {@inheritDoc}
+     * <p>
+     * In case of a ranges this method returns <code>true</code> if one of the following conditions
+     * is <code>true</code>
+     * <ul>
+     * <li>the range is empty</li>
+     * <li>lower bound is equal to upper bound</li>
+     * <li>a step is specified (step is not <code>null</code>)</li>
+     * </ul>
+     * 
+     * Even if the datatype might be discrete in such way that the range is discrete in theory, this
+     * method only returns <code>true</code> if a step is defined. For example an
+     * {@link IntegerRange} is not discrete if the step is <code>null</code> even though a step of 1
+     * could be assumed.
      */
     public boolean isDiscrete() {
-        return !isStepNull();
+        return isEmpty() || lowerBound.equals(upperBound) || !isStepNull();
     }
 
     public boolean containsNull() {

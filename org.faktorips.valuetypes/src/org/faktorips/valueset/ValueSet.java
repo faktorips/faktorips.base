@@ -29,7 +29,14 @@ public interface ValueSet<T> extends Serializable {
     public boolean contains(Object value);
 
     /**
-     * Returns true if this set contains discrete values.
+     * Returns true if this set contains discrete values. Also an empty {@link ValueSet} is
+     * considered to be discrete.
+     * 
+     * If a {@link ValueSet} is discrete it is allowed to call {@link #getValues(boolean)}.
+     * 
+     * @return <code>true</code> if the value set contains discrete values or is empty
+     * 
+     * @see #getValues(boolean)
      */
     public boolean isDiscrete();
 
