@@ -73,7 +73,9 @@
 				«ELSEIF !generatePublishedInterfaces && overwrite-»
 					return super.«methodNameGetter-»();
 				«ELSE-»
-					«localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
+					«IF !formulaSignature.parameters.isEmpty-»
+						«localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
+					«ENDIF-»
 					«EXPAND formulaParameterDeclaration FOR formulaSignature-»
 					return «getPropertyValueContainer(false)».«EXPAND formulaCall FOR formulaSignature-»;
 				«ENDIF-»
