@@ -193,7 +193,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE getterForProductAttributes(XPolicyCmptClass currentClass) FOR XProductAttribute-»
 	«IF generateInterfaceGetter-»
 		 /**
-	     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
+	     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, descriptionForJDoc)»
 	     «IF descriptionForJDoc.length > 0-»
 	     * «descriptionForJDoc»
 		 «ENDIF-»

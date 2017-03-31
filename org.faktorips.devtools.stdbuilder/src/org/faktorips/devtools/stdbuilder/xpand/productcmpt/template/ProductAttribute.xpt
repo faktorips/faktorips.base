@@ -110,7 +110,7 @@
 «DEFINE internalSetter FOR XProductAttribute-»
 	«IF (!genInterface())-»
 		/**
- 		* «localizedJDoc("METHOD_SETVALUE_INTERNAL", name, description)»
+ 		* «localizedJDoc("METHOD_SETVALUE", name, description)»
  		* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
  		* @generated
  		*/

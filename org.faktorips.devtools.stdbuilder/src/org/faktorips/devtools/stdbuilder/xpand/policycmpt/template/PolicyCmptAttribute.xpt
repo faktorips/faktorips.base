@@ -89,7 +89,7 @@
 «DEFINE setter FOR XPolicyAttribute-»
 	«IF generateSetter-»
 		/**
-		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»
+		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
@@ -113,7 +113,7 @@
 «DEFINE setterInternal FOR XPolicyAttribute-»
 	«IF generateSetterInternal-»
 		/**
-		 * «localizedJDoc("METHOD_SETVALUE_INTERNAL", name)»
+		 * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */

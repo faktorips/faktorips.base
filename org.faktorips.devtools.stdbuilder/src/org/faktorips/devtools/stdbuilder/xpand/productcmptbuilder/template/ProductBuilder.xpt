@@ -122,7 +122,7 @@
 
 «DEFINE attributeSetter(XProductBuilder builder) FOR XProductAttribute-»
 	/**
-	* «localizedJDoc("METHOD_SETVALUE",name)»
+	* «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
 	*
 	* @generated
 	*/
@@ -142,7 +142,7 @@
 «ENDREM»
 «DEFINE superAttributeSetter(XProductBuilder builder) FOR XProductAttribute-»
 	/**
-	* «localizedJDoc("METHOD_SETVALUE",name)»
+	* «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
 	*
 	* @generated
 	*/
