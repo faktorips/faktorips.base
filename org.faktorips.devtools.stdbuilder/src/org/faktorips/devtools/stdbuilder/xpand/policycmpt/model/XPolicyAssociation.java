@@ -90,9 +90,9 @@ public class XPolicyAssociation extends XAssociation {
                                 if (superAssociationWithSameName != null
                                         || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
                                     resultingAssociations
-                                    .addAll(detailToMasterDerivedUnion
-                                            .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
-                                                    currentType));
+                                            .addAll(detailToMasterDerivedUnion
+                                                    .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
+                                                            currentType));
                                 }
                             }
                         }
@@ -558,28 +558,27 @@ public class XPolicyAssociation extends XAssociation {
 
     /**
      * Returns the uncapitalized singular role-name. Use inside a loop to store the associated
-     * policy instance. e.g. "baseCoverage".
+     * policy instance. e.g. "baseCoverage". Prepended with 'a' in case of a collision with the
+     * field name.
      */
     public String getVisitorSupportLoopVarName() {
-        if (getName().equals(getName(true))) {
-            return "a" + StringUtils.capitalize(getJavaNamingConvention().getMemberVarName(getName()));
-        } else {
-            return getJavaNamingConvention().getMemberVarName(getName());
-        }
+        return getVarNameAvoidCollisionWithPluralName(getName());
     }
 
     /**
-     * Returns uncapitalized target interface name, e.g. "iCoverage".
+     * Returns uncapitalized target interface name, e.g. "iCoverage". Prepended with 'a' in case of
+     * a collision with the field name.
      */
     public String getCopySupportLoopVarNameInternal() {
-        return StringUtils.uncapitalize(getTargetInterfaceName());
+        return getVarNameAvoidCollisionWithPluralName(getTargetInterfaceName());
     }
 
     /**
-     * Returns uncapitalized target class name, e.g. "coverage".
+     * Returns uncapitalized target class name, e.g. "coverage". Prepended with 'a' in case of a
+     * collision with the field name.
      */
     public String getCopySupportLoopVarName() {
-        return StringUtils.uncapitalize(getTargetClassName());
+        return getVarNameAvoidCollisionWithPluralName(getTargetClassName());
     }
 
     /**

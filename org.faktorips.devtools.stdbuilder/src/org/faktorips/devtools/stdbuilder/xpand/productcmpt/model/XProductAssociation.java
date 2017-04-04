@@ -156,4 +156,12 @@ public class XProductAssociation extends XAssociation {
     public AnnotatedJavaElementType getAnnotatedJavaElementTypeForGetter() {
         return AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER;
     }
+
+    /**
+     * Returns the uncapitalized singular role-name. Used inside a loop. Prepended with 'a' in case
+     * of a collision with the field name.
+     */
+    public String getGetterLoopVarName() {
+        return getVarNameAvoidCollisionWithPluralName(getName());
+    }
 }

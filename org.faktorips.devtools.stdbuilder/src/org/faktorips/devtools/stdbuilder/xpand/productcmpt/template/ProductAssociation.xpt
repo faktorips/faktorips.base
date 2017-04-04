@@ -71,8 +71,8 @@
 	    		return «ListUtil()».«convert("super."+methodNameGetter+"()", targetInterfaceName+".class")»;
 	    	«ELSE-»
         		«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
-				for («IProductComponentLink(targetInterfaceName)» «name.toFirstLower()» : «fieldName».values()) {
-	            	result.add(«name.toFirstLower()».«getTarget()»);
+				for («IProductComponentLink(targetInterfaceName)» «getterLoopVarName» : «fieldName».values()) {
+	            	result.add(«getterLoopVarName».«getTarget()»);
     	    	}
         		return result;
         «ENDIF-»

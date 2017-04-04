@@ -372,6 +372,14 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
+    protected String getVarNameAvoidCollisionWithPluralName(String potentialName) {
+        if (potentialName.equals(getName(true))) {
+            return "a" + StringUtils.capitalize(getJavaNamingConvention().getMemberVarName(potentialName));
+        } else {
+            return getJavaNamingConvention().getMemberVarName(potentialName);
+        }
+    }
+
     protected abstract Class<? extends XAssociation> getMatchingClass();
 
     public abstract AnnotatedJavaElementType getAnnotatedJavaElementTypeForGetter();
