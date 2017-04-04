@@ -31,7 +31,7 @@ import org.faktorips.util.LocalizedStringsSet;
 /**
  * This is the generator model node for a derived union association. It is very important to
  * remember, that the corresponding (derived union) association is not in the IType you currently
- * generate code for. Thats why many methods need to know the xClass in which context you currentyl
+ * generate code for. Thats why many methods need to know the xClass in which context you currently
  * generate the code.
  * 
  * @author dirmeier

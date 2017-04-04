@@ -57,7 +57,7 @@
 
 «DEFINE getterProductCmpt FOR XProductAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), getName(oneToMany))»
+     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), getName(oneToMany), descriptionForJDoc)»
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
@@ -94,7 +94,7 @@
 
 «DEFINE getterProductCmptGen FOR XProductAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany))»
+     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany), descriptionForJDoc)»
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
@@ -135,7 +135,7 @@
 «DEFINE getterProductCmptPerIndex FOR XProductAssociation-»
 	«IF oneToMany-»
 	    /**
-	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CMPT_AT_INDEX", name)»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CMPT_AT_INDEX", name, descriptionForJDoc)»
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
@@ -163,7 +163,7 @@
 
 «DEFINE getterLinksFor FOR XProductAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany))»
+     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany), descriptionForJDoc)»
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
@@ -187,7 +187,7 @@
 
 «DEFINE getterSingleLinkFor FOR XProductAssociation-»
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CMPT_LINK_AT_INDEX", name)»
+     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_CMPT_LINK_AT_INDEX", name, descriptionForJDoc)»
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */

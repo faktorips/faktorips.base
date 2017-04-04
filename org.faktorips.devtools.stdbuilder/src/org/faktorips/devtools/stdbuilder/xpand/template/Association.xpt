@@ -24,7 +24,7 @@
 	«IF isGenerateAbstractGetter(genInterface())-»
 		«IF oneToMany-»
 			/**
-		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»
+		     * «localizedJDoc("METHOD_GET_MANY", getName(true), descriptionForJDoc)»
 			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
@@ -39,7 +39,7 @@
 			 public «IF !genInterface()»abstract«ENDIF» int «method(methodNameGetNumOf)»;
 		«ELSE-»
 			/**
-		     * «localizedJDoc("METHOD_GET_ONE", name)»
+		     * «localizedJDoc("METHOD_GET_ONE", name, descriptionForJDoc)»
 			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */

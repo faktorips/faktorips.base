@@ -88,7 +88,7 @@
 	«IF generateGetter-»
 		«IF oneToMany-»
 	    /**
-	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true), descriptionForJDoc)»
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
@@ -105,7 +105,7 @@
 	    	}
 	    «ENDIF»
 		/**
-	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name, descriptionForJDoc)»
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
          */
@@ -122,7 +122,7 @@
 		 «ENDIF»
 	    «ELSE-»
 		    /**
-		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name)»
+		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name, descriptionForJDoc)»
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
@@ -142,7 +142,7 @@
     «ENDIF»
     «IF generateQualifiedGetter»
 	    /**
-	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name, descriptionForJDoc)»
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
