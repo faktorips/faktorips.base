@@ -924,7 +924,7 @@
     	   class="org.faktorips.devtools.core.ui.wizards.productcmpttype.NewProductCmptTypeWizard"
     	   category="org.faktorips.devtools"
     	   icon="icons/NewProductCmptTypeWizard.gif">
-    	   <description>%NewPcTypeWizard.description</description>
+    	   <description>%NewProductCmptTypeWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
   <wizard
