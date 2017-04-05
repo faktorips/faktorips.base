@@ -37,6 +37,12 @@ public class Messages extends NLS {
     public static String LinkChangingOverTimeMismatchEntry_Description_RemoveOnly;
 
     public static String MissingPropertyValueEntry_valueTransferedInformation;
+    public static String MissingPropertyValueEntry_ATTRIBUTE_VALUE;
+    public static String MissingPropertyValueEntry_TABLE_CONTENT_USAGE;
+    public static String MissingPropertyValueEntry_FORMULA;
+    public static String MissingPropertyValueEntry_CONFIGURED_VALUESET;
+    public static String MissingPropertyValueEntry_CONFIGURED_DEFAULT;
+    public static String MissingPropertyValueEntry_VALIDATION_RULE_CONFIG;
 
     public static String MissingTemplateLinkEntry_missingTemplateLink;
 

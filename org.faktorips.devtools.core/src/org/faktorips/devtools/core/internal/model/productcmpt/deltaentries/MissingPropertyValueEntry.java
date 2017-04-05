@@ -63,19 +63,41 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getDescription() {
-        String description = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
+        StringBuilder description = new StringBuilder(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property));
+        description.append(" ("); //$NON-NLS-1$
+        description.append(getLocalizedLabel(getPropertyType()));
+        description.append(')');
         if (hasPredecessorValue()) {
             IPropertyValueContainer predecessorContainer = getPredecessor().getPropertyValue()
                     .getPropertyValueContainer();
             String name = predecessorContainer.getName();
             if (predecessorContainer instanceof IProductCmptGeneration) {
                 name = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                        .getGenerationConceptNameSingular()
-                        + " " + name; //$NON-NLS-1$
+                        .getGenerationConceptNameSingular() + ' ' + name;
             }
-            description += NLS.bind(Messages.MissingPropertyValueEntry_valueTransferedInformation, name);
+            description.append(NLS.bind(Messages.MissingPropertyValueEntry_valueTransferedInformation, name));
         }
-        return description;
+        return description.toString();
+    }
+
+    private String getLocalizedLabel(PropertyValueType propertyType) {
+        switch (propertyType) {
+            case ATTRIBUTE_VALUE:
+                return Messages.MissingPropertyValueEntry_ATTRIBUTE_VALUE;
+            case CONFIGURED_DEFAULT:
+                return Messages.MissingPropertyValueEntry_CONFIGURED_DEFAULT;
+            case CONFIGURED_VALUESET:
+                return Messages.MissingPropertyValueEntry_CONFIGURED_VALUESET;
+            case FORMULA:
+                return Messages.MissingPropertyValueEntry_FORMULA;
+            case TABLE_CONTENT_USAGE:
+                return Messages.MissingPropertyValueEntry_TABLE_CONTENT_USAGE;
+            case VALIDATION_RULE_CONFIG:
+                return Messages.MissingPropertyValueEntry_VALIDATION_RULE_CONFIG;
+
+            default:
+                throw new IllegalStateException("Unknown property type: " + propertyType); //$NON-NLS-1$
+        }
     }
 
     @Override

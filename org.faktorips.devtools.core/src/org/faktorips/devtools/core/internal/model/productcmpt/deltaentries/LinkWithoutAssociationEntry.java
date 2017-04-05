@@ -36,7 +36,8 @@ public class LinkWithoutAssociationEntry extends AbstractDeltaEntryForLinks {
 
     @Override
     public String getDescription() {
-        return getDeltaType() + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getLink()); //$NON-NLS-1$
+        return getDeltaType().getDescription()
+                + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getLink()); //$NON-NLS-1$
     }
 
 }
