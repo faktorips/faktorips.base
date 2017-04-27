@@ -179,8 +179,7 @@
 
 «DEFINE writeEnumValueSet FOR XPolicyAttribute-»
 	            Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_ENUM()»);
-	            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL()», Boolean.toString(«fieldNameValueSet».«containsNull()»));
-	            for («javaClassQualifiedName» value : «fieldNameValueSet».getValues(true)) {
+	            for («javaClassQualifiedName» value : «fieldNameValueSet».getValues(false)) {
 	                Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_VALUE()»);
 	                «ValueToXmlHelper()».«addValueToElement(getToStringExpression("value"),"valueElement", XML_TAG_DATA())»;
 	                valueSetValuesElement.appendChild(valueElement);
