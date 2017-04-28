@@ -25,6 +25,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -41,6 +42,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
 import org.eclipse.jface.text.BadLocationException;
@@ -754,7 +756,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getJavaFile(ipsSrcFile);
         IContainer parent = file.getParent();
-        IFolder destination = getArtefactDestination(ipsSrcFile);
+        IResource destination = getArtefactDestination(ipsSrcFile).getResource();
         if (file.exists()) {
             file.delete(true, null);
             if (!parent.equals(destination) && parent instanceof IFolder) {
@@ -856,11 +858,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the IFile for the provided IIpsSrcFile.
      */
     public IFile getJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFolder destinationFolder = getArtefactDestination(ipsSrcFile);
+        IPackageFragmentRoot destinationFolder = getArtefactDestination(ipsSrcFile);
 
         IPath javaFile = getRelativeJavaFile(ipsSrcFile);
 
-        return destinationFolder.getFile(javaFile);
+        return ((IContainer)destinationFolder.getResource()).getFile(javaFile);
     }
 
     /**
@@ -993,7 +995,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
-
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         if (ipsObjectPartContainer instanceof IIpsObject) {
             try {
@@ -1006,7 +1007,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
 
         getGeneratedJavaElementsThis(javaElements, ipsObjectPartContainer);
-
         return javaElements;
     }
 
@@ -1021,10 +1021,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         ArgumentCheck.notNull(ipsObject);
 
         try {
-            IFolder outputFolder = ipsObject.getIpsPackageFragment().getRoot()
+            IPackageFragmentRoot javaRoot = ipsObject.getIpsPackageFragment().getRoot()
                     .getArtefactDestination(buildsDerivedArtefacts());
-            IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
-                    .getPackageFragmentRoot(outputFolder);
             String packageName = getPackage(ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
             List<IType> javaTypes = new ArrayList<IType>(1);
@@ -1042,8 +1040,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throws CoreException {
 
         String typeName = getUnqualifiedClassName(ipsObject.getIpsSrcFile());
-        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
-        javaTypes.add(compilationUnit.getType(typeName));
+        IType type = getJavaType(fragment, typeName);
+        javaTypes.add(type);
+    }
+
+    protected IType getJavaType(IPackageFragment fragment, String typeName) throws JavaModelException {
+        IType type = fragment.getJavaProject().findType(fragment.getElementName() + '.' + typeName);
+        if (type == null || !type.exists()) {
+            // maybe type is not compiled yet, we could still try to get the source
+            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
+            type = compilationUnit.getType(typeName);
+        }
+        return type;
     }
 
     /**

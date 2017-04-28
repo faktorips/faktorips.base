@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -46,12 +47,15 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * within this ips package fragment root.
      */
     @Override
-    public IFolder getArtefactDestination(boolean derived) throws CoreException {
+    public IPackageFragmentRoot getArtefactDestination(boolean derived) throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
+        IFolder folder;
         if (derived) {
-            return entry.getOutputFolderForDerivedJavaFiles();
+            folder = entry.getOutputFolderForDerivedJavaFiles();
+        } else {
+            folder = entry.getOutputFolderForMergableJavaFiles();
         }
-        return entry.getOutputFolderForMergableJavaFiles();
+        return getIpsProject().getJavaProject().getPackageFragmentRoot(folder);
     }
 
     /**

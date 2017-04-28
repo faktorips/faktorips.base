@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -237,11 +238,8 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the artefact destination. The destination can either be the output folder for
      * mergable artefacts or the one for derived artefacts.
      */
-    protected IFolder getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (buildsDerivedArtefacts()) {
-            return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true);
-        }
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false);
+    protected IPackageFragmentRoot getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(buildsDerivedArtefacts());
     }
 
 }

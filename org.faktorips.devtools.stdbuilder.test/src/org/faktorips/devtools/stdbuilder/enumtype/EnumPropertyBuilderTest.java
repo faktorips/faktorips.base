@@ -65,8 +65,8 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
         IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
-        String folder = ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFullPath()
-                .toPortableString();
+        String folder = ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource()
+                .getFullPath().toPortableString();
         assertEquals(folder + '/' + BASE_PACKAGE_NAME_MERGABLE.replace('.', '/') + "/AnyEnumType_de.properties",
                 propertyFile.getFullPath().toPortableString());
     }

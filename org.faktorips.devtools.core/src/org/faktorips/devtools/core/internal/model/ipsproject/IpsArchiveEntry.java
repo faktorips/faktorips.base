@@ -155,4 +155,10 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     protected String getXmlPathRepresentation() {
         return archive.getArchivePath().toString();
     }
+
+    @Override
+    public IPath getPath() {
+        return archive.getArchivePath();
+    }
+
 }

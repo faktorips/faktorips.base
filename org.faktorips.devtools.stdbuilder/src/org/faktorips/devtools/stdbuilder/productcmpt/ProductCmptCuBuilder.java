@@ -14,12 +14,10 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -79,16 +77,13 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
     }
 
     @Override
-    protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes) {
+    protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
+            throws CoreException {
         IProductCmpt currentProductCmpt = (IProductCmpt)ipsObject;
         IIpsSrcFile productCmptSrcFile = getVirtualIpsSrcFile(currentProductCmpt);
-        try {
-            String typeName = getUnqualifiedClassName(productCmptSrcFile);
-            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
-            javaTypes.add(compilationUnit.getType(typeName));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        String typeName = getUnqualifiedClassName(productCmptSrcFile);
+        IType type = getJavaType(fragment, typeName);
+        javaTypes.add(type);
     }
 
     @Override

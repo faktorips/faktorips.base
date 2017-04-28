@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -98,7 +99,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         try {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             Element element = toRuntimeTestCaseXml(doc, testCase);
-            String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" : testCase.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
+            String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" //$NON-NLS-1$
+                    : testCase.getIpsProject().getXmlFileCharset();
             content = XmlUtil.nodeToString(element, encoding);
             is = convertContentAsStream(content, encoding);
 
@@ -169,7 +171,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
     public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true)
+        return ((IFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 
@@ -313,43 +315,43 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 }
             }
 
-            IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpts[i].getIpsProject().findIpsSrcFile(
-                    IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
+            IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpts[i].getIpsProject()
+                    .findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             if (policyCmptTypeSrcFile == null) {
-                throw new CoreException(new IpsStatus(NLS.bind("The policy component type {0} was not found.",
-                        policyCmptTypeQName)));
+                throw new CoreException(
+                        new IpsStatus(NLS.bind("The policy component type {0} was not found.", policyCmptTypeQName)));
             }
-            testPolicyCmptElem
-                    .setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(policyCmptTypeSrcFile));
+            testPolicyCmptElem.setAttribute("class",
+                    javaSourceFileBuilder.getQualifiedClassName(policyCmptTypeSrcFile));
             addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestAttributeValues(), isInput);
             addAssociations(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestPolicyCmptLinks(), isInput, objectId);
         }
     }
 
-    private String getPolicyCmptTypeNameAndSetProductCmptAttr(ITestPolicyCmpt testPolicyCmpt, Element testPolicyCmptElem)
-            throws CoreException {
+    private String getPolicyCmptTypeNameAndSetProductCmptAttr(ITestPolicyCmpt testPolicyCmpt,
+            Element testPolicyCmptElem) throws CoreException {
         IIpsSrcFile productCmptSrcFile = testPolicyCmpt.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
                 testPolicyCmpt.getProductCmpt());
         if (productCmptSrcFile == null) {
-            throw new CoreException(new IpsStatus(NLS.bind("The product component {0} was not found.",
-                    testPolicyCmpt.getProductCmpt())));
+            throw new CoreException(new IpsStatus(
+                    NLS.bind("The product component {0} was not found.", testPolicyCmpt.getProductCmpt())));
         }
         testPolicyCmptElem.setAttribute("productCmpt",
                 productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID));
         // because the product can be based on a subtype defined in the test type parameter we must
         // search for the correct policy cmpt
         String productCmptTypeQName = productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        IIpsSrcFile productCmptTypeSrcFile = testPolicyCmpt.getIpsProject().findIpsSrcFile(
-                IpsObjectType.PRODUCT_CMPT_TYPE, productCmptTypeQName);
+        IIpsSrcFile productCmptTypeSrcFile = testPolicyCmpt.getIpsProject()
+                .findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE, productCmptTypeQName);
         return productCmptTypeSrcFile.getPropertyValue(IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
     }
 
     private String getPolicyCmptTypeNameFromParameter(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(getIpsProject());
         if (parameter == null) {
-            throw new CoreException(new IpsStatus(NLS.bind(
-                    "The test policy component type parameter {0} was not found.",
-                    testPolicyCmpt.getTestPolicyCmptTypeParameter())));
+            throw new CoreException(
+                    new IpsStatus(NLS.bind("The test policy component type parameter {0} was not found.",
+                            testPolicyCmpt.getTestPolicyCmptTypeParameter())));
         }
         return parameter.getPolicyCmptType();
     }
@@ -362,14 +364,14 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (link != null) {
             ITestPolicyCmptTypeParameter parameter = link.findTestPolicyCmptTypeParameter(getIpsProject());
             if (parameter == null) {
-                throw new CoreException(new IpsStatus(NLS.bind(
-                        "The test policy component type parameter {0} was not found.",
-                        link.getTestPolicyCmptTypeParameter())));
+                throw new CoreException(
+                        new IpsStatus(NLS.bind("The test policy component type parameter {0} was not found.",
+                                link.getTestPolicyCmptTypeParameter())));
             }
             testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, parameter.getAssociation());
             testPolicyCmptElem.setAttribute("type", "composite");
-            testPolicyCmptElem.setAttribute("name", testPolicyCmpt.getTestPolicyCmptTypeParameter() + "/"
-                    + testPolicyCmpt.getName());
+            testPolicyCmptElem.setAttribute("name",
+                    testPolicyCmpt.getTestPolicyCmptTypeParameter() + "/" + testPolicyCmpt.getName());
         } else {
             testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, testPolicyCmpt.getTestPolicyCmptTypeParameter());
             testPolicyCmptElem.setAttribute("name", testPolicyCmpt.getName());
@@ -445,9 +447,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     || testAttrValues[i].isExpectedResultAttribute(ipsProject) && !isInput) {
                 ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(ipsProject);
                 if (testAttribute == null) {
-                    throw new CoreException(new IpsStatus(NLS.bind(
-                            "The test attribute {0} was not found in the test case type definition.",
-                            testAttrValues[i].getTestAttribute())));
+                    throw new CoreException(new IpsStatus(
+                            NLS.bind("The test attribute {0} was not found in the test case type definition.",
+                                    testAttrValues[i].getTestAttribute())));
                 }
 
                 // the child name is either the attribute name or the extension attribute (=test

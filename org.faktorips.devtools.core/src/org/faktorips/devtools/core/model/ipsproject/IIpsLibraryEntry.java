@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
 
 /**
- * The library entry is the common interface for {@link IIpsArchiveEntry} and
- * {@link IpsBundleEntry}. It is an {@link IIpsObjectPathEntry} for bundles and archives.
+ * The library entry is the common interface for {@link IIpsArchiveEntry} and {@link IpsBundleEntry}
+ * . It is an {@link IIpsObjectPathEntry} for bundles and archives.
  * 
  * 
  * @author dirmeier
@@ -31,4 +31,5 @@ public interface IIpsLibraryEntry extends IIpsObjectPathEntry {
      */
     public void initStorage(IPath path) throws IOException;
 
+    public IPath getPath();
 }

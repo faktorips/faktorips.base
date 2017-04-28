@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="217">
+<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="226">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.core.runtime.feature.feature.group" version="0.0.0"/>
@@ -13,12 +13,15 @@
 <unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.m2e.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.m2e.sdk.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.m2e.logback.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.server_ui.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.server_core.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.server_adapters.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.common_ui.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.common_core.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.common.fproj.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.xml_core.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
@@ -31,6 +34,8 @@
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.xsd.feature.group" version="0.0.0"/>
 <unit id="com.google.inject" version="0.0.0"/>
+<unit id="com.google.guava" version="0.0.0"/>
+<unit id="org.slf4j.api" version="0.0.0"/>
 <unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.uml2.feature.group" version="0.0.0"/>
 <repository location="https://update.faktorzehn.org/p2repositories/luna/"/>

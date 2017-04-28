@@ -558,7 +558,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
-
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             IIpsArtefactBuilder builderTemp = builder;

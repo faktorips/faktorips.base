@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -61,14 +62,14 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetArtefactDestination() throws CoreException {
-        IFolder destination = ipsRoot.getArtefactDestination(false);
+        IPackageFragmentRoot destination = ipsRoot.getArtefactDestination(false);
         assertNotNull(destination);
         IIpsSrcFolderEntry srcEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
-        IPath outputPath = srcEntry.getOutputFolderForMergableJavaFiles().getProjectRelativePath();
-        assertEquals(outputPath, destination.getProjectRelativePath());
+        IPath outputPath = srcEntry.getOutputFolderForMergableJavaFiles().getFullPath();
+        assertEquals(outputPath, destination.getPath());
         destination = ipsRoot.getArtefactDestination(true);
-        IPath outputPathDerived = srcEntry.getOutputFolderForDerivedJavaFiles().getProjectRelativePath();
-        assertEquals(outputPathDerived, destination.getProjectRelativePath());
+        IPath outputPathDerived = srcEntry.getOutputFolderForDerivedJavaFiles().getFullPath();
+        assertEquals(outputPathDerived, destination.getPath());
     }
 
     @Test

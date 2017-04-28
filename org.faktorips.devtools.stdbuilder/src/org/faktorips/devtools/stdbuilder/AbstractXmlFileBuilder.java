@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -114,7 +115,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
     public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true)
+        return ((IFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 

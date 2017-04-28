@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsLibraryEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -58,8 +59,15 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public IFolder getArtefactDestination(boolean derived) throws CoreException {
-        throw newExceptionMethodNotAvailableForArchvies();
+    public IPackageFragmentRoot getArtefactDestination(boolean derived) throws CoreException {
+        IIpsLibraryEntry entry = (IIpsLibraryEntry)getIpsObjectPathEntry();
+        String path;
+        if (entry.getPath().isAbsolute()) {
+            path = entry.getPath().toPortableString();
+        } else {
+            path = getIpsProject().getProject().getLocation().append(entry.getPath()).toPortableString();
+        }
+        return getIpsProject().getJavaProject().getPackageFragmentRoot(path);
     }
 
     @Override
@@ -167,12 +175,11 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      * <p>
-     * Checks if two objects are "equal" without considering the parent. If
-     * {@link LibraryIpsSrcFile LibraryIpsSrcFiles} from different projects refer the same jar file
-     * and the {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is
-     * different, the default implementation in {@link IIpsElement} may yield misleadingly
-     * <code>false</code>. Therefore we need to overwrite the default implementation in
-     * {@link IIpsElement}.
+     * Checks if two objects are "equal" without considering the parent. If {@link LibraryIpsSrcFile
+     * LibraryIpsSrcFiles} from different projects refer the same jar file and the
+     * {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is different,
+     * the default implementation in {@link IIpsElement} may yield misleadingly <code>false</code>.
+     * Therefore we need to overwrite the default implementation in {@link IIpsElement}.
      */
     @Override
     public boolean equals(Object obj) {

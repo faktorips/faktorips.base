@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -29,7 +30,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
 
     private ITableStructure structure;
     private ITableContents contents;
-    private IFolder destination;
+    private IPackageFragmentRoot destination;
     private String filePath;
 
     @Override
@@ -46,7 +47,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IFile getContentsFile() {
-        return destination.getFile(new Path(filePath));
+        return ((IFolder)destination.getResource()).getFile(new Path(filePath));
     }
 
     @Test

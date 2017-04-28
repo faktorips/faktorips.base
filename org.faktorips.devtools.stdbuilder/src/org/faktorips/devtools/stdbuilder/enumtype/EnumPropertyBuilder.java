@@ -133,7 +133,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      */
     IFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreException {
         if (ipsSrcFile != null) {
-            IFolder artefactDestination = getArtefactDestination(ipsSrcFile);
+            IFolder artefactDestination = (IFolder)getArtefactDestination(ipsSrcFile).getResource();
             IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(ipsSrcFile);
             IPath relativePropertyFile = relativeJavaFile.removeFileExtension();
             IPath folder = relativePropertyFile.removeLastSegments(1);

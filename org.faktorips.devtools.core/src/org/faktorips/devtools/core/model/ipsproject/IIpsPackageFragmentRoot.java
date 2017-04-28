@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -57,7 +57,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      *            destination for mergable resources is to return. If set to true the destination
      *            for the derived artifacts will be returned.
      */
-    public IFolder getArtefactDestination(boolean derived) throws CoreException;
+    public IPackageFragmentRoot getArtefactDestination(boolean derived) throws CoreException;
 
     /**
      * Returns the package fragments contained in this root folder. Returns an empty array if this

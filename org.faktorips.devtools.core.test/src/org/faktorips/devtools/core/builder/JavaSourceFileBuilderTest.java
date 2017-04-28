@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -92,8 +94,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         verify(spyBuilder).generate();
 
         // check file creation
-        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
         assertTrue(file.exists());
 
         /*
@@ -103,6 +105,14 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         spyBuilder.setMergeEnabled(true);
         reset(spyBuilder);
         spyBuilder.build(ipsSrcFile);
+    }
+
+    private IFile getFile(String name, boolean derived) throws CoreException {
+        IPackageFragmentRoot artefactDestination = ipsProject.getIpsPackageFragmentRoots()[0]
+                .getArtefactDestination(derived);
+        IFolder folder = (IFolder)artefactDestination.getResource();
+        IFile file = folder.getFile(name);
+        return file;
     }
 
     @Test
@@ -115,8 +125,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         spyBuilder.build(ipsSrcFile);
 
-        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         assertTrue(file.exists());
         assertFalse(file.isDerived());
         assertFalse(file.getParent().isDerived());
@@ -126,8 +135,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         doReturn(true).when(spyBuilder).buildsDerivedArtefacts();
         spyBuilder.build(ipsSrcFile);
-        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(true).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        file = getFile("org/faktorips/sample/model/test/TestPolicy.java", true);
         assertTrue(file.exists());
         assertTrue(file.isDerived());
         assertTrue(file.getParent().isDerived());
@@ -138,8 +146,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         properties.put(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED, false);
         spyBuilder.build(ipsSrcFile);
 
-        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         assertTrue(file.exists());
         assertFalse(file.isDerived());
         assertFalse(file.getParent().isDerived());
@@ -148,8 +155,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         reset(spyBuilder);
         doReturn(true).when(spyBuilder).buildsDerivedArtefacts();
         spyBuilder.build(ipsSrcFile);
-        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(true).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        file = getFile("org/faktorips/sample/model/test/TestPolicy.java", true);
         assertTrue(file.exists());
         assertFalse(file.isDerived());
         assertFalse(file.getParent().isDerived());
@@ -161,14 +167,12 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.build(ipsSrcFile);
         builder.afterBuild(ipsSrcFile);
         // check file creation
-        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         assertTrue(file.exists());
 
         // check file deletion
         builder.delete(ipsSrcFile);
-        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
-                "org/faktorips/sample/model/test/TestPolicy.java");
+        file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         assertFalse(file.exists());
     }
 
@@ -182,8 +186,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetQualifiedClassName() throws CoreException {
-        builder = new StubJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), new LocalizedStringsSet(
-                JavaSourceFileBuilderTest.class), ipsSrcFile, false);
+        builder = new StubJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(),
+                new LocalizedStringsSet(JavaSourceFileBuilderTest.class), ipsSrcFile, false);
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
@@ -203,8 +207,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     public void testGetQualifiedClassName_noPublishedInterfaces() throws CoreException {
         TestIpsArtefactBuilderSet standardBuilderSetSpy = spy(new TestIpsArtefactBuilderSet());
         doReturn(false).when(standardBuilderSetSpy).isGeneratePublishedInterfaces();
-        builder = new StubJavaSourceFileBuilder(standardBuilderSetSpy, new LocalizedStringsSet(
-                JavaSourceFileBuilderTest.class), ipsSrcFile, false);
+        builder = new StubJavaSourceFileBuilder(standardBuilderSetSpy,
+                new LocalizedStringsSet(JavaSourceFileBuilderTest.class), ipsSrcFile, false);
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);

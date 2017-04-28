@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
@@ -102,13 +101,12 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
             String javaTypeName) {
 
         try {
-            IFolder outputFolder = ipsObject.getIpsPackageFragment().getRoot().getArtefactDestination(derivedSource);
-            IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
-                    .getPackageFragmentRoot(outputFolder);
+            IPackageFragmentRoot javaRoot = ipsObject.getIpsPackageFragment().getRoot()
+                    .getArtefactDestination(derivedSource);
             String packageName = builderSet.getPackageName(ipsObject.getIpsSrcFile(), !published, !derivedSource);
             IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
-            ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
-                    + JavaClassNaming.JAVA_EXTENSION);
+            ICompilationUnit javaCompilationUnit = javaPackage
+                    .getCompilationUnit(javaTypeName + JavaClassNaming.JAVA_EXTENSION);
             return javaCompilationUnit.getType(javaTypeName);
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -138,8 +136,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a specific {@IBaseMethod} to be added to the list of generated Java
-     * elements.
+     * Expects a specific {@IBaseMethod} to be added to the list of generated Java elements.
      * 
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method

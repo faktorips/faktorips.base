@@ -24,6 +24,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -140,33 +142,35 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmpt productCmpt = newProductCmpt(type, "Product");
 
-        IFolder folder = productCmpt.getIpsPackageFragment().getRoot().getArtefactDestination(true);
+        IPackageFragmentRoot packageFragmentRoot = productCmpt.getIpsPackageFragment().getRoot()
+                .getArtefactDestination(true);
         // the artefact destination is expected to be there right from the beginning
-        assertTrue(folder.exists());
+        assertTrue(packageFragmentRoot.exists());
 
         /*
          * after an incremental build the base package and the generated xml file for the product
          * cmpt is expected to be there
          */
         productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        IFolder baseDir = folder.getFolder(new Path("/org/faktorips/sample/model"));
-        assertTrue(baseDir.exists());
+        IPackageFragment fragment = packageFragmentRoot.getPackageFragment("org.faktorips.sample.model");
+        assertTrue(fragment.exists());
         // TODO little dirty here. Better to ask the builder for its package
-        IFile productFile = folder.getFile(new Path("/org/faktorips/sample/model/internal/Product.xml"));
+        IFile productFile = ((IFolder)packageFragmentRoot.getResource())
+                .getFile(new Path("/org/faktorips/sample/model/internal/Product.xml"));
         assertTrue(productFile.exists());
 
         // a clean build is expected to remove the base directory and the product xml file.
         productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
         assertFalse(productFile.exists());
-        assertFalse(baseDir.exists());
+        assertFalse(fragment.exists());
 
         // a full build creates the base directory and the product component xml file again.
         productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        assertTrue(baseDir.exists());
+        assertTrue(fragment.exists());
         assertTrue(productFile.exists());
 
         // Putting an arbitrary file into a sub folder of the derived destination folder.
-        IFile file = baseDir.getFile("keep.txt");
+        IFile file = ((IFolder)fragment.getResource()).getFile("keep.txt");
         file.create(new ByteArrayInputStream("".getBytes()), true, null);
         file.setDerived(false, null);
         assertTrue(file.exists());
@@ -177,7 +181,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
          */
         productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
         assertTrue(file.exists());
-        assertTrue(baseDir.exists());
+        assertTrue(fragment.exists());
     }
 
 }

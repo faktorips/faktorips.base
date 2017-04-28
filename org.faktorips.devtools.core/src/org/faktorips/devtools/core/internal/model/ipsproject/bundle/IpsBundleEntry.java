@@ -150,6 +150,11 @@ public class IpsBundleEntry extends IpsLibraryEntry {
         return getIpsStorage().getLocation().toPortableString();
     }
 
+    @Override
+    public IPath getPath() {
+        return getIpsStorage().getLocation();
+    }
+
     protected class IpsStrorageFactory {
 
         public IpsFolderBundle createFolderBundle(IIpsProject ipsProject, IPath bundlePath) {

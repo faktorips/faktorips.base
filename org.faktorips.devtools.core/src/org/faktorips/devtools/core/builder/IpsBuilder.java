@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -408,7 +409,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.isBasedOnSourceFolder()) {
-                removeEmptyFolders(root.getArtefactDestination(false), false);
+                removeEmptyFolders((IFolder)root.getArtefactDestination(false).getResource(), false);
             }
         }
     }
@@ -466,12 +467,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (!roots[i].isBasedOnSourceFolder()) {
                 continue;
             }
-            IFolder destination = roots[i].getArtefactDestination(true);
+            IPackageFragmentRoot destination = roots[i].getArtefactDestination(true);
             if (destination == null) {
                 continue;
             }
             if (destination.exists()) {
-                removeDerivedResources(destination, monitor);
+                removeDerivedResources((IFolder)destination.getResource(), monitor);
             }
         }
         getBuilderSetReInitialisedIfNecessary(getIpsProject()).clean(monitor);

@@ -60,7 +60,8 @@ import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
  * 
  * @author Alexander Weickmann
  */
-public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem implements IWorkbenchContribution {
+public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem
+        implements IWorkbenchContribution {
 
     private static final String EDITOR_JUMP_TO_SOURCE_CODE_COMMAND = "org.faktorips.devtools.stdbuilder.ui.dynamicmenus.editorJumpToSourceCode"; //$NON-NLS-1$
 
@@ -84,7 +85,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     @Override
     public IContributionItem[] getContributionItems() {
         IIpsElement selectedItem = getSelectedIpsElement();
-        if (selectedItem == null || selectedItem.isContainedInArchive()) {
+        if (selectedItem == null) {
             return getContributionItemsForNoSourceCodeFound();
         }
         if (selectedItem instanceof IIpsSrcFile) {
@@ -140,8 +141,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
         IEditorInput input = ((IEditorPart)part).getEditorInput();
         if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
-                    ((IFileEditorInput)input).getFile()));
+            return new TypedSelection<IAdaptable>(IAdaptable.class,
+                    new StructuredSelection(((IFileEditorInput)input).getFile()));
         }
         return null;
     }
@@ -193,7 +194,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
          * "Open in Java Editor" command contribution item for each type itself as well as its
          * members.
          */
-        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(javaTypesToJavaElements.size() * 3);
+        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(
+                javaTypesToJavaElements.size() * 3);
         List<IType> sortedJavaTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (IType type : sortedJavaTypes) {
             if (!type.exists()) {
@@ -284,8 +286,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IType getImplementationForInterface(Set<IType> types, IType interfaceType) {
-        String searchedTypeName = getJavaNamingConvention().getImplementationClassNameForPublishedInterfaceName(
-                interfaceType.getElementName());
+        String searchedTypeName = getJavaNamingConvention()
+                .getImplementationClassNameForPublishedInterfaceName(interfaceType.getElementName());
         for (IType type : types) {
             if (type.getElementName().equals(searchedTypeName)) {
                 return type;
