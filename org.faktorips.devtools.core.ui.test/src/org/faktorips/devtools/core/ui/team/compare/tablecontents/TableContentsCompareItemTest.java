@@ -53,13 +53,17 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
 
         proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
-        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
+        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable");
+        structure.newColumn();
+        structure.newColumn();
+        structure.newColumn();
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
         generation = table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "");
+        table.newColumn("2", "");
+        table.newColumn("3", "");
 
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
@@ -124,11 +128,15 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
         ITableStructure structure2 = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+
         ITableRows generation2 = table2.newTableRows();
         table2.setTableStructure(structure2.getQualifiedName());
-        table2.newColumn("1");
-        table2.newColumn("2");
-        table2.newColumn("3");
+        table2.newColumn("1", "");
+        table2.newColumn("2", "");
+        table2.newColumn("3", "");
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");
@@ -176,7 +184,8 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         assertFalse(rowItem1.equals(rowItem2));
 
         // add column
-        table2.newColumn("4");
+        structure2.newColumn();
+        table2.newColumn("4", "");
         compareItemRoot2 = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile2));
         tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];
@@ -200,11 +209,14 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
         ITableStructure structure2 = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
         ITableRows generation2 = table2.newTableRows();
         table2.setTableStructure(structure2.getQualifiedName());
-        table2.newColumn("1");
-        table2.newColumn("2");
-        table2.newColumn("3");
+        table2.newColumn("1", "");
+        table2.newColumn("2", "");
+        table2.newColumn("3", "");
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");
@@ -252,7 +264,8 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         assertFalse(rowItem1.hashCode() == rowItem2.hashCode());
 
         // add column
-        table2.newColumn("4");
+        structure2.newColumn();
+        table2.newColumn("4", "");
         compareItemRoot2 = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile2));
         tableItem2 = (TableContentsCompareItem)compareItemRoot2.getChildren()[0];

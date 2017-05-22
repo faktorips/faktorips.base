@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
+import org.faktorips.devtools.core.model.IPartReference;
 
 /**
  * An <tt>IEnumContent</tt> is used when the values for a Faktor-IPS enumeration shall not be
@@ -100,8 +101,8 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     /**
      * Sets the <tt>IEnumType</tt> this <tt>IEnumContent</tt> is based upon.
      * <p>
-     * If the new <tt>IEnumType</tt> can be found then the <tt>IEnumAttributeReference</tt>s will be
-     * updated to match the <tt>IEnumAttribute</tt>s of the new <tt>IEnumType</tt>.
+     * If the new <tt>IEnumType</tt> can be found then the <tt>IPartReference</tt>s will be updated
+     * to match the <tt>IEnumAttribute</tt>s of the new <tt>IEnumType</tt>.
      * 
      * @param enumType The qualified name of the <tt>IEnumType</tt> this <tt>IEnumContent</tt> shall
      *            be based upon.
@@ -126,22 +127,22 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
     public boolean isFixToModelRequired() throws CoreException;
 
     /**
-     * Returns a list containing all <tt>IEnumAttributeReference</tt>s that belong to this
+     * Returns a list containing all <tt>IPartReference</tt>s that belong to this
      * <tt>IEnumContent</tt>.
      * <p>
      * Returns an empty list if there are none, never returns <tt>null</tt>.
      */
-    public List<IEnumAttributeReference> getEnumAttributeReferences();
+    public List<IPartReference> getEnumAttributeReferences();
 
     /**
-     * Returns the <tt>IEnumAttributeReference</tt> with the given name or <tt>null</tt> if there is
-     * no such reference in this <tt>IEnumContent</tt>.
+     * Returns the <tt>IPartReference</tt> with the given name or <tt>null</tt> if there is no such
+     * reference in this <tt>IEnumContent</tt>.
      * 
-     * @param name The name of the <tt>IEnumAttributeReference</tt> to obtain.
+     * @param name The name of the <tt>IPartReference</tt> to obtain.
      * 
      * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
      */
-    public IEnumAttributeReference getEnumAttributeReference(String name);
+    public IPartReference getEnumAttributeReference(String name);
 
     /**
      * Returns the number of <tt>IEnumAttribute</tt>s that are currently referenced by this

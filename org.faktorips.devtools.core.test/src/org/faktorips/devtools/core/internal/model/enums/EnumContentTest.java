@@ -23,13 +23,14 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -244,7 +245,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetEnumAttributeReferences() {
-        List<IEnumAttributeReference> references = genderEnumContent.getEnumAttributeReferences();
+        List<IPartReference> references = genderEnumContent.getEnumAttributeReferences();
         assertEquals(2, references.size());
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, references.get(0).getName());
         assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, references.get(1).getName());

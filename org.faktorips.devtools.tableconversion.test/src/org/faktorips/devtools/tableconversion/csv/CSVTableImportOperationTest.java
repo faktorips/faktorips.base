@@ -17,8 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,6 +30,8 @@ import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 public class CSVTableImportOperationTest extends AbstractTableTest {
 
@@ -70,16 +70,24 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
         importTarget = contents.newTableRows();
         contents.setTableStructure(structure2.getQualifiedName());
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
 
         file = new File("table" + format.getDefaultExtension());
         file.delete();

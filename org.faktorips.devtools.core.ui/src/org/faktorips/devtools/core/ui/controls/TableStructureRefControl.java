@@ -35,17 +35,11 @@ public class TableStructureRefControl extends IpsObjectRefControl {
      * @throws CoreException if an exception occurs while searching for the table structure.
      */
     public ITableStructure findTableStructure() throws CoreException {
-        if (getIpsProject() == null) {
-            return null;
-        }
-        return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getText());
+        return (ITableStructure)findIpsObject(IpsObjectType.TABLE_STRUCTURE);
     }
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject() == null) {
-            return new IIpsSrcFile[0];
-        }
-        return getIpsProject().findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        return findIpsSrcFilesByType(IpsObjectType.TABLE_STRUCTURE);
     }
 }

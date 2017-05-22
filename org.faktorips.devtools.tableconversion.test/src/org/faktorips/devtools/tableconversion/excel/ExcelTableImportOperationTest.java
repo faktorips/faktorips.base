@@ -72,16 +72,24 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
+        structure2.newColumn();
         importTarget = contents.newTableRows();
         contents.setTableStructure(structure2.getQualifiedName());
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
+        contents.newColumn(null, "");
 
         file = new File("table" + format.getDefaultExtension());
         file.delete();

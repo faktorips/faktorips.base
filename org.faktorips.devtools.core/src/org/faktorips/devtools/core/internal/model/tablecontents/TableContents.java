@@ -10,9 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +30,16 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
@@ -47,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
@@ -56,16 +61,28 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;
 
-public class TableContents extends IpsObject implements ITableContents {
+public class TableContents extends BaseIpsObject implements ITableContents {
     // Performance Potential Tabellen: Datentypen der Columns cachen
+
+    public static final String COLUMNREFERENCENAME = "ColumnReference"; //$NON-NLS-1$
+
+    private static final List<String> FIX_REQUIRING_ERROR_CODES = Arrays.asList(
+            MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_NAMES_INVALID,
+            MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_ORDERING_INVALID,
+            MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID);
+
     private String structure = ""; //$NON-NLS-1$
 
     private ITableRows tableRows;
 
     private int numOfColumns = 0;
 
+    private IpsObjectPartCollection<IPartReference> columnReferences;
+
     public TableContents(IIpsSrcFile file) {
         super(file);
+        columnReferences = new IpsObjectPartCollection<IPartReference>(this, TableColumnReference.class,
+                IPartReference.class, TableColumnReference.XML_TAG);
     }
 
     @Override
@@ -107,9 +124,9 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     @Override
-    public void setTableStructure(String qName) {
+    public void setTableStructure(String tableStructure) {
         String oldStructure = structure;
-        setTableStructureInternal(qName);
+        setTableStructureInternal(tableStructure);
         valueChanged(oldStructure, structure);
     }
 
@@ -132,15 +149,16 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     @Override
-    public int newColumn(String defaultValue) {
-        newColumnAt(numOfColumns, defaultValue);
+    public int newColumn(String defaultValue, String name) {
+        newColumnAt(numOfColumns, defaultValue, name);
         return numOfColumns;
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * Method is overwritten in TableContents to make it visible for {@link TableContentsSaxHandler}.
+     * Method is overwritten in TableContents to make it visible for
+     * {@link TableContentsSaxHandler}.
      */
     @Override
     protected IDescription newDescription(String id) {
@@ -148,8 +166,9 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     @Override
-    public void newColumnAt(int index, String defaultValue) {
+    public void newColumnAt(int index, String defaultValue, String name) {
         ((TableRows)getTableRowsInternal()).newColumn(index, defaultValue);
+        addNewColumnReference(name);
         numOfColumns++;
         objectHasChanged();
     }
@@ -160,8 +179,32 @@ public class TableContents extends IpsObject implements ITableContents {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
         ((TableRows)getTableRowsInternal()).removeColumn(columnIndex);
+        removeColumnReference(columnIndex);
         numOfColumns--;
         objectHasChanged();
+    }
+
+    @Override
+    public void migrateColumnReferences() {
+        int referenceCount = getColumnReferencesCount();
+        if (referenceCount == 0 && numOfColumns != 0) {
+            ITableStructure newTableStructure;
+            try {
+                newTableStructure = findTableStructure(getIpsProject());
+                if (newTableStructure != null) {
+                    // Only references of columns that actually exist in the structure will be
+                    // created
+                    for (int i = 0; i < newTableStructure.getNumOfColumns(); i++) {
+                        IPartReference newReference = new TableColumnReference(this, getNextPartId());
+                        newReference.setName(newTableStructure.getColumn(i).getName());
+                        columnReferences.addPart(newReference);
+                    }
+                }
+
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -319,7 +362,15 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        return new IIpsElement[] { getTableRowsInternal() };
+
+        ArrayList<IIpsElement> children = new ArrayList<IIpsElement>();
+        for (IPartReference reference : getColumnReferences()) {
+            children.add(reference);
+        }
+        children.add(getTableRowsInternal());
+
+        return children.toArray(new IIpsElement[children.size()]);
+
     }
 
     @Override
@@ -339,6 +390,7 @@ public class TableContents extends IpsObject implements ITableContents {
     @Override
     protected void reinitPartCollectionsThis() {
         setTableRowsInternal(null);
+        columnReferences.clear();
     }
 
     @Override
@@ -360,23 +412,88 @@ public class TableContents extends IpsObject implements ITableContents {
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-
         ITableStructure tableStructure = findTableStructure(ipsProject);
         if (tableStructure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
-
-        if (tableStructure.getNumOfColumns() != getNumOfColumns()) {
-            Integer structCols = new Integer(tableStructure.getNumOfColumns());
-            Integer contentCols = new Integer(getNumOfColumns());
-            String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
-            list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
-        }
-
+        validateColumnReferences(list, tableStructure);
         SingleTableContentsValidator singleTableContentsValidator = SingleTableContentsValidator.createFor(this);
         list.add(singleTableContentsValidator.validateIfPossible());
+    }
+
+    /** Validates the {@link IPartReference IPartReferences}. */
+    private void validateColumnReferences(MessageList validationMessageList, ITableStructure tableStructure) {
+        validateColumnReferencesCount(validationMessageList, tableStructure);
+        if (validationMessageList.containsErrorMsg()) {
+            return;
+        }
+
+        List<IColumn> columns = Arrays.asList(tableStructure.getColumns());
+
+        validateColumnReferenceNames(validationMessageList, tableStructure, columns);
+        if (validationMessageList.containsErrorMsg()) {
+            return;
+        }
+
+        validateColumnReferenceOrdering(validationMessageList, tableStructure, columns);
+    }
+
+    /**
+     * The number of {@link IPartReference IPartReferences} must match the number of {@link IColumn
+     * IColumns} defined in the base {@link ITableStructure}.
+     */
+    private void validateColumnReferencesCount(MessageList validationMessageList, ITableStructure tableStructure) {
+        if (tableStructure.getNumOfColumns() != getColumnReferencesCount()) {
+            String text = NLS.bind(Messages.TableContents_ReferencedColumnCountInvalid,
+                    tableStructure.getQualifiedName());
+            Message validationMessage = new Message(
+                    ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID, text, Message.ERROR, this);
+            validationMessageList.add(validationMessage);
+        }
+    }
+
+    /**
+     * The names of the {@link IPartReference IPartReferences} must match the names of the
+     * {@link IColumn IColumns} in the base {@link ITableStructure}.
+     */
+    private void validateColumnReferenceNames(MessageList validationMessageList,
+            ITableStructure tableStructure,
+            List<IColumn> columns) {
+
+        for (IColumn currentColumn : columns) {
+            if (!(containsEnumAttributeReference(currentColumn.getName()))) {
+                String text = NLS.bind(Messages.TableContents_ReferencedColumnNamesInvalid,
+                        tableStructure.getQualifiedName());
+                Message validationMessage = new Message(
+                        ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_NAMES_INVALID, text, Message.ERROR,
+                        this);
+                validationMessageList.add(validationMessage);
+            }
+        }
+    }
+
+    /**
+     * The ordering of the {@link IPartReference IPartReferences} must match the ordering of the
+     * {@link IColumn IColumns} in the base {@link ITableStructure}.
+     */
+    private void validateColumnReferenceOrdering(MessageList validationMessageList,
+            ITableStructure tableStructure,
+            List<IColumn> columns) {
+        for (int i = 0; i < columns.size(); i++) {
+            String currentColumnName = columns.get(i).getName();
+            String currentReference = columnReferences.getPart(i).getName();
+            if (!(currentColumnName.equals(currentReference))) {
+                String text = NLS.bind(Messages.TableContents_ReferencedColumnOrderingInvalid,
+                        tableStructure.getQualifiedName());
+                Message validationMessage = new Message(
+                        TableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_ORDERING_INVALID, text, Message.ERROR,
+                        this);
+                validationMessageList.add(validationMessage);
+                break;
+            }
+        }
     }
 
     ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) {
@@ -384,6 +501,29 @@ public class TableContents extends IpsObject implements ITableContents {
             return new ValueDatatype[0];
         }
         return ((TableStructure)structure).findColumnDatatypes(ipsProject);
+    }
+
+    // only validates the datatypes of the tableStructure that are referenced by this tableContents
+    ValueDatatype[] findColumnDatatypesByReferences(ITableStructure structure, IIpsProject ipsProject) {
+        if (structure == null) {
+            return new ValueDatatype[0];
+        }
+        ValueDatatype[] valueDatatypes = new ValueDatatype[columnReferences.size()];
+        int i = 0;
+        for (IPartReference reference : columnReferences) {
+            IColumn column = structure.getColumn(reference.getName());
+            if (column != null) {
+                try {
+                    valueDatatypes[i++] = column.findValueDatatype(ipsProject);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+
+            } else {
+                valueDatatypes[i++] = null;
+            }
+        }
+        return valueDatatypes;
     }
 
     @Override
@@ -396,12 +536,28 @@ public class TableContents extends IpsObject implements ITableContents {
         return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
     }
 
+    @Override
+    public boolean isFixToModelRequired() {
+        try {
+            MessageList messages = validate(getIpsProject());
+            for (Message message : messages) {
+                if (FIX_REQUIRING_ERROR_CODES.contains(message.getCode())) {
+                    return true;
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        return false;
+    }
+
     /**
      * This method always returns false because differences to model is not supported at the moment
      */
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
-        // TODO TableContent does not yet support the fix differences framework
+
         return false;
     }
 
@@ -463,4 +619,122 @@ public class TableContents extends IpsObject implements ITableContents {
     protected void setTableRowsInternal(ITableRows tableRows) {
         this.tableRows = tableRows;
     }
+
+    private void addNewColumnReference(String name) {
+        ITableStructure newTableStructure;
+        try {
+            newTableStructure = findTableStructure(getIpsProject());
+            if (newTableStructure != null) {
+                IPartReference newReference = new TableColumnReference(this, getNextPartId());
+                newReference.setName(name);
+                columnReferences.addPart(newReference);
+            }
+
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
+    public void createColumnReferenceSaxHandler(String referenceName) {
+        IPartReference reference = new TableColumnReference(this, getNextPartId());
+        reference.setName(referenceName);
+        columnReferences.addPart(reference);
+    }
+
+    /**
+     * Removes the corresponding ColumnReference based on the given index
+     * 
+     * @param columnIndex index of the ColumnReference to be deleted
+     */
+    private void removeColumnReference(int columnIndex) {
+        try {
+            ITableStructure newTableStructure;
+            newTableStructure = findTableStructure(getIpsProject());
+            if (newTableStructure != null) {
+                columnReferences.removePart(columnReferences.getPart(columnIndex));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Internal function to sort all {@link TableColumnReference TableColumnReferences} in the right
+     * order corresponding to given columnList. columnReferences size has to be the same as the
+     * columnList
+     * 
+     * @param columnList List of columns of the referenced TableStructure
+     */
+    private void sortColumnReferencesInternal(IColumn[] columnList) {
+        if (columnList.length == columnReferences.size()) {
+            IPartReference[] newOrdering = new IPartReference[columnList.length];
+            int i = 0;
+            for (IColumn column : columnList) {
+                for (IPartReference reference : columnReferences) {
+                    if (column.getName().equals(reference.getName())) {
+                        newOrdering[i++] = reference;
+                        break;
+                    }
+                }
+            }
+            columnReferences.clear();
+            for (IPartReference reference : newOrdering) {
+                columnReferences.addPart(reference);
+            }
+        }
+        objectHasChanged(new PropertyChangeEvent(columnReferences, COLUMNREFERENCENAME, null, columnReferences));
+    }
+
+    @Override
+    public void fixColumnReferences() {
+        ITableStructure newTableStructure;
+        try {
+            newTableStructure = findTableStructure(getIpsProject());
+            if (newTableStructure != null) {
+                updateReferences(newTableStructure);
+                sortColumnReferencesInternal(newTableStructure.getColumns());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+    }
+
+    /**
+     * Updates the references with the columns of the referenced structure
+     */
+    private void updateReferences(ITableStructure structure) {
+        IColumn[] columns = structure.getColumns();
+        columnReferences.clear();
+        for (IColumn column : columns) {
+            IPartReference newReference = new TableColumnReference(this, getNextPartId());
+            newReference.setName(column.getName());
+            columnReferences.addPart(newReference);
+        }
+    }
+
+    /**
+     * Returns {@code true} if an {@link IPartReference} with the given name exists in this
+     * {@link ITableContents}, {@code false} otherwise.
+     */
+    private boolean containsEnumAttributeReference(String name) {
+        for (IPartReference currentReference : columnReferences) {
+            if (currentReference.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<IPartReference> getColumnReferences() {
+        return columnReferences.getBackingList();
+    }
+
+    @Override
+    public int getColumnReferencesCount() {
+        return columnReferences.size();
+    }
+
 }

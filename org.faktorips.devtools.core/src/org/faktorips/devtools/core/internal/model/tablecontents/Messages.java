@@ -35,6 +35,9 @@ public class Messages extends NLS {
     public static String TableContents_msgNameStructureAndContentsNotSameWhenEnum;
     public static String TableContents_msgTooManyContentsForSingleTableStructure;
     public static String TableContentsGeneration_dublicateEnumId;
+    public static String TableContents_ReferencedColumnOrderingInvalid;
+    public static String TableContents_ReferencedColumnCountInvalid;
+    public static String TableContents_ReferencedColumnNamesInvalid;
 
     public static String UniqueKeyValidator_msgUniqueKeyViolation;
     public static String UniqueKeyValidatorRange_msgTooManyUniqueKeyViolations;

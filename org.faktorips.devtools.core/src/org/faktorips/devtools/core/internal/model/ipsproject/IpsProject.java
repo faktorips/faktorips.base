@@ -121,8 +121,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public static final boolean TRACE_IPSPROJECT_PROPERTIES;
 
     static {
-        TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
-                Platform.getDebugOption("org.faktorips.devtools.core/trace/properties")).booleanValue(); //$NON-NLS-1$
+        TRACE_IPSPROJECT_PROPERTIES = Boolean
+                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/properties")).booleanValue(); //$NON-NLS-1$
     }
 
     /**
@@ -189,8 +189,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsProjectProperties getProperties() {
         if (TRACE_IPSPROJECT_PROPERTIES) {
-            System.out
-                    .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
+            System.out.println(
+                    "Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
         }
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
@@ -355,7 +355,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return false;
     }
 
-    private List<IJavaProject> getJavaProjectsReferencedInClasspath(IJavaProject javaProject) throws JavaModelException {
+    private List<IJavaProject> getJavaProjectsReferencedInClasspath(IJavaProject javaProject)
+            throws JavaModelException {
         List<IJavaProject> result = new ArrayList<IJavaProject>();
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         for (IClasspathEntry entrie : entries) {
@@ -686,8 +687,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
         IIpsProjectProperties properties = getPropertiesInternal();
-        return getIpsModel().getChangesOverTimeNamingConvention(
-                properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
+        return getIpsModel()
+                .getChangesOverTimeNamingConvention(properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
     }
 
     @Override
@@ -1190,7 +1191,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
-    private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IIpsProject ipsProject, String qualifiedName) {
+    private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IIpsProject ipsProject,
+            String qualifiedName) {
         Datatype datatype = getIpsModel().getDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
         if (datatype != null) {
             return datatype;
@@ -1355,7 +1357,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes) throws CoreException {
+    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes)
+            throws CoreException {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
         if (enumType == null) {
             return ipsSrcFiles;
@@ -1527,9 +1530,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (IClasspathEntry entrie : entries) {
-            if (JavaConventions.validateClasspathEntry(javaProject, entrie, false).getSeverity() == IStatus.ERROR) {
-                String text = NLS.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entrie.getPath());
+        for (IClasspathEntry entry : entries) {
+            if (JavaConventions.validateClasspathEntry(javaProject, entry, false).getSeverity() == IStatus.ERROR) {
+                String text = NLS.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entry.getPath());
                 Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.WARNING,
                         this);
                 result.add(msg);
@@ -1588,13 +1591,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 continue;
             }
             String minVersion = props.getMinRequiredVersionNumber(feature);
-            if (manager.compareToCurrentVersion(minVersion) > 0 && !manager.isCurrentVersionCompatibleWith(minVersion)) {
+            if (manager.compareToCurrentVersion(minVersion) > 0
+                    && !manager.isCurrentVersionCompatibleWith(minVersion)) {
                 String[] params = { manager.getCurrentVersion(), minVersion, feature };
                 String msg = NLS.bind(Messages.IpsProject_msgVersionTooLow, params);
                 ml.add(new Message(MSGCODE_VERSION_TOO_LOW, msg, Message.ERROR, this));
             }
 
-            if (manager.compareToCurrentVersion(minVersion) < 0 && !manager.isCurrentVersionCompatibleWith(minVersion)) {
+            if (manager.compareToCurrentVersion(minVersion) < 0
+                    && !manager.isCurrentVersionCompatibleWith(minVersion)) {
                 String[] params = { manager.getCurrentVersion(), minVersion, feature };
                 String msg = NLS.bind(Messages.IpsProject_msgIncompatibleVersions, params);
                 ml.add(new Message(MSGCODE_INCOMPATIBLE_VERSIONS, msg, Message.ERROR, this));

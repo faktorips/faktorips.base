@@ -56,9 +56,9 @@ public class TableContentsContentProviderTest extends AbstractIpsPluginTest {
         rowInvalid = gen.newRow();
         rowNull = gen.newRow();
 
-        tableContents.newColumn("1");
-        tableContents.newColumn("2");
-        tableContents.newColumn("3");
+        tableContents.newColumn("1", "");
+        tableContents.newColumn("2", "");
+        tableContents.newColumn("3", "");
 
         rowValid.setValue(0, "1");
         rowValid.setValue(1, "2");

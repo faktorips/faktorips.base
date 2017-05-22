@@ -132,7 +132,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     public void testCreateTocEntryTable() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
-        ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
+        ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "motor.RateTable");
         table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
         structure.getIpsSrcFile().save(true, null);
@@ -157,7 +158,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         // create a table content => 4
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
-        ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
+        ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "motor.RateTable");
         table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
         structure.getIpsSrcFile().save(true, null);
@@ -230,22 +232,22 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         // delete the table => should be removed from toc => 4
         table.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        assertNull(tocFileBuilder.getToc(root).getEntry(
-                new QualifiedNameType("motor.RateTable", IpsObjectType.TABLE_CONTENTS)));
+        assertNull(tocFileBuilder.getToc(root)
+                .getEntry(new QualifiedNameType("motor.RateTable", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(4, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the second table => should be removed from toc => 3
         table2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        assertNull(tocFileBuilder.getToc(root).getEntry(
-                new QualifiedNameType("motor.RateTable2", IpsObjectType.TABLE_CONTENTS)));
+        assertNull(tocFileBuilder.getToc(root)
+                .getEntry(new QualifiedNameType("motor.RateTable2", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(3, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete test case => should be removed from toc => 2
         testCase.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        assertNull(tocFileBuilder.getToc(root).getEntry(
-                new QualifiedNameType("tests.PremiumCalcTestA", IpsObjectType.TABLE_CONTENTS)));
+        assertNull(tocFileBuilder.getToc(root)
+                .getEntry(new QualifiedNameType("tests.PremiumCalcTestA", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(2, tocFileBuilder.getToc(root).getEntries().size());
 
         // check removing of table toc entries depending on the table structure type
@@ -258,8 +260,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         structureEnum.newColumn();
         tableEnum.newTableRows();
         tableEnum.setTableStructure(structureEnum.getQualifiedName());
-        tableEnum.newColumn("");
-        tableEnum.newColumn("");
+        tableEnum.newColumn("", "");
+        tableEnum.newColumn("", "");
         tableEnum.getIpsSrcFile().save(true, null);
 
         // build

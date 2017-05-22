@@ -16,8 +16,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -119,7 +119,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     private void updateEnumContentReference() throws CoreException {
         IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
         if (enumContent != null) {
-            IEnumAttributeReference attributeReference = enumContent.getEnumAttributeReference(getOriginalName());
+            IPartReference attributeReference = enumContent.getEnumAttributeReference(getOriginalName());
             if (attributeReference != null) {
                 attributeReference.setName(getNewName());
             }

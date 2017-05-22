@@ -450,6 +450,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     protected void initPartContainersFromXml(Element element, Map<String, IIpsObjectPart> idPartMap) {
         Set<String> idSet = new HashSet<String>();
+
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
@@ -550,7 +551,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Removes the given part from the container. Returns <tt>true</tt> if removed, <tt>false</tt>
      * otherwise.
      * <p>
-     * Subclasses may extend this method by using the method {@link #removePartThis(IIpsObjectPart)}.
+     * Subclasses may extend this method by using the method
+     * {@link #removePartThis(IIpsObjectPart)}.
      * 
      * @param part The {@link IIpsObjectPart} to remove from this container.
      */

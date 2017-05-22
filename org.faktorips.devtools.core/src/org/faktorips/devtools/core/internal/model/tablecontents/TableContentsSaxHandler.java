@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -42,6 +43,8 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String DESCRIPTION = DescriptionHelper.XML_ELEMENT_NAME;
     private static final String ATTRIBUTE_TABLESTRUCTURE = ITableContents.PROPERTY_TABLESTRUCTURE;
     private static final String ATTRIBUTE_NUMOFCOLUMNS = ITableContents.PROPERTY_NUMOFCOLUMNS;
+    private static final String COLUMNREFERENCE_TAG = TableColumnReference.XML_TAG;
+    private static final String COLUMNREFERENCE_NAME = IpsElement.PROPERTY_NAME;
 
     // extension properties support
     private static final String EXTENSIONPROPERTIES = TableRows.getXmlExtPropertiesElementName();
@@ -84,6 +87,8 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private String currentId;
 
+    private String referenceName;
+
     public TableContentsSaxHandler(TableContents tableContents, boolean readRowsContent) {
         this.tableContents = tableContents;
         this.readRowsContent = readRowsContent;
@@ -92,16 +97,14 @@ public class TableContentsSaxHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         updateCurrentId(attributes);
-        if (TABLECONTENTS.equals(qName) && !readRowsContent) {
+        if (isTableContents(qName)) {
             tableContents.setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
             tableContents.setNumOfColumnsInternal(Integer.parseInt(attributes.getValue(ATTRIBUTE_NUMOFCOLUMNS)));
+        } else if (COLUMNREFERENCE_TAG.equals(qName)) {
+            referenceName = attributes.getValue(COLUMNREFERENCE_NAME);
         } else if (isTableRowsTag(qName)) {
-            if (readRowsContent) {
-                currentTableRows = (TableRows)tableContents.createNewTableRowsInternal(currentId);
-                tableContents.setTableRowsInternal(currentTableRows);
-            } else {
-                throw new SAXException("Skip reading table content"); //$NON-NLS-1$
-            }
+            tableContents.migrateColumnReferences();
+            readRowsContent();
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
             currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);
@@ -117,10 +120,24 @@ public class TableContentsSaxHandler extends DefaultHandler {
             nullValue = Boolean.valueOf(attributes.getValue(EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL)).booleanValue();
             extensionPropertyId = attributes.getValue(EXTENSIONPROPERTIES_ID);
         }
+
+    }
+
+    private boolean isTableContents(String qName) {
+        return TABLECONTENTS.equals(qName) && !readRowsContent;
     }
 
     private boolean isTableRowsTag(String qName) {
         return ITableRows.TAG_NAME.equals(qName) || IIpsObjectGeneration.TAG_NAME.equals(qName);
+    }
+
+    private void readRowsContent() throws SAXException {
+        if (readRowsContent) {
+            currentTableRows = (TableRows)tableContents.createNewTableRowsInternal(currentId);
+            tableContents.setTableRowsInternal(currentTableRows);
+        } else {
+            throw new SAXException("Skip reading table content"); //$NON-NLS-1$
+        }
     }
 
     private void updateCurrentId(Attributes attributes) {
@@ -166,6 +183,10 @@ public class TableContentsSaxHandler extends DefaultHandler {
                 throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
             }
             textBuffer = null;
+        } else if (isAttributeReferenceNode(qName)) {
+            tableContents.createColumnReferenceSaxHandler(referenceName);
+            referenceName = null;
+
         }
     }
 
@@ -199,6 +220,14 @@ public class TableContentsSaxHandler extends DefaultHandler {
      */
     private boolean isExtensionPropertiesValueNode(String nodeName) {
         return EXTENSIONPROPERTIES_VALUE.equals(nodeName) && insideExtensionPropertiesNode;
+    }
+
+    /**
+     * Returns <code>true</code> if the given node is the attributeReference node otherwise
+     * <code>false</code>
+     */
+    private boolean isAttributeReferenceNode(String nodeName) {
+        return COLUMNREFERENCE_TAG.equals(nodeName);
     }
 
 }

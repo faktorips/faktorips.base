@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -40,8 +41,8 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testNewEnumAttributeValue_fixedValue() throws CoreException {
-        IEnumAttributeValue enumAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(
-                genderEnumValueMale.getEnumAttributeValuesCount() - 1);
+        IEnumAttributeValue enumAttributeValue = genderEnumValueMale.getEnumAttributeValues()
+                .get(genderEnumValueMale.getEnumAttributeValuesCount() - 1);
         IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
         enumAttributeValue.delete();
         enumAttribute.setMultilingual(true);
@@ -75,8 +76,8 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         genderEnumValueFemale.getEnumAttributeValues().get(0).delete();
         MessageList validationMessageList = genderEnumValueFemale.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES));
+        assertNotNull(validationMessageList.getMessageByCode(
+                IEnumValue.MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES));
     }
 
     @Test
@@ -107,8 +108,8 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("idValue"));
         enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("nameValue"));
 
-        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(paymentMode
-                .findIdentiferAttribute(ipsProject));
+        IEnumAttributeValue enumAttributeValue = enumValue
+                .getEnumAttributeValue(paymentMode.findIdentiferAttribute(ipsProject));
 
         assertEquals(2, enumValue.getEnumAttributeValues().size());
         assertEquals("idValue", enumAttributeValue.getStringValue());
@@ -160,8 +161,8 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testFindUniqueEnumAttributeValues() throws CoreException {
         IEnumValue value = paymentMode.getEnumValues().get(0);
-        List<IEnumAttributeValue> uniqueAttributeValues = value.findUniqueEnumAttributeValues(
-                paymentMode.findUniqueEnumAttributes(true, ipsProject), ipsProject);
+        List<IEnumAttributeValue> uniqueAttributeValues = value
+                .findUniqueEnumAttributeValues(paymentMode.findUniqueEnumAttributes(true, ipsProject), ipsProject);
         assertEquals(3, uniqueAttributeValues.size());
     }
 

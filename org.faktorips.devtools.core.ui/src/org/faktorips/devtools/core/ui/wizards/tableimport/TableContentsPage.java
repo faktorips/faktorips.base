@@ -156,7 +156,7 @@ public class TableContentsPage extends IpsObjectPage {
                 table.getTableStructure());
         if (structure != null) {
             for (int i = 0; i < structure.getNumOfColumns(); i++) {
-                table.newColumn(StringUtils.EMPTY);
+                table.newColumn(StringUtils.EMPTY, structure.getColumn(i).getName());
             }
         }
     }

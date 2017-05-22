@@ -265,8 +265,8 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
-        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
-
+        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypesByReferences(tableStructure,
+                ipsProject);
         if (tableStructure != null && datatypes != null && tableStructure.getUniqueKeys().length > 0) {
             MessageList validationMessageList = new MessageList();
 
@@ -329,8 +329,8 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         if (tableStructure != null) {
             lastUniqueKeyValidationResult = new MessageList();
             IIpsProject ipsProject = getTableContents().getIpsProject();
-            ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure,
-                    ipsProject);
+            ValueDatatype[] datatypes = ((TableContents)getTableContents())
+                    .findColumnDatatypesByReferences(tableStructure, ipsProject);
             validateUniqueKeys(lastUniqueKeyValidationResult, tableStructure, datatypes, true);
             boolean dirty = getIpsSrcFile().isDirty();
             objectHasChanged();

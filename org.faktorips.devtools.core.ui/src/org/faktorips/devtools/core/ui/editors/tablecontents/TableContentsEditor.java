@@ -55,9 +55,15 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     @Override
+    protected void refresh() {
+        super.refresh();
+        contentsPage.refreshTable();
+    }
+
+    @Override
     protected String getUniformPageTitle() {
-        return Messages.TableContentsEditor_TableContentsEditor_title2
-                + " " + getTableContents().getName() + " (" + getTableContents().getTableStructure() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return Messages.TableContentsEditor_TableContentsEditor_title2 + " " + getTableContents().getName() + " (" //$NON-NLS-1$ //$NON-NLS-2$
+                + getTableContents().getTableStructure() + ")"; //$NON-NLS-1$
     }
 
     @Override
@@ -79,4 +85,11 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
         }
         return messages;
     }
+
+    /*
+     * @Override protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+     * contentsPage.updateToolbarActionsEnabledStates();
+     * 
+     * }
+     */
 }

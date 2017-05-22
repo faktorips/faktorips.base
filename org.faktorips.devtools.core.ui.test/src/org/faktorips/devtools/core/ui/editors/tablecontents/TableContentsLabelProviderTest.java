@@ -59,9 +59,9 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         rowInvalid = gen.newRow();
         rowNull = gen.newRow();
 
-        tableContents.newColumn("1");
-        tableContents.newColumn("2");
-        tableContents.newColumn("3");
+        tableContents.newColumn("1", "");
+        tableContents.newColumn("2", "");
+        tableContents.newColumn("3", "");
 
         rowValid.setValue(0, "1");
         rowValid.setValue(1, "2");
@@ -74,10 +74,9 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         rowNull.setValue(2, null);
 
         labelProvider = new TableContentsLabelProvider();
-        labelProvider
-                .setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(column0.getIpsProject()),
-                        column1.findValueDatatype(column1.getIpsProject()),
-                        column2.findValueDatatype(column2.getIpsProject()) });
+        labelProvider.setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(column0.getIpsProject()),
+                column1.findValueDatatype(column1.getIpsProject()),
+                column2.findValueDatatype(column2.getIpsProject()) });
     }
 
     @Test

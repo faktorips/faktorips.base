@@ -31,7 +31,9 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -111,6 +113,59 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         objectHasChanged();
     }
 
+    @Override
+    public int moveValue(int columnIndex, boolean up) {
+        ArgumentCheck.notNull(values);
+        int index = columnIndex;
+        // Return if element is already the first / last one.
+        if (up) {
+            if (index == 0) {
+                return index;
+            }
+        } else {
+            if (index == values.size() - 1) {
+                return index;
+            }
+        }
+
+        // Perform the moving.
+
+        int[] newIndex = moveParts(new int[] { index }, up);
+
+        return newIndex[0];
+
+    }
+
+    @Override
+    public void swapValue(int firstColumnIndex, int secondColumnIndex) {
+        if (firstColumnIndex == secondColumnIndex || firstColumnIndex < 0 || secondColumnIndex < 0) {
+            throw new IllegalArgumentException();
+        }
+        int positionOfFirstAttribute = firstColumnIndex;
+        int positionOfSecondAttribute = secondColumnIndex;
+        // firstIndex is always the higher index. If not swap both indexes
+        if (firstColumnIndex < secondColumnIndex) {
+            positionOfFirstAttribute = secondColumnIndex;
+            positionOfSecondAttribute = firstColumnIndex;
+        }
+        // move the first Value to the desired position
+        int currentIndex = positionOfFirstAttribute;
+        while (currentIndex != positionOfSecondAttribute) {
+            currentIndex = moveValue(currentIndex, true);
+        }
+        // move the second Value to the desired position
+        currentIndex = positionOfSecondAttribute + 1;
+        while (currentIndex != positionOfFirstAttribute) {
+            currentIndex = moveValue(currentIndex, false);
+        }
+    }
+
+    private int[] moveParts(int[] indeces, boolean up) {
+        ListElementMover<String> mover = new ListElementMover<String>(values);
+        int[] newIndeces = mover.move(indeces, up);
+        return newIndeces;
+    }
+
     protected ITableStructure findTableStructure() {
         try {
             return getTableContents().findTableStructure(getIpsProject());
@@ -123,7 +178,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         values.set(column, newValue);
     }
 
-    void newColumn(int insertAfter, String defaultValue) {
+    @Override
+    public void newColumn(int insertAfter, String defaultValue) {
         if (insertAfter < values.size()) {
             values.add(Math.max(0, insertAfter), defaultValue);
         } else {
@@ -155,7 +211,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         if (tableStructure == null) {
             return;
         }
-        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
+        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypesByReferences(tableStructure,
+                ipsProject);
         validateThis(list, tableStructure, datatypes);
     }
 
@@ -253,11 +310,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 IColumn toColumn = structure.getColumn(toColumnIndex);
                 String localizedFromLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(fromColumn);
                 String localizedToLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(toColumn);
-                String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue, localizedFromLabel + '-'
-                        + localizedToLabel);
-                list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
+                String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue,
+                        localizedFromLabel + '-' + localizedToLabel);
+                list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
                         Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, fromColumnIndex)));
-                list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
+                list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
                         Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, toColumnIndex)));
             }
         } catch (RuntimeException e) {
@@ -268,8 +325,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateUniqueKeyValue(MessageList list, ITableStructure structure, String columnName) {
         try {
             int columnIndex = structure.getColumnIndex(columnName);
-            String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
-                    structure.getColumn(columnIndex));
+            String localizedLabel = IpsPlugin.getMultiLanguageSupport()
+                    .getLocalizedLabel(structure.getColumn(columnIndex));
             String value = getValue(columnIndex);
             if (value != null && StringUtils.isEmpty(value.trim()) || value == null) {
                 String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, localizedLabel);
@@ -297,8 +354,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             if (dataType == null || !dataType.isParsable(value)) {
                 String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(column);
                 String text = NLS.bind(Messages.Row_ValueNotParsable, new Object[] { value, dataType, localizedLabel });
-                Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, new ObjectProperty(this,
-                        IRow.PROPERTY_VALUE, i));
+                Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR,
+                        new ObjectProperty(this, IRow.PROPERTY_VALUE, i));
                 list.add(message);
             }
         }
@@ -338,5 +395,4 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     public int getNoOfColumns() {
         return values.size();
     }
-
 }

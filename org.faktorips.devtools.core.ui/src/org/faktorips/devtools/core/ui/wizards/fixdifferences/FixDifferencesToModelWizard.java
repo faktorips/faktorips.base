@@ -38,8 +38,8 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
         ArgumentCheck.notNull(ipsElementsToFix, this);
         this.ipsElementsToFix = ipsElementsToFix;
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/FixDifferencesToModelWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/FixDifferencesToModelWizard.png")); //$NON-NLS-1$
     }
 
     @Override
@@ -70,9 +70,14 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
                     IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
                 }
             });
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
+        } catch (InterruptedException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            Thread.currentThread().interrupt();
+            return false;
+
         }
         return true;
     }

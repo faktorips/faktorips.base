@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.value.StringValue;

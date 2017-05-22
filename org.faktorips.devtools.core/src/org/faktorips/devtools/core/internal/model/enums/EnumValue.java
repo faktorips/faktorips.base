@@ -143,6 +143,32 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
+    public void swapEnumAttributeValue(int firstIndex, int secondIndex) {
+        if (firstIndex == secondIndex || firstIndex < 0 || secondIndex < 0) {
+            throw new IllegalArgumentException();
+        }
+        int positionOfFirstAttribute = firstIndex;
+        int positionOfSecondAttribute = secondIndex;
+        // firstIndex is always the higher index. If not swap both indexes
+        if (firstIndex < secondIndex) {
+            positionOfFirstAttribute = secondIndex;
+            positionOfSecondAttribute = firstIndex;
+        }
+        IEnumAttributeValue firstValue = getEnumAttributeValues().get(positionOfFirstAttribute);
+        IEnumAttributeValue secondValue = getEnumAttributeValues().get(positionOfSecondAttribute);
+        int currentIndex = positionOfFirstAttribute;
+        // move first EnumAttributValue to the desired position
+        while (currentIndex != positionOfSecondAttribute) {
+            currentIndex = moveEnumAttributeValue(firstValue, true);
+        }
+        // move second EnumAttributValue to the desired position
+        currentIndex = positionOfSecondAttribute + 1;
+        while (currentIndex != positionOfFirstAttribute) {
+            currentIndex = moveEnumAttributeValue(secondValue, false);
+        }
+    }
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 

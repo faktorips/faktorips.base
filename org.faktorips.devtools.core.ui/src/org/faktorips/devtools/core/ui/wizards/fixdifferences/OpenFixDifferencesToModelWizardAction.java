@@ -87,9 +87,9 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
 
     private IStructuredSelection getCurrentSelection() {
         if (window != null) {
-            ISelection selection = window.getSelectionService().getSelection();
-            if (selection instanceof IStructuredSelection) {
-                return (IStructuredSelection)selection;
+            ISelection newSelection = window.getSelectionService().getSelection();
+            if (newSelection instanceof IStructuredSelection) {
+                return (IStructuredSelection)newSelection;
             }
             IWorkbenchPart part = window.getPartService().getActivePart();
             if (part instanceof IEditorPart) {

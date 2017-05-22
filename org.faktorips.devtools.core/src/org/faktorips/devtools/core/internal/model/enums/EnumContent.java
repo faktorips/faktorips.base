@@ -22,10 +22,10 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -64,10 +64,9 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     private String enumType;
 
     /**
-     * Collection containing <tt>IEnumAttributeReference</tt>s that belong to this
-     * <tt>IEnumContent</tt>.
+     * Collection containing <tt>IPartReference</tt>s that belong to this <tt>IEnumContent</tt>.
      */
-    private IpsObjectPartCollection<IEnumAttributeReference> enumAttributeReferences;
+    private IpsObjectPartCollection<IPartReference> enumAttributeReferences;
 
     /**
      * Creates a new <tt>IEnumContent</tt>.
@@ -78,8 +77,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super(file);
 
         enumType = StringUtils.EMPTY;
-        enumAttributeReferences = new IpsObjectPartCollection<IEnumAttributeReference>(this,
-                EnumAttributeReference.class, IEnumAttributeReference.class, IEnumAttributeReference.XML_TAG);
+        enumAttributeReferences = new IpsObjectPartCollection<IPartReference>(this, EnumAttributeReference.class,
+                IPartReference.class, EnumAttributeReference.XML_TAG);
     }
 
     @Override
@@ -117,8 +116,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * Refreshes the <tt>IEnumAttributeReference</tt>s that belong to this <tt>IEnumContent</tt> by
-     * looking up recent information in the base <tt>IEnumType</tt>.
+     * Refreshes the <tt>IPartReference</tt>s that belong to this <tt>IEnumContent</tt> by looking
+     * up recent information in the base <tt>IEnumType</tt>.
      */
     private void refreshEnumAttributeReferences() {
         IEnumType newEnumType = findEnumType(getIpsProject());
@@ -126,10 +125,11 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             enumAttributeReferences.clear();
             List<IEnumAttribute> enumAttributes = newEnumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-                IEnumAttributeReference reference = enumAttributeReferences.newPart();
+                IPartReference reference = enumAttributeReferences.newPart();
                 reference.setName(currentEnumAttribute.getName());
             }
         }
+
     }
 
     @Override
@@ -163,7 +163,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         validateEnumAttributeReferences(list, referencedEnumType);
     }
 
-    /** Validates the <tt>IEnumAttributeReference</tt>s. */
+    /** Validates the <tt>IPartReference</tt>s. */
     private void validateEnumAttributeReferences(MessageList validationMessageList, IEnumType enumType) {
         validateEnumAttributeReferencesCount(validationMessageList, enumType);
         if (validationMessageList.containsErrorMsg()) {
@@ -181,7 +181,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * The ordering of the <tt>IEnumAttributeReference</tt>s must match the ordering of the
+     * The ordering of the <tt>IPartReference</tt>s must match the ordering of the
      * <tt>IEnumAttribute</tt>s in the base <tt>IEnumType</tt>.
      */
     private void validateEnumAttributeReferenceOrdering(MessageList validationMessageList,
@@ -204,7 +204,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * The names of the <tt>IEnumAttributeReference</tt>s must match the names of the
+     * The names of the <tt>IPartReference</tt>s must match the names of the
      * <tt>IEnumAttribute</tt>s in the base <tt>IEnumType</tt>.
      */
     private void validateEnumAttributeReferenceNames(MessageList validationMessageList,
@@ -224,8 +224,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * The number of <tt>IEnumAttributeReference</tt>s must match the number of
-     * <tt>IEnumAttribute</tt>s defined in the base <tt>IEnumType</tt>.
+     * The number of <tt>IPartReference</tt>s must match the number of <tt>IEnumAttribute</tt>s
+     * defined in the base <tt>IEnumType</tt>.
      */
     private void validateEnumAttributeReferencesCount(MessageList validationMessageList, IEnumType enumType) {
         if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getEnumAttributeReferencesCount()) {
@@ -239,11 +239,11 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * Returns <tt>true</tt> if an <tt>IEnumAttributeReference</tt> with the given name exists in
-     * this <tt>IEnumContent</tt>, <tt>false</tt> otherwise.
+     * Returns <tt>true</tt> if an <tt>IPartReference</tt> with the given name exists in this
+     * <tt>IEnumContent</tt>, <tt>false</tt> otherwise.
      */
     private boolean containsEnumAttributeReference(String name) {
-        for (IEnumAttributeReference currentReference : enumAttributeReferences) {
+        for (IPartReference currentReference : enumAttributeReferences) {
             if (currentReference.getName().equals(name)) {
                 return true;
             }
@@ -261,19 +261,19 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public List<IEnumAttributeReference> getEnumAttributeReferences() {
-        List<IEnumAttributeReference> referencesList = new ArrayList<IEnumAttributeReference>();
+    public List<IPartReference> getEnumAttributeReferences() {
+        List<IPartReference> referencesList = new ArrayList<IPartReference>();
         IIpsObjectPart[] parts = enumAttributeReferences.getParts();
         for (IIpsObjectPart part : parts) {
-            referencesList.add((IEnumAttributeReference)part);
+            referencesList.add((IPartReference)part);
         }
         return referencesList;
     }
 
     @Override
-    public IEnumAttributeReference getEnumAttributeReference(String name) {
+    public IPartReference getEnumAttributeReference(String name) {
         ArgumentCheck.notNull(name);
-        for (IEnumAttributeReference reference : getEnumAttributeReferences()) {
+        for (IPartReference reference : getEnumAttributeReferences()) {
             if (reference.getName().equals(name)) {
                 return reference;
             }

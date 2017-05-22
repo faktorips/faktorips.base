@@ -51,13 +51,17 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
 
         IIpsProject proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
-        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
+        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable");
+        structure.newColumn();
+        structure.newColumn();
+        structure.newColumn();
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
         generation = table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "");
+        table.newColumn("2", "");
+        table.newColumn("3", "");
 
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
@@ -117,7 +121,8 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetName() {
-        assertEquals(Messages.TableContentsCompareItemCreator_TableContentsStructureCompare, structureCreator.getName());
+        assertEquals(Messages.TableContentsCompareItemCreator_TableContentsStructureCompare,
+                structureCreator.getName());
     }
 
     @Test

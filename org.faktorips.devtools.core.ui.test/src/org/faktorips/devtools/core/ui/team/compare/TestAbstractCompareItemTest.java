@@ -61,12 +61,16 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         IIpsProject proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
-        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
+        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable");
+        structure.newColumn();
+        structure.newColumn();
+        structure.newColumn();
         generation = table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "");
+        table.newColumn("2", "");
+        table.newColumn("3", "");
 
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");

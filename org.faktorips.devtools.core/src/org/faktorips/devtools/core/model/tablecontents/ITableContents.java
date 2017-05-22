@@ -10,10 +10,16 @@
 
 package org.faktorips.devtools.core.model.tablecontents;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableColumnReference;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
@@ -35,7 +41,10 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
     /**
      * Validation message code to indicate that the structure has a different number of columns than
      * this content.
+     * 
+     * @deprecated not used any more. See MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID.
      */
+    @Deprecated
     public static final String MSGCODE_COLUMNCOUNT_MISMATCH = MSGCODE_PREFIX + "ColumncountMismatch"; //$NON-NLS-1$
 
     /**
@@ -63,6 +72,30 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
             + "TooManyContentsForSingleTableStructure"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the ordering of the referenced {@link IColumn}s as
+     * stored in this {@link ITableContents} does not match the ordering of the {@link IColumn}s as
+     * defined in the base {@link ITableStructure}.
+     */
+    public static final String MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_ORDERING_INVALID = MSGCODE_PREFIX
+            + "TableContentsReferencedColumnOrderingInvalid"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the number of referenced {@link IPartReference}s
+     * does not correspond to the number of {@link IColumn}s defined in the referenced
+     * {@link ITableStructure}.
+     */
+    public static final String MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID = MSGCODE_PREFIX
+            + "TableContentsReferencedColumnCountInvalid"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the names of the referenced {@link IColumn}s as
+     * stored in this {@link ITableContents} do not match the names of the {@link IColumn} s as
+     * defined in the base {@link ITableStructure}.
+     */
+    public static final String MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_NAMES_INVALID = MSGCODE_PREFIX
+            + "TableContentReferencedColumnNamesInvalid"; //$NON-NLS-1$
+
+    /**
      * Returns the qualified name of the table structure this table contents is based on.
      */
     public String getTableStructure();
@@ -83,9 +116,9 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
     public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the number of colums in the table contents. Note, that it is possible that this table
-     * contents object contains more (or less) columns than the table structure it is based on. Of
-     * course this is an error in the product definition, but the model must handle it.
+     * Returns the number of columns in the table contents. Note, that it is possible that this
+     * table contents object contains more (or less) columns than the table structure it is based
+     * on. Of course this is an error in the product definition, but the model must handle it.
      */
     public int getNumOfColumns();
 
@@ -93,30 +126,39 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
      * Creates a new column. A new cell is added to each row in this object with the given default
      * value.
      * 
-     * @return the index of the new column.
+     * @param defaultValue the default value to use for cells in the new column
+     * @param name the name of the new column
+     * @return the index of the new column
      */
-    public int newColumn(String defaultValue);
+    public int newColumn(String defaultValue, String name);
 
     /**
      * Creates a new column at the given index (zero based), remaining columns are shifted to the
      * right.
      * 
-     * @param index The index to insert the new column. Values less than zero lead to a new column
+     * @param index the index to insert the new column. Values less than zero lead to a new column
      *            at index zero. A value greater or equal to the index of the last existing column
-     *            lead to a new column inserted after the last existing one.
-     * @param defaultValue The new value to use for the new cells.
+     *            lead to a new column inserted after the last existing one
+     * @param defaultValue The default value to use for cells in the new column
+     * @param name the name of the new column
      */
-    public void newColumnAt(int index, String defaultValue);
+    public void newColumnAt(int index, String defaultValue, String name);
 
     /**
-     * Deletes the column by removing the cell in each row.
+     * Deletes the column by removing the cell in each row and the corresponding
+     * {@link TableColumnReference}.
      * 
-     * @param columnIndex The column's index.
+     * @param columnIndex the column's index
      * 
      * @throws IllegalArgumentException if this object does not contain a column with the indicated
-     *             index.
+     *             index
      */
     public void deleteColumn(int columnIndex);
+
+    /**
+     * Migrates the missing columnReferences in old {@link TableContents}
+     */
+    public void migrateColumnReferences();
 
     /**
      * Creates a new {@link ITableRows}
@@ -129,4 +171,40 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
      * Reads the whole Content only on the first call of this method.
      */
     public ITableRows getTableRows();
+
+    /**
+     * Returns a list containing all {@link IPartReference}s that belong to this
+     * {@link ITableContents}.
+     * <p>
+     * Returns an empty list if there are none, never returns {@code null}.
+     */
+    public List<IPartReference> getColumnReferences();
+
+    /**
+     * Returns the number of {@link IColumn}s that are currently referenced by this
+     * {@link ITableContents}.
+     */
+    public int getColumnReferencesCount();
+
+    /**
+     * Adds a new ColumnReference to {@link ITableContents}. Only used for initializing
+     * {@link ITableContents} with SAXHandler
+     */
+    public void createColumnReferenceSaxHandler(String referenceID);
+
+    /**
+     * Returns {@code true} if this {@link ITableContents} is inconsistent with the model and needs
+     * to be fixed by the user, {@code false} otherwise.
+     */
+    public boolean isFixToModelRequired();
+
+    /**
+     * Sorts the {@link TableColumnReference}s in the right order corresponding to the
+     * {@link ITableStructure}.
+     * <p>
+     * Note: This is a workaround since there is no method to notice the {@code ContentPage} that
+     * just the order of the references changed without adding or deleting any columns.
+     */
+    public void fixColumnReferences();
+
 }

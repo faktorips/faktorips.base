@@ -13,16 +13,19 @@ package org.faktorips.devtools.core.ui.editors.enumcontent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
-import org.faktorips.devtools.core.ui.wizards.enumcontent.FixEnumContentWizard;
+import org.faktorips.devtools.core.ui.wizards.enumcontent.FixEnumContentStrategy;
+import org.faktorips.devtools.core.ui.wizards.fixcontent.FixContentWizard;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * Opens a <tt>FixEnumContentWizard</tt>.
  * 
- * @see FixEnumContentWizard
+ * @see FixContentWizard
  * 
  * @author Alexander Weickmann
  * 
@@ -31,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
 public class OpenFixEnumContentWizardAction extends Action {
 
     /** The name of the image for the action. */
-    private final String IMAGE_NAME = "BrokenEnum.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME = "BrokenEnum.gif"; //$NON-NLS-1$
 
     /** The <tt>IEnumContent</tt> to fix. */
     private IEnumContent enumContent;
@@ -69,7 +72,8 @@ public class OpenFixEnumContentWizardAction extends Action {
 
     @Override
     public void run() {
-        FixEnumContentWizard wizard = new FixEnumContentWizard(enumContent);
+        FixContentWizard<IEnumType, IEnumAttribute> wizard = new FixContentWizard<IEnumType, IEnumAttribute>(
+                enumContent, new FixEnumContentStrategy(enumContent));
         WizardDialog dialog = new WizardDialog(parentShell, wizard);
         dialog.open();
         if (editorPage != null) {

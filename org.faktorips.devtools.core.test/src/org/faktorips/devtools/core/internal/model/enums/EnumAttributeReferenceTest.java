@@ -7,15 +7,15 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
 package org.faktorips.devtools.core.internal.model.enums;
 
 import static org.junit.Assert.assertEquals;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -23,8 +23,8 @@ import org.w3c.dom.NamedNodeMap;
 
 public class EnumAttributeReferenceTest extends AbstractIpsEnumPluginTest {
 
-    private IEnumAttributeReference genderIdReference;
-    private IEnumAttributeReference genderNameReference;
+    private IPartReference genderIdReference;
+    private IPartReference genderNameReference;
 
     @Override
     @Before
@@ -43,9 +43,10 @@ public class EnumAttributeReferenceTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testXml() throws ParserConfigurationException {
-        Element xmlElement = genderIdReference.toXml(createXmlDocument(IEnumAttributeReference.XML_TAG));
+        Element xmlElement = genderIdReference.toXml(createXmlDocument(EnumAttributeReference.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
-        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IIpsElement.PROPERTY_NAME).getTextContent());
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME,
+                attributes.getNamedItem(IIpsElement.PROPERTY_NAME).getTextContent());
 
         genderNameReference.initFromXml(xmlElement);
         assertEquals(genderIdReference.getName(), genderNameReference.getName());

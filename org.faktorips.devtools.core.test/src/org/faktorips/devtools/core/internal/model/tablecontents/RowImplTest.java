@@ -43,9 +43,12 @@ public class RowImplTest extends AbstractIpsPluginTest {
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         table.setTableStructure(structure.getQualifiedName());
         generation = table.newTableRows();
-        table.newColumn(null);
-        table.newColumn(null);
-        table.newColumn(null);
+        structure.newColumn();
+        structure.newColumn();
+        structure.newColumn();
+        table.newColumn(null, "");
+        table.newColumn(null, "");
+        table.newColumn(null, "");
         row = (Row)generation.newRow();
         row2 = (Row)generation.newRow();
         ipsSrcFile = table.getIpsSrcFile();

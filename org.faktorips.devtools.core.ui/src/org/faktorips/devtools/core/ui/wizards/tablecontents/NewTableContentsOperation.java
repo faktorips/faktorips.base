@@ -39,7 +39,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
             ITableStructure structure = getPmo().getSelectedStructure();
             if (structure != null) {
                 for (int i = 0; i < structure.getNumOfColumns(); i++) {
-                    table.newColumn(StringUtils.EMPTY);
+                    table.newColumn(StringUtils.EMPTY, structure.getColumn(i).getName());
                 }
             }
             if (getPmo().isOpenEditor()) {

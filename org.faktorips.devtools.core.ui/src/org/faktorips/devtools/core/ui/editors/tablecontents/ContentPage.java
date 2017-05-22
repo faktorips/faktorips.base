@@ -10,20 +10,20 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -51,10 +51,13 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableRows;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -78,17 +81,22 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Stefan Widmaier
  */
-public class ContentPage extends IpsObjectEditorPage {
+public class ContentPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
     private static final String PAGE_ID = "Contents"; //$NON-NLS-1$
     private static final String TABLE_SETTINGS_PREFIX = "TableColumnWidths_"; //$NON-NLS-1$
     private static final String COLUMN_PREFIX = "col_"; //$NON-NLS-1$
     private static final int DEFAULT_COLUMN_WIDTH = 125;
 
+    private Table table;
+    private UIToolkit toolkit;
     private TableViewer tableViewer;
     private SearchBar searchBar;
 
     private SelectionStatusBarPublisher selectionStatusBarPublisher;
+    private IAction openFixTableContentDialogAction;
+    private NewRowAction newRowAction;
+    private DeleteRowAction deleteRowAction;
 
     /**
      * The <tt>ITableContents</tt> the <tt>TableContentsEditor</tt> this page belongs to is
@@ -104,8 +112,10 @@ public class ContentPage extends IpsObjectEditorPage {
     public ContentPage(TableContentsEditor editor) {
         super(editor, PAGE_ID, Messages.ContentPage_title);
         tableContents = editor.getTableContents();
+        tableContents.getIpsModel().addChangeListener(this);
         extFactory = new ExtensionPropertyControlFactory(tableContents);
         selectionStatusBarPublisher = new SelectionStatusBarPublisher(getEditor().getEditorSite());
+
     }
 
     @Override
@@ -118,11 +128,30 @@ public class ContentPage extends IpsObjectEditorPage {
     public void refresh() {
         super.refresh();
         bindingContext.updateUI();
+        updateToolbarActionsEnabledStates();
+    }
+
+    /**
+     * Updates or creates a new table by disposing the old table columns
+     */
+    private void updateTable() {
+        if (!tableViewer.getTable().isDisposed()) {
+            if (tableViewer.getTable().getColumnCount() > 0) {
+                TableColumn[] columns = tableViewer.getTable().getColumns();
+
+                for (TableColumn column : columns) {
+                    column.dispose();
+                }
+            }
+        }
+
+        createNewTableViewer();
+        updateToolbarActionsEnabledStates();
     }
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-
+        this.toolkit = toolkit;
         checkDifferences(formBody, toolkit);
 
         GridLayout layout = new GridLayout(1, false);
@@ -134,8 +163,8 @@ public class ContentPage extends IpsObjectEditorPage {
 
         searchBar = new SearchBar(formBody, toolkit);
 
-        final Table table = createTable(formBody);
-        initTableViewer(table, toolkit);
+        this.table = createTable(formBody);
+        initTableViewer(table);
 
         tableViewer.setInput(getTableContents());
         TableRows tableRows = (TableRows)getTableContents().getTableRows();
@@ -145,9 +174,13 @@ public class ContentPage extends IpsObjectEditorPage {
 
         createUniqueKeyValidationButton(tableRows, formToolbarManager);
 
-        NewRowAction newRowAction = new NewRowAction(tableViewer, this);
-        DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
+        openFixTableContentDialogAction = new OpenFixTableContentWizardAction(this, tableContents,
+                getSite().getShell());
+        newRowAction = new NewRowAction(tableViewer, this);
+        deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
+        formToolbarManager.add(openFixTableContentDialogAction);
+        updateToolbarActionsEnabledStates();
         formToolbarManager.add(newRowAction);
         formToolbarManager.add(deleteRowAction);
         formToolbarManager.add(new Separator());
@@ -174,9 +207,8 @@ public class ContentPage extends IpsObjectEditorPage {
         // FS#822 workaround to activate the correct cell editor (row and column),
         // after scrolling and activating another cell the table on a different page.
         // To fix this problem selection listeners will be added to deactivate the current cell
-        // editor first
-        // if the user scrolls to another cell in the table
-        table.getVerticalBar().addSelectionListener(new SelectionListener() {
+        // editor first if the user scrolls to another cell in the table
+        SelectionListener cellEditorDeactivator = new SelectionListener() {
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 deactivateCellEditors();
@@ -186,18 +218,9 @@ public class ContentPage extends IpsObjectEditorPage {
             public void widgetSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
-        });
-        table.getHorizontalBar().addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                deactivateCellEditors();
-            }
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                deactivateCellEditors();
-            }
-        });
+        };
+        table.getVerticalBar().addSelectionListener(cellEditorDeactivator);
+        table.getHorizontalBar().addSelectionListener(cellEditorDeactivator);
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -206,14 +229,15 @@ public class ContentPage extends IpsObjectEditorPage {
                 selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
             }
         });
+
     }
 
     private void createUniqueKeyValidationButton(TableRows tableRows, IToolBarManager formToolbarManager) {
         UniqueKeyValidatonAction uniqueKeyValidationAction = new UniqueKeyValidatonAction(tableViewer);
         ActionContributionItem uniqueKeyValidationActionContributionItem = new ActionContributionItem(
                 uniqueKeyValidationAction);
-        uniqueKeyValidationActionContributionItem.setVisible(tableRows.isUniqueKeyValidationEnabled()
-                && !tableRows.isUniqueKeyValidatedAutomatically());
+        uniqueKeyValidationActionContributionItem
+                .setVisible(tableRows.isUniqueKeyValidationEnabled() && !tableRows.isUniqueKeyValidatedAutomatically());
         formToolbarManager.add(uniqueKeyValidationActionContributionItem);
         formToolbarManager.add(new Separator());
     }
@@ -251,20 +275,20 @@ public class ContentPage extends IpsObjectEditorPage {
      * the table and adds a KeyListener that enables the editing of the first cell in the currently
      * selected row by pressing "F2".
      * 
-     * @return The newly created and initialized Table.
+     * @return The newly created and initialised Table.
      */
     private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
-        Table table = new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION
-                | SWT.VIRTUAL);
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
+        Table newTable = new Table(formBody,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION | SWT.VIRTUAL);
+        newTable.setHeaderVisible(true);
+        newTable.setLinesVisible(true);
         // occupy all available space
         GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableGridData.widthHint = formBody.getClientArea().width;
         tableGridData.heightHint = formBody.getClientArea().height;
-        table.setLayoutData(tableGridData);
-        table.addKeyListener(new KeyAdapter() {
+        newTable.setLayoutData(tableGridData);
+        newTable.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.keyCode == SWT.F2) {
@@ -275,7 +299,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 }
             }
         });
-        return table;
+        return newTable;
     }
 
     /**
@@ -288,7 +312,7 @@ public class ContentPage extends IpsObjectEditorPage {
         String tableSettingsKey = TABLE_SETTINGS_PREFIX + getTableContents().getQualifiedName();
         IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(tableSettingsKey);
         List<Integer> sizes = new ArrayList<Integer>();
-        for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
+        for (int i = 0; i < getTableContents().getColumnReferencesCount(); i++) {
             String val = settings == null ? null : settings.get(COLUMN_PREFIX + i);
             try {
                 sizes.add(val == null ? DEFAULT_COLUMN_WIDTH : Integer.parseInt(val));
@@ -320,94 +344,134 @@ public class ContentPage extends IpsObjectEditorPage {
      * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
      * hoverservice.
      */
-    private void initTableViewer(Table table, UIToolkit toolkit) {
-        try {
-            table.removeAll();
-            TableUtil.increaseHeightOfTableRows(table, getTableContents().getNumOfColumns(), 5);
+    private void initTableViewer(Table table) {
 
-            tableViewer = new TableViewer(table);
-            /*
-             * SetUseHashlookup in combination with SWT.VIRTUAL does't work.
-             * 
-             * 
-             * https://bugs.eclipse.org/bugs/show_bug.cgi?id=269721
-             * 
-             * tableViewer.setUseHashlookup(true);
-             */
-            tableViewer.setContentProvider(new TableContentsContentProvider());
-            TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
-            tableViewer.setLabelProvider(labelProvider);
+        table.removeAll();
+        TableUtil.increaseHeightOfTableRows(table, getTableContents().getColumnReferencesCount(), 5);
 
-            ITableStructure tableStructure = getTableStructure();
-            String[] columnProperties = new String[getTableContents().getNumOfColumns()];
-            List<Integer> columnSizes = readColumnWidths();
-            int numReadSizes = columnSizes.size();
-            for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                String columnName;
-                ValueDatatype valueDatatype = null;
-                if (tableStructure == null) {
-                    columnName = Messages.ContentPage_Column + (i + 1);
-                } else {
-                    columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(tableStructure.getColumn(i));
-                    valueDatatype = tableStructure.getColumn(i).findValueDatatype(getTableContents().getIpsProject());
+        tableViewer = new TableViewer(table);
+        /*
+         * SetUseHashlookup in combination with SWT.VIRTUAL does't work.
+         * 
+         * 
+         * https://bugs.eclipse.org/bugs/show_bug.cgi?id=269721
+         * 
+         * tableViewer.setUseHashlookup(true);
+         */
+        tableViewer.setContentProvider(new TableContentsContentProvider());
+        TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
+        tableViewer.setLabelProvider(labelProvider);
+
+        createNewTableViewer();
+
+        new TableMessageHoverService(tableViewer) {
+
+            @Override
+            protected MessageList getMessagesFor(Object element) throws CoreException {
+                if (element != null) {
+                    return ((IRow)element).validate(((IRow)element).getIpsProject());
                 }
-                ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
-                        .getValueDatatypeControlFactory(valueDatatype);
-                final TableColumn column = new TableColumn(table, valueDatatypeControlFactory.getDefaultAlignment(), i);
-                column.setWidth(i < numReadSizes ? columnSizes.get(i) : DEFAULT_COLUMN_WIDTH);
-                final int columnIndex = i;
-                column.addListener(SWT.Resize, new Listener() {
-                    @Override
-                    public void handleEvent(Event arg0) {
-                        storeColumnWidth(columnIndex, column);
-                    }
-                });
-                column.setText(columnName);
-                columnProperties[i] = columnName;
+                return null;
             }
-            tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
-            tableViewer.setColumnProperties(columnProperties);
+        };
 
-            // column properties must be set before cellEditors are created.
-            ValueDatatype[] datatypes = new ValueDatatype[getTableContents().getNumOfColumns()];
-            if (tableStructure != null) {
-                // use the number of columns in the contents as only those can be edited.
-                CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
-                for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
-                            getTableContents().getIpsProject());
-                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                            dataType);
-                    IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
-                            getTableContents().getIpsProject());
-                    TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
-                            .getTraversalStrategy();
-                    tableTraverseStrat.setRowCreating(true);
-                    editors[i] = cellEditor;
-                    datatypes[i] = dataType;
-                }
-                tableViewer.setCellEditors(editors);
+    }
+
+    /**
+     * creates a new <tt>TableViewer</tt> based on the corresponding <tt>ITableContents</tt>
+     */
+    private void createNewTableViewer() {
+        ITableStructure tableStructure = getTableStructure();
+        int columnReferencesCount = getTableContents().getColumnReferencesCount();
+        String[] columnProperties = new String[columnReferencesCount];
+        List<Integer> columnSizes = readColumnWidths();
+        int numReadSizes = columnSizes.size();
+        // use the number of references in the contents as only those can be edited.
+        CellEditor[] editors = new CellEditor[columnReferencesCount];
+        ValueDatatype[] datatypes = new ValueDatatype[columnReferencesCount];
+        for (int i = 0; i < columnReferencesCount; i++) {
+            String columnName;
+            ValueDatatype dataType = null;
+            if (tableStructure == null) {
+                columnName = Messages.ContentPage_Column + (i + 1);
+            } else {
+                String referenceName = getTableContents().getColumnReferences().get(i).getName();
+                IColumn column = tableStructure.getColumn(referenceName);
+                columnName = findColumnName(column, referenceName);
+                dataType = findValueDatatype(column);
             }
-            labelProvider.setValueDatatypes(datatypes);
-            tableViewer.setSorter(new TableSorter());
+            ValueDatatypeControlFactory factory = getValueDatatypeControlFactory(dataType);
+            createTableColumn(columnSizes, numReadSizes, i, columnName, factory);
+            columnProperties[i] = columnName;
+            editors[i] = createCellEditor(i, dataType, factory);
+            datatypes[i] = dataType;
+        }
+        tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
+        tableViewer.setColumnProperties(columnProperties);
+        if (tableStructure != null) {
+            tableViewer.setCellEditors(editors);
+        }
+        ((TableContentsLabelProvider)tableViewer.getLabelProvider()).setValueDatatypes(datatypes);
+        tableViewer.setSorter(new TableSorter());
+        tableViewer.refresh();
+    }
 
-            new TableMessageHoverService(tableViewer) {
+    private IpsCellEditor createCellEditor(int i, ValueDatatype dataType, ValueDatatypeControlFactory factory) {
+        IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
+                getTableContents().getIpsProject());
+        TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
+                .getTraversalStrategy();
+        tableTraverseStrat.setRowCreating(true);
+        return cellEditor;
+    }
 
-                @Override
-                protected MessageList getMessagesFor(Object element) throws CoreException {
-                    if (element != null) {
-                        return ((IRow)element).validate(((IRow)element).getIpsProject());
-                    }
-                    return null;
-                }
-            };
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+    private void createTableColumn(List<Integer> columnSizes,
+            int numReadSizes,
+            int i,
+            String columnName,
+            ValueDatatypeControlFactory factory) {
+        final TableColumn column = new TableColumn(table, factory.getDefaultAlignment(), i);
+        column.setWidth(i < numReadSizes ? columnSizes.get(i) : DEFAULT_COLUMN_WIDTH);
+        final int columnIndex = i;
+        column.addListener(SWT.Resize, new Listener() {
+            @Override
+            public void handleEvent(Event arg0) {
+                storeColumnWidth(columnIndex, column);
+            }
+        });
+        column.setText(columnName);
+    }
+
+    private ValueDatatypeControlFactory getValueDatatypeControlFactory(ValueDatatype dataType) {
+        return IpsUIPlugin.getDefault().getValueDatatypeControlFactory(dataType);
+    }
+
+    private ValueDatatype findValueDatatype(IColumn column) {
+        // referenced column does not exists under known reference name anymore
+        // the ValueDatatype will be String as a workaround to still show the content of the cells
+        if (column == null) {
+            return ValueDatatype.STRING;
+        } else {
+            try {
+                return column.findValueDatatype(getTableContents().getIpsProject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+    }
+
+    private String findColumnName(IColumn column, String referenceName) {
+        // referenced column does not exists under known reference name anymore
+        // the referenced column name will be displayed in place of the column's name
+        if (column == null) {
+            return referenceName;
+        } else {
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(column);
         }
     }
 
     /**
-     * Adds the given deleteRowAction to the popupmenu of th given table.
+     * Adds the given deleteRowAction to the popup menu of the given table.
      */
     private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction, NewRowAction newRowAction) {
         // popupmenu
@@ -441,84 +505,6 @@ public class ContentPage extends IpsObjectEditorPage {
         if (structure == null) {
             return;
         }
-        int difference = structure.getColumns().length - getTableContents().getNumOfColumns();
-
-        if (difference != 0) {
-            IInputValidator validator = new Validator(difference);
-
-            String msg = msgByDifference(difference);
-            String title = titleByDifference(difference);
-
-            InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$
-            int state = dialog.open();
-            if (state == Window.OK) {
-                if (difference > 0) {
-                    insertColumnsAt(dialog.getValue());
-                } else {
-                    removeColumns(dialog.getValue());
-                }
-            } else {
-                toolkit.createLabel(formBody, Messages.ContentPage_msgCantShowContent);
-                return;
-            }
-        }
-    }
-
-    private String msgByDifference(int difference) {
-        String msg = null;
-        if (difference > 1) {
-            msg = NLS.bind(Messages.ContentPage_msgAddMany, String.valueOf(difference),
-                    String.valueOf(getTableContents().getNumOfColumns()));
-
-        } else if (difference == 1) {
-            msg = NLS.bind(Messages.ContentPage_msgAddOne, String.valueOf(getTableContents().getNumOfColumns()));
-        } else if (difference == -1) {
-            msg = NLS.bind(Messages.ContentPage_msgRemoveOne, String.valueOf(getTableContents().getNumOfColumns()));
-        } else if (difference < -1) {
-            msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String.valueOf(Math.abs(difference)),
-                    String.valueOf(getTableContents().getNumOfColumns()));
-        }
-        return msg;
-    }
-
-    private String titleByDifference(int difference) {
-        String title = null;
-        if (difference > 1) {
-            title = Messages.ContentPage_titleMissingColumns;
-
-        } else if (difference == 1) {
-            title = Messages.ContentPage_titleMissingColumn;
-        } else if (difference == -1) {
-            title = Messages.ContentPage_titleTooMany;
-        } else if (difference < -1) {
-            title = Messages.ContentPage_titleTooMany;
-        }
-        return title;
-    }
-
-    private void insertColumnsAt(String insertIndices) {
-        int[] indices = getIndices(insertIndices);
-        for (int i = 0; i < indices.length; i++) {
-            ((TableContents)getTableContents()).newColumnAt(indices[i] + i, null);
-        }
-    }
-
-    private void removeColumns(String removeIndices) {
-        int[] indices = getIndices(removeIndices);
-        for (int i = 0; i < indices.length; i++) {
-            ((TableContents)getTableContents()).deleteColumn(indices[i] - i);
-        }
-    }
-
-    private int[] getIndices(String indices) {
-        StringTokenizer tokenizer = getTokenizer(indices);
-        int[] result = new int[tokenizer.countTokens()];
-        for (int i = 0; tokenizer.hasMoreTokens(); i++) {
-            result[i] = Integer.valueOf(tokenizer.nextToken()).intValue();
-        }
-
-        Arrays.sort(result);
-        return result;
     }
 
     private StringTokenizer getTokenizer(String tokens) {
@@ -580,6 +566,29 @@ public class ContentPage extends IpsObjectEditorPage {
         searchBar.setEnabled(true);
     }
 
+    /*
+     * 
+     * Updates the enabled states of the tool bar. <p> The <tt>OpenFixEnumContentWizardAction</tt>
+     * will be enabled if the <tt>ITableStructure</tt> the <tt>ITableContents</tt> to edit is built
+     * upon is not correct
+     */
+    void updateToolbarActionsEnabledStates() {
+        boolean isFixToModelRequired = tableContents.isFixToModelRequired();
+        openFixTableContentDialogAction.setEnabled(isFixToModelRequired);
+        newRowAction.setEnabled(!isFixToModelRequired);
+        deleteRowAction.setEnabled(!isFixToModelRequired);
+
+    }
+
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        for (PropertyChangeEvent propertyChangeEvent : event.getPropertyChangeEvents()) {
+            if (TableContents.COLUMNREFERENCENAME.equals(propertyChangeEvent.getPropertyName())) {
+                updateTable();
+            }
+        }
+    }
+
     private class TableImportExportActionInEditor extends TableImportExportAction {
 
         protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
@@ -601,6 +610,7 @@ public class ContentPage extends IpsObjectEditorPage {
         }
     }
 
+    @SuppressWarnings("unused")
     private class Validator implements IInputValidator {
 
         private int indexCount = 0;
@@ -622,8 +632,8 @@ public class ContentPage extends IpsObjectEditorPage {
                     if (values.contains(value) && indexCount < 0) {
                         return Messages.ContentPage_errorNoDuplicateIndices;
                     }
-                    if (indexCount < 0
-                            && (value.intValue() >= getTableContents().getNumOfColumns() || value.intValue() < 0)) {
+                    if (indexCount < 0 && (value.intValue() >= getTableContents().getColumnReferencesCount()
+                            || value.intValue() < 0)) {
                         return NLS.bind(Messages.ContentPage_errorIndexOutOfRange, value);
                     }
                     values.add(value);
@@ -654,4 +664,5 @@ public class ContentPage extends IpsObjectEditorPage {
             return null;
         }
     }
+
 }

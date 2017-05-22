@@ -8,14 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enums;
+package org.faktorips.abstracttest;
 
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -143,14 +142,13 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         IEnumAttributeValue tempAttributeValueRef;
 
         tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_MALE_ID));
+        tempAttributeValueRef.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_MALE_ID));
         tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_MALE_NAME));
-
+        tempAttributeValueRef.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_MALE_NAME));
         tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_FEMALE_ID));
+        tempAttributeValueRef.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_FEMALE_ID));
         tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(new StringValue(GENDER_ENUM_LITERAL_FEMALE_NAME));
+        tempAttributeValueRef.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_FEMALE_NAME));
     }
 
     protected void assertOneValidationMessage(MessageList validationMessageList) {

@@ -60,7 +60,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * Creates valid table contents.
      */
     protected ITableContents createValidTableContents(IIpsProject ipsProject) throws CoreException {
-        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "ExportSource");
+        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "ExportSource");
         ITableRows exportSource = createExportSource(ipsProject, contents);
 
         IRow row1 = exportSource.newRow();
@@ -102,7 +103,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * Creates an invalid source for export.
      */
     protected ITableContents createInvalidTableContents(IIpsProject ipsProject) throws CoreException {
-        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "ExportSource");
+        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "ExportSource");
         ITableRows exportSource = createExportSource(ipsProject, contents);
 
         IRow row1 = exportSource.newRow();
@@ -180,18 +182,17 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
     private ITableRows createExportSource(IIpsProject ipsProject, ITableContents contents) throws CoreException {
 
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-
         structure = createTableStructure(ipsProject);
         contents.setTableStructure(structure.getQualifiedName());
 
+        contents.newColumn(null, "col0");
+        contents.newColumn(null, "col1");
+        contents.newColumn(null, "col2");
+        contents.newColumn(null, "col3");
+        contents.newColumn(null, "col4");
+        contents.newColumn(null, "col5");
+        contents.newColumn(null, "col6");
+        contents.newColumn(null, "col7");
         return contents.newTableRows();
     }
 

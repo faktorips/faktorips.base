@@ -142,7 +142,9 @@ public class TableContentsTest extends AbstractDependencyTest {
         IRow row22 = gen1.newRow();
 
         pdSrcFile.markAsClean();
-        table.newColumn("a");
+        IColumn column1 = structure.newColumn();
+        column1.setName("first");
+        table.newColumn("a", "first");
         assertTrue(pdSrcFile.isDirty());
         assertEquals(1, table.getNumOfColumns());
         assertEquals("a", row11.getValue(0));
@@ -150,7 +152,9 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("a", row21.getValue(0));
         assertEquals("a", row22.getValue(0));
 
-        table.newColumn("b");
+        IColumn column2 = structure.newColumn();
+        column2.setName("second");
+        table.newColumn("b", "second");
         assertEquals(2, table.getNumOfColumns());
         assertEquals("a", row11.getValue(0));
         assertEquals("a", row12.getValue(0));
@@ -160,6 +164,9 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("b", row12.getValue(1));
         assertEquals("b", row21.getValue(1));
         assertEquals("b", row22.getValue(1));
+
+        assertEquals("first", table.getColumnReferences().get(0).getName());
+        assertEquals("second", table.getColumnReferences().get(1).getName());
     }
 
     @Test
@@ -170,9 +177,16 @@ public class TableContentsTest extends AbstractDependencyTest {
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
 
-        table.newColumn("a");
-        table.newColumn("b");
-        table.newColumn("c");
+        IColumn first = structure.newColumn();
+        first.setName("first");
+        IColumn column2 = structure.newColumn();
+        column2.setName("second");
+        IColumn column3 = structure.newColumn();
+        column3.setName("third");
+
+        table.newColumn("a", "first");
+        table.newColumn("b", "second");
+        table.newColumn("c", "third");
 
         pdSrcFile.markAsClean();
         table.deleteColumn(1);
@@ -186,6 +200,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("c", row12.getValue(1));
         assertEquals("c", row21.getValue(1));
         assertEquals("c", row22.getValue(1));
+        assertEquals("first", table.getColumnReferences().get(0).getName());
+        assertEquals("third", table.getColumnReferences().get(1).getName());
     }
 
     @Test
@@ -252,8 +268,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         table = spy(newTableContents(structure, "Tc"));
         when(table.getIpsSrcFile()).thenReturn(ipsSrcFile);
-        when(ipsSrcFile.getContentFromEnclosingResource()).thenReturn(
-                getClass().getResourceAsStream("TableContentsTest2.xml"));
+        when(ipsSrcFile.getContentFromEnclosingResource())
+                .thenReturn(getClass().getResourceAsStream("TableContentsTest2.xml"));
 
         table.setTableRowsInternal(null);
         table.getTableRows();
@@ -264,8 +280,11 @@ public class TableContentsTest extends AbstractDependencyTest {
         IDescription description = table.newDescription();
         description.setLocale(Locale.GERMAN);
         description.setText("blabla");
+        IColumn first = structure.newColumn();
+        first.setName("first");
         table.setTableStructure(structure.getQualifiedName());
-        table.newColumn("");
+        structure.newColumn();
+        table.newColumn("", "");
         ITableRows gen1 = table.getTableRows();
         IRow row = gen1.newRow();
         row.setValue(0, "value");
@@ -303,9 +322,9 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         table.setTableStructure(structure.getQualifiedName());
         ITableRows tableGen = table.newTableRows();
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "first");
+        table.newColumn("2", "second");
+        table.newColumn("3", "third");
 
         msgList = table.validate(project);
         assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
@@ -344,20 +363,20 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         table.setTableStructure(structure.getQualifiedName());
         ITableRows tableGen = table.newTableRows();
-        table.newColumn("fromColumn");
-        table.newColumn("toColumn");
+        table.newColumn("fromColumn", "fromColumn");
+        table.newColumn("toColumn", "toColumn");
         IRow newRow = tableGen.newRow();
         newRow.setValue(0, "10");
         newRow.setValue(1, "20");
 
         MessageList msgList = table.validate(project);
-        assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
+        assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
 
         newRow.setValue(0, "21");
         newRow.setValue(1, "20");
 
         msgList = table.validate(project);
-        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
+        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
     }
 
     @Test
@@ -378,13 +397,34 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         table.setTableStructure(structure.getQualifiedName());
         ITableRows tableGen = table.newTableRows();
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "first");
+        table.newColumn("2", "second");
+        table.newColumn("3", "third");
 
         tableGen.newRow();
         MessageList msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
+
+        // test validate with column added
+        IColumn column4 = structure.newColumn();
+        column4.setDatatype(Datatype.STRING.getQualifiedName());
+        column4.setName("fourth");
+        msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID));
+        column4.delete();
+
+        // test validate with column renamed
+        column3.setName("notThird");
+        msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_NAMES_INVALID));
+        column3.setName("third");
+
+        // test validate with columns moved
+        structure.moveColumns(new int[] { 2 }, true);
+        msgList = table.validate(project);
+        assertNotNull(
+                msgList.getMessageByCode(ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_ORDERING_INVALID));
+        structure.moveColumns(new int[] { 2 }, false);
 
         table.deleteColumn(0);
         // there was an error in the code of the Row validate method that caused an
@@ -393,7 +433,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         // which index number was equal
         // or greater than the number of table contents columns.
         msgList = table.validate(project);
-        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_COLUMNCOUNT_MISMATCH));
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID));
 
         // test validate with missing table structure
         table.setTableStructure("NONE");
@@ -427,8 +467,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         when(ipsSrcFile.exists()).thenReturn(true);
         TableContents tableContents = spy(table);
         when(tableContents.getIpsSrcFile()).thenReturn(ipsSrcFile);
-        when(ipsSrcFile.getContentFromEnclosingResource()).thenReturn(
-                getClass().getResourceAsStream(getXmlResourceName()));
+        when(ipsSrcFile.getContentFromEnclosingResource())
+                .thenReturn(getClass().getResourceAsStream(getXmlResourceName()));
         tableContents.setNumOfColumnsInternal(2);
 
         tableContents.setTableRowsInternal(null);
@@ -539,4 +579,5 @@ public class TableContentsTest extends AbstractDependencyTest {
         // check that a new UUID is created for each row
         assertThat(row1.getId(), is(not(row2.getId())));
     }
+
 }

@@ -78,8 +78,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     public static final boolean TRACE_BUILDER_TRACE;
 
     static {
-        TRACE_BUILDER_TRACE = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/builder")).booleanValue(); //$NON-NLS-1$
+        TRACE_BUILDER_TRACE = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/builder")) //$NON-NLS-1$
+                .booleanValue();
     }
 
     /**
@@ -130,8 +130,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 currentKind = IncrementalProjectBuilder.FULL_BUILD;
             }
             beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
-            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(currentKind,
-                    getIpsProject()), monitor);
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus,
+                    new BeforeBuildProcessCommand(currentKind, getIpsProject()), monitor);
             monitor.worked(100);
             try {
                 if (isFullBuildRequired) {
@@ -144,8 +144,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 }
             } finally {
                 monitor.subTask(Messages.IpsBuilder_finishBuild);
-                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(currentKind,
-                        getIpsProject()), monitor);
+                applyBuildCommand(ipsArtefactBuilderSet, buildStatus,
+                        new AfterBuildProcessCommand(currentKind, getIpsProject()), monitor);
                 afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
             }
             monitor.worked(100);
@@ -180,8 +180,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) {
         Long timestamp = lastModificationTimestampForBuilderSets.get(project.getName());
         if (timestamp == null) {
-            lastModificationTimestampForBuilderSets.put(project.getName(), project.getReadOnlyProperties()
-                    .getLastPersistentModificationTimestamp());
+            lastModificationTimestampForBuilderSets.put(project.getName(),
+                    project.getReadOnlyProperties().getLastPersistentModificationTimestamp());
             return project.getIpsArtefactBuilderSet();
         }
 
@@ -317,8 +317,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         try {
             builderSet.beforeBuildProcess(buildKind);
         } catch (Exception e) {
-            buildStatus.add(new IpsStatus(
-                    "Error during beforeBuildProcess() of the builder set: " + builderSet.getId(), e)); //$NON-NLS-1$
+            buildStatus.add(
+                    new IpsStatus("Error during beforeBuildProcess() of the builder set: " + builderSet.getId(), e)); //$NON-NLS-1$
         }
     }
 
@@ -588,8 +588,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 try {
                     if (!ipsProject.equals(getIpsProject())) {
                         beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, INCREMENTAL_BUILD);
-                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(
-                                INCREMENTAL_BUILD, ipsProject), monitor);
+                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus,
+                                new BeforeBuildProcessCommand(INCREMENTAL_BUILD, ipsProject), monitor);
                     }
                     for (IDependency dependency : dependencySet) {
                         if (monitor.isCanceled()) {
@@ -615,8 +615,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                             Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
                 } finally {
                     if (!ipsProject.equals(getIpsProject())) {
-                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(
-                                INCREMENTAL_BUILD, ipsProject), monitor);
+                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus,
+                                new AfterBuildProcessCommand(INCREMENTAL_BUILD, ipsProject), monitor);
                         afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, INCREMENTAL_BUILD);
                         if (currentBuildStatus.getSeverity() != IStatus.OK) {
                             ipsProject.reinitializeIpsArtefactBuilderSet();
@@ -655,8 +655,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     void createMarkersFromMessageList(IResource resource, MessageList list, String markerType) throws CoreException {
-        List<IMarker> markers = new ArrayList<IMarker>(Arrays.asList(resource.findMarkers(markerType, true,
-                IResource.DEPTH_ZERO)));
+        List<IMarker> markers = new ArrayList<IMarker>(
+                Arrays.asList(resource.findMarkers(markerType, true, IResource.DEPTH_ZERO)));
         for (int i = 0; i < list.size(); i++) {
             Message msg = list.getMessage(i);
             boolean foundMarked = false;
@@ -681,8 +681,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private void updateMarker(IMarker marker, String text, int severity) throws CoreException {
-        marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY }, new Object[] { text,
-                new Integer(severity) });
+        marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+                new Object[] { text, new Integer(severity) });
     }
 
     private int getMarkerSeverity(Message msg) {
@@ -835,8 +835,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (builder != null) {
                 builder.beforeBuildProcess(ipsProject, buildKind);
             } else {
-                throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                        "Builder is assert to be not null")); //$NON-NLS-1$
+                throw new CoreException(
+                        new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, "Builder is assert to be not null")); //$NON-NLS-1$
             }
         }
 
@@ -868,8 +868,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (builder != null) {
                 builder.afterBuildProcess(ipsProject, buildKind);
             } else {
-                throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                        "Builder is assert to be not null")); //$NON-NLS-1$
+                throw new CoreException(
+                        new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, "Builder is assert to be not null")); //$NON-NLS-1$
             }
         }
 

@@ -186,8 +186,9 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             contentProvider = new EnumContentsContentProvider();
             viewer.setContentProvider(contentProvider);
             viewer.setLabelProvider(new EnumContentsLabelProvider());
-            viewer.setInput(this); // input element can be anything (but an existing package name
-            // including the default package name ""
+            viewer.setInput(this);
+            // input element can be anything (but an existing package name including the default
+            // package name ""
             viewer.addCheckStateListener(new ICheckStateListener() {
                 @Override
                 public void checkStateChanged(CheckStateChangedEvent event) {

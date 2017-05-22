@@ -114,10 +114,10 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("start1");
-        table.newColumn("end1");
-        table.newColumn("start2");
-        table.newColumn("end2");
+        table.newColumn("start1", "start1");
+        table.newColumn("end1", "end1");
+        table.newColumn("start2", "start2");
+        table.newColumn("end2", "end2");
 
         return gen1;
     }
@@ -140,8 +140,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem("b");
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("b");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
 
         // valid contents
         IRow row1 = gen1.newRow();
@@ -191,8 +191,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem("age");
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("1");
-        table.newColumn("2");
+        table.newColumn("1", "age");
+        table.newColumn("2", "rate");
 
         // valid contents
         IRow row1 = gen1.newRow();
@@ -281,8 +281,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("2b");
+        table.newColumn("a", "a");
+        table.newColumn("2b", "b");
 
         MessageList messageList = null;
 
@@ -356,8 +356,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("b");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
 
         MessageList messageList = null;
 
@@ -417,11 +417,11 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertEquals(0, structure.validate(project).size());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("b");
-        table.newColumn("aString");
-        table.newColumn("bString");
-        table.newColumn("c");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
+        table.newColumn("aString", "aString");
+        table.newColumn("bString", "bString");
+        table.newColumn("c", "c");
 
         // valid contents
         IRow row1 = gen1.newRow();
@@ -476,33 +476,52 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testRanges() throws CoreException {
-        assertRangeCollision("1", new String[][] { new String[] { "a", "1", "9", "10", "19" },
-                new String[] { "a", "10", "19", "10", "19" }, new String[] { "a", "20", "29", "10", "19" } }, false);
-        assertRangeCollision("2", new String[][] { new String[] { "a", "1", "9", "10", "19" },
-                new String[] { "a", "10", "19", "10", "19" }, new String[] { "a", "2", "29", "10", "19" } }, true);
-        assertRangeCollision("3", new String[][] { new String[] { "a", "1", "9", "10", "19" },
-                new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "2", "29", "10", "19" } }, true);
-        assertRangeCollision("4", new String[][] { new String[] { "a", "1", "9", "10", "19" },
-                new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "2", "29", "10", "19" } }, true);
-        assertRangeCollision("5", new String[][] { new String[] { "a", "1", "19", "10", "19" },
-                new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "11", "29", "10", "19" } }, true);
-        assertRangeCollision("6", new String[][] { new String[] { "a", "1", "19", "10", "19" },
-                new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "1", "29", "10", "19" } }, true);
-        assertRangeCollision("7", new String[][] { new String[] { "a", "1", "19", "10", "19" },
-                new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
-                new String[] { "a", "1", "19", "40", "49" } }, false);
-        assertRangeCollision("8", new String[][] { //
-                new String[] { "a", "1", "19", "10", "19" }, //
+        assertRangeCollision("1",
+                new String[][] { new String[] { "a", "1", "9", "10", "19" },
+                        new String[] { "a", "10", "19", "10", "19" }, new String[] { "a", "20", "29", "10", "19" } },
+                false);
+        assertRangeCollision("2",
+                new String[][] { new String[] { "a", "1", "9", "10", "19" },
+                        new String[] { "a", "10", "19", "10", "19" }, new String[] { "a", "2", "29", "10", "19" } },
+                true);
+        assertRangeCollision("3",
+                new String[][] { new String[] { "a", "1", "9", "10", "19" },
+                        new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "2", "29", "10", "19" } },
+                true);
+        assertRangeCollision("4",
+                new String[][] { new String[] { "a", "1", "9", "10", "19" },
+                        new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "2", "29", "10", "19" } },
+                true);
+        assertRangeCollision("5",
+                new String[][] { new String[] { "a", "1", "19", "10", "19" },
+                        new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "11", "29", "10", "19" } },
+                true);
+        assertRangeCollision("6",
+                new String[][] { new String[] { "a", "1", "19", "10", "19" },
+                        new String[] { "b", "10", "19", "10", "19" }, new String[] { "a", "1", "29", "10", "19" } },
+                true);
+        assertRangeCollision("7",
+                new String[][] { new String[] { "a", "1", "19", "10", "19" },
+                        new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
+                        new String[] { "a", "1", "19", "40", "49" } },
+                false);
+        assertRangeCollision("8",
+                new String[][] { //
+                        new String[] { "a", "1", "19", "10", "19" }, //
                         new String[] { "a", "20", "29", "20", "29" }, //
                         new String[] { "a", "30", "39", "30", "39" }, //
                         new String[] { "a", "1", "19", "20", "29" } }, //
                 false);
-        assertRangeCollision("9", new String[][] { new String[] { "a", "1", "19", "10", "19" },
-                new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
-                new String[] { "a", "1", "19", "10", "19" } }, true);
-        assertRangeCollision("10", new String[][] { new String[] { "a", "1", "19", "10", "19" },
-                new String[] { "a", "20", "29", "40", "49" }, new String[] { "a", "30", "39", "30", "39" },
-                new String[] { "a", "1", "19", "30", "39" }, new String[] { "a", "1", "19", "40", "49" } }, false);
+        assertRangeCollision("9",
+                new String[][] { new String[] { "a", "1", "19", "10", "19" },
+                        new String[] { "a", "20", "29", "20", "29" }, new String[] { "a", "30", "39", "30", "39" },
+                        new String[] { "a", "1", "19", "10", "19" } },
+                true);
+        assertRangeCollision("10",
+                new String[][] { new String[] { "a", "1", "19", "10", "19" },
+                        new String[] { "a", "20", "29", "40", "49" }, new String[] { "a", "30", "39", "30", "39" },
+                        new String[] { "a", "1", "19", "30", "39" }, new String[] { "a", "1", "19", "40", "49" } },
+                false);
     }
 
     private void assertRangeCollision(String testName, String[][] rows, boolean collision) throws CoreException {
@@ -543,11 +562,11 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("b");
-        table.newColumn("c");
-        table.newColumn("d");
-        table.newColumn("e");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
+        table.newColumn("c", "c");
+        table.newColumn("d", "d");
+        table.newColumn("e", "e");
 
         for (String[] row : rows) {
             createRow(gen1, row);
@@ -610,10 +629,10 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("b");
-        table.newColumn("c");
-        table.newColumn("d");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
+        table.newColumn("c", "c");
+        table.newColumn("d", "d");
 
         MessageList messageList = null;
 
@@ -635,7 +654,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         tearDownPerformanceTest();
     }
 
-    private ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {
+    private ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject)
+            throws CoreException {
         if (structure == null) {
             return new ValueDatatype[0];
         }
@@ -668,8 +688,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("a");
-        table.newColumn("b");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
 
         Row row = (Row)gen1.newRow();
         row.setValue(0, "1");
@@ -752,9 +772,9 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "mandant");
+        table.newColumn("2", "ageMin");
+        table.newColumn("3", "ageMax");
 
         Row row = (Row)gen1.newRow();
         row.setValue(0, "1");
@@ -834,9 +854,9 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem(range.getName());
 
         ITableRows gen1 = table.newTableRows();
-        table.newColumn("1");
-        table.newColumn("2");
-        table.newColumn("3");
+        table.newColumn("1", "mandant");
+        table.newColumn("2", "ageMin");
+        table.newColumn("3", "ageMax");
 
         Row row = (Row)gen1.newRow();
         row.setValue(0, "1");
@@ -974,11 +994,11 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         if (!withUniqueKeyValidation) {
             ((TableRows)gen1).initUniqueKeyValidator(null, null);
         }
-        table.newColumn("a");
-        table.newColumn("b");
-        table.newColumn("aString");
-        table.newColumn("bString");
-        table.newColumn("c");
+        table.newColumn("a", "a");
+        table.newColumn("b", "b");
+        table.newColumn("aString", "aString");
+        table.newColumn("bString", "bString");
+        table.newColumn("c", "c");
 
         int noOfTestRows = noOfRows;
         GregorianCalendar calendarFrom = DateUtil.parseIsoDateStringToGregorianCalendar("1900-01-01");

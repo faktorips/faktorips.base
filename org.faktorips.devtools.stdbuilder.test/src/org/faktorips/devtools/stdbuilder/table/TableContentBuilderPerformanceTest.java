@@ -40,7 +40,7 @@ public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
         tableStructure.getIpsSrcFile().save(true, null);
         TableContents tableContents = newTableContents(tableStructure, "TC");
         for (int c = 0; c < COLUMNS; c++) {
-            tableContents.newColumn("VD");
+            tableContents.newColumn("VD", "C" + c);
         }
         ITableRows tableRows = tableContents.newTableRows();
         for (int r = 0; r < ROWS; r++) {

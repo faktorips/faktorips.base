@@ -108,6 +108,11 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
     public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up);
 
     /**
+     * Swaps the position of two EnumAttributeValues
+     */
+    public void swapEnumAttributeValue(int firstColumnIndex, int secondColumnIndex);
+
+    /**
      * Sets the value of the <tt>IEnumAttributeValue</tt> that refers to the given
      * <tt>IEnumAttribute</tt>.
      * <p>

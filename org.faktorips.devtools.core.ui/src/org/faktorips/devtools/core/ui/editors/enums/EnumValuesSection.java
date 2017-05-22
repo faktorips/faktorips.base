@@ -49,8 +49,8 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.enums.EnumValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -216,8 +216,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings();
         if (enumTypeEditing) {
             String synchronizeSetting = settings.get(SETTINGS_KEY_LOCK_AND_SYNC);
-            lockAndSynchronizeLiteralNames = synchronizeSetting == null ? false : settings
-                    .getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
+            lockAndSynchronizeLiteralNames = synchronizeSetting == null ? false
+                    : settings.getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
         } else {
             lockAndSynchronizeLiteralNames = false;
         }
@@ -226,8 +226,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         searchBar = new SearchBar(client, toolkit);
-        enumValuesTable = toolkit.createTable(client, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
-                | SWT.FULL_SELECTION);
+        enumValuesTable = toolkit.createTable(client,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION);
         enumValuesTableViewer = new TableViewer(enumValuesTable);
 
         final SelectionStatusBarPublisher selectionStatusBarPublisher = new SelectionStatusBarPublisher(editorSite);
@@ -331,16 +331,16 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private void createTableColumnsForEnumContent() {
         try {
             IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
-            List<IEnumAttributeReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
+            List<IPartReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
             EnumValueTraversalStrategy previousTraversalStrategy = null;
             for (int i = 0; i < enumContent.getEnumAttributeReferencesCount(); i++) {
-                IEnumAttributeReference enumAttributeReference = enumAttributeReferences.get(i);
+                IPartReference enumAttributeReference = enumAttributeReferences.get(i);
                 if (enumContent.isFixToModelRequired()) {
                     previousTraversalStrategy = addTableColumn(enumAttributeReference.getName(), null, false, false,
                             false, previousTraversalStrategy);
                 } else {
-                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(
-                            false).get(i);
+                    IEnumAttribute currentEnumAttribute = referencedEnumType
+                            .getEnumAttributesIncludeSupertypeCopies(false).get(i);
                     String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
                     previousTraversalStrategy = addTableColumn(columnName,
                             currentEnumAttribute.findDatatype(ipsProject),
@@ -392,8 +392,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         return traversalStrategy;
     }
 
-    private FormattedCellEditingSupport<IEnumValue, ?> createInternationalStringEditingSupport(TableViewerColumn newColumn,
-            int columnIndex) {
+    private FormattedCellEditingSupport<IEnumValue, ?> createInternationalStringEditingSupport(
+            TableViewerColumn newColumn, int columnIndex) {
         EnumInternationalStringCellModifier cellModifier = new EnumInternationalStringCellModifier(columnIndex,
                 IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(ipsProject));
         EditCondition editCondition = new EditCondition() {
@@ -609,7 +609,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
         }
 
-        if (enumType.hasEnumLiteralNameAttribute() && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
+        if (enumType.hasEnumLiteralNameAttribute()
+                && event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile())) {
             contentsChangedUpdateLiteralNameColumn(event);
             enumValuesTableViewer.refresh();
         }
@@ -634,11 +635,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             changedEnumAttribute = changedAttributeValue.findEnumAttribute(ipsProject);
             if (changedEnumAttribute != null) {
                 IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
-                IEnumAttribute providerAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
-                        .getDefaultValueProviderAttribute());
+                IEnumAttribute providerAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(
+                        literalNameAttribute.getDefaultValueProviderAttribute());
                 if (providerAttribute != null && providerAttribute.equals(changedEnumAttribute)) {
-                    IEnumAttributeValue literalNameValue = changedAttributeValue.getEnumValue().getEnumAttributeValue(
-                            literalNameAttribute);
+                    IEnumAttributeValue literalNameValue = changedAttributeValue.getEnumValue()
+                            .getEnumAttributeValue(literalNameAttribute);
                     if (literalNameValue != null) {
                         updateLiteralName(changedAttributeValue, literalNameValue);
                     }

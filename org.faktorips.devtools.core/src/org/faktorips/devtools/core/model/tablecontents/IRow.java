@@ -17,30 +17,30 @@ public interface IRow extends IIpsObjectPart {
     /**
      * Value-Property.
      */
-    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this row does not define values in columns a unique
      * key of its table dictates.
      */
-    public final static String MSGCODE_UNDEFINED_UNIQUEKEY_VALUE = "UNDEFINED_UNIQUE_KEY_VALUE"; //$NON-NLS-1$
+    public static final String MSGCODE_UNDEFINED_UNIQUEKEY_VALUE = "UNDEFINED_UNIQUE_KEY_VALUE"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a value in a row does not match its column's
      * datatype (is not parsable).
      */
-    public final static String MSGCODE_VALUE_NOT_PARSABLE = "VALUE_NOT_PARSABLE"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUE_NOT_PARSABLE = "VALUE_NOT_PARSABLE"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public final static String MSGCODE_VALID_NAME_WHEN_TABLE_ENUM_TYPE = "ValidNameWhenEnumTypeContent"; //$NON-NLS-1$
+    public static final String MSGCODE_VALID_NAME_WHEN_TABLE_ENUM_TYPE = "ValidNameWhenEnumTypeContent"; //$NON-NLS-1$
 
     /**
      * Identifies that in case of an existing two column unique key ('from'- and 'to'-column) the
      * 'from'-column is greater that the 'to'-column
      */
-    public final static String MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE = "UniqueKeyFromVolumnValueIsGreaterToColumnValue"; //$NON-NLS-1$
+    public static final String MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE = "UniqueKeyFromVolumnValueIsGreaterToColumnValue"; //$NON-NLS-1$
 
     /**
      * Returns the row number as string.
@@ -80,5 +80,22 @@ public interface IRow extends IIpsObjectPart {
      *             index.
      */
     public void setValue(int column, String newValue);
+
+    /**
+     * Moves the Value at the given Index up/down by one
+     * 
+     * @param columnIndex Index of the Value to move
+     * @param up Flag indicating whether to move upwards (<tt>true</tt>) or downwards (
+     *            <tt>false</tt>).
+     * @return new Index of the Value
+     */
+    public int moveValue(int columnIndex, boolean up);
+
+    /**
+     * Swap two Values with each other
+     */
+    public void swapValue(int firstColumnIndex, int secondColumnIndex);
+
+    public void newColumn(int insertAfter, String defaultValue);
 
 }

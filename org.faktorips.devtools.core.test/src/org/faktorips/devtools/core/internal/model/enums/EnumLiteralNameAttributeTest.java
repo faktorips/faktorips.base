@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;

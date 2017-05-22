@@ -46,12 +46,15 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
+        structure.newColumn();
+        structure.newColumn();
+        structure.newColumn();
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         table.setTableStructure(structure.getQualifiedName());
         tableRows = (TableRows)table.newTableRows();
-        table.newColumn(null);
-        table.newColumn(null);
-        table.newColumn(null);
+        table.newColumn("", "");
+        table.newColumn("", "");
+        table.newColumn("", "");
 
         tableRows.getIpsSrcFile().save(true, null);
     }
@@ -59,8 +62,10 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     @Test
     public void testGetChildren() {
         int childrenSizeBefore = tableRows.getChildren().length;
-        table.newColumn(null);
-        table.newColumn(null);
+        structure.newColumn();
+        structure.newColumn();
+        table.newColumn("", "");
+        table.newColumn("", "");
         tableRows.newRow();
         tableRows.newRow();
         IIpsElement[] children = tableRows.getChildren();
@@ -69,8 +74,10 @@ public class TableRowsTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewRow() {
-        table.newColumn(null);
-        table.newColumn(null);
+        structure.newColumn();
+        structure.newColumn();
+        table.newColumn("", "");
+        table.newColumn("", "");
         IRow row0 = tableRows.newRow();
         String id0 = row0.getId();
         assertNotNull(id0);
@@ -246,6 +253,10 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         range.setToColumn("b");
         IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
+        // validation is now done by references
+        table.newColumn("", "a");
+        table.newColumn("", "b");
+        table.newColumn("", "c");
         table.validate(project);
     }
 
