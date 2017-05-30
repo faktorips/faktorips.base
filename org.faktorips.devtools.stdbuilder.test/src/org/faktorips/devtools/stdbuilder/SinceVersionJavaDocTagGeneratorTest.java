@@ -33,7 +33,7 @@ public class SinceVersionJavaDocTagGeneratorTest {
     public void testCreateAnnotation_withSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(true);
         when(modelNode.getSinceVersion()).thenReturn("1.2.3");
-        JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3");
+        JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3\n");
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);
 
@@ -50,7 +50,7 @@ public class SinceVersionJavaDocTagGeneratorTest {
     @Test
     public void testCreateAnnotation_noSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(false);
-        JavaCodeFragment expected = new JavaCodeFragment("@since null");
+        JavaCodeFragment expected = new JavaCodeFragment("@since null\n");
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);
 

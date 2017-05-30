@@ -69,7 +69,7 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * attribute does not exist, this method returns the type of the current configuration element's
      * value set.
      * 
-     * @throw CoreException if an error occurs.
+     * @throws CoreException if an error occurs.
      * 
      * @see IIpsProject#getValueSetTypes(ValueDatatype)
      * @see IPolicyCmptTypeAttribute#getValueSet()

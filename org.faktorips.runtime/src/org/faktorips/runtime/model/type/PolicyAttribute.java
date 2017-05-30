@@ -69,8 +69,8 @@ public abstract class PolicyAttribute extends Attribute {
      * @throws IllegalArgumentException if the model object does not have a changeable attribute
      *             fitting this model type attribute or that attribute is not accessible for any
      *             reason or the value does not fit the attribute's datatype.
-     * @throw UnsupportedOperationException if invoked on a
-     *        {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      */
     public abstract void setValue(IModelObject modelObject, Object value);
 
@@ -96,8 +96,8 @@ public abstract class PolicyAttribute extends Attribute {
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the attribute's
      *            configuration is not changing over time.
-     * @throw UnsupportedOperationException if invoked on a
-     *        {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      */
     public abstract Object getDefaultValue(IProductComponent source, Calendar effectiveDate);
 
@@ -108,8 +108,8 @@ public abstract class PolicyAttribute extends Attribute {
      * class is not configured by a product class.
      *
      * @param modelObject a model object
-     * @throw UnsupportedOperationException if invoked on a
-     *        {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      */
     public abstract ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context);
 
@@ -124,8 +124,8 @@ public abstract class PolicyAttribute extends Attribute {
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the attribute's
      *            configuration is not changing over time.
-     * @throw UnsupportedOperationException if invoked on a
-     *        {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      */
     public abstract ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context);
 

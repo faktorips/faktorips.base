@@ -169,7 +169,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @param parent The parent class loader.
      * 
-     * @throw {@link NullPointerException} if <code>parent</code> is <code>null</code>.
+     * @throws NullPointerException if <code>parent</code> is <code>null</code>.
      * 
      * @since 3.1.0
      */
