@@ -22,7 +22,7 @@ public class SinceVersionJavaDocTagGenerator implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        return new JavaCodeFragment("@since " + modelNode.getSinceVersion());
+        return new JavaCodeFragment("@since " + modelNode.getSinceVersion()).appendln();
     }
 
     @Override
