@@ -385,4 +385,10 @@ public class TableRows extends IpsObjectPart implements ITableRows {
             updateUniqueKeyCache(tableStructure);
         }
     }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.removeAttribute(IpsObjectPart.PROPERTY_ID);
+    }
 }

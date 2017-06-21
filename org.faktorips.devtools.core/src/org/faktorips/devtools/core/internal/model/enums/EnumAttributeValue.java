@@ -22,6 +22,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.internal.model.value.ValueUtil;
@@ -113,6 +114,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(IS_NULL, Boolean.toString(isNullValue()));
+        element.removeAttribute(IpsObjectPart.PROPERTY_ID);
         if (getValue() != null) {
             Node valueNode = getValue().toXml(element.getOwnerDocument());
             element.appendChild(valueNode);
@@ -252,13 +254,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 .getLanguage();
         ValueTypeMismatch typeMismatch = checkValueTypeMismatch(enumAttribute);
         if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
-            list.add(new Message(MSGCODE_INVALID_VALUE_TYPE, NLS.bind(Messages.EnumAttributeValue_MultiLingual,
-                    enumAttribute.getName(), defaultProjectLanguage), Message.ERROR, new ObjectProperty(this,
-                    PROPERTY_VALUE)));
+            list.add(new Message(MSGCODE_INVALID_VALUE_TYPE,
+                    NLS.bind(Messages.EnumAttributeValue_MultiLingual, enumAttribute.getName(), defaultProjectLanguage),
+                    Message.ERROR, new ObjectProperty(this, PROPERTY_VALUE)));
         } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
-            list.add(new Message(MSGCODE_INVALID_VALUE_TYPE, NLS.bind(Messages.EnumAttributeValue_NotMultiLingual,
-                    enumAttribute.getName(), defaultProjectLanguage), Message.ERROR, new ObjectProperty(this,
-                    PROPERTY_VALUE)));
+            list.add(new Message(
+                    MSGCODE_INVALID_VALUE_TYPE, NLS.bind(Messages.EnumAttributeValue_NotMultiLingual,
+                            enumAttribute.getName(), defaultProjectLanguage),
+                    Message.ERROR, new ObjectProperty(this, PROPERTY_VALUE)));
         }
     }
 
@@ -280,9 +283,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private void convertStringToInternationalString() {
         InternationalStringValue internationalStringValue = new InternationalStringValue();
         if (getStringValue() != null) {
-            internationalStringValue.getContent().add(
-                    new LocalizedString(getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale(),
-                            getStringValue()));
+            internationalStringValue.getContent().add(new LocalizedString(
+                    getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale(), getStringValue()));
         }
         setValueInternal(internationalStringValue);
     }
@@ -402,8 +404,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         private boolean isValidateNecessary() {
             if (enumType != null) {
-                return ((EnumType)getEnumType()).isValidateIdentifierBoundaryOnDatatypeNecessary(enumType
-                        .getIdentifierBoundary());
+                return ((EnumType)getEnumType())
+                        .isValidateIdentifierBoundaryOnDatatypeNecessary(enumType.getIdentifierBoundary());
             }
             return false;
         }

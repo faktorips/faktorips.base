@@ -14,11 +14,15 @@ import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -104,7 +108,8 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
         assertThat(messageList, isEmpty());
 
         String fileContent = StringUtil.readFromInputStream(file.getContents(), "UTF-8");
-        assertThat(fileContent, is(not(containsString(" id="))));
+        List<String> elementsWithId = findUnwantedIds(fileContent);
+        assertThat("unwanted ids after:" + elementsWithId, elementsWithId.size(), is(0));
     }
 
     @Test
@@ -128,7 +133,21 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
         assertThat(messageList, isEmpty());
 
         String fileContent = StringUtil.readFromInputStream(file.getContents(), "UTF-8");
-        assertThat(fileContent, is(not(containsString(" id="))));
+        List<String> elementsWithId = findUnwantedIds(fileContent);
+        assertThat("unwanted ids after:" + elementsWithId, elementsWithId.size(), is(0));
+    }
+
+    private List<String> findUnwantedIds(String fileContent) {
+        Pattern pattern = Pattern.compile("(\\w+) id=");
+        Matcher matcher = pattern.matcher(fileContent);
+        List<String> elementsWithId = new ArrayList<String>();
+        while (matcher.find()) {
+            String elementWithId = matcher.group(1);
+            if (!elementWithId.equals("Description")) {
+                elementsWithId.add(elementWithId);
+            }
+        }
+        return elementsWithId;
     }
 
     private IFile writeTestContents(String testFileName) throws CoreException {

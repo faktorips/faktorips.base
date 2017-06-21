@@ -97,12 +97,6 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    @Override
-    public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
-            throws CoreException {
-        super.writeToFile(file, new UUIDFilterStream(inputStream), force, keepHistory);
-    }
-
     /**
      * Returns the relative path to the generated XML file.
      * 

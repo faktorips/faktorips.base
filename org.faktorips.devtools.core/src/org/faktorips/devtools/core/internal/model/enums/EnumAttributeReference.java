@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.util.ArgumentCheck;
@@ -62,6 +63,7 @@ public class EnumAttributeReference extends AtomicIpsObjectPart implements IEnum
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.removeAttribute(IpsObjectPart.PROPERTY_ID);
         element.setAttribute(PROPERTY_NAME, name);
     }
 
