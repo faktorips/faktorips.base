@@ -14,7 +14,7 @@ public class UUIDFilterStream extends FilterInputStream {
 
     private LinkedList<Integer> potentialUUID = new LinkedList<Integer>();
 
-    protected UUIDFilterStream(InputStream in) {
+    public UUIDFilterStream(InputStream in) {
         super(in);
     }
 

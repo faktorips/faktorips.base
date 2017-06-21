@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -38,6 +40,7 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.UUIDFilterStream;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -233,6 +236,12 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
+    }
+
+    @Override
+    public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
+            throws CoreException {
+        super.writeToFile(file, new UUIDFilterStream(inputStream), force, keepHistory);
     }
 
 }
