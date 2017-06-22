@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.ProductComponent;
 
 /**
  * Interface for all product components.
@@ -47,6 +48,11 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Returns the version id that identifies this product component in its kind.
      */
     public String getVersionId();
+
+    /**
+     * @return whether this is a variant of another {@link ProductComponent}
+     */
+    public boolean isVariant();
 
     /**
      * Returns the date from which this product component is valid. If this product component

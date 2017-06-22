@@ -285,6 +285,11 @@ public class IpsModelTest {
             return null;
         }
 
+        @Override
+        public boolean isVariant() {
+            return false;
+        }
+
     }
 
     private abstract static class TestProductWithoutAnnotation implements IProductComponent {

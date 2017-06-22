@@ -160,8 +160,8 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
 
         when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
-        when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900))).thenReturn(
-                productComponentGeneration);
+        when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900)))
+                .thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
     }
@@ -264,6 +264,21 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertEquals("Je ne parle pas français.", ((Element)desriptionNodes.item(1)).getTextContent());
         assertEquals("de", ((Element)desriptionNodes.item(2)).getAttribute("locale"));
         assertEquals("Deutsche Beschreibung.", ((Element)desriptionNodes.item(2)).getTextContent());
+    }
+
+    @Test
+    public void testIsVariant_variant_shouldReturnTrue() {
+        Element element = getTestDocument().getDocumentElement();
+        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, "variedId");
+
+        pc.initFromXml(element);
+        assertTrue(pc.isVariant());
+    }
+
+    @Test
+    public void testIsVariant_noVariant_shouldReturnFalse() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+        assertFalse(pc.isVariant());
     }
 
     /**
