@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
@@ -279,6 +280,44 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     public void testIsVariant_noVariant_shouldReturnFalse() {
         pc.initFromXml(getTestDocument().getDocumentElement());
         assertFalse(pc.isVariant());
+    }
+
+    @Test
+    public void testGetVariedBase_noVariant_shouldReturnNull() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+        assertNull(pc.getVariedBase());
+    }
+
+    @Test
+    public void testGetVariedBase_variant_shouldReturnBaseComponent() {
+
+        String id = "variedId";
+        TestProductComponent baseComponent = new TestProductComponent(repository, id, "kind", "1.0");
+        when(repository.getProductComponent(id)).thenReturn(baseComponent);
+
+        Element element = getTestDocument().getDocumentElement();
+        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, id);
+
+        pc.initFromXml(element);
+        IProductComponent baseFromProduct = pc.getVariedBase();
+
+        verify(repository).getProductComponent(id);
+        assertSame(baseComponent, baseFromProduct);
+    }
+
+    @Test
+    public void testGetVariedBase_variantIdNotFound_shouldReturnNull() {
+
+        String id = "missingComponentId";
+        when(repository.getProductComponent(anyString())).thenReturn(null);
+
+        Element element = getTestDocument().getDocumentElement();
+        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, id);
+
+        pc.initFromXml(element);
+
+        assertNull(pc.getVariedBase());
+        verify(repository).getProductComponent(id);
     }
 
     /**

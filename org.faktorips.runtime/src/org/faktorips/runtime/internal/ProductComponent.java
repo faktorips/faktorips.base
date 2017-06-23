@@ -150,6 +150,15 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     @Override
+    public IProductComponent getVariedBase() {
+        if (isVariant()) {
+            return repository.getProductComponent(variedBase);
+        }
+
+        return null;
+    }
+
+    @Override
     public DateTime getValidFrom() {
         return validFrom;
     }
