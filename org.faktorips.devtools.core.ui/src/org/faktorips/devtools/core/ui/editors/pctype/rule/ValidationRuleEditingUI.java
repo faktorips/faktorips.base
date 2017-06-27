@@ -32,12 +32,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.InternationalStringPresentationObject;
@@ -62,7 +64,6 @@ import org.faktorips.devtools.core.ui.editors.pctype.Messages;
  * @see RuleEditDialog
  * @see AttributeEditDialog
  * 
- * @author Stefan Widmaier, FaktorZehn AG
  */
 public class ValidationRuleEditingUI {
 
@@ -82,8 +83,11 @@ public class ValidationRuleEditingUI {
 
     private ComboViewerField<IProductCmptCategory> categoryField;
 
+    private ExtensionPropertyControlFactory extFactory;
+
     public ValidationRuleEditingUI(UIToolkit uiToolkit) {
         this.uiToolkit = uiToolkit;
+        extFactory = new ExtensionPropertyControlFactory(IValidationRule.class);
     }
 
     /**
@@ -172,6 +176,14 @@ public class ValidationRuleEditingUI {
 
         uiToolkit.createFormLabel(labelEditColumnComposite, Messages.RuleEditDialog_labelCategory);
         createCategoryCombo(labelEditColumnComposite);
+
+        createExtFactoryControls(labelEditColumnComposite);
+    }
+
+    private void createExtFactoryControls(Composite workArea) {
+        if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
+            extFactory.createControls(workArea, uiToolkit, null, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        }
     }
 
     private void createCategoryCombo(Composite workArea) {
@@ -229,6 +241,8 @@ public class ValidationRuleEditingUI {
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
         bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,
                 IValidationRule.PROPERTY_ACTIVATED_BY_DEFAULT);
+
+        extFactory.bind(rule, bindingContext);
 
         bindingContext.bindEnabled(configurableByProductBox, rule.getIpsObject(),
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
