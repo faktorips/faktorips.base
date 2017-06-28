@@ -49,6 +49,21 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
     public String getVersionId();
 
     /**
+     * @return whether this is a variant of another {@link IProductComponent}
+     */
+    public boolean isVariant();
+
+    /**
+     * @return the {@link IProductComponent} this {@link IProductComponent} is based on or
+     *         {@code null} if it is not a variant or the {@link IProductComponent variedBase} can
+     *         not be found in the {@link IRuntimeRepository}.
+     * 
+     * @see #isVariant()
+     * @see IRuntimeRepository#getProductComponent(String)
+     */
+    public IProductComponent getVariedBase();
+
+    /**
      * Returns the date from which this product component is valid. If this product component
      * supports generations this is the same valid from date as the first generation.
      * 

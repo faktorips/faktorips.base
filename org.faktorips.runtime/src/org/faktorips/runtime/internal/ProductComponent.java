@@ -39,6 +39,8 @@ import org.w3c.dom.Element;
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
 
+    protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
+
     private static final String ATTRIBUTE_LOCALE = "locale";
 
     private static final String XML_ELEMENT_DESCRIPTION = "Description";
@@ -62,12 +64,18 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     /**
      * The component's kindId
      */
-    private String productKindId;
+    private final String productKindId;
 
     /**
      * The component's versionId
      */
-    private String versionId;
+    private final String versionId;
+
+    /**
+     * The runtimeId of the {@link ProductComponent} this variant is based on. {@code null} if this
+     * is not a variant
+     */
+    private String variedBase;
 
     /**
      * The date from which this product component is valid.
@@ -134,6 +142,20 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public boolean isVariant() {
+        return variedBase != null;
+    }
+
+    @Override
+    public IProductComponent getVariedBase() {
+        if (isVariant()) {
+            return repository.getProductComponent(variedBase);
+        }
+
+        return null;
     }
 
     @Override
@@ -238,6 +260,11 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         initExtensionPropertiesFromXml(cmptElement);
         initDescriptions(cmptElement);
+
+        variedBase = cmptElement.getAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
+        if (IpsStringUtils.EMPTY.equals(variedBase)) {
+            variedBase = null;
+        }
     }
 
     /**
@@ -302,8 +329,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             descriptions.add(new LocalizedString(locale, text));
         }
         // FIXME: FIPS-5152 use the correct default locale from the repository
-        description = new DefaultInternationalString(descriptions, descriptions.isEmpty() ? null : descriptions.get(0)
-                .getLocale());
+        description = new DefaultInternationalString(descriptions,
+                descriptions.isEmpty() ? null : descriptions.get(0).getLocale());
     }
 
     @Override
@@ -314,8 +341,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     /**
      * Creates an XML {@link Element} that represents this product component's data.
      * <p>
-     * Throws an {@link UnsupportedOperationException} if the support for toXml
-     * ("Generate toXml Support") is not activated in the FIPS standard builder.
+     * Throws an {@link UnsupportedOperationException} if the support for toXml ("Generate toXml
+     * Support") is not activated in the FIPS standard builder.
      * 
      * @param document a document, that can be used to create XML elements.
      */
@@ -327,8 +354,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     /**
      * Creates an XML {@link Element} that represents this product component's data.
      * <p>
-     * Throws an {@link UnsupportedOperationException} if the support for toXml
-     * ("Generate toXml Support") is not activated in the FIPS standard builder.
+     * Throws an {@link UnsupportedOperationException} if the support for toXml ("Generate toXml
+     * Support") is not activated in the FIPS standard builder.
      * 
      * @param document a document, that can be used to create XML elements.
      * @param includeGenerations <code>true</code> if the created XML element should include the
