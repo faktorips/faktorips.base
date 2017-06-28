@@ -52,4 +52,15 @@ public class IpsStringUtilsTest {
     public void testJoinEmpty() {
         assertEquals("", IpsStringUtils.join(new Object[] {}, ", "));
     }
+
+    @Test
+    public void testToLowerFirstChar() {
+        assertEquals("", IpsStringUtils.toLowerFirstChar(""));
+        assertEquals("a", IpsStringUtils.toLowerFirstChar("a"));
+        assertEquals("aB", IpsStringUtils.toLowerFirstChar("aB"));
+        assertEquals("ab", IpsStringUtils.toLowerFirstChar("ab"));
+        assertEquals("a", IpsStringUtils.toLowerFirstChar("A"));
+        assertEquals("aB", IpsStringUtils.toLowerFirstChar("AB"));
+        assertEquals("ab", IpsStringUtils.toLowerFirstChar("Ab"));
+    }
 }

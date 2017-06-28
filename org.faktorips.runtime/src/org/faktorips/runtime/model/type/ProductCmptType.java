@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
@@ -47,8 +48,8 @@ public class ProductCmptType extends Type {
 
     public ProductCmptType(String name, AnnotatedDeclaration annotatedDeclaration) {
         super(name, annotatedDeclaration);
-        generationDeclaration = isChangingOverTime() ? AnnotatedDeclaration.from(annotatedDeclaration.get(
-                IpsChangingOverTime.class).value()) : null;
+        generationDeclaration = isChangingOverTime()
+                ? AnnotatedDeclaration.from(annotatedDeclaration.get(IpsChangingOverTime.class).value()) : null;
 
         ProductAttributeCollector attributeCollector = new ProductAttributeCollector();
         ProductAssociationCollector associationCollector = new ProductAssociationCollector();
@@ -115,8 +116,8 @@ public class ProductCmptType extends Type {
      *             policy component type
      */
     public PolicyCmptType getPolicyCmptType() {
-        return IpsModel.getPolicyCmptType(getAnnotatedDeclaration().get(IpsConfigures.class).value()
-                .asSubclass(IModelObject.class));
+        return IpsModel.getPolicyCmptType(
+                getAnnotatedDeclaration().get(IpsConfigures.class).value().asSubclass(IModelObject.class));
     }
 
     /**
@@ -130,8 +131,8 @@ public class ProductCmptType extends Type {
         TableUsageFinder finder = new TableUsageFinder(name);
         finder.visitHierarchy(this);
         if (finder.tableUsage == null) {
-            throw new IllegalArgumentException("The type " + this
-                    + " (or one of it's super types) hasn't got a table usage \"" + name + "\"");
+            throw new IllegalArgumentException(
+                    "The type " + this + " (or one of it's super types) hasn't got a table usage \"" + name + "\"");
         }
         return finder.tableUsage;
     }
@@ -189,8 +190,8 @@ public class ProductCmptType extends Type {
     @Override
     public ProductCmptType getSuperType() {
         Class<?> superclass = getJavaClass().getSuperclass();
-        return IpsModel.isProductCmptType(superclass) ? IpsModel.getProductCmptType(superclass
-                .asSubclass(IProductComponent.class)) : null;
+        return IpsModel.isProductCmptType(superclass)
+                ? IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class)) : null;
     }
 
     @Override
@@ -200,7 +201,7 @@ public class ProductCmptType extends Type {
 
     @Override
     public ProductAttribute getDeclaredAttribute(String name) {
-        ProductAttribute attr = attributes.get(name);
+        ProductAttribute attr = attributes.get(IpsStringUtils.toLowerFirstChar(name));
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
         }
@@ -231,7 +232,7 @@ public class ProductCmptType extends Type {
 
     @Override
     public ProductAssociation getDeclaredAssociation(String name) {
-        return associations.get(name);
+        return associations.get(IpsStringUtils.toLowerFirstChar(name));
     }
 
     @Override

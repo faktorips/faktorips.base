@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ModelElement;
 
@@ -48,7 +49,7 @@ public abstract class TypePartCollector<T extends ModelElement, D extends PartDe
     }
 
     protected void addPart(LinkedHashMap<String, T> result, T part) {
-        result.put(part.getName(), part);
+        result.put(IpsStringUtils.toLowerFirstChar(part.getName()), part);
     }
 
     protected abstract String[] getNames(AnnotatedDeclaration annotatedDeclaration);

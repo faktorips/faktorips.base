@@ -62,16 +62,16 @@ public class SimpleTypeModelPartsReaderTest {
         SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
-        LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(Parent.class,
-                PartHolder2.class, parentModel);
+        LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(Parent.class, PartHolder2.class,
+                parentModel);
 
         assertThat(parts, is(notNullValue()));
         assertThat(parts.size(), is(2));
         Iterator<String> keys = parts.keySet().iterator();
-        assertThat(keys.next(), is(equalTo("Tick")));
-        assertThat(keys.next(), is(equalTo("Trick")));
-        assertThat(parts.get("Tick").parentElement, is(parentModel));
-        assertThat(parts.get("Tick").getterMethod, is(equalTo(PartHolder2.class.getMethod("foo"))));
+        assertThat(keys.next(), is(equalTo("tick")));
+        assertThat(keys.next(), is(equalTo("trick")));
+        assertThat(parts.get("tick").parentElement, is(parentModel));
+        assertThat(parts.get("tick").getterMethod, is(equalTo(PartHolder2.class.getMethod("foo"))));
     }
 
     @Test
@@ -115,10 +115,10 @@ public class SimpleTypeModelPartsReaderTest {
         assertThat(parts, is(notNullValue()));
         assertThat(parts.size(), is(2));
         Iterator<String> keys = parts.keySet().iterator();
-        assertThat(keys.next(), is(equalTo("Tick")));
-        assertThat(keys.next(), is(equalTo("Trick")));
-        assertThat(parts.get("Tick").parentElement, is(parentModel));
-        assertThat(parts.get("Tick").getterMethod, is(equalTo(ParentInterface.class.getMethod("foo"))));
+        assertThat(keys.next(), is(equalTo("tick")));
+        assertThat(keys.next(), is(equalTo("trick")));
+        assertThat(parts.get("tick").parentElement, is(parentModel));
+        assertThat(parts.get("tick").getterMethod, is(equalTo(ParentInterface.class.getMethod("foo"))));
     }
 
     @Test
@@ -132,10 +132,10 @@ public class SimpleTypeModelPartsReaderTest {
         assertThat(parts, is(notNullValue()));
         assertThat(parts.size(), is(2));
         Iterator<String> keys = parts.keySet().iterator();
-        assertThat(keys.next(), is(equalTo("Tick")));
-        assertThat(keys.next(), is(equalTo("Trick")));
-        assertThat(parts.get("Tick").parentElement, is(parentModel));
-        assertThat(parts.get("Tick").getterMethod, is(equalTo(ParentInterface.class.getMethod("foo"))));
+        assertThat(keys.next(), is(equalTo("tick")));
+        assertThat(keys.next(), is(equalTo("trick")));
+        assertThat(parts.get("tick").parentElement, is(parentModel));
+        assertThat(parts.get("tick").getterMethod, is(equalTo(ParentInterface.class.getMethod("foo"))));
     }
 
     @Retention(RetentionPolicy.RUNTIME)

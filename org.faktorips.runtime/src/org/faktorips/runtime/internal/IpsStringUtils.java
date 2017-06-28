@@ -85,4 +85,15 @@ public enum IpsStringUtils {
     public static final String join(Object[] objectArray, String separator) {
         return join(Arrays.asList(objectArray), separator);
     }
+
+    public static final String toLowerFirstChar(String string) {
+        if (isEmpty(string)) {
+            return string;
+        }
+        char firstChar = string.charAt(0);
+        if (Character.isLowerCase(firstChar)) {
+            return string;
+        }
+        return Character.toLowerCase(firstChar) + string.substring(1);
+    }
 }

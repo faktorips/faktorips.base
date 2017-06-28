@@ -87,8 +87,8 @@ public abstract class Type extends ModelElement implements IModelType {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);
         if (finder.association == null) {
-            throw new IllegalArgumentException("The type " + this
-                    + " (or one of it's super types) hasn't got an association \"" + name + "\"");
+            throw new IllegalArgumentException(
+                    "The type " + this + " (or one of it's super types) hasn't got an association \"" + name + "\"");
         }
         return finder.association;
     }
@@ -104,8 +104,8 @@ public abstract class Type extends ModelElement implements IModelType {
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
         if (finder.attribute == null) {
-            throw new IllegalArgumentException("The type " + this
-                    + " (or one of it's supertypes) hasn't got an attribute \"" + name + "\"");
+            throw new IllegalArgumentException(
+                    "The type " + this + " (or one of it's supertypes) hasn't got an attribute \"" + name + "\"");
         }
         return finder.attribute;
     }
@@ -272,7 +272,7 @@ public abstract class Type extends ModelElement implements IModelType {
 
         public AttributeFinder(String attrName) {
             super();
-            this.attrName = attrName;
+            this.attrName = IpsStringUtils.toLowerFirstChar(attrName);
         }
 
         @Override
@@ -318,7 +318,7 @@ public abstract class Type extends ModelElement implements IModelType {
 
         public AssociationFinder(String associationName) {
             super();
-            this.associationName = associationName;
+            this.associationName = IpsStringUtils.toLowerFirstChar(associationName);
         }
 
         @Override

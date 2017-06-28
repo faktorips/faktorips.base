@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
@@ -78,20 +79,20 @@ public class PolicyCmptType extends Type {
      * 
      */
     public ProductCmptType getProductCmptType() {
-        return IpsModel.getProductCmptType(getAnnotatedDeclaration().get(IpsConfiguredBy.class).value()
-                .asSubclass(IProductComponent.class));
+        return IpsModel.getProductCmptType(
+                getAnnotatedDeclaration().get(IpsConfiguredBy.class).value().asSubclass(IProductComponent.class));
     }
 
     @Override
     public PolicyCmptType getSuperType() {
         Class<?> superclass = getJavaClass().getSuperclass();
-        return IpsModel.isPolicyCmptType(superclass) ? IpsModel.getPolicyCmptType(superclass
-                .asSubclass(IModelObject.class)) : null;
+        return IpsModel.isPolicyCmptType(superclass)
+                ? IpsModel.getPolicyCmptType(superclass.asSubclass(IModelObject.class)) : null;
     }
 
     @Override
     public PolicyAttribute getDeclaredAttribute(String name) {
-        PolicyAttribute attr = attributes.get(name);
+        PolicyAttribute attr = attributes.get(IpsStringUtils.toLowerFirstChar(name));
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
         }
@@ -122,7 +123,7 @@ public class PolicyCmptType extends Type {
 
     @Override
     public PolicyAssociation getDeclaredAssociation(String name) {
-        return associations.get(name);
+        return associations.get(IpsStringUtils.toLowerFirstChar(name));
     }
 
     @Override

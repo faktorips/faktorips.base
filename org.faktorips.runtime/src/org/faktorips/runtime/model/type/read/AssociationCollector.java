@@ -20,8 +20,8 @@ import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.type.Association;
 
-public abstract class AssociationCollector<T extends Association, D extends AbstractAssociationDescriptor<T>> extends
-        TypePartCollector<T, D> {
+public abstract class AssociationCollector<T extends Association, D extends AbstractAssociationDescriptor<T>>
+        extends TypePartCollector<T, D> {
 
     public AssociationCollector(List<AnnotationProcessor<?, D>> annotationAccessors) {
         super(annotationAccessors);
@@ -40,12 +40,12 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
     protected void addPart(LinkedHashMap<String, T> result, T part) {
         super.addPart(result, part);
         if (IpsStringUtils.isNotEmpty(part.getNamePlural())) {
-            result.put(part.getNamePlural(), part);
+            result.put(IpsStringUtils.toLowerFirstChar(part.getNamePlural()), part);
         }
     }
 
-    static class IpsAssociationProcessor<D extends AbstractAssociationDescriptor<? extends Association>> extends
-            AnnotationProcessor<IpsAssociation, D> {
+    static class IpsAssociationProcessor<D extends AbstractAssociationDescriptor<? extends Association>>
+            extends AnnotationProcessor<IpsAssociation, D> {
 
         public IpsAssociationProcessor() {
             super(IpsAssociation.class);
@@ -57,7 +57,9 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
         }
 
         @Override
-        public void process(D descriptor, AnnotatedDeclaration annotatedDeclaration, AnnotatedElement annotatedElement) {
+        public void process(D descriptor,
+                AnnotatedDeclaration annotatedDeclaration,
+                AnnotatedElement annotatedElement) {
             descriptor.setAnnotatedElement((Method)annotatedElement);
         }
 

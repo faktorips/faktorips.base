@@ -2,7 +2,9 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
@@ -58,16 +60,28 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetDeclaredAttributes() {
-        assertThat(policyCmptType.getDeclaredAttributes().size(), is(2));
+        assertThat(policyCmptType.getDeclaredAttributes().size(), is(3));
         assertThat(policyCmptType.getDeclaredAttributes().get(1).getName(), is("const"));
+    }
+
+    @Test
+    public void testGetDeclaredAttribute() {
         assertNotNull(policyCmptType.getDeclaredAttribute("attr"));
+        assertEquals("CapitalAttr", policyCmptType.getDeclaredAttribute("CapitalAttr").getName());
+        assertEquals("CapitalAttr", policyCmptType.getDeclaredAttribute("capitalAttr").getName());
     }
 
     @Test
     public void testGetAttributes() {
-        assertThat(policyCmptType.getAttributes().size(), is(3));
+        assertThat(policyCmptType.getAttributes().size(), is(4));
         assertThat(policyCmptType.getAttributes().get(0).getName(), is("attr"));
+    }
+
+    @Test
+    public void testGetAttribute() {
         assertNotNull(policyCmptType.getAttribute("supAttr"));
+        assertEquals("CapitalAttr", policyCmptType.getAttribute("capitalAttr").getName());
+        assertEquals("CapitalAttr", policyCmptType.getAttribute("CapitalAttr").getName());
     }
 
     @Test
@@ -75,21 +89,23 @@ public class PolicyCmptTypeTest {
         assertThat(policyCmptType.getDeclaredAssociations().size(), is(2));
         assertThat(policyCmptType.getDeclaredAssociations().get(0).getName(), is("asso"));
         assertNotNull(policyCmptType.getDeclaredAssociation("asso"));
-        assertThat(policyCmptType.getDeclaredAssociations().get(1).getName(), is("asso2"));
+        assertThat(policyCmptType.getDeclaredAssociations().get(1).getName(), is("Asso2"));
         assertNotNull(policyCmptType.getDeclaredAssociation("asso2"));
     }
 
     @Test
     public void testGetDeclaredAssociation() {
         PolicyAssociation association = policyCmptType.getDeclaredAssociation("asso");
-        PolicyAssociation association2 = policyCmptType.getDeclaredAssociation("asso2");
+        PolicyAssociation association2 = policyCmptType.getDeclaredAssociation("Asso2");
+        PolicyAssociation association2lowerCase = policyCmptType.getDeclaredAssociation("asso2");
         PolicyAssociation superAsso = policyCmptType.getDeclaredAssociation("supAsso");
         PolicyAssociation superAssoInSuper = superPolicyCmptType.getDeclaredAssociation("supAsso");
 
         assertThat(association.getName(), is("asso"));
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
-        assertThat(association2.getName(), is("asso2"));
-        assertThat(association2.getNamePlural(), is("asso2s"));
+        assertThat(association2.getName(), is("Asso2"));
+        assertThat(association2.getNamePlural(), is("Asso2s"));
+        assertSame(association2, association2lowerCase);
         assertThat(superAsso, is(nullValue()));
         assertThat(superAssoInSuper.getName(), is("supAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
@@ -110,11 +126,14 @@ public class PolicyCmptTypeTest {
     @Test
     public void testGetAssociation() {
         PolicyAssociation association = policyCmptType.getAssociation("asso");
+        PolicyAssociation association2 = policyCmptType.getAssociation("asso2");
         PolicyAssociation superAsso = policyCmptType.getAssociation("supAsso");
         PolicyAssociation superAssoInSuper = superPolicyCmptType.getAssociation("supAsso");
 
         assertThat(association.getName(), is("asso"));
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
+        assertThat(association2.getName(), is("Asso2"));
+        assertThat(association2.getNamePlural(), is("Asso2s"));
         assertThat(superAsso.getName(), is("supAsso"));
         assertThat(superAsso.getNamePlural(), is("supAssos"));
         assertThat(superAssoInSuper.getName(), is("supAsso"));
@@ -125,26 +144,29 @@ public class PolicyCmptTypeTest {
     public void testGetAssociation_Plural() {
         PolicyAssociation superAsso = policyCmptType.getAssociation("supAssos");
         PolicyAssociation superAssoInSuper = superPolicyCmptType.getAssociation("supAssos");
+        PolicyAssociation association2 = policyCmptType.getAssociation("asso2s");
 
         assertThat(superAsso.getName(), is("supAsso"));
         assertThat(superAsso.getNamePlural(), is("supAssos"));
         assertThat(superAssoInSuper.getName(), is("supAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
+        assertThat(association2.getName(), is("Asso2"));
+        assertThat(association2.getNamePlural(), is("Asso2s"));
     }
 
     @Test
     public void testGetAssociations() {
         assertThat(policyCmptType.getAssociations().size(), is(3));
         assertThat(policyCmptType.getAssociations().get(0).getName(), is("asso"));
-        assertThat(policyCmptType.getAssociations().get(1).getName(), is("asso2"));
+        assertThat(policyCmptType.getAssociations().get(1).getName(), is("Asso2"));
         assertThat(policyCmptType.getAssociations().get(2).getName(), is("supAsso"));
         assertNotNull(policyCmptType.getAssociation("supAsso"));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsConfiguredBy(Product.class)
-    @IpsAttributes({ "attr", "const" })
-    @IpsAssociations({ "asso", "asso2" })
+    @IpsAttributes({ "attr", "const", "CapitalAttr" })
+    @IpsAssociations({ "asso", "Asso2" })
     private static abstract class Policy extends SuperPolicy {
 
         @IpsAttribute(name = "const", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -153,13 +175,16 @@ public class PolicyCmptTypeTest {
         @IpsAttribute(name = "attr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
         public abstract String getAttr();
 
+        @IpsAttribute(name = "CapitalAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public abstract String getCapitalAttr();
+
         @IpsAttributeSetter("attr")
         public abstract void setAttr(String attr);
 
         @IpsAssociation(name = "asso", max = 0, min = 0, targetClass = Policy.class, kind = AssociationKind.Composition)
         public abstract Policy getPartPolicy();
 
-        @IpsAssociation(name = "asso2", pluralName = "asso2s", max = 5, min = 0, targetClass = Policy.class, kind = AssociationKind.Composition)
+        @IpsAssociation(name = "Asso2", pluralName = "Asso2s", max = 5, min = 0, targetClass = Policy.class, kind = AssociationKind.Composition)
         public abstract List<Policy> getTargets();
     }
 
