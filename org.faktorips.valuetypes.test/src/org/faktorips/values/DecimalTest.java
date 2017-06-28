@@ -140,6 +140,7 @@ public class DecimalTest {
         assertTrue(Decimal.valueOf("3.450").equals(d));
         assertTrue(d.equals(Decimal.valueOf("3.45")));
         assertTrue(Decimal.valueOf("1").equals(Decimal.valueOf("1.0")));
+        assertTrue(Decimal.valueOf("1E1").equals(Decimal.valueOf("10")));
     }
 
     @Test
@@ -150,7 +151,8 @@ public class DecimalTest {
         assertFalse(Decimal.valueOf("1.0").hashCode() == Decimal.valueOf("10").hashCode());
         assertEquals(Decimal.valueOf("1.0").hashCode(), Decimal.valueOf("1.00").hashCode());
         assertEquals(Decimal.valueOf("0.0").hashCode(), Decimal.valueOf("0").hashCode());
-
+        assertEquals(Decimal.valueOf("1E1").hashCode(), Decimal.valueOf("10").hashCode());
+        assertEquals(Decimal.valueOf("1E7").hashCode(), Decimal.valueOf("10000000").hashCode());
     }
 
     @Test

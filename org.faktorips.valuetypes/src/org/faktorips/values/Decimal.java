@@ -20,7 +20,8 @@ import org.faktorips.values.xml.DecimalXmlAdapter;
  * Value class that represents a decimal number. This class is similar to Java's BigDecimal with two
  * differences:
  * <ul>
- * <li>The equals() Method ignores the scale as most people expect 1.0 and 1 to be the same number.</li>
+ * <li>The equals() Method ignores the scale as most people expect 1.0 and 1 to be the same
+ * number.</li>
  * <li>The class has a special subclass representing <code>null</code></li>
  * </ul>
  * 
@@ -589,27 +590,13 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     }
 
     /**
-     * Returns the hash code for the decimal value. <strong> Note that unlike the BigDecimal class
-     * this class ignores the value's scale when comparing for equality. Thus this method returns
-     * the same hash code for 1.0 and 1.00 for example. </strong>
+     * Returns the hash code for the decimal value. <strong>Note that unlike the {@link BigDecimal}
+     * class this class ignores the value's scale when comparing for equality. Thus this method
+     * returns the same hash code for 1.0 and 1.00 for example.</strong>
      */
     @Override
     public int hashCode() {
-        String s = value.toString();
-        if (s.indexOf('.') > 0) {
-            int pos = s.length() - 1;
-            while (pos >= 0 && s.charAt(pos) == '0') {
-                pos--;
-            }
-            if (pos >= 0 && s.charAt(pos) == '.') {
-                pos--;
-            }
-            s = s.substring(0, pos + 1);
-        }
-        if (s.equals("0")) {
-            return 0;
-        }
-        return s.hashCode();
+        return value.stripTrailingZeros().hashCode();
     }
 
     @Override
