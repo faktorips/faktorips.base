@@ -1,0 +1,238 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.wizards;
+
+import java.util.Collection;
+
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
+import org.faktorips.devtools.core.ui.binding.ViewerRefreshBinding;
+import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.Messages;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFilter;
+
+/**
+ * This composite contains two columns. On the left hand you see a list of {@link IDescribedElement
+ * described} {@link IIpsElement elements} you could select. On the right hand you see the
+ * description of the selected element.
+ */
+public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement> extends Composite {
+
+    private final UIToolkit toolkit;
+    private final ResourceManager resourceManager;
+    private TableViewer listViewer;
+    private StructuredViewerField<E> listViewerField;
+    private Text description;
+    private final PresentationModelObject pmo;
+    private final String property;
+    private BindingContext bindingContext;
+    private TypeSelectionFilter filter;
+    private Text searchText;
+    private Collection<?> inputList;
+    private IBaseLabelProvider labelProvider;
+    private Class<E> elementClass;
+
+    /**
+     * Constructs a new type selection composite.
+     * 
+     * @param parent the parent composite
+     * @param toolkit the {@link UIToolkit} to create the internal controls
+     * @param pmo a presentation model object to bind the selected type
+     * @param property the property of the presentation model object
+     * @param inputList The input list for the type selection. This list instance should never
+     *            change, the content may change of course
+     */
+    // CSOFF: ParameterNumberCheck
+    public ElementSelectionComposite(Composite parent, UIToolkit toolkit, BindingContext bindingContext,
+            PresentationModelObject pmo, String property, Collection<? extends E> inputList,
+            IBaseLabelProvider labelProvider, Class<E> elementClass) {
+        super(parent, SWT.NONE);
+        this.toolkit = toolkit;
+        this.pmo = pmo;
+        this.property = property;
+        this.inputList = inputList;
+        this.labelProvider = labelProvider;
+        this.elementClass = elementClass;
+        this.resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        this.bindingContext = bindingContext;
+
+        setLayoutAndLayoutData();
+
+        createControls();
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                resourceManager.dispose();
+            }
+        });
+    }
+    // CSON: ParameterNumberCheck
+
+    private void setLayoutAndLayoutData() {
+        GridLayout layout = new GridLayout(2, true);
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.horizontalSpacing = 10;
+        setLayout(layout);
+
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        setLayoutData(gridData);
+    }
+
+    protected void createControls() {
+        Composite searchComposite = toolkit.createLabelEditColumnComposite(this);
+        searchText = toolkit.createText(searchComposite);
+        toolkit.createLabel(searchComposite, Messages.TypeSelectionComposite_msgLabel_Filter);
+        searchText.setMessage(Messages.TypeSelectionComposite_msg_Filter);
+
+        toolkit.createLabel(this, Messages.TypeSelectionComposite_label_description);
+
+        listViewer = new TableViewer(this, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+
+        filter = new TypeSelectionFilter();
+        listViewer.addFilter(filter);
+        listViewer.setComparator(new ViewerComparator());
+        listViewer.setContentProvider(new ArrayContentProvider());
+        listViewer.setLabelProvider(labelProvider);
+        GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        listLayoutData.heightHint = 200;
+        listLayoutData.widthHint = 300;
+        listViewer.getControl().setLayoutData(listLayoutData);
+        listViewerField = new StructuredViewerField<E>(listViewer, elementClass);
+
+        description = toolkit.createMultilineText(this);
+        description.setEditable(false);
+        bindContent();
+    }
+
+    private void bindContent() {
+        bindingContext.bindContent(searchText, new FilterPMO(), FilterPMO.TEXT_FOR_FILTER);
+        bindingContext.bindContent(listViewerField, pmo, property);
+
+        listViewer.setInput(inputList);
+
+        bindingContext.add(new PropertyChangeBinding<E>(description, pmo, property, elementClass) {
+
+            @Override
+            protected void propertyChanged(E oldValue, E newValue) {
+                updateDescription(newValue);
+            }
+
+        });
+
+        bindingContext.add(ViewerRefreshBinding.refresh(listViewer, pmo));
+    }
+
+    public void clearValidationStatus() {
+        bindingContext.clearValidationStatus();
+    }
+
+    public void addDoubleClickListener(IDoubleClickListener listener) {
+        listViewer.addDoubleClickListener(listener);
+    }
+
+    private void updateDescription(E element) {
+        if (element == null) {
+            description.setText(StringUtils.EMPTY);
+        } else {
+            String descriptionString = getDescription(element);
+            if (StringUtils.isEmpty(descriptionString)) {
+                description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
+                description.setEnabled(false);
+            } else {
+                description.setText(descriptionString);
+                description.setEnabled(true);
+                description.setEditable(false);
+            }
+        }
+    }
+
+    private String getDescription(E element) {
+        DescriptionFinder descriptionFinder = new DescriptionFinder(element.getIpsProject());
+        descriptionFinder.start(element);
+        return descriptionFinder.localizedDescription;
+    }
+
+    protected UIToolkit getToolkit() {
+        return toolkit;
+    }
+
+    /**
+     * Searching for a description in the type hierarchy. If the description of the given type is
+     * empty this visitor searches for a not empty description in supertype.
+     */
+    private static class DescriptionFinder extends TypeHierarchyVisitor<IType> {
+
+        private String localizedDescription;
+
+        public DescriptionFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        public void start(IDescribedElement element) {
+            if (element instanceof IType) {
+                IType type = (IType)element;
+                super.start(type);
+            } else {
+                setDescription(element);
+            }
+        }
+
+        @Override
+        protected boolean visit(IType currentType) {
+            setDescription(currentType);
+            return localizedDescription.isEmpty();
+        }
+
+        protected void setDescription(IDescribedElement currentType) {
+            localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(currentType);
+        }
+
+    }
+
+    public class FilterPMO extends PresentationModelObject {
+        private static final String TEXT_FOR_FILTER = "textForFilter"; //$NON-NLS-1$
+
+        public void setTextForFilter(String searchText) {
+            filter.setSearchText(searchText);
+            listViewer.refresh();
+        }
+
+        public String getTextForFilter() {
+            return filter.getSearchText();
+        }
+    }
+}
