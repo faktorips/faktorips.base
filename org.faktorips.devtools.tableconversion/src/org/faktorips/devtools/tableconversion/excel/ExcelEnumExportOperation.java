@@ -60,7 +60,8 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" //$NON-NLS-1$
+                            + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
         enumValueContainer = (IEnumValueContainer)typeToExport;
     }
@@ -124,10 +125,9 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException {
 
-        List<IEnumAttribute> enumAttributes = structure
-                .getEnumAttributesIncludeSupertypeCopies(enumValueContainer instanceof IEnumType);
-        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(structure
-                .isInextensibleEnum())];
+        boolean exportingEnumType = enumValueContainer instanceof IEnumType;
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(exportingEnumType);
+        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(exportingEnumType)];
         for (int i = 0; i < datatypes.length; i++) {
             datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
         }

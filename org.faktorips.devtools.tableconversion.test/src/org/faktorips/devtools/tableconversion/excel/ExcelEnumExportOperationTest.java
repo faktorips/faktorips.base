@@ -71,4 +71,15 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
         assertTrue(ml.toString(), ml.isEmpty());
     }
 
+    @Test
+    public void testExportValid_ExtensibleEnum() throws Exception {
+        IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
+        enumType.setExtensible(true);
+
+        MessageList ml = new MessageList();
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        assertTrue(ml.toString(), ml.isEmpty());
+    }
+
 }
