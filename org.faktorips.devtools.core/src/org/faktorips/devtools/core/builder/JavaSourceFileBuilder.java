@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
@@ -119,14 +117,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public static final String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
-    private static final String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
-
-    private static final String END_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "END FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
-
-    private static final Pattern FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN = createFeatureSectionPattern();
-
-    private String versionSection;
-
     private boolean mergeEnabled;
 
     private String kindId;
@@ -170,13 +160,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         model = null;
-        versionSection = null;
     }
 
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         initJControlModel(project);
-        createVersionSection();
     }
 
     protected JavaClassNaming getJavaClassNaming() {
@@ -723,7 +711,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             content = merge(javaFile, oldJavaFileContentsStr, content);
         }
 
-        content = writeFeatureVersions(content);
         content = removeUnusedImports(content);
         content = format(content);
 
@@ -745,8 +732,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             javaFileContents = javaFile.getContents(true);
             return StringUtil.readFromInputStream(javaFileContents, charset);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
-                    "An exception ocurred while trying to read the contents of the java file " + //$NON-NLS-1$
+            throw new CoreException(
+                    new IpsStatus("An exception ocurred while trying to read the contents of the java file " + //$NON-NLS-1$
                             javaFile, e));
         } finally {
             closeStream(javaFileContents);
@@ -793,7 +780,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            be generated it must be known if the the generated method is an implementation of
      *            an interface method or an override of a super class method.
      */
-    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation) {
+    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
+            boolean interfaceMethodImplementation) {
         JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, getIpsProject(), interfaceMethodImplementation);
     }
 
@@ -917,9 +905,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         try {
             merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
         } catch (Exception e) {
-            throw new CoreException(
-                    new IpsStatus(
-                            "Can't create JDT Compilation Unit for the Java source existing Java Source. Probably the code does not compile. " + javaFile, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus(
+                    "Can't create JDT Compilation Unit for the Java source existing Java Source. Probably the code does not compile. " //$NON-NLS-1$
+                            + javaFile,
+                    e));
         }
         try {
             merger.merge();
@@ -975,61 +964,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         } else {
             throw new IllegalStateException("Cannot accedd Ips Plugin."); //$NON-NLS-1$
         }
-    }
-
-    private static final Pattern createFeatureSectionPattern() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("/\\*.*"); //$NON-NLS-1$
-        buf.append(BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
-        buf.append(".*"); //$NON-NLS-1$
-        buf.append(END_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
-        buf.append("[\\s\\*]*\\*/"); //$NON-NLS-1$
-        return Pattern.compile(buf.toString(), Pattern.DOTALL);
-    }
-
-    private void createVersionSection() {
-        StringBuffer versionSecionBuf = new StringBuffer();
-        versionSecionBuf.append("/* "); //$NON-NLS-1$
-        versionSecionBuf.append(BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
-        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
-        versionSecionBuf.append(" * "); //$NON-NLS-1$
-        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
-
-        versionSecionBuf.append(" * builder set: "); //$NON-NLS-1$
-        versionSecionBuf.append(getBuilderSet().getId());
-        versionSecionBuf.append(", Version: "); //$NON-NLS-1$
-        versionSecionBuf.append(getBuilderSet().getVersion());
-
-        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
-        versionSecionBuf.append(" * "); //$NON-NLS-1$
-        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
-        versionSecionBuf.append(" * "); //$NON-NLS-1$
-        versionSecionBuf.append(END_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
-        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
-        versionSecionBuf.append(" */"); //$NON-NLS-1$
-        versionSection = versionSecionBuf.toString();
-    }
-
-    private String writeFeatureVersions(String source) {
-        if (source == null) {
-            return source;
-        }
-        Matcher m = FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN.matcher(source);
-        StringBuffer newSource = new StringBuffer();
-        if (m.find()) {
-            if (m.start() > 0) {
-                newSource.append(source.substring(0, m.start()));
-            }
-            newSource.append(versionSection);
-            if (source.length() > m.end()) {
-                newSource.append(source.substring(m.end(), source.length()));
-            }
-        } else {
-            newSource.append(versionSection);
-            newSource.append(SystemUtils.LINE_SEPARATOR);
-            newSource.append(source);
-        }
-        return newSource.toString();
     }
 
     private ByteArrayInputStream transform(IIpsSrcFile ipsSrcFile, String content) throws CoreException {
