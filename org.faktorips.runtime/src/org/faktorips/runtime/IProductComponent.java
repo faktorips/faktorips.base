@@ -49,14 +49,24 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
     public String getVersionId();
 
     /**
-     * @return whether this is a variant of another {@link IProductComponent}
+     * A variant is a product component that is based on another product component (hence varied
+     * base). It uses the varied base as a template and "changes" specific values.
+     * 
+     * @return <code>true</code> if this is a variant of another {@link IProductComponent},
+     *         <code>false</code> for regular product components.
+     * 
+     * @see #getVariedBase()
      */
     public boolean isVariant();
 
     /**
-     * @return the {@link IProductComponent} this {@link IProductComponent} is based on or
-     *         {@code null} if it is not a variant or the {@link IProductComponent variedBase} can
-     *         not be found in the {@link IRuntimeRepository}.
+     * 
+     * Allows distinguishing variants not only by their product component type but also their varied
+     * base. {@link #isVariant()} allows determining whether a product component is a variant.
+     * 
+     * @return the {@link IProductComponent} this {@link IProductComponent} is based on. Returns
+     *         {@code null} if it is a regular product component or the {@link IProductComponent
+     *         variedBase} can not be found in the {@link IRuntimeRepository}.
      * 
      * @see #isVariant()
      * @see IRuntimeRepository#getProductComponent(String)
