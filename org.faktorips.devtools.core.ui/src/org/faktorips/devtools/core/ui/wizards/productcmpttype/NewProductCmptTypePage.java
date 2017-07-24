@@ -46,7 +46,8 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     public NewProductCmptTypePage(IStructuredSelection selection) {
         super(IpsObjectType.PRODUCT_CMPT_TYPE, selection, Messages.NewProductCmptTypePage_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
+        setImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
     }
 
     @Override
@@ -88,7 +89,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     private IPolicyCmptType getPolicyCmptType() {
-        String pcTypeQualifiedName = policyCmptTypeField.getText();
+        String pcTypeQualifiedName = getPolicyCmptTypeName();
         if (getIpsProject() != null) {
             IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);
             if (policyCmptType != null) {
@@ -96,6 +97,10 @@ public class NewProductCmptTypePage extends NewTypePage {
             }
         }
         return null;
+    }
+
+    protected String getPolicyCmptTypeName() {
+        return policyCmptTypeField.getText();
     }
 
     @Override
@@ -130,8 +135,8 @@ public class NewProductCmptTypePage extends NewTypePage {
             return;
         }
 
-        setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
-                IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
+        setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
+                getQualifiedIpsObjectName(), getIpsProject(), null));
     }
 
     @Override
@@ -145,11 +150,21 @@ public class NewProductCmptTypePage extends NewTypePage {
         NewWizardUtil.createDefaultCategoriesIfNecessary(productCmptType);
 
         associatePolicyCmptType(modifiedIpsObjects, productCmptType);
+
+        setChangingOverTimeAsInSupertype(productCmptType);
+    }
+
+    private void setChangingOverTimeAsInSupertype(IProductCmptType productCmptType) {
+        String superTypeName = getSuperType();
+        if (!StringUtils.isBlank(superTypeName)) {
+            IProductCmptType superType = getIpsProject().findProductCmptType(superTypeName);
+            productCmptType.setChangingOverTime(superType.isChangingOverTime());
+        }
     }
 
     private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType) {
 
-        String policyCmptTypeQualifiedName = policyCmptTypeField.getValue();
+        String policyCmptTypeQualifiedName = getPolicyCmptTypeName();
         if (StringUtils.isEmpty(policyCmptTypeQualifiedName)) {
             productCmptType.setConfigurationForPolicyCmptType(false);
             return;

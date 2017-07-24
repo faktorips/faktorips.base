@@ -135,7 +135,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * 
      * @param selectedResource the selected resource
      * @throws CoreException in any case of exception
-     * */
+     */
     protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
         // subclasses may override
     }
@@ -257,9 +257,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * {@link #finishIpsObjects(IIpsObject, Set)}.
      * 
      * @param newIpsObject the {@link IIpsObject} to that is created by this page
-     * @param modifiedIpsObjects {@link IIpsObject}s that have being modified during the finishing
-     *            of the new {@link IIpsObject} need to be registered in this set so that the wizard
-     *            can also save the changed state of these objects.
+     * @param modifiedIpsObjects {@link IIpsObject IIpsObjects} that have been modified during the
+     *            finishing of the new {@link IIpsObject} need to be registered in this set so that
+     *            the wizard can also save the changed state of these objects.
      * 
      * @throws CoreException if an exception occurs during finishing
      */
