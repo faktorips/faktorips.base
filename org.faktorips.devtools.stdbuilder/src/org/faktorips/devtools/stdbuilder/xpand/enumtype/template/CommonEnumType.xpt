@@ -36,7 +36,7 @@
 
 «DEFINE getter FOR XEnumAttribute»
 	/**
-	* «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name)»«ELSE»«localizedJDoc("GETTER", name)»«ENDIF»
+	* «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»«ELSE»«localizedJDoc("GETTER", name, descriptionForJDoc)»«ENDIF»
 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	* @generated
 	*/
