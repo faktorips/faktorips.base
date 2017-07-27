@@ -43,8 +43,8 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
     public ConfigElement(IPropertyValueContainer parent, String policyAttribute, String id) {
         super(parent, id);
-        this.templateValueSettings = new TemplateValueSettings(this);
         this.policyAttribute = policyAttribute;
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -161,8 +161,9 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
                 || attribute.getAttributeType() == AttributeType.CONSTANT;
     }
 
-    protected abstract void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            throws CoreException;
+    protected abstract void validateContent(MessageList list,
+            IIpsProject ipsProject,
+            IPolicyCmptTypeAttribute attribute) throws CoreException;
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
