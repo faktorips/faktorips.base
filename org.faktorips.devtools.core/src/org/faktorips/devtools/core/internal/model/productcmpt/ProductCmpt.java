@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -183,7 +182,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public void setTemplate(String newTemplate) {
-        if (ObjectUtils.notEqual(newTemplate, template)) {
+        if (StringUtils.isEmpty(newTemplate)) {
             resetTemplateStatus();
         }
         String oldTemplate = template;
@@ -333,9 +332,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
-                    .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(
+                    getIpsObject().getQualifiedNameType(),
+                    new QualifiedNameType(tableContentUsage.getTableContentName(), IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
