@@ -11,27 +11,59 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TemplateValueUiStatusTest {
+public class TemplateValueUiStatusTest extends AbstractIpsPluginTest {
 
-    @Mock
+    private static final String ATTRIBUTE = "attribute";
+
     private IAttributeValue property;
 
-    @Mock
     private IAttributeValue templateProperty;
+
+    private IIpsProject ipsProject;
+
+    private ProductCmptType productCmptType;
+
+    private IAttribute attribute;
+
+    private ProductCmpt template;
+
+    private ProductCmpt product;
+
+    private void createProperty() throws Exception {
+        ipsProject = newIpsProject();
+        productCmptType = newProductCmptType(ipsProject, "Type");
+        attribute = productCmptType.newAttribute();
+        attribute.setName(ATTRIBUTE);
+        attribute.setDatatype(ValueDatatype.MONEY.getQualifiedName());
+        attribute.setChangingOverTime(false);
+
+        template = newProductTemplate(productCmptType, "MyTemplate");
+        template.fixAllDifferencesToModel(ipsProject);
+        templateProperty = template.getAttributeValue(ATTRIBUTE);
+        templateProperty.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        product = newProductCmpt(productCmptType, "MyProduct");
+        product.setTemplate(template.getQualifiedName());
+        product.fixAllDifferencesToModel(ipsProject);
+        property = product.getAttributeValue(ATTRIBUTE);
+    }
 
     @Test
     public void testMapStatus_INHERITED() throws Exception {
-        when(property.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
+        createProperty();
+        property.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
 
@@ -40,16 +72,19 @@ public class TemplateValueUiStatusTest {
 
     @Test
     public void testMapStatus_UNDEFINED() throws Exception {
-        when(property.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        createProperty();
+        templateProperty.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
+        TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(templateProperty);
 
         assertThat(status, is(TemplateValueUiStatus.UNDEFINED));
     }
 
     @Test
     public void testMapStatus_DEFINED__NEWLY_DEFINED() throws Exception {
-        when(property.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        createProperty();
+        templateProperty.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        property.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
 
@@ -58,8 +93,8 @@ public class TemplateValueUiStatusTest {
 
     @Test
     public void testMapStatus_DEFINED__OVERWRITE_EQUAL__null() throws Exception {
-        when(property.findTemplateProperty(null)).thenReturn(templateProperty);
-        when(property.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        createProperty();
+        property.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
 
@@ -68,10 +103,22 @@ public class TemplateValueUiStatusTest {
 
     @Test
     public void testMapStatus_DEFINED__OVERWRITE_EQUAL__nonNull() throws Exception {
-        when(property.findTemplateProperty(null)).thenReturn(templateProperty);
-        when(property.getPropertyValue()).thenReturn("asdf");
-        when(templateProperty.getPropertyValue()).thenReturn("asdf");
-        when(property.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        createProperty();
+        property.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        property.setValueHolder(new SingleValueHolder(property, "asdf"));
+        templateProperty.setValueHolder(new SingleValueHolder(templateProperty, "asdf"));
+
+        TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
+
+        assertThat(status, is(TemplateValueUiStatus.OVERWRITE_EQUAL));
+    }
+
+    @Test
+    public void testMapStatus_DEFINED__OVERWRITE_EQUAL__DatatypeCompare() throws Exception {
+        createProperty();
+        property.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        property.setValueHolder(new SingleValueHolder(property, "7.0 EUR"));
+        templateProperty.setValueHolder(new SingleValueHolder(templateProperty, "7 EUR"));
 
         TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
 
@@ -80,10 +127,10 @@ public class TemplateValueUiStatusTest {
 
     @Test
     public void testMapStatus_DEFINED__OVERWRITE() throws Exception {
-        when(property.findTemplateProperty(null)).thenReturn(templateProperty);
-        when(property.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
-        when(property.getPropertyValue()).thenReturn("abc");
-        when(property.getPropertyValue()).thenReturn("abcxyz");
+        createProperty();
+        property.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        property.setValueHolder(new SingleValueHolder(property, "7.0 EUR"));
+        templateProperty.setValueHolder(new SingleValueHolder(templateProperty, "70 EUR"));
 
         TemplateValueUiStatus status = TemplateValueUiStatus.mapStatus(property);
 

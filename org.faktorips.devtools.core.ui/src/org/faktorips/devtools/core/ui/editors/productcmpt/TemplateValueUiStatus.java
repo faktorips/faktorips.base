@@ -9,12 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.Comparator;
+
 import com.google.common.base.Function;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -41,57 +40,35 @@ public enum TemplateValueUiStatus {
         return IpsUIPlugin.getImageHandling().getSharedImage(icon, true);
     }
 
-    public static <T extends IPropertyValue> TemplateValueUiStatus mapStatus(T propertyValue) {
-        return mapStatusInternal(propertyValue, new Function<T, Object>() {
-            @Override
-            public Object apply(T p) {
-                if (p == null) {
-                    return null;
-                }
-                // We don't care about data type etc. so we can just use the string property value
-                return p.getPropertyValue();
-            }
-        });
-    }
-
-    public static TemplateValueUiStatus mapStatus(IProductCmptLink link) {
-        return mapStatusInternal(link, new Function<IProductCmptLink, Object>() {
-            @Override
-            public Object apply(IProductCmptLink l) {
-                if (l == null) {
-                    return null;
-                }
-                return l.getCardinality();
-            }
-        });
-    }
-
-    private static <T extends ITemplatedValue> TemplateValueUiStatus mapStatusInternal(T propertyValue,
-            Function<T, Object> valueFunction) {
+    public static <T extends ITemplatedValue> TemplateValueUiStatus mapStatus(T propertyValue) {
         TemplateValueStatus templateStatus = propertyValue.getTemplateValueStatus();
         if (templateStatus == TemplateValueStatus.INHERITED) {
             return INHERITED;
         } else if (templateStatus == TemplateValueStatus.UNDEFINED) {
             return UNDEFINED;
         } else {
-            return mapDefinedStatus(propertyValue, valueFunction);
+            return mapDefinedStatus(propertyValue);
         }
     }
 
-    private static <T extends ITemplatedValue> TemplateValueUiStatus mapDefinedStatus(T property,
-            Function<T, Object> valueFunction) {
+    private static <T extends ITemplatedValue> TemplateValueUiStatus mapDefinedStatus(T propertyValue) {
         @SuppressWarnings("unchecked")
-        T templateProperty = (T)property.findTemplateProperty(property.getIpsProject());
+        T templateProperty = (T)propertyValue.findTemplateProperty(propertyValue.getIpsProject());
         if (templateProperty == null) {
             return NEWLY_DEFINED;
         } else {
-            Object value = valueFunction.apply(property);
-            Object templateValue = valueFunction.apply(templateProperty);
-            if (ObjectUtils.equals(value, templateValue)) {
+            Comparator<Object> comparator = propertyValue.getValueComparator();
+            if (comparator.compare(getValue(propertyValue), getValue(templateProperty)) == 0) {
                 return OVERWRITE_EQUAL;
             } else {
                 return OVERWRITE;
             }
         }
     }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends ITemplatedValue> Object getValue(T propertyValue) {
+        return ((Function<T, Object>)propertyValue.getValueGetter()).apply(propertyValue);
+    }
+
 }
