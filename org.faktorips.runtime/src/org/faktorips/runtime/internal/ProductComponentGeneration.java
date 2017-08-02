@@ -37,8 +37,8 @@ import org.w3c.dom.NodeList;
  * it, which is undesired.
  * 
  */
-public abstract class ProductComponentGeneration extends RuntimeObject implements IProductComponentGeneration,
-IXmlPersistenceSupport {
+public abstract class ProductComponentGeneration extends RuntimeObject
+        implements IProductComponentGeneration, IXmlPersistenceSupport {
 
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
@@ -223,14 +223,6 @@ IXmlPersistenceSupport {
         }
     }
 
-    /**
-     * Returning the map from the names of validation rules to the validation rule configuration.
-     * Not intended to use by client, only for test cases.
-     */
-    /* private */Map<String, ValidationRuleConfiguration> getNameToValidationRuleConfigMap() {
-        return nameToValidationRuleConfigMap;
-    }
-
     protected Element getRangeElement(Element configElement) {
         Element valueSetElement = getValueSetElement(configElement);
         return XmlUtil.getFirstElement(valueSetElement, ValueToXmlHelper.XML_TAG_RANGE);
@@ -279,6 +271,14 @@ IXmlPersistenceSupport {
     }
 
     @Override
+    public void setValidationRuleActivated(String ruleName, boolean active) {
+        if (getRepository() != null && !getRepository().isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
+        nameToValidationRuleConfigMap.put(ruleName, new ValidationRuleConfiguration(ruleName, active));
+    }
+
+    @Override
     public String toString() {
         return getProductComponent().getId() + "-" + validFrom;
     }
@@ -312,8 +312,8 @@ IXmlPersistenceSupport {
     /**
      * Creates an XML {@link Element} that represents this product component generation's data.
      * <p>
-     * Throws an {@link UnsupportedOperationException} if the support for toXml
-     * ("Generate toXml Support") is not activated in the FIPS standard builder.
+     * Throws an {@link UnsupportedOperationException} if the support for toXml ("Generate toXml
+     * Support") is not activated in the FIPS standard builder.
      * 
      * @param document a document, that can be used to create XML elements.
      */

@@ -96,4 +96,12 @@ public interface IProductComponentGeneration extends IRuntimeObject, IProductCom
      */
     public boolean isValidationRuleActivated(String ruleName);
 
+    /**
+     * Enables or disables validation for a specific rule.
+     * 
+     * @param ruleName the name of the rule in question
+     * @param active indicating whether the validation rule is configured as active
+     */
+    public void setValidationRuleActivated(String ruleName, boolean active);
+
 }

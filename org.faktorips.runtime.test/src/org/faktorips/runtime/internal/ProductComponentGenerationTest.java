@@ -12,8 +12,6 @@ package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -69,29 +67,26 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     }
 
     @Test
-    public void testGetValidationRuleConfigElements() {
+    public void testSetValidationRuleActivated() {
         Element genElement = getTestDocument().getDocumentElement();
-        gen.doInitValidationRuleConfigsFromXml(genElement);
-        Map<String, ValidationRuleConfiguration> configsMap = gen.getNameToValidationRuleConfigMap();
+        gen.initFromXml(genElement);
 
-        assertEquals(3, configsMap.size());
-        ValidationRuleConfiguration config = configsMap.get("Regel1");
-        assertNotNull(config);
-        assertEquals("Regel1", config.getRuleName());
-        assertEquals(true, config.isActive());
+        gen.setValidationRuleActivated("Regel1", true);
+        gen.setValidationRuleActivated("RegelZwei", true);
+        gen.setValidationRuleActivated("RegelDrei", true);
 
-        config = configsMap.get("RegelZwei");
-        assertNotNull(config);
-        assertEquals("RegelZwei", config.getRuleName());
-        assertEquals(false, config.isActive());
+        assertEquals(true, gen.isValidationRuleActivated("Regel1"));
+        assertEquals(true, gen.isValidationRuleActivated("RegelZwei"));
+        assertEquals(true, gen.isValidationRuleActivated("RegelDrei"));
 
-        config = configsMap.get("RegelDrei");
-        assertNotNull(config);
-        assertEquals("RegelDrei", config.getRuleName());
-        assertEquals(false, config.isActive());
+        gen.setValidationRuleActivated("Regel1", false);
+        gen.setValidationRuleActivated("RegelZwei", false);
+        gen.setValidationRuleActivated("RegelDrei", false);
 
-        config = configsMap.get("nonExistentRule");
-        assertNull(config);
+        assertEquals(false, gen.isValidationRuleActivated("Regel1"));
+        assertEquals(false, gen.isValidationRuleActivated("RegelZwei"));
+        assertEquals(false, gen.isValidationRuleActivated("RegelDrei"));
+
     }
 
     @Test
