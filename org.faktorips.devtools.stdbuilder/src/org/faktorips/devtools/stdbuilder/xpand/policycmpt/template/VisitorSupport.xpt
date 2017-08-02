@@ -32,10 +32,9 @@
 		        «visitorSupportLoopVarName».accept(visitor);
 		    }
 		«ELSE-»
-			if («visitorSupportLoopVarName» != null) {
-	            «visitorSupportLoopVarName».accept(visitor);
+			if («fieldName» != null) {
+	            «fieldName».accept(visitor);
 	        }
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
-
