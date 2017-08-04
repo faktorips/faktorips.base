@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.pctype.associationwizard.NewPcTypeAssociationWizard;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsSection;
+import org.faktorips.devtools.core.ui.wizards.NextButtonDefaultWizardDialog;
 import org.faktorips.util.memento.Memento;
 
 public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
@@ -65,9 +65,11 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
              * Create default buttons without the 'New' button, because the 'New' button will be
              * overridden with wizard functionality.
              */
-            super(policyCmptType, parent, EnumSet.of(Option.CAN_EDIT, Option.CAN_OVERRIDE, Option.CAN_DELETE,
-                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
-                    Option.JUMP_TO_SOURCE_CODE_SUPPORTED), site, toolkit);
+            super(policyCmptType, parent,
+                    EnumSet.of(Option.CAN_EDIT, Option.CAN_OVERRIDE, Option.CAN_DELETE, Option.CAN_MOVE,
+                            Option.SHOW_EDIT_BUTTON, Option.RENAME_REFACTORING_SUPPORTED,
+                            Option.JUMP_TO_SOURCE_CODE_SUPPORTED),
+                    site, toolkit);
         }
 
         @Override
@@ -98,8 +100,8 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
          */
         private void createWizardNewButton(Composite buttons, UIToolkit toolkit) {
             wizardNewButton = toolkit.createButton(buttons, Messages.PolicyCmptTypeAssociationsSection_newButton);
-            wizardNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                    | GridData.VERTICAL_ALIGN_BEGINNING));
+            wizardNewButton
+                    .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
             wizardNewButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent event) {
@@ -121,8 +123,8 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
             boolean dirty = file.isDirty();
             Memento memento = getIpsObject().newMemento();
             IIpsObjectPart newRelation = newIpsPart();
-            WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeAssociationWizard(
-                    (IPolicyCmptTypeAssociation)newRelation));
+            NextButtonDefaultWizardDialog dialog = new NextButtonDefaultWizardDialog(getShell(),
+                    new NewPcTypeAssociationWizard((IPolicyCmptTypeAssociation)newRelation));
             dialog.open();
             if (dialog.getReturnCode() == Window.CANCEL) {
                 getIpsObject().setState(memento);
