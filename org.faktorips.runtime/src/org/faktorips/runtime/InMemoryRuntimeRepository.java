@@ -56,7 +56,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /** Contains all test cases with their qualified name as key. */
     private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
 
-    /** Contains all enumeration values for the Faktor-IPS enumerations which content is deferred. */
+    /**
+     * Contains all enumeration values for the Faktor-IPS enumerations which content is deferred.
+     */
     private Map<Class<?>, List<?>> enumValuesMap = new HashMap<Class<?>, List<?>>();
 
     private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
@@ -107,7 +109,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public void getProductComponentGenerations(IProductComponent productCmpt, List<IProductComponentGeneration> result) {
+    public void getProductComponentGenerations(IProductComponent productCmpt,
+            List<IProductComponentGeneration> result) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(productCmpt.getId());
         if (genSet != null) {
             result.addAll(genSet);
@@ -264,8 +267,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
         SortedSet<IProductComponentGeneration> genSortedSet = productCmptGenLists.get(productCmptId);
         if (genSortedSet == null) {
-            genSortedSet = new TreeSet<IProductComponentGeneration>(new ProductCmptGenerationComparator(
-                    TimeZone.getDefault()));
+            genSortedSet = new TreeSet<IProductComponentGeneration>(
+                    new ProductCmptGenerationComparator(TimeZone.getDefault()));
             productCmptGenLists.put(productCmptId, genSortedSet);
         }
         return genSortedSet;
@@ -307,9 +310,10 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    protected IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
-        SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
-                .getProductComponent().getId());
+    protected IProductComponentGeneration getNextProductComponentGenerationInternal(
+            IProductComponentGeneration generation) {
+        SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(
+                generation.getProductComponent().getId());
         SortedSet<IProductComponentGeneration> successor = genSet.tailSet(generation);
         if (successor == null) {
             return null;
@@ -330,9 +334,10 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
-        SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
-                .getProductComponent().getId());
+    protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(
+            IProductComponentGeneration generation) {
+        SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(
+                generation.getProductComponent().getId());
         SortedSet<IProductComponentGeneration> predecessors = genSet.headSet(generation);
         if (predecessors.isEmpty()) {
             return null;

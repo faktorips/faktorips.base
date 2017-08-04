@@ -10,11 +10,6 @@
 
 package org.faktorips.runtime;
 
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
-import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 
 /**
@@ -25,17 +20,7 @@ import org.faktorips.runtime.internal.ProductComponent;
  * 
  * @author Jan Ortmann
  */
-public interface IProductComponentGeneration extends IRuntimeObject, IProductComponentLinkSource {
-
-    /**
-     * Creates a new policy component that is configured by this product component generation. After
-     * creating the policy component it is automatically initialized. The new policy component is
-     * not added to any parent structure.
-     * <p>
-     * 
-     * @throws RuntimeException if this product component does not configure a policy component.
-     */
-    public IConfigurableModelObject createPolicyComponent();
+public interface IProductComponentGeneration extends IRuntimeObject, IProductObject {
 
     /**
      * Returns the repository this product component generation belongs to. This method never
@@ -59,33 +44,6 @@ public interface IProductComponentGeneration extends IRuntimeObject, IProductCom
      * Returns the next generation if available if not <code>null</code> will be returned.
      */
     public IProductComponentGeneration getNextGeneration();
-
-    /**
-     * Returns the date from which this generation is valid.
-     * 
-     * @return The valid from date of this generation
-     */
-    public DateTime getValidFrom();
-
-    /**
-     * Returns the point in time this generation is valid from in the given time zone. This method
-     * never returns <code>null</code>.
-     * 
-     * @throws NullPointerException if zone is <code>null</code>.
-     */
-    public Date getValidFrom(TimeZone zone);
-
-    /**
-     * Returns the <code>IProductComponentLink</code> for the association with the given role name
-     * to the given product component or <code>null</code> if no such association exists.
-     */
-    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
-
-    /**
-     * Returns a <code>List</code> of all the <code>IProductComponentLink</code>s from this product
-     * component generation to other product components.
-     */
-    public List<IProductComponentLink<? extends IProductComponent>> getLinks();
 
     /**
      * Returns whether the validation rule with the given name is configured as active in this
