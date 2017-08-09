@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceS
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -72,6 +73,41 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY));
         msgList = perTypeInfoSub.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY));
+    }
+
+    @Test
+    public void testDoubleColumnNameInConstrainedAssociation() throws CoreException {
+        policyCmptType.getPersistenceTypeInfo().setTableName("validName");
+        policyCmptType.getPersistenceTypeInfo().setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+
+        PolicyCmptType subPcType = newPolicyCmptType(ipsProject, "Policy2");
+        subPcType.setSupertype(policyCmptType.getQualifiedName());
+        subPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+
+        PolicyCmptType targetPcType = newPolicyCmptType(ipsProject, "targetPolicy");
+        targetPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+
+        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)policyCmptType.newAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTarget(targetPcType.getQualifiedName());
+        association.setTargetRoleSingular("associationToTarget");
+        association.setTargetRolePlural("associationToTargets");
+        association.setMaxCardinality(1);
+        association.getPersistenceAssociatonInfo().setJoinColumnName("sameName");
+
+        IPolicyCmptTypeAssociation associationSub = (IPolicyCmptTypeAssociation)subPcType.newAssociation();
+        associationSub.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associationSub.setTarget(targetPcType.getQualifiedName());
+        associationSub.setTargetRoleSingular("associationToTarget");
+        associationSub.setTargetRolePlural("associationToTargets");
+        associationSub.setMaxCardinality(1);
+        associationSub.getPersistenceAssociatonInfo().setJoinColumnName("sameName");
+        associationSub.setConstrain(true);
+
+        MessageList messageList = subPcType.validate(ipsProject);
+
+        assertNull(messageList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
     }
 
     @Test

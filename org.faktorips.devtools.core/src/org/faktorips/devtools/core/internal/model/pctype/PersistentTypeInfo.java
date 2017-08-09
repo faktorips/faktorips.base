@@ -763,6 +763,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         private void collectAssociationColumnsIfExists(IPolicyCmptType currentType) {
             List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
+                 if (policyCmptTypeAssociation.isConstrain()) {
+                 continue;
+                 }
                 IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociation.getPersistenceAssociatonInfo();
                 if (StringUtils.isBlank(policyCmptTypeAssociation.getInverseAssociation())
                         && ((PersistentAssociationInfo)pAssInfo).isForeignKeyColumnCreatedOnTargetSide(null)) {
