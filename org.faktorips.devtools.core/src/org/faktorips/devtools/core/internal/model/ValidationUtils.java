@@ -259,14 +259,19 @@ public class ValidationUtils {
         if (datatype.checkReadyToUse().containsErrorMsg()) {
             String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName());
             Message msg = new Message(
-                    IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID,
-                    text, Message.WARNING, part, propertyName);
+                    IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text,
+                    Message.WARNING, part, propertyName);
             list.add(msg);
             return false;
         }
 
         if (!datatype.isParsable(value)) {
-            String text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, value, datatype);
+            String text;
+            if (Datatype.MONEY.equals(datatype)) {
+                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, value, datatype);
+            } else {
+                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, value, datatype);
+            }
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text,
                     Message.ERROR, part, propertyName);
@@ -351,9 +356,9 @@ public class ValidationUtils {
      * Validate the given Java identifier using the source and compliance levels used by the given
      * IpsProject/JavaProject. The identifier must not have the same spelling as a Java keyword,
      * boolean literal (<code>"true"</code>, <code>"false"</code>), or null literal (
-     * <code>"null"</code>). See section 3.8 of the
-     * <em>Java Language Specification, Second Edition</em> (JLS2). A valid identifier can act as a
-     * simple type name, method name or field name.
+     * <code>"null"</code>). See section 3.8 of the <em>Java Language Specification, Second
+     * Edition</em> (JLS2). A valid identifier can act as a simple type name, method name or field
+     * name.
      * <p>
      * Returns a status object with code <code>IStatus.OK</code> if the given identifier is a valid
      * Java identifier, otherwise a status object indicating what is wrong with the identifier.

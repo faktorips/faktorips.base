@@ -10,7 +10,11 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.internal.model.productcmpt.AbstractValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -78,6 +82,28 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * @param value The value that should be set as current value in this holder.
      */
     public void setValue(T value);
+
+    /**
+     * Get the list of single values. If this {@link IValueHolder} is a {@link SingleValueHolder}
+     * this {@link List} always returns a list with the single {@link IValue}. If it is a
+     * {@link MultiValueHolder} the {@link List} contains all values;
+     * 
+     * @return The list of {@link IValue} of this {@link IValueHolder}
+     */
+    List<IValue<?>> getValueList();
+
+    /**
+     * Set the list of values to this {@link IValueHolder}. If this is a {@link SingleValueHolder}
+     * the list must contain at most one element, an empty list is treated as <code>null</code>
+     * value. If this is a {@link MultiValueHolder} all the values will be placed.
+     * 
+     * @param values the list of values, must have at most one value in case of
+     *            {@link SingleValueHolder}
+     * 
+     * @throws IllegalArgumentException if the list has more than one values but this is only a
+     *             {@link SingleValueHolder}
+     */
+    void setValueList(List<IValue<?>> values);
 
     /**
      * Returns <code>true</code>, if the value is <code>null</code> otherwise <code>false</code>. It

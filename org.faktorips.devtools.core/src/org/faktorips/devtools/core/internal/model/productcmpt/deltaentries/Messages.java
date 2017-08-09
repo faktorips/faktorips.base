@@ -24,6 +24,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String DatatypeMismatchEntry_datatypeMissmatchDescription;
+
     public static String DeletedTemplateLinkEntry_removeInheritedTemplateLink;
 
     public static String DeletedTemplateLinkEntry_removeUndefinedTemplateLink;

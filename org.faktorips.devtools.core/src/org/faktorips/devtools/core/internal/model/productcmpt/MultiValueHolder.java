@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 import org.apache.commons.collections.ComparatorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
@@ -110,6 +113,28 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         List<SingleValueHolder> oldValue = this.values;
         this.values = values;
         objectHasChanged(oldValue, values);
+    }
+
+    @Override
+    public List<IValue<?>> getValueList() {
+        return Lists.transform(getValue(), new Function<SingleValueHolder, IValue<?>>() {
+
+            @Override
+            public IValue<?> apply(SingleValueHolder input) {
+                return input.getValue();
+            }
+        });
+    }
+
+    @Override
+    public void setValueList(List<IValue<?>> values) {
+        setValue(Lists.transform(values, new Function<IValue<?>, SingleValueHolder>() {
+
+            @Override
+            public SingleValueHolder apply(IValue<?> input) {
+                return new SingleValueHolder(getParent(), input);
+            }
+        }));
     }
 
     @Override

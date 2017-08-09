@@ -32,7 +32,8 @@ public enum DeltaType {
     MISSING_TEMPLATE_LINK(Messages.DeltaType_missingTemplateLink, Kind.ADD),
     REMOVED_TEMPLATE_LINK(Messages.DeltaType_removedTemplateLink, Kind.DELETE),
     INVALID_GENERATIONS(NLS.bind(Messages.DeltaType_invalidGenerations, IpsPlugin.getDefault().getIpsPreferences()
-            .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true)), Kind.DELETE);
+            .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true)), Kind.DELETE),
+    DATATYPE_MISMATCH(Messages.DeltaType_datatypeMissmatch, Kind.MODIFY);
 
     private final String description;
 
