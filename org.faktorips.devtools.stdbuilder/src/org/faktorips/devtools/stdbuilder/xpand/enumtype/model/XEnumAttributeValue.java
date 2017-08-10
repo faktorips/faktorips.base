@@ -10,6 +10,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.enumtype.model;
 
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
@@ -44,9 +45,12 @@ public class XEnumAttributeValue extends AbstractGeneratorModelNode {
             String identifierAttributeValue = getEnumValue().getIdentifierAttributeValue().getStringValue();
             String key = getEnumAttributeName() + "_" + identifierAttributeValue;
             return "new " + addImport(PropertiesReadingInternationalString.class) + "(\"" + key + "\", "
-            + getEnumAttribute().getEnumType().getVarNameMessageHelper() + ")";
+                    + getEnumAttribute().getEnumType().getVarNameMessageHelper() + ")";
         } else {
-            return getDatatypeHelper().newInstance(getEnumAttributeValue().getStringValue()).getSourcecode();
+            JavaCodeFragment newInstanceCode = getDatatypeHelper()
+                    .newInstance(getEnumAttributeValue().getStringValue());
+            addImport(newInstanceCode.getImportDeclaration());
+            return newInstanceCode.getSourcecode();
         }
     }
 
