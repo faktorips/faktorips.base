@@ -12,12 +12,9 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +27,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -87,11 +85,11 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     public void testValidate_UnknownAttribute() throws CoreException {
         attribute.setName("otherName");
         MessageList ml = configuredDefaultValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
 
         attribute.setName("attribute");
         ml = configuredDefaultValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, lacksMessageCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
 
     @Test
@@ -102,19 +100,19 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
 
         // no data type given
         MessageList ml = configuredDefaultValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
 
         // unknown data type
         attribute.setDatatype("HopefullyNoExistingDatatype");
         policyCmptType.getIpsSrcFile().save(true, null);
         ml = configuredDefaultValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
 
         // valid data type
         attribute.setDatatype("Decimal");
         policyCmptType.getIpsSrcFile().save(true, null);
         ml = configuredDefaultValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml, lacksMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
     }
 
     @Test
@@ -128,13 +126,15 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         // value cannot be parsed -> expect error message
         configuredDefaultValue.setValue("1");
         MessageList ml = configuredDefaultValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_VALUE_NOT_PARSABLE));
+        assertThat(ml,
+                hasMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
 
         // make value parsable -> expect no error message
         attribute.setDatatype("Decimal");
         policyCmptType.getIpsSrcFile().save(true, null);
         ml = configuredDefaultValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_VALUE_NOT_PARSABLE));
+        assertThat(ml,
+                lacksMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }
 
     @Test
@@ -169,11 +169,13 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
 
         MessageList ml = configuredDefaultValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_VALUE_NOT_PARSABLE));
+        assertThat(ml,
+                lacksMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
 
         configuredDefaultValue.setValue("b");
         ml = configuredDefaultValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_VALUE_NOT_PARSABLE));
+        assertThat(ml,
+                hasMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }
 
     @Test
@@ -191,7 +193,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         MessageList ml = configuredDefaultValue.validate(configuredDefaultValue.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+        assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
     }
 
     @Test
@@ -214,12 +216,12 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
 
         MessageList ml = configuredDefaultValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET));
 
         configuredDefaultValue.setValue("15");
 
         ml = configuredDefaultValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET));
     }
 
     @Test
@@ -280,8 +282,8 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     @Test
     public void testSetValue() {
         configuredDefaultValue.setValue("newValue");
-        assertEquals("newValue", configuredDefaultValue.getValue());
-        assertTrue(configuredDefaultValue.getIpsSrcFile().isDirty());
+        assertThat(configuredDefaultValue.getValue(), is("newValue"));
+        assertThat(configuredDefaultValue.getIpsSrcFile().isDirty(), is(true));
     }
 
     @Test
@@ -308,8 +310,8 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Document doc = getTestDocument();
         configuredDefaultValue.initFromXml(doc.getDocumentElement());
-        assertEquals("42", configuredDefaultValue.getId());
-        assertEquals("10", configuredDefaultValue.getValue());
+        assertThat(configuredDefaultValue.getId(), is("42"));
+        assertThat(configuredDefaultValue.getValue(), is("10"));
     }
 
     @Test
@@ -360,13 +362,13 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
 
         IConfiguredDefault cfgDefaultFromXml = generation.newPropertyValue(attribute, IConfiguredDefault.class);
         cfgDefaultFromXml.initFromXml(xmlElement);
-        assertEquals("value", cfgDefaultFromXml.getValue());
+        assertThat(cfgDefaultFromXml.getValue(), is("value"));
 
         configuredDefaultValue.setValue(null);
         xmlElement = toXml(configuredDefaultValue);
         cfgDefaultFromXml.initFromXml(xmlElement);
 
-        assertNull(cfgDefaultFromXml.getValue());
+        assertThat(cfgDefaultFromXml.getValue(), equalTo(null));
     }
 
     private Element toXml(IConfiguredDefault configuredDefaultValue) {
@@ -430,8 +432,8 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         return templateConfiguredDefault;
     }
 
-    private IConfiguredDefault createDefaultValueAndValueSetInNewTemplate(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
-            throws CoreException {
+    private IConfiguredDefault createDefaultValueAndValueSetInNewTemplate(
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute) throws CoreException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredDefault templateConfiguredDefault = templateGen.newPropertyValue(policyCmptTypeAttribute,
@@ -450,14 +452,14 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     public void testGetCaption() throws CoreException {
         attribute.setLabelValue(Locale.US, "Attribute Label");
 
-        assertEquals(NLS.bind(Messages.ConfiguredDefault_caption, "Attribute Label"),
-                configuredDefaultValue.getCaption(Locale.US));
+        assertThat(NLS.bind(Messages.ConfiguredDefault_caption, "Attribute Label"),
+                is(configuredDefaultValue.getCaption(Locale.US)));
     }
 
     @Test
     public void testGetLastResortCaption() {
-        assertEquals(NLS.bind(Messages.ConfiguredDefault_caption, "attribute"),
-                configuredDefaultValue.getLastResortCaption());
+        assertThat(NLS.bind(Messages.ConfiguredDefault_caption, "attribute"),
+                is(configuredDefaultValue.getLastResortCaption()));
     }
 
 }

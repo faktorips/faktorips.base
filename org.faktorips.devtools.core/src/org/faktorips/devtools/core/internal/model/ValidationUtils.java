@@ -47,13 +47,13 @@ public class ValidationUtils {
      * <p>
      * Returns <tt>true</tt> if the reference is valid, otherwise <tt>false</tt>.
      * 
-     * @param objectName the qualified type name to check.
-     * @param type The type the object to check is of.
-     * @param propertyDisplayName The name used to display the value to the user.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param msgCode The message code to use if a message has to be created.
-     * @param list The list of messages to add a new one.
+     * @param objectName the qualified type name to check
+     * @param type the type the object to check is of
+     * @param propertyDisplayName the name used to display the value to the user
+     * @param part the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param msgCode the message code to use if a message has to be created
+     * @param list the list of messages to add a new one
      */
     public static final boolean checkIpsObjectReference(String objectName,
             IpsObjectType type,
@@ -91,13 +91,13 @@ public class ValidationUtils {
      * {@link #checkIpsObjectReference(String, IpsObjectType, String, IIpsObjectPartContainer, String, String, MessageList)}
      * to get the found object for better performance.
      * 
-     * @param objectName the qualified type name to check.
-     * @param type The type the object to check is of.
-     * @param propertyDisplayName The name used to display the value to the user.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param msgCode The message code to use if a message has to be created.
-     * @param list The list of messages to add a new one.
+     * @param objectName the qualified type name to check
+     * @param type the type the object to check is of
+     * @param propertyDisplayName the name used to display the value to the user
+     * @param part the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param msgCode the message code to use if a message has to be created
+     * @param list the list of messages to add a new one
      */
     public static final IIpsObject checkAndGetIpsObjectReference(String objectName,
             IpsObjectType type,
@@ -128,14 +128,14 @@ public class ValidationUtils {
      * <p>
      * Returns the data type if no error was detected, otherwise <tt>null</tt>.
      * 
-     * @param datatypeName The data type name to check.
+     * @param datatypeName the data type name to check
      * @param voidAllowed <code>true</code> to allow void as data type, <code>false</code> to
-     *            prohibit void.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param msgcode The message code to use if a message has to be created.
-     * @param list The list of messages to add a new one.
-     * @param ipsProject The ips project which ips object path is used to search the data type.
+     *            prohibit void
+     * @param part the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param msgcode the message code to use if a message has to be created
+     * @param list the list of messages to add a new one
+     * @param ipsProject the ips project which ips object path is used to search the data type
      */
     public static final Datatype checkDatatypeReference(String datatypeName,
             boolean voidAllowed,
@@ -173,13 +173,13 @@ public class ValidationUtils {
      * <p>
      * Returns the data type if no error was detected, otherwise <tt>null</tt>.
      * 
-     * @param datatypeName The data type name to check.
+     * @param datatypeName the data type name to check
      * @param voidAllowed <code>true</code> to allow void as data type, <code>false</code> to
-     *            prohibit void.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param msgcode The message code to use if a message has to be created.
-     * @param list The list of messages to add a new one.
+     *            prohibit void
+     * @param part the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param msgcode the message code to use if a message has to be created
+     * @param list the list of messages to add a new one
      */
     public static final ValueDatatype checkValueDatatypeReference(String datatypeName,
             boolean voidAllowed,
@@ -212,12 +212,12 @@ public class ValidationUtils {
      * <p>
      * Returns <code>true</code> if the value is valid otherwise <code>false</code>.
      * 
-     * @param valueDatatype The qualified value data type name which will be used to validate the
-     *            given value.
-     * @param value The value which will be validated with the given data type.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param list The list of messages to add a new one.
+     * @param valueDatatype the qualified value data type name which will be used to validate the
+     *            given value
+     * @param value the value which will be validated with the given data type
+     * @param part the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param list the list of messages to add a new one
      */
     public static final boolean checkValue(String valueDatatype,
             String value,
@@ -235,11 +235,11 @@ public class ValidationUtils {
      * <p>
      * Returns <code>true</code> if the value is valid otherwise <code>false</code>.
      * 
-     * @param datatype The data type which will be used to validate the given value.
-     * @param value The value which will be validated with the given data type.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param list The list of messages to add a new one.
+     * @param datatype the data type which will be used to validate the given value
+     * @param value the value which will be validated with the given data type
+     * @param part the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param list the list of messages to add a new one
      */
     public static final boolean checkValue(ValueDatatype datatype,
             String value,
@@ -265,6 +265,25 @@ public class ValidationUtils {
             return false;
         }
 
+        return checkParsable(datatype, value, part, propertyName, list);
+    }
+
+    /**
+     * Tests if the given value can be parsed to the given datatype. It adds an error message to the
+     * given message list if the value can't be parsed.
+     * 
+     * @param datatype the type the value has to be parsed to
+     * @param value the value that has to be parsed
+     * @param part the associated object of the value
+     * @param propertyName the associated property name of the value
+     * @param list the error message list
+     * @return whether the given value is parsable
+     */
+    public static boolean checkParsable(ValueDatatype datatype,
+            String value,
+            Object part,
+            String propertyName,
+            MessageList list) {
         if (!datatype.isParsable(value)) {
             String text;
             if (Datatype.MONEY.equals(datatype)) {
@@ -287,13 +306,12 @@ public class ValidationUtils {
      * <p>
      * Returns <tt>true</tt> if the string is not empty, <tt>false</tt> if the string is empty.
      * 
-     * @param propertyValue The value to check.
-     * @param propertyDisplayName The name used to display the value to the user.
-     * @param object The part the checked reference belongs to (used if a message has to be
-     *            created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param msgCode The message code to use if a message has to be created.
-     * @param list The list of messages to add a new one.
+     * @param propertyValue the value to check
+     * @param propertyDisplayName the name used to display the value to the user
+     * @param object the part the checked reference belongs to (used if a message has to be created)
+     * @param propertyName the (technical) name of the property used if a message has to be created
+     * @param msgCode the message code to use if a message has to be created
+     * @param list the list of messages to add a new one
      */
     public static final boolean checkStringPropertyNotEmpty(String propertyValue,
             String propertyDisplayName,
@@ -315,8 +333,8 @@ public class ValidationUtils {
      * Validate the given field name using the source and compliance levels used by the given
      * IpsProject/JavaProject.
      * 
-     * @param name The name of a field.
-     * @param ipsProject The project which source and compliance level should be used.
+     * @param name the name of a field
+     * @param ipsProject the project which source and compliance level should be used
      * 
      * @see JavaConventions#validateFieldName(String, String, String)
      */
@@ -341,8 +359,8 @@ public class ValidationUtils {
      * Java type name, a status with code <code>IStatus.WARNING</code> indicating why the given name
      * is discouraged, otherwise a status object indicating what is wrong with the name.
      * 
-     * @param name The name of a type.
-     * @param ipsProject The project which source and compliance level should be used.
+     * @param name the name of a type
+     * @param ipsProject the project which source and compliance level should be used
      * 
      * @see JavaConventions#validateJavaTypeName(String, String, String)
      */
@@ -363,7 +381,7 @@ public class ValidationUtils {
      * Returns a status object with code <code>IStatus.OK</code> if the given identifier is a valid
      * Java identifier, otherwise a status object indicating what is wrong with the identifier.
      * 
-     * @param ipsProject the project which source and compliance level should be used.
+     * @param ipsProject the project which source and compliance level should be used
      * 
      * @see JavaConventions#validateIdentifier(String, String, String)
      */

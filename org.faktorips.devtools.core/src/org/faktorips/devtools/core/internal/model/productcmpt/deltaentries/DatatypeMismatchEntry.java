@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -90,12 +90,18 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
      * Creates a {@link DatatypeMismatchEntry} for each {@link IPropertyValue} in the given list
      * that has a datatype not matching the corresponding {@link IProductCmptProperty}'s datatype.
      */
-    public static Collection<? extends IDeltaEntry> forEachMismatch(List<? extends IPropertyValue> values) {
-        List<IDeltaEntry> result = new ArrayList<IDeltaEntry>();
+    public static List<DatatypeMismatchEntry> forEachMismatch(List<? extends IPropertyValue> values) {
+        List<DatatypeMismatchEntry> result = new ArrayList<DatatypeMismatchEntry>();
         for (IPropertyValue propertyValue : values) {
             if (propertyValue instanceof IAttributeValue) {
                 IAttributeValue attributeValue = (IAttributeValue)propertyValue;
-                Optional<DatatypeMismatchEntry> entry = create(attributeValue);
+                Optional<DatatypeMismatchEntry> entry = createAttributeValue(attributeValue);
+                if (entry.isPresent()) {
+                    result.add(entry.get());
+                }
+            } else if (propertyValue instanceof IConfiguredDefault) {
+                IConfiguredDefault configuredDefault = (IConfiguredDefault)propertyValue;
+                Optional<DatatypeMismatchEntry> entry = createConfiguredDefault(configuredDefault);
                 if (entry.isPresent()) {
                     result.add(entry.get());
                 }
@@ -104,7 +110,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         return result;
     }
 
-    /* private */ static Optional<DatatypeMismatchEntry> create(final IAttributeValue attributeValue) {
+    /* private */ static Optional<DatatypeMismatchEntry> createAttributeValue(final IAttributeValue attributeValue) {
         if (isConversionNeeded(attributeValue)) {
             List<IValue<?>> valueList = attributeValue.getValueHolder().getValueList();
             List<String> values = Lists.transform(valueList, new Function<IValue<?>, String>() {
@@ -136,6 +142,27 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         return Optional.absent();
     }
 
+    /* private */ static Optional<DatatypeMismatchEntry> createConfiguredDefault(
+            final IConfiguredDefault configuredDefault) {
+        if (isConversionNeeded(configuredDefault)) {
+            String value = configuredDefault.getValue();
+            ValueDatatype datatype = findDatatype(configuredDefault);
+            ValueConverter converter = ValueConverter.getByTargetType(datatype);
+            if (converter != null) {
+                Consumer<List<String>> valueConsumer = new Consumer<List<String>>() {
+                    @Override
+                    public void accept(List<String> t) {
+                        configuredDefault.setValue(t.get(0));
+                    }
+                };
+                return Optional.of(new DatatypeMismatchEntry(configuredDefault, Collections.singletonList(value),
+                        converter, valueConsumer));
+            }
+        }
+
+        return Optional.absent();
+    }
+
     private static boolean isConversionNeeded(IPropertyValue attributeValue) {
         try {
             return attributeValue.validate(attributeValue.getIpsProject()).getMessageByCode(
@@ -156,5 +183,4 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
             throw new CoreRuntimeException(e);
         }
     }
-
 }

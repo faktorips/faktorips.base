@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -96,23 +97,12 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
         ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
         String valueToValidate = getValue();
 
-        if (!valueDatatype.isParsable(valueToValidate)) {
-            addNotParsableMessage(valueToValidate, valueDatatype, list);
+        if (ValidationUtils.checkParsable(valueDatatype, valueToValidate, attribute,
+                NLS.bind(Messages.ConfiguredDefault_caption, attribute), list)) {
+
+            validateValueVsValueSet(valueDatatype, ipsProject, list);
         }
 
-        validateValueVsValueSet(valueDatatype, ipsProject, list);
-    }
-
-    private void addNotParsableMessage(String value, ValueDatatype valueDatatype, MessageList msgList) {
-        String valueInMsg = value;
-        if (value == null) {
-            valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        } else if (value.length() == 0) {
-            valueInMsg = Messages.ConfiguredDefault_msgValueIsEmptyString;
-        }
-        String text = NLS.bind(Messages.ConfiguredDefault_msgValueNotParsable, valueInMsg, valueDatatype.getName());
-        msgList.add(new Message(IConfiguredDefault.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
-                PROPERTY_VALUE));
     }
 
     private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)
@@ -123,8 +113,8 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
             if (!valueSetToValidate.containsValue(valueToValidate, ipsProject)) {
                 String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                         .formatValue(valueDatatype, valueToValidate);
-                list.add(new Message(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-                        Messages.ConfiguredDefault_msgValueNotInValueset, formattedValue), Message.ERROR, this,
+                list.add(new Message(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET,
+                        NLS.bind(Messages.ConfiguredDefault_msgValueNotInValueset, formattedValue), Message.ERROR, this,
                         PROPERTY_VALUE));
             }
         }
