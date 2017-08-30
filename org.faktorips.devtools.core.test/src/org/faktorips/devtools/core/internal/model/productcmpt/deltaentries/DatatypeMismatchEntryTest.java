@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -30,12 +30,16 @@ import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.functional.Consumer;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +52,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     private ProductCmpt productCmpt;
     private final List<String> result = new LinkedList<String>();
     private List<DatatypeMismatchEntry> entries;
+    private IConfiguredValueSet configuredValueSet;
     private Consumer<List<String>> valueConsumer = new Consumer<List<String>>() {
 
         @Override
@@ -79,6 +84,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
         policyCmptTypeAttribute.setChangingOverTime(false);
         productCmpt.fixAllDifferencesToModel(ipsProject);
         configuredDefault = productCmpt.getPropertyValue(policyCmptTypeAttribute, IConfiguredDefault.class);
+        configuredValueSet = productCmpt.getPropertyValue(policyCmptTypeAttribute, IConfiguredValueSet.class);
 
         policyCmptTypeAttribute.setDatatype(Datatype.MONEY.getQualifiedName());
     }
@@ -90,8 +96,8 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
 
         datatypeMismatchEntry.fix();
 
-        assertEquals(1, result.size());
-        assertEquals("10.00 EUR", result.get(0));
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is("10.00 EUR"));
     }
 
     @Test
@@ -103,12 +109,12 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
 
         dataTypeMismatchEntry.fix();
 
-        assertEquals(3, result.size());
-        assertEquals("10.00 EUR", result.get(0));
+        assertThat(result.size(), is(3));
+        assertThat(result.get(0), is("10.00 EUR"));
         // € always has two digits after the .
-        assertEquals("10.00 EUR", result.get(1));
+        assertThat(result.get(1), is("10.00 EUR"));
         // can't convert because of precision loss
-        assertEquals("10.12341234", result.get(2));
+        assertThat(result.get(2), is("10.12341234"));
     }
 
     @Test
@@ -118,30 +124,35 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
 
         dataTypeMismatchEntry.fix();
 
-        assertEquals(true, result.isEmpty());
+        assertThat(result.isEmpty(), equalTo(true));
     }
 
     @Test
-    public void testCreateAttributeValue() {
-        assertTrue(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty());
+    public void testCreateAttributeValueMismatch() {
+        assertThat(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty(),
+                equalTo(true));
 
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "10.0"));
-        assertFalse(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty());
+        assertThat(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty(),
+                equalTo(false));
     }
 
     @Test
     public void testCreateIfValidationFailsAttributeValue() throws CoreException {
         doThrow(new CoreException(Status.CANCEL_STATUS)).when(attrValue).validate(ipsProject);
 
-        assertTrue(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty());
+        assertThat(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty(),
+                equalTo(true));
     }
 
     @Test
-    public void testCreateConfiguredDefault() {
-        assertTrue(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(configuredDefault)).isEmpty());
+    public void testCreateConfiguredDefaultMismatch() {
+        assertThat(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(configuredDefault)).isEmpty(),
+                equalTo(true));
 
         configuredDefault.setValue("10.0");
-        assertFalse(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(configuredDefault)).isEmpty());
+        assertThat(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(configuredDefault)).isEmpty(),
+                equalTo(false));
     }
 
     @Test
@@ -151,19 +162,66 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
 
         datatypeMismatchEntry.fix();
 
-        assertEquals(1, result.size());
-        assertEquals("10.00 EUR", result.get(0));
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is("10.00 EUR"));
     }
 
     @Test
-    public void testForEachMismatch() {
+    public void testFixConfiguredValueSetEnum() {
+        configuredValueSet.setValueSetType(ValueSetType.ENUM);
+        DatatypeMismatchEntry datatypeMismatchEntry = new DatatypeMismatchEntry(configuredValueSet,
+                Collections.singletonList("10.00"), ValueConverter.TO_MONEY, valueConsumer);
+
+        datatypeMismatchEntry.fix();
+
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is("10.00 EUR"));
+    }
+
+    @Test
+    public void testFixConfiguredValueSetRange() {
+        configuredValueSet.setValueSetType(ValueSetType.RANGE);
+        DatatypeMismatchEntry datatypeMismatchEntry = new DatatypeMismatchEntry(configuredValueSet,
+                Arrays.asList("1.00", "10.00", "1.00"), ValueConverter.TO_MONEY, valueConsumer);
+
+        datatypeMismatchEntry.fix();
+
+        assertThat(result.size(), is(3));
+        assertThat(result.get(0), is("1.00 EUR"));
+        assertThat(result.get(1), is("10.00 EUR"));
+        assertThat(result.get(2), is("1.00 EUR"));
+    }
+
+    @Test
+    public void testForEachMismatchSingleValue() {
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "10.0"));
         configuredDefault.setValue("11.0");
+
         entries = DatatypeMismatchEntry
                 .forEachMismatch(Arrays.asList(attrValue, configuredDefault, mock(IFormula.class)));
-        assertEquals(2, entries.size());
-        assertEquals(entries.get(0).getPropertyName(), attrValue.getPropertyName());
-        assertEquals(entries.get(1).getPropertyName(), configuredDefault.getPropertyName());
+        assertThat(entries.size(), is(2));
+        assertThat(entries.get(0).getPropertyName(), is(attrValue.getPropertyName()));
+        assertThat(entries.get(1).getPropertyName(), is(configuredDefault.getPropertyName()));
+    }
+
+    @Test
+    public void testForEachMismatchConfiguredValueSetEnum() {
+        configuredValueSet.setValueSet(new EnumValueSet(configuredValueSet, Arrays.asList("10.00", "5.00"),
+                ipsProject.getIpsModel().getNextPartId(configuredValueSet)));
+
+        entries = DatatypeMismatchEntry.forEachMismatch(Arrays.asList(configuredValueSet));
+        assertThat(entries.size(), is(1));
+        assertThat(entries.get(0).getPropertyName(), is(configuredValueSet.getPropertyName()));
+    }
+
+    @Test
+    public void testForEachMismatchConfiguredValueSetRange() {
+        configuredValueSet.setValueSet(new RangeValueSet(configuredValueSet,
+                ipsProject.getIpsModel().getNextPartId(configuredValueSet), "0.00", "10.00", "1.00"));
+
+        entries = DatatypeMismatchEntry.forEachMismatch(Arrays.asList(configuredValueSet));
+        assertThat(entries.size(), is(1));
+        assertThat(entries.get(0).getPropertyName(), is(configuredValueSet.getPropertyName()));
     }
 
     @Test
@@ -173,8 +231,8 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
                         new SingleValueHolder(attrValue, "10"), new SingleValueHolder(attrValue, "10 EUR"))));
         entries = DatatypeMismatchEntry.forEachMismatch(Arrays.asList(attrValue));
 
-        assertEquals(1, entries.size());
-        assertEquals(entries.get(0).getPropertyName(), attrValue.getPropertyName());
+        assertThat(entries.size(), is(1));
+        assertThat(entries.get(0).getPropertyName(), is(attrValue.getPropertyName()));
     }
 
     @Test
@@ -182,7 +240,6 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "10.00 EUR"));
         entries = DatatypeMismatchEntry.forEachMismatch(Arrays.asList(attrValue));
 
-        assertEquals(0, entries.size());
-
+        assertThat(entries.size(), is(0));
     }
 }

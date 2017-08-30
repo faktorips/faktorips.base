@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -674,7 +675,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         list.clear();
         list = set.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_PARSABLE));
+        assertNotNull(list
+                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
 
         set.removeValue(0);
         set.removeValue(0);
@@ -878,8 +880,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         String shortString = enumValueSet.toShortString();
 
-        String nullText = NLS.bind(Messages.ValueSet_excludingNull, IpsPlugin.getDefault().getIpsPreferences()
-                .getNullPresentation());
+        String nullText = NLS.bind(Messages.ValueSet_excludingNull,
+                IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         assertEquals(NLS.bind(Messages.EnumValueSet_abstract, nullText), shortString);
     }
 
@@ -891,8 +893,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         String shortString = enumValueSet.toShortString();
 
-        String nullText = NLS.bind(Messages.ValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
-                .getNullPresentation());
+        String nullText = NLS.bind(Messages.ValueSet_includingNull,
+                IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         assertEquals(NLS.bind(Messages.EnumValueSet_abstract, nullText), shortString);
     }
 

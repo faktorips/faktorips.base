@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,15 +24,19 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.util.functional.Consumer;
 
 public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
@@ -93,73 +98,29 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
     public static List<DatatypeMismatchEntry> forEachMismatch(List<? extends IPropertyValue> values) {
         List<DatatypeMismatchEntry> result = new ArrayList<DatatypeMismatchEntry>();
         for (IPropertyValue propertyValue : values) {
-            if (propertyValue instanceof IAttributeValue) {
-                IAttributeValue attributeValue = (IAttributeValue)propertyValue;
-                Optional<DatatypeMismatchEntry> entry = createAttributeValue(attributeValue);
-                if (entry.isPresent()) {
-                    result.add(entry.get());
-                }
-            } else if (propertyValue instanceof IConfiguredDefault) {
-                IConfiguredDefault configuredDefault = (IConfiguredDefault)propertyValue;
-                Optional<DatatypeMismatchEntry> entry = createConfiguredDefault(configuredDefault);
-                if (entry.isPresent()) {
-                    result.add(entry.get());
-                }
+            for (DatatypeMismatchEntry entry : createPossibleMismatch(propertyValue).asSet()) {
+                result.add(entry);
             }
         }
         return result;
     }
 
-    /* private */ static Optional<DatatypeMismatchEntry> createAttributeValue(final IAttributeValue attributeValue) {
-        if (isConversionNeeded(attributeValue)) {
-            List<IValue<?>> valueList = attributeValue.getValueHolder().getValueList();
-            List<String> values = Lists.transform(valueList, new Function<IValue<?>, String>() {
-                @Override
-                public String apply(IValue<?> input) {
-                    // no usecase for converting international strings
-                    return input.getContentAsString();
-                }
-            });
-            ValueDatatype datatype = findDatatype(attributeValue);
-            ValueConverter converter = ValueConverter.getByTargetType(datatype);
+    private static Optional<DatatypeMismatchEntry> createPossibleMismatch(final IPropertyValue propertyValue) {
+        if (isConversionNeeded(propertyValue)) {
+            ValueDatatype datatype = findDatatype(propertyValue);
+            final ValueConverter converter = ValueConverter.getByTargetType(datatype);
             if (converter != null) {
-                Consumer<List<String>> valueConsumer = new Consumer<List<String>>() {
+                Optional<DatatypeMismatch<IPropertyValue>> mismatch = createMismatch(propertyValue);
+                return mismatch.transform(new Function<DatatypeMismatch<?>, DatatypeMismatchEntry>() {
+
                     @Override
-                    public void accept(List<String> t) {
-                        List<IValue<?>> newValueList = Lists.transform(t, new Function<String, IValue<?>>() {
-                            @Override
-                            public IValue<?> apply(String input) {
-                                return new StringValue(input);
-                            }
-                        });
-                        attributeValue.getValueHolder().setValueList(newValueList);
+                    public DatatypeMismatchEntry apply(DatatypeMismatch<?> mismatch) {
+                        return new DatatypeMismatchEntry(propertyValue, mismatch.getValues(), converter,
+                                mismatch.getValueConsumer());
                     }
-                };
-                return Optional.of(new DatatypeMismatchEntry(attributeValue, values, converter, valueConsumer));
+                });
             }
         }
-
-        return Optional.absent();
-    }
-
-    /* private */ static Optional<DatatypeMismatchEntry> createConfiguredDefault(
-            final IConfiguredDefault configuredDefault) {
-        if (isConversionNeeded(configuredDefault)) {
-            String value = configuredDefault.getValue();
-            ValueDatatype datatype = findDatatype(configuredDefault);
-            ValueConverter converter = ValueConverter.getByTargetType(datatype);
-            if (converter != null) {
-                Consumer<List<String>> valueConsumer = new Consumer<List<String>>() {
-                    @Override
-                    public void accept(List<String> t) {
-                        configuredDefault.setValue(t.get(0));
-                    }
-                };
-                return Optional.of(new DatatypeMismatchEntry(configuredDefault, Collections.singletonList(value),
-                        converter, valueConsumer));
-            }
-        }
-
         return Optional.absent();
     }
 
@@ -182,5 +143,171 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <P extends IPropertyValue> Optional<DatatypeMismatch<P>> createMismatch(P propertyValue) {
+        if (propertyValue instanceof IAttributeValue) {
+            return Optional.of((DatatypeMismatch<P>)new AttributeValueDatatypeMismatch((IAttributeValue)propertyValue));
+        } else if (propertyValue instanceof IConfiguredDefault) {
+            return Optional
+                    .of((DatatypeMismatch<P>)new ConfiguredDefaultDatatypeMismatch((IConfiguredDefault)propertyValue));
+        } else if (propertyValue instanceof IConfiguredValueSet) {
+            IConfiguredValueSet configuredValueSet = (IConfiguredValueSet)propertyValue;
+            IValueSet valueSet = configuredValueSet.getValueSet();
+            if (valueSet.isEnum()) {
+                return Optional.of((DatatypeMismatch<P>)new EnumValueSetDatatypeMismatch(configuredValueSet));
+            } else if (valueSet.isRange()) {
+                return Optional.of((DatatypeMismatch<P>)new RangeValueSetDatatypeMismatch(configuredValueSet));
+            }
+        }
+        return Optional.absent();
+    }
+
+    private abstract static class DatatypeMismatch<P extends IPropertyValue> {
+
+        private final P propertyValue;
+
+        public DatatypeMismatch(P propertyValue) {
+            this.propertyValue = propertyValue;
+        }
+
+        public P getPropertyValue() {
+            return propertyValue;
+        }
+
+        public abstract List<String> getValues();
+
+        public abstract Consumer<List<String>> getValueConsumer();
+    }
+
+    private static class AttributeValueDatatypeMismatch extends DatatypeMismatch<IAttributeValue> {
+
+        public AttributeValueDatatypeMismatch(IAttributeValue attributeValue) {
+            super(attributeValue);
+        }
+
+        @Override
+        public List<String> getValues() {
+            List<IValue<?>> valueList = getPropertyValue().getValueHolder().getValueList();
+            return Lists.transform(valueList, new Function<IValue<?>, String>() {
+                @Override
+                public String apply(IValue<?> input) {
+                    // no usecase for converting international strings
+                    return input.getContentAsString();
+                }
+            });
+        }
+
+        @Override
+        public Consumer<List<String>> getValueConsumer() {
+            return new Consumer<List<String>>() {
+                @Override
+                public void accept(List<String> t) {
+                    List<IValue<?>> newValueList = Lists.transform(t, new Function<String, IValue<?>>() {
+                        @Override
+                        public IValue<?> apply(String input) {
+                            return new StringValue(input);
+                        }
+                    });
+                    getPropertyValue().getValueHolder().setValueList(newValueList);
+                }
+            };
+        }
+
+    }
+
+    private static class ConfiguredDefaultDatatypeMismatch extends DatatypeMismatch<IConfiguredDefault> {
+
+        public ConfiguredDefaultDatatypeMismatch(IConfiguredDefault propertyValue) {
+            super(propertyValue);
+        }
+
+        @Override
+        public List<String> getValues() {
+            return Collections.singletonList(getPropertyValue().getValue());
+        }
+
+        @Override
+        public Consumer<List<String>> getValueConsumer() {
+            return new Consumer<List<String>>() {
+                @Override
+                public void accept(List<String> t) {
+                    getPropertyValue().setValue(t.get(0));
+                }
+            };
+        }
+
+    }
+
+    private abstract static class ConfiguredValueSetDatatypeMismatch<S extends IValueSet>
+            extends DatatypeMismatch<IConfiguredValueSet> {
+
+        private final S valueSet;
+
+        @SuppressWarnings("unchecked")
+        public ConfiguredValueSetDatatypeMismatch(IConfiguredValueSet propertyValue) {
+            super(propertyValue);
+            valueSet = (S)propertyValue.getValueSet();
+        }
+
+        public S getValueSet() {
+            return valueSet;
+        }
+
+    }
+
+    private static class EnumValueSetDatatypeMismatch extends ConfiguredValueSetDatatypeMismatch<EnumValueSet> {
+
+        public EnumValueSetDatatypeMismatch(IConfiguredValueSet propertyValue) {
+            super(propertyValue);
+        }
+
+        @Override
+        public List<String> getValues() {
+            return Arrays.asList(getValueSet().getValues());
+        }
+
+        @Override
+        public Consumer<List<String>> getValueConsumer() {
+            return new Consumer<List<String>>() {
+                @Override
+                public void accept(List<String> values) {
+                    int i = 0;
+                    for (String value : values) {
+                        getValueSet().setValue(i++, value);
+                    }
+                }
+            };
+        }
+
+    }
+
+    private static class RangeValueSetDatatypeMismatch extends ConfiguredValueSetDatatypeMismatch<RangeValueSet> {
+
+        public RangeValueSetDatatypeMismatch(IConfiguredValueSet propertyValue) {
+            super(propertyValue);
+        }
+
+        @Override
+        public List<String> getValues() {
+            String lowerBound = getValueSet().getLowerBound();
+            String upperBound = getValueSet().getUpperBound();
+            String step = getValueSet().getStep();
+            return Arrays.asList(lowerBound, upperBound, step);
+        }
+
+        @Override
+        public Consumer<List<String>> getValueConsumer() {
+            return new Consumer<List<String>>() {
+                @Override
+                public void accept(List<String> t) {
+                    getValueSet().setUpperBound(t.get(1));
+                    getValueSet().setLowerBound(t.get(0));
+                    getValueSet().setStep(t.get(2));
+                }
+            };
+        }
+
     }
 }
