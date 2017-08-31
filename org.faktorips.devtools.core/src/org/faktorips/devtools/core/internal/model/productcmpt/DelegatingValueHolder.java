@@ -9,12 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -144,6 +147,16 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
+    public List<IValue<?>> getValueList() {
+        return delegate.getValueList();
+    }
+
+    @Override
+    public void setValueList(List<IValue<?>> values) {
+        delegate.setValueList(values);
+    }
+
+    @Override
     public boolean isNullValue() {
         return delegate.isNullValue();
     }
@@ -179,8 +192,8 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
      *         to the given value holder
      */
     public static <U> DelegatingValueHolder<U> of(IAttributeValue parent, IValueHolder<U> delegate) {
-        Preconditions
-                .checkArgument(delegate instanceof AbstractValueHolder, "Can only delegate to AbstractValueHolder"); //$NON-NLS-1$
+        Preconditions.checkArgument(delegate instanceof AbstractValueHolder,
+                "Can only delegate to AbstractValueHolder"); //$NON-NLS-1$
         return new DelegatingValueHolder<U>(parent, (AbstractValueHolder<U>)delegate);
     }
 

@@ -18,11 +18,11 @@ import static org.faktorips.devtools.core.model.valueset.IRangeValueSet.PROPERTY
 import static org.faktorips.devtools.core.model.valueset.IRangeValueSet.PROPERTY_STEP;
 import static org.faktorips.devtools.core.model.valueset.IRangeValueSet.PROPERTY_UPPERBOUND;
 import static org.faktorips.devtools.core.model.valueset.IValueSet.MSGCODE_UNKNOWN_DATATYPE;
-import static org.faktorips.devtools.core.model.valueset.IValueSet.MSGCODE_VALUE_NOT_PARSABLE;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -55,10 +55,10 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
 
         ValueDatatype datatypeToValidate = getDatatypeOrWrapperForPrimitivDatatype(getDatatype());
 
-        validateParsable(datatypeToValidate, lowerBound, messages, this, PROPERTY_LOWERBOUND);
-        validateParsable(datatypeToValidate, upperBound, messages, this, PROPERTY_UPPERBOUND);
-        boolean stepParsable = validateParsable(datatypeToValidate, getValueSet().getStep(), messages, this,
-                PROPERTY_STEP);
+        ValidationUtils.checkParsable(datatypeToValidate, lowerBound, this, PROPERTY_LOWERBOUND, messages);
+        ValidationUtils.checkParsable(datatypeToValidate, upperBound, this, PROPERTY_UPPERBOUND, messages);
+        boolean stepParsable = ValidationUtils.checkParsable(datatypeToValidate, getValueSet().getStep(), this,
+                PROPERTY_STEP, messages);
 
         NumericDatatype numDatatype = getAndValidateNumericDatatype(datatypeToValidate, messages);
 
@@ -83,8 +83,8 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
         if (stepParsable && isNonNull(numDatatype, upperBound, lowerBound, step)) {
             String range = numDatatype.subtract(upperBound, lowerBound);
             if (!numDatatype.divisibleWithoutRemainder(range, step)) {
-                String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch, new String[] { lowerBound,
-                        upperBound, step });
+                String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch,
+                        new String[] { lowerBound, upperBound, step });
                 messages.newError(MSGCODE_STEP_RANGE_MISMATCH, msg, parentObjectProperty, lowerBoundProperty,
                         upperBoundProperty, stepProperty);
             }
@@ -100,19 +100,6 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
             return datatype.getWrapperType();
         }
         return datatype;
-    }
-
-    private boolean validateParsable(ValueDatatype datatype,
-            String value,
-            MessageList list,
-            Object invalidObject,
-            String property) {
-        if (!datatype.isParsable(value)) {
-            String msg = NLS.bind(Messages.Range_msgPropertyValueNotParsable, value, datatype.getName());
-            list.newError(MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, property);
-            return false;
-        }
-        return true;
     }
 
     private NumericDatatype getAndValidateNumericDatatype(ValueDatatype datatype, MessageList list) {

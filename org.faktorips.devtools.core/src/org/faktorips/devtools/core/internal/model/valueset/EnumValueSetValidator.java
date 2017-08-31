@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.util.message.Message;
@@ -84,11 +85,12 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
     private void validateValueWithoutDuplicateCheck(int index) {
         ObjectProperty op = new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_VALUES, index);
         String value = getValueSet().getValue(index);
-        if (!getDatatype().isParsable(value) || isSpecialNull(value, getDatatype())) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value), getDatatype()
-                    .getName());
+        if (isSpecialNull(value, getDatatype())) {
+            String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value),
+                    getDatatype().getName());
             list.add(new Message(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, op, getParentOp()));
         }
+        ValidationUtils.checkParsable(getDatatype(), value, this, IEnumValueSet.PROPERTY_VALUES, list);
     }
 
     private void checkForDuplicate(int index) {

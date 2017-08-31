@@ -36,6 +36,7 @@ public class Messages extends NLS {
     public static String ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
     public static String ValidationUtils_VALUEDATATYPE_INVALID;
     public static String ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE;
+    public static String ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY;
     public static String ValueSetNullIncompatibleValidator_Msg_NullNotAllowed;
 
 }

@@ -140,8 +140,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         /** Creates the <tt>SelectEnumContentsPage</tt>. */
         protected SelectEnumContentsPage() {
             super(Messages.SelectEnumContentsPage_title);
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "wizards/CreateMissingEnumContentsWizard.png")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("wizards/CreateMissingEnumContentsWizard.png")); //$NON-NLS-1$
             setMessage(Messages.SelectEnumContentsPage_prompt);
             setTitle(Messages.SelectEnumContentsPage_title);
         }

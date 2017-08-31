@@ -20,6 +20,7 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.DatatypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
@@ -59,8 +60,8 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite implements
-IPropertyValueContainerToTypeDelta {
+public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite
+        implements IPropertyValueContainerToTypeDelta {
 
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
@@ -201,6 +202,7 @@ IPropertyValueContainerToTypeDelta {
                 }
             }
         }
+        entries.addAll(DatatypeMismatchEntry.forEachMismatch(values));
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
@@ -221,7 +223,8 @@ IPropertyValueContainerToTypeDelta {
     }
 
     private void checkForMultilingualMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
-        if (attribute.isMultilingual() != (value.getValueHolder().getValueType().equals(ValueType.INTERNATIONAL_STRING))) {
+        if (attribute
+                .isMultilingual() != (value.getValueHolder().getValueType().equals(ValueType.INTERNATIONAL_STRING))) {
             addEntry(new MultilingualMismatchEntry(value, attribute));
         }
     }

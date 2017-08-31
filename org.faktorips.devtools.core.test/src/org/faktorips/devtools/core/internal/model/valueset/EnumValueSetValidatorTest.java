@@ -16,6 +16,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -73,9 +74,15 @@ public class EnumValueSetValidatorTest {
         EnumValueSetValidator enumValueSetValidator = new EnumValueSetValidator(enumValueSet, owner, datatype);
         MessageList messageList = enumValueSetValidator.validate();
 
-        assertThat(messageList, hasMessageCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE));
-        assertThat(messageList.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE), hasInvalidObject(owner));
-        assertThat(messageList.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE),
+        assertThat(messageList,
+                hasMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        assertThat(
+                messageList.getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE),
+                hasInvalidObject(owner));
+        assertThat(
+                messageList.getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE),
                 hasInvalidObject(enumValueSet));
     }
 }

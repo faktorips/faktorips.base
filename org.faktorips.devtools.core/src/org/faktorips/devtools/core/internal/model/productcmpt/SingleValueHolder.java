@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -127,6 +129,24 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
         IValue<?> oldValue = this.value;
         setValueInternal(value);
         objectHasChanged(oldValue, value);
+    }
+
+    @Override
+    public List<IValue<?>> getValueList() {
+        ArrayList<IValue<?>> result = new ArrayList<IValue<?>>(1);
+        result.add(getValue());
+        return result;
+    }
+
+    @Override
+    public void setValueList(List<IValue<?>> values) {
+        if (values.isEmpty()) {
+            setValue(new StringValue(null));
+        } else if (values.size() == 1) {
+            setValue(values.get(0));
+        } else {
+            throw new IllegalArgumentException("Cannot set multiple values in a SingleValueHolder"); //$NON-NLS-1$
+        }
     }
 
     @Override

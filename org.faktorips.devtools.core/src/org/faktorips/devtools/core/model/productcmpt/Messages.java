@@ -37,6 +37,8 @@ public class Messages extends NLS {
 
     public static String DeltaType_ConfigWithoutValidationRule;
 
+    public static String DeltaType_datatypeMissmatch;
+
     public static String DeltaType_hiddenAttributeMismatch;
 
     public static String DeltaType_MissingVRuleConfig;

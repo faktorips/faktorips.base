@@ -22,12 +22,6 @@ public interface IConfiguredDefault extends IConfigElement {
     public static final String MSGCODE_PREFIX = "CONFIGUREDDEFAULT-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value can't be parsed, it is not an instance of
-     * the data type
-     */
-    public static final String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the value is not contained in the value set.
      */
     public static final String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$

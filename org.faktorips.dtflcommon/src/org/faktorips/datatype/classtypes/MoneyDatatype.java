@@ -28,7 +28,7 @@ public class MoneyDatatype extends ValueClassNameDatatype implements NumericData
     }
 
     @Override
-    public Object getValue(String s) {
+    public Money getValue(String s) {
         return Money.valueOf(s);
     }
 
