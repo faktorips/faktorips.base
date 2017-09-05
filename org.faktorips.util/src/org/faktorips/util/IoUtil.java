@@ -19,7 +19,7 @@ import org.faktorips.annotation.UtilityClass;
 public class IoUtil {
 
     private IoUtil() {
-        // prevents constructor call
+        // utility class
     }
 
     /**

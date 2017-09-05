@@ -14,7 +14,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,23 +60,27 @@ public class RecursiveCopy {
      * @param from - Path to the Sourcefile as String
      * @param to - Path to the Targetfile as String
      */
-    public void copyFile(String from, String to) throws FileNotFoundException, IOException {
+    public void copyFile(String from, String to) throws IOException {
         mkdirs(to);
-        InputStream input = new BufferedInputStream(new FileInputStream(from));
-        OutputStream output = new BufferedOutputStream(new FileOutputStream(to));
+        InputStream input = null;
+        OutputStream output = null;
         int c;
         try {
+            input = new BufferedInputStream(new FileInputStream(from));
+            output = new BufferedOutputStream(new FileOutputStream(to));
             while ((c = input.read()) != -1) {
                 output.write(c);
             }
         } catch (IOException e) {
             throw e;
         } finally {
-            if ((input != null) && (output != null))
+            if (input != null) {
                 input.close();
-            output.close();
+            }
+            if (output != null) {
+                output.close();
+            }
         }
-
     }
 
     /**
