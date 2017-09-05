@@ -27,6 +27,10 @@ import org.w3c.dom.Text;
 public enum XmlUtil {
     /* no instances */;
 
+    private XmlUtil() {
+        // Utility class not to be instantiated.
+    }
+
     public static final Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {

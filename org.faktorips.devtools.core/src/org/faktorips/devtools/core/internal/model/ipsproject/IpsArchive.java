@@ -413,7 +413,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
                 throw new CoreRuntimeException(new IpsStatus("Entry " + path + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
             }
             try {
-                return StreamUtil.copy(archive.getInputStream(entry), 1024);
+                return StreamUtil.copy(archive.getInputStream(entry));
             } catch (IOException e) {
                 throw new CoreRuntimeException(new IpsStatus(
                         "Error reading data for " + path + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
