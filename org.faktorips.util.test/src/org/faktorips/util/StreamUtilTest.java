@@ -11,13 +11,15 @@
 package org.faktorips.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
 public class StreamUtilTest {
-	
+
     @Test
     public void testCopy() throws Exception {
         byte[] bytes = new byte[8];
@@ -25,7 +27,7 @@ public class StreamUtilTest {
             bytes[i] = 1;
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        ByteArrayInputStream copiedStream = StreamUtil.copy(bis, 100);
+        ByteArrayInputStream copiedStream = StreamUtil.copy(bis);
         int value = copiedStream.read();
         int counter = 0;
         while (value != -1) {
@@ -40,7 +42,7 @@ public class StreamUtilTest {
             bytes[i] = 1;
         }
         bis = new ByteArrayInputStream(bytes);
-        copiedStream = StreamUtil.copy(bis, 9);
+        copiedStream = StreamUtil.copy(bis);
         value = copiedStream.read();
         counter = 0;
         while (value != -1) {
@@ -52,7 +54,7 @@ public class StreamUtilTest {
 
         bytes = new byte[] { 1 };
         bis = new ByteArrayInputStream(bytes);
-        copiedStream = StreamUtil.copy(bis, 1);
+        copiedStream = StreamUtil.copy(bis);
         value = copiedStream.read();
         counter = 0;
         while (value != -1) {
@@ -61,6 +63,22 @@ public class StreamUtilTest {
             counter++;
         }
         assertEquals(1, counter);
+    }
+
+    @Test
+    public void testCopyNull() throws Exception {
+        assertNotNull(StreamUtil.copy(null));
+    }
+
+    @Test
+    public void testStreamIsOpenAfterOriginalIsClosed() throws IOException {
+        ByteArrayInputStream in = new ByteArrayInputStream("Foo".getBytes());
+        ByteArrayInputStream copy = StreamUtil.copy(in);
+        in.close();
+        assertEquals('F', copy.read());
+        assertEquals('o', copy.read());
+        assertEquals('o', copy.read());
+        assertEquals(-1, copy.read());
     }
 
 }

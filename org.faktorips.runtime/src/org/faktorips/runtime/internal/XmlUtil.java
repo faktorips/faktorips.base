@@ -26,6 +26,10 @@ import org.w3c.dom.Text;
  */
 public class XmlUtil {
 
+    private XmlUtil() {
+        // Utility class not to be instantiated.
+    }
+
     public static final Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -184,10 +188,6 @@ public class XmlUtil {
             }
         }
         return result;
-    }
-
-    private XmlUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

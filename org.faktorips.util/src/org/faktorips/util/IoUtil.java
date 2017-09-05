@@ -15,6 +15,10 @@ import java.io.IOException;
 
 public class IoUtil {
 
+    private IoUtil() {
+        // utility class
+    }
+
     /**
      * Tries to close the given {@link Closeable}.
      * 

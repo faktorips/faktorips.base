@@ -10,11 +10,10 @@
 
 package org.faktorips.util;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -60,23 +59,11 @@ public class StringUtil {
      * This method closes the input stream before returning!
      */
     public static final String readFromInputStream(InputStream is, String charsetName) throws IOException {
-
-        StringBuffer buf = new StringBuffer(is.available());
-        BufferedReader in = new BufferedReader(new InputStreamReader(is, charsetName));
-
+        ByteArrayOutputStream buffer = StreamUtil.toByteArrayOutputStream(is);
         try {
-            int charValue = 0;
-            while (true) {
-                charValue = in.read();
-                if (charValue == -1) {
-                    break;
-                }
-                buf.append((char)charValue);
-            }
-
-            return buf.toString();
+            return buffer.toString(charsetName);
         } finally {
-            in.close();
+            buffer.close();
         }
     }
 

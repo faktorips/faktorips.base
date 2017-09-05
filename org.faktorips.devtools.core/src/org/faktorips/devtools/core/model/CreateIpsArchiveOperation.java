@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,6 +41,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
@@ -46,6 +49,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.IoUtil;
 
 /**
  * An operation to create an IPS archive.
@@ -272,23 +276,31 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
      */
     private void writeJarEntry(JarOutputStream os, InputStream content, String entryName, String fileName)
             throws CoreException {
+        BufferedInputStream in = null;
+        BufferedOutputStream out = null;
         try {
+            in = new BufferedInputStream(content);
+            out = new BufferedOutputStream(os);
+
             JarEntry newEntry = new JarEntry(entryName);
             os.putNextEntry(newEntry);
-            int nextByte = content.read();
-            while (nextByte != -1) {
-                os.write(nextByte);
-                nextByte = content.read();
+
+            int nextByte;
+            while ((nextByte = in.read()) != -1) {
+                out.write(nextByte);
             }
         } catch (IOException e) {
             throw new CoreException(new IpsStatus("Error writing archive entry for file " + fileName, e)); //$NON-NLS-1$
         } finally {
-            if (content != null) {
-                try {
-                    content.close();
-                } catch (IOException e) {
-                    throw new CoreException(new IpsStatus("Unable to close steam.", e)); //$NON-NLS-1$
+            IoUtil.close(in);
+            try {
+                // do not close the BufferedOutputStream, as that would also close the
+                // JarOutputStream, which should only be closed after all entries have been written
+                if (out != null) {
+                    out.flush();
                 }
+            } catch (IOException e) {
+                throw new CoreRuntimeException(new IpsStatus("Unable to flush steam.", e)); //$NON-NLS-1$
             }
         }
     }
