@@ -85,7 +85,7 @@ public class IpsJarBundle extends AbstractIpsBundle {
         InputStream inputStream = null;
         try {
             inputStream = jarFile.getInputStream(zipEntry);
-            return StreamUtil.copy(inputStream, 1024);
+            return StreamUtil.copy(inputStream);
         } catch (IOException e) {
             throw newRuntimeException("Error while reading jar file " + getLocation(), e); //$NON-NLS-1$
         }

@@ -10,19 +10,20 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject.bundle;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -141,8 +142,9 @@ public class IpsJarBundleTest {
 
         InputStream ressourceAsStream = ipsJarBundle.getContent(qualifiedNameType.toPath());
 
-        assertEquals(152, ressourceAsStream.read());
-        assertEquals(-1, ressourceAsStream.read());
+        assertEquals('F', ressourceAsStream.read());
+        assertEquals('o', ressourceAsStream.read());
+        assertEquals('o', ressourceAsStream.read());
         verify(jarFile).close();
     }
 
@@ -152,8 +154,9 @@ public class IpsJarBundleTest {
 
         InputStream ressourceAsStream = ipsJarBundle.getResourceAsStream(ANY_PATH);
 
-        assertEquals(152, ressourceAsStream.read());
-        assertEquals(-1, ressourceAsStream.read());
+        assertEquals('F', ressourceAsStream.read());
+        assertEquals('o', ressourceAsStream.read());
+        assertEquals('o', ressourceAsStream.read());
         verify(jarFile).close();
     }
 
@@ -162,9 +165,7 @@ public class IpsJarBundleTest {
         when(bundleContentIndex.getModelPath(rootPath)).thenReturn(new Path(ROOT_PATH));
         ZipEntry zipEntry = mock(ZipEntry.class);
         when(jarFile.getEntry(ROOT_PATH + "/" + ANY_PATH)).thenReturn(zipEntry);
-        InputStream inputStream = mock(InputStream.class);
-        // Important: need to return -1 to avoid endless reading from streams
-        when(inputStream.read()).thenReturn(152).thenReturn(-1);
+        InputStream inputStream = new ByteArrayInputStream("Foo".getBytes());
         when(jarFile.getInputStream(zipEntry)).thenReturn(inputStream);
     }
 
