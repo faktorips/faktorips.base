@@ -234,10 +234,14 @@ public class ExtensionPropertyControlFactory {
         for (ExtPropControlData element : extPropData) {
             element.partContainer = partContainer;
             if (element.editField != null) {
-                element.editField.getControl().setVisible(element.extProperty.isApplicableFor(partContainer));
+                if (element.extProperty.isApplicableFor(partContainer)) {
+                    bindingContext.bindContent(element.editField, element.partContainer,
+                            element.extProperty.getPropertyId());
+                } else {
+                    element.editField.getControl().setVisible(false);
+                }
             }
         }
-        bind(bindingContext);
     }
 
     /**
