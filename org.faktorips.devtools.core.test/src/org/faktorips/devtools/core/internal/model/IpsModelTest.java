@@ -243,6 +243,30 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetIpsElement_NonIpsProject() throws Exception {
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("TestProject");
+        project.create(null);
+        project.open(null);
+
+        IFolder rootFolder = project.getFolder("model");
+        rootFolder.create(true, true, null);
+        assertNull(model.getIpsElement(rootFolder));
+
+        IFolder folderA = rootFolder.getFolder("a");
+        folderA.create(true, true, null);
+        assertNull(model.getIpsElement(folderA));
+
+        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Policy");
+        IFile file = folderA.getFile(filename);
+        file.create(new ByteArrayInputStream(new byte[0]), true, null);
+        assertNotNull(model.getIpsElement(file));
+
+        IFile textFile = folderA.getFile("Textfile.txt");
+        textFile.create(new ByteArrayInputStream(new byte[0]), true, null);
+        assertNull(model.getIpsElement(textFile));
+    }
+
+    @Test
     public void testFindIpsElement() throws CoreException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         assertEquals(model, model.getIpsElement(root));
@@ -371,8 +395,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         property.setPropertyId("prop1");
         property.setExtendedType(extendedClass);
         model.addIpsObjectExtensionProperty(property);
-        List<IExtensionPropertyDefinition> props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass,
-                false));
+        List<IExtensionPropertyDefinition> props = Arrays
+                .asList(model.getExtensionPropertyDefinitions(extendedClass, false));
         assertEquals(1, props.size());
         assertSame(property, props.get(0));
         props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
@@ -651,8 +675,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         root.createPackageFragment("products.hausrat", true, null);
         IIpsPackageFragment unfall = root.createPackageFragment("products.unfall", true, null);
-        IpsPackageFragment leistungsarten = (IpsPackageFragment)root.createPackageFragment(
-                "products.unfall.leistungsarten", true, null);
+        IpsPackageFragment leistungsarten = (IpsPackageFragment)root
+                .createPackageFragment("products.unfall.leistungsarten", true, null);
         root.createPackageFragment("products.unfall.leistungsartgruppen", true, null);
         IpsPackageFragment kranken = (IpsPackageFragment)root.createPackageFragment("products.kranken", true, null);
 

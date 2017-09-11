@@ -65,6 +65,7 @@ import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
@@ -119,10 +120,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public static final boolean TRACE_VALIDATION;
 
     static {
-        TRACE_MODEL_MANAGEMENT = Boolean.valueOf(
-                Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
-        TRACE_MODEL_CHANGE_LISTENERS = Boolean.valueOf(
-                Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners")) //$NON-NLS-1$
+        TRACE_MODEL_MANAGEMENT = Boolean
+                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
+        TRACE_MODEL_CHANGE_LISTENERS = Boolean
+                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners")) //$NON-NLS-1$
                 .booleanValue();
         TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation")) //$NON-NLS-1$
                 .booleanValue();
@@ -260,8 +261,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IpsPlugin.log(new IpsStatus(text));
                 continue;
             }
-            type = ExtensionPoints
-                    .createExecutableExtension(extension, configElements[i], "class", IpsObjectType.class); //$NON-NLS-1$
+            type = ExtensionPoints.createExecutableExtension(extension, configElements[i], "class", //$NON-NLS-1$
+                    IpsObjectType.class);
 
             if (type == null) {
                 String text = "Illegal ips object type definition " + extension.getUniqueIdentifier(); //$NON-NLS-1$
@@ -286,10 +287,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void startListeningToResourceChanges() {
-        getWorkspace().addResourceChangeListener(
-                this,
-                IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE
-                | IResourceChangeEvent.PRE_REFRESH);
+        getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE
+                | IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -528,9 +527,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         String[] segments = resource.getProjectRelativePath().segments();
         IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(segments[0]);
         if (root == null) {
-            return null;
+            return getExternalIpsSrcFile(resource);
         }
-
         if (segments.length == 1) {
             return root;
         }
@@ -554,6 +552,25 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
 
         return ipsFolder.getIpsSrcFile(resource.getName());
+    }
+
+    /**
+     * Returns an IpsElement of an IPS project that is not categorized as such (For example the
+     * parent folder of an IPS project).
+     * 
+     * @param resource the input file
+     * @return the respective IPS file or <code>null</code> if the resource isn't an IPS SRC File
+     */
+    private IIpsElement getExternalIpsSrcFile(IResource resource) {
+        if (resource.getType() == IResource.FILE && resource.exists()
+                && getIpsObjectTypeByFileExtension(resource.getFileExtension()) != null) {
+            try {
+                return new IpsSrcFileImmutable(resource.getName(), ((IFile)resource).getContents());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -1211,9 +1228,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         convention = changesOverTimeNamingConventionMap.get(IChangesOverTimeNamingConvention.VAA);
         if (convention != null) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknown changes in time naming convention " + id //$NON-NLS-1$
-                    + ". Using default " //$NON-NLS-1$
-                    + IChangesOverTimeNamingConvention.VAA, null));
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING,
+                    "Unknown changes in time naming convention " + id //$NON-NLS-1$
+                            + ". Using default " //$NON-NLS-1$
+                            + IChangesOverTimeNamingConvention.VAA,
+                    null));
             return convention;
         }
         IpsPlugin.log(new IpsStatus("Unknown changes in time naming convention " + id //$NON-NLS-1$
@@ -1226,7 +1245,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                                                                                              .size()];
+                .size()];
         int i = 0;
         for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
                 .hasNext();) {
@@ -1500,7 +1519,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
             System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
                     new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
-                    Thread.currentThread().getName() }));
+                            Thread.currentThread().getName() }));
         }
     }
 
@@ -1738,9 +1757,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     }
                     listener.modificationStatusHasChanged(event);
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
-                        System.out
-                        .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                + listener);
+                        System.out.println(
+                                "IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
+                                        + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {
