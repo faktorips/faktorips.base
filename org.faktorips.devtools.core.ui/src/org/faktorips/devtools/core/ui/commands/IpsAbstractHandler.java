@@ -14,6 +14,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -49,15 +50,17 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
         TypedSelection<IAdaptable> typedSelection;
         ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                 .getSelectionService();
-        typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selectionService.getSelection());
+        ISelection selection = selectionService.getSelection();
+        typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
+
         return typedSelection;
     }
 
     protected TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
         IEditorInput input = ((IEditorPart)part).getEditorInput();
         if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
-                    ((IFileEditorInput)input).getFile()));
+            return new TypedSelection<IAdaptable>(IAdaptable.class,
+                    new StructuredSelection(((IFileEditorInput)input).getFile()));
         } else {
             return null;
         }

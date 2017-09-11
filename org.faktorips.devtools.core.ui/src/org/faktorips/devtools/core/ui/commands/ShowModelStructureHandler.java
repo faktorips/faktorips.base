@@ -46,7 +46,6 @@ public class ShowModelStructureHandler extends IpsAbstractHandler {
         // this method must be called first! Otherwise the selection is not valid.
         TypedSelection<IAdaptable> selection = new TypedSelection<IAdaptable>(IAdaptable.class,
                 HandlerUtil.getCurrentSelection(event));
-
         try {
             IViewPart modelOverviewView = activePage.showView(ModelStructure.EXTENSION_ID, null,
                     IWorkbenchPage.VIEW_ACTIVATE);
@@ -57,7 +56,8 @@ public class ShowModelStructureHandler extends IpsAbstractHandler {
                 ((ModelStructure)modelOverviewView).showStructure((IType)ipsSrcFile.getIpsObject());
             } else {
                 throw new CoreRuntimeException(
-                        "The selection must be of type IType, IpsProject or ComponentNode, but was " + selection.getFirstElement().getClass()); //$NON-NLS-1$
+                        "The selection must be of type IType, IpsProject or ComponentNode, but was " //$NON-NLS-1$
+                                + selection.getFirstElement().getClass());
             }
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);

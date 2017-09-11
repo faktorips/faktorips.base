@@ -40,14 +40,15 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.util.message.MessageList;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
-public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implements IWorkbenchWindowActionDelegate,
-        IObjectActionDelegate {
+public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
+        implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
     private IWorkbenchWindow window;
     // the last selection
     private ISelection selection;
@@ -155,6 +156,8 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             addIpsElements((IIpsPackageFragment)selected, ipsElementsToFix);
         } else if (selected instanceof IIpsSrcFile) {
             addElementToFix(ipsElementsToFix, ((IIpsSrcFile)selected).getIpsObject());
+        } else if (selected instanceof InstanceIpsSrcFileViewItem) {
+            addElementToFix(ipsElementsToFix, ((InstanceIpsSrcFileViewItem)selected).getIpsSrcFile().getIpsObject());
         } else if (selected instanceof IFixDifferencesToModelSupport) {
             IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
             addIpsElement(ipsElementToFix, ipsElementsToFix);

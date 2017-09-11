@@ -338,7 +338,7 @@
             name="%IpsDeepCopyAction_name" categoryId="org.faktorips.devtools.core.ui.category.productcreate">
       </command>
       <command
-            id="org.faktorips.devtools.core.ui.command.FixDiffereneces"
+            id="org.faktorips.devtools.core.ui.command.FixDifferences"
             name="%fixDifferencesAction">
       </command>
       <command
@@ -1876,6 +1876,9 @@
                      </adapt>
                   </or>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </enabledWhen>
          <activeWhen>
@@ -1972,6 +1975,9 @@
                      </instanceof>
                   </or>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </enabledWhen>
          <class
@@ -2007,6 +2013,9 @@
                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                  </adapt>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </enabledWhen>
       </handler>
@@ -2195,6 +2204,9 @@
                      </instanceof>
                   </or>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </enabledWhen>
       </handler>
@@ -2216,6 +2228,9 @@
                      </not>
                   </adapt>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </enabledWhen>
       </handler>
@@ -2235,6 +2250,9 @@
                         </test>
                      </adapt>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </enabledWhen>
       </handler>
@@ -2253,15 +2271,18 @@
                         <test
                               property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
                         </test>
-                     </not>
+                    </not>
                   </adapt>
                </iterate>
+               <count
+                     value="1">
+               </count> 
             </with>
          </enabledWhen>
       </handler>
       <handler
             class="org.faktorips.devtools.core.ui.commands.FixDifferencesHandler"
-            commandId="org.faktorips.devtools.core.ui.command.FixDiffereneces">
+            commandId="org.faktorips.devtools.core.ui.command.FixDifferences">
          <activeWhen>
             <with
                   variable="selection">
@@ -2955,7 +2976,7 @@
                label="%cleanUpMenu"
                mnemonic="c">
             <command
-                  commandId="org.faktorips.devtools.core.ui.command.FixDiffereneces"
+                  commandId="org.faktorips.devtools.core.ui.command.FixDifferences"
                   icon="icons/FixDifferencesToModel.gif"
                   label="%fixDifferencesAction"
                   style="push">
