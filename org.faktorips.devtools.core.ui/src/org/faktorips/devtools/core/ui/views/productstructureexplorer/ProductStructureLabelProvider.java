@@ -20,6 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -53,11 +54,11 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         if (element instanceof IProductCmptReference) {
             return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeAssociationReference) {
-            return IpsUIPlugin.getImageHandling().getImage(
-                    ((IProductCmptTypeAssociationReference)element).getAssociation());
+            return IpsUIPlugin.getImageHandling()
+                    .getImage(((IProductCmptTypeAssociationReference)element).getAssociation());
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            return IpsUIPlugin.getImageHandling().getImage(
-                    ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
+            return IpsUIPlugin.getImageHandling()
+                    .getImage(((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
         } else if (element instanceof IProductCmptVRuleReference) {
             IValidationRuleConfig config = ((IProductCmptVRuleReference)element).getValidationRuleConfig();
             return IpsUIPlugin.getImageHandling().getImage(config);
@@ -144,42 +145,58 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             IProductCmptReference productCmptReference = (IProductCmptReference)element;
 
             // show cardinality
-            if (productCmptReference.getLink() != null && showCardinalities) {
-                IProductCmptLink link = productCmptReference.getLink();
-                styledString.append(new StyledString(link.getCardinality().format(),
-                        IpsStyler.DEFAULT_CARDINALITY_STYLER));
-            }
+            IProductCmptTypeAssociationReference parent = productCmptReference.getParent();
+            if (parent != null) {
+                if (showCardinalities && constrainsPolicyCmptTypeAssociation(parent.getAssociation())) {
+                    IProductCmptLink link = productCmptReference.getLink();
+                    styledString.append(" " + new StyledString(link.getCardinality().format(), //$NON-NLS-1$
+                            IpsStyler.DEFAULT_CARDINALITY_STYLER));
+                }
 
-            // show association nodes
-            if (!isShowAssociationNodes()) {
-                styledString.append(getRolenameLabel(productCmptReference), IpsStyler.ROLENAME_STYLER);
-            }
+                // show association nodes
+                if (!isShowAssociationNodes()) {
+                    styledString.append(getRolenameLabel(productCmptReference), IpsStyler.ROLENAME_STYLER);
+                }
 
-            // generation labels
-            styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()), IpsStyler.QUALIFIER_STYLER);
+                // generation labels
+                styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
+                        IpsStyler.QUALIFIER_STYLER);
 
-        } else if (element instanceof IProductCmptVRuleReference) {
-            // Rule
-            IProductCmptVRuleReference vRuleRef = (IProductCmptVRuleReference)element;
-            if (!vRuleRef.getValidationRuleConfig().isActive()) {
-                // gray-out inactive rules
-                styledString.setStyle(0, styledString.length(), IpsStyler.DEACTIVATED_STYLER);
-                styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration,
-                        IpsStyler.DEACTIVATED_STYLER);
-            }
-        } else if (element instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
-            if (showCardinalities) {
-                IPolicyCmptTypeAssociation policyAssociation = association
-                        .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
-                if (policyAssociation != null) {
-                    styledString.append(new StyledString(StringUtil.getRangeString(
-                            policyAssociation.getMinCardinality(), policyAssociation.getMaxCardinality()),
-                            IpsStyler.MODEL_CARDINALITY_STYLER));
+            } else if (element instanceof IProductCmptVRuleReference) {
+                styleRule((IProductCmptVRuleReference)element, styledString);
+            } else if (element instanceof IProductCmptTypeAssociationReference) {
+                if (showCardinalities) {
+                    stylePolicyAssociation((IProductCmptTypeAssociationReference)element, styledString);
                 }
             }
         }
         return styledString;
+
+    }
+
+    private boolean constrainsPolicyCmptTypeAssociation(IProductCmptTypeAssociation productAssociation) {
+        IIpsProject ipsProject = productAssociation.getIpsProject();
+        return ipsProject != null && productAssociation.constrainsPolicyCmptTypeAssociation(ipsProject);
+    }
+
+    protected void styleRule(IProductCmptVRuleReference vRuleRef, StyledString styledString) {
+        if (!vRuleRef.getValidationRuleConfig().isActive()) {
+            // gray-out inactive rules
+            styledString.setStyle(0, styledString.length(), IpsStyler.DEACTIVATED_STYLER);
+            styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration,
+                    IpsStyler.DEACTIVATED_STYLER);
+        }
+    }
+
+    protected void stylePolicyAssociation(IProductCmptTypeAssociationReference productTypeAssociation,
+            StyledString styledString) {
+        IProductCmptTypeAssociation productAssociation = productTypeAssociation.getAssociation();
+        IPolicyCmptTypeAssociation policyAssociation = productAssociation
+                .findMatchingPolicyCmptTypeAssociation(productAssociation.getIpsProject());
+        if (policyAssociation != null) {
+            styledString.append(new StyledString(StringUtil.getRangeString(policyAssociation.getMinCardinality(),
+                    policyAssociation.getMaxCardinality()), IpsStyler.MODEL_CARDINALITY_STYLER));
+        }
     }
 
     /**
@@ -205,8 +222,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                         .getChildProductCmptTypeAssociationReferences(parentCmptReference, true);
                 for (IProductCmptTypeAssociationReference aReference : associationReferences) {
                     // if the association is another one but have the same target... show role name
-                    if (aReference != associationReference
-                            && aReference.getAssociation().getTarget()
+                    if (aReference != associationReference && aReference.getAssociation().getTarget()
                             .equals(associationReference.getAssociation().getTarget())) {
                         return getRolenameLabel(associationReference.getAssociation());
                     }

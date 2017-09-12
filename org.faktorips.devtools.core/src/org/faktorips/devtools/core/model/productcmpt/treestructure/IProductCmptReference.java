@@ -60,4 +60,7 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
      */
     public GregorianCalendar getValidTo();
 
+    @Override
+    public IProductCmptTypeAssociationReference getParent();
+
 }

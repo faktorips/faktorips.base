@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -98,53 +97,34 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
         // add product cmpt associations and product cmpts
         if (!showAssociationNodes && parentElement instanceof IProductCmptReference) {
-            // Arrays.asLists returns an AbstractList that could not be modified
-            List<IProductCmptReference> list = new ArrayList<IProductCmptReference>(Arrays.asList(structure
-                    .getChildProductCmptReferences((IProductCmptReference)parentElement)));
-            if (!showAssociatedCmpts) {
-                // filter association nodes
-                for (Iterator<IProductCmptReference> iterator = list.iterator(); iterator.hasNext();) {
-                    IProductCmptReference aProductCmptReference = iterator.next();
-                    if (aProductCmptReference.getParent() instanceof IProductCmptTypeAssociationReference) {
-                        IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)aProductCmptReference
-                                .getParent();
-                        if (relationReference.getAssociation().isAssoziation()) {
-                            iterator.remove();
-                        }
-                    }
+            for (IProductCmptReference productCmptReference : structure
+                    .getChildProductCmptReferences((IProductCmptReference)parentElement)) {
+                IProductCmptTypeAssociationReference relationReference = productCmptReference.getParent();
+                if (showAssociatedCmpts || relationReference == null
+                        || !relationReference.getAssociation().isAssoziation()) {
+                    children.add(productCmptReference);
                 }
             }
-            children.addAll(list);
         } else if (parentElement instanceof IProductCmptReference) {
-            // Arrays.asLists returns an AbstractList that could not be modified
-            List<IProductCmptTypeAssociationReference> list = new ArrayList<IProductCmptTypeAssociationReference>(
-                    Arrays.asList(structure
-                            .getChildProductCmptTypeAssociationReferences((IProductCmptReference)parentElement)));
-            if (!showAssociatedCmpts) {
-                // filter association nodes
-                for (Iterator<IProductCmptTypeAssociationReference> iterator = list.iterator(); iterator.hasNext();) {
-                    IProductCmptTypeAssociationReference aRelationReference = iterator.next();
-                    if (aRelationReference.getAssociation().isAssoziation()) {
-                        iterator.remove();
-                    }
-
+            for (IProductCmptTypeAssociationReference relationReference : structure
+                    .getChildProductCmptTypeAssociationReferences((IProductCmptReference)parentElement)) {
+                if (showAssociatedCmpts || !relationReference.getAssociation().isAssoziation()) {
+                    children.add(relationReference);
                 }
             }
-            children.addAll(list);
         } else if (parentElement instanceof IProductCmptTypeAssociationReference) {
-            List<IProductCmptReference> list = Arrays.asList(structure
-                    .getChildProductCmptReferences((IProductCmptTypeAssociationReference)parentElement));
-            children.addAll(list);
+            children.addAll(Arrays.asList(
+                    structure.getChildProductCmptReferences((IProductCmptTypeAssociationReference)parentElement)));
         }
 
         if (showValidationRules && parentElement instanceof IProductCmptReference) {
-            children.addAll(Arrays.asList(structure
-                    .getChildProductCmptVRuleReferences((IProductCmptReference)parentElement)));
+            children.addAll(
+                    Arrays.asList(structure.getChildProductCmptVRuleReferences((IProductCmptReference)parentElement)));
         }
         // add table content usages
         if (showTableContents && parentElement instanceof IProductCmptReference) {
-            children.addAll(Arrays.asList(structure
-                    .getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
+            children.addAll(Arrays.asList(
+                    structure.getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
         }
 
         return children.toArray();

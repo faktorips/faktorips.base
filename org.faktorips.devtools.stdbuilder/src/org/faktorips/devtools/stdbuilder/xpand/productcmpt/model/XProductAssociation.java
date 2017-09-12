@@ -11,9 +11,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -82,11 +80,7 @@ public class XProductAssociation extends XAssociation {
     }
 
     public boolean hasMatchingAssociation() {
-        try {
-            return getAssociation().constrainsPolicyCmptTypeAssociation(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getAssociation().constrainsPolicyCmptTypeAssociation(getIpsProject());
     }
 
     /**

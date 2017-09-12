@@ -38,7 +38,7 @@ public class ProductCmptReferenceTest {
     @Mock
     private IProductCmptTreeStructure structure;
     @Mock
-    private ProductCmptStructureReference parent;
+    private ProductCmptTypeAssociationReference parent;
     @Mock
     private IProductCmpt cmpt;
     @Mock

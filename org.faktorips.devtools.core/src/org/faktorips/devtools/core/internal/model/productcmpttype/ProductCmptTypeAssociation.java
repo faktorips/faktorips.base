@@ -77,7 +77,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) {
         return findMatchingPolicyCmptTypeAssociation(ipsProject) != null;
     }
 
@@ -147,9 +147,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             IPolicyCmptType nextSource = policyCmptTypeAssociation.findTargetPolicyCmptType(ipsProject);
             if (nextSource != null) {
                 boolean notVisitedYet = alreadyVisit.add(nextSource);
-                if (notVisitedYet
-                        && collectPossibleMatchingAssociations(nextSource, targetQName, foundAssociations, ipsProject,
-                                alreadyVisit)) {
+                if (notVisitedYet && collectPossibleMatchingAssociations(nextSource, targetQName, foundAssociations,
+                        ipsProject, alreadyVisit)) {
                     if (!foundAssociations.add(policyCmptTypeAssociation)) {
                         // already visited this component -- return to avoid cycles
                         return true;
@@ -289,7 +288,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     protected void validateDerivedUnionChangingOverTimeProperty(MessageList list, IIpsProject ipsProject) {
         if (isSubsetOfADerivedUnion()) {
             try {
-                IProductCmptTypeAssociation derivedUnionAssociation = (IProductCmptTypeAssociation)findSubsettedDerivedUnion(ipsProject);
+                IProductCmptTypeAssociation derivedUnionAssociation = (IProductCmptTypeAssociation)findSubsettedDerivedUnion(
+                        ipsProject);
                 if (derivedUnionAssociation != null
                         && derivedUnionAssociation.isChangingOverTime() != isChangingOverTime()) {
                     String messageText;
@@ -301,8 +301,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                     String boundMessageText = NLS.bind(messageText, derivedUnionAssociation.getName());
                     Message message = new Message(
                             IProductCmptTypeAssociation.MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH,
-                            boundMessageText, Message.ERROR, new ObjectProperty(this,
-                                    IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME));
+                            boundMessageText, Message.ERROR,
+                            new ObjectProperty(this, IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME));
                     list.add(message);
                 }
             } catch (CoreException e) {
@@ -312,29 +312,31 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = findMatchingPolicyCmptTypeAssociation(ipsProject);
+        IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = findMatchingPolicyCmptTypeAssociation(
+                ipsProject);
         if (matchingPolicyCmptTypeAssociation == null) {
             if (isMatchingAssociationSourceAndNameNotEmpty()) {
-                list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND, NLS.bind(
-                        Messages.ProductCmptTypeAssociation_error_matchingAssociationNotFound,
-                        getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
-                        PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND,
+                        NLS.bind(Messages.ProductCmptTypeAssociation_error_matchingAssociationNotFound,
+                                getMatchingAssociationName(), getMatchingAssociationSource()),
+                        Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
             return;
         }
         if (!this.equals(matchingPolicyCmptTypeAssociation.findMatchingProductCmptTypeAssociation(ipsProject))) {
-            list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID, NLS.bind(
-                    Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid, getMatchingAssociationName(),
-                    getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
-                    PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+            list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
+                    NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid,
+                            getMatchingAssociationName(), getMatchingAssociationSource()),
+                    Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
         }
-        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
+        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = findPossiblyMatchingPolicyCmptTypeAssociations(
+                ipsProject);
         if (!possibleMatchingPolicyCmptTypeAssociations.contains(matchingPolicyCmptTypeAssociation)) {
-            list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID, NLS.bind(
-                    Messages.ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis,
-                    getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
-                    PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+            list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
+                    NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis,
+                            getMatchingAssociationName(), getMatchingAssociationSource()),
+                    Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
         }
 
@@ -353,10 +355,10 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 continue;
             }
             if (otherMatchingAssociation.equals(matchingPolicyCmptTypeAssociation)) {
-                list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME, NLS.bind(
-                        Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName, otherAssociation,
-                        getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
-                        PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME,
+                        NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName,
+                                otherAssociation, getMatchingAssociationSource()),
+                        Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
         }
     }
@@ -371,8 +373,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             if (constrainedAssociation != null && isChangingOverTime() != constrainedAssociation.isChangingOverTime()) {
                 list.newError(MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH,
                         Messages.ProductCmptTypeAssociation_errorMsg_constrained_changeOverTime_missmatch,
-                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this,
-                                PROPERTY_CHANGING_OVER_TIME));
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN),
+                        new ObjectProperty(this, PROPERTY_CHANGING_OVER_TIME));
             }
         }
     }

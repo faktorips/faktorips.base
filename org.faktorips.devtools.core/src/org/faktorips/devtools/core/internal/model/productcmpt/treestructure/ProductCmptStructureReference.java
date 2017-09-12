@@ -100,7 +100,8 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
 
     @Override
     public String toString() {
-        return "ProductCmptStructureReference [ipsObject=" + getWrappedIpsObject() + "," + "wrappedPart=" + getWrapped() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        return "ProductCmptStructureReference [ipsObject=" + getWrappedIpsObject() + "," + "wrappedPart=" + getWrapped() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "]"; //$NON-NLS-1$
     }
 
     /**

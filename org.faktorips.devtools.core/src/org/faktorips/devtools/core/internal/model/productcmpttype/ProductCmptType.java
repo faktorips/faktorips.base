@@ -796,7 +796,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getPolicyCmptType())) {
             IDependency dependency = IpsObjectDependency.createConfiguresDependency(getQualifiedNameType(),
@@ -832,7 +832,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @param dependencies the result set will contain all dependencies that have been found
      */
-    private void dependsOnAddExplicitlyMatchingAssociations(Set<IDependency> dependencies) throws CoreException {
+    private void dependsOnAddExplicitlyMatchingAssociations(Set<IDependency> dependencies) {
         for (IProductCmptTypeAssociation association : getProductCmptTypeAssociations()) {
             if (association.constrainsPolicyCmptTypeAssociation(getIpsProject())) {
                 IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociations = association

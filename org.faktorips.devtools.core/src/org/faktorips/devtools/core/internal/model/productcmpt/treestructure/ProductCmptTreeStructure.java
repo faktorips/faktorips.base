@@ -246,7 +246,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      */
     private ProductCmptReference buildNode(IProductCmpt cmpt,
             IProductCmptLink link,
-            ProductCmptStructureReference parent) throws CycleInProductStructureException {
+            ProductCmptTypeAssociationReference parent) throws CycleInProductStructureException {
 
         ProductCmptReference node = new ProductCmptReference(this, parent, cmpt, link);
         node.setChildren(buildChildNodes(cmpt, node));
@@ -261,7 +261,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * @param parent The parent for the new nodes
      */
     private ProductCmptStructureReference[] buildChildNodes(IProductCmptLink[] links,
-            ProductCmptStructureReference parent,
+            ProductCmptTypeAssociationReference parent,
             IProductCmptTypeAssociation association) throws CycleInProductStructureException {
 
         List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
@@ -353,13 +353,14 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         for (IAssociation iAssociation : associations) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
             if (association.isRelevant()) {
-                ProductCmptStructureReference node = new ProductCmptTypeAssociationReference(this, parent, association);
+                ProductCmptTypeAssociationReference node = new ProductCmptTypeAssociationReference(this, parent,
+                        association);
                 List<IProductCmptLink> linksList = mapping.get(association.getName());
                 if (linksList == null) {
                     linksList = new ArrayList<IProductCmptLink>();
                 }
-                node.setChildren(buildChildNodes(linksList.toArray(new IProductCmptLink[linksList.size()]), node,
-                        association));
+                node.setChildren(
+                        buildChildNodes(linksList.toArray(new IProductCmptLink[linksList.size()]), node, association));
                 children.add(node);
             }
         }
@@ -400,7 +401,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     }
 
     @Override
-    public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
+    public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(
+            IProductCmptStructureReference child) {
         ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
         IProductCmptStructureReference result = ref.getParent();
         if (result instanceof IProductCmptTypeAssociationReference) {
@@ -435,13 +437,14 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     }
 
     @Override
-    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent) {
+    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
+            IProductCmptStructureReference parent) {
         return getChildProductCmptTypeAssociationReferences(parent, true);
     }
 
     @Override
-    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent,
-            boolean includeEmptyAssociations) {
+    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
+            IProductCmptStructureReference parent, boolean includeEmptyAssociations) {
 
         if (parent instanceof IProductCmptReference) {
             List<IProductCmptTypeAssociationReference> associationReferences = new ArrayList<IProductCmptTypeAssociationReference>();
@@ -471,7 +474,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     }
 
     @Override
-    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent) {
+    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(
+            IProductCmptStructureReference parent) {
         List<ProductCmptStructureTblUsageReference> tblUsageReferences = new ArrayList<ProductCmptStructureTblUsageReference>();
         IProductCmptStructureReference[] children = getChildren(parent);
         for (IProductCmptStructureReference element : children) {

@@ -80,6 +80,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -100,8 +101,8 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  * @author guenther
  * 
  */
-public class ProductStructureExplorer extends AbstractShowInSupportingViewPart implements ContentsChangeListener,
-        IIpsSrcFilesChangeListener {
+public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
+        implements ContentsChangeListener, IIpsSrcFilesChangeListener {
 
     /**
      * The ID of this view extension
@@ -514,7 +515,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             menumanager.add(toggleRuleAction);
         }
 
-        if (!(selectedRef instanceof IProductCmptVRuleReference || selectedRef instanceof IProductCmptTypeAssociationReference)) {
+        if (!(selectedRef instanceof IProductCmptVRuleReference
+                || selectedRef instanceof IProductCmptTypeAssociationReference)) {
             IpsMenuId.GROUP_COPY_PRODUCTC.addSeparator(menumanager);
             IpsMenuId.GROUP_REFACTORING.addSeparator(menumanager);
             IpsMenuId.GROUP_NAVIGATE.addSeparator(menumanager);
@@ -528,44 +530,23 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         // change cardinalities
         if (selectedRef instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
-
-            IProductCmptLink currentLink = productCmptReference.getLink();
-            boolean canChangeCardinality = false;
-            if (currentLink != null) {
-                canChangeCardinality = currentLink.constrainsPolicyCmptTypeAssociation(currentLink.getIpsProject());
-            }
-            if (canChangeCardinality && currentLink != null) {
+            if (canChangeCardinality(productCmptReference)) {
                 MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities,
                         IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"), null); //$NON-NLS-1$
 
                 // Optional Excluded
-                final IAction cardinalitiesOptionalExcludedAction = new CardinalityDirectAction(productCmptReference,
-                        this, 0, 1, 0);
-                cardinalitiesOptionalExcludedAction
-                        .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded);
-                cardinalitiesOptionalExcludedAction
-                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded_ToolTip);
+                final IAction cardinalitiesOptionalExcludedAction = cardinalitiesOptionalExcludedAction(
+                        productCmptReference);
 
                 // Optional Included
-                final IAction cardinalitiesOptionalIncludedAction = new CardinalityDirectAction(productCmptReference,
-                        this, 0, 1, 1);
-                cardinalitiesOptionalIncludedAction
-                        .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded);
-                cardinalitiesOptionalIncludedAction
-                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded_ToolTip);
+                final IAction cardinalitiesOptionalIncludedAction = cardinalitiesOptionalIncludedAction(
+                        productCmptReference);
 
                 // Mandatory
-                final IAction cardinalitiesMandatoryAction = new CardinalityDirectAction(productCmptReference, this, 1,
-                        1, 1);
-                cardinalitiesMandatoryAction.setText(Messages.ProductStructureExplorer_setCardinalitiesMandatory);
-                cardinalitiesMandatoryAction
-                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesMandatory_ToolTip);
+                final IAction cardinalitiesMandatoryAction = cardinalitiesMandatoryAction(productCmptReference);
 
                 // Other
-                final IAction cardinalitiesOtherAction = new CardinalityDialogAction(productCmptReference, this);
-                cardinalitiesOtherAction.setText(Messages.ProductStructureExplorer_setCardinalitiesOther);
-                cardinalitiesOtherAction
-                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOther_ToolTip);
+                final IAction cardinalitiesOtherAction = cardinalitiesOtherAction(productCmptReference);
 
                 // Create menu
                 cardinalitiesSub.add(cardinalitiesOptionalExcludedAction);
@@ -573,23 +554,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 cardinalitiesSub.add(cardinalitiesMandatoryAction);
                 cardinalitiesSub.add(cardinalitiesOtherAction);
 
-                int minCardinality = currentLink.getMinCardinality();
-                int maxCardinality = currentLink.getMaxCardinality();
-                int defaultCardinality = currentLink.getDefaultCardinality();
+                selectActionMatchingCurrentLinksCardinality(cardinalitiesOptionalExcludedAction,
+                        cardinalitiesOptionalIncludedAction, cardinalitiesMandatoryAction, cardinalitiesOtherAction,
+                        productCmptReference.getLink());
 
-                if (maxCardinality == 1) {
-                    if (minCardinality == 1) {
-                        cardinalitiesMandatoryAction.setChecked(true);
-                    } else if (minCardinality == 0) {
-                        if (defaultCardinality == 0) {
-                            cardinalitiesOptionalExcludedAction.setChecked(true);
-                        } else if (defaultCardinality == 1) {
-                            cardinalitiesOptionalIncludedAction.setChecked(true);
-                        }
-                    }
-                } else {
-                    cardinalitiesOtherAction.setChecked(true);
-                }
                 menumanager.add(cardinalitiesSub);
             } else {
                 Action dummyCardinalityAction = createDummyCardinalityAction();
@@ -597,6 +565,80 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 menumanager.add(dummyCardinalityAction);
             }
         }
+    }
+
+    protected boolean canChangeCardinality(IProductCmptReference productCmptReference) {
+        boolean canChangeCardinality = false;
+        IProductCmptTypeAssociationReference parent = productCmptReference.getParent();
+        if (parent != null) {
+            IProductCmptTypeAssociation association = parent.getAssociation();
+            if (association != null) {
+                canChangeCardinality = association.constrainsPolicyCmptTypeAssociation(association.getIpsProject());
+            }
+        }
+        return canChangeCardinality;
+    }
+
+    protected void selectActionMatchingCurrentLinksCardinality(final IAction cardinalitiesOptionalExcludedAction,
+            final IAction cardinalitiesOptionalIncludedAction,
+            final IAction cardinalitiesMandatoryAction,
+            final IAction cardinalitiesOtherAction,
+            IProductCmptLink currentLink) {
+        int minCardinality = currentLink.getMinCardinality();
+        int maxCardinality = currentLink.getMaxCardinality();
+        int defaultCardinality = currentLink.getDefaultCardinality();
+
+        if (maxCardinality == 1) {
+            if (minCardinality == 1) {
+                cardinalitiesMandatoryAction.setChecked(true);
+            } else if (minCardinality == 0) {
+                if (defaultCardinality == 0) {
+                    cardinalitiesOptionalExcludedAction.setChecked(true);
+                } else if (defaultCardinality == 1) {
+                    cardinalitiesOptionalIncludedAction.setChecked(true);
+                }
+            }
+        } else {
+            cardinalitiesOtherAction.setChecked(true);
+        }
+    }
+
+    private IAction cardinalitiesOtherAction(IProductCmptReference productCmptReference) {
+        final IAction cardinalitiesOtherAction = new CardinalityDialogAction(productCmptReference, this);
+        cardinalitiesOtherAction.setText(Messages.ProductStructureExplorer_setCardinalitiesOther);
+        cardinalitiesOtherAction.setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOther_ToolTip);
+        return cardinalitiesOtherAction;
+    }
+
+    private IAction cardinalitiesOptionalExcludedAction(IProductCmptReference productCmptReference) {
+        return cardinalitiesAction(productCmptReference, 0, 1, 0,
+                Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded,
+                Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded_ToolTip);
+    }
+
+    private IAction cardinalitiesOptionalIncludedAction(IProductCmptReference productCmptReference) {
+        return cardinalitiesAction(productCmptReference, 0, 1, 1,
+                Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded,
+                Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded_ToolTip);
+    }
+
+    private IAction cardinalitiesMandatoryAction(IProductCmptReference productCmptReference) {
+        return cardinalitiesAction(productCmptReference, 1, 1, 1,
+                Messages.ProductStructureExplorer_setCardinalitiesMandatory,
+                Messages.ProductStructureExplorer_setCardinalitiesMandatory_ToolTip);
+    }
+
+    private IAction cardinalitiesAction(IProductCmptReference productCmptReference,
+            int minCardinality,
+            int maxCardinality,
+            int defaultCardinality,
+            String textKey,
+            String toolTipKey) {
+        final IAction cardinalitiesAction = new CardinalityDirectAction(productCmptReference, this, minCardinality,
+                maxCardinality, defaultCardinality);
+        cardinalitiesAction.setText(textKey);
+        cardinalitiesAction.setToolTipText(toolTipKey);
+        return cardinalitiesAction;
     }
 
     private void hookGlobalActions() {
@@ -939,7 +981,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private void intitMenuStateFields(int checkedMenuState) {
         showReferencedTable = (checkedMenuState & OPTION_REFERENCE_TABLE) == OPTION_REFERENCE_TABLE;
-        showTableStructureRoleName = (checkedMenuState & OPTION_TABLE_STRUCTURE_ROLE_NAME) == OPTION_TABLE_STRUCTURE_ROLE_NAME;
+        showTableStructureRoleName = (checkedMenuState
+                & OPTION_TABLE_STRUCTURE_ROLE_NAME) == OPTION_TABLE_STRUCTURE_ROLE_NAME;
         showAssociationNode = (checkedMenuState & OPTION_ASSOCIATION_NODE) == OPTION_ASSOCIATION_NODE;
         showAssociatedCmpts = (checkedMenuState & OPTION_ASSOCIATED_CMPTS) == OPTION_ASSOCIATED_CMPTS;
     }
@@ -947,8 +990,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     private int evalMenuStates() {
         return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0)
                 | (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0)
-                | (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS
-                    : 0));
+                | (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0)
+                | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS : 0));
     }
 
     public void setShowAssociationNode(boolean showAssociationNode) {
@@ -996,8 +1039,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     private Action createDummyCardinalityAction() {
-        return new Action(Messages.ProductStructureExplorer_setCardinalities, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Cardinality.gif")) { //$NON-NLS-1$
+        return new Action(Messages.ProductStructureExplorer_setCardinalities,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif")) { //$NON-NLS-1$
 
             @Override
             public String getToolTipText() {
@@ -1099,20 +1142,21 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         @Override
         public void doubleClick(DoubleClickEvent event) {
             if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptReference) {
-                IProductCmptReference selectedProductCmptReference = (IProductCmptReference)getSelectedObjectFromSelection(event
-                        .getSelection());
+                IProductCmptReference selectedProductCmptReference = (IProductCmptReference)getSelectedObjectFromSelection(
+                        event.getSelection());
                 GenerationDate selectedGenerationDate = generationDateViewer.getSelectedDate();
                 IProductCmptGeneration generationToBeOpened = selectedProductCmptReference.getProductCmpt()
                         .getBestMatchingGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
 
                 IpsUIPlugin.getDefault().openEditor(generationToBeOpened);
             }
-            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptStructureTblUsageReference) {
-                IProductCmptStructureTblUsageReference selectedTableReference = (IProductCmptStructureTblUsageReference)getSelectedObjectFromSelection(event
-                        .getSelection());
+            if (getSelectedObjectFromSelection(
+                    event.getSelection()) instanceof IProductCmptStructureTblUsageReference) {
+                IProductCmptStructureTblUsageReference selectedTableReference = (IProductCmptStructureTblUsageReference)getSelectedObjectFromSelection(
+                        event.getSelection());
                 try {
-                    ITableContents tableUsage = selectedTableReference.getTableContentUsage().findTableContents(
-                            selectedTableReference.getTableContentUsage().getIpsProject());
+                    ITableContents tableUsage = selectedTableReference.getTableContentUsage()
+                            .findTableContents(selectedTableReference.getTableContentUsage().getIpsProject());
                     if (tableUsage != null) {
                         IpsUIPlugin.getDefault().openEditor(tableUsage);
                     }

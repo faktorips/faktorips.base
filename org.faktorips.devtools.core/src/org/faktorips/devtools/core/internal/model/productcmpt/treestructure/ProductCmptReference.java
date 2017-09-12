@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 
 /**
  * A reference to a <code>IProductCmpt</code>. Used by <code>ProductCmptStructure</code>.
@@ -34,12 +35,16 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     private final IProductCmpt cmpt;
     private final IProductCmptLink link;
 
-    public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
+    public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptTypeAssociationReference parent,
             IProductCmpt cmpt, IProductCmptLink link) throws CycleInProductStructureException {
-
         super(structure, parent);
         this.cmpt = cmpt;
         this.link = link;
+    }
+
+    @Override
+    public IProductCmptTypeAssociationReference getParent() {
+        return (IProductCmptTypeAssociationReference)super.getParent();
     }
 
     @Override
@@ -73,7 +78,8 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
         IProductCmptReference[] childProductCmptReferences = getStructure().getChildProductCmptReferences(this);
         for (IProductCmptReference productCmptReference : childProductCmptReferences) {
             GregorianCalendar childValidTo = productCmptReference.getValidTo();
-            if (mostRestrictiveValidTo == null || (childValidTo != null && childValidTo.before(mostRestrictiveValidTo))) {
+            if (mostRestrictiveValidTo == null
+                    || (childValidTo != null && childValidTo.before(mostRestrictiveValidTo))) {
                 mostRestrictiveValidTo = childValidTo;
             }
         }

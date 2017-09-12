@@ -77,8 +77,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
                 LinkStatus status = getStatus(reference);
                 if (reference instanceof IProductCmptReference) {
                     IProductCmptReference cmptReference = (IProductCmptReference)reference;
-                    IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)cmptReference
-                            .getParent();
+                    IProductCmptTypeAssociationReference parent = cmptReference.getParent();
                     if (parent != null && parent.getAssociation().isAssoziation()) {
                         // default for associated product components is linked, not copy
                         // in the getter method the status is verified: due to FIPS-3, we want to
@@ -269,8 +268,8 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             }
         } else if (reference instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
-            for (IProductCmptReference child : associationReference.getStructure().getChildProductCmptReferences(
-                    associationReference)) {
+            for (IProductCmptReference child : associationReference.getStructure()
+                    .getChildProductCmptReferences(associationReference)) {
                 if (isChecked(child)) {
                     return true;
                 }
@@ -296,8 +295,8 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         } else if (reference instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
             oldValue = false;
-            for (IProductCmptReference child : associationReference.getStructure().getChildProductCmptReferences(
-                    associationReference)) {
+            for (IProductCmptReference child : associationReference.getStructure()
+                    .getChildProductCmptReferences(associationReference)) {
                 oldValue = setCheckedInternal(child, value) || oldValue;
             }
         } else {
