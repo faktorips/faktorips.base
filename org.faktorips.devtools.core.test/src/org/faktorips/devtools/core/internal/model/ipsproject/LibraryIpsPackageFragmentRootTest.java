@@ -162,8 +162,8 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
             qualifiedNameTypes.add(pcTypeSrcFile.getQualifiedNameType());
         }
         assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.Policy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.collision.CollisionCoverage",
-                IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(qualifiedNameTypes
+                .contains(new QualifiedNameType("motor.collision.CollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
 
         result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE, null, result);
@@ -188,6 +188,23 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
         assertTrue(root.equals(sameAsRootOtherProject));
         assertEquals(root.hashCode(), sameAsRootOtherProject.hashCode());
+    }
+
+    @Test
+    public void testEquals_sameNameNotEqual() throws Exception {
+        assertTrue(root.equals(root));
+
+        IIpsProject otherProject = newIpsProject();
+        IIpsObjectPath path = otherProject.getIpsObjectPath();
+        IFile otherArchiveFile = otherProject.getProject().getFile("test.ipsar");
+        IpsArchiveEntry otherEntry = (IpsArchiveEntry)path.newArchiveEntry(otherArchiveFile.getFullPath());
+        otherProject.setIpsObjectPath(path);
+
+        LibraryIpsPackageFragmentRoot otherProjectRoot = new LibraryIpsPackageFragmentRoot(otherProject,
+                otherEntry.getIpsStorage());
+
+        assertFalse(root.equals(otherProjectRoot));
+        assertEquals(root.hashCode(), otherProjectRoot.hashCode());
     }
 
 }
