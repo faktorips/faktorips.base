@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.functional.Consumer;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -193,15 +195,21 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testForEachMismatchSingleValue() {
+    public void testForEachMismatchSingleValue() throws CoreException {
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "10.0"));
         configuredDefault.setValue("11.0");
 
-        entries = DatatypeMismatchEntry
-                .forEachMismatch(Arrays.asList(attrValue, configuredDefault, mock(IFormula.class)));
+        entries = DatatypeMismatchEntry.forEachMismatch(Arrays.asList(attrValue, configuredDefault, mockFormula()));
         assertThat(entries.size(), is(2));
         assertThat(entries.get(0).getPropertyName(), is(attrValue.getPropertyName()));
         assertThat(entries.get(1).getPropertyName(), is(configuredDefault.getPropertyName()));
+    }
+
+    private IFormula mockFormula() throws CoreException {
+        IFormula formula = mock(IFormula.class);
+        when(formula.getIpsProject()).thenReturn(ipsProject);
+        when(formula.validate(ipsProject)).thenReturn(new MessageList());
+        return formula;
     }
 
     @Test
