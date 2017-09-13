@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * {@link IIpsPackageFragmentRoot} for Libraries.
@@ -167,16 +167,14 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      * <p>
-     * Checks if two objects are "equal" without considering the parent. If
-     * {@link LibraryIpsSrcFile LibraryIpsSrcFiles} from different projects refer the same jar file
-     * and the {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is
-     * different, the default implementation in {@link IIpsElement} may yield misleadingly
-     * <code>false</code>. Therefore we need to overwrite the default implementation in
-     * {@link IIpsElement}.
+     * Checks if two objects are "equal" without considering the parent. If {@link LibraryIpsSrcFile
+     * LibraryIpsSrcFiles} from different projects refer the same jar file and the
+     * {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is different,
+     * the default implementation in {@link IIpsElement} may yield misleadingly <code>false</code>.
+     * Therefore we need to overwrite the default implementation in {@link IIpsElement}.
      */
     @Override
     public boolean equals(Object obj) {
-
         if (this == obj) {
             return true;
         }
@@ -186,15 +184,8 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         if (getClass() != obj.getClass()) {
             return false;
         }
-        IpsElement other = (IpsElement)obj;
-        if (getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!getName().equals(other.getName())) {
-            return false;
-        }
-        return true;
+        LibraryIpsPackageFragmentRoot other = (LibraryIpsPackageFragmentRoot)obj;
+        return ObjectUtil.equals(storage.getLocation(), other.storage.getLocation());
     }
 
 }
