@@ -44,7 +44,7 @@ public abstract class AbstractAssociationViewItem implements ILinkSectionViewIte
     }
 
     public boolean hasChildren() {
-        return !getLinkContainer().getLinksAsList().isEmpty();
+        return !getLinkContainer().getLinksAsList(getAssociationName()).isEmpty();
     }
 
     public IProductCmptLinkContainer getLinkContainer() {
