@@ -314,8 +314,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     private Properties readIpsObjectsProperties(JarFile archive) {
         JarEntry entry = archive.getJarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
         if (entry == null) {
-            throw new CoreRuntimeException(new IpsStatus(
-                    "Entry " + JAVA_MAPPING_ENTRY_NAME + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreRuntimeException(
+                    new IpsStatus("Entry " + JAVA_MAPPING_ENTRY_NAME + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         InputStream is = null;
         try {
@@ -324,8 +324,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             props.load(is);
             return props;
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(
-                    "Error reading " + JAVA_MAPPING_ENTRY_NAME + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreRuntimeException(
+                    new IpsStatus("Error reading " + JAVA_MAPPING_ENTRY_NAME + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             IoUtil.close(is);
         }
@@ -353,7 +353,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
     @Override
     public String toString() {
-        return "Archive " + archivePath; //$NON-NLS-1$
+        return "Archive " + getIpsProject() + "/" + archivePath; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -415,8 +415,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             try {
                 return StreamUtil.copy(archive.getInputStream(entry));
             } catch (IOException e) {
-                throw new CoreRuntimeException(new IpsStatus(
-                        "Error reading data for " + path + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new CoreRuntimeException(
+                        new IpsStatus("Error reading data for " + path + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
         } catch (IOException e) {
@@ -428,8 +428,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
                     archive.close();
                 }
             } catch (IOException e) {
-                throw new CoreRuntimeException(new IpsStatus(
-                        "Error closing stream reading " + path + " from archive " + this, e)); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new CoreRuntimeException(
+                        new IpsStatus("Error closing stream reading " + path + " from archive " + this, e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
