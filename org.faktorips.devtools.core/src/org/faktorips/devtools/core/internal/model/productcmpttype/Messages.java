@@ -35,6 +35,7 @@ public class Messages extends NLS {
     public static String ProductCmptType_notMarkedAsConfigurable;
     public static String ProductCmptType_PolicyCmptTypeDoesNotExist;
     public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;
+    public static String ProductCmptType_policyCmptTypeNotValid;
     public static String ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
     public static String ProductCmptType_caption;
     public static String ProductCmptType_pluralCaption;

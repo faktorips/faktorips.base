@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -346,7 +347,67 @@ public class XProductClassTest {
 
         assertEquals(1, result.size());
         assertThat(result, hasItem(attrNode3));
+    }
 
+    @Test
+    public void testIsValidForCodeGeneration() throws CoreException {
+        when(xProductClass.getType()).thenReturn(type);
+        when(type.isValid(ipsProject)).thenReturn(true);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(policyType.isValid(ipsProject)).thenReturn(true);
+        when(xPolicyCmpt.getType()).thenReturn(policyType);
+        when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject);
+
+        assertTrue(xProductClass.isValidForCodeGeneration());
+    }
+
+    @Test
+    public void testIsValidForCodeGeneration_typeInvalid() throws CoreException {
+        when(xProductClass.getType()).thenReturn(type);
+        when(type.isValid(ipsProject)).thenReturn(false);
+
+        assertFalse(xProductClass.isValidForCodeGeneration());
+    }
+
+    @Test
+    public void testIsValidForCodeGeneration_notConfigured() throws CoreException {
+        when(xProductClass.getType()).thenReturn(type);
+        when(type.isValid(ipsProject)).thenReturn(true);
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
+
+        assertTrue(xProductClass.isValidForCodeGeneration());
+    }
+
+    @Test
+    public void testIsValidForCodeGeneration_policyTypeInvalid() throws CoreException {
+        when(xProductClass.getType()).thenReturn(type);
+        when(type.isValid(ipsProject)).thenReturn(true);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(policyType.isValid(ipsProject)).thenReturn(false);
+        when(xPolicyCmpt.getType()).thenReturn(policyType);
+        when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject);
+
+        assertFalse(xProductClass.isValidForCodeGeneration());
+    }
+
+    @Test
+    public void testIsValidForCodeGeneration_policyTypeInvalidForProductProject() throws CoreException {
+        when(xProductClass.getType()).thenReturn(type);
+        when(type.isValid(ipsProject)).thenReturn(true);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        IIpsProject ipsProject2 = mock(IIpsProject.class);
+        when(policyType.isValid(ipsProject)).thenReturn(false);
+        when(policyType.isValid(ipsProject2)).thenReturn(true);
+        when(xPolicyCmpt.getType()).thenReturn(policyType);
+        when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject2);
+
+        assertTrue(xProductClass.isValidForCodeGeneration());
     }
 
 }

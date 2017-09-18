@@ -49,7 +49,7 @@ public abstract class XProductClass extends XType {
                 return false;
             } else {
                 if (isConfigurationForPolicyCmptType()) {
-                    return getPolicyCmptClass().getType().isValid(getIpsProject());
+                    return getPolicyCmptClass().getType().isValid(getPolicyCmptClass().getIpsProject());
                 } else {
                     return true;
                 }
@@ -180,8 +180,8 @@ public abstract class XProductClass extends XType {
         if (isCached(XProductAssociation.class)) {
             return getCachedObjects(XProductAssociation.class);
         } else {
-            Set<XProductAssociation> nodesForParts = initNodesForParts(
-                    getAssociationsInternal(isChangeOverTimeClass()), XProductAssociation.class);
+            Set<XProductAssociation> nodesForParts = initNodesForParts(getAssociationsInternal(isChangeOverTimeClass()),
+                    XProductAssociation.class);
             putToCache(nodesForParts);
             return nodesForParts;
         }
@@ -382,13 +382,13 @@ public abstract class XProductClass extends XType {
     }
 
     public String getGenerationConceptNameSingular() {
-        return getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode(), true);
+        return getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(), true);
     }
 
     public String getGenerationConceptNamePlural() {
-        return getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(
-                getLanguageUsedInGeneratedSourceCode(), true);
+        return getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural(getLanguageUsedInGeneratedSourceCode(), true);
     }
 
     private IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {

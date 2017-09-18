@@ -49,8 +49,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    public static final List<String> SUPPORTED_ICON_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(
-            "gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
+    public static final List<String> SUPPORTED_ICON_EXTENSIONS = Collections
+            .unmodifiableList(Arrays.asList("gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
 
     /**
      * Prefix for all message codes of this class.
@@ -75,6 +75,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      */
     public static final String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE = MSGCODE_PREFIX
             + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the referenced policy component type is invalid and
+     * therefore code generation for this type will fail.
+     */
+    public static final String MSGCODE_POLICY_CMPT_TYPE_NOT_VALID = MSGCODE_PREFIX + "PolicyCmptTypeNotValid"; //$NON-NLS-1$
 
     /**
      * Validation code to indicate that a type has a different value for the
@@ -451,7 +457,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
      */
-    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject);
+    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties according to the given search parameters.
