@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -120,7 +122,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         return Lists.transform(getValue(), new Function<SingleValueHolder, IValue<?>>() {
 
             @Override
-            public IValue<?> apply(SingleValueHolder input) {
+            public IValue<?> apply(@Nonnull SingleValueHolder input) {
                 return input.getValue();
             }
         });
