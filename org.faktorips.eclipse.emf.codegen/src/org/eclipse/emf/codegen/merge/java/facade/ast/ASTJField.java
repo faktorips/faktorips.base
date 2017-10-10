@@ -21,6 +21,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JField;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
+import org.eclipse.jdt.core.dom.Dimension;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -308,8 +309,27 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
         performSplit();
 
         this.type = type;
-        setNodeProperty(variableDeclarationFragment, 0, VariableDeclarationFragment.EXTRA_DIMENSIONS2_PROPERTY);
+        removeExtraDimension();
         setTrackedNodeProperty(getASTNode(), type, FieldDeclaration.TYPE_PROPERTY, ASTNode.SIMPLE_TYPE);
+    }
+
+    /**
+     * Extra dimension is the optional array declaration after the field name. For example in
+     * 
+     * <pre>
+     * private String a[] = null;
+     * </pre>
+     * 
+     * We do not want to have these extra dimensions at all. If there are some extra dimensions we
+     * simply remove them.
+     */
+    private void removeExtraDimension() {
+        @SuppressWarnings("unchecked")
+        List<Dimension> extraDimensions = variableDeclarationFragment.extraDimensions();
+        for (Dimension d : extraDimensions) {
+            removeNodeFromListProperty(variableDeclarationFragment, d,
+                    VariableDeclarationFragment.EXTRA_DIMENSIONS2_PROPERTY);
+        }
     }
 
     @Override
@@ -339,8 +359,8 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
      */
     protected void prepareSplit() {
         // check number of fragments
-        ListRewrite listRewrite = rewriter
-                .getListRewrite(originalFieldDeclaration, FieldDeclaration.FRAGMENTS_PROPERTY);
+        ListRewrite listRewrite = rewriter.getListRewrite(originalFieldDeclaration,
+                FieldDeclaration.FRAGMENTS_PROPERTY);
         List<?> fragments = listRewrite.getRewrittenList();
         if (splitPerformed || fragments.size() <= 1) {
             splitPerformed = true;
@@ -440,8 +460,8 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
 
                 // set javadoc
                 if (originalFieldDeclaration.getJavadoc() != null) {
-                    String javadocString = getFacadeHelper().applyFormatRules(
-                            getFacadeHelper().toString(originalFieldDeclaration.getJavadoc()));
+                    String javadocString = getFacadeHelper()
+                            .applyFormatRules(getFacadeHelper().toString(originalFieldDeclaration.getJavadoc()));
                     setTrackedNodeProperty(newDeclaration, javadocString, newDeclaration.getJavadocProperty(),
                             ASTNode.JAVADOC);
                 }
@@ -469,8 +489,8 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
                     IExtendedModifier originalModifier = originalModifiersIterator.next();
                     if (originalModifier.isAnnotation()) {
                         ASTJAnnotation astjAnnotation = (ASTJAnnotation)getFacadeHelper().convertToNode(modifier);
-                        astjAnnotation.trackAndReplace(astjAnnotation.getRewrittenASTNode(), getFacadeHelper()
-                                .applyFormatRules(getFacadeHelper().toString(originalModifier)));
+                        astjAnnotation.trackAndReplace(astjAnnotation.getRewrittenASTNode(),
+                                getFacadeHelper().applyFormatRules(getFacadeHelper().toString(originalModifier)));
                     }
                 }
 

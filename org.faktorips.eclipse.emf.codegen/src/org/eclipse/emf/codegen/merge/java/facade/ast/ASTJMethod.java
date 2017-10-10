@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.emf.codegen.merge.java.facade.JMethod;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Dimension;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -109,8 +110,28 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     @Override
     public void setReturnType(String type) {
         this.returnType = type;
-        setNodeProperty(getASTNode(), 0, MethodDeclaration.EXTRA_DIMENSIONS2_PROPERTY);
+        removeExtraDimensions();
         setTrackedNodeProperty(getASTNode(), type, MethodDeclaration.RETURN_TYPE2_PROPERTY, ASTNode.SIMPLE_TYPE);
+    }
+
+    /**
+     * Extra dimension is the optional array declaration after the method name. For example in
+     * 
+     * <pre>
+     * private String a()[] {
+     *     // ...
+     * }
+     * </pre>
+     * 
+     * We do not want to have these extra dimensions at all. If there are some extra dimensions we
+     * simply remove them.
+     */
+    private void removeExtraDimensions() {
+        @SuppressWarnings("unchecked")
+        List<Dimension> extraDimensions = getASTNode().extraDimensions();
+        for (Dimension d : extraDimensions) {
+            removeNodeFromListProperty(getASTNode(), d, MethodDeclaration.EXTRA_DIMENSIONS2_PROPERTY);
+        }
     }
 
     @Override

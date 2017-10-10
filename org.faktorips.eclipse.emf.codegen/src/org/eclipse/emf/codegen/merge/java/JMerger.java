@@ -335,10 +335,9 @@ public class JMerger {
 
         if (fixInterfaceBrace) {
             if (interfaceBracePattern == null) {
-                interfaceBracePattern = Pattern
-                        .compile(
-                                "(?:\\n\\r|\\r\\n|\\n|\\r)(\\s*)(?:public|private|protected|static|\\s)*(?:interface|class)\\s*[^\\{\\n\\r]*(\\{)(\\n\\r|\\r\\n|\\n|\\r)",
-                                Pattern.MULTILINE);
+                interfaceBracePattern = Pattern.compile(
+                        "(?:\\n\\r|\\r\\n|\\n|\\r)(\\s*)(?:public|private|protected|static|\\s)*(?:interface|class)\\s*[^\\{\\n\\r]*(\\{)(\\n\\r|\\r\\n|\\n|\\r)",
+                        Pattern.MULTILINE);
             }
             Matcher matcher = interfaceBracePattern.matcher(result);
             int offset = 0;
@@ -425,8 +424,8 @@ public class JMerger {
                     JNode nextTargetNodeParent = nextTargetNode.getParent();
                     if (facadeHelper.isSibilingTraversalExpensive() && parent != nextTargetNodeParent) {
                         parent = nextTargetNodeParent;
-                        children = nextTargetNodeParent == null ? null : new ArrayList<JNode>(
-                                nextTargetNodeParent.getChildren());
+                        children = nextTargetNodeParent == null ? null
+                                : new ArrayList<JNode>(nextTargetNodeParent.getChildren());
                     }
 
                     int previousTargetNodeIndex = 0;
@@ -562,8 +561,8 @@ public class JMerger {
                     Method sourceGetMethod = pullRule.getSourceGetFeature().getFeatureMethod();
                     Object value = sourceGetMethod.invoke(sourceNode, NO_ARGUMENTS);
                     Method targetPutMethod = pullRule.getTargetPutFeature().getFeatureMethod();
-                    if (!sourceGetMethod.getReturnType().isArray()
-                            || targetPutMethod.getParameterTypes()[0].isAssignableFrom(sourceGetMethod.getReturnType())) {
+                    if (!sourceGetMethod.getReturnType().isArray() || targetPutMethod.getParameterTypes()[0]
+                            .isAssignableFrom(sourceGetMethod.getReturnType())) {
                         if (value instanceof String) {
                             String stringValue = (String)value;
                             stringValue = getControlModel().getFacadeHelper().applyFormatRules(stringValue);
@@ -584,7 +583,7 @@ public class JMerger {
                                         }
                                         for (boolean match = sourceMatcher.find(sourceStart)
                                                 && targetMatcher.find(targetStart); match; match = sourceMatcher.find()
-                                                && targetMatcher.find()) {
+                                                        && targetMatcher.find()) {
                                             result.append(stringValue.substring(index, sourceMatcher.start(1)));
                                             result.append(targetMatcher.group(1));
                                             index = sourceMatcher.end(1);
@@ -632,9 +631,8 @@ public class JMerger {
                             //
                             if (sourceGetMethod.getName().equals("getReturnType")
                                     && getControlModel().getBlockPattern() != null
-                                    && ((JMethod)targetNode).getComment() != null
-                                    && getControlModel().getBlockPattern().matcher(((JMethod)targetNode).getComment())
-                                            .find()) {
+                                    && ((JMethod)targetNode).getComment() != null && getControlModel().getBlockPattern()
+                                            .matcher(((JMethod)targetNode).getComment()).find()) {
                                 continue;
                             }
 
@@ -687,10 +685,10 @@ public class JMerger {
 
                             String[] oldSuperInterfaces = (String[])sourceGetMethod.invoke(targetNode);
                             String[] superInterfaces = additionalStrings.toArray(new String[additionalStrings.size()]);
-                            if (oldSuperInterfaces == null ? superInterfaces.length != 0 : !Arrays.equals(
-                                    oldSuperInterfaces, superInterfaces)) {
-                                Method putMethod = targetNode.getClass()
-                                        .getMethod("setSuperInterfaces", String[].class);
+                            if (oldSuperInterfaces == null ? superInterfaces.length != 0
+                                    : !Arrays.equals(oldSuperInterfaces, superInterfaces)) {
+                                Method putMethod = targetNode.getClass().getMethod("setSuperInterfaces",
+                                        String[].class);
                                 putMethod.invoke(targetNode, new Object[] { superInterfaces });
                                 targetCompilationChanged = true;
                             }
@@ -698,8 +696,8 @@ public class JMerger {
                         // target method is NOT addSuperInterface
                         else {
                             String[] oldStringValues = (String[])sourceGetMethod.invoke(targetNode, NO_ARGUMENTS);
-                            List<String> old = oldStringValues == null ? Collections.<String> emptyList() : Arrays
-                                    .<String> asList(oldStringValues);
+                            List<String> old = oldStringValues == null ? Collections.<String> emptyList()
+                                    : Arrays.<String> asList(oldStringValues);
                             for (String string : additionalStrings) {
                                 if (!old.contains(string)) {
                                     targetPutMethod.invoke(targetNode, new Object[] { string });
@@ -756,10 +754,10 @@ public class JMerger {
 
     protected boolean applySweepRules(JNode targetNode) {
         for (JControlModel.SweepRule sweepRule : getControlModel().getSweepRules()) {
-            boolean sweep = (sweepRule.getSelector() == JImport.class && targetNode instanceof JImport && sweepRule
-                    .getMarkup().matcher(targetNode.getName()).find())
-                    || (sweepRule.getSelector().isInstance(targetNode) && targetPatternDictionary.isMarkedUp(
-                            sweepRule.getMarkup(), sweepRule.getParentMarkup(), targetNode));
+            boolean sweep = (sweepRule.getSelector() == JImport.class && targetNode instanceof JImport
+                    && sweepRule.getMarkup().matcher(targetNode.getName()).find())
+                    || (sweepRule.getSelector().isInstance(targetNode) && targetPatternDictionary
+                            .isMarkedUp(sweepRule.getMarkup(), sweepRule.getParentMarkup(), targetNode));
 
             if (sweep) {
                 switch (sweepRule.getAction()) {
@@ -856,8 +854,8 @@ public class JMerger {
                     }
                     targetParentFirstChild = targetChildren.isEmpty() ? null : targetChildren.get(0);
                 } else {
-                    for (JNode previousNode = facadeHelper.getPrevious(sourceNode); previousNode != null; previousNode = facadeHelper
-                            .getPrevious(previousNode)) {
+                    for (JNode previousNode = facadeHelper.getPrevious(
+                            sourceNode); previousNode != null; previousNode = facadeHelper.getPrevious(previousNode)) {
                         JNode targetSibling = sourceToTargetMap.get(previousNode);
                         if (targetSibling != null) {
                             JNode targetNextSibling = facadeHelper.getNext(targetSibling);
@@ -970,8 +968,8 @@ public class JMerger {
             }
         } else {
             for (JNode sourceChild = facadeHelper.getFirstChild(sourceNode), targetChild = facadeHelper
-                    .getFirstChild(targetNode); sourceChild != null; sourceChild = facadeHelper.getNext(sourceChild), targetChild = facadeHelper
-                    .getNext(targetChild)) {
+                    .getFirstChild(targetNode); sourceChild != null; sourceChild = facadeHelper
+                            .getNext(sourceChild), targetChild = facadeHelper.getNext(targetChild)) {
                 mapChildren(sourceChild, targetChild);
             }
         }
@@ -1047,9 +1045,8 @@ public class JMerger {
                     && method.getName().endsWith(getControlModel().getRedirect())) {
                 String qualifiedTargetMethodName = method.getQualifiedName();
                 int index = qualifiedTargetMethodName.indexOf("("); // )
-                qualifiedTargetMethodName = qualifiedTargetMethodName.substring(0, index
-                        - getControlModel().getRedirect().length())
-                        + qualifiedTargetMethodName.substring(index);
+                qualifiedTargetMethodName = qualifiedTargetMethodName.substring(0,
+                        index - getControlModel().getRedirect().length()) + qualifiedTargetMethodName.substring(index);
                 sourceNode = sourcePatternDictionary.getMethodMap().get(qualifiedTargetMethodName);
             }
             if (noAbstractTypeConversion && sourceNode == null) {

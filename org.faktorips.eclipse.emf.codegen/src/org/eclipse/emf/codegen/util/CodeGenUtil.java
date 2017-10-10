@@ -9,7 +9,6 @@
 package org.eclipse.emf.codegen.util;
 
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -564,13 +563,13 @@ public class CodeGenUtil {
         if (sourceName != null) {
             StringBuilder currentWord = new StringBuilder();
             boolean lastIsLower = false;
-            for (int index = 0, length = sourceName.length(); index < length; index = sourceName.offsetByCodePoints(
-                    index, 1)) {
+            for (int index = 0, length = sourceName.length(); index < length; index = sourceName
+                    .offsetByCodePoints(index, 1)) {
                 int codePoint = sourceName.charAt(index);
                 if (Character.isUpperCase(codePoint) || (!lastIsLower && Character.isDigit(codePoint))
                         || Character.isJavaIdentifierPart(codePoint)) {
-                    if (lastIsLower && currentWord.length() > 1 || (codePoint == '$' || codePoint == '_')
-                            && currentWord.length() > 0) {
+                    if (lastIsLower && currentWord.length() > 1
+                            || (codePoint == '$' || codePoint == '_') && currentWord.length() > 0) {
                         result.append(capName(currentWord.toString(), locale));
                         currentWord = new StringBuilder();
                     }
@@ -590,8 +589,8 @@ public class CodeGenUtil {
 
             result.append(capName(currentWord.toString(), locale));
         }
-        return result.length() == 0 || !Character.isJavaIdentifierStart(result.codePointAt(0)) ? "_" + result : result
-                .toString();
+        return result.length() == 0 || !Character.isJavaIdentifierStart(result.codePointAt(0)) ? "_" + result
+                : result.toString();
     }
 
     /**
@@ -635,8 +634,8 @@ public class CodeGenUtil {
     }
 
     protected static final String MATCH_LINE_SEPARATOR = "(\n\r?|\r\n?)";
-    protected static final Pattern BRACE_LINE_PATTERN = Pattern.compile("(\\s*" + MATCH_LINE_SEPARATOR
-            + "\\s*\\{\\s*?)" + MATCH_LINE_SEPARATOR); // }
+    protected static final Pattern BRACE_LINE_PATTERN = Pattern
+            .compile("(\\s*" + MATCH_LINE_SEPARATOR + "\\s*\\{\\s*?)" + MATCH_LINE_SEPARATOR); // }
 
     public static String convertFormat(final String tabReplacement, boolean convertToStandardBraceStyle, String value) {
         if (tabReplacement != null && !"\t".equals(tabReplacement)) {
@@ -850,17 +849,7 @@ public class CodeGenUtil {
          * A constant that will always represent the latest language level supported by the version
          * of JDT in the installed runtime. It will determine the
          */
-        private static final int JLS;
-        static {
-            int jls = AST.JLS8;
-            try {
-                Field field = AST.class.getField("JLS4");
-                jls = (Integer)field.get(null);
-            } catch (Throwable exception) {
-                // Ignore the absence of the new version support in older runtimes.
-            }
-            JLS = jls;
-        }
+        private static final int JLS = AST.JLS8;
 
         /**
          * Return an ASTParser that supports the latest language level in the version of the JDT in
