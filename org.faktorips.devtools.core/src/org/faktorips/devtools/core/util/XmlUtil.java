@@ -170,7 +170,9 @@ public class XmlUtil {
     public static final String nodeToString(Node node, String encoding) throws TransformerException {
         StringWriter writer = new StringWriter();
         nodeToWriter(node, writer, encoding);
-        return writer.toString().replace("\r\r", "\r"); //workaround for Windows bug producing \r\r\n in CDATA sections //$NON-NLS-1$//$NON-NLS-2$
+        return writer.toString().replace("\r\r", "\r"); // workaround for //$NON-NLS-1$//$NON-NLS-2$
+                                                        // Windows bug producing \r\r\n in CDATA
+                                                        // sections
     }
 
     /**
@@ -189,6 +191,8 @@ public class XmlUtil {
         Transformer transformer = getTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+        // workaround to avoid linebreak after xml declaration
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ""); //$NON-NLS-1$
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1"); //$NON-NLS-1$ //$NON-NLS-2$
         DOMSource source = new DOMSource(node);
         StreamResult result = new StreamResult(writer);
@@ -203,8 +207,8 @@ public class XmlUtil {
     @SuppressWarnings("unused")
     // Unused exception suppressed because of deprecation.
     // CSOFF: ThrowsCount
-    public static final Document getDocument(InputStream is) throws SAXException, IOException,
-    ParserConfigurationException {
+    public static final Document getDocument(InputStream is)
+            throws SAXException, IOException, ParserConfigurationException {
         return getDefaultDocumentBuilder().parse(is);
     }
 
@@ -221,8 +225,8 @@ public class XmlUtil {
     /**
      * Writes a XML document to a file.
      * <p>
-     * See also the <a
-     * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * See also the
+     * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
      */
     public static void writeXMLtoFile(File file, Document doc, String doctype, int indentWidth, String encoding)
@@ -234,8 +238,8 @@ public class XmlUtil {
     /**
      * Writes a XML document to a file.
      * <p>
-     * See also the <a
-     * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * See also the
+     * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
      */
     public static void writeXMLtoStream(OutputStream os, Document doc, String doctype, int indentWidth, String encoding)
@@ -247,8 +251,8 @@ public class XmlUtil {
     /**
      * Writes a XML document to a DOM result object.
      * <p>
-     * See also the <a
-     * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * See also the
+     * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
      */
     private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
@@ -257,7 +261,8 @@ public class XmlUtil {
         Source src = new DOMSource(doc);
         transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+        // workaround to avoid linebreak after xml declaration
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ""); //$NON-NLS-1$
         if (encoding != null) {
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         }

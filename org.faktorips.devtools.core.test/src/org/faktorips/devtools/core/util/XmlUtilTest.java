@@ -89,6 +89,20 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testNodeToString_CheckLinebreaks() throws TransformerException {
+        Document doc = newDocument();
+        doc.setXmlStandalone(true);
+
+        Element element = doc.createElement("el");
+        doc.appendChild(element);
+
+        String string = XmlUtil.nodeToString(doc, "UTF-8");
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SystemUtils.LINE_SEPARATOR + "<el/>"
+                + SystemUtils.LINE_SEPARATOR;
+        assertEquals(expected, string);
+    }
+
+    @Test
     public void testGetFirstElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
