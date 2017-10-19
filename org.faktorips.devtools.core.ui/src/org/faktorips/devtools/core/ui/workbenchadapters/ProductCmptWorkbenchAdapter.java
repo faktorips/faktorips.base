@@ -13,8 +13,10 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -33,7 +35,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
-    // using imageRegistry and not the resource manager because images have to be leaded by input
+    private static final String PRODUCT_TEMPLATE_OVERLAY = "ProductTemplateOverlay.gif"; //$NON-NLS-1$
+
+    // using imageRegistry and not the resource manager because images have to be read by input
     // stream to support all kinds of images in user projects, including images in archives.
     // The image registry uses the UIPlugin's resource manager internally
     private ImageRegistry imageRegistry;
@@ -89,7 +93,13 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
             String typeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             if (typeName != null) {
                 IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
-                return getProductCmptImageDescriptor(type);
+                ImageDescriptor productCmptImageDescriptor = getProductCmptImageDescriptor(type);
+                String templateName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
+                if (StringUtils.isNotBlank(templateName)) {
+                    return IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(
+                            productCmptImageDescriptor.createImage(), PRODUCT_TEMPLATE_OVERLAY, IDecoration.TOP_LEFT);
+                }
+                return productCmptImageDescriptor;
             }
         }
         return getDefaultImageDescriptor();
