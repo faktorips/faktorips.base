@@ -76,8 +76,8 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     @Override
     public String getBaseVersion() {
-        return checkTocModifications ? dataSource.getLastModificationStamp(tocResourcePath) : toc
-                .getProductDataVersion();
+        return checkTocModifications ? dataSource.getLastModificationStamp(tocResourcePath)
+                : toc.getProductDataVersion();
     }
 
     @Override
@@ -105,8 +105,8 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         for (int i = 0; i < nl.getLength(); i++) {
             if (GenerationTocEntry.XML_TAG.equals(nl.item(i).getNodeName())) {
                 Element genElement = (Element)nl.item(i);
-                DateTime generationValidFrom = DateTime.parseIso(genElement
-                        .getAttribute(GenerationTocEntry.PROPERTY_VALID_FROM));
+                DateTime generationValidFrom = DateTime
+                        .parseIso(genElement.getAttribute(GenerationTocEntry.PROPERTY_VALID_FROM));
                 if (validFrom.equals(generationValidFrom)) {
                     throwExceptionIfModified(tocEntry.getParent().getIpsObjectId(), getBaseVersion());
                     return genElement;

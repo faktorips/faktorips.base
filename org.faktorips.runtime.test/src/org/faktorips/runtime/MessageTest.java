@@ -10,15 +10,16 @@
 
 package org.faktorips.runtime;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,24 @@ public class MessageTest extends XmlAbstractTestCase {
             assertEquals(mps.get(i).getName(), mpsCpy.get(i).getName());
             assertEquals(mps.get(i).getValue(), mpsCpy.get(i).getValue());
         }
+    }
+
+    @Test
+    public void testCreateCopyWithMarkers() {
+
+        Set<IMarker> markers = new HashSet<IMarker>();
+        markers.add(mock(IMarker.class));
+        Message msg = new Message("code", "text", Message.INFO, Collections.<ObjectProperty> emptyList(),
+                Collections.<MsgReplacementParameter> emptyList(), markers);
+        Message copy = Message.createCopy(msg, "a", "b");
+
+        assertEquals("code", copy.getCode());
+        assertEquals("text", copy.getText());
+        assertEquals(Message.INFO, copy.getSeverity());
+        assertEquals(0, copy.getInvalidObjectProperties().size());
+        assertEquals(0, copy.getReplacementParameters().size());
+        assertEquals(1, copy.getMarkers().size());
+
     }
 
     @Test
@@ -163,9 +182,8 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(0, copy.getInvalidObjectProperties().size());
         assertEquals(0, copy.getReplacementParameters().size());
 
-        List<MsgReplacementParameter> params = Arrays.asList(
-                new MsgReplacementParameter("sumInsured", Money.euro(100)), new MsgReplacementParameter("minAge",
-                        new Integer(18)));
+        List<MsgReplacementParameter> params = Arrays.asList(new MsgReplacementParameter("sumInsured", Money.euro(100)),
+                new MsgReplacementParameter("minAge", new Integer(18)));
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
         copy = new Message(msg);
         List<MsgReplacementParameter> copyParams = copy.getReplacementParameters();
@@ -452,8 +470,8 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testInvalideObjects_ArrayListOfInvalideObjectProperties() {
-        List<ObjectProperty> objectProperties = Arrays.asList(new ObjectProperty(this, "prop1"), new ObjectProperty(
-                this, "prop2"));
+        List<ObjectProperty> objectProperties = Arrays.asList(new ObjectProperty(this, "prop1"),
+                new ObjectProperty(this, "prop2"));
         Message message = Message.error("messageText").invalidObjects(objectProperties).create();
 
         assertEquals(2, message.getNumOfInvalidObjectProperties());

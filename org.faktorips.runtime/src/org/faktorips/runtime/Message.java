@@ -163,8 +163,10 @@ public class Message implements Serializable {
      * @param invalidObject the Object of the ObjectProperty
      * @param invalidObjectProperties An array of propertie's names the message refers to
      */
-    public Message(String code, String text, Severity severity, Object invalidObject, String... invalidObjectProperties) {
-        this(new Builder(text, severity).code(code).invalidObjectWithProperties(invalidObject, invalidObjectProperties));
+    public Message(String code, String text, Severity severity, Object invalidObject,
+            String... invalidObjectProperties) {
+        this(new Builder(text, severity).code(code).invalidObjectWithProperties(invalidObject,
+                invalidObjectProperties));
     }
 
     /**
@@ -342,7 +344,8 @@ public class Message implements Serializable {
                 newOp.add(objectProperty);
             }
         }
-        return new Message(msg.code, msg.text, msg.severity, newOp, msg.getReplacementParameters());
+        return new Builder(msg.text, msg.severity).code(msg.code).invalidObjects(newOp)
+                .replacements(msg.getReplacementParameters()).markers(msg.getMarkers()).create();
     }
 
     /**
