@@ -32,9 +32,9 @@ public interface «name» «EXPAND CommonDefinitions::extendedInterfaces»{
 «DEFINE getterMethod FOR XEnumAttribute-»
 	/**
 	«IF multilingual-»
-	* «localizedJDoc("GETTER_MULTILINGUAL", name)»
+	* «localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)-»
 	«ELSE-»
-	* «localizedJDoc("GETTER", name)»
+	* «localizedJDoc("GETTER", name, descriptionForJDoc)-»
 	«ENDIF-»
 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	* @generated
