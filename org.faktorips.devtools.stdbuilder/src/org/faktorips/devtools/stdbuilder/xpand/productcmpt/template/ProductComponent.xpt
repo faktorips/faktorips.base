@@ -190,7 +190,6 @@
 «ENDDEFINE»
 
 «REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
-«REM» TODO may use covariant return type«ENDREM»
 «DEFINE createPolicyCmpt(XProductCmptClass currentType) FOR XPolicyCmptClass»
 	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
 	    /**

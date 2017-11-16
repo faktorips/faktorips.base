@@ -6,6 +6,28 @@
 
 «DEFINE copyMethods FOR XPolicyCmptClass-»
 	
+	«IF genInterface()-»
+		«EXPAND copyMethodsDecl-»
+	«ELSE-» 
+		«EXPAND copyMethodsImpl-»
+	«ENDIF-»
+	
+«ENDDEFINE»
+
+«DEFINE copyMethodsDecl FOR XPolicyCmptClass-»
+	
+	    /**
+	     * «inheritDoc()»
+	     * 
+	     * @generated
+	     */
+	    @Override
+	    public «abstract()» «getClassName(genInterface())» «newCopy()»;
+		
+«ENDDEFINE»
+
+«DEFINE copyMethodsImpl FOR XPolicyCmptClass-»
+	
    	«IF !abstract-»
 	    /**
 	     * «inheritDoc()»
@@ -13,12 +35,14 @@
 	     * @generated
 	     */
 	    @Override
-	    public «IModelObject()» «newCopy()» {
+	    public «implClassName» «newCopy()» {
 	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
-	        «implClassName» newCopy = («implClassName») «newCopyInternal("copyMap")»;
+	        «implClassName» newCopy = «newCopyInternal("copyMap")»;
 	        «copyAssociationsInternal("newCopy", "copyMap")»;
 	        return newCopy;
 	    }
+	«ELSE-»
+		«EXPAND copyMethodsDecl-»		
 	«ENDIF-»
 	
 	/**
@@ -27,7 +51,7 @@
      * @generated
      */
     «overrideAnnotationIfHasSuperclass()-»
-    public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
+    public «implClassName» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF !abstract-»
 	        «implClassName» newCopy = («implClassName»)copyMap.get(this);
 	        if (newCopy == null) {
@@ -119,7 +143,7 @@
 				«IF oneToMany-»
 			        for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) { «REM» TODO cast ohne published interfaces nicht noetig«ENDREM»
 			            «targetClassName» «copySupportLoopVarName» = «castToImplementation(targetClassName)» it.next();
-			            «targetClassName» «copySupportCopyVarName» = («targetClassName»)«copySupportLoopVarName».newCopyInternal(copyMap);
+			            «targetClassName» «copySupportCopyVarName» = «copySupportLoopVarName».newCopyInternal(copyMap);
 			            «IF setInverseAssociationInCopySupport-»
 				            «copySupportCopyVarName».«inverseAssociation.methodNameSetOrAddInternal»(concreteCopy);
 			           	«ENDIF-»
