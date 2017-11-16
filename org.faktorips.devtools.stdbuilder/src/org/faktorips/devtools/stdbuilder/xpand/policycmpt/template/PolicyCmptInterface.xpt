@@ -71,6 +71,11 @@
 			«IF generatePolicyBuilder && !abstract-»
 				«EXPAND PolicyCmptCreateBuilder::builder FOR policyBuilderModelNode-»
 			«ENDIF-»
+			
+		    «IF generateCopySupport-»
+	    		«EXPAND CopySupport::copyMethods-»
+	 	    «ENDIF-»
+			
 		}
 	«ENDFILE»
 «ENDDEFINE»
