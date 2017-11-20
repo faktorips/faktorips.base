@@ -52,17 +52,17 @@ public class XPolicyAssociation extends XAssociation {
         return getSubsettedDetailToMasterAssociationsInternal(new HashSet<String>(), getSourceType());
     }
 
-    private Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociationsInternal(Set<String> resultingNames,
-            IType currentType) {
+    private Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociationsInternal(
+            Set<String> resultingNames, IType currentType) {
         LinkedHashSet<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
         try {
             if (isCompositionDetailToMaster()) {
                 if (isSharedAssociation()) {
                     if (!isSharedAssociationImplementedInSuperclass()) {
-                        IPolicyCmptTypeAssociation sharedAssociationHost = getAssociation().findSharedAssociationHost(
-                                getIpsProject());
-                        resultingAssociations.add(getModelNode(sharedAssociationHost,
-                                XDetailToMasterDerivedUnionAssociation.class));
+                        IPolicyCmptTypeAssociation sharedAssociationHost = getAssociation()
+                                .findSharedAssociationHost(getIpsProject());
+                        resultingAssociations
+                                .add(getModelNode(sharedAssociationHost, XDetailToMasterDerivedUnionAssociation.class));
                         resultingNames.add(sharedAssociationHost.getName());
                     }
                 } else {
@@ -89,10 +89,9 @@ public class XPolicyAssociation extends XAssociation {
                                 }
                                 if (superAssociationWithSameName != null
                                         || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
-                                    resultingAssociations
-                                            .addAll(detailToMasterDerivedUnion
-                                                    .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
-                                                            currentType));
+                                    resultingAssociations.addAll(
+                                            detailToMasterDerivedUnion.getSubsettedDetailToMasterAssociationsInternal(
+                                                    resultingNames, currentType));
                                 }
                             }
                         }
@@ -106,8 +105,8 @@ public class XPolicyAssociation extends XAssociation {
                         XPolicyAssociation inverseOfSuperAssociation = superAssociationWithSameName
                                 .getInverseAssociation();
                         if (inverseOfSuperAssociation == null) {
-                            throw new RuntimeException("Cannot find inverse association of "
-                                    + superAssociationWithSameName);
+                            throw new RuntimeException(
+                                    "Cannot find inverse association of " + superAssociationWithSameName);
                         }
                         if (inverseOfSuperAssociation.isDerived()) {
                             resultingAssociations.add(getModelNode(superAssociationWithSameName.getAssociation(),
@@ -184,7 +183,8 @@ public class XPolicyAssociation extends XAssociation {
      * Returns <code>true</code> for:
      * <ul>
      * <li>oneToMany associations (but not derived unions, see below)</li>
-     * <li>oneToOne associations (but <code>false</code> for onToOne-detailToMaster associations)</li>
+     * <li>oneToOne associations (but <code>false</code> for onToOne-detailToMaster
+     * associations)</li>
      * </ul>
      * Returns <code>false</code> for
      * <ul>
@@ -371,8 +371,8 @@ public class XPolicyAssociation extends XAssociation {
             if (inverseAssoc != null) {
                 return getModelNode(inverseAssoc, XPolicyAssociation.class);
             } else {
-                throw new NullPointerException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
-                        getAssociation()));
+                throw new NullPointerException(
+                        NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.", getAssociation()));
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -387,8 +387,8 @@ public class XPolicyAssociation extends XAssociation {
         // TODO FIPS-1141 correct but not in old code generator:
         // return (isMasterToDetail() || isTypeAssociation()) && hasInverseAssociation();
         try {
-            return (hasInverseAssociation() || getAssociation().isComposition()
-                    && ((IPolicyCmptType)getTargetType()).isDependantType());
+            return (hasInverseAssociation()
+                    || getAssociation().isComposition() && ((IPolicyCmptType)getTargetType()).isDependantType());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -602,19 +602,6 @@ public class XPolicyAssociation extends XAssociation {
             return super.getMethodNameGetSingle();
         } else {
             return getMethodNameGetter();
-        }
-    }
-
-    /**
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143. One-To-One Getters are
-     * generated without capitalized names.
-     */
-    @Override
-    public String getMethodNameGetter() {
-        if (!isOneToMany()) {
-            return "get" + getName(false);
-        } else {
-            return super.getMethodNameGetter();
         }
     }
 

@@ -32,8 +32,8 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
  */
 public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssociation {
 
-    public XDetailToMasterDerivedUnionAssociation(IPolicyCmptTypeAssociation association,
-            GeneratorModelContext context, ModelService modelService) {
+    public XDetailToMasterDerivedUnionAssociation(IPolicyCmptTypeAssociation association, GeneratorModelContext context,
+            ModelService modelService) {
         super(association, context, modelService);
     }
 
@@ -74,9 +74,8 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
                     }
                 } else {
                     XPolicyAssociation inverseAssociation = detailToMaster.getInverseAssociation();
-                    if (!inverseAssociation.isDerived()
-                            && (getName().equals(detailToMaster.getName()) || inverseAssociation
-                                    .isRecursiveSubsetOf(getDerivedUnion()))) {
+                    if (!inverseAssociation.isDerived() && (getName().equals(detailToMaster.getName())
+                            || inverseAssociation.isRecursiveSubsetOf(getDerivedUnion()))) {
                         subsets.add(detailToMaster);
                     }
                 }
@@ -95,16 +94,6 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    /**
-     * TODO @see {@link XPolicyAssociation#getMethodNameGetter()}
-     * 
-     * {@inheritDoc}
-     */
-    @Override
-    public String getMethodNameGetter() {
-        return "get" + getName(false);
     }
 
     /**
@@ -138,9 +127,8 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
                             }
                         } else {
                             IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(getIpsProject());
-                            if (!masterToDetail.isDerivedUnion()
-                                    && masterToDetail.getSubsettedDerivedUnion().equals(
-                                            detailToMasterDU.getInverseAssociation())) {
+                            if (!masterToDetail.isDerivedUnion() && masterToDetail.getSubsettedDerivedUnion()
+                                    .equals(detailToMasterDU.getInverseAssociation())) {
                                 foundSubset = true;
                                 return false;
                             }
