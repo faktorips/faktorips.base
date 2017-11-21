@@ -97,7 +97,7 @@ localizedJDocOrDescription(AbstractGeneratorModelNode this, String key, String p
 	if description.length > 0 then description else localizedJDoc(key, param1, param2);
 	
 abstract(XType this) :
-	if abstract && !genInterface() then "abstract";
+	if abstract then "abstract";
 
 isPolicyCmptClass(XClass xClass) :
 	if XPolicyCmptClass.isInstance(xClass) then true else false;

@@ -53,10 +53,6 @@ public abstract class XType extends XClass {
         return getSimpleName(BuilderAspect.INTERFACE);
     }
 
-    public String getClassName(boolean isInterface) {
-        return getSimpleName(BuilderAspect.getValue(isInterface));
-    }
-
     public String getNameForVariable() {
         return getJavaNamingConvention().getMemberVarName(getName());
     }

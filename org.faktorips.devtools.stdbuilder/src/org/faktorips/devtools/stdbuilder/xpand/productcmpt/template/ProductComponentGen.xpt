@@ -184,7 +184,7 @@
 	     * @generated
 	     */
 	     «overrideAnnotationForPublishedMethodOrIf(!genInterface(), this.productCmptNode != currentType)-»
-	    public «getClassName(genInterface())» «method(methodNameCreatePolicyCmpt)»
+	    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)»
 	    «IF genInterface()»;«ELSE-»
 	    {
 	        «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());

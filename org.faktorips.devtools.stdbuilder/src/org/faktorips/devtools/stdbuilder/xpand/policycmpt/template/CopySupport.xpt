@@ -6,28 +6,6 @@
 
 «DEFINE copyMethods FOR XPolicyCmptClass-»
 	
-	«IF genInterface()-»
-		«EXPAND copyMethodsDecl-»
-	«ELSE-» 
-		«EXPAND copyMethodsImpl-»
-	«ENDIF-»
-	
-«ENDDEFINE»
-
-«DEFINE copyMethodsDecl FOR XPolicyCmptClass-»
-	
-	    /**
-	     * «inheritDoc()»
-	     * 
-	     * @generated
-	     */
-	    @Override
-	    public «abstract()» «getClassName(genInterface())» «newCopy()»;
-		
-«ENDDEFINE»
-
-«DEFINE copyMethodsImpl FOR XPolicyCmptClass-»
-	
    	«IF !abstract-»
 	    /**
 	     * «inheritDoc()»
@@ -35,14 +13,12 @@
 	     * @generated
 	     */
 	    @Override
-	    public «implClassName» «newCopy()» {
+	    public «IModelObject()» «newCopy()» {
 	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
-	        «implClassName» newCopy = «newCopyInternal("copyMap")»;
+	        «implClassName» newCopy = («implClassName») «newCopyInternal("copyMap")»;
 	        «copyAssociationsInternal("newCopy", "copyMap")»;
 	        return newCopy;
 	    }
-	«ELSE-»
-		«EXPAND copyMethodsDecl-»		
 	«ENDIF-»
 	
 	/**
@@ -51,7 +27,7 @@
      * @generated
      */
     «overrideAnnotationIfHasSuperclass()-»
-    public «implClassName» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
+    public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF !abstract-»
 	        «implClassName» newCopy = («implClassName»)copyMap.get(this);
 	        if (newCopy == null) {
