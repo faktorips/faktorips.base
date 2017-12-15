@@ -519,22 +519,24 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (!event.getIpsSrcFile().equals(ipsSrcFile)) {
             return;
         }
+        if (isActive()) {
+            Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
+            display.asyncExec(new Runnable() {
 
-        Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
-        display.syncExec(new Runnable() {
+                @Override
+                public void run() {
+                    logMethodStarted("contentsChanged(): Received content changed event for the file being edited." //$NON-NLS-1$
+                            + event.getEventType());
 
-            @Override
-            public void run() {
-                logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType()); //$NON-NLS-1$
+                    updateHeaderMessage();
+                    if (event.isAffected(getIpsObject())) {
+                        updatePageStructure(false);
+                    }
 
-                updateHeaderMessage();
-                if (event.isAffected(getIpsObject())) {
-                    updatePageStructure(false);
+                    logMethodFinished("contentChanged()"); //$NON-NLS-1$
                 }
-
-                logMethodFinished("contentChanged()"); //$NON-NLS-1$
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -614,7 +616,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>.
      */
     protected boolean isActive() {
-        return this == getSite().getPage().getActiveEditor();
+        return Display.getCurrent().getActiveShell() == getSite().getShell()
+                && this == getSite().getPage().getActiveEditor();
     }
 
     protected void handleEditorActivation() {
@@ -640,9 +643,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
                 MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
                         Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
-                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
-                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
-                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
+                        new String[] { Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton },
+                        0);
                 dlg.open();
                 if (dlg.getReturnCode() == 0) {
                     try {
@@ -842,8 +846,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     private void logInternal(String msg) {
         String file = ipsSrcFile == null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$ //$NON-NLS-1$
-        System.out.println(getLogPrefix() + msg
-                + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+        System.out.println(
+                getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                                                                                                                 // $NON-NLS-2$
     }
 
     private String getLogPrefix() {
@@ -998,7 +1003,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public void partBroughtToTop(IWorkbenchPart part) {
-            // Nothing to do
+            // partBroughtToTop is called for example when selecting an object in package explorer
+            // which is already opened in the editor. In this case the editor is visible but not
+            // activated, hence no partActivated event is triggered.
+            partActivated(part);
         }
 
         @Override
