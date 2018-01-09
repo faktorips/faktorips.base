@@ -21,10 +21,13 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +39,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -51,6 +56,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
@@ -84,6 +91,8 @@ import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
 
@@ -381,6 +390,47 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(2, object.getPolicyCmptTypeAttributes().size());
         assertNotNull(object.getPolicyCmptTypeAttributes().get(1));
         assertTrue(sourceFile.isDirty());
+    }
+
+    @Test
+    public void testForceReloadOfCachedIpsSrcFileContents_forExternalResources() throws Exception {
+        IIpsProject ipsProject = newIpsProject();
+        IpsModel ipsModel = (IpsModel)ipsProject.getIpsModel();
+
+        // Resource does not exist in workspace, therefore will always return -1 as modification stamp
+        IResource externalResource = ipsProject.getProject().getFile("foo.bar");
+        IpsObjectType ipsObjectType = mock(IpsObjectType.class);
+        IpsSrcFile ipsSrcFile = mock(IpsSrcFile.class);
+        when(ipsSrcFile.exists()).thenReturn(true);
+        when(ipsSrcFile.getIpsObjectType()).thenReturn(ipsObjectType);
+        when(ipsSrcFile.getEnclosingResource()).thenReturn(externalResource);
+        when(ipsSrcFile.getContentFromEnclosingResource()).thenAnswer(withNewXmlInputStream());
+
+        IpsObject ipsObject = mock(IpsObject.class);
+        when(ipsObjectType.newObject(ipsSrcFile)).thenReturn(ipsObject);
+        when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+
+        // prime the cache
+        ipsModel.getIpsSrcFileContent(ipsSrcFile);
+
+        // clear the cache
+        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+        when(event.getType()).thenReturn(IResourceChangeEvent.PRE_REFRESH);
+        ipsModel.resourceChanged(event);
+
+        // reload, as cache entry should be marked invalid
+        ipsModel.getIpsSrcFileContent(ipsSrcFile);
+        verify(ipsSrcFile, times(2)).getContentFromEnclosingResource();
+    }
+
+    private Answer<InputStream> withNewXmlInputStream() {
+        return new Answer<InputStream>() {
+
+            @Override
+            public InputStream answer(InvocationOnMock invocation) throws Throwable {
+                return new ByteArrayInputStream("<Foo/>".getBytes());
+            }
+        };
     }
 
     /**
