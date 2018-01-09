@@ -10106,9 +10106,12 @@ unspecific
 mergeable
 implementieren
 blendet
-kardinalit‰ten
+kardinalit√§ten
 assoziationen
 multilingual
 selectable
 accessor
 moloch
+categorized
+intializes
+ipsproject

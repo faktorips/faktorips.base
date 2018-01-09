@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
+import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
@@ -119,6 +120,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public static final boolean TRACE_VALIDATION;
 
+    /**
+     * We must use a value different from {@link IResource#NULL_STAMP} because otherwise files which
+     * do not exist in workspace (like {@link LibraryIpsSrcFile}) would remain cached forever.
+     * <p>
+     * Described in FIPS-5745
+     */
+    private static final int INVALID_MOD_STAMP = -42;
+
     static {
         TRACE_MODEL_MANAGEMENT = Boolean
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
@@ -130,8 +139,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * resource delta visitor used to generate ips sourcefile contents changed events and trigger a
-     * build after changes to the ips project properties file.
+     * Resource delta visitor used to generate IPS source file contents changed events and trigger a
+     * build after changes to the IPS project properties file.
      */
     private ResourceDeltaVisitor resourceDeltaVisitor;
 
@@ -275,7 +284,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the data for the given ips project.
+     * Returns the data for the given IPS project.
      */
     private IpsProjectData getIpsProjectData(IIpsProject ipsProject) {
         IpsProjectData data = ipsProjectDatas.get(ipsProject);
@@ -937,9 +946,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the properties (stored in the .ipsproject file) for the given ips project. If an
+     * Returns the properties (stored in the .ipsproject file) for the given IPS project. If an
      * error occurs while accessing the .ipsproject file or the file does not exist an error is
-     * logged and an empty ips project data instance is returned.
+     * logged and an empty IPS project data instance is returned.
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
@@ -1050,7 +1059,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Forces to reload the the cached IPS source file contents of a single project or the whole
-     * workspace. This is done by setting -1 as modification stamp in each content object.
+     * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in each
+     * content object.
      * 
      * @param project The project that should considered or <code>null</code> if the whole workspace
      *            should be considered.
@@ -1078,7 +1088,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     private void releaseInCache(IIpsSrcFile srcFile) {
         IpsSrcFileContent contents = ipsObjectsMap.get(srcFile);
-        contents.setModificationStamp(-1);
+        contents.setModificationStamp(INVALID_MOD_STAMP);
     }
 
     /**
@@ -1334,10 +1344,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the content for the given ips src file. If the ips source file's corresponding
+     * Returns the content for the given IPS source file. If the IPS source file's corresponding
      * resource does not exist, the method returns <code>null</code>. If loadCompleteContent is
      * <code>true</code> then the complete content will be read from the source file, if
-     * <code>false</code> then only the properties of the ips object will be read.
+     * <code>false</code> then only the properties of the IPS object will be read.
      * 
      * @param file the file to read
      * 
