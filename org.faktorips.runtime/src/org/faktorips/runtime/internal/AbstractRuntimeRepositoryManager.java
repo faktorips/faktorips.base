@@ -20,12 +20,9 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryManager;
 
 /**
- * 
  * The {@link AbstractRuntimeRepositoryManager} manages the referenced
- * {@link IRuntimeRepositoryManager}. It delegates the up to date check and the creation of new
+ * {@link IRuntimeRepositoryManager}. It delegates the up-to-date check and the creation of new
  * repositories to the subclass.
- * 
- * @author dirmeier
  */
 public abstract class AbstractRuntimeRepositoryManager implements IRuntimeRepositoryManager {
 
@@ -52,52 +49,57 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
         return getCurrentRuntimeRepository();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public synchronized IRuntimeRepository getCurrentRuntimeRepository() {
-        if (!isRepositoryUpToDate(currentRuntimeRepository) || !isReferencedRepositorysUpToDate()) {
-            currentRuntimeRepository = createNewRuntimeRepository();
-            for (IRuntimeRepositoryManager manager : managers) {
-                IRuntimeRepository runtimeRepository = manager.getCurrentRuntimeRepository();
-                if (runtimeRepository != null) {
-                    currentRuntimeRepository.addDirectlyReferencedRepository(runtimeRepository);
+    public IRuntimeRepository getCurrentRuntimeRepository() {
+        IRuntimeRepository runtimeRepository = currentRuntimeRepository;
+        if (!(isRepositoryUpToDate(runtimeRepository) && areReferencedRepositoriesUpToDate())) {
+            synchronized (this) {
+                runtimeRepository = currentRuntimeRepository;
+                if (!(isRepositoryUpToDate(runtimeRepository) && areReferencedRepositoriesUpToDate())) {
+                    runtimeRepository = createNewRuntimeRepository();
+                    for (IRuntimeRepositoryManager manager : managers) {
+                        IRuntimeRepository referencedRuntimeRepository = manager.getCurrentRuntimeRepository();
+                        if (referencedRuntimeRepository != null) {
+                            runtimeRepository.addDirectlyReferencedRepository(referencedRuntimeRepository);
+                        }
+                    }
+                    currentRuntimeRepository = runtimeRepository;
                 }
             }
         }
-        return currentRuntimeRepository;
+        return runtimeRepository;
     }
 
     /**
-     * This method checks whether the {@link IRuntimeRepository} is up to date or not. If this
-     * method returns false, a new repository have to be created
+     * Checks whether the {@link IRuntimeRepository} is up to date or not. If this method returns
+     * {@code false}, a new repository has to be created.
      * 
-     * @param currentRuntimeRepository The actual runtime repository that have to be checked
-     * @return true if the repository is still up to date
+     * @param currentRuntimeRepository the runtime repository that has to be checked
+     * @return whether the repository is still up to date
      */
     protected abstract boolean isRepositoryUpToDate(IRuntimeRepository currentRuntimeRepository);
 
     /**
-     * Creates a new repository. This method have to create thre repository but do NOT have to
-     * connect the repository to the other referenced repositories.
+     * Creates a new repository. This method has to create the repository but must NOT connect the
+     * repository to the other referenced repositories.
      * 
      * @return A newly created {@link IRuntimeRepository}
      */
     protected abstract IRuntimeRepository createNewRuntimeRepository();
 
     /**
-     * Returns true if every manager directly referenced to this one did not change it repository.
+     * Returns {@code true} if no manager directly referenced from this one did change its
+     * repository.
      * 
-     * @return true if any direct referenced repository changed
+     * @return whether no directly referenced repository changed
      */
-    private boolean isReferencedRepositorysUpToDate() {
+    private boolean areReferencedRepositoriesUpToDate() {
         List<IRuntimeRepository> directReferencedRepos = new ArrayList<IRuntimeRepository>(
                 currentRuntimeRepository.getDirectlyReferencedRepositories());
         for (IRuntimeRepositoryManager manager : managers) {
             IRuntimeRepository referencedRepository = manager.getCurrentRuntimeRepository();
             if (referencedRepository != null) {
-                // the repository of every manager have to be in the list of direct referenced
+                // the repository of every manager has to be in the list of direct referenced
                 // repositories.
                 if (!directReferencedRepos.remove(referencedRepository)) {
                     // If any manager creates a new repository return false
@@ -105,8 +107,9 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
                 }
             }
         }
-        // after iterating over all managers the list have to be empty. Otherwise a references
-        // manager was deleted
+        // after iterating over all managers the list has to be empty. Otherwise a referenced
+        // manager was
+        // deleted
         if (!directReferencedRepos.isEmpty()) {
             return false;
         }
@@ -146,11 +149,12 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
                             candidates.add(newCandidate);
                         }
                     }
-                    allManagers = Collections.unmodifiableList(result);
+                    result = Collections.unmodifiableList(result);
+                    allManagers = result;
                 }
             }
         }
-        return allManagers;
+        return result;
     }
 
 }

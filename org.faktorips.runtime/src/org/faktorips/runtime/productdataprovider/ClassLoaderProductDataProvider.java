@@ -49,7 +49,6 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     public ClassLoaderProductDataProvider(ClassLoaderDataSource dataSource, String tocResourcePath,
             boolean checkTocModifications) {
-
         super(new IVersionChecker() {
 
             @Override
@@ -142,7 +141,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     }
 
     @Override
-    public synchronized ReadonlyTableOfContents getToc() {
+    public ReadonlyTableOfContents getToc() {
         return toc;
     }
 

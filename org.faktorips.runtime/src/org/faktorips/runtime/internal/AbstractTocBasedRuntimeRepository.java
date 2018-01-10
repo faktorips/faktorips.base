@@ -112,7 +112,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
-    protected IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
+    protected IProductComponentGeneration getNextProductComponentGenerationInternal(
+            IProductComponentGeneration generation) {
         String id = generation.getProductComponent().getId();
         ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         Date validFromAsDate = generation.getValidFrom(TimeZone.getDefault());
@@ -126,7 +127,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
-    protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
+    protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(
+            IProductComponentGeneration generation) {
         String id = generation.getProductComponent().getId();
         ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         Date validFromAsDate = generation.getValidFrom(TimeZone.getDefault());
@@ -150,15 +152,16 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
-    public void getProductComponentGenerations(IProductComponent productCmpt, List<IProductComponentGeneration> result) {
+    public void getProductComponentGenerations(IProductComponent productCmpt,
+            List<IProductComponentGeneration> result) {
         if (productCmpt.getRepository() != this) {
             return;
         }
         ProductCmptTocEntry entry = toc.getProductCmptTocEntry(productCmpt.getId());
         List<GenerationTocEntry> genEntries = entry.getGenerationEntries();
         for (GenerationTocEntry genEntry : genEntries) {
-            IProductComponentGeneration gen = getProductComponentGeneration(productCmpt.getId(), genEntry
-                    .getValidFrom().toGregorianCalendar(TimeZone.getDefault()));
+            IProductComponentGeneration gen = getProductComponentGeneration(productCmpt.getId(),
+                    genEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault()));
             result.add(gen);
         }
     }
@@ -246,7 +249,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      * Initializes the runtime repository by loading the table of contents. This method have to be
      * called from the constructor after all necessary data is set.
      */
-    protected synchronized void initialize() {
+    protected void initialize() {
         setTableOfContents(loadTableOfContents());
     }
 
@@ -283,8 +286,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     @SuppressWarnings("unchecked")
     protected XmlAdapter<String, ?> createEnumXmlAdapter(String className, IRuntimeRepository repository)
             throws Exception {
-        Class<XmlAdapter<String, ?>> xmlAdapterClass = (Class<XmlAdapter<String, ?>>)getClassLoader().loadClass(
-                className);
+        Class<XmlAdapter<String, ?>> xmlAdapterClass = (Class<XmlAdapter<String, ?>>)getClassLoader()
+                .loadClass(className);
         Constructor<XmlAdapter<String, ?>> constructor = xmlAdapterClass.getConstructor(IRuntimeRepository.class);
         XmlAdapter<String, ?> instance = constructor.newInstance(repository);
         return instance;
@@ -317,10 +320,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
             try {
                 enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName(), repository));
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
-                throw new RuntimeException("Unable to create an XmlAdapter for the enumeration: "
-                        + tocEntry.getImplementationClassName(), e);
+                throw new RuntimeException(
+                        "Unable to create an XmlAdapter for the enumeration: " + tocEntry.getImplementationClassName(),
+                        e);
             }
+            // CSON: IllegalCatch
         }
         return enumXmlAdapters;
     }
