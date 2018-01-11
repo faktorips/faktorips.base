@@ -23,12 +23,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -50,7 +53,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation[] associations;
     private IProductCmpt[] productCmpts;
     private IProductCmptLink[] links;
-    private IProductCmptGeneration[] productCmptsGenerations;
+    private IProductCmptGeneration[] productCmptGenerations;
     private ProductCmptTreeStructure structure;
     private IpsPreferences ipsPreferences;
     private String mode;
@@ -85,6 +88,11 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     private void initStructure(IIpsProject rootIpsProject, IIpsProject childIpsProject) throws Exception {
+        initStructure(rootIpsProject, childIpsProject, false);
+    }
+
+    private void initStructure(IIpsProject rootIpsProject, IIpsProject childIpsProject, boolean alternatePackageRoots)
+            throws Exception {
         types = new IProductCmptType[6];
         for (int i = 0; i < types.length; i++) {
             types[i] = mock(IProductCmptType.class);
@@ -103,78 +111,69 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         when(associations[2].getType()).thenReturn(types[1]);
         when(associations[3].getType()).thenReturn(types[2]);
 
-        when(types[0].findAllNotDerivedAssociations(any(IIpsProject.class))).thenReturn(
-                Arrays.asList(new IProductCmptTypeAssociation[] { associations[0], associations[1] }));
-        when(types[1].findAllNotDerivedAssociations(any(IIpsProject.class))).thenReturn(
-                Arrays.asList(new IProductCmptTypeAssociation[] { associations[2] }));
-        when(types[2].findAllNotDerivedAssociations(any(IIpsProject.class))).thenReturn(
-                Arrays.asList(new IProductCmptTypeAssociation[] { associations[3] }));
+        when(types[0].findAllNotDerivedAssociations(any(IIpsProject.class)))
+                .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[0], associations[1] }));
+        when(types[1].findAllNotDerivedAssociations(any(IIpsProject.class)))
+                .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[2] }));
+        when(types[2].findAllNotDerivedAssociations(any(IIpsProject.class)))
+                .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[3] }));
 
+        IIpsPackageFragmentRoot[] packageRoots = mockPackageRoots(alternatePackageRoots);
+        IIpsPackageFragmentRoot[] childPackageRoots = childIpsProject == rootIpsProject ? packageRoots
+                : mockPackageRoots(alternatePackageRoots);
         productCmpts = new IProductCmpt[6];
         links = new IProductCmptLink[6];
-        productCmptsGenerations = new IProductCmptGeneration[10];
+        productCmptGenerations = new IProductCmptGeneration[6];
         for (int i = 0; i < productCmpts.length; i++) {
             productCmpts[i] = mock(IProductCmpt.class);
-            productCmpts[i].setProductCmptType("type" + i);
-            productCmptsGenerations[i] = mock(IProductCmptGeneration.class);
-            when(productCmptsGenerations[i].getParent()).thenReturn(productCmpts[i]);
+            when(productCmpts[i].getName()).thenReturn(Integer.toString(i));
+            productCmptGenerations[i] = mock(IProductCmptGeneration.class);
+            when(productCmptGenerations[i].getParent()).thenReturn(productCmpts[i]);
             ArrayList<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
-            generations.add(productCmptsGenerations[i]);
+            generations.add(productCmptGenerations[i]);
             when(productCmpts[i].getGenerations()).thenReturn(generations);
-            when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(
-                    productCmptsGenerations[i]);
+            when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class)))
+                    .thenReturn(productCmptGenerations[i]);
             when(productCmpts[i].findProductCmptType(any(IIpsProject.class))).thenReturn(types[i]);
             when(productCmpts[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
             IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
             when(productCmpts[i].getIpsSrcFile()).thenReturn(srcFile);
-            when(srcFile.getIpsProject()).thenReturn(childIpsProject);
-            when(productCmpts[i].getIpsProject()).thenReturn(rootIpsProject);
-            when(productCmptsGenerations[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
+            IIpsProject ipsProject = i < 3 ? rootIpsProject : childIpsProject;
+            when(productCmpts[i].getIpsProject()).thenReturn(ipsProject);
+            when(srcFile.getIpsProject()).thenReturn(ipsProject);
+            IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+            IIpsPackageFragmentRoot packageFragmentRoot = i < 3 ? packageRoots[i % packageRoots.length]
+                    : childPackageRoots[i % childPackageRoots.length];
+            when(packageFragment.getRoot()).thenReturn(packageFragmentRoot);
+            when(srcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+            when(productCmpts[i].getIpsPackageFragment()).thenReturn(packageFragment);
+            when(productCmptGenerations[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
             links[i] = mock(IProductCmptLink.class);
         }
 
-        when(links[0].findAssociation(any(IIpsProject.class))).thenReturn(associations[0]);
-        when(links[0].getProductCmpt()).thenReturn(productCmpts[0]);
-        when(links[0].getIpsObject()).thenReturn(productCmpts[0]);
-        when(links[0].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[1]);
+        /* @formatter:off
+         * P1: P2  packageRoot
+         * 0_:
+         * |\:\_
+         * | :\ \
+         * 2 : 1_\ rootProject
+         * --------------------
+         * | : | 3 childProject
+         * 4 : 5
+         * @formatter:on */
+        mockLink(links[0], associations[0], productCmpts[0], productCmpts[1]);
+        mockLink(links[1], associations[0], productCmpts[0], productCmpts[2]);
+        mockLink(links[2], associations[1], productCmpts[0], productCmpts[3]);
+        mockLink(links[3], associations[2], productCmpts[1], productCmpts[5]);
+        mockLink(links[4], associations[2], productCmpts[1], productCmpts[3]);
+        mockLink(links[5], associations[3], productCmpts[2], productCmpts[4]);
 
-        when(links[1].findAssociation(any(IIpsProject.class))).thenReturn(associations[0]);
-        when(links[1].getProductCmpt()).thenReturn(productCmpts[0]);
-        when(links[1].getIpsObject()).thenReturn(productCmpts[0]);
-        when(links[1].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[2]);
-
-        when(links[2].findAssociation(any(IIpsProject.class))).thenReturn(associations[1]);
-        when(links[2].getProductCmpt()).thenReturn(productCmpts[0]);
-        when(links[2].getIpsObject()).thenReturn(productCmpts[0]);
-        when(links[2].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[3]);
-
-        when(links[3].findAssociation(any(IIpsProject.class))).thenReturn(associations[2]);
-        when(links[3].getProductCmpt()).thenReturn(productCmpts[1]);
-        when(links[3].getIpsObject()).thenReturn(productCmpts[0]);
-        when(links[3].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[4]);
-
-        when(links[4].findAssociation(any(IIpsProject.class))).thenReturn(associations[2]);
-        when(links[4].getProductCmpt()).thenReturn(productCmpts[1]);
-        when(links[4].getIpsObject()).thenReturn(productCmpts[1]);
-        when(links[4].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[2]);
-
-        when(links[5].findAssociation(any(IIpsProject.class))).thenReturn(associations[3]);
-        when(links[5].getProductCmpt()).thenReturn(productCmpts[2]);
-        when(links[5].getIpsObject()).thenReturn(productCmpts[2]);
-        when(links[5].findTarget(any(IIpsProject.class))).thenReturn(productCmpts[5]);
-
-        when(productCmptsGenerations[0].getLinksIncludingProductCmpt()).thenReturn(
-                Arrays.asList(new IProductCmptLink[] { links[0], links[1], links[2] }));
-        when(productCmptsGenerations[1].getLinksIncludingProductCmpt()).thenReturn(
-                Arrays.asList(new IProductCmptLink[] { links[3], links[4] }));
-        when(productCmptsGenerations[2].getLinksIncludingProductCmpt()).thenReturn(
-                Arrays.asList(new IProductCmptLink[] { links[5] }));
-        when(productCmptsGenerations[3].getLinksIncludingProductCmpt()).thenReturn(
-                Arrays.asList(new IProductCmptLink[] {}));
-        when(productCmptsGenerations[4].getLinksIncludingProductCmpt()).thenReturn(
-                Arrays.asList(new IProductCmptLink[] {}));
-        when(productCmptsGenerations[5].getLinksIncludingProductCmpt()).thenReturn(
-                Arrays.asList(new IProductCmptLink[] {}));
+        mockLinks(productCmptGenerations[0], links[0], links[1], links[2]);
+        mockLinks(productCmptGenerations[1], links[3], links[4]);
+        mockLinks(productCmptGenerations[2], links[5]);
+        mockLinks(productCmptGenerations[3]);
+        mockLinks(productCmptGenerations[4]);
+        mockLinks(productCmptGenerations[5]);
 
         List<IValidationRuleConfig> ruleConfigs = new ArrayList<IValidationRuleConfig>();
         ruleConfigs.add(mock(IValidationRuleConfig.class));
@@ -182,12 +181,12 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         when(ruleConfigs.get(0).getName()).thenReturn("Rule1");
         when(ruleConfigs.get(1).getName()).thenReturn("RuleTwo");
 
-        when(productCmptsGenerations[0].getValidationRuleConfigs()).thenReturn(ruleConfigs);
-        when(productCmptsGenerations[1].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptsGenerations[2].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptsGenerations[3].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptsGenerations[4].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptsGenerations[5].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptGenerations[0].getValidationRuleConfigs()).thenReturn(ruleConfigs);
+        when(productCmptGenerations[1].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptGenerations[2].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptGenerations[3].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptGenerations[4].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptGenerations[5].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
 
         structure = new ProductCmptTreeStructure(productCmpts[0], new GregorianCalendar(), mock(IIpsProject.class));
 
@@ -195,16 +194,39 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         deepCopyTreeStatus.initialize(structure);
     }
 
+    private IIpsPackageFragmentRoot[] mockPackageRoots(boolean alternatePackageRoots) {
+        int number = alternatePackageRoots ? 2 : 1;
+        IIpsPackageFragmentRoot[] packageFragmentRoots = new IIpsPackageFragmentRoot[number];
+        for (int i = 0; i < number; i++) {
+            packageFragmentRoots[i] = mock(IIpsPackageFragmentRoot.class);
+        }
+        return packageFragmentRoots;
+    }
+
+    private void mockLinks(IProductCmptGeneration generation, IProductCmptLink... links) {
+        when(generation.getLinksIncludingProductCmpt()).thenReturn(Arrays.asList(links));
+    }
+
+    private void mockLink(IProductCmptLink link,
+            IProductCmptTypeAssociation association,
+            IProductCmpt source,
+            IProductCmpt target) throws CoreException {
+        when(link.findAssociation(any(IIpsProject.class))).thenReturn(association);
+        when(link.getProductCmpt()).thenReturn(source);
+        when(link.getIpsObject()).thenReturn(source);
+        when(link.findTarget(any(IIpsProject.class))).thenReturn(target);
+    }
+
     @Test
     public void testIsEnabled() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_COPY);
         initStructure();
-        Set<IProductCmptStructureReference> allCopyEnabledElements = deepCopyTreeStatus.getAllEnabledElements(
-                CopyOrLink.COPY, structure, true);
-        // 6 product components + 2 are referenced twice (productCmpts[2] and productCmpts[5])
-        assertEquals(8, allCopyEnabledElements.size());
-        Set<IProductCmptStructureReference> allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(
-                CopyOrLink.LINK, structure, true);
+        Set<IProductCmptStructureReference> allCopyEnabledElements = deepCopyTreeStatus
+                .getAllEnabledElements(CopyOrLink.COPY, structure, true);
+        // 6 product components + 1 is referenced twice (productCmpts[3])
+        assertEquals(7, allCopyEnabledElements.size());
+        Set<IProductCmptStructureReference> allLinkEnabledElements = deepCopyTreeStatus
+                .getAllEnabledElements(CopyOrLink.LINK, structure, true);
         assertEquals(0, allLinkEnabledElements.size());
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
@@ -212,9 +234,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         }
 
         IProductCmptStructureReference r1 = structure.getRoot().getChildren()[0].getChildren()[1];
-        deepCopyTreeStatus.setCopOrLink(r1, CopyOrLink.LINK);
+        deepCopyTreeStatus.setCopyOrLink(r1, CopyOrLink.LINK);
         allCopyEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, true);
-        assertEquals(6, allCopyEnabledElements.size());
+        assertEquals(5, allCopyEnabledElements.size());
         allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
         assertEquals(1, allLinkEnabledElements.size());
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
@@ -227,7 +249,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
 
         deepCopyTreeStatus.setChecked(r1, false);
         allCopyEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, true);
-        assertEquals(6, allCopyEnabledElements.size());
+        assertEquals(5, allCopyEnabledElements.size());
         allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
         assertEquals(0, allLinkEnabledElements.size());
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
@@ -299,7 +321,96 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
             } else {
-                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.LINK));
+
+                /* @formatter:off
+                 * 0_
+                 * |\\_
+                 * | \ \
+                 * 2  1_\ rootProject
+                 * -------------------
+                 * |  | 3 childProject
+                 * 4  5
+                 * @formatter:on */
+                if (Integer.parseInt(reference.getWrappedIpsObject().getName()) < 3) {
+                    assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
+                } else {
+                    assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.LINK));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testgetCopyOrLink_SmartModusOtherPackageRoot() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
+        IIpsProject rootIpsProject = mock(IIpsProject.class);
+
+        initStructure(rootIpsProject, rootIpsProject, true);
+
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            CopyOrLink copyOrLink = deepCopyTreeStatus.getCopyOrLink(reference);
+            if (reference.isRoot()) {
+                assertTrue(copyOrLink.equals(CopyOrLink.COPY));
+            } else if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertTrue(copyOrLink.equals(CopyOrLink.UNDEFINED));
+            } else {
+
+                /* @formatter:off
+                 * P1: P2
+                 * 0_:
+                 * |\:\_
+                 * | :\ \
+                 * 2 : 1_\
+                 * | : | 3
+                 * 4 : 5
+                 * @formatter:on */
+
+                int number = Integer.parseInt(reference.getWrappedIpsObject().getName());
+                boolean isInSamePackageRoot = number % 2 == 0;
+                if (isInSamePackageRoot) {
+                    assertTrue(number + " should be copied", copyOrLink.equals(CopyOrLink.COPY));
+                } else {
+                    assertTrue(number + " should be linked", copyOrLink.equals(CopyOrLink.LINK));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testgetCopyOrLink_SmartModusOtherProjectOrPackageRoot() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
+        IIpsProject rootIpsProject = mock(IIpsProject.class);
+        IIpsProject childIpsProject = mock(IIpsProject.class);
+
+        initStructure(rootIpsProject, childIpsProject, true);
+
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            CopyOrLink copyOrLink = deepCopyTreeStatus.getCopyOrLink(reference);
+            if (reference.isRoot()) {
+                assertTrue(copyOrLink.equals(CopyOrLink.COPY));
+            } else if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertTrue(copyOrLink.equals(CopyOrLink.UNDEFINED));
+            } else {
+
+                /* @formatter:off
+                 * P1: P2  packageRoot
+                 * 0_:
+                 * |\:\_
+                 * | :\ \
+                 * 2 : 1_\ rootProject
+                 * --------------------
+                 * | : | 3 childProject
+                 * 4 : 5
+                 * @formatter:on */
+
+                int number = Integer.parseInt(reference.getWrappedIpsObject().getName());
+                boolean isInSamePackageRoot = number % 2 == 0;
+                boolean isInSameProject = number < 3;
+                if (isInSamePackageRoot && isInSameProject) {
+                    assertTrue(number + " should be copied", copyOrLink.equals(CopyOrLink.COPY));
+                } else {
+                    assertTrue(number + " should be linked", copyOrLink.equals(CopyOrLink.LINK));
+                }
             }
         }
     }
