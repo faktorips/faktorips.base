@@ -58,6 +58,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.util.MultiMap;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -534,7 +535,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
         try {
             IResourceDelta delta = getDelta(getProject());
-            IncBuildVisitor visitor = new IncBuildVisitor();
+            IncBuildVisitor visitor = new IncBuildVisitor(getIpsProject());
             delta.accept(visitor);
             DependencyResolver dependencyResolver = new DependencyResolver(getIpsProject());
             MultiMap<IIpsProject, IDependency> dependenciesForProjectsMap = dependencyResolver
@@ -737,32 +738,15 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * ResourceDeltaVisitor for the incremental build.
      */
-    private class IncBuildVisitor implements IResourceDeltaVisitor {
+    private static class IncBuildVisitor implements IResourceDeltaVisitor {
 
-        private IFolder[] outputFolders;
+        private final IIpsSrcFolderEntry[] sourceFolderEntries;
+
         private List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
         private List<IIpsSrcFile> changedAndAddedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
 
-        private IncBuildVisitor() {
-            outputFolders = getIpsProject().getOutputFolders();
-        }
-
-        /**
-         * Checks if the provided resource is the java output folder resource or the IpsProject
-         * output folder resource.
-         */
-        private boolean ignoredResource(IResource resource) throws CoreException {
-            IPath outPutLocation = getIpsProject().getJavaProject().getOutputLocation();
-            IPath resourceLocation = resource.getFullPath();
-            if (outPutLocation.equals(resourceLocation)) {
-                return true;
-            }
-            for (IFolder outputFolder : outputFolders) {
-                if (outputFolder.getFullPath().equals(resourceLocation)) {
-                    return true;
-                }
-            }
-            return false;
+        private IncBuildVisitor(IIpsProject ipsProject) {
+            sourceFolderEntries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getSourceFolderEntries();
         }
 
         @Override
@@ -771,11 +755,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (resource == null || resource.getType() == IResource.PROJECT) {
                 return true;
             }
-            /*
-             * Resources in the output folders of the ipsProject and the assigned java project are
-             * ignored.
-             */
-            if (ignoredResource(resource)) {
+            if (!isIpsResource(resource)) {
                 return false;
             }
 
@@ -804,6 +784,20 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     break;
             }
             return true;
+        }
+
+        /**
+         * Checks if the provided resource is the java output folder resource or the IpsProject
+         * output folder resource.
+         */
+        private boolean isIpsResource(IResource resource) {
+            IPath resourceLocation = resource.getFullPath();
+            for (IIpsSrcFolderEntry srcFolderEntry : sourceFolderEntries) {
+                if (srcFolderEntry.getSourceFolder().getFullPath().isPrefixOf(resourceLocation)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
