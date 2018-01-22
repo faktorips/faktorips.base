@@ -37,16 +37,6 @@ public interface IPolicyCmptType extends IType {
     public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     /**
-     * The name of the super type property.
-     */
-    public static final String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
-
-    /**
-     * The name of the abstract property.
-     */
-    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
-
-    /**
      * The name of the abstract property.
      */
     public static final String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration"; //$NON-NLS-1$
