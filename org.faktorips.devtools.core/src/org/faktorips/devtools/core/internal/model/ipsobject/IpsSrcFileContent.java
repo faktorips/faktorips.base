@@ -200,8 +200,8 @@ public class IpsSrcFileContent {
         try {
             long startTime = 0;
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out
-                        .println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" + file //$NON-NLS-1$
+                System.out.println(
+                        "IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" + file //$NON-NLS-1$
                                 + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
                 startTime = System.currentTimeMillis();
             }
@@ -219,9 +219,9 @@ public class IpsSrcFileContent {
             parsable = true;
             initializedFinished();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out
-                        .println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$ //$NON-NLS-2$
-                                + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " //$NON-NLS-1$
+                        + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$
+                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } catch (Exception e) {
             parsable = false;
@@ -294,7 +294,8 @@ public class IpsSrcFileContent {
         try {
             PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
             Method readMethod = propertyDescriptor.getReadMethod();
-            return "" + readMethod.invoke(ipsObject, new Object[0]); //$NON-NLS-1$
+            Object result = readMethod.invoke(ipsObject, new Object[0]);
+            return result == null ? null : "" + result; //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
             // due to documentation this method should return null in case of property does not
             // exists.
@@ -330,8 +331,8 @@ public class IpsSrcFileContent {
                     modStampsAfterSave.add(new Long(modificationStamp));
                     markAsUnmodified();
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out
-                                .println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this); //$NON-NLS-1$ //$NON-NLS-2$
+                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                                + IpsSrcFileContent.this);
                     }
                     clearRootPropertyCache();
                 } catch (Exception e) {
