@@ -575,8 +575,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testMarkerForNotParsableIpsSrcFiles() throws CoreException, UnsupportedEncodingException {
-        IFile file = ((IContainer)root.getCorrespondingResource()).getFile(new Path("test."
-                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
+        IFile file = ((IContainer)root.getCorrespondingResource())
+                .getFile(new Path("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
         String xml = "invalid xml";
         suppressLoggingDuringExecutionOfThisTestCase();
         file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), true, null);
@@ -601,9 +601,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(ipsProject);
-        ((IpsModel)ipsProject.getIpsModel())
-                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                        builderSet) });
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
+                new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
 
         IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -611,6 +610,31 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsObject.getIpsSrcFile().getCorrespondingFile().delete(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         assertTrue(builder.deleteCalled);
+    }
+
+    @Test
+    public void testBuildOnlyFilesInIpsSrcFolder() throws CoreException {
+        TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
+
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        ipsProject.setProperties(props);
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+        builderSet.setIpsProject(ipsProject);
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
+                new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
+
+        IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        assertTrue(builder.buildCalled);
+        builder.buildCalled = false;
+
+        IResource resource = ipsObject.getEnclosingResource();
+        resource.copy(ipsProject.getProject().getFullPath().append(resource.getName()), true, null);
+
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+
+        assertTrue(!builder.buildCalled);
     }
 
     @Test
@@ -658,9 +682,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         builderSetProjectC.setIpsProject(projectC);
         builderSetProjectC.setAggregateRootBuilder(false);
 
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                TestIpsArtefactBuilderSet.ID, new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB,
-                        builderSetProjectC }) };
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+                new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
+                        new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB, builderSetProjectC }) };
         ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
 
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -783,9 +807,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         builderSetProjectC.setIpsProject(projectC);
         builderSetProjectC.setAggregateRootBuilder(false);
 
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                TestIpsArtefactBuilderSet.ID, new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB,
-                        builderSetProjectC }) };
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+                new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
+                        new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB, builderSetProjectC }) };
         ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
 
         // first initial build
@@ -860,8 +884,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(project);
         builderSet.setAggregateRootBuilder(isAggregateRootBuilderSet);
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                builderSet) };
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+                new TestArtefactBuilderSetInfo(builderSet) };
         ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
         return builder;
     }
@@ -910,8 +934,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(project);
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                builderSet) };
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+                new TestArtefactBuilderSetInfo(builderSet) };
         ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
     }
 
@@ -1113,8 +1137,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                 new Object[] { "1111", new Integer(IMarker.SEVERITY_ERROR) });
         verify(marker5555).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
                 new Object[] { "5555", new Integer(IMarker.SEVERITY_ERROR) });
-        verify(markerNoManifestMf).setAttributes(
-                new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+        verify(markerNoManifestMf).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
                 new Object[] { NLS.bind(Messages.IpsBuilder_missingManifestMf, IpsBundleManifest.MANIFEST_NAME),
                         new Integer(IMarker.SEVERITY_ERROR) });
     }
