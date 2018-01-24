@@ -19,17 +19,27 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.junit.Test;
 
 public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
 
+    private static final String TEST_VALUE = "TestValue";
+    private static final String ATTRIBUTE_NAME = "test";
     private static final String TARGET1 = "Target1";
     private static final String TARGET2 = "Target2";
     private static final String ASSOCIATION = "Association1";
@@ -37,12 +47,14 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
+    private PolicyCmptType policyCmptType;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        productCmptType = newProductCmptType(ipsProject, "MyProductCmptType");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "MyPolicyCmptType", "MyProductCmptType");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "MyProductCmpt");
     }
 
@@ -146,6 +158,26 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
         IProductCmptLink newLink = container.newLink(association);
         newLink.setTarget(target);
         return newLink;
+    }
+
+    @Test
+    public void testFindAndSetPredecessors() throws Exception {
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute(ATTRIBUTE_NAME);
+        policyCmptTypeAttribute.setDatatype(ValueDatatype.STRING.getName());
+        policyCmptTypeAttribute.setProductRelevant(true);
+        productCmpt.fixAllDifferencesToModel(ipsProject);
+        IProductCmptGeneration generation = productCmpt.getLatestProductCmptGeneration();
+        generation.getPropertyValue(ATTRIBUTE_NAME, IConfiguredDefault.class).setValue(TEST_VALUE);
+        ((EnumValueSet)generation.getPropertyValue(ATTRIBUTE_NAME, IConfiguredValueSet.class)
+                .changeValueSetType(ValueSetType.ENUM)).addValue(TEST_VALUE);
+
+        policyCmptTypeAttribute.setChangingOverTime(false);
+        productCmpt.fixAllDifferencesToModel(ipsProject);
+
+        assertThat(productCmpt.getPropertyValue(ATTRIBUTE_NAME, IConfiguredDefault.class).getValue(), is(TEST_VALUE));
+        assertThat(((EnumValueSet)productCmpt.getPropertyValue(ATTRIBUTE_NAME, IConfiguredValueSet.class).getValueSet())
+                .getValues()[0], is(TEST_VALUE));
+
     }
 
 }
