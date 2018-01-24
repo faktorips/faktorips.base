@@ -48,7 +48,8 @@ public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
     }
 
     private void checkInvalidGenerations() {
-        if (!getPropertyValueContainer().allowGenerations() && getPropertyValueContainer().getGenerations().size() > 1) {
+        if (!getPropertyValueContainer().allowGenerations()
+                && getPropertyValueContainer().getGenerations().size() > 1) {
             addEntry(new InvalidGenerationsDeltaEntry(getPropertyValueContainer()));
         }
     }
@@ -66,12 +67,18 @@ public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
 
         for (ValueWithoutPropertyEntry valueWithoutPropertyEntry : valueWithoutPropertyEntries) {
             for (MissingPropertyValueEntry missingPropertyValueEntry : missingPropertyValueEntries) {
-                if (valueWithoutPropertyEntry.getPropertyName().equals(missingPropertyValueEntry.getPropertyName())) {
+                if (isMatchingPropertyValue(valueWithoutPropertyEntry, missingPropertyValueEntry)) {
                     missingPropertyValueEntry.setPredecessor(valueWithoutPropertyEntry);
                 }
             }
         }
 
+    }
+
+    private boolean isMatchingPropertyValue(ValueWithoutPropertyEntry valueWithoutPropertyEntry,
+            MissingPropertyValueEntry missingPropertyValueEntry) {
+        return valueWithoutPropertyEntry.getPropertyName().equals(missingPropertyValueEntry.getPropertyName())
+                && valueWithoutPropertyEntry.getPropertyType().equals(missingPropertyValueEntry.getPropertyType());
     }
 
     protected void addEntries(IDeltaEntry[] entries,
