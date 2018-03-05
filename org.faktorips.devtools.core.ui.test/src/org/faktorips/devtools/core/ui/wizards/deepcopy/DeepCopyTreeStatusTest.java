@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -38,6 +43,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -82,16 +88,16 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         ipsPreferences.setCopyWizardMode(mode);
     }
 
-    private void initStructure() throws Exception {
+    private void mockProducts() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        initStructure(ipsProject, ipsProject);
+        mockProducts(ipsProject, ipsProject);
     }
 
-    private void initStructure(IIpsProject rootIpsProject, IIpsProject childIpsProject) throws Exception {
-        initStructure(rootIpsProject, childIpsProject, false);
+    private void mockProducts(IIpsProject rootIpsProject, IIpsProject childIpsProject) throws Exception {
+        mockProducts(rootIpsProject, childIpsProject, false);
     }
 
-    private void initStructure(IIpsProject rootIpsProject, IIpsProject childIpsProject, boolean alternatePackageRoots)
+    private void mockProducts(IIpsProject rootIpsProject, IIpsProject childIpsProject, boolean alternatePackageRoots)
             throws Exception {
         types = new IProductCmptType[6];
         for (int i = 0; i < types.length; i++) {
@@ -105,11 +111,6 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
             when(associations[i].getName()).thenReturn("association" + i);
             when(associations[i].isRelevant()).thenReturn(true);
         }
-
-        when(associations[0].getType()).thenReturn(types[0]);
-        when(associations[1].getType()).thenReturn(types[0]);
-        when(associations[2].getType()).thenReturn(types[1]);
-        when(associations[3].getType()).thenReturn(types[2]);
 
         when(types[0].findAllNotDerivedAssociations(any(IIpsProject.class)))
                 .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[0], associations[1] }));
@@ -187,7 +188,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         when(productCmptGenerations[3].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
         when(productCmptGenerations[4].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
         when(productCmptGenerations[5].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+    }
 
+    private void initDeepCopyTreeStatusWithStructure() throws CycleInProductStructureException {
         structure = new ProductCmptTreeStructure(productCmpts[0], new GregorianCalendar(), mock(IIpsProject.class));
 
         deepCopyTreeStatus = new DeepCopyTreeStatus();
@@ -220,7 +223,8 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     @Test
     public void testIsEnabled() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_COPY);
-        initStructure();
+        mockProducts();
+        initDeepCopyTreeStatusWithStructure();
         Set<IProductCmptStructureReference> allCopyEnabledElements = deepCopyTreeStatus
                 .getAllEnabledElements(CopyOrLink.COPY, structure, true);
         // 6 product components + 1 is referenced twice (productCmpts[3])
@@ -263,9 +267,10 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testgetCopyOrLink_CopyModus() throws Exception {
+    public void testGetCopyOrLink_CopyModus() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_COPY);
-        initStructure();
+        mockProducts();
+        initDeepCopyTreeStatusWithStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
@@ -277,9 +282,10 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testgetCopyOrLink_LinkModus() throws Exception {
+    public void testGetCopyOrLink_LinkModus() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_LINK);
-        initStructure();
+        mockProducts();
+        initDeepCopyTreeStatusWithStructure();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
@@ -292,9 +298,10 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testgetCopyOrLink_SmartModusSameIpsProject() throws Exception {
+    public void testGetCopyOrLink_SmartModusSameIpsProject() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
-        initStructure();
+        mockProducts();
+        initDeepCopyTreeStatusWithStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()) {
@@ -308,12 +315,13 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testgetCopyOrLink_SmartModusOtherIpsProject() throws Exception {
+    public void testGetCopyOrLink_SmartModusOtherIpsProject() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
         IIpsProject rootIpsProject = mock(IIpsProject.class);
         IIpsProject childIpsProject = mock(IIpsProject.class);
 
-        initStructure(rootIpsProject, childIpsProject);
+        mockProducts(rootIpsProject, childIpsProject);
+        initDeepCopyTreeStatusWithStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()) {
@@ -341,11 +349,12 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testgetCopyOrLink_SmartModusOtherPackageRoot() throws Exception {
+    public void testGetCopyOrLink_SmartModusOtherPackageRoot() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
         IIpsProject rootIpsProject = mock(IIpsProject.class);
 
-        initStructure(rootIpsProject, rootIpsProject, true);
+        mockProducts(rootIpsProject, rootIpsProject, true);
+        initDeepCopyTreeStatusWithStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             CopyOrLink copyOrLink = deepCopyTreeStatus.getCopyOrLink(reference);
@@ -377,12 +386,13 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testgetCopyOrLink_SmartModusOtherProjectOrPackageRoot() throws Exception {
+    public void testGetCopyOrLink_SmartModusOtherProjectOrPackageRoot() throws Exception {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
         IIpsProject rootIpsProject = mock(IIpsProject.class);
         IIpsProject childIpsProject = mock(IIpsProject.class);
 
-        initStructure(rootIpsProject, childIpsProject, true);
+        mockProducts(rootIpsProject, childIpsProject, true);
+        initDeepCopyTreeStatusWithStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             CopyOrLink copyOrLink = deepCopyTreeStatus.getCopyOrLink(reference);
@@ -414,4 +424,55 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
             }
         }
     }
+
+    @Test
+    public void testGetCopyOrLink_SmartModusOtherProjectOrPackageRoot_InvalidProdutCmpt() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
+        mockProducts();
+        // null out the package fragment
+        when(productCmpts[1].getIpsPackageFragment()).thenReturn(null);
+
+        initDeepCopyTreeStatusWithStructure();
+        // test ok if the initialization passes without exceptions
+    }
+
+    @Test
+    public void testGetCopyOrLink_TableUsageWithoutTable() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
+        IIpsProject rootIpsProject = mock(IIpsProject.class);
+        IIpsProject childIpsProject = mock(IIpsProject.class);
+
+        mockProducts(rootIpsProject, childIpsProject, true);
+        ITableContentUsage tableContentUsage = mock(ITableContentUsage.class);
+        when(tableContentUsage.getIpsObject()).thenReturn(productCmpts[0]);
+        when(productCmpts[0].getTableContentUsages()).thenReturn(new ITableContentUsage[] { tableContentUsage });
+        initDeepCopyTreeStatusWithStructure();
+
+        // check that the usage is included in the structure even without a referenced table content
+        IProductCmptStructureReference[] children = structure.getRoot().getChildren();
+        assertThat(children.length, is(5));
+        assertThat(children[4], is(instanceOf(ProductCmptStructureTblUsageReference.class)));
+        ProductCmptStructureTblUsageReference tblUsageReference = (ProductCmptStructureTblUsageReference)children[4];
+        assertThat(tblUsageReference.getTableContentUsage(), is(sameInstance(tableContentUsage)));
+
+        // as there is no target table, the reference should not be in the elements of the
+        // DeepCopyTreeStatus
+        assertThat(deepCopyTreeStatus.getAllElements(CopyOrLink.COPY, structure, true).contains(tblUsageReference),
+                is(false));
+        assertThat(deepCopyTreeStatus.getAllElements(CopyOrLink.LINK, structure, true).contains(tblUsageReference),
+                is(false));
+        assertThat(deepCopyTreeStatus.getAllElements(CopyOrLink.UNDEFINED, structure, true).contains(tblUsageReference),
+                is(false));
+
+        // but when it is asked for a copy-or-link-status, CopyOrLink#UNDEFINED should be returned without
+        // an Exception
+        assertThat(deepCopyTreeStatus.getCopyOrLink(tblUsageReference), is(CopyOrLink.UNDEFINED));
+
+        // and the reference should be treated as checked
+        // This is called from
+        // org.faktorips.devtools.core.ui.wizards.deepcopy.SourcePage.updateCheckedAndGrayStatus(IProductCmptStructureReference)
+        // for all references, independent of whether they are visible elements in the tree
+        assertThat(deepCopyTreeStatus.isChecked(tblUsageReference), is(true));
+    }
+
 }

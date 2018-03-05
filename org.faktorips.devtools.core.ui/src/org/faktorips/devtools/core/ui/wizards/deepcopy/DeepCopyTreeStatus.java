@@ -18,6 +18,7 @@ import java.util.Set;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -45,8 +46,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     private Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> treeStatus;
 
     /**
-     * A map of {@link IProductCmptLink} caching all associations (not composition or aggregations). The
-     * value of {@link IProductCmpt} is the target of the link, hold in the map for performance use.
+     * A map of {@link IProductCmptLink} caching all associations (not composition or aggregations).
+     * The value of {@link IProductCmpt} is the target of the link, hold in the map for performance
+     * use.
      */
     private Map<IProductCmptLink, IProductCmpt> associationLinks;
 
@@ -99,8 +101,8 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Getting the status for a {@link IProductCmptStructureReference}. If there is no such status, a
-     * new status with default values is created. Never returns null.
+     * Getting the status for a {@link IProductCmptStructureReference}. If there is no such status,
+     * a new status with default values is created. Never returns null.
      * 
      * @param reference the link you want to get the status for
      * @return The status for the link maybe a new one with default values
@@ -164,11 +166,12 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Updates the link status for the given reference with the values for "checked" and "copyOrLink".
-     * Passing <code>null</code> for "checked" or "copyOrLink" preserves the value set in the existing
-     * link status. If there is no existing link status, a new one is created. If, in this case,
-     * <code>null</code> is passed for "checked" and "copyOrLink", the new {@link LinkStatus} will be
-     * initialized with the default values <code>true</code> and COPY respectively.
+     * Updates the link status for the given reference with the values for "checked" and
+     * "copyOrLink". Passing <code>null</code> for "checked" or "copyOrLink" preserves the value set
+     * in the existing link status. If there is no existing link status, a new one is created. If,
+     * in this case, <code>null</code> is passed for "checked" and "copyOrLink", the new
+     * {@link LinkStatus} will be initialized with the default values <code>true</code> and COPY
+     * respectively.
      * 
      * @param reference The {@link IIpsObjectPart} the status should be updated for
      * @param checked the checked status or null to preserve the previous value (if any)
@@ -225,19 +228,25 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     private CopyOrLink getCopyOrLinkInSmartMode(IProductCmptStructureReference reference) {
-        IIpsPackageFragmentRoot referencePackageFragmentRoot = reference.getWrappedIpsObject().getIpsPackageFragment()
-                .getRoot();
-        if (root.equals(referencePackageFragmentRoot)) {
-            return CopyOrLink.COPY;
+        IIpsObject wrappedIpsObject = reference.getWrappedIpsObject();
+        // wrappedIpsObject may be null for ProductCmptStructureTblUsageReference
+        if (wrappedIpsObject != null && wrappedIpsObject.getIpsPackageFragment() != null) {
+            IIpsPackageFragmentRoot referencePackageFragmentRoot = wrappedIpsObject.getIpsPackageFragment().getRoot();
+            if (root.equals(referencePackageFragmentRoot)) {
+                return CopyOrLink.COPY;
+            } else {
+                return CopyOrLink.LINK;
+            }
         } else {
-            return CopyOrLink.LINK;
+            return CopyOrLink.UNDEFINED;
         }
     }
 
     /**
      * Getting the {@link IProductCmpt} for a part of a {@link IProductCmptGeneration}
      * 
-     * @throws IllegalArgumentException if the parameter is no part of {@link IProductCmptGeneration}
+     * @throws IllegalArgumentException if the parameter is no part of
+     *             {@link IProductCmptGeneration}
      */
     private IProductCmpt getProductCmpt(IIpsObjectPart partOfProductCmpt) {
         if (partOfProductCmpt == null) {
@@ -252,8 +261,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Getting the checked state of a reference. For {@link IProductCmptTypeAssociationReference} the
-     * checked status is derived from its children. The checked status of the root node is always true.
+     * Getting the checked state of a reference. For {@link IProductCmptTypeAssociationReference}
+     * the checked status is derived from its children. The checked status of the root node is
+     * always true.
      * 
      * @param reference the reference you want to get the status for
      * @return true if the reference is checked.
@@ -280,8 +290,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Setting the checked status for the give {@link IProductCmptStructureReference}. If the reference
-     * is a {@link IProductCmptTypeAssociationReference} the status is set for all children.
+     * Setting the checked status for the give {@link IProductCmptStructureReference}. If the
+     * reference is a {@link IProductCmptTypeAssociationReference} the status is set for all
+     * children.
      * 
      * @param reference the reference you want to change the status for
      * @param value the new status of the reference
@@ -332,9 +343,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Returns true if this reference is enabled. A Reference is enabled when itself and all the parent
-     * elements are checked and all parent elements are marked to copy. Returns false if this reference
-     * or one of its parents is not checked or any parent is linked.
+     * Returns true if this reference is enabled. A Reference is enabled when itself and all the
+     * parent elements are checked and all parent elements are marked to copy. Returns false if this
+     * reference or one of its parents is not checked or any parent is linked.
      * 
      * @param reference A reference you want to know the enable state for
      * @return true if this reference is enabled, false otherwise
@@ -372,9 +383,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Getting all {@link IProductCmptStructureReference} of the given structure that should be copied
-     * or linked. By the boolean includeAssociations you could specify whether to check the status of
-     * associations (in contrary to compositions/aggregations) or not.
+     * Getting all {@link IProductCmptStructureReference} of the given structure that should be
+     * copied or linked. By the boolean includeAssociations you could specify whether to check the
+     * status of associations (in contrary to compositions/aggregations) or not.
      * 
      * @param copyOrLink Whether to get only references that are marked as copied or linked
      * @param structure the structure to get the references from
