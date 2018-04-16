@@ -519,7 +519,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (!event.getIpsSrcFile().equals(ipsSrcFile)) {
             return;
         }
-        if (isActive()) {
+        if (isVisible()) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.asyncExec(new Runnable() {
 
@@ -618,6 +618,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     protected boolean isActive() {
         return Display.getCurrent().getActiveShell() == getSite().getShell()
                 && this == getSite().getPage().getActiveEditor();
+    }
+
+    protected boolean isVisible() {
+        return getSite().getPage().isPartVisible(this);
     }
 
     protected void handleEditorActivation() {
@@ -803,11 +807,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     public void propertyChange(PropertyChangeEvent event) {
         logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
 
-        if (!isActive()) {
-            return;
-        }
-
-        if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+        if (isVisible() && event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             refresh();
         }
 
@@ -869,12 +869,12 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     private void updateHeaderMessage() {
-        if (!isActive()) {
-            return;
+        // if getActivaPage = -1 then the editor is not yet initialized
+        if (getActivePage() > -1 && isVisible()) {
+            List<IMessage> messages = getMessages();
+            int messageType = getHighestSeverity(messages);
+            setHeaderMessage(messages, messageType);
         }
-        List<IMessage> messages = getMessages();
-        int messageType = getHighestSeverity(messages);
-        setHeaderMessage(messages, messageType);
     }
 
     int getHighestSeverity(List<IMessage> messages) {
@@ -1122,7 +1122,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 shell.getDisplay().syncExec(new Runnable() {
                     @Override
                     public void run() {
-                        if (isActive()) {
+                        if (isVisible()) {
                             refresh();
                         }
                         setTitleImage(newImage);
