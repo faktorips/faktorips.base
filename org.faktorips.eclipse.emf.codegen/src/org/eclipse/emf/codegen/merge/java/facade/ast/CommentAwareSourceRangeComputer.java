@@ -130,7 +130,7 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
 
         List<?> commentList = compilationUnit.getCommentList();
         if (commentList != null) {
-            this.commentArray = (Comment[])commentList.toArray();
+            this.commentArray = commentList.toArray(new Comment[commentList.size()]);
             this.commentStartPositions = new int[commentList.size()];
             this.commentEndPositions = new int[commentList.size()];
             int i = 0;
@@ -296,8 +296,8 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      */
     protected SourceRange extendRangeForward(ASTNode nodeToAdd, SourceRange range) {
         if (nodeToAdd != null && nodeToAdd.getStartPosition() > range.getStartPosition() + range.getLength()) {
-            return new SourceRange(range.getStartPosition(), nodeToAdd.getStartPosition() + nodeToAdd.getLength()
-                    - range.getStartPosition());
+            return new SourceRange(range.getStartPosition(),
+                    nodeToAdd.getStartPosition() + nodeToAdd.getLength() - range.getStartPosition());
         }
         return range;
     }
@@ -316,8 +316,8 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
         if (nodeToAdd != null) {
             int nodeEndPos = nodeToAdd.getStartPosition() + nodeToAdd.getLength();
             if (nodeEndPos >= 0 && nodeEndPos < range.getStartPosition()) {
-                return new SourceRange(nodeToAdd.getStartPosition(), range.getStartPosition() + range.getLength()
-                        - nodeToAdd.getStartPosition());
+                return new SourceRange(nodeToAdd.getStartPosition(),
+                        range.getStartPosition() + range.getLength() - nodeToAdd.getStartPosition());
             }
         }
         return range;
@@ -341,8 +341,8 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
         if (nodeStartPosition >= 0) {
             // find start position of farthest preceding comment
             ASTNode prevNode = getPreviousNode(node);
-            int minStartPosition = prevNode == null ? 0 : compilationUnit.getExtendedStartPosition(prevNode)
-                    + compilationUnit.getExtendedLength(prevNode);
+            int minStartPosition = prevNode == null ? 0
+                    : compilationUnit.getExtendedStartPosition(prevNode) + compilationUnit.getExtendedLength(prevNode);
             int commentIndex = findLastCommentInRangeIndex(minStartPosition, nodeStartPosition);
             while (commentIndex >= 0) {
                 int commentStartPosition = commentArray[commentIndex].getStartPosition();
@@ -376,8 +376,8 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
         if (nodeEndPosition >= 0) {
             // find start position of farthest preceding comment
             ASTNode nextNode = getNextNode(node);
-            int maxEndPosition = nextNode == null ? source.length() : compilationUnit
-                    .getExtendedStartPosition(nextNode);
+            int maxEndPosition = nextNode == null ? source.length()
+                    : compilationUnit.getExtendedStartPosition(nextNode);
             int commentIndex = findFirstCommentInRangeIndex(nodeEndPosition, maxEndPosition);
             while (commentIndex >= 0 && commentIndex < commentArray.length) {
                 int commentStartPosition = commentArray[commentIndex].getStartPosition();
