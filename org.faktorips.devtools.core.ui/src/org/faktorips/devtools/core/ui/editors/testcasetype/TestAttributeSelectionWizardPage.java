@@ -86,11 +86,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         String description = NLS.bind(Messages.TestAttributeSelectionWizardPage_wizardPageDescription,
                 QNameUtil.getUnqualifiedName(parameter.getPolicyCmptType()));
         setDescription(description);
-        try {
-            policyCmptType = parameter.findPolicyCmptType(wizard.getIpsProjekt());
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        policyCmptType = parameter.findPolicyCmptType(wizard.getIpsProjekt());
     }
 
     @Override
@@ -190,7 +186,8 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
     protected FilteredList createFilteredList(Composite parent) {
         int flags = SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | (fIsMultipleSelection ? SWT.MULTI : SWT.SINGLE);
 
-        FilteredList list = new FilteredList(parent, flags, fRenderer, fIgnoreCase, fAllowDuplicates, fMatchEmptyString);
+        FilteredList list = new FilteredList(parent, flags, fRenderer, fIgnoreCase, fAllowDuplicates,
+                fMatchEmptyString);
 
         GridData data = new GridData();
         data.widthHint = convertWidthInCharsToPixels(fWidth);
@@ -201,7 +198,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         data.verticalAlignment = GridData.FILL;
         list.setLayoutData(data);
         list.setFont(parent.getFont());
-        list.setFilter((fFilter == null ? "" : fFilter)); //$NON-NLS-1$     
+        list.setFilter((fFilter == null ? "" : fFilter)); //$NON-NLS-1$
 
         list.addSelectionListener(new SelectionListener() {
             @Override

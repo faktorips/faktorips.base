@@ -64,7 +64,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     private List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>(0);
 
-    private List<ITestPolicyCmptTypeParameter> testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>(0);
+    private List<ITestPolicyCmptTypeParameter> testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>(
+            0);
 
     private int minInstances = 0;
 
@@ -164,7 +165,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(policyCmptType)) {
             return null;
         }
@@ -512,14 +513,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         // check min and max instances
         if (minInstances > maxInstances) {
             String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax,
-                    "" + minInstances, "" + maxInstances); //$NON-NLS-1$//$NON-NLS-2$ 
+                    "" + minInstances, "" + maxInstances); //$NON-NLS-1$//$NON-NLS-2$
             Message msg = new Message(MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX, text, Message.ERROR, this,
                     PROPERTY_MIN_INSTANCES);
             list.add(msg);
         }
         if (maxInstances < minInstances) {
             String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MaxLessThanMin,
-                    "" + minInstances, "" + maxInstances); //$NON-NLS-1$//$NON-NLS-2$ 
+                    "" + minInstances, "" + maxInstances); //$NON-NLS-1$//$NON-NLS-2$
             Message msg = new Message(MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN, text, Message.ERROR, this,
                     PROPERTY_MAX_INSTANCES);
             list.add(msg);
@@ -559,9 +560,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     list.add(msg);
                 } else {
                     if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfAssociation, ipsProject)) {
-                        String text = NLS
-                                .bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation,
-                                        policyCmptType, association);
+                        String text = NLS.bind(
+                                Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation,
+                                policyCmptType, association);
                         Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION, text, Message.ERROR,
                                 this, PROPERTY_POLICYCMPTTYPE);
                         list.add(msg);
@@ -597,9 +598,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                         }
                     }
                     if (targetOfAssoziationInTestCaseType == null) {
-                        String text = NLS
-                                .bind(Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType,
-                                        policyCmptType, association);
+                        String text = NLS.bind(
+                                Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType,
+                                policyCmptType, association);
                         Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE, text,
                                 Message.WARNING, this, PROPERTY_POLICYCMPTTYPE);
                         list.add(msg);
@@ -632,9 +633,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
          */
         if (policyCmptTypeFound != null && requiresProductCmpt
                 && !policyCmptTypeFound.isConfigurableByProductCmptType()) {
-            String text = NLS
-                    .bind(Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct,
-                            policyCmptType);
+            String text = NLS.bind(
+                    Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct,
+                    policyCmptType);
             Message msg = new Message(MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD, text,
                     Message.ERROR, this, PROPERTY_REQUIRES_PRODUCTCMT);
             list.add(msg);

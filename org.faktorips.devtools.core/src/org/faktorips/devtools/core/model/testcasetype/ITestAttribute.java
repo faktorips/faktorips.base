@@ -150,10 +150,8 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
     /**
      * Returns the policy component type the attribute belongs to.
      * 
-     * @throws CoreException If there was an error while searching the corresponding policy
-     *             component type.
      */
-    public String getCorrespondingPolicyCmptType() throws CoreException;
+    public String getCorrespondingPolicyCmptType();
 
     /**
      * Returns the policy component type which is stored beside the attribute.<br>
@@ -182,10 +180,8 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * Returns the model attribute or <code>null</code> if the attribute does not exists.
      * 
      * @param ipsProject The ips project which object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching for the attribute.
      */
-    public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject);
 
     /**
      * Returns the test attribute's value data type.
@@ -195,7 +191,7 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * 
      * @see #getDatatype() #getAttribute()
      */
-    public ValueDatatype findDatatype(IIpsProject project) throws CoreException;
+    public ValueDatatype findDatatype(IIpsProject project);
 
     /**
      * Returns <code>true</code> if the test attribute is an input attribute, otherwise

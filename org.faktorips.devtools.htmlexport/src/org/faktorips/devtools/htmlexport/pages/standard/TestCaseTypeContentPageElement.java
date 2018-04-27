@@ -71,8 +71,9 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * adds a treeview with the Parameters of the {@link ITestCaseType}
      */
     private void addTestCaseTypeParameters() {
-        addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.TestCaseTypeContentPageElement_parameters), TextType.HEADING_2, getContext()));
+        addPageElements(new TextPageElement(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_parameters),
+                TextType.HEADING_2, getContext()));
         TreeNodePageElement root = createRootNode();
 
         ITestParameter[] testParameters = getDocumentedIpsObject().getTestParameters();
@@ -133,9 +134,9 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 policyCmptType, TargetType.CONTENT, getContext().getLabel(policyCmptType), true);
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
                 new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(linkPageElement)
-                        .addPageElements(
-                                new TextPageElement(
-                                        (" - " + testParameter.getTestParameterType().getName()), getContext())), getContext()); //$NON-NLS-1$
+                        .addPageElements(new TextPageElement((" - " + testParameter.getTestParameterType().getName()), //$NON-NLS-1$
+                                getContext())),
+                getContext());
 
         testParameterPageElement.addPageElements(createKeyValueTableForTestPolicyCmptTypeParameter(testParameter));
 
@@ -152,9 +153,10 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     private IPageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
 
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext())
-        .addPageElements(TextPageElement.createParagraph(
-                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes),
-                getContext()).addStyles(Style.BOLD));
+                .addPageElements(TextPageElement
+                        .createParagraph(getContext().getMessage(
+                                HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes), getContext())
+                        .addStyles(Style.BOLD));
 
         TestAttributesTablePageElement testAttributesTablePageElement = new TestAttributesTablePageElement(
                 testParameter);
@@ -166,7 +168,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         return wrapper.addPageElements(testAttributesTablePageElement);
     }
 
-    private KeyValueTablePageElement createKeyValueTableForTestPolicyCmptTypeParameter(ITestPolicyCmptTypeParameter testParameter) {
+    private KeyValueTablePageElement createKeyValueTableForTestPolicyCmptTypeParameter(
+            ITestPolicyCmptTypeParameter testParameter) {
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
         keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name),
                 getContext().getLabel(testParameter));
@@ -196,8 +199,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType),
                 testParameter.getTestParameterType().getName());
         keyValueTable.addKeyValueRow(
-                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), getContext()
-                        .getDescription(testParameter));
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description),
+                getContext().getDescription(testParameter));
 
         testParameterPageElement.addPageElements(keyValueTable);
         return testParameterPageElement;
@@ -221,8 +224,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType),
                 testParameter.getTestParameterType().getName());
         keyValueTable.addKeyValueRow(
-                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), getContext()
-                        .getDescription(testParameter));
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description),
+                getContext().getDescription(testParameter));
 
         testParameter.getTestParameterType();
 
@@ -236,12 +239,12 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * @author dicker
      * 
      */
-    private class TestAttributesTablePageElement extends
-            AbstractIpsObjectPartsContainerTablePageElement<ITestAttribute> {
+    private class TestAttributesTablePageElement
+            extends AbstractIpsObjectPartsContainerTablePageElement<ITestAttribute> {
 
         public TestAttributesTablePageElement(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
-            super(Arrays.asList(testPolicyCmptTypeParameter.getTestAttributes()), TestCaseTypeContentPageElement.this
-                    .getContext());
+            super(Arrays.asList(testPolicyCmptTypeParameter.getTestAttributes()),
+                    TestCaseTypeContentPageElement.this.getContext());
             addLayouts(new RegexTablePageElementLayout(".{1}", Style.CENTER)); //$NON-NLS-1$
         }
 
@@ -257,21 +260,14 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             attributeData.add(new TextPageElement(attribute.getTestAttributeType().getName(), getContext()));
             attributeData.add(new TextPageElement(attribute.getAttribute(), getContext()));
 
-            try {
-                addPolicyComponentAndDataType(attribute, attributeData);
-            } catch (CoreException e) {
-                getContext().addStatus(
-                        new IpsStatus(IStatus.WARNING, "Error adding data of corresponding PolicyCmptType", e)); //$NON-NLS-1$
-            }
+            addPolicyComponentAndDataType(attribute, attributeData);
 
             attributeData.add(new TextPageElement(getContext().getDescription(attribute), getContext()));
 
             return attributeData.toArray(new IPageElement[attributeData.size()]);
         }
 
-        private void addPolicyComponentAndDataType(ITestAttribute attribute, List<IPageElement> attributeData)
-                throws CoreException {
-
+        private void addPolicyComponentAndDataType(ITestAttribute attribute, List<IPageElement> attributeData) {
             String correspondingPolicyCmptType = attribute.getCorrespondingPolicyCmptType();
 
             if (StringUtils.isEmpty(correspondingPolicyCmptType)) {
@@ -280,13 +276,13 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 return;
             }
 
-            IPolicyCmptType policyCmptType = getContext().getIpsProject().findPolicyCmptType(
-                    correspondingPolicyCmptType);
+            IPolicyCmptType policyCmptType = getContext().getIpsProject()
+                    .findPolicyCmptType(correspondingPolicyCmptType);
             attributeData.add(new PageElementUtils(getContext()).createLinkPageElement(getContext(), policyCmptType,
                     TargetType.CONTENT, correspondingPolicyCmptType, true));
             if (policyCmptType != null) {
-                attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute())
-                        .getDatatype(), getContext()));
+                attributeData.add(new TextPageElement(
+                        policyCmptType.getAttribute(attribute.getAttribute()).getDatatype(), getContext()));
             }
         }
 

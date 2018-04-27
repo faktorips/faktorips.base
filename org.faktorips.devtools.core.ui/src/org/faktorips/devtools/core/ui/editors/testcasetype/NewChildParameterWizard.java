@@ -87,12 +87,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
      * Returns the parent parameter of the new created child parameter.
      */
     public IPolicyCmptType getParentPolicyCmptType() {
-        try {
-            return parentTestPolicyCmptTypeParameter.findPolicyCmptType(testCaseType.getIpsProject());
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return null;
-        }
+        return parentTestPolicyCmptTypeParameter.findPolicyCmptType(testCaseType.getIpsProject());
     }
 
     /**
@@ -127,8 +122,8 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
             IPolicyCmptTypeAssociation modelAssociation = newTestParameter
                     .findAssociation(testCaseType.getIpsProject());
             if (modelAssociation != null) {
-                IPolicyCmptType pcType = modelAssociation.findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter
-                        .getIpsProject());
+                IPolicyCmptType pcType = modelAssociation
+                        .findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter.getIpsProject());
                 if (pcType != null) {
                     newTestParameter.setPolicyCmptType(pcType.getQualifiedName());
                 }

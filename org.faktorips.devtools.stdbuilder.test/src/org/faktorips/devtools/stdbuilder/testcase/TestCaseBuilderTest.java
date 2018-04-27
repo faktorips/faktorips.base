@@ -10,18 +10,33 @@
 
 package org.faktorips.devtools.stdbuilder.testcase;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestCaseBuilderTest extends AbstractStdBuilderTest {
 
+    private static final String TEST_POLICY_TYPE = "TestPolicyType";
+
     private ITestCaseType testCaseType;
+
+    private IIpsProject otherProject;
+
+    private TestCaseBuilder builder;
+
+    private PolicyCmptType newPolicyCmptType;
 
     @Override
     @Before
@@ -31,6 +46,15 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
         testCaseType.getIpsSrcFile().save(true, null);
+
+        builder = new TestCaseBuilder(builderSet);
+
+        otherProject = newIpsProject();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(otherProject);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        newPolicyCmptType = newPolicyCmptType(otherProject, TEST_POLICY_TYPE);
+
     }
 
     @Test
@@ -40,6 +64,31 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         testCase.newTestValue().setTestValueParameter("testValueParam1");
         testCase.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+
+    @Test
+    public void testGetQualifiedNameFromTestPolicyCmptParam() throws Exception {
+        String qualifiedName = builder.getQualifiedClassName(newPolicyCmptType);
+
+        assertThat(qualifiedName, is("org.faktorips.sample.model.internal.TestPolicyType"));
+    }
+
+    @Test
+    public void testGetQualifiedNameFromTestPolicyCmptParam_DifferentProjectSettings() throws Exception {
+        setGeneratorProperty(ipsProject, StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES,
+                Boolean.FALSE.toString());
+        String qualifiedName = builder.getQualifiedClassName(newPolicyCmptType);
+
+        assertThat(qualifiedName, is("org.faktorips.sample.model.internal.TestPolicyType"));
+    }
+
+    @Test
+    public void testGetQualifiedNameFromTestPolicyCmptParam_OtherDifferentProjectSettings() throws Exception {
+        setGeneratorProperty(otherProject, StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES,
+                Boolean.FALSE.toString());
+        String qualifiedName = builder.getQualifiedClassName(newPolicyCmptType);
+
+        assertThat(qualifiedName, is("org.faktorips.sample.model.TestPolicyType"));
     }
 
 }

@@ -74,7 +74,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     }
 
     @Override
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         return ipsProject.findValueDatatype(datatype);
     }
 

@@ -24,7 +24,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -35,6 +34,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -46,6 +47,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultReferenceResolver;
 import org.faktorips.runtime.IModelObject;
@@ -152,7 +154,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setSuperClass(getSuperClassName());
         String description = getDescriptionInGeneratorLanguage(getIpsObject());
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), description, mainSection.getJavaDocForTypeBuilder());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), description,
+                mainSection.getJavaDocForTypeBuilder());
 
         JavaCodeFragmentBuilder xmlCallbackBuilder = new JavaCodeFragmentBuilder();
         buildXmlCallbackClasses(xmlCallbackBuilder, testCaseType);
@@ -184,8 +187,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
         buildMemberForTestPolicyCmptParameter(codeBuilder, testCaseType.getInputTestPolicyCmptTypeParameters(),
                 inputPrefix);
-        buildMemberForTestPolicyCmptParameter(codeBuilder,
-                testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
+        buildMemberForTestPolicyCmptParameter(codeBuilder, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(),
+                expectedResultPrefix);
     }
 
     /*
@@ -262,22 +265,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /*
      * Returns the corresponding helper for the given ITestValueParameter.
      */
-    private DatatypeHelper getCachedDatatypeHelper(ITestValueParameter testValueParameter) throws CoreException {
+    private DatatypeHelper getCachedDatatypeHelper(ITestValueParameter testValueParameter) {
         ValueDatatype valueDatatype = testValueParameter.findValueDatatype(getIpsProject());
         if (valueDatatype == null) {
             return null;
         }
 
-        try {
-            DatatypeHelper helper = project.getDatatypeHelper(valueDatatype);
-            if (helper == null) {
-                throw new CoreException(new IpsStatus("No datatype helper found for datatype " + valueDatatype));
-            }
-            return helper;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building value parameter "
-                    + testValueParameter.getName() + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+        DatatypeHelper helper = project.getDatatypeHelper(valueDatatype);
+        if (helper == null) {
+            throw new CoreRuntimeException(new IpsStatus("No datatype helper found for datatype " + valueDatatype));
         }
+        return helper;
     }
 
     /*
@@ -309,9 +307,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             throw new CoreException(new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType()
                     + " not found for test policy component type parameter " + testPolicyTypeParam.getName()));
         }
-        String pcTypePackage = getBuilderSet().getPackageName(policyCmptType.getIpsSrcFile(),
-                isBuildingInternalArtifacts(), !buildsDerivedArtefacts());
-        return StringUtil.qualifiedName(pcTypePackage, policyCmptType.getName());
+        return getBuilderSet().getModelNode(policyCmptType, XPolicyCmptClass.class)
+                .getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
     /*
@@ -767,8 +764,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln("}}");
         }
 
-        codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[] { "messageList", "result" }, new String[] {
-                MessageList.class.getName(), IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[] { "messageList", "result" },
+                new String[] { MessageList.class.getName(), IpsTestResult.class.getName() }, body, javaDoc,
+                ANNOTATION_GENERATED);
     }
 
     /*
@@ -789,8 +787,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generate the callback class for the extension attributes.
      */
-    private void buildXmlCallbackClasseFor(JavaCodeFragmentBuilder builder, ITestPolicyCmptTypeParameter parameter)
-            throws CoreException {
+    private void buildXmlCallbackClasseFor(JavaCodeFragmentBuilder builder, ITestPolicyCmptTypeParameter parameter) {
         JavaCodeFragment body = new JavaCodeFragment();
         boolean extensionAttrExists = buildXmlCallbackBodyFor(body, parameter, "");
 
@@ -826,18 +823,20 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             javaDoc = getJavaDocCommentForOverriddenMethod();
             method = new JavaCodeFragmentBuilder();
             method.annotationLn(Override.class);
-            method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot",
-                    "modelObject", "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
-                    Map.class.getName() + "<" + String.class.getName() + ", " + String.class.getName() + ">" }, body,
-                    javaDoc, ANNOTATION_GENERATED);
+            method.method(Modifier.PUBLIC, "void", "initProperties",
+                    new String[] { "pathFromAggregateRoot", "modelObject", "propMap" },
+                    new String[] { String.class.getName(), IModelObject.class.getName(),
+                            Map.class.getName() + "<" + String.class.getName() + ", " + String.class.getName() + ">" },
+                    body, javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             builder.appendln("}");
         }
     }
 
+    // CS-OFF: CyclomaticComplexityCheck
     private boolean buildXmlCallbackBodyFor(JavaCodeFragment body,
             ITestPolicyCmptTypeParameter parameter,
-            String parentPath) throws CoreException {
+            String parentPath) {
         String pathElement = null;
         // evaluate the path, the current path element is: a) in case of root elements the name of
         // the test parameter (because the xml node name is equal to the test parameter name)
@@ -846,7 +845,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         if (!parameter.isRoot()) {
             IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(getIpsProject());
             if (policyCmptType == null) {
-                throw new CoreException(new IpsStatus("Policy component type " + parameter.getPolicyCmptType()
+                throw new CoreRuntimeException(new IpsStatus("Policy component type " + parameter.getPolicyCmptType()
                         + " not found for test policy component type parameter " + parameter.getName()));
             }
             pathElement = parameter.getAssociation();
@@ -881,8 +880,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 }
                 DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
                 if (datatypeHelper == null) {
-                    throw new CoreException(new IpsStatus("Datatypehelper not found for: "
-                            + datatype.getQualifiedName()));
+                    throw new CoreRuntimeException(
+                            new IpsStatus("Datatypehelper not found for: " + datatype.getQualifiedName()));
                 }
                 // generate a constant
                 String constName = generateTestAttributeConstant(parameter, testAttribute);
@@ -922,6 +921,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
         return extensionAttrExists;
     }
+    // CS-ON: CyclomaticComplexityCheck
 
     private String generateTestAttributeConstant(ITestPolicyCmptTypeParameter parameter, String testAttribute) {
         String constName = parameter.getName();
@@ -950,8 +950,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         javaElements.add(javaType.getMethod(getMethodNameExecuteBusinessLogic(), new String[0]));
         javaElements.add(javaType.getMethod(getMethodNameExecuteAsserts(),
                 new String[] { unresolvedParam(IpsTestResult.class) }));
-        javaElements.add(javaType.getMethod(getMethodNameInitInputFromXml(),
-                new String[] { unresolvedParam(Element.class) }));
+        javaElements.add(
+                javaType.getMethod(getMethodNameInitInputFromXml(), new String[] { unresolvedParam(Element.class) }));
         javaElements.add(javaType.getMethod(getMethodNameInitExpectedResultFromXml(),
                 new String[] { unresolvedParam(Element.class) }));
     }

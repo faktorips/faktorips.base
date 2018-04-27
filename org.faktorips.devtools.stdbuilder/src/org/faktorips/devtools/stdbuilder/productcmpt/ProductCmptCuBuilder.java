@@ -18,13 +18,14 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ProductComponent;
 
@@ -95,13 +96,9 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
     }
 
     @Override
-    protected String getSuperClassQualifiedClassName() throws CoreException {
-        IProductCmptType pcType = getPropertyValueContainer().findProductCmptType(getIpsProject());
-        return getProductCmptImplBuilder().getQualifiedClassName(pcType.getIpsSrcFile());
+    protected String getSuperClassQualifiedClassName(IProductCmpt productCmpt) {
+        return getBuilderSet().getModelNode(productCmpt.findProductCmptType(getIpsProject()), XProductCmptClass.class)
+                .getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
-    @Override
-    protected String getQualifiedClassNameFromImplBuilder() {
-        return getProductCmptImplBuilder().getQualifiedClassName(findProductCmptType(getIpsProject()));
-    }
 }

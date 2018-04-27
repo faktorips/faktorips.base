@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 
     public final static String PROPERTY_POLICYCMPTTYPE = "policyCmptType"; //$NON-NLS-1$
-    public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$	
+    public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
     public final static String PROPERTY_REQUIRES_PRODUCTCMT = "requiresProductCmpt"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_INSTANCES = "minInstances"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_INSTANCES = "maxInstances"; //$NON-NLS-1$
@@ -115,10 +115,8 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * exists.
      * 
      * @param ipsProject the IpsProject where to start the search from
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Returns the name of the association.

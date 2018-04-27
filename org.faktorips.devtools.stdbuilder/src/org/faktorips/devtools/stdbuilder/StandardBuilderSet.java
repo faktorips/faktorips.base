@@ -98,6 +98,7 @@ import org.faktorips.devtools.stdbuilder.xpand.table.TableBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.table.TableBuilderFactory;
 import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.table.TableRowBuilderFactory;
+import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -288,7 +289,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         ITableStructure tableStructure = fct.getTableStructure();
 
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
-        code.appendClassName(getTableBuilder().getQualifiedClassName(tableStructure.getIpsSrcFile()));
+        code.appendClassName(getModelNode(tableStructure, XTable.class).getQualifiedName(BuilderAspect.IMPLEMENTATION));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
@@ -335,28 +336,23 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
         LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
-        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE, new PolicyCmptClassBuilder(true, this,
-                generatorModelContext, modelService));
-        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this, generatorModelContext,
-                modelService);
-        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, policyCmptClassBuilder);
+        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE,
+                new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService));
+        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION,
+                new PolicyCmptClassBuilder(false, this, generatorModelContext, modelService));
 
         // create product component type builders
-        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_INTERFACE, new ProductCmptClassBuilder(true, this,
-                generatorModelContext, modelService));
-        ProductCmptClassBuilder productCmptClassBuilder = new ProductCmptClassBuilder(false, this,
-                generatorModelContext, modelService);
-        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, productCmptClassBuilder);
-        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, new ProductCmptGenerationClassBuilder(true,
-                this, generatorModelContext, modelService));
-        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
-                false, this, generatorModelContext, modelService);
-        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION, productCmptGenerationClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_INTERFACE,
+                new ProductCmptClassBuilder(true, this, generatorModelContext, modelService));
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION,
+                new ProductCmptClassBuilder(false, this, generatorModelContext, modelService));
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_INTERFACE,
+                new ProductCmptGenerationClassBuilder(true, this, generatorModelContext, modelService));
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
+                new ProductCmptGenerationClassBuilder(false, this, generatorModelContext, modelService));
 
-        IIpsArtefactBuilder tableBuilder = new TableBuilderFactory().createBuilder(this);
-        IIpsArtefactBuilder tableRowBuilder = new TableRowBuilderFactory().createBuilder(this);
-        builders.put(BuilderKindIds.TABLE, tableBuilder);
-        builders.put(BuilderKindIds.TABLE_ROW, tableRowBuilder);
+        builders.put(BuilderKindIds.TABLE, new TableBuilderFactory().createBuilder(this));
+        builders.put(BuilderKindIds.TABLE_ROW, new TableRowBuilderFactory().createBuilder(this));
 
         // table content builders
         builders.put(BuilderKindIds.TABLE_CONTENT, new TableContentBuilder(this));
@@ -365,17 +361,14 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         builders.put(BuilderKindIds.TEST_CASE_TYPE, new TestCaseTypeClassBuilder(this));
 
         // test case builder
-        TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
-        builders.put(BuilderKindIds.TEST_CASE, testCaseBuilder);
+        builders.put(BuilderKindIds.TEST_CASE, new TestCaseBuilder(this));
 
         // toc file builder
-        TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
-        builders.put(BuilderKindIds.TOC_FILE, tocFileBuilder);
+        builders.put(BuilderKindIds.TOC_FILE, new TocFileBuilder(this));
 
         builders.put(BuilderKindIds.BUSINESS_FUNCTION, new BusinessFunctionBuilder(this));
         // New enum type builder
-        EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilderFactory().createBuilder(this);
-        builders.put(BuilderKindIds.ENUM_TYPE, enumTypeBuilder);
+        builders.put(BuilderKindIds.ENUM_TYPE, new EnumTypeBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));
         builders.put(BuilderKindIds.ENUM_CONTENT, new EnumContentBuilder(this));
         builders.put(BuilderKindIds.ENUM_PROPERTY, new EnumPropertyBuilder(this));
@@ -383,14 +376,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // product component builders
         ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(this);
         builders.put(BuilderKindIds.PRODUCT_CMPT_IMPLEMENTATION, productCmptBuilder);
-        IIpsArtefactBuilder productCmptXmlBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this);
-        builders.put(BuilderKindIds.PRODUCT_CMPT_XML, productCmptXmlBuilder);
-
-        productCmptBuilder.setProductCmptImplBuilder(productCmptClassBuilder);
-        productCmptBuilder.setProductCmptGenImplBuilder(productCmptGenerationClassBuilder);
-
-        // test case builder
-        testCaseBuilder.setJavaSourceFileBuilder(policyCmptClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_XML, new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this));
 
         builders.put(BuilderKindIds.VALIDATION_RULE_MESSAGES, new ValidationRuleMessagesPropertiesBuilder(this));
         builders.put(BuilderKindIds.LABELS_AND_DESCRIPTIONS, new LabelAndDescriptionPropertiesBuilder(this));
@@ -403,8 +389,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             }
             builders.put(id, ipsArtefactBuilder);
         }
-
-        tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
         return builders;
     }
@@ -507,8 +491,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     public LocalDateHelperVariant getLocalDateHelperVariant() {
-        return LocalDateHelperVariant.fromString(getConfig().getPropertyValueAsString(
-                CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT));
+        return LocalDateHelperVariant
+                .fromString(getConfig().getPropertyValueAsString(CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT));
     }
 
     /**
@@ -550,8 +534,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     private <T extends XType> String getJavaClassName(IType type, boolean interfaces, Class<T> modelNodeClass) {
-        return modelService.getModelNode(type, modelNodeClass, generatorModelContext).getQualifiedName(
-                BuilderAspect.getValue(interfaces));
+        return modelService.getModelNode(type, modelNodeClass, generatorModelContext)
+                .getQualifiedName(BuilderAspect.getValue(interfaces));
 
     }
 
@@ -722,8 +706,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
          */
         private void initialize(IIpsProject ipsProject) {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
-            IExtensionPoint point = registry
-                    .getExtensionPoint(IpsPlugin.PLUGIN_ID, DATATYPE_DEFINITION_EXTENSION_POINT);
+            IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
+                    DATATYPE_DEFINITION_EXTENSION_POINT);
             IExtension[] extensions = point.getExtensions();
 
             for (IExtension extension : extensions) {
