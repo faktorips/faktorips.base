@@ -25,8 +25,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 
 /**
  * 
@@ -46,15 +44,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public StandardBuilderSet getBuilderSet() {
         return (StandardBuilderSet)super.getBuilderSet();
-    }
-
-    public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
-        productCmptCuBuilder.setProductCmptImplBuilder(builder);
-        generationBuilder.setProductCmptImplBuilder(builder);
-    }
-
-    public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
-        generationBuilder.setProductCmptGenImplBuilder(builder);
     }
 
     public AbstractProductCuBuilder<IProductCmptGeneration> getGenerationBuilder() {
@@ -182,7 +171,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return cuBuilder.isContainingAvailableFormula(container);
     }
 
-    private AbstractProductCuBuilder<? extends IPropertyValueContainer> getCuBuilderFor(IPropertyValueContainer container) {
+    private AbstractProductCuBuilder<? extends IPropertyValueContainer> getCuBuilderFor(
+            IPropertyValueContainer container) {
         if (container instanceof IProductCmpt) {
             return productCmptCuBuilder;
         } else {

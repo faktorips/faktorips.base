@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -50,8 +49,6 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
     // property key for the constructor's Javadoc.
     public static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
 
-    private ProductCmptClassBuilder productCmptImplBuilder;
-
     private MultiStatus buildStatus;
 
     private Class<?> cuBuilderClazz;
@@ -61,14 +58,6 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
     public AbstractProductCuBuilder(StandardBuilderSet builderSet, Class<?> clazz) {
         super(builderSet, new LocalizedStringsSet(clazz));
         this.cuBuilderClazz = clazz;
-    }
-
-    public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
-        productCmptImplBuilder = builder;
-    }
-
-    public ProductCmptClassBuilder getProductCmptImplBuilder() {
-        return productCmptImplBuilder;
     }
 
     public MultiStatus getBuildStatus() {
@@ -125,7 +114,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         mainSection.setClassModifier(Modifier.PUBLIC);
         try {
             mainSection.setUnqualifiedName(getUnqualifiedClassName());
-            mainSection.setSuperClass(getSuperClassQualifiedClassName());
+            mainSection.setSuperClass(getSuperClassQualifiedClassName(getPropertyValueContainer()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
@@ -206,8 +195,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             if (addOverrideAnnotationIfNecessary) {
                 // if the formula is also compiled to XML we have a standard implementation of this
                 // method
-                appendOverrideAnnotation(builder, method.getModifier().isPublished()
-                        && !getBuilderSet().getFormulaCompiling().isCompileToXml());
+                appendOverrideAnnotation(builder,
+                        method.getModifier().isPublished() && !getBuilderSet().getFormulaCompiling().isCompileToXml());
             }
 
             generateSignatureForModelMethod(method, builder);
@@ -233,7 +222,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
                     // optimization: we search for value types only as only those can be primitives!
                     builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " //$NON-NLS-1$ //$NON-NLS-2$
+                            + parameters[i].getName() + ".toString());"); //$NON-NLS-1$
                 }
             }
             builder.append("throw new "); //$NON-NLS-1$
@@ -249,7 +239,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         }
     }
 
-    private void generateSignatureForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder methodsBuilder) {
+    private void generateSignatureForModelMethod(IProductCmptTypeMethod method,
+            JavaCodeFragmentBuilder methodsBuilder) {
 
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier();
@@ -268,8 +259,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
         String methodName = method.getName();
         // extend the method signature with the given parameter names
-        methodsBuilder
-                .signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, true);
+        methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur,
+                true);
 
         methodsBuilder.append(" throws ");
         methodsBuilder.appendClassName(FormulaExecutionException.class);
@@ -288,7 +279,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         return getPropertyValueContainer().getPropertyValues(IFormula.class);
     }
 
-    protected abstract String getSuperClassQualifiedClassName() throws CoreException;
+    protected abstract String getSuperClassQualifiedClassName(T container);
 
     protected abstract void buildConstructor(JavaCodeFragmentBuilder constructorBuilder);
 
@@ -326,10 +317,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         if (isContainingAvailableFormula(container) && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
             return getQualifiedClassName(container);
         } else {
-            setPropertyValueContainer(container);
-            return getQualifiedClassNameFromImplBuilder();
+            return getSuperClassQualifiedClassName(container);
         }
     }
 
-    protected abstract String getQualifiedClassNameFromImplBuilder();
 }

@@ -90,6 +90,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -249,25 +250,21 @@ public class TestCaseTypeSection extends IpsSection {
          * Update the attributes deatailed area.
          */
         public void updateDetailAttributeArea(ITestAttribute selectedAttribute) {
-            try {
-                if (!manualTriggered) {
-                    attributeExpandable.setExpanded(true);
-                    redrawForm();
-                }
-
-                attributesDescription.setDescribedElement(selectedAttribute);
-
-                if (selectedAttribute.isBasedOnModelAttribute()) {
-                    attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
-                } else {
-                    attributesPolicyCmptType
-                            .setText(Messages.TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr);
-                }
-
-                attributesDescription.refresh();
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+            if (!manualTriggered) {
+                attributeExpandable.setExpanded(true);
+                redrawForm();
             }
+
+            attributesDescription.setDescribedElement(selectedAttribute);
+
+            if (selectedAttribute.isBasedOnModelAttribute()) {
+                attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
+            } else {
+                attributesPolicyCmptType
+                        .setText(Messages.TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr);
+            }
+
+            attributesDescription.refresh();
         }
     }
 
@@ -482,7 +479,8 @@ public class TestCaseTypeSection extends IpsSection {
             hookButtonListenersDetail();
         }
 
-        public void updateDetailButtonStatus(IIpsObjectPart mainSectionObject, IIpsObjectPart currSelectedDetailObject) {
+        public void updateDetailButtonStatus(IIpsObjectPart mainSectionObject,
+                IIpsObjectPart currSelectedDetailObject) {
             if (!isDataChangeable()) {
                 toolkit.setDataChangeable(addAtributeButton, false);
                 toolkit.setDataChangeable(removeAttributeButton, false);
@@ -675,11 +673,11 @@ public class TestCaseTypeSection extends IpsSection {
                     case 1:
                         // type input or expected
                         if (testAttribute.getTestAttributeType() == TestParameterType.EXPECTED_RESULT) {
-                            baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling()
-                                    .createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                            baseImage = (Image)resourceManager
+                                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
                         } else {
-                            baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling()
-                                    .createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                            baseImage = (Image)resourceManager
+                                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
                         }
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
                         break;
@@ -693,15 +691,15 @@ public class TestCaseTypeSection extends IpsSection {
                         break;
                     case 3:
                         // datatype
-                        baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "Datatype.gif")); //$NON-NLS-1$
+                        baseImage = (Image)resourceManager
+                                .get(IpsUIPlugin.getImageHandling().createImageDescriptor("Datatype.gif")); //$NON-NLS-1$
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
                         break;
                     default:
                         return null;
                 }
-                return (Image)resourceManager.get(IpsProblemOverlayIcon.createOverlayIcon(baseImage,
-                        msgList.getSeverity()));
+                return (Image)resourceManager
+                        .get(IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList.getSeverity()));
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return null;
@@ -721,16 +719,12 @@ public class TestCaseTypeSection extends IpsSection {
                         return testAttribute.getTestAttributeType().getName();
                     case 2:
                         // attribute
-                        try {
-                            IPolicyCmptTypeAttribute attr = testAttribute.findAttribute(ipsProject);
-                            if (attr != null) {
-                                return (attr.isDerived() ? "/" : "") + attr.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-                            }
-                        } catch (CoreException e) {
-                            // ignore exception, display attributes name stored in test parameter
-                            // instead
+                        IPolicyCmptTypeAttribute attr = testAttribute.findAttribute(ipsProject);
+                        if (attr != null) {
+                            return (attr.isDerived() ? "/" : "") + attr.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                        } else {
+                            return testAttribute.getAttribute();
                         }
-                        return testAttribute.getAttribute();
                     case 3:
                         // datatype
                         ValueDatatype datatype;
@@ -738,12 +732,14 @@ public class TestCaseTypeSection extends IpsSection {
                             datatype = testAttribute.findDatatype(ipsProject);
                             if (datatype != null) {
                                 return super.getText(datatype);
+                            } else {
+                                return testAttribute.getDatatype();
                             }
-                        } catch (CoreException e) {
+                        } catch (CoreRuntimeException e) {
                             // ignore exception, display datatype name stored in test parameter
                             // instead
+                            return testAttribute.getDatatype();
                         }
-                        return testAttribute.getDatatype();
                     default:
                         break;
                 }
@@ -921,15 +917,11 @@ public class TestCaseTypeSection extends IpsSection {
         public void run(IStructuredSelection selection) {
             Object firstElement = selection.getFirstElement();
             if (firstElement instanceof ITestPolicyCmptTypeParameter) {
-                try {
-                    ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)firstElement;
-                    if (StringUtils.isNotEmpty(param.getPolicyCmptType())) {
-                        IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
-                        IpsUIPlugin.getDefault().openEditor(cmptType);
-                        return;
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)firstElement;
+                if (StringUtils.isNotEmpty(param.getPolicyCmptType())) {
+                    IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
+                    IpsUIPlugin.getDefault().openEditor(cmptType);
+                    return;
                 }
             }
         }
@@ -1199,22 +1191,17 @@ public class TestCaseTypeSection extends IpsSection {
             errorMessageText += "<p><img href=\"imageassociation\"/> <span color=\"red\">" + msgText + "</span></p>"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (errorMessageText.length() > 0) {
-            FormToolkit toolkit = new FormToolkit(form.getParent().getDisplay());
-            FormText formText = toolkit.createFormText(section, false);
+            FormText formText = toolkit.getFormToolkit().createFormText(section, false);
             if (testParam instanceof ITestPolicyCmptTypeParameter) {
                 ITestPolicyCmptTypeParameter pcTypeParameter = (ITestPolicyCmptTypeParameter)testParam;
-                try {
-                    IPolicyCmptType pcType = pcTypeParameter.findPolicyCmptType(pcTypeParameter.getIpsProject());
-                    Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
-                    ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
-                            msgList.getSeverity());
-                    formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage)); //$NON-NLS-1$
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                IPolicyCmptType pcType = pcTypeParameter.findPolicyCmptType(pcTypeParameter.getIpsProject());
+                Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
+                ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
+                        msgList.getSeverity());
+                formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage)); //$NON-NLS-1$
             }
-            Image baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "Association.gif")); //$NON-NLS-1$
+            Image baseImage = (Image)resourceManager
+                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("Association.gif")); //$NON-NLS-1$
             ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
                     msgList.getSeverity());
             formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$
@@ -1284,11 +1271,11 @@ public class TestCaseTypeSection extends IpsSection {
                 gridData.heightHint = 60;
                 gridData.widthHint = 100;
                 text.setLayoutData(gridData);
-                text.setText(
-                        NLS.bind(Messages.TestCaseTypeSection_FormText_InfoAssociation_1
+                text.setText(NLS.bind(
+                        Messages.TestCaseTypeSection_FormText_InfoAssociation_1
                                 + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
                                 + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
-                                testPolicyCmptTypeParam.getAssociation()), true, false);
+                        testPolicyCmptTypeParam.getAssociation()), true, false);
             }
         } else if (testParam instanceof ITestValueParameter) {
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
@@ -1365,9 +1352,9 @@ public class TestCaseTypeSection extends IpsSection {
         viewer.setCellEditors(new CellEditor[] { textCellEditorName, cellEditorTestAttributeType, null, null });
 
         viewer.setCellModifier(new TestAttributeCellModifier(viewer));
-        viewer.setColumnProperties(new String[] { IIpsElement.PROPERTY_NAME,
-                ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE, ITestAttribute.PROPERTY_ATTRIBUTE,
-                ITestAttribute.PROPERTY_DATATYPE });
+        viewer.setColumnProperties(
+                new String[] { IIpsElement.PROPERTY_NAME, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE,
+                        ITestAttribute.PROPERTY_ATTRIBUTE, ITestAttribute.PROPERTY_DATATYPE });
 
         // add listener to the table
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -1409,8 +1396,8 @@ public class TestCaseTypeSection extends IpsSection {
         } else if (object instanceof ITestPolicyCmptTypeParameter) {
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object;
         } else {
-            throw new RuntimeException(NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object
-                    .getClass().getName()));
+            throw new RuntimeException(
+                    NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object.getClass().getName()));
         }
 
         // open a wizard to select an attribute of the policy cmpt
@@ -1595,8 +1582,8 @@ public class TestCaseTypeSection extends IpsSection {
             ITestValueParameter parameter,
             IpsObjectUIController uiController) {
 
-        Label label = toolkit
-                .createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
+        Label label = toolkit.createFormLabel(editFieldsComposite,
+                Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
         EditField<String> editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
         editFieldDatatype.getControl().setEnabled(false);
@@ -1686,8 +1673,8 @@ public class TestCaseTypeSection extends IpsSection {
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer) {
-            messageList.add(((IIpsObjectPartContainer)element).validate(((IIpsObjectPartContainer)element)
-                    .getIpsProject()));
+            messageList.add(
+                    ((IIpsObjectPartContainer)element).validate(((IIpsObjectPartContainer)element).getIpsProject()));
         }
         return messageList;
     }
@@ -1898,16 +1885,10 @@ public class TestCaseTypeSection extends IpsSection {
 
             // check if the policy cmpt type exists and if not
             // open a error dialog and cancel
-            try {
-                if (((ITestPolicyCmptTypeParameter)selObject)
-                        .findPolicyCmptType(((ITestPolicyCmptTypeParameter)selObject).getIpsProject()) == null) {
-                    MessageDialog.openInformation(getShell(),
-                            Messages.TestCaseTypeSection_ErrorDialog_AddParameterTitle,
-                            Messages.TestCaseTypeSection_ErrorDialog_AddParameterPcTypeIsMissing);
-                    return;
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+            if (((ITestPolicyCmptTypeParameter)selObject)
+                    .findPolicyCmptType(((ITestPolicyCmptTypeParameter)selObject).getIpsProject()) == null) {
+                MessageDialog.openInformation(getShell(), Messages.TestCaseTypeSection_ErrorDialog_AddParameterTitle,
+                        Messages.TestCaseTypeSection_ErrorDialog_AddParameterPcTypeIsMissing);
                 return;
             }
 

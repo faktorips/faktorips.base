@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -28,11 +28,13 @@ public class TestAttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
                 IPolicyCmptTypeAttribute attribute = testAttribute.findAttribute(testAttribute.getIpsProject());
                 if (attribute != null) {
                     return IpsUIPlugin.getImageHandling().getImageDescriptor(attribute);
+                } else {
+                    return getDefaultImageDescriptor();
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 // ignore exception, return default image
+                return getDefaultImageDescriptor();
             }
-            return getDefaultImageDescriptor();
         }
         return null;
     }

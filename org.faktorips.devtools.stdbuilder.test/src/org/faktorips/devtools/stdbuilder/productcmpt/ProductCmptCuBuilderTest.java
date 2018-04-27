@@ -9,27 +9,29 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
+
+    private static final String TEST_FORMULA = "testFormula";
 
     private static final String PRODUCT_CMPT_NAME = "Product";
 
@@ -41,9 +43,6 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
 
     private ProductCmptType productCmptType;
 
-    @Mock
-    private ProductCmptClassBuilder prodCmptImplBuilder;
-
     @Override
     @Before
     public void setUp() throws Exception {
@@ -51,12 +50,8 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
 
         productCmptType = newProductCmptType(ipsProject, PRODUCT_CMPT_TYPE_NAME);
         productCmpt = newProductCmpt(productCmptType, PRODUCT_CMPT_NAME);
-        IIpsSrcFile ipsSrcFile = productCmptType.getIpsSrcFile();
-        when(prodCmptImplBuilder.getQualifiedClassName(ipsSrcFile)).thenReturn("productIpsSrcFile");
 
         builder = new ProductCmptCuBuilder(builderSet);
-        builder.setProductCmptImplBuilder(prodCmptImplBuilder);
-
     }
 
     @Test
@@ -81,8 +76,8 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
-        IFormula newFormula = productCmpt.newPropertyValue(
-                new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
+        IFormula newFormula = productCmpt
+                .newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
 
         assertTrue(builder.isContainingAvailableFormula(productCmpt));
@@ -91,11 +86,55 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
         productCmpt.newPropertyValues(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
-        IFormula newFormula = productCmpt.newPropertyValue(
-                new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
+        IFormula newFormula = productCmpt
+                .newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
 
         assertTrue(builder.isContainingAvailableFormula(productCmpt));
+    }
+
+    @Test
+    public void testGetSuperClassQualifiedClassName() throws Exception {
+        String superClassQualifiedClassName = builder.getSuperClassQualifiedClassName(productCmpt);
+
+        assertThat(superClassQualifiedClassName, is("org.faktorips.sample.model.internal.ProductType"));
+    }
+
+    @Test
+    public void testGetSuperClassQualifiedClassName_OtherProjectDifferentSettings() throws Exception {
+        setGeneratorProperty(ipsProject, StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES,
+                Boolean.FALSE.toString());
+        builder = new ProductCmptCuBuilder(builderSet);
+        IIpsProject otherProject = newIpsProject();
+        IIpsObjectPath objectPath = otherProject.getIpsObjectPath();
+        objectPath.newIpsProjectRefEntry(ipsProject);
+        otherProject.setIpsObjectPath(objectPath);
+        ProductCmpt productCmpt2 = newProductCmpt(otherProject, "Test2");
+        productCmpt2.setProductCmptType(PRODUCT_CMPT_TYPE_NAME);
+        productCmpt2.fixAllDifferencesToModel(otherProject);
+
+        String superClassQualifiedClassName = builder.getSuperClassQualifiedClassName(productCmpt2);
+
+        assertThat(superClassQualifiedClassName, is("org.faktorips.sample.model.ProductType"));
+    }
+
+    @Test
+    public void testGetImplementationClass_NoFormula() throws Exception {
+        String superClassQualifiedClassName = builder.getImplementationClass(productCmpt);
+
+        assertThat(superClassQualifiedClassName, is("org.faktorips.sample.model.internal.ProductType"));
+    }
+
+    @Test
+    public void testGetImplementationClass_WithFormula() throws Exception {
+        IProductCmptTypeMethod formulaSignature = productCmptType.newFormulaSignature(TEST_FORMULA);
+        formulaSignature.setChangingOverTime(false);
+        productCmpt.fixAllDifferencesToModel(ipsProject);
+        productCmpt.getFormula(TEST_FORMULA).setExpression("abc");
+
+        String superClassQualifiedClassName = builder.getImplementationClass(productCmpt);
+
+        assertThat(superClassQualifiedClassName, is("org.faktorips.sample.model.internal.Product"));
     }
 
 }

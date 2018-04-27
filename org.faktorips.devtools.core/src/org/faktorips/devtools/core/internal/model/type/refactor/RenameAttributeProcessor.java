@@ -64,7 +64,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
         try {
             result.add(getIpsSrcFile());
-            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_TEMPLATE);
+            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT,
+                    IpsObjectType.PRODUCT_TEMPLATE);
             for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
                 result.add(ipsSrcFile);
             }
@@ -255,8 +256,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             IProductCmptType referencedProductCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
             IProductCmptType configuringProductCmptType = ((IPolicyCmptType)getType())
                     .findProductCmptType(getIpsProject());
-            if (!(referencedProductCmptType
-                    .isSubtypeOrSameType(configuringProductCmptType, productCmpt.getIpsProject()))) {
+            if (!(referencedProductCmptType.isSubtypeOrSameType(configuringProductCmptType,
+                    productCmpt.getIpsProject()))) {
                 continue;
             }
             for (IPropertyValueContainer container : getPropertyValueContainers(productCmpt)) {
@@ -276,7 +277,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * <p>
      * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
      */
-    private void updateTestCaseTypeReferences() throws CoreException {
+    private void updateTestCaseTypeReferences() {
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
             for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {

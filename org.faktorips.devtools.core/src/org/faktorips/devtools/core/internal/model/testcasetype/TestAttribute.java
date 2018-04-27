@@ -118,7 +118,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
+    public ValueDatatype findDatatype(IIpsProject project) {
         if (StringUtils.isEmpty(attribute)) {
             return project.findValueDatatype(datatype);
         }
@@ -142,7 +142,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    public String getCorrespondingPolicyCmptType() throws CoreException {
+    public String getCorrespondingPolicyCmptType() {
         IPolicyCmptTypeAttribute attribute = findAttribute(getIpsProject());
         if (attribute != null) {
             return attribute.getPolicyCmptType().getQualifiedName();
@@ -158,7 +158,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
@@ -348,9 +348,9 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
          */
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
-            messageList.add(new Message(MSGCODE_INVALID_TEST_ATTRIBUTE_NAME, NLS.bind(
-                    Messages.TestAttribute_TestAttribute_Error_InvalidTestAttributeName, name), Message.ERROR, this,
-                    PROPERTY_NAME));
+            messageList.add(new Message(MSGCODE_INVALID_TEST_ATTRIBUTE_NAME,
+                    NLS.bind(Messages.TestAttribute_TestAttribute_Error_InvalidTestAttributeName, name), Message.ERROR,
+                    this, PROPERTY_NAME));
         }
     }
 

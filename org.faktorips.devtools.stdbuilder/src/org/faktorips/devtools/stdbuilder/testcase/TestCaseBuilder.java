@@ -30,9 +30,9 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -48,6 +48,8 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -60,31 +62,22 @@ import org.w3c.dom.Element;
  */
 public class TestCaseBuilder extends AbstractArtefactBuilder {
 
-    private JavaSourceFileBuilder javaSourceFileBuilder;
-
     private Map<ITestPolicyCmpt, String> objectIdMap = new HashMap<ITestPolicyCmpt, String>();
 
     private Map<Element, ITestPolicyCmpt> targetObjectIdMap = new HashMap<Element, ITestPolicyCmpt>();
 
-    public TestCaseBuilder(DefaultBuilderSet builderSet) {
+    public TestCaseBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
     }
 
     @Override
-    public DefaultBuilderSet getBuilderSet() {
-        return (DefaultBuilderSet)super.getBuilderSet();
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     @Override
     public String getName() {
         return "TestCaseBuilder";
-    }
-
-    /**
-     * Sets the policy component type implementation builder.
-     */
-    public void setJavaSourceFileBuilder(JavaSourceFileBuilder javaSourceFileBuilder) {
-        this.javaSourceFileBuilder = javaSourceFileBuilder;
     }
 
     @Override
@@ -321,11 +314,15 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 throw new CoreException(
                         new IpsStatus(NLS.bind("The policy component type {0} was not found.", policyCmptTypeQName)));
             }
-            testPolicyCmptElem.setAttribute("class",
-                    javaSourceFileBuilder.getQualifiedClassName(policyCmptTypeSrcFile));
+            testPolicyCmptElem.setAttribute("class", getQualifiedClassName(policyCmptTypeSrcFile.getIpsObject()));
             addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestAttributeValues(), isInput);
             addAssociations(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestPolicyCmptLinks(), isInput, objectId);
         }
+    }
+
+    /* private */ String getQualifiedClassName(IIpsObject policyCmptType) {
+        return getBuilderSet().getModelNode(policyCmptType, XPolicyCmptClass.class)
+                .getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
     private String getPolicyCmptTypeNameAndSetProductCmptAttr(ITestPolicyCmpt testPolicyCmpt,
