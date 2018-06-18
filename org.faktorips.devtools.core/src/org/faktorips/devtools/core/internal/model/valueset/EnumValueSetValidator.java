@@ -75,7 +75,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
      */
     private boolean isValidDatatype() {
         if (getDatatype() == null) {
-            String msg = Messages.EnumValueSet_msgDatatypeUnknown;
+            String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeUnknown, getOwner().getName());
             list.add(new Message(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, getParentOp()));
             return false;
         }

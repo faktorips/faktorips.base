@@ -151,7 +151,7 @@ public class ValidationUtils {
 
         Datatype datatype = ipsProject.findDatatype(datatypeName);
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName);
+            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName, part.getName());
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -193,7 +193,7 @@ public class ValidationUtils {
         }
         ValueDatatype datatype = part.getIpsProject().findValueDatatype(datatypeName);
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName);
+            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName, part.getName());
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -248,7 +248,7 @@ public class ValidationUtils {
             MessageList list) {
 
         if (datatype == null) {
-            String text = Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
+            String text = NLS.bind(Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND, propertyName, value);
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND,
                     text, Message.ERROR, part, propertyName);
@@ -257,7 +257,7 @@ public class ValidationUtils {
         }
 
         if (datatype.checkReadyToUse().containsErrorMsg()) {
-            String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName());
+            String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, propertyName, datatype.getName());
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text,
                     Message.WARNING, part, propertyName);
@@ -286,10 +286,13 @@ public class ValidationUtils {
             MessageList list) {
         if (!datatype.isParsable(value)) {
             String text;
+
             if (Datatype.MONEY.equals(datatype)) {
-                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, value, datatype);
+                String[] params = { propertyName, value, datatype.getName() };
+                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, params);
             } else {
-                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, value, datatype);
+                String[] params = { value, propertyName, datatype.getName() };
+                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, params);
             }
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text,

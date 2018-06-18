@@ -302,7 +302,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
-        validateDatatype(list, signatureDatatype);
+        validateDatatype(list, signatureDatatype, method);
         if (list.containsErrorMsg()) {
             return;
         }
@@ -322,9 +322,9 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
     }
 
-    private void validateDatatype(MessageList list, Datatype signatureDatatype) {
+    private void validateDatatype(MessageList list, Datatype signatureDatatype, IBaseMethod method) {
         if (signatureDatatype == null) {
-            String text = Messages.ConfigElement_msgDatatypeMissing;
+            String text = NLS.bind(Messages.FormulaElement_msgDatatypeMissing, method.getDatatype(), formulaSignature);
             list.add(new Message(MSGCODE_UNKNOWN_DATATYPE_FORMULA, text, Message.ERROR, this, PROPERTY_EXPRESSION));
         }
     }

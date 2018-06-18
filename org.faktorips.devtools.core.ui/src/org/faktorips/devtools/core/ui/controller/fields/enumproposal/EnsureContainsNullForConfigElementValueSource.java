@@ -36,7 +36,6 @@ public class EnsureContainsNullForConfigElementValueSource implements IValueSour
     public EnsureContainsNullForConfigElementValueSource(IValueSetOwner valueSetOwner, ValueDatatype datatype,
             IValueSource valueSource) {
         this.valueSetOwner = valueSetOwner;
-        Assert.isNotNull(datatype);
         this.datatype = datatype;
         Assert.isNotNull(valueSource);
         this.valueSource = valueSource;
@@ -57,7 +56,7 @@ public class EnsureContainsNullForConfigElementValueSource implements IValueSour
     }
 
     private boolean requiresNull(List<String> values) {
-        return isConfigElement() && !values.contains(null) && !datatype.isPrimitive();
+        return isConfigElement() && !values.contains(null) && datatype != null && !datatype.isPrimitive();
     }
 
     private boolean isConfigElement() {
