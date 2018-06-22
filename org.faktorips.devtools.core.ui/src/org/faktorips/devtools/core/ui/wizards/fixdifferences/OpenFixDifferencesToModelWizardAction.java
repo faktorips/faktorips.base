@@ -24,6 +24,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -74,16 +76,22 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
      */
     @Override
     public void run(IAction action) {
-        // save dirty editors
-        if (!IpsUIPlugin.getDefault().saveAllEditors()) {
-            return;
-        }
+        BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 
-        Set<IFixDifferencesToModelSupport> ipsElementsToFix = findObjectsToFix();
-        FixDifferencesToModelWizard wizard = new FixDifferencesToModelWizard(ipsElementsToFix);
-        wizard.init(window.getWorkbench(), getCurrentSelection());
-        WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-        dialog.open();
+            @Override
+            public void run() {
+                // save dirty editors
+                if (!IpsUIPlugin.getDefault().saveAllEditors()) {
+                    return;
+                }
+
+                Set<IFixDifferencesToModelSupport> ipsElementsToFix = findObjectsToFix();
+                FixDifferencesToModelWizard wizard = new FixDifferencesToModelWizard(ipsElementsToFix);
+                wizard.init(window.getWorkbench(), getCurrentSelection());
+                WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+                dialog.open();
+            }
+        });
     }
 
     private IStructuredSelection getCurrentSelection() {
