@@ -22,8 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -52,7 +50,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
      * @param content the content of this IpsSrcFile
      */
     public IpsSrcFileImmutable(String name, InputStream content) {
-        super(new IpsProject((IpsModel)IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject") //$NON-NLS-1$
+        super(IpsPlugin.getDefault().getIpsModel().getIpsProject("IpsSrcFileImmutableIpsProject") //$NON-NLS-1$
                 .getIpsPackageFragmentRoot("immutablePackageFragmentRoot").getDefaultIpsPackageFragment(), name); //$NON-NLS-1$
         setContents(content);
     }
