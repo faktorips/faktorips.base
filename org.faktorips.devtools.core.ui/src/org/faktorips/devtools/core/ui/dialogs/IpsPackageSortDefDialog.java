@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
@@ -22,21 +23,31 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -50,6 +61,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.functional.BiConsumer;
 
 /**
  * Dialog for changing the sort order of IIpsPackageFragments.
@@ -163,6 +175,31 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 udpateButtonEnablement();
             }
         });
+        tableViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
+                new DragSourceAdapter() {
+
+                    @Override
+                    public void dragStart(DragSourceEvent event) {
+                        event.doit = getSelectedElements().size() > 0;
+                    }
+                });
+        tableViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
+                new SortOrderDropListener(tableViewer, new BiConsumer<IIpsElement, List<IIpsElement>>() {
+                    @Override
+                    public void accept(IIpsElement t, List<IIpsElement> u) {
+                        sortOrder.above(t, u);
+                    }
+                }, new BiConsumer<IIpsElement, List<IIpsElement>>() {
+                    @Override
+                    public void accept(IIpsElement t, List<IIpsElement> u) {
+                        sortOrder.below(t, u);
+                    }
+                }, new Runnable() {
+                    @Override
+                    public void run() {
+                        refresh();
+                    }
+                }));
     }
 
     @Override
@@ -180,6 +217,11 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         }
     }
 
+    public void refresh() {
+        tableViewer.refresh(false);
+        udpateButtonEnablement();
+    }
+
     /**
      * Enables or disables the buttons {@link #up} and {@link #down} according to the
      * {@link #tableViewer}'s current selection.
@@ -191,10 +233,10 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * fragment is the first in its category and cannot be moved further upwards, #down analogous.
      */
     private void udpateButtonEnablement() {
-        IIpsElement[] selectedElements = getSelectedElements();
+        List<IIpsElement> selectedElements = getSelectedElements();
         if (hasOnlyElementsOfOneCategory(selectedElements)) {
-            up.setEnabled(!isFirstInCategory(selectedElements[0]));
-            down.setEnabled(!isLastInCategory(selectedElements[selectedElements.length - 1]));
+            up.setEnabled(!isFirstInCategory(selectedElements.get(0)));
+            down.setEnabled(!isLastInCategory(selectedElements.get(selectedElements.size() - 1)));
         } else {
             up.setEnabled(false);
             down.setEnabled(false);
@@ -211,10 +253,10 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 || element instanceof IIpsSrcFile && sortOrder.isLast((IIpsSrcFile)element);
     }
 
-    private boolean hasOnlyElementsOfOneCategory(IIpsElement[] elements) {
+    private static boolean hasOnlyElementsOfOneCategory(List<IIpsElement> selectedElements) {
         boolean hasPackage = false;
         boolean hasSrcFile = false;
-        for (IIpsElement element : elements) {
+        for (IIpsElement element : selectedElements) {
             if (element instanceof IIpsPackageFragment) {
                 hasPackage = true;
                 if (hasSrcFile) {
@@ -228,7 +270,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 }
             }
         }
-        return elements.length > 0;
+        return selectedElements.size() > 0;
     }
 
     private void createTableViewer(Composite sortComposite) {
@@ -275,7 +317,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      */
     protected void restorePressed() {
         sortOrder.restore();
-        tableViewer.refresh();
+        refresh();
     }
 
     /**
@@ -283,8 +325,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      */
     protected void downPressed() {
         sortOrder.down(getSelectedElements());
-        tableViewer.refresh(false);
-        udpateButtonEnablement();
+        refresh();
     }
 
     /**
@@ -292,13 +333,13 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      */
     protected void upPressed() {
         sortOrder.up(getSelectedElements());
-        tableViewer.refresh(false);
-        udpateButtonEnablement();
+        refresh();
     }
 
-    protected IIpsElement[] getSelectedElements() {
-        List<?> selectedElements = ((IStructuredSelection)tableViewer.getSelection()).toList();
-        return selectedElements.toArray(new IIpsElement[selectedElements.size()]);
+    protected List<IIpsElement> getSelectedElements() {
+        @SuppressWarnings("unchecked")
+        List<IIpsElement> selectedElements = ((IStructuredSelection)tableViewer.getSelection()).toList();
+        return selectedElements;
     }
 
     @Override
@@ -355,6 +396,90 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             // do not log the error - could be the first time we read the settings.
             /* IpsPlugin.log(e); */
         }
+    }
+
+    private static class SortOrderDropListener extends ViewerDropAdapter {
+
+        private BiConsumer<IIpsElement, List<IIpsElement>> above;
+        private BiConsumer<IIpsElement, List<IIpsElement>> below;
+        private Runnable updateHandler;
+
+        private SortOrderDropListener(TableViewer tableViewer, BiConsumer<IIpsElement, List<IIpsElement>> above,
+                BiConsumer<IIpsElement, List<IIpsElement>> below, Runnable updateHandler) {
+            super(tableViewer);
+            this.above = above;
+            this.below = below;
+            this.updateHandler = updateHandler;
+        }
+
+        @Override
+        public boolean validateDrop(Object target, int operation, TransferData transferData) {
+            List<IIpsElement> selectedElements = getSelectedElements();
+            return target != null && hasOnlyElementsOfOneCategory(selectedElements)
+                    && areSameCategory((IIpsElement)target, selectedElements);
+        }
+
+        protected List<IIpsElement> getSelectedElements() {
+            @SuppressWarnings("unchecked")
+            List<IIpsElement> selectedElements = ((IStructuredSelection)getViewer().getSelection()).toList();
+            return selectedElements;
+        }
+
+        private boolean areSameCategory(IIpsElement target, List<IIpsElement> selectedElements) {
+            return selectedElements.size() > 0
+                    && (areBothPackageFragments(target, selectedElements) || areBothSrcFiles(target, selectedElements));
+        }
+
+        private boolean areBothSrcFiles(IIpsElement target, List<IIpsElement> selectedElements) {
+            return selectedElements.get(0) instanceof IIpsSrcFile && target instanceof IIpsSrcFile;
+        }
+
+        private boolean areBothPackageFragments(IIpsElement target, List<IIpsElement> selectedElements) {
+            return selectedElements.get(0) instanceof IIpsPackageFragment && target instanceof IIpsPackageFragment;
+        }
+
+        /**
+         * Override the determineLocation method because we have only location after or location before when
+         * moving an element. When D&D is not in moving mode, we do not have location feedback. In that case
+         * we return the normal determined location instead.
+         */
+        @Override
+        protected int determineLocation(DropTargetEvent event) {
+            if (!(event.item instanceof Item)) {
+                return LOCATION_NONE;
+            }
+            Item item = (Item)event.item;
+            Point coordinates = new Point(event.x, event.y);
+            coordinates = getViewer().getControl().toControl(coordinates);
+            if (item != null) {
+                Rectangle bounds = getBounds(item);
+                int offset = bounds.height / 2;
+                if ((coordinates.y - bounds.y) < offset) {
+                    return LOCATION_BEFORE;
+                }
+                if ((bounds.y + bounds.height - coordinates.y) < offset) {
+                    return LOCATION_AFTER;
+                }
+            }
+            return LOCATION_ON;
+        }
+
+        @Override
+        public boolean performDrop(Object data) {
+            IIpsElement target = (IIpsElement)getCurrentTarget();
+            if (target != null) {
+                if (getCurrentLocation() == LOCATION_BEFORE) {
+                    above.accept(target, getSelectedElements());
+                } else {
+                    below.accept(target, getSelectedElements());
+                }
+                updateHandler.run();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 
     private class IpsPackageSortDefLabelProvider extends DefaultLabelProvider {
@@ -475,17 +600,39 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             return elements;
         }
 
-        public void up(IIpsElement... elements) {
-            for (IIpsElement element : elements) {
+        public void up(List<? extends IIpsElement> list) {
+            for (IIpsElement element : list) {
                 int index = indexOf(element);
                 swap(index, index - 1);
             }
         }
 
-        public void down(IIpsElement... elements) {
-            for (int i = elements.length - 1; i >= 0; i--) {
-                int index = indexOf(elements[i]);
+        public void down(List<? extends IIpsElement> list) {
+            for (int i = list.size() - 1; i >= 0; i--) {
+                int index = indexOf(list.get(i));
                 swap(index, index + 1);
+            }
+        }
+
+        public void below(IIpsElement target, List<? extends IIpsElement> list) {
+            for (int i = list.size() - 1; i >= 0; i--) {
+                moveTo(target, list.get(i), +1);
+            }
+        }
+
+        private void moveTo(IIpsElement target, IIpsElement source, int offset) {
+            List<IIpsElement> element = Collections.singletonList(source);
+            while (indexOf(source) > indexOf(target) + offset) {
+                up(element);
+            }
+            while (indexOf(source) < indexOf(target) + offset) {
+                down(element);
+            }
+        }
+
+        public void above(IIpsElement target, List<? extends IIpsElement> list) {
+            for (IIpsElement source : list) {
+                moveTo(target, source, -1);
             }
         }
 

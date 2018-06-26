@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import org.eclipse.core.resources.IFile;
@@ -89,7 +90,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         assertThat(defaultIpsPackageFragment.getChildOrderComparator(), is(instanceOf(DefinedOrderComparator.class)));
 
         // makes sortOrder "dirty"
-        sortOrder.up(packB);
+        sortOrder.up(Arrays.asList(packB));
 
         sortOrder.save();
 
@@ -120,7 +121,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
-        sortOrder.up(packB);
+        sortOrder.up(Arrays.asList(packB));
         sortOrder.save();
 
         IFile file = ((IFolder)defaultIpsPackageFragment.getCorrespondingResource())
@@ -207,7 +208,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
 
-        sortOrder.up(packB);
+        sortOrder.up(Arrays.asList(packB));
 
         Object[] elements = sortOrder.getElements(defaultIpsPackageFragment);
         assertThat((IIpsPackageFragment)elements[0], is(packB));
@@ -227,7 +228,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
 
-        sortOrder.up(packB, packD);
+        sortOrder.up(Arrays.asList(packB, packD));
 
         Object[] elements = sortOrder.getElements(defaultIpsPackageFragment);
         assertThat((IIpsPackageFragment)elements[0], is(packB));
@@ -247,7 +248,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
 
-        sortOrder.down(packB);
+        sortOrder.down(Arrays.asList(packB));
 
         Object[] elements = sortOrder.getElements(defaultIpsPackageFragment);
         assertThat((IIpsPackageFragment)elements[0], is(packA));
@@ -267,7 +268,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
 
-        sortOrder.down(packB, packD);
+        sortOrder.down(Arrays.asList(packB, packD));
 
         Object[] elements = sortOrder.getElements(defaultIpsPackageFragment);
         assertThat((IIpsPackageFragment)elements[0], is(packA));
@@ -275,6 +276,50 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         assertThat((IIpsPackageFragment)elements[2], is(packB));
         assertThat((IIpsPackageFragment)elements[3], is(packE));
         assertThat((IIpsPackageFragment)elements[4], is(packD));
+    }
+
+    @Test
+    public void testAbove() throws CoreException {
+        IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
+        IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
+        IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
+        IIpsPackageFragment packD = ipsRoot.createPackageFragment("d", true, null);
+        IIpsPackageFragment packE = ipsRoot.createPackageFragment("e", true, null);
+        IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
+
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
+
+        sortOrder.above(packB, Arrays.asList(packC, packE));
+
+        Object[] elements = sortOrder.getElements(defaultIpsPackageFragment);
+        assertThat((IIpsPackageFragment)elements[0], is(packA));
+        assertThat((IIpsPackageFragment)elements[1], is(packC));
+        assertThat((IIpsPackageFragment)elements[2], is(packE));
+        assertThat((IIpsPackageFragment)elements[3], is(packB));
+        assertThat((IIpsPackageFragment)elements[4], is(packD));
+    }
+
+    @Test
+    public void testBelow() throws CoreException {
+        IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
+        IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
+        IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
+        IIpsPackageFragment packD = ipsRoot.createPackageFragment("d", true, null);
+        IIpsPackageFragment packE = ipsRoot.createPackageFragment("e", true, null);
+        IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
+
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
+
+        sortOrder.below(packD, Arrays.asList(packA, packC));
+
+        Object[] elements = sortOrder.getElements(defaultIpsPackageFragment);
+        assertThat((IIpsPackageFragment)elements[0], is(packB));
+        assertThat((IIpsPackageFragment)elements[1], is(packD));
+        assertThat((IIpsPackageFragment)elements[2], is(packA));
+        assertThat((IIpsPackageFragment)elements[3], is(packC));
+        assertThat((IIpsPackageFragment)elements[4], is(packE));
     }
 
     @Test

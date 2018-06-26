@@ -467,6 +467,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                     return childOrderComparator;
                 } else {
                     childOrderComparator = DefinedOrderComparator.forPackage(IpsPackageFragment.this);
+                    if (childOrderComparator == null) {
+                        childOrderComparator = AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR;
+                    }
                     return childOrderComparator;
                 }
             } else {
@@ -529,7 +532,12 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
 
         public static DefinedOrderComparator forPackage(IpsPackageFragment parentPackage) {
-            return new DefinedOrderComparator(Persistence.read(parentPackage));
+            Map<IIpsElement, Integer> read = Persistence.read(parentPackage);
+            if (read != null) {
+                return new DefinedOrderComparator(read);
+            } else {
+                return null;
+            }
         }
 
         public DefinedOrderComparator copy() {
@@ -606,7 +614,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                     } catch (IOException e) {
                         throw new CoreRuntimeException(new IpsStatus(e));
                     } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
+                        IpsPlugin.log(e);
+                        return null;
                     }
                 } else {
                     return null;
