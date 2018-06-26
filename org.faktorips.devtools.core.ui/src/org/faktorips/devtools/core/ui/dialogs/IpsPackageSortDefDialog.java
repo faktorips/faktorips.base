@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -52,8 +53,6 @@ import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * Dialog for changing the sort order of IIpsPackageFragments.
- * 
- * @author Markus Blum
  */
 public class IpsPackageSortDefDialog extends TrayDialog {
 
@@ -192,29 +191,44 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * fragment is the first in its category and cannot be moved further upwards, #down analogous.
      */
     private void udpateButtonEnablement() {
-        Object selectedElement = getFirstSelectedElement();
-        if (selectedElement instanceof IIpsPackageFragment) {
-            IIpsPackageFragment fragment = (IIpsPackageFragment)selectedElement;
-            if (fragment.isDefaultPackage()) {
-                /*
-                 * These are the sourceFolders or pckgFragmentRoots displayed in the dialog. Disable buttons, as
-                 * reordering is not possible.
-                 */
-                up.setEnabled(false);
-                down.setEnabled(false);
-            } else {
-                up.setEnabled(!sortOrder.isFirst(fragment));
-                down.setEnabled(!sortOrder.isLast(fragment));
-            }
-        } else if (selectedElement instanceof IIpsSrcFile) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)selectedElement;
-            up.setEnabled(!sortOrder.isFirst(srcFile));
-            down.setEnabled(!sortOrder.isLast(srcFile));
+        IIpsElement[] selectedElements = getSelectedElements();
+        if (hasOnlyElementsOfOneCategory(selectedElements)) {
+            up.setEnabled(!isFirstInCategory(selectedElements[0]));
+            down.setEnabled(!isLastInCategory(selectedElements[selectedElements.length - 1]));
         } else {
-            // nothing or no movable element selected, disable buttons
             up.setEnabled(false);
             down.setEnabled(false);
         }
+    }
+
+    private boolean isFirstInCategory(IIpsElement element) {
+        return element instanceof IIpsPackageFragment && sortOrder.isFirst((IIpsPackageFragment)element)
+                || element instanceof IIpsSrcFile && sortOrder.isFirst((IIpsSrcFile)element);
+    }
+
+    private boolean isLastInCategory(IIpsElement element) {
+        return element instanceof IIpsPackageFragment && sortOrder.isLast((IIpsPackageFragment)element)
+                || element instanceof IIpsSrcFile && sortOrder.isLast((IIpsSrcFile)element);
+    }
+
+    private boolean hasOnlyElementsOfOneCategory(IIpsElement[] elements) {
+        boolean hasPackage = false;
+        boolean hasSrcFile = false;
+        for (IIpsElement element : elements) {
+            if (element instanceof IIpsPackageFragment) {
+                hasPackage = true;
+                if (hasSrcFile) {
+                    return false;
+                }
+            }
+            if (element instanceof IIpsSrcFile) {
+                hasSrcFile = true;
+                if (hasPackage) {
+                    return false;
+                }
+            }
+        }
+        return elements.length > 0;
     }
 
     private void createTableViewer(Composite sortComposite) {
@@ -268,30 +282,23 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>down</code>.
      */
     protected void downPressed() {
-        Object element = getFirstSelectedElement();
-
-        if (element instanceof IIpsElement) {
-            sortOrder.down((IIpsElement)element);
-            tableViewer.refresh(false);
-            udpateButtonEnablement();
-        }
+        sortOrder.down(getSelectedElements());
+        tableViewer.refresh(false);
+        udpateButtonEnablement();
     }
 
     /**
      * Handle Button <code>up</code>.
      */
     protected void upPressed() {
-        Object element = getFirstSelectedElement();
-
-        if (element instanceof IIpsElement) {
-            sortOrder.up((IIpsElement)element);
-            tableViewer.refresh(false);
-            udpateButtonEnablement();
-        }
+        sortOrder.up(getSelectedElements());
+        tableViewer.refresh(false);
+        udpateButtonEnablement();
     }
 
-    protected Object getFirstSelectedElement() {
-        return ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
+    protected IIpsElement[] getSelectedElements() {
+        List<?> selectedElements = ((IStructuredSelection)tableViewer.getSelection()).toList();
+        return selectedElements.toArray(new IIpsElement[selectedElements.size()]);
     }
 
     @Override
@@ -468,14 +475,18 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             return elements;
         }
 
-        public void up(IIpsElement element) {
-            int index = indexOf(element);
-            swap(index, index - 1);
+        public void up(IIpsElement... elements) {
+            for (IIpsElement element : elements) {
+                int index = indexOf(element);
+                swap(index, index - 1);
+            }
         }
 
-        public void down(IIpsElement element) {
-            int index = indexOf(element);
-            swap(index, index + 1);
+        public void down(IIpsElement... elements) {
+            for (int i = elements.length - 1; i >= 0; i--) {
+                int index = indexOf(elements[i]);
+                swap(index, index + 1);
+            }
         }
 
         private int indexOf(IIpsElement element) {
