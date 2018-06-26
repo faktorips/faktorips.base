@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageNameComparator;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -58,13 +57,10 @@ public class ModelExplorerSorter extends ViewerSorter {
         TYPE_TO_CATEGORY.put(IpsObjectType.TEST_CASE, ModelExplorerCategory.CAT_TEST_CASE);
     }
 
-    private IpsPackageNameComparator packageComparator;
-
     private boolean supportCategories;
 
     public ModelExplorerSorter(boolean supportCategories) {
         this.supportCategories = supportCategories;
-        packageComparator = new IpsPackageNameComparator(false);
     }
 
     /**
@@ -99,7 +95,7 @@ public class ModelExplorerSorter extends ViewerSorter {
             }
         } else {
             if (element instanceof IProject) {
-                // IProjects in same cathegory as IpsProject
+                // IProjects in same category as IpsProject
                 return ModelExplorerCategory.CAT_PROJECT.getOrder();
             } else if (element instanceof IFolder) {
                 // other Folders after IpsFragments(Root)
@@ -128,12 +124,9 @@ public class ModelExplorerSorter extends ViewerSorter {
     }
 
     @Override
-    public int compare(Viewer viewer, Object o1param, Object o2param) {
-        Object o1 = mapIpsSrcFileToIpsObject(o1param);
-        Object o2 = mapIpsSrcFileToIpsObject(o2param);
-
-        if (isBothNull(o1, o2)) {
-            return 0;
+    public int compare(Viewer viewer, Object o1, Object o2) {
+        if (isAnyNull(o1, o2)) {
+            return super.compare(viewer, o1, o2);
         }
         if (isBothPackageFragmentRoot(o1, o2)) {
             return comparePackageFragmentRoot(o1, o2);
@@ -159,8 +152,17 @@ public class ModelExplorerSorter extends ViewerSorter {
             return getProjectName(o1).compareToIgnoreCase(getProjectName(o2));
         }
 
+        if (isBothIpsSrcFile(o1, o2)) {
+            return ((IIpsSrcFile)o1).getIpsPackageFragment().getChildOrderComparator().compare((IIpsSrcFile)o1,
+                    (IIpsSrcFile)o2);
+        }
+
         return super.compare(viewer, o1, o2);
 
+    }
+
+    private boolean isBothIpsSrcFile(Object o1, Object o2) {
+        return o1 instanceof IIpsSrcFile && o2 instanceof IIpsSrcFile;
     }
 
     private boolean isBothProject(Object o1, Object o2) {
@@ -180,7 +182,7 @@ public class ModelExplorerSorter extends ViewerSorter {
         return o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration;
     }
 
-    private boolean isBothNull(Object o1, Object o2) {
+    private boolean isAnyNull(Object o1, Object o2) {
         return o1 == null || o2 == null;
     }
 
@@ -207,7 +209,7 @@ public class ModelExplorerSorter extends ViewerSorter {
             return 1;
         }
         // sort IpsPackages by SortDefinition
-        return packageComparator.compare(fragment, fragment2);
+        return fragment.getParentIpsPackageFragment().getChildOrderComparator().compare(fragment, fragment2);
     }
 
     private String getProjectName(Object o) {
@@ -218,18 +220,6 @@ public class ModelExplorerSorter extends ViewerSorter {
         } else {
             return ""; //$NON-NLS-1$
         }
-    }
-
-    private Object mapIpsSrcFileToIpsObject(Object o1) {
-        if (!(o1 instanceof IIpsSrcFile)) {
-            return o1;
-        }
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)o1;
-        IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
-        if (ipsObjectType == null) {
-            return null;
-        }
-        return ipsObjectType.newObject(ipsSrcFile);
     }
 
     private int getTypeMemberOrder(Object member) {

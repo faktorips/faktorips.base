@@ -50,32 +50,24 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsObjectPathEntry getIpsObjectPathEntry();
 
     /**
-     * Returns the artifact destination for the artifacts generated on behalf of the IPS objects
-     * within this IPS package fragment root.
+     * Returns the artifact destination for the artifacts generated on behalf of the IPS objects within
+     * this IPS package fragment root.
      * 
-     * @param derived determines if the artifact destination for derived resources or the
-     *            destination for mergable resources is to return. If set to true the destination
-     *            for the derived artifacts will be returned.
+     * @param derived determines if the artifact destination for derived resources or the destination
+     *            for mergable resources is to return. If set to true the destination for the derived
+     *            artifacts will be returned.
      */
     public IPackageFragmentRoot getArtefactDestination(boolean derived) throws CoreException;
 
     /**
-     * Returns the package fragments contained in this root folder. Returns an empty array if this
-     * root folder does not contain any fragments.
+     * Returns the package fragments contained in this root folder. Returns an empty array if this root
+     * folder does not contain any fragments.
      */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException;
 
     /**
-     * Returns the package fragments contained in this root folder in the order defined by the sort
-     * definitions. Returns an empty array if this root folder does not contain any fragments.
-     * 
-     * @see IIpsPackageFragmentSortDefinition
-     */
-    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException;
-
-    /**
-     * Returns the package fragment with the indicated name or <code>null</code> if the given name
-     * is not a valid package name. Note that the returned package fragment might not exists.
+     * Returns the package fragment with the indicated name or <code>null</code> if the given name is
+     * not a valid package name. Note that the returned package fragment might not exists.
      * <p>
      * If a given name is valid as name for a package fragment is determined by
      * {@link IIpsProject#getNamingConventions()}.
@@ -86,8 +78,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
 
     /**
      * Returns all <code>IResource</code> objects that do not correspond to
-     * <code>IIpsPackageFragment</code>s contained in this PackageFragmentRoot. Returns an empty
-     * array if no such resources are found.
+     * <code>IIpsPackageFragment</code>s contained in this PackageFragmentRoot. Returns an empty array
+     * if no such resources are found.
      * 
      * @throws CoreException if the members of the corresponding resource cannot be accessed.
      */
@@ -99,12 +91,12 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsPackageFragment getDefaultIpsPackageFragment();
 
     /**
-     * Creates the IPS package fragment with the indicated name. Note that if the name contains one
-     * or more dots (.), one folder in the file system is created for each token between the dots.
+     * Creates the IPS package fragment with the indicated name. Note that if the name contains one or
+     * more dots (.), one folder in the file system is created for each token between the dots.
      * 
      * @param name the given dot-separated package name
-     * @param force a flag controlling how to deal with resources that are not in sync with the
-     *            local file system
+     * @param force a flag controlling how to deal with resources that are not in sync with the local
+     *            file system
      * @param monitor the given progress monitor
      * 
      * @throws CoreException if the element could not be created. Reasons include:
@@ -129,8 +121,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
 
     /**
-     * If this root is based on a storage, the method returns the storage, otherwise
-     * <code>null</code> is returned.
+     * If this root is based on a storage, the method returns the storage, otherwise <code>null</code>
+     * is returned.
      */
     public IIpsStorage getIpsStorage();
 
@@ -143,8 +135,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public void delete() throws CoreException;
 
     /**
-     * Finding and returning all {@link IIpsSrcFile}s of the specified {@link IpsObjectType} that
-     * are stored in this {@link IIpsPackageFragmentRoot}
+     * Finding and returning all {@link IIpsSrcFile}s of the specified {@link IpsObjectType} that are
+     * stored in this {@link IIpsPackageFragmentRoot}
      * 
      * @param type The type of {@link IIpsSrcFile}s you want to find
      * @return A List of all {@link IIpsSrcFile}s found in this {@link IIpsPackageFragmentRoot}

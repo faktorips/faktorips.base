@@ -13,9 +13,6 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -101,10 +98,7 @@ public class ModelExplorerSorterTest extends AbstractIpsPluginTest {
         pathContainer = mock(IIpsObjectPathContainer.class);
 
         // create sort order file
-        List<String> list = new ArrayList<String>();
-        list.add("ZTestPackageFragment");
-        list.add("TestPackageFragment");
-        createPackageOrderFile((IFolder)root.getCorrespondingResource(), list);
+        createSortOrderFile((IFolder)root.getCorrespondingResource(), "ZTestPackageFragment", "TestPackageFragment");
     }
 
     @Test

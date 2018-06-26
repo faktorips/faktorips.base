@@ -145,14 +145,6 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSortedIpsPackageFragments() throws CoreException {
-        IIpsPackageFragment[] packs = root.getSortedIpsPackageFragments();
-        assertEquals(2, packs.length);
-        assertEquals("motor", packs[0].getName());
-        assertEquals("motor.collision", packs[1].getName());
-    }
-
-    @Test
     public void testFindIpsSourceFiles() throws CoreException {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);

@@ -11,21 +11,25 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -34,9 +38,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.util.QNameUtil;
 
@@ -47,39 +57,40 @@ import org.faktorips.devtools.core.util.QNameUtil;
  */
 public class IpsPackageSortDefDialog extends TrayDialog {
 
+    private static final int RESTORE_BUTTON_ID = 42;
     private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
     private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
     private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
     private static final int SETTINGS_DEFAULT_HEIGTH = 480;
     private static final int SETTINGS_DEFAULT_WIDTH = 640;
 
+    private static String settingsFilename;
+
     private String title;
-    private IIpsProject project;
-    private IpsProjectSortOrdersPM sortOrderPM;
 
     private UIToolkit toolkit;
-    private TreeViewer treeViewer;
     private Button up;
     private Button down;
-    private Button restore;
     private Composite container;
 
     private DialogSettings settings;
-    private static String settingsFilename;
+    private IIpsPackageFragment packageFragment;
+    private SortOrder sortOrder;
+    private TableViewer tableViewer;
 
     /**
      * New instance.
      * 
      * @param parentShell The active shell.
      * @param title Title of the dialog.
-     * @param project The selected IIpsProject.
+     * @param packageFragment The selected IIpsProject.
      */
-    public IpsPackageSortDefDialog(Shell parentShell, String title, IIpsProject project) {
+    public IpsPackageSortDefDialog(Shell parentShell, String title, IIpsPackageFragment packageFragment) {
         super(parentShell);
 
         this.title = title;
-        this.project = project;
-        sortOrderPM = new IpsProjectSortOrdersPM(project);
+        this.packageFragment = packageFragment;
+        sortOrder = new SortOrder();
 
         toolkit = new UIToolkit(null);
 
@@ -109,7 +120,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         createHeadline(container);
         createSortArea(container);
-        createRestoreButton(container);
 
         Dialog.applyDialogFont(parent);
 
@@ -129,26 +139,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         layout.numColumns = 2;
         headline.setLayout(layout);
 
-        toolkit.createLabel(headline, Messages.IpsPackageSortDefDialog_headlineText);
-        toolkit.createLabel(headline, project.getName());
-    }
-
-    private void createRestoreButton(Composite parent) {
-        Composite restoreComposite = toolkit.createComposite(parent);
-
-        GridLayout layout = new GridLayout();
-        restoreComposite.setLayout(layout);
-
-        restore = toolkit.createButton(restoreComposite, Messages.IpsPackageSortDefDialog_restore);
-        restore.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                restorePressed();
-                treeViewer.refresh();
-            }
-        });
-
-        restoreComposite.setLayoutData(new GridData(SWT.TRAIL, SWT.DEFAULT, false, false));
+        toolkit.createLabel(headline,
+                Messages.bind(Messages.IpsPackageSortDefDialog_headlineText, packageFragment.getName()));
     }
 
     /**
@@ -163,10 +155,10 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         layout.numColumns = 2;
         sortComposite.setLayout(layout);
 
-        createTreeViewer(sortComposite);
+        createTableViewer(sortComposite);
         createUpDownButtons(sortComposite);
         udpateButtonEnablement();
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 udpateButtonEnablement();
@@ -174,31 +166,50 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         });
     }
 
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, RESTORE_BUTTON_ID, Messages.IpsPackageSortDefDialog_restore, false);
+        super.createButtonsForButtonBar(parent);
+    }
+
+    @Override
+    protected void buttonPressed(int buttonId) {
+        if (RESTORE_BUTTON_ID == buttonId) {
+            restorePressed();
+        } else {
+            super.buttonPressed(buttonId);
+        }
+    }
+
     /**
      * Enables or disables the buttons {@link #up} and {@link #down} according to the
-     * {@link #treeViewer}'s current selection.
+     * {@link #tableViewer}'s current selection.
      * <p>
-     * Both buttons are disabled if no element is selected or if the element represents a source
-     * folder or packageFragmentRoot respectively.
+     * Both buttons are disabled if no element is selected or if the element represents a source folder
+     * or packageFragmentRoot respectively.
      * <p>
-     * For movable elements (PackageFragments) the button {@link #up} is disabled if the fragment is
-     * the first in its parent and cannot be moved further upwards, #down analogous.
+     * For movable elements (PackageFragments/IpsSrcFiles) the button {@link #up} is disabled if the
+     * fragment is the first in its category and cannot be moved further upwards, #down analogous.
      */
     private void udpateButtonEnablement() {
-        Object selectedElement = getFirstSelectedElementFromTreeViewer();
-        if (selectedElement != null && selectedElement instanceof IIpsPackageFragment) {
+        Object selectedElement = getFirstSelectedElement();
+        if (selectedElement instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)selectedElement;
             if (fragment.isDefaultPackage()) {
                 /*
-                 * These are the sourceFolders or pckgFragmentRoots displayed in the dialog. Disable
-                 * buttons, as reordering is not possible.
+                 * These are the sourceFolders or pckgFragmentRoots displayed in the dialog. Disable buttons, as
+                 * reordering is not possible.
                  */
                 up.setEnabled(false);
                 down.setEnabled(false);
             } else {
-                up.setEnabled(!sortOrderPM.isFirstInParent(fragment));
-                down.setEnabled(!sortOrderPM.isLastInParent(fragment));
+                up.setEnabled(!sortOrder.isFirst(fragment));
+                down.setEnabled(!sortOrder.isLast(fragment));
             }
+        } else if (selectedElement instanceof IIpsSrcFile) {
+            IIpsSrcFile srcFile = (IIpsSrcFile)selectedElement;
+            up.setEnabled(!sortOrder.isFirst(srcFile));
+            down.setEnabled(!sortOrder.isLast(srcFile));
         } else {
             // nothing or no movable element selected, disable buttons
             up.setEnabled(false);
@@ -206,18 +217,13 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         }
     }
 
-    /**
-     * Create the treeviewer.
-     */
-    private void createTreeViewer(Composite sortComposite) {
-        treeViewer = new TreeViewer(sortComposite);
-        treeViewer.setLabelProvider(new IpsPackageSortDefLabelProvider());
-        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    private void createTableViewer(Composite sortComposite) {
+        tableViewer = new TableViewer(sortComposite);
+        tableViewer.setLabelProvider(new IpsPackageSortDefLabelProvider());
+        tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        treeViewer.setContentProvider(sortOrderPM);
-        treeViewer.setInput(sortOrderPM);
-        // expand roots
-        treeViewer.expandToLevel(2);
+        tableViewer.setContentProvider(sortOrder);
+        tableViewer.setInput(packageFragment);
     }
 
     /**
@@ -254,20 +260,19 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>restore</code>.
      */
     protected void restorePressed() {
-        sortOrderPM.restore();
-        treeViewer.refresh();
+        sortOrder.restore();
+        tableViewer.refresh();
     }
 
     /**
      * Handle Button <code>down</code>.
      */
     protected void downPressed() {
-        Object element = getFirstSelectedElementFromTreeViewer();
+        Object element = getFirstSelectedElement();
 
-        if (element instanceof IIpsPackageFragment) {
-            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            sortOrderPM.moveOneDown(fragment);
-            treeViewer.refresh(false);
+        if (element instanceof IIpsElement) {
+            sortOrder.down((IIpsElement)element);
+            tableViewer.refresh(false);
             udpateButtonEnablement();
         }
     }
@@ -276,28 +281,23 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>up</code>.
      */
     protected void upPressed() {
-        Object element = getFirstSelectedElementFromTreeViewer();
+        Object element = getFirstSelectedElement();
 
-        if (element instanceof IIpsPackageFragment) {
-            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            sortOrderPM.moveOneUp(fragment);
-            treeViewer.refresh(false);
+        if (element instanceof IIpsElement) {
+            sortOrder.up((IIpsElement)element);
+            tableViewer.refresh(false);
             udpateButtonEnablement();
         }
     }
 
-    protected Object getFirstSelectedElementFromTreeViewer() {
-        return ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+    protected Object getFirstSelectedElement() {
+        return ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
     }
 
     @Override
     protected void okPressed() {
         // write changes to filesystem.
-        try {
-            sortOrderPM.saveSortDefDelta();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        sortOrder.save();
 
         super.okPressed();
     }
@@ -324,7 +324,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         try {
             settings.save(settingsFilename);
         } catch (IOException e) {
-            // cant save - use defaults the next time
+            // can't save - use defaults the next time
             IpsPlugin.log(e);
         }
     }
@@ -350,39 +350,162 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         }
     }
 
-    /**
-     * New LabelProvider for the TreeViewer <code>treeViewer</code>.
-     * 
-     * @author Markus Blum
-     */
-    private class IpsPackageSortDefLabelProvider extends LabelProvider {
-
-        @Override
-        public Image getImage(Object element) {
-            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-
-            Image image;
-            if (fragment.isDefaultPackage()) {
-                image = IpsUIPlugin.getImageHandling().getImage(fragment.getRoot());
-            } else {
-                image = IpsUIPlugin.getImageHandling().getImage(fragment);
-            }
-
-            return image;
-        }
+    private class IpsPackageSortDefLabelProvider extends DefaultLabelProvider {
 
         @Override
         public String getText(Object element) {
-            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            String name;
-
-            if (fragment.isDefaultPackage()) {
-                name = fragment.getRoot().getName();
-            } else {
-                name = fragment.getName();
+            if (element instanceof IIpsPackageFragment) {
+                IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+                String name;
+                if (fragment.isDefaultPackage()) {
+                    name = fragment.getRoot().getName();
+                } else {
+                    name = fragment.getName();
+                }
+                return QNameUtil.getUnqualifiedName(name);
             }
-
-            return QNameUtil.getUnqualifiedName(name);
+            return super.getText(element);
         }
+    }
+
+    /* private */ static class SortOrder implements IStructuredContentProvider {
+
+        private IpsPackageFragment packageFragment;
+        private IIpsElement[] elements;
+        private boolean dirty;
+        private boolean restored;
+
+        private static IIpsElement[] addUnorderedChildren(IIpsElement[] orderedElements,
+                IpsPackageFragment packageFragment) {
+            try {
+                // sort because IFolder#members makes no guarantee for order
+                SortedSet<IIpsElement> subPackages = new TreeSet<IIpsElement>(
+                        AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
+                for (IIpsPackageFragment subPackage : packageFragment.getChildIpsPackageFragments()) {
+                    subPackages.add(subPackage);
+                }
+
+                SortedSet<IIpsElement> relevantSrcFiles = new TreeSet<IIpsElement>(
+                        AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
+                for (IIpsSrcFile ipsSrcFile : packageFragment.getIpsSrcFiles()) {
+                    if (isRelevantForSortOrder(ipsSrcFile.getIpsObjectType())) {
+                        relevantSrcFiles.add(ipsSrcFile);
+                    }
+                }
+
+                IIpsElement[] sortOrder = new IIpsElement[subPackages.size() + relevantSrcFiles.size()];
+                int i = addOrderedAndDefaultSorted(subPackages, sortOrder, 0, orderedElements);
+                addOrderedAndDefaultSorted(relevantSrcFiles, sortOrder, i, orderedElements);
+
+                return sortOrder;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+
+        private static int addOrderedAndDefaultSorted(SortedSet<IIpsElement> elements,
+                IIpsElement[] sortOrder,
+                int index,
+                IIpsElement[] orderedElements) {
+            int i = index;
+            for (IIpsElement element : orderedElements) {
+                if (elements.contains(element)) {
+                    sortOrder[i++] = element;
+                    elements.remove(element);
+                }
+            }
+            for (IIpsElement element : elements) {
+                sortOrder[i++] = element;
+            }
+            return i;
+        }
+
+        private static boolean isRelevantForSortOrder(IpsObjectType ipsObjectType) {
+            return ipsObjectType == IpsObjectType.PRODUCT_CMPT || ipsObjectType == IpsObjectType.PRODUCT_TEMPLATE;
+        }
+
+        private void init(IpsPackageFragment packageFragment) {
+            this.packageFragment = packageFragment;
+            if (packageFragment == null) {
+                elements = new IIpsElement[0];
+            } else {
+                Comparator<IIpsElement> childOrderComparator = packageFragment.getChildOrderComparator();
+                IIpsElement[] orderedElements = childOrderComparator instanceof DefinedOrderComparator
+                        ? ((DefinedOrderComparator)childOrderComparator).getElements()
+                        : new IIpsElement[0];
+                elements = addUnorderedChildren(orderedElements, packageFragment);
+            }
+            dirty = false;
+            restored = false;
+        }
+
+        public void restore() {
+            restored = true;
+            dirty = false;
+            elements = addUnorderedChildren(new IIpsElement[0], packageFragment);
+        }
+
+        public void save() {
+            if (dirty) {
+                packageFragment.setChildOrderComparator(new DefinedOrderComparator(elements));
+            } else if (restored) {
+                packageFragment.setChildOrderComparator(AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
+            }
+        }
+
+        @Override
+        public void dispose() {
+            // nothing to dispose;
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            init((IpsPackageFragment)newInput);
+        }
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            return elements;
+        }
+
+        public void up(IIpsElement element) {
+            int index = indexOf(element);
+            swap(index, index - 1);
+        }
+
+        public void down(IIpsElement element) {
+            int index = indexOf(element);
+            swap(index, index + 1);
+        }
+
+        private int indexOf(IIpsElement element) {
+            return ArrayUtils.indexOf(elements, element);
+        }
+
+        private void swap(int i, int j) {
+            IIpsElement element = elements[i];
+            elements[i] = elements[j];
+            elements[j] = element;
+            dirty = true;
+        }
+
+        public boolean isFirst(IIpsPackageFragment fragment) {
+            return indexOf(fragment) == 0;
+        }
+
+        public boolean isLast(IIpsPackageFragment fragment) {
+            int index = indexOf(fragment);
+            return elements.length == index + 1 || !(elements[index + 1] instanceof IIpsPackageFragment);
+        }
+
+        public boolean isFirst(IIpsSrcFile srcFile) {
+            int index = indexOf(srcFile);
+            return index == 0 || elements[index - 1] instanceof IIpsPackageFragment;
+        }
+
+        public boolean isLast(IIpsSrcFile srcFile) {
+            return indexOf(srcFile) == elements.length - 1;
+        }
+
     }
 }

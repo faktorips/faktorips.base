@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.util.AlphaNumericComparator;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -30,6 +33,8 @@ import org.faktorips.util.StringUtil;
  * @author Jan Ortmann
  */
 public abstract class AbstractIpsPackageFragment extends IpsElement implements IIpsPackageFragment {
+
+    public static final AlphaNumericSimpleNameComparator DEFAULT_CHILD_ORDER_COMPARATOR = new AlphaNumericSimpleNameComparator();
 
     public AbstractIpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
@@ -108,6 +113,11 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
         return getRoot().getIpsPackageFragment(packageName);
     }
 
+    @Override
+    public Comparator<IIpsElement> getChildOrderComparator() {
+        return DEFAULT_CHILD_ORDER_COMPARATOR;
+    }
+
     /**
      * Searches all objects of the given type and adds them to the result.
      * 
@@ -122,4 +132,21 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
      */
     public abstract void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException;
 
+    static class AlphaNumericSimpleNameComparator implements Comparator<IIpsElement>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+        private static final AlphaNumericComparator ALPHA_NUMERIC_COMPARATOR = new AlphaNumericComparator();
+
+        @Override
+        public int compare(IIpsElement o1, IIpsElement o2) {
+            if (o1 == null) {
+                return o2 == null ? 0 : Integer.MIN_VALUE;
+            }
+            if (o2 == null) {
+                return Integer.MAX_VALUE;
+            }
+            return ALPHA_NUMERIC_COMPARATOR.compare(o1.getName(), o2.getName());
+        }
+
+    }
 }

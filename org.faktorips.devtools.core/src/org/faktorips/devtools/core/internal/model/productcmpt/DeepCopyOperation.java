@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
@@ -31,7 +31,10 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -76,8 +79,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      * Creates a new operation to copy the given product components.
      * 
      * @param copyElements All product components and table contents that should be copied.
-     * @param linkElements All product components and table contents which should be referred from
-     *            the copied ones.
+     * @param linkElements All product components and table contents which should be referred from the
+     *            copied ones.
      * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing
      *            resources!). Keys are the nodes given in <code>toCopy</code>.
      */
@@ -106,8 +109,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     /**
-     * If <code>true</code> table contents will be created as empty files, otherwise the table
-     * contents will be copied.
+     * If <code>true</code> table contents will be created as empty files, otherwise the table contents
+     * will be copied.
      */
     public void setCreateEmptyTableContents(boolean createEmptyTableContents) {
         this.createEmptyTableContents = createEmptyTableContents;
@@ -209,29 +212,26 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
     void copySortOrder(IProgressMonitor monitor) {
         try {
-            IFile sortOrder = sourceIpsPackageFragment.getSortOrderFile();
-            if (sortOrder.exists() && !targetIpsPackageFragment.getSortOrderFile().exists()) {
-                IFile file = targetIpsPackageFragment.getSortOrderFile();
-                file.create(sortOrder.getContents(true), true, monitor);
-            }
             copySortOrder(monitor, sourceIpsPackageFragment, targetIpsPackageFragment);
         } catch (CoreException e) {
-            throw new RuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
+            throw new CoreRuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
         }
     }
 
     private void copySortOrder(IProgressMonitor monitor,
             IIpsPackageFragment sourceParent,
             IIpsPackageFragment targetParent) throws CoreException {
+        Comparator<IIpsElement> sourceComparator = sourceParent.getChildOrderComparator();
+        if (sourceComparator instanceof DefinedOrderComparator) {
+            Comparator<IIpsElement> targetComparator = targetParent.getChildOrderComparator();
+            if (!(targetComparator instanceof DefinedOrderComparator)) {
+                ((IpsPackageFragment)targetParent)
+                        .setChildOrderComparator(((DefinedOrderComparator)sourceComparator).copy());
+            }
+        }
         for (IIpsPackageFragment fragment : sourceParent.getChildIpsPackageFragments()) {
             IIpsPackageFragment destination = targetParent.getSubPackage(fragment.getLastSegmentName());
             if (destination.exists()) {
-                IFile sortOrder = fragment.getSortOrderFile();
-                if (sortOrder.exists() && destination.getSortOrderFile() != null
-                        && !destination.getSortOrderFile().exists()) {
-                    IFile file = destination.getSortOrderFile();
-                    file.create(sortOrder.getContents(true), true, monitor);
-                }
                 copySortOrder(monitor, fragment, destination);
             }
         }
@@ -259,7 +259,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         return fixups;
     }
 
-    private IIpsObject createNewIpsObjectIfNecessary(final IProductCmptStructureReference toCopyProductCmptStructureReference,
+    private IIpsObject createNewIpsObjectIfNecessary(
+            final IProductCmptStructureReference toCopyProductCmptStructureReference,
             Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld,
             GregorianCalendar oldValidFrom,
             GregorianCalendar newValidFrom,
@@ -343,38 +344,36 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 IProductCmptStructureReference parent = productCmptStructureTblUsageReference.getParent();
                 if (linkElements.contains(parent)) {
                     /*
-                     * the tableContents should be linked, check if the productCmpt for this
-                     * tableContentUsage is also a link and if true, don't store this table because
-                     * the parent productCmpt must not be fixed
+                     * the tableContents should be linked, check if the productCmpt for this tableContentUsage is also a
+                     * link and if true, don't store this table because the parent productCmpt must not be fixed
                      */
                     continue;
                 }
-                tblContentUsageAndLinkDataRefer.add(new TblContentUsageData((productCmptStructureTblUsageReference)
-                        .getTableContentUsage()));
+                tblContentUsageAndLinkDataRefer
+                        .add(new TblContentUsageData((productCmptStructureTblUsageReference).getTableContentUsage()));
             } else {
                 IProductCmptTypeAssociationReference parentTypeRel = (IProductCmptTypeAssociationReference)productCmptStructureReference
                         .getParent();
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
                 tblContentUsageAndLinkDataRefer.add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
-                        (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
-                        .getAssociation()));
+                        (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(),
+                        parentTypeRel.getAssociation()));
             }
         }
         return tblContentUsageAndLinkDataRefer;
     }
 
     /**
-     * Fixes all table content usages and all links. Calls the appropriate fix methods with the
-     * correct generation(s).
+     * Fixes all table content usages and all links. Calls the appropriate fix methods with the correct
+     * generation(s).
      * 
      * @param productCmptNew the new productCmpt which will be fixed
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
      *            productCmpt
      * @param linkData2newProductCmptQName A map containing the link-identifier as key and the new
      *            created productCmpt which was initiated by the key link
-     * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier
-     *            as key and the new created tableContent which was initiated by the key
-     *            tableContentUsage
+     * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier as
+     *            key and the new created tableContent which was initiated by the key tableContentUsage
      * @param objectsToRefer A set containing the not copied objects
      */
     private void fixLinks(IProductCmpt productCmptNew,
@@ -387,8 +386,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 IProductCmptGeneration generation = (IProductCmptGeneration)objectGeneration;
                 fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
                         objectsToRefer, generation.getTableContentUsages());
-                fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName,
-                        objectsToRefer, generation);
+                fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer,
+                        generation);
             }
         } else {
             IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew
@@ -408,9 +407,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      * @param productCmptNew the new productCmpt which will be fixed
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
      *            productCmpt
-     * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier
-     *            as key and the new created tableContent which was initiated by the key
-     *            tableContentUsage
+     * @param tblContentData2newTableContentQName A map containing the tableContentUsage-identifier as
+     *            key and the new created tableContent which was initiated by the key tableContentUsage
      * @param objectsToRefer A set containing the not copied objects
      * @param tableContentUsages the {@link TableContentUsage TableContentUsages}
      */
@@ -483,8 +481,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     /**
-     * Creates a new package, based on the target package. To this base package, the path of the
-     * source is appended, after the given number of segments to ignore is cut off.
+     * Creates a new package, based on the target package. To this base package, the path of the source
+     * is appended, after the given number of segments to ignore is cut off.
      */
     private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragment result;
@@ -499,8 +497,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
     /**
      * Represents a productCmptLink, which is defined as a link object between two product cmpts
-     * (sourceProductCmpt and targetProductCmpt) and a productCmptTypeAssociation on which the link
-     * is based on.
+     * (sourceProductCmpt and targetProductCmpt) and a productCmptTypeAssociation on which the link is
+     * based on.
      */
     private class LinkData {
 
