@@ -135,16 +135,17 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
     private boolean validateDatatype(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute) {
         ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
+        Object[] params = { attribute.getDatatype(), attribute.getName(), attribute.getPolicyCmptType().getName() };
 
         if (valueDatatype == null) {
-            String text = Messages.ConfigElement_msgUndknownDatatype;
+            String text = NLS.bind(Messages.ConfigElement_msgUndknownDatatype, params);
             list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;
         }
 
         if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
-            String text = Messages.ConfigElement_msgInvalidDatatype;
+            String text = NLS.bind(Messages.ConfigElement_msgInvalidDatatype, params);
             list.add(new Message(IConfiguredDefault.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;

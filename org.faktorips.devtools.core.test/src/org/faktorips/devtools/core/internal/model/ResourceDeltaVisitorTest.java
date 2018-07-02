@@ -10,82 +10,104 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ResourceDeltaVisitorTest {
+public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
 
-    @Mock
-    private IpsModel ipsModel;
-    @Mock
     private IIpsProject ipsProject;
-    @Mock
-    private IProject project;
-    @Mock
-    private ValidationResultCache validationResultCache;
-    private ResourceDeltaVisitor visitor;
 
+    private TestIpsSrcFilesChangeListener listener = new TestIpsSrcFilesChangeListener();
+
+    private IpsModel ipsModel;
+
+    private ProductCmptType productCmptType;
+
+    @Override
     @Before
-    public void setUp() {
-        when(ipsModel.getValidationResultCache()).thenReturn(validationResultCache);
-        when(ipsModel.getIpsObjectTypes()).thenReturn(new IpsObjectType[] {});
-        when(ipsModel.getIpsProject(project)).thenReturn(ipsProject);
-
-        visitor = new ResourceDeltaVisitor(ipsModel);
-
+    public void setUp() throws CoreException {
+        ipsProject = newIpsProject();
+        ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+        productCmptType = newProductCmptType(ipsProject, "TestPCT");
+        ipsModel.addIpsSrcFilesChangedListener(listener);
     }
 
     @Test
-    public void testChangeIpsProjectProperties() {
-        IResourceDelta delta = mock(IResourceDelta.class);
+    public void testChangeIpsProjectProperties() throws CoreException {
+        productCmptType.validate(ipsProject);
+        assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
-        IFile resource = mock(IFile.class);
-        when(resource.getType()).thenReturn(IResource.FILE);
-        when(resource.getProject()).thenReturn(project);
-        when(resource.getFileExtension()).thenReturn(IpsProject.PROPERTY_FILE_EXTENSION);
+        IFile projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
+        projectPropertiesFile.touch(null);
 
-        when(ipsProject.getIpsProjectPropertiesFile()).thenReturn(resource);
-
-        boolean result = visitor.visitInternal(delta, resource);
-
-        verify(validationResultCache).clear();
-
-        assertFalse(result);
+        assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
     }
 
     @Test
-    public void testChangeManifest() {
-        IResourceDelta delta = mock(IResourceDelta.class);
+    public void testChangeManifest() throws CoreException {
+        productCmptType.validate(ipsProject);
+        assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
-        IFile resource = mock(IFile.class);
-        when(resource.exists()).thenReturn(true);
-        when(resource.getType()).thenReturn(IResource.FILE);
-        when(resource.getProject()).thenReturn(project);
-        when(resource.getFileExtension()).thenReturn("MF");
-        when(resource.getProjectRelativePath()).thenReturn(new Path(IpsBundleManifest.MANIFEST_NAME));
+        IFile manifestFile = ipsProject.getProject().getFile(new Path(IpsBundleManifest.MANIFEST_NAME));
+        ((IFolder)manifestFile.getParent()).create(true, true, null);
+        manifestFile.create(new ByteArrayInputStream(new byte[0]), true, null);
+        manifestFile.touch(null);
 
-        boolean result = visitor.visitInternal(delta, resource);
-
-        assertFalse(result);
-        verify(ipsModel).clearProjectSpecificCaches(ipsProject);
-
+        assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
     }
+
+    @Test
+    public void testChangeIpsSrcFile() throws CoreException {
+        productCmptType.getEnclosingResource().touch(null);
+
+        waitForIndexer();
+
+        assertThat(listener.changedFiles, hasItems(productCmptType.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testChangeIpsSrcFileOffRoot() throws CoreException {
+        IFolder folder = ipsProject.getProject().getFolder("test");
+        folder.create(true, true, null);
+        IResource file = productCmptType.getEnclosingResource();
+        file.copy(folder.getFullPath().append(file.getName()), true, null);
+
+        waitForIndexer();
+
+        assertTrue(listener.changedFiles.isEmpty());
+    }
+
+    private final class TestIpsSrcFilesChangeListener implements IIpsSrcFilesChangeListener {
+
+        private List<IIpsSrcFile> changedFiles = new ArrayList<IIpsSrcFile>();
+
+        @Override
+        public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+            changedFiles.addAll(event.getChangedIpsSrcFiles());
+        }
+    }
+
 }

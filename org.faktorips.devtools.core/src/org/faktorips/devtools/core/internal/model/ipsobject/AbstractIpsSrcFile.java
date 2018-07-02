@@ -130,8 +130,8 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     @Override
     public String getPropertyValue(String name) {
         if (!exists()) {
-            throw new CoreRuntimeException(new IpsStatus(
-                    "Can't get property value because file does not exist. " + this)); //$NON-NLS-1$
+            throw new CoreRuntimeException(
+                    new IpsStatus("Can't get property value because file does not exist. " + this)); //$NON-NLS-1$
         }
         IpsSrcFileContent content = getContent(false);
         if (content == null) {
@@ -157,4 +157,8 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return content.isParsable();
     }
 
+    @Override
+    public boolean isContainedInIpsRoot() {
+        return getIpsPackageFragment().getRoot().exists();
+    }
 }

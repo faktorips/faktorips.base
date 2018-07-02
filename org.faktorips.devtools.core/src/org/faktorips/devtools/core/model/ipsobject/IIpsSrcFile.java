@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
 /**
  * A handle for files containing sourcecode for IPS objects.
@@ -91,6 +92,17 @@ public interface IIpsSrcFile extends IIpsElement {
     public boolean isHistoric();
 
     /**
+     * Returns <code>true</code> if this file is contained in an existing
+     * {@link IIpsPackageFragmentRoot} of the project. Returns <code>false</code> if this file is
+     * either not part of any project (for example {@link #isHistoric()}) or if it correspondents to
+     * an resource that is in an non-ips folder.
+     * 
+     * @return <code>true</code> if this file is contained in an existing
+     *         {@link IIpsPackageFragmentRoot}, otherwise <code>false</code>
+     */
+    public boolean isContainedInIpsRoot();
+
+    /**
      * Returns the IPS object stored in the file.
      * 
      */
@@ -128,7 +140,8 @@ public interface IIpsSrcFile extends IIpsElement {
      * <li>The underlying file does not exists.</li>
      * <li>The underlying file is read-only.</li>
      * <li>The IPS source file is contained in an IPS archive.</li>
-     * <li>The IPS source file is created from an input stream to show an old revision / history.</li>
+     * <li>The IPS source file is created from an input stream to show an old revision /
+     * history.</li>
      * </ul>
      */
     public boolean isMutable();
@@ -140,7 +153,8 @@ public interface IIpsSrcFile extends IIpsElement {
      * <li>The underlying file does not exists.</li>
      * <li>The underlying file is read-only.</li>
      * <li>The IPS source file is contained in an IPS archive.</li>
-     * <li>The IPS source file is created from an input stream to show an old revision / history.</li>
+     * <li>The IPS source file is created from an input stream to show an old revision /
+     * history.</li>
      * </ul>
      */
     public boolean isReadOnly();

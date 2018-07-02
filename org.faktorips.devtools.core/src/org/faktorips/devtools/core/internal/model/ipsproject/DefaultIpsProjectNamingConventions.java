@@ -195,8 +195,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         char[] chars = INVALID_RESOURCE_CHARACTERS;
         for (char c : chars) {
             if (unqualifiedName.indexOf(c) != -1) {
-                ml.add(new Message(INVALID_NAME, NLS.bind(Messages.DefaultIpsProjectNamingConventions_msgNameNotValid,
-                        unqualifiedName), Message.ERROR));
+                ml.add(new Message(INVALID_NAME,
+                        NLS.bind(Messages.DefaultIpsProjectNamingConventions_msgNameNotValid, unqualifiedName),
+                        Message.ERROR));
             }
         }
         return ml;
@@ -219,7 +220,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         IProductCmptNamingStrategy pns = ipsProject.getProductCmptNamingStrategy();
         // the validate will be delegated to the product cmpt naming strategy, only if the given
         // name is unqualified
-        if (!qualifiedCheck) {
+        if (!qualifiedCheck && pns != null) {
             return pns.validate(name);
         }
         return null;
@@ -265,7 +266,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return ml;
     }
 
-    private MessageList validateJavaPackageName(String name, String msgNameNotValidError, String msgNameNotValidWarning) {
+    private MessageList validateJavaPackageName(String name,
+            String msgNameNotValidError,
+            String msgNameNotValidWarning) {
         MessageList ml = new MessageList();
         String sourceLevel = getCompilerSourceLevel(ipsProject);
         String complianceLevel = getCompilerComplianceLevel(ipsProject);

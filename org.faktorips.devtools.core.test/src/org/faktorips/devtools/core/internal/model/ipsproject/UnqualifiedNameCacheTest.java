@@ -9,14 +9,18 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -120,6 +124,19 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testNoResourceChangeForIpsSrcFileOffRoot() throws Exception {
+        ProductCmpt productCmpt = newProductCmpt(ipsProject, "foo.Test");
+        IIpsSrcFile ipsSrcFile = productCmpt.getIpsSrcFile();
+
+        assertThat(unqualifiedNameCache.findProductCmptByUnqualifiedName("Test"), hasItem(ipsSrcFile));
+
+        IResource resource = productCmpt.getEnclosingResource();
+        resource.move(ipsProject.getProject().getFullPath().append(resource.getName()), true, null);
+
+        assertTrue(unqualifiedNameCache.findProductCmptByUnqualifiedName("Test").isEmpty());
     }
 
 }

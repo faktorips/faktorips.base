@@ -62,10 +62,10 @@ import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileOffRoot;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
@@ -565,11 +565,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private IIpsElement getExternalIpsSrcFile(IResource resource) {
         if (resource.getType() == IResource.FILE && resource.exists()
                 && getIpsObjectTypeByFileExtension(resource.getFileExtension()) != null) {
-            try {
-                return new IpsSrcFileImmutable(resource.getName(), ((IFile)resource).getContents());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return new IpsSrcFileOffRoot((IFile)resource);
         }
         return null;
     }
@@ -1725,23 +1721,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             if (fileExtensionsOfInterest.contains(((IFile)resource).getFileExtension())) {
                 if (delta.getKind() == IResourceDelta.REMOVED) {
                     IIpsElement ipsElement = getIpsElement(resource);
-                    if (ipsElement instanceof IIpsSrcFile) {
+                    if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
                         changedIpsSrcFiles.put((IIpsSrcFile)ipsElement, delta);
-                        return false;
+                    }
+                } else {
+                    final IIpsElement ipsElement = findIpsElement(resource);
+                    if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
+                        IpsSrcFile srcFile = (IpsSrcFile)ipsElement;
+                        changedIpsSrcFiles.put(srcFile, delta);
                     }
                 }
-
-                final IIpsElement element = findIpsElement(resource);
-                if (element instanceof IIpsSrcFile) {
-                    IpsSrcFile srcFile = (IpsSrcFile)element;
-                    changedIpsSrcFiles.put(srcFile, delta);
-                    return false;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
             }
+            return false;
         }
     }
 

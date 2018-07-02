@@ -114,6 +114,10 @@ public class UnqualifiedNameCache {
         prodCmptIpsSrcFilesMap.put(productCmpt.getIpsObjectName(), productCmpt);
     }
 
+    void removeProductCmpt(IIpsSrcFile ipsSrcFile) {
+        prodCmptIpsSrcFilesMap.remove(ipsSrcFile.getIpsObjectName());
+    }
+
     public void dispose() {
         ipsProject.getIpsModel().removeIpsSrcFilesChangedListener(listener);
     }
@@ -130,23 +134,34 @@ public class UnqualifiedNameCache {
         public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
             Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
             for (IIpsSrcFile ipsSrcFile : changedIpsSrcFiles) {
-                if (isRelevantIpsSrcFileEvent(event, ipsSrcFile)) {
-                    cache.addProductCmpt(ipsSrcFile);
+                if (isRelevantIpsSrcFile(ipsSrcFile)) {
+                    if (isAdd(getDelta(event, ipsSrcFile))) {
+                        cache.addProductCmpt(ipsSrcFile);
+                    } else if (isRemove(getDelta(event, ipsSrcFile))) {
+                        cache.removeProductCmpt(ipsSrcFile);
+                    }
                 }
             }
         }
 
-        boolean isRelevantIpsSrcFileEvent(IpsSrcFilesChangedEvent event, IIpsSrcFile ipsSrcFile) {
-            return isProductCmptSrcFile(ipsSrcFile) && isAddEvent(event, ipsSrcFile)
-                    && ipsSrcFile.getIpsProject().equals(cache.ipsProject);
+        boolean isRelevantIpsSrcFile(IIpsSrcFile ipsSrcFile) {
+            return isProductCmptSrcFile(ipsSrcFile) && ipsSrcFile.getIpsProject().equals(cache.ipsProject);
         }
 
         private boolean isProductCmptSrcFile(IIpsSrcFile ipsSrcFile) {
             return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
         }
 
-        private boolean isAddEvent(IpsSrcFilesChangedEvent event, IIpsSrcFile ipsSrcFile) {
-            return (event.getResourceDelta(ipsSrcFile).getKind() & IResourceDelta.ADDED) != 0;
+        private IResourceDelta getDelta(IpsSrcFilesChangedEvent event, IIpsSrcFile ipsSrcFile) {
+            return event.getResourceDelta(ipsSrcFile);
+        }
+
+        private boolean isAdd(IResourceDelta delta) {
+            return (delta.getKind() & IResourceDelta.ADDED) != 0;
+        }
+
+        private boolean isRemove(IResourceDelta delta) {
+            return (delta.getKind() & IResourceDelta.REMOVED) != 0;
         }
 
     }

@@ -55,34 +55,45 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         if (resource == null || resource.getType() != IResource.FILE) {
             return true;
         }
-        if (isNotRelatedFile(resource)) {
-            return false;
-        }
-        if (ipsProjectPropertiesChanged(resource) || manifestChanged(resource)) {
-            IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
-            ipsModel.clearProjectSpecificCaches(ipsProject);
-            ipsModel.getValidationResultCache().clear();
-            return false;
-        }
-
-        if (delta.getKind() == IResourceDelta.REMOVED) {
-            IIpsElement ipsElement = ipsModel.getIpsElement(resource);
-            if (ipsElement instanceof IIpsSrcFile) {
-                ipsModel.removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
-                return false;
+        if (isRelatedFile(resource)) {
+            if (ipsProjectPropertiesChanged(resource) || manifestChanged(resource)) {
+                handleUpdateProjectSettings(resource);
+            } else if (delta.getKind() == IResourceDelta.REMOVED) {
+                handleRemoved(resource);
+            } else {
+                handleOtherResourceChange(resource);
             }
         }
+        return false;
+    }
 
+    private void handleUpdateProjectSettings(IResource resource) {
+        IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
+        ipsModel.clearProjectSpecificCaches(ipsProject);
+        ipsModel.getValidationResultCache().clear();
+    }
+
+    private void handleRemoved(IResource resource) {
+        IIpsElement ipsElement = ipsModel.getIpsElement(resource);
+        if (ipsElement instanceof IIpsSrcFile) {
+            ipsModel.removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
+        }
+    }
+
+    private boolean handleOtherResourceChange(IResource resource) {
         final IIpsElement element = ipsModel.findIpsElement(resource);
-        if (!(element instanceof IIpsSrcFile)) {
+        if (element instanceof IpsSrcFile && ((IpsSrcFile)element).isContainedInIpsRoot()) {
+            IpsSrcFile srcFile = (IpsSrcFile)element;
+            IpsSrcFileContent content = ipsModel.getIpsSrcFileContent(srcFile);
+            boolean isInSync = isInSync(srcFile, content);
+            traceModelResourceVisited(resource, srcFile, isInSync);
+            if (!isInSync) {
+                handleNotSyncResource(srcFile);
+            }
+            return true;
+        } else {
             return true;
         }
-        IpsSrcFile srcFile = (IpsSrcFile)element;
-        IpsSrcFileContent content = ipsModel.getIpsSrcFileContent(srcFile);
-        boolean isInSync = isInSync(srcFile, content);
-        traceModelResourceVisited(resource, srcFile, isInSync);
-        handleNotSyncResource(srcFile, isInSync);
-        return true;
     }
 
     private boolean ipsProjectPropertiesChanged(IResource resource) {
@@ -94,32 +105,38 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         return resource.getProjectRelativePath().equals(new Path(IpsBundleManifest.MANIFEST_NAME));
     }
 
-    private void handleNotSyncResource(IpsSrcFile srcFile, boolean isInSync) {
-        if (!isInSync) {
-            ipsModel.ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(srcFile));
-        }
+    private void handleNotSyncResource(IpsSrcFile srcFile) {
+        ipsModel.ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(srcFile));
     }
 
     private void traceModelResourceVisited(IResource resource, IpsSrcFile srcFile, boolean isInSync) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out
-                    .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
+            System.out.println(
+                    "IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
                             + resource.getModificationStamp() + ", Sync status=" + isInSync + ", " //$NON-NLS-1$ //$NON-NLS-2$
                             + srcFile + " Thread: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
     }
 
-    private boolean isNotRelatedFile(IResource resource) {
+    private boolean isRelatedFile(IResource resource) {
         IFile file = (IFile)resource;
         if (getFileExtensionsOfInterest().contains(file.getFileExtension())) {
-            return false;
+            return true;
         }
         if (IpsBundleManifest.MANIFEST_NAME.equals(file.getProjectRelativePath().toString())) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
+    /**
+     * This method checks whether the content was saved by a Faktor-IPS save or by an event outside
+     * of Faktor-IPS. If it was saved by us it is still in sync because we have other mechanism to
+     * trigger change events. These change events will be more detailed (for example it gives the
+     * information about a specific part that was changed). If the resource change event was not
+     * triggered by our own save operation we need to assume that the whole content may have
+     * changed.
+     */
     private boolean isInSync(IpsSrcFile srcFile, IpsSrcFileContent content) {
         return content == null
                 || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());

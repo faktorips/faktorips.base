@@ -1117,19 +1117,18 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Expects an array of classes that comply to the enum type pattern. The enum types are registered
-     * to the provided IpsProject as definded datatypes. The qualifiedName of a registered datatype is
-     * the unqualified class name of the enum type class. The enum type class must have the folloing
-     * methods:
-     * </p>
+     * Expects an array of classes that comply to the enum type pattern. The enum types are
+     * registered to the provided IpsProject as definded datatypes. The qualifiedName of a
+     * registered datatype is the unqualified class name of the enum type class. The enum type class
+     * must have the following methods: </p>
      * <ol>
      * <li>public final static &lt;EnumValue &gt; getAllValues()</li>
      * <li>public String getId()</li>
      * <li>public String getName()</li>
      * <li>public boolean isValueOf(String)</li>
      * <li>public String toString(), must return the id of the enum value</li>
-     * <li>public final static &lt;EnumValue &gt; valueOf(String), the id is provided to this method and
-     * an enum values is supposed to be returned by this method</li>
+     * <li>public final static &lt;EnumValue &gt; valueOf(String), the id is provided to this method
+     * and an enum values is supposed to be returned by this method</li>
      * </ol>
      */
     protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project, Class<?>[] adaptedClass)

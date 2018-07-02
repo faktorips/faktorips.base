@@ -36,7 +36,7 @@ public abstract class IdentifierNode {
 
     protected IdentifierNode(Datatype datatype, boolean listOfTypes, TextRegion textRegion) {
         this.textRegion = textRegion;
-        if (listOfTypes) {
+        if (listOfTypes && datatype != null) {
             this.datatype = new ListOfTypeDatatype(datatype);
         } else {
             this.datatype = datatype;
