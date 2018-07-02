@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A default implementation that extends the AbstractBuilderSet and implements the
@@ -38,8 +40,6 @@ import org.faktorips.fl.IdentifierResolver;
  * adds the IPS package fragment name of the IpsSrcFile in question. Internal packages are
  * distinguished from packages that contain published interfaces and classes. It depends on the kind
  * constant if an internal or published package name is returned.
- * 
- * @author Peter Erzberger
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
@@ -52,6 +52,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     private List<String> additionalAnnotations = new ArrayList<String>();
 
     private List<String> additionalImports = new ArrayList<String>();
+
+    private List<String> retainedAnnotations = new ArrayList<String>();
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
@@ -145,13 +147,23 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public void beforeBuildProcess(int buildKind) throws CoreException {
         super.beforeBuildProcess(buildKind);
         initAdditionalImports();
-        initAdditionalAnnotations();
+        additionalAnnotations = initAnnotations(getConfiguredAdditionalAnnotations());
+        retainedAnnotations = splitString(getConfiguredRetainedAnnotations());
     }
 
-    protected abstract String getConfiguredAdditionalAnnotations();
+    protected String getConfiguredAdditionalAnnotations() {
+        return IpsStringUtils.EMPTY;
+    }
+
+    protected String getConfiguredRetainedAnnotations() {
+        return IpsStringUtils.EMPTY;
+    }
 
     private void initAdditionalImports() {
         additionalImports = new ArrayList<String>();
+        // we only need the additional imports for additional annotations. The imports for retained
+        // annotations will have been added by whomever created those annotations and are not removed by
+        // jMerge.
         List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
             String importStatement = removeParenthesis(splitString);
@@ -178,17 +190,18 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return importWithParenthesis;
     }
 
-    private void initAdditionalAnnotations() {
-        additionalAnnotations = new ArrayList<String>();
-        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
+    private List<String> initAnnotations(String input) {
+        List<String> annotations = new LinkedList<String>();
+        List<String> splitInput = splitString(input);
         for (String splitString : splitInput) {
             int i = splitString.indexOf(PARENTHESIS_CHARACTER);
             if (i < 0) {
                 i = splitString.length();
             }
             String unqualifiedName = QNameUtil.getUnqualifiedName(splitString.substring(0, i));
-            additionalAnnotations.add(unqualifiedName + splitString.substring(i));
+            annotations.add(unqualifiedName + splitString.substring(i));
         }
+        return annotations;
     }
 
     public List<String> getAdditionalImports() {
@@ -197,5 +210,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     public List<String> getAdditionalAnnotations() {
         return additionalAnnotations;
+    }
+
+    public List<String> getRetainedAnnotations() {
+        return retainedAnnotations;
     }
 }
