@@ -96,8 +96,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * {@inheritDoc}
      * 
      * {@link IIpsPackageFragment IIpsPackageFragments} are always returned, whether they are output
-     * locations of the {@link IJavaProject} corresponding to this package fragment's
-     * {@link IpsProject} or not.
+     * locations of the {@link IJavaProject} corresponding to this package fragment's {@link IpsProject}
+     * or not.
      */
     @Override
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
@@ -523,10 +523,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             }
         }
 
-        private DefinedOrderComparator(DefinedOrderComparator toCopy) {
-            sortOrder = new LinkedHashMap<IIpsElement, Integer>(toCopy.sortOrder);
-        }
-
         private DefinedOrderComparator(Map<IIpsElement, Integer> sortOrder) {
             this.sortOrder = sortOrder;
         }
@@ -538,10 +534,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             } else {
                 return null;
             }
-        }
-
-        public DefinedOrderComparator copy() {
-            return new DefinedOrderComparator(this);
         }
 
         public void persistTo(IpsPackageFragment parentPackage) {
@@ -588,9 +580,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                         String content = StringUtil.readFromInputStream(sortOrderFile.getContents(),
                                 Charset.forName(charsetName));
                         /*
-                         * do not use system line separator here because the file could be
-                         * transfered from another system. This regex splits the content at \r\n
-                         * (windows), \n (unix) or \r (old mac)
+                         * do not use system line separator here because the file could be transfered from another
+                         * system. This regex splits the content at \r\n (windows), \n (unix) or \r (old mac)
                          */
                         String[] lines = content.split("[\r\n]++"); //$NON-NLS-1$
                         LinkedHashMap<IIpsElement, Integer> sortOrder = new LinkedHashMap<IIpsElement, Integer>(
@@ -626,8 +617,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
              * Skip empty lines and lines starting with a comment ('#').
              * 
              * @param line One single line (String) of the sort order.
-             * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty
-             *         or a comment
+             * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a
+             *         comment
              */
             static boolean checkLine(String line) {
                 return !IpsStringUtils.isBlank(line) && !line.trim().startsWith("#"); //$NON-NLS-1$

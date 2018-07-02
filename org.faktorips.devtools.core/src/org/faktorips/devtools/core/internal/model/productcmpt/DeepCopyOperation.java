@@ -205,35 +205,64 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         }
 
         // copy all existing sort order files (if any)
-        copySortOrder(monitor);
+        copySortOrder(productNew2ProductOld, monitor);
 
         monitor.done();
     }
 
-    void copySortOrder(IProgressMonitor monitor) {
+    /* private */ void copySortOrder(Map<IProductCmpt, IProductCmpt> productNew2ProductOld, IProgressMonitor monitor) {
+        Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile = new HashMap<IIpsSrcFile, IIpsSrcFile>(
+                productNew2ProductOld.size());
+        for (Entry<IProductCmpt, IProductCmpt> entry : productNew2ProductOld.entrySet()) {
+            old2NewSrcFile.put(entry.getValue().getIpsSrcFile(), entry.getKey().getIpsSrcFile());
+        }
         try {
-            copySortOrder(monitor, sourceIpsPackageFragment, targetIpsPackageFragment);
+            copySortOrder(sourceIpsPackageFragment, targetIpsPackageFragment, old2NewSrcFile, monitor);
         } catch (CoreException e) {
             throw new CoreRuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
         }
     }
 
-    private void copySortOrder(IProgressMonitor monitor,
-            IIpsPackageFragment sourceParent,
-            IIpsPackageFragment targetParent) throws CoreException {
+    private void copySortOrder(IIpsPackageFragment sourceParent,
+            IIpsPackageFragment targetParent,
+            Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile,
+            IProgressMonitor monitor) throws CoreException {
         Comparator<IIpsElement> sourceComparator = sourceParent.getChildOrderComparator();
         if (sourceComparator instanceof DefinedOrderComparator) {
             Comparator<IIpsElement> targetComparator = targetParent.getChildOrderComparator();
             if (!(targetComparator instanceof DefinedOrderComparator)) {
-                ((IpsPackageFragment)targetParent)
-                        .setChildOrderComparator(((DefinedOrderComparator)sourceComparator).copy());
+                copySortOrder(((DefinedOrderComparator)sourceComparator).getElements(), old2NewSrcFile, targetParent);
             }
         }
         for (IIpsPackageFragment fragment : sourceParent.getChildIpsPackageFragments()) {
             IIpsPackageFragment destination = targetParent.getSubPackage(fragment.getLastSegmentName());
             if (destination.exists()) {
-                copySortOrder(monitor, fragment, destination);
+                copySortOrder(fragment, destination, old2NewSrcFile, monitor);
             }
+        }
+    }
+
+    protected void copySortOrder(IIpsElement[] elements,
+            Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile,
+            IIpsPackageFragment targetParent) {
+        List<IIpsElement> copiedElements = new ArrayList<IIpsElement>(elements.length);
+        for (IIpsElement element : elements) {
+            if (element instanceof IIpsSrcFile) {
+                IIpsElement newElement = old2NewSrcFile.get(element);
+                if (newElement != null) {
+                    copiedElements.add(newElement);
+                }
+            } else if (element instanceof IIpsPackageFragment) {
+                IIpsPackageFragment subPackage = targetParent
+                        .getSubPackage(((IIpsPackageFragment)element).getLastSegmentName());
+                if (subPackage.exists()) {
+                    copiedElements.add(subPackage);
+                }
+            }
+        }
+        if (!copiedElements.isEmpty()) {
+            ((IpsPackageFragment)targetParent).setChildOrderComparator(
+                    new DefinedOrderComparator(copiedElements.toArray(new IIpsElement[copiedElements.size()])));
         }
     }
 
