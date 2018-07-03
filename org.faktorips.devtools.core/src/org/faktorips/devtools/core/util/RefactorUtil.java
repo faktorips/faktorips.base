@@ -10,11 +10,15 @@
 
 package org.faktorips.devtools.core.util;
 
+import java.util.Comparator;
 import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
@@ -28,8 +32,8 @@ import org.faktorips.util.StringUtil;
 public final class RefactorUtil {
 
     /**
-     * Copies the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination
-     * package. Returns a handle to the new <tt>IIpsSrcFile</tt>.
+     * Copies the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination package.
+     * Returns a handle to the new <tt>IIpsSrcFile</tt>.
      * 
      * @param toBeCopied The <tt>IIpsSrcFile</tt> to be copied.
      * @param targetIpsPackageFragment The destination IPS package.
@@ -58,13 +62,12 @@ public final class RefactorUtil {
     }
 
     public static String getTargetFileName(IIpsSrcFile toBeCopied, String copyName) {
-        return copyName + "." + toBeCopied.getIpsObjectType().getFileExtension();//$NON-NLS-1$
+        return copyName + "." + toBeCopied.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
     }
 
     /**
-     * Copies the given <tt>IIpsSrcFile</tt> into a temporary source file at the destination
-     * package. The file name will contain a time stamp. Returns a handle to the temporary
-     * <tt>IIpsSrcFile</tt>.
+     * Copies the given <tt>IIpsSrcFile</tt> into a temporary source file at the destination package.
+     * The file name will contain a time stamp. Returns a handle to the temporary <tt>IIpsSrcFile</tt>.
      * 
      * @param toBeCopied The <tt>IIpsSrcFile</tt> to be copied.
      * @param targetIpsPackageFragment The destination IPS package.
@@ -86,16 +89,16 @@ public final class RefactorUtil {
     }
 
     /**
-     * Moves the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination
-     * package. Returns a handle to the new <tt>IIpsSrcFile</tt>.
+     * Moves the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination package.
+     * Returns a handle to the new <tt>IIpsSrcFile</tt>.
      * 
      * @param originalSrcFile The <tt>IIpsSrcFile</tt> to be moved.
      * @param targetIpsPackageFragment The destination IPS package.
      * @param newName The new name of the source file.
      * @param pm A progress monitor to report progress to or <tt>null</tt>.
      * 
-     * @throws NullPointerException If <tt>originalSrcFile</tt>, <tt>targetIpsPackageFragment</tt>
-     *             or <tt>newName</tt> is <tt>null</tt>
+     * @throws NullPointerException If <tt>originalSrcFile</tt>, <tt>targetIpsPackageFragment</tt> or
+     *             <tt>newName</tt> is <tt>null</tt>
      * @throws IllegalArgumentException if the source file to be copied is dirty
      * 
      */
@@ -103,7 +106,7 @@ public final class RefactorUtil {
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             IProgressMonitor pm) throws CoreException {
-        // we need to copy and delete the file because at least the subclipse svn adaptder get some
+        // we need to copy and delete the file because at least the subclipse svn adapter get some
         // problems when we moving the files there and back again twice
         IIpsSrcFile targetSrcFile;
         if (targetIpsPackageFragment.equals(originalSrcFile.getIpsPackageFragment())
@@ -116,7 +119,35 @@ public final class RefactorUtil {
             targetSrcFile = copyIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
             originalSrcFile.delete();
         }
+        final IIpsElement targetElement = targetSrcFile;
+
+        updateSortOrder(originalSrcFile.getIpsPackageFragment(), originalSrcFile, targetIpsPackageFragment,
+                targetElement);
         return targetSrcFile;
+    }
+
+    public static void updateSortOrder(IIpsPackageFragment originalIpsPackageFragment,
+            IIpsElement originalElement,
+            IIpsPackageFragment targetIpsPackageFragment,
+            final IIpsElement targetElement) {
+        if (originalIpsPackageFragment.equals(targetIpsPackageFragment)) {
+            // so the child was renamed
+            IpsPackageFragment ipsPackageFragment = (IpsPackageFragment)originalIpsPackageFragment;
+            Comparator<IIpsElement> childOrderComparator = ipsPackageFragment.getChildOrderComparator();
+            if (childOrderComparator instanceof DefinedOrderComparator) {
+                IIpsElement[] elements = ((DefinedOrderComparator)childOrderComparator).getElements();
+                for (int i = 0; i < elements.length; i++) {
+                    if (elements[i].equals(originalElement)) {
+                        elements[i] = targetElement;
+                        break;
+                    }
+                }
+                ipsPackageFragment.setChildOrderComparator(new DefinedOrderComparator(elements));
+            }
+        }
+        // else the child was moved
+        // leave the old element there, so that the element will be in order after an undo operation. It
+        // will be removed when the sort order is next updated.
     }
 
     public static boolean isOnlyCapitalizationChanged(IIpsSrcFile fileToBeCopied, String newName) {

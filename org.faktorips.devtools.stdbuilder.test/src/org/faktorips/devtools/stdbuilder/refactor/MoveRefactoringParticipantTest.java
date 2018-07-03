@@ -10,7 +10,16 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
+import static org.faktorips.abstracttest.matcher.IpsSrcFileNamesMatcher.containsInOrder;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -47,8 +56,8 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
     @Test
     public void testMovePolicyCmptType() throws CoreException {
-        IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME
-                + '.' + "Policy");
+        IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
+                ORIGINAL_PACKAGE_NAME + '.' + "Policy");
 
         saveIpsSrcFile(policyCmptType);
         performFullBuild(ipsProject);
@@ -69,6 +78,29 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         performMoveRefactoring(productCmptType, targetIpsPackageFragment);
 
         checkJavaSourceFilesProductCmptType(ORIGINAL_PACKAGE_NAME, "Product", TARGET_PACKAGE_NAME, "Product");
+    }
+
+    @Test
+    public void testMoveProductCmpt() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
+        saveIpsSrcFile(productCmptType);
+        productCmptType.setConfigurationForPolicyCmptType(false);
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, ORIGINAL_PACKAGE_NAME + '.' + "Prod");
+        ProductCmpt productCmpt2 = newProductCmpt(productCmptType, ORIGINAL_PACKAGE_NAME + '.' + "Prod2");
+        IpsPackageFragment originalIpsPackageFragment = (IpsPackageFragment)productCmpt.getIpsPackageFragment();
+        originalIpsPackageFragment.setChildOrderComparator(
+                new DefinedOrderComparator(productCmpt.getIpsSrcFile(), productCmpt2.getIpsSrcFile()));
+        saveIpsSrcFile(productCmpt);
+        performFullBuild(ipsProject);
+
+        performMoveRefactoring(productCmpt, targetIpsPackageFragment);
+
+        assertNull(ipsProject.findProductCmpt(ORIGINAL_PACKAGE_NAME + '.' + "Prod"));
+        assertNotNull(ipsProject.findProductCmpt(TARGET_PACKAGE_NAME + '.' + "Prod"));
+        IIpsElement[] elements = ((DefinedOrderComparator)originalIpsPackageFragment.getChildOrderComparator())
+                .getElements();
+        // still there, to allow undo
+        assertThat(elements, containsInOrder("Prod.ipsproduct", "Prod2.ipsproduct"));
     }
 
     @Test

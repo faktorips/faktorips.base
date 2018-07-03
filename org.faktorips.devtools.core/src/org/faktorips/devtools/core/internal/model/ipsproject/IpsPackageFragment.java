@@ -470,6 +470,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                     if (childOrderComparator == null) {
                         childOrderComparator = AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR;
                     }
+                    lastModification = modificationStamp;
                     return childOrderComparator;
                 }
             } else {
@@ -586,20 +587,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                         String[] lines = content.split("[\r\n]++"); //$NON-NLS-1$
                         LinkedHashMap<IIpsElement, Integer> sortOrder = new LinkedHashMap<IIpsElement, Integer>(
                                 lines.length);
-                        int i = 0;
                         for (String line : lines) {
-                            if (checkLine(line)) {
-                                String childName = line.trim();
-                                IIpsPackageFragment subPackage = parentPackage.isDefaultPackage()
-                                        ? parentPackage.getRoot().getIpsPackageFragment(childName)
-                                        : parentPackage.getSubPackage(childName);
-                                if (subPackage != null && subPackage.exists()) {
-                                    sortOrder.put(subPackage, i++);
-                                } else {
-                                    IIpsSrcFile ipsSrcFile = parentPackage.getIpsSrcFile(childName);
-                                    sortOrder.put(ipsSrcFile, i++);
-                                }
-                            }
+                            read(line.trim(), parentPackage, sortOrder);
                         }
                         return sortOrder;
                     } catch (IOException e) {
@@ -613,6 +602,29 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                 }
             }
 
+            private static boolean read(String line,
+                    final IpsPackageFragment parentPackage,
+                    LinkedHashMap<IIpsElement, Integer> sortOrder) {
+                if (isNeitherBlankNorComment(line)) {
+                    IIpsElement element = findElement(line, parentPackage);
+                    if (element != null) {
+                        // don't check for .exists(), as elements might arrive later during a refactoring
+                        sortOrder.put(element, sortOrder.size());
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            private static IIpsElement findElement(String line, final IpsPackageFragment parentPackage) {
+                if (line.contains(".")) { //$NON-NLS-1$
+                    return parentPackage.getIpsSrcFile(line);
+                } else {
+                    return parentPackage.isDefaultPackage() ? parentPackage.getRoot().getIpsPackageFragment(line)
+                            : parentPackage.getSubPackage(line);
+                }
+            }
+
             /**
              * Skip empty lines and lines starting with a comment ('#').
              * 
@@ -620,8 +632,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
              * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a
              *         comment
              */
-            static boolean checkLine(String line) {
-                return !IpsStringUtils.isBlank(line) && !line.trim().startsWith("#"); //$NON-NLS-1$
+            private static boolean isNeitherBlankNorComment(String line) {
+                return !IpsStringUtils.isBlank(line) && !line.startsWith("#"); //$NON-NLS-1$
             }
 
             static void write(IpsPackageFragment parentPackage, Map<IIpsElement, Integer> sortOrder) {

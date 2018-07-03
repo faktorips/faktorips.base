@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.IpsSrcFileNamesMatcher.containsInOrder;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -32,13 +33,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,9 +83,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -805,41 +801,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         dco.setTargetIpsPackageFragment(targetPackageFragment);
         dco.setCreateEmptyTableContents(true);
         dco.run(null);
-    }
-
-    private Matcher<? super IIpsElement[]> containsInOrder(final String... filenames) {
-        return new TypeSafeMatcher<IIpsElement[]>() {
-
-            private Deque<String> namesToMatch = new LinkedList<String>(Arrays.asList(filenames));
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("An array containing in order ");
-                description.appendValueList("[", ", ", "]", filenames);
-            }
-
-            @Override
-            protected boolean matchesSafely(IIpsElement[] elements) {
-                for (IIpsElement element : elements) {
-                    String name = null;
-                    if (element instanceof IIpsSrcFile) {
-                        name = ((IIpsSrcFile)element).getQualifiedNameType().getFileName();
-                    }
-                    if (element instanceof IIpsPackageFragment) {
-                        name = ((IIpsPackageFragment)element).getLastSegmentName();
-                    }
-                    if (namesToMatch.contains(name)) {
-                        if (!namesToMatch.pop().equals(name)) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-
-                return namesToMatch.isEmpty();
-            }
-        };
     }
 
     protected void removeReferences(Set<IProductCmptStructureReference> toCopy) {

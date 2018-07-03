@@ -353,6 +353,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         TestContentsChangeListener listener = new TestContentsChangeListener();
         template.getIpsModel().addChangeListener(listener);
 
+        @SuppressWarnings("deprecation")
         IIpsSrcFile file = pack.createIpsFileFromTemplate("copy", template, date, date, true, null);
         assertEquals(1, listener.getNumOfEventsReceived());
         assertEquals(file, listener.getLastEvent().getIpsSrcFile());

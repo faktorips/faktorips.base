@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.refactor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +31,8 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -38,6 +41,7 @@ import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -115,8 +119,8 @@ public final class MoveRenamePackageHelper {
         boolean createSubPackage = false;
         for (FileInfo fileInfos : files) {
 
-            IIpsPackageFragment targetPackage = currTargetRoot.getIpsPackageFragment(buildPackageName(
-                    StringUtils.EMPTY, newName, fileInfos.getPath()));
+            IIpsPackageFragment targetPackage = currTargetRoot
+                    .getIpsPackageFragment(buildPackageName(StringUtils.EMPTY, newName, fileInfos.getPath()));
 
             if (targetPackage == null) {
                 continue;
@@ -127,8 +131,8 @@ public final class MoveRenamePackageHelper {
 
             createPackageFragmentIfNotExist(currTargetRoot, targetPackage, monitor);
 
-            IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(buildPackageName(
-                    originalPackageFragment.getName(), StringUtils.EMPTY, fileInfos.getPath()));
+            IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(
+                    buildPackageName(originalPackageFragment.getName(), StringUtils.EMPTY, fileInfos.getPath()));
             IIpsSrcFile sourceFile = sourcePackage.getIpsSrcFile(fileInfos.getFileName());
             if (sourceFile != null) {
                 modificationSet.addBeforeChanged(sourceFile);
@@ -149,6 +153,17 @@ public final class MoveRenamePackageHelper {
         if (!(createSubPackage)) {
             if (isSourceFolderEmpty(((IFolder)originalPackageFragment.getEnclosingResource()))) {
                 originalPackageFragment.getEnclosingResource().delete(true, monitor);
+            }
+        }
+
+        // 4) fix .sortorder
+        IIpsPackageFragment originalParentIpsPackageFragment = originalPackageFragment.getParentIpsPackageFragment();
+        if (originalParentIpsPackageFragment != null) {
+            Comparator<IIpsElement> childOrderComparator = originalParentIpsPackageFragment.getChildOrderComparator();
+            if (childOrderComparator instanceof DefinedOrderComparator) {
+                RefactorUtil.updateSortOrder(originalParentIpsPackageFragment, originalPackageFragment,
+                        targetPackageFragement.getParentIpsPackageFragment(), currTargetRoot.getIpsPackageFragment(
+                                buildPackageName(StringUtils.EMPTY, newName, StringUtils.EMPTY)));
             }
         }
     }
@@ -198,8 +213,8 @@ public final class MoveRenamePackageHelper {
             IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)sourcePackage.getEnclosingResource();
         IFile rawFile = folder.getFile(fileInfos.getFileName());
-        IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(
-                fileInfos.getFileName());
+        IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath()
+                .append(fileInfos.getFileName());
         if (rawFile.exists()) {
             rawFile.move(destination, true, monitor);
         } else {
@@ -227,15 +242,20 @@ public final class MoveRenamePackageHelper {
                         : member.getName();
                 files.addAll(getRelativeFileNames(pathName, (IFolder)member));
             } else if (member.getType() == IResource.FILE) {
-                files.add(new FileInfo(path, member.getName()));
+                if (member.getName().equals(IIpsPackageFragment.SORT_ORDER_FILE_NAME)) {
+                    // put .sortorder first, because otherwise it would be destroyed by moving the contained files away
+                    files.add(0, new FileInfo(path, member.getName()));
+                } else {
+                    files.add(new FileInfo(path, member.getName()));
+                }
             }
         }
         return files;
     }
 
     /**
-     * Builds a package name by concatenating the given parts with dots. Each one of the three parts
-     * can be empty.
+     * Builds a package name by concatenating the given parts with dots. Each one of the three parts can
+     * be empty.
      */
     private String buildPackageName(String prefix, String middle, String postfix) {
         String result = prefix;
@@ -289,8 +309,8 @@ public final class MoveRenamePackageHelper {
                     (IFolder)originalPackageFragment.getEnclosingResource());
             IIpsPackageFragmentRoot sourceRoot = getSourceRoot();
             for (FileInfo fileInfos : files) {
-                IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(buildPackageName(
-                        originalPackageFragment.getName(), StringUtils.EMPTY, fileInfos.getPath()));
+                IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(
+                        buildPackageName(originalPackageFragment.getName(), StringUtils.EMPTY, fileInfos.getPath()));
                 IIpsSrcFile sourceFile = sourcePackage.getIpsSrcFile(fileInfos.getFileName());
                 if (sourceFile != null && sourceFile.exists()) {
                     affectedFiles.add(sourceFile);
@@ -333,8 +353,8 @@ public final class MoveRenamePackageHelper {
     }
 
     /**
-     * Checks the final conditions on all AffectedIpsSourceFiles. It's necessary to create the
-     * target packages. After the check the target package will be deleted.
+     * Checks the final conditions on all AffectedIpsSourceFiles. It's necessary to create the target
+     * packages. After the check the target package will be deleted.
      */
     public void checkFinalConditions(IIpsPackageFragment targetIpsPackageFragment,
             RefactoringStatus status,
@@ -378,16 +398,16 @@ public final class MoveRenamePackageHelper {
     /**
      * Calling the refactoring processor for {@link IIpsObject}. The source file of the
      * {@link IIpsObject} will be moved this early. Based on that new source file and on the moved
-     * {@link IIpsObject} validation is performed. After validation the file is moved back to
-     * perform the real model refactoring.
+     * {@link IIpsObject} validation is performed. After validation the file is moved back to perform
+     * the real model refactoring.
      */
     private void checkFinalConditionsOnIpsSrcFile(IIpsSrcFile originalFile,
             IIpsPackageFragment targetIpsPackageFragment,
             RefactoringStatus status,
             IProgressMonitor pm) throws CoreException {
         createSubPackageFragmentIfNotExist(originalFile, targetIpsPackageFragment, pm);
-        IIpsProcessorBasedRefactoring moveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(
-                originalFile.getIpsObject(), targetIpsPackageFragment);
+        IIpsProcessorBasedRefactoring moveRefactoring = IpsPlugin.getIpsRefactoringFactory()
+                .createMoveRefactoring(originalFile.getIpsObject(), targetIpsPackageFragment);
         status.merge(moveRefactoring.checkFinalConditions(pm));
     }
 
@@ -395,9 +415,9 @@ public final class MoveRenamePackageHelper {
             IIpsPackageFragment targetIpsPackageFragment,
             IProgressMonitor pm) throws CoreException {
         if (!originalPackageFragment.equals(originalFile.getIpsPackageFragment())) {
-            IIpsPackageFragment targetPackage = targetIpsPackageFragment.getRoot().getIpsPackageFragment(
-                    buildPackageName(StringUtils.EMPTY, targetIpsPackageFragment.getName(), originalFile
-                            .getIpsPackageFragment().getLastSegmentName()));
+            IIpsPackageFragment targetPackage = targetIpsPackageFragment.getRoot()
+                    .getIpsPackageFragment(buildPackageName(StringUtils.EMPTY, targetIpsPackageFragment.getName(),
+                            originalFile.getIpsPackageFragment().getLastSegmentName()));
             createPackageFragmentIfNotExist(targetIpsPackageFragment.getRoot(), targetPackage, pm);
         }
     }
