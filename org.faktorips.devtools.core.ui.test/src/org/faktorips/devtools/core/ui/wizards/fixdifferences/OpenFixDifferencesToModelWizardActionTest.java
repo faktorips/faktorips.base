@@ -55,6 +55,8 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
         IAttribute newAttribute = productCmptType.newAttribute();
         newAttribute.setDatatype(Datatype.MONEY.getQualifiedName());
         productCmptType.getIpsSrcFile().save(true, null);
+
+        waitForIndexer();
     }
 
     @Test
