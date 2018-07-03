@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.builder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -147,8 +148,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public void beforeBuildProcess(int buildKind) throws CoreException {
         super.beforeBuildProcess(buildKind);
         initAdditionalImports();
-        additionalAnnotations = initAnnotations(getConfiguredAdditionalAnnotations());
-        retainedAnnotations = splitString(getConfiguredRetainedAnnotations());
+        additionalAnnotations = initAdditionalAnnotations();
+        retainedAnnotations = initRetainedAnnotations();
     }
 
     protected String getConfiguredAdditionalAnnotations() {
@@ -190,9 +191,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return importWithParenthesis;
     }
 
-    private List<String> initAnnotations(String input) {
+    private List<String> initAdditionalAnnotations() {
         List<String> annotations = new LinkedList<String>();
-        List<String> splitInput = splitString(input);
+        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
             int i = splitString.indexOf(PARENTHESIS_CHARACTER);
             if (i < 0) {
@@ -200,6 +201,17 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             }
             String unqualifiedName = QNameUtil.getUnqualifiedName(splitString.substring(0, i));
             annotations.add(unqualifiedName + splitString.substring(i));
+        }
+        return annotations;
+    }
+
+    private List<String> initRetainedAnnotations() {
+        List<String> annotations = splitString(getConfiguredRetainedAnnotations());
+        for (ListIterator<String> iterator = annotations.listIterator(); iterator.hasNext();) {
+            String annotation = iterator.next();
+            if (!annotation.startsWith("@")) { //$NON-NLS-1$
+                iterator.set('@' + annotation);
+            }
         }
         return annotations;
     }

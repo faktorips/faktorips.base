@@ -10,10 +10,13 @@
 
 package org.faktorips.devtools.core.builder;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -99,8 +102,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertTrue(file.exists());
 
         /*
-         * this checks if the merge.xml has been found since it will try to merge the content
-         * because the java file exists already
+         * this checks if the merge.xml has been found since it will try to merge the content because the
+         * java file exists already
          */
         spyBuilder.setMergeEnabled(true);
         reset(spyBuilder);
@@ -222,6 +225,292 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         String className = builder.getQualifiedClassName(ipsSrcFile);
 
         assertEquals("org.merge.test.myTable", className);
+    }
+
+    @Test
+    public void testAdditionalAnnotations() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return "foo.bar.Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\n" +
+                        " * @generated\n" +
+                        " */\n" +
+                        "public class TestPolicy {\n" +
+                        "\n" +
+                        "    /**\n" +
+                        "     * @generated\n" +
+                        "     */\n" +
+                        "    public void foo(){\n" +
+                        "    }\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, containsString("import foo.bar.Baz;"));
+        assertThat(javaFileContents, containsString("@Baz"));
+    }
+
+    @Test
+    public void testRetainedAnnotations() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredRetainedAnnotations() {
+                return "Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\n" +
+                        " * @generated\n" +
+                        " */\n" +
+                        "public class TestPolicy {\n" +
+                        "\n" +
+                        "    /**\n" +
+                        "     * @generated\n" +
+                        "     */\n" +
+                        "    public void foo(){\n" +
+                        "    }\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+        builder.createFileIfNotThere(file);
+        //@formatter:off
+        builder.writeToFile(ipsSrcFile, file,
+                "import foo.bar.Baz;\n" +
+                "\n" +
+                "/**\n" +
+                " * @generated\n" +
+                " */\n" +
+                "@Baz\n" +
+                "public class TestPolicy {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * @generated\n" +
+                "     */\n" +
+                "    @Baz\n" +
+                "    public void foo(){\n" +
+                "    }\n" +
+                "}");
+        //@formatter:on
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, containsString("import foo.bar.Baz;"));
+        assertThat(javaFileContents, containsString("@Baz"));
+    }
+
+    @Test
+    public void testRetainedAnnotationsWithAt() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredRetainedAnnotations() {
+                return "@Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\n" +
+                        " * @generated\n" +
+                        " */\n" +
+                        "public class TestPolicy {\n" +
+                        "\n" +
+                        "    /**\n" +
+                        "     * @generated\n" +
+                        "     */\n" +
+                        "    public void foo(){\n" +
+                        "    }\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+        builder.createFileIfNotThere(file);
+        //@formatter:off
+        builder.writeToFile(ipsSrcFile, file,
+                "import foo.bar.Baz;\n" +
+                "\n" +
+                "/**\n" +
+                " * @generated\n" +
+                " */\n" +
+                "@Baz\n" +
+                "public class TestPolicy {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * @generated\n" +
+                "     */\n" +
+                "    @Baz\n" +
+                "    public void foo(){\n" +
+                "    }\n" +
+                "}");
+        //@formatter:on
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, containsString("import foo.bar.Baz;"));
+        assertThat(javaFileContents, containsString("@Baz"));
+    }
+
+    @Test
+    public void testRetainedAnnotationsQualified() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredRetainedAnnotations() {
+                return "foo.bar.Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\n" +
+                        " * @generated\n" +
+                        " */\n" +
+                        "public class TestPolicy {\n" +
+                        "\n" +
+                        "    /**\n" +
+                        "     * @generated\n" +
+                        "     */\n" +
+                        "    public void foo(){\n" +
+                        "    }\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+        builder.createFileIfNotThere(file);
+        //@formatter:off
+        builder.writeToFile(ipsSrcFile, file,
+                "import foo.bar.Baz;\n" +
+                "\n" +
+                "/**\n" +
+                " * @generated\n" +
+                " */\n" +
+                "@foo.bar.Baz\n" +
+                "public class TestPolicy {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * @generated\n" +
+                "     */\n" +
+                "    @Baz\n" +
+                "    public void foo(){\n" +
+                "    }\n" +
+                "}");
+        //@formatter:on
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, not(containsString("import foo.bar.Baz;")));
+        assertThat(javaFileContents, not(containsString("@Baz")));
+    }
+
+    @Test
+    public void testRetainedAnnotationsQualifiedVsUnqualified() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredRetainedAnnotations() {
+                return "foo.bar.Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\n" +
+                        " * @generated\n" +
+                        " */\n" +
+                        "public class TestPolicy {\n" +
+                        "\n" +
+                        "    /**\n" +
+                        "     * @generated\n" +
+                        "     */\n" +
+                        "    public void foo(){\n" +
+                        "    }\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+        builder.createFileIfNotThere(file);
+        //@formatter:off
+        builder.writeToFile(ipsSrcFile, file,
+                "import foo.bar.Baz;\n" +
+                "\n" +
+                "/**\n" +
+                " * @generated\n" +
+                " */\n" +
+                "@Baz\n" +
+                "public class TestPolicy {\n" +
+                "\n" +
+                "    /**\n" +
+                "     * @generated\n" +
+                "     */\n" +
+                "    @Baz\n" +
+                "    public void foo(){\n" +
+                "    }\n" +
+                "}");
+        //@formatter:on
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, not(containsString("import foo.bar.Baz;")));
+        assertThat(javaFileContents, not(containsString("@Baz")));
     }
 
     public static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {

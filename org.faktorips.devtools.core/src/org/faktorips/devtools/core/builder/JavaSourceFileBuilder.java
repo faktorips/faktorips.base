@@ -88,16 +88,16 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     /**
      * This constant is supposed to be used as a Javadoc annotation. If the merging capabilities are
-     * activated a class, method or attribute that is marked by this annotation will be regenerated
-     * with every build.
+     * activated a class, method or attribute that is marked by this annotation will be regenerated with
+     * every build.
      */
     public static final String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
 
     /**
-     * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
-     * merging capabilities are activated. It indicates that within a generated piece of code only
-     * the parts that are outside the braces defined by the markers <code>//begin-user-code</code>
-     * and <code>//end-user-code</code> are regenerated with the next generation.
+     * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the merging
+     * capabilities are activated. It indicates that within a generated piece of code only the parts
+     * that are outside the braces defined by the markers <code>//begin-user-code</code> and
+     * <code>//end-user-code</code> are regenerated with the next generation.
      */
     public static final String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[] { "restrainedmodifiable" }; //$NON-NLS-1$
 
@@ -107,15 +107,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public static final String ANNOTATION_OVERRIDE = "Override"; //$NON-NLS-1$
 
     /**
-     * This constant is supposed to be used to indicate the beginning of a section within generated
-     * code that a user can modify and will not be overridden by the generator at the next
-     * generation.
+     * This constant is supposed to be used to indicate the beginning of a section within generated code
+     * that a user can modify and will not be overridden by the generator at the next generation.
      */
     public static final String MARKER_BEGIN_USER_CODE = "//begin-user-code"; //$NON-NLS-1$
 
     /**
-     * This constant is supposed to be used to indicate the end of a section within generated code
-     * that a user can modify and will not be overridden by the generator at the next generation.
+     * This constant is supposed to be used to indicate the end of a section within generated code that
+     * a user can modify and will not be overridden by the generator at the next generation.
      */
     public static final String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
@@ -190,8 +189,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the description of the given {@link IIpsObjectPartContainer} in the language of the
-     * code generator.
+     * Returns the description of the given {@link IIpsObjectPartContainer} in the language of the code
+     * generator.
      * <p>
      * If there is no description in that locale, the description of the default language will be
      * returned.
@@ -199,8 +198,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns an empty string if there is no default description as well or the given
      * {@link IIpsObjectPartContainer} does not support descriptions.
      * 
-     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the description
-     *            of.
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the description of.
      * 
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      */
@@ -243,13 +241,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Implementations of this class must override this method to provide the content of the java
-     * source file.
+     * Implementations of this class must override this method to provide the content of the java source
+     * file.
      * 
-     * @throws CoreException implementations can wrap rising checked exceptions into a
-     *             CoreException. If an exception is thrown by this method the current build of this
-     *             builder is interrupted. Alternatively the exception can be reported to the
-     *             buildStatus to avoid interrupting the build process of this builder.
+     * @throws CoreException implementations can wrap rising checked exceptions into a CoreException. If
+     *             an exception is thrown by this method the current build of this builder is
+     *             interrupted. Alternatively the exception can be reported to the buildStatus to avoid
+     *             interrupting the build process of this builder.
      */
     protected abstract String generate() throws CoreException;
 
@@ -278,12 +276,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Convenience method that delegates the call to the package structure and returns the package
-     * name for the java class that is build by this builder.
+     * Convenience method that delegates the call to the package structure and returns the package name
+     * for the java class that is build by this builder.
      * <p>
-     * It is not allowed to overwrite this method because other methods in {@link JavaClassNaming}
-     * uses the {@link JavaPackageStructure} object directly and this may impact an inconsistent
-     * package name.
+     * It is not allowed to overwrite this method because other methods in {@link JavaClassNaming} uses
+     * the {@link JavaPackageStructure} object directly and this may impact an inconsistent package
+     * name.
      * 
      * @param ipsSrcFile The source file to get the package from
      * 
@@ -298,9 +296,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Calls getPackage(IpsObject). It is only allowed to call this method during the build cycle of
      * this builder.
      * <p>
-     * It is not allowed to overwrite this method because other methods in {@link JavaClassNaming}
-     * uses the {@link JavaPackageStructure} object directly and this may impact an inconsistent
-     * package name.
+     * It is not allowed to overwrite this method because other methods in {@link JavaClassNaming} uses
+     * the {@link JavaPackageStructure} object directly and this may impact an inconsistent package
+     * name.
      * 
      * @return the package string
      * 
@@ -311,8 +309,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the qualified name of the Java class generated by this builder for the IPS object
-     * stored in the given IPS source file.
+     * Returns the qualified name of the Java class generated by this builder for the IPS object stored
+     * in the given IPS source file.
      * 
      * @param ipsSrcFile the IPS source file.
      * 
@@ -323,8 +321,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the qualified name of the Java class generated by this builder for the given IPS
-     * object.
+     * Returns the qualified name of the Java class generated by this builder for the given IPS object.
      * 
      * @param ipsObject the IPS object.
      */
@@ -333,8 +330,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Calls getQualifiedClassName(IpsObject). It is only allowed to call this method during the
-     * build cycle of this builder.
+     * Calls getQualifiedClassName(IpsObject). It is only allowed to call this method during the build
+     * cycle of this builder.
      * 
      * @return the qualified class name
      * 
@@ -344,13 +341,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the unqualified name for Java class generated by this builder for the given ips
-     * source file.
+     * Returns the unqualified name for Java class generated by this builder for the given ips source
+     * file.
      * <p>
-     * It is not allowed to overwrite this class because other methods in the
-     * {@link JavaClassNaming} does also reference the unqualified name. If you want to change the
-     * unqualified name you have to set your own {@link IJavaClassNameProvider} to the
-     * {@link JavaClassNaming}.
+     * It is not allowed to overwrite this class because other methods in the {@link JavaClassNaming}
+     * does also reference the unqualified name. If you want to change the unqualified name you have to
+     * set your own {@link IJavaClassNameProvider} to the {@link JavaClassNaming}.
      * 
      * @param ipsSrcFile the IPS source file
      * 
@@ -362,8 +358,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Calls getUnqualifiedClassName(IpsObject). It is only allowed to call this method during the
-     * build cycle of this builder.
+     * Calls getUnqualifiedClassName(IpsObject). It is only allowed to call this method during the build
+     * cycle of this builder.
      * 
      * @throws CoreException is delegated from calls to other methods
      */
@@ -372,8 +368,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * This method has been overridden for convenience. Subclasses might need to implement this
-     * method to clean up the state of the builder that was created during the generation.
+     * This method has been overridden for convenience. Subclasses might need to implement this method
+     * to clean up the state of the builder that was created during the generation.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
@@ -387,8 +383,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * This method has been overridden for convenience. Subclasses might need to implement this
-     * method to set up a defined state before the generation starts.
+     * This method has been overridden for convenience. Subclasses might need to implement this method
+     * to set up a defined state before the generation starts.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile,
      *      org.eclipse.core.runtime.MultiStatus)
@@ -442,8 +438,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Logs a CoreException to the build status of this builder. This method can only be called
-     * during the build cycle.
+     * Logs a CoreException to the build status of this builder. This method can only be called during
+     * the build cycle.
      */
     protected void addToBuildStatus(CoreException e) {
         buildStatus.add(new IpsStatus(e));
@@ -460,10 +456,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns a single line comment containing a TO DO.
      * 
-     * @param element Any IPS element used to access the IPS project and determine the language for
-     *            the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
-     *            prefix
+     * @param element Any IPS element used to access the IPS project and determine the language for the
+     *            generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix) {
         return getLocalizedToDo(element, keyPrefix, new Object[0]);
@@ -472,10 +467,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns a single line comment containing a TO DO.
      * 
-     * @param element Any IPS element used to access the IPS project and determine the language for
-     *            the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
-     *            prefix
+     * @param element Any IPS element used to access the IPS project and determine the language for the
+     *            generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      * @param replacement An object to replace the wild card in the message text.
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object replacement) {
@@ -485,10 +479,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns a single line comment containing a TO DO.
      * 
-     * @param element Any IPS element used to access the IPS project and determine the language for
-     *            the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
-     *            prefix
+     * @param element Any IPS element used to access the IPS project and determine the language for the
+     *            generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      * @param replacements Any objects to replace wild cards in the message text.
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object[] replacements) {
@@ -496,21 +489,20 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Inserts the localized Javadoc including the annotations into the given
-     * JavaCodeFragmentBuikder.
+     * Inserts the localized Javadoc including the annotations into the given JavaCodeFragmentBuikder.
      * <p>
      * Calling this method is only allowed during the build cycle. If it is called outside the build
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
-     *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
+     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The Javadoc
+     *            is looked up in the localized text by adding _JAVADOC to the prefix. The annotation is
+     *            looked up in the localized text by adding _ANNOTATION to the prefix.
      * @param element The IPS element for which this java doc is created. It is used for getting
-     *            additional information like the since version. If the generated code part is not
-     *            for a specific model element this element could be <code>null</code>.
-     * @param modelDescription a description of the model object can be provided here so that it can
-     *            be added to the description provided by the generator configuration
+     *            additional information like the since version. If the generated code part is not for a
+     *            specific model element this element could be <code>null</code>.
+     * @param modelDescription a description of the model object can be provided here so that it can be
+     *            added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
@@ -550,22 +542,21 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Inserts the localized Javadoc including the annotations into the given
-     * JavaCodeFragmentBuikder.
+     * Inserts the localized Javadoc including the annotations into the given JavaCodeFragmentBuikder.
      * <p>
      * Calling this method is only allowed during the build cycle. If it is called outside the build
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
-     *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
+     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The Javadoc
+     *            is looked up in the localized text by adding _JAVADOC to the prefix. The annotation is
+     *            looked up in the localized text by adding _ANNOTATION to the prefix.
      * @param replacement Object that replaces the place holder {0} in the property file
      * @param element The IPS element for which this java doc is created. It is used for getting
-     *            additional information like the since version. If the generated code part is not
-     *            for a specific model element this element could be <code>null</code>.
-     * @param modelDescription a description of the model object can be provided here so that it can
-     *            be added to the description provided by the generator configuration
+     *            additional information like the since version. If the generated code part is not for a
+     *            specific model element this element could be <code>null</code>.
+     * @param modelDescription a description of the model object can be provided here so that it can be
+     *            added to the description provided by the generator configuration
      * @param builder the builder the Javadoc is appended to.
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
@@ -622,24 +613,22 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Inserts the localized Javadoc including the annotations into the given
-     * JavaCodeFragmentBuilder.
+     * Inserts the localized Javadoc including the annotations into the given JavaCodeFragmentBuilder.
      * <p>
      * Calling this method is only allowed during the build cycle. If it is called outside the build
      * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet has been set to this
      * builder a RuntimeException is thrown.
      * 
-     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The
-     *            Javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
-     * @param modelDescription a description of the model object can be provided here so that it can
-     *            be added to the description provided by the generator configuration
+     * @param keyPrefix the key prefix that identifies the requested Javadoc and annotation. The Javadoc
+     *            is looked up in the localized text by adding _JAVADOC to the prefix. The annotation is
+     *            looked up in the localized text by adding _ANNOTATION to the prefix.
+     * @param modelDescription a description of the model object can be provided here so that it can be
+     *            added to the description provided by the generator configuration
      * @param element The IPS element for which this java doc is created. It is used for getting
-     *            additional information like the since version. If the generated code part is not
-     *            for a specific model element this element could be <code>null</code>.
+     *            additional information like the since version. If the generated code part is not for a
+     *            specific model element this element could be <code>null</code>.
      * @param builder the builder the Javadoc is appended to.
-     * @param replacements Objects that replaces the place holders {0}, {1} etc. in the property
-     *            file
+     * @param replacements Objects that replaces the place holders {0}, {1} etc. in the property file
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             String modelDescription,
@@ -658,15 +647,15 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Create generic java doc tags. The default implementation searches for localized annotations
-     * with the key <code>{keyPrefix}_ANNOTATION</code>. You could overwrite this class to provide
-     * further generic java doc tags that should be appended by
+     * Create generic java doc tags. The default implementation searches for localized annotations with
+     * the key <code>{keyPrefix}_ANNOTATION</code>. You could overwrite this class to provide further
+     * generic java doc tags that should be appended by
      * {@link #appendLocalizedJavaDoc(String, IIpsObjectPartContainer, JavaCodeFragmentBuilder)}
      * 
      * @param element The {@link IIpsElement} for which the java doc is generated
      * @param keyPrefix The keyPrefix for messages should be found by adding _ANNOTATION
-     * @param builder The {@link JavaCodeFragmentBuilder} that is currently used. Normally you do
-     *            not need to add anything but maybe you want to provide some import statements.
+     * @param builder The {@link JavaCodeFragmentBuilder} that is currently used. Normally you do not
+     *            need to add anything but maybe you want to provide some import statements.
      * @return The tags that should be added to the java doc (also known as annotations)
      */
     protected List<String> getJavaDocTags(IIpsObjectPartContainer element,
@@ -717,18 +706,22 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         content = format(content);
 
         /*
-         * If merging is not activated and the old content of the file is equal compared to the new
-         * content, then the new content is not written to the file.
+         * If merging is not activated and the old content of the file is equal compared to the new content,
+         * then the new content is not written to the file.
          */
         if (content.equals(oldJavaFileContentsStr)) {
             return;
         } else {
-            ByteArrayInputStream inputStream = transform(ipsSrcFile, content);
-            writeToFile(javaFile, inputStream, true, false);
+            writeToFile(ipsSrcFile, javaFile, content);
         }
     }
 
-    private String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
+    /* private */ void writeToFile(IIpsSrcFile ipsSrcFile, IFile javaFile, String content) throws CoreException {
+        ByteArrayInputStream inputStream = transform(ipsSrcFile, content);
+        writeToFile(javaFile, inputStream, true, false);
+    }
+
+    /* private */ String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
         InputStream javaFileContents = null;
         try {
             javaFileContents = javaFile.getContents(true);
@@ -773,14 +766,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
-     * level is greater than 1.5. It takes into account the fine differences regarding the
+     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance level
+     * is greater than 1.5. It takes into account the fine differences regarding the
      * <code>Override</code> annotation for compliance level 1.5 and higher.
      * 
      * @param fragmentBuilder the annotation is added to this {@link JavaCodeFragmentBuilder}
-     * @param interfaceMethodImplementation to be able to decide if an Override annotation needs to
-     *            be generated it must be known if the the generated method is an implementation of
-     *            an interface method or an override of a super class method.
+     * @param interfaceMethodImplementation to be able to decide if an Override annotation needs to be
+     *            generated it must be known if the the generated method is an implementation of an
+     *            interface method or an override of a super class method.
      */
     public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
             boolean interfaceMethodImplementation) {
@@ -788,8 +781,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Appends the list of classNames as a list of generics to the given fragmentBuilder if
-     * compliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
+     * Appends the list of classNames as a list of generics to the given fragmentBuilder if compliance
+     * level is at least Java5. e.g. if your classNames is [Integer, String], the code
      * 
      * <pre>
      * <Integer, String>
@@ -831,8 +824,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             formatter = ToolFactory.createCodeFormatter(null);
         }
         /*
-         * With parameter null the CodeFormatter is configured with the preferences that are
-         * currently set.
+         * With parameter null the CodeFormatter is configured with the preferences that are currently set.
          */
         TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT | CodeFormatter.F_INCLUDE_COMMENTS, content,
                 0, content.length(), 0, StringUtil.getSystemLineSeparator());
@@ -895,6 +887,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             List<String> additionalImports = getBuilderSet().getAdditionalImports();
             List<String> additionalAnnotations = getBuilderSet().getAdditionalAnnotations();
             merger.setAdditionalAnnotations(additionalImports, additionalAnnotations);
+            List<String> retainedAnnotations = getBuilderSet().getRetainedAnnotations();
+            merger.setRetainedAnnotations(retainedAnnotations);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
         }
@@ -985,8 +979,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
      * <tt>IIpsObjectPartContainer</tt>.
      * <p>
-     * The IPS model should be completely valid if calling this method or else the results may not
-     * be exhaustive.
+     * The IPS model should be completely valid if calling this method or else the results may not be
+     * exhaustive.
      * 
      * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
      *            <tt>IJavaElement</tt>s for.
@@ -1059,15 +1053,15 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * <tt>IIpsObjectPartContainer</tt> to the provided list (collecting parameter pattern).
      * 
      * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client
-     *            requested the generated <tt>IJavaElement</tt>s.
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> for that the client requested
+     *            the generated <tt>IJavaElement</tt>s.
      */
     protected abstract void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer);
 
     /**
-     * Must return <tt>true</tt> if the source file generated by this builder is considered
-     * published, <tt>false</tt> if not.
+     * Must return <tt>true</tt> if the source file generated by this builder is considered published,
+     * <tt>false</tt> if not.
      * <p>
      * This does not consider whether we generate published interfaces or not. Hence if this method
      * returns false the generated artifacts are not always considered to be internal!
@@ -1079,9 +1073,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <code>true</code> if the generated artifact is not published and we do generate
-     * published interfaces. If we do not generate published interfaces, there are no internal
-     * artifacts except for the generated artifact of EnumXmlAdapterBuilder.
+     * Returns <code>true</code> if the generated artifact is not published and we do generate published
+     * interfaces. If we do not generate published interfaces, there are no internal artifacts except
+     * for the generated artifact of EnumXmlAdapterBuilder.
      * 
      * @see #isBuildingPublishedSourceFile()
      */
