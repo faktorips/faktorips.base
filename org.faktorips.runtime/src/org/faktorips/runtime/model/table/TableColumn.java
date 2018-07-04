@@ -70,7 +70,7 @@ public class TableColumn extends ModelElement {
     }
 
     protected static LinkedHashMap<String, TableColumn> createModelsFrom(TableStructure tableStructure,
-            Class<? extends ITable> tableObjectClass,
+            Class<? extends ITable<?>> tableObjectClass,
             Class<?> tableRowClass) {
         Class<IpsTableStructure> parentAnnotation = IpsTableStructure.class;
         NamesAccessor<IpsTableStructure> getNamesOfPartsFromParentAnnotation = new NamesAccessor<IpsTableStructure>() {

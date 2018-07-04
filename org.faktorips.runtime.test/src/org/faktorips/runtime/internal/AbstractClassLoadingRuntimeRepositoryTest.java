@@ -148,7 +148,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         TableContentTocEntry tocEntry = new TableContentTocEntry(ipsObjectId, ipsObjectQualifiedName, xmlResourceName,
                 implementationClassName);
 
-        ITable table = repo.createTable(tocEntry);
+        ITable<?> table = repo.createTable(tocEntry);
 
         assertNotNull(table.getName());
         assertEquals(tocEntry.getIpsObjectId(), table.getName());

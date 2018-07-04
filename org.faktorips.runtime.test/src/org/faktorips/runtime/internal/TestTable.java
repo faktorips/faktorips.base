@@ -8,7 +8,6 @@
 package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
@@ -37,9 +36,9 @@ public class TestTable extends Table<TestTableRow> {
 
     /**
      * Erzeugt einen neuen Tabelleninhalt mit den uebergebenen Zeilen. Die Liste mit den Zeilen wird
-     * kopiert. Spaetere Aenderungen an dem Inhalt der Liste, aendern also nicht die erzeugte
-     * Tabelle. Dieser Konstruktor ist vor allem fuer die Verwendung in JUnit Tests vorgesehen, um
-     * beliebige Tabelleninhalte erzeugen zu koennen.
+     * kopiert. Spaetere Aenderungen an dem Inhalt der Liste, aendern also nicht die erzeugte Tabelle.
+     * Dieser Konstruktor ist vor allem fuer die Verwendung in JUnit Tests vorgesehen, um beliebige
+     * Tabelleninhalte erzeugen zu koennen.
      * 
      * @generated
      */
@@ -60,8 +59,8 @@ public class TestTable extends Table<TestTableRow> {
         String columnValue = values.get(0);
         String company = columnValue == null ? null : columnValue;
         columnValue = values.get(1);
-        Integer gender = columnValue == null ? null : IpsStringUtils.isEmpty(columnValue) ? null : Integer
-                .valueOf(columnValue);
+        Integer gender = columnValue == null ? null
+                : IpsStringUtils.isEmpty(columnValue) ? null : Integer.valueOf(columnValue);
         columnValue = values.get(2);
         Decimal rate = columnValue == null ? Decimal.NULL : Decimal.valueOf(columnValue);
         rows.add(new TestTableRow(company, gender, rate));
@@ -84,15 +83,6 @@ public class TestTable extends Table<TestTableRow> {
      */
     public static final TestTable getInstance(IRuntimeRepository repository, String qualifiedTableName) {
         return (TestTable)repository.getTable(qualifiedTableName);
-    }
-
-    /**
-     * Gibt alle Zeilen dieser Tabelle zurueck.
-     * 
-     * @generated
-     */
-    public List<TestTableRow> getAllRows() {
-        return Collections.unmodifiableList(rows);
     }
 
 }

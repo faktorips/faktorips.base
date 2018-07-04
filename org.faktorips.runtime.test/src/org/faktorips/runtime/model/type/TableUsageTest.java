@@ -37,6 +37,7 @@ public class TableUsageTest {
 
     private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetTableUsage() throws Exception {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
@@ -45,6 +46,7 @@ public class TableUsageTest {
         assertThat(productCmptType.getTableUsage("table2").getTable(product, null), is((ITable)product.TABLE2));
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetTableUsage_fromGeneration() throws Exception {
         Product product = new Product();
@@ -56,6 +58,7 @@ public class TableUsageTest {
                 is((ITable)productGen.TABLE_GEN));
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetTableUsage_fromGeneration_noEffectiveDate() throws Exception {
         Product product = new Product();
@@ -182,7 +185,7 @@ public class TableUsageTest {
         }
 
         @IpsTableUsage(name = "multitable")
-        public ITable getMultitable() {
+        public ITable<?> getMultitable() {
             return null;
         }
 

@@ -34,7 +34,6 @@ public class «name» extends «Table_(tableRowName)»{
 	«ENDIF-»
 	
 	«EXPAND getInstanceForMultipleContents»
-	«EXPAND getAllRows»
 	
 	«EXPAND findMethods(this) FOREACH indexModelNodes»
 	
@@ -174,17 +173,6 @@ public class «name» extends «Table_(tableRowName)»{
 	*/
 	public static final «name» «method("getInstance", IRuntimeRepository(), "repository", "String", "qualifiedTableName")»{
 		return («name») repository.«getTable("qualifiedTableName")»;
-	}
-«ENDDEFINE»
-
-«DEFINE getAllRows FOR XTable»
-	/**
-	* «localizedJDoc("METHOD_GET_ALL_ROWS")»
-	*
-	* @generated
-	*/
-	public «List_(tableRowName)» «method("getAllRows")»{
-		return «Collections()».unmodifiableList(rows);
 	}
 «ENDDEFINE»
 

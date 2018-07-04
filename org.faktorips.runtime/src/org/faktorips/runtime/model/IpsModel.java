@@ -35,16 +35,16 @@ import org.faktorips.runtime.model.type.Type;
 public enum IpsModel {
     /* no instances */;
 
-    private static final Memoizer<Class<? extends ITable>, TableStructure> TABLE_MODEL_CACHE = new Memoizer<Class<? extends ITable>, TableStructure>(
-            new AbstractComputable<Class<? extends ITable>, TableStructure>(TableStructure.class) {
+    private static final Memoizer<Class<? extends ITable<?>>, TableStructure> TABLE_MODEL_CACHE = new Memoizer<Class<? extends ITable<?>>, TableStructure>(
+            new AbstractComputable<Class<? extends ITable<?>>, TableStructure>(TableStructure.class) {
 
                 @Override
-                public TableStructure compute(Class<? extends ITable> tableObjectClass) {
+                public TableStructure compute(Class<? extends ITable<?>> tableObjectClass) {
                     if (tableObjectClass.isAnnotationPresent(IpsTableStructure.class)) {
                         return new TableStructure(tableObjectClass);
                     } else {
-                        throw new IllegalArgumentException("The class " + tableObjectClass.getName()
-                                + "is not annotated as IpsTableStructure.");
+                        throw new IllegalArgumentException(
+                                "The class " + tableObjectClass.getName() + "is not annotated as IpsTableStructure.");
                     }
                 }
             });
@@ -57,8 +57,8 @@ public enum IpsModel {
                     if (enumObjectClass.isAnnotationPresent(IpsEnumType.class)) {
                         return new EnumType(enumObjectClass);
                     } else {
-                        throw new IllegalArgumentException("The class " + enumObjectClass.getName()
-                                + " is not annotated as IpsEnumType.");
+                        throw new IllegalArgumentException(
+                                "The class " + enumObjectClass.getName() + " is not annotated as IpsEnumType.");
                     }
                 }
             });
@@ -71,8 +71,7 @@ public enum IpsModel {
                         String name = annotatedDeclaration.get(IpsProductCmptType.class).name();
                         return new ProductCmptType(name, annotatedDeclaration);
                     } else {
-                        throw new IllegalArgumentException("The class "
-                                + annotatedDeclaration.getDeclarationClassName()
+                        throw new IllegalArgumentException("The class " + annotatedDeclaration.getDeclarationClassName()
                                 + " is not annotated as product component type.");
                     }
                 }
@@ -106,15 +105,16 @@ public enum IpsModel {
      * @return a {@link TableStructure} describing the type and columns of the given {@link ITable}
      *         class
      */
-    public static TableStructure getTableStructure(Class<? extends ITable> tableObjectClass) {
+    public static TableStructure getTableStructure(Class<? extends ITable<?>> tableObjectClass) {
         return get(TABLE_MODEL_CACHE, tableObjectClass);
     }
 
     /**
      * @return a {@link TableStructure} describing the type and columns of the given {@link ITable}
      */
-    public static TableStructure getTableStructure(ITable table) {
-        return getTableStructure(table.getClass());
+    @SuppressWarnings("unchecked")
+    public static TableStructure getTableStructure(ITable<?> table) {
+        return getTableStructure((Class<? extends ITable<?>>)table.getClass());
     }
 
     /**
@@ -122,8 +122,8 @@ public enum IpsModel {
      * {@link #getProductCmptType(Class)} as argument without getting an
      * {@link IllegalArgumentException}.
      * 
-     * @param productModelClass The class that may be a the implementation or the published
-     *            interface of an {@link IProductComponent}.
+     * @param productModelClass The class that may be a the implementation or the published interface of
+     *            an {@link IProductComponent}.
      * @return <code>true</code> if the given class is a product model class
      */
     public static boolean isProductCmptType(Class<?> productModelClass) {
@@ -134,8 +134,7 @@ public enum IpsModel {
      * @param productModelClass The generated class for a product component type, may be either an
      *            implementation class of a published interface.
      * @return the product model object for the given product model class
-     * @throws IllegalArgumentException if the given class is not properly annotated for a product
-     *             model
+     * @throws IllegalArgumentException if the given class is not properly annotated for a product model
      */
     public static ProductCmptType getProductCmptType(Class<? extends IProductComponent> productModelClass) {
         return get(PRODUCT_MODEL_CACHE, AnnotatedDeclaration.from(productModelClass));
@@ -155,8 +154,8 @@ public enum IpsModel {
      * {@link #getPolicyCmptType(Class)} as argument without getting an
      * {@link IllegalArgumentException}.
      * 
-     * @param policyModelClass The class that may be a the implementation or the published interface
-     *            of an {@link IModelObject}.
+     * @param policyModelClass The class that may be a the implementation or the published interface of
+     *            an {@link IModelObject}.
      * @return <code>true</code> if the given class is a policy model class
      */
     public static boolean isPolicyCmptType(Class<?> policyModelClass) {
@@ -167,8 +166,7 @@ public enum IpsModel {
      * @param policyModelClass The generated class for a policy component type, may be either an
      *            implementation class of a published interface.
      * @return the policy model object for the given policy model class
-     * @throws IllegalArgumentException if the given class is not properly annotated for a policy
-     *             model
+     * @throws IllegalArgumentException if the given class is not properly annotated for a policy model
      */
     public static PolicyCmptType getPolicyCmptType(Class<? extends IModelObject> policyModelClass) {
         return get(POLICY_MODEL_CACHE, AnnotatedDeclaration.from(policyModelClass));
@@ -176,8 +174,8 @@ public enum IpsModel {
 
     /**
      * @return the policy model object for the given model object
-     * @throws IllegalArgumentException if the class of the model object is not properly annotated
-     *             for a policy model
+     * @throws IllegalArgumentException if the class of the model object is not properly annotated for a
+     *             policy model
      */
     public static PolicyCmptType getPolicyCmptType(IModelObject modelObject) {
         return getPolicyCmptType(modelObject.getClass());
@@ -185,10 +183,9 @@ public enum IpsModel {
 
     /**
      * @return the model object for the given policy or product model class. This is either the
-     *         implementation or the published interface of a product component type or policy
-     *         component type.
-     * @throws IllegalArgumentException if the given class is not properly annotated for a model
-     *             type
+     *         implementation or the published interface of a product component type or policy component
+     *         type.
+     * @throws IllegalArgumentException if the given class is not properly annotated for a model type
      */
     public static Type getType(Class<?> modelObjectClass) {
         AnnotatedDeclaration annotatedModelType = AnnotatedDeclaration.from(modelObjectClass);
@@ -197,8 +194,8 @@ public enum IpsModel {
         } else if (annotatedModelType.is(IpsPolicyCmptType.class)) {
             return getPolicyCmptType(modelObjectClass.asSubclass(IModelObject.class));
         } else {
-            throw new IllegalArgumentException("The given " + modelObjectClass
-                    + " is not annotated as product or policy component type.");
+            throw new IllegalArgumentException(
+                    "The given " + modelObjectClass + " is not annotated as product or policy component type.");
         }
     }
 

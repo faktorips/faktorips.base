@@ -37,9 +37,9 @@ public class TableStructure extends ModelElement {
     private List<String> columnNames;
     private final MessagesHelper messagesHelper;
 
-    public TableStructure(Class<? extends ITable> tableObjectClass) {
-        super(tableObjectClass.getAnnotation(IpsTableStructure.class).name(), tableObjectClass
-                .getAnnotation(IpsExtensionProperties.class));
+    public TableStructure(Class<? extends ITable<?>> tableObjectClass) {
+        super(tableObjectClass.getAnnotation(IpsTableStructure.class).name(),
+                tableObjectClass.getAnnotation(IpsExtensionProperties.class));
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
 
         this.kind = annotation.type();

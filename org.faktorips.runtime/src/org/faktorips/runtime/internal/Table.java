@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,20 +41,21 @@ import org.xml.sax.InputSource;
  * that contains trees as values. Depending on the number of range fields a tree hierarchy is build
  * up where the depth of the hierarchy is determined by the number of range fields. That means that
  * each node of a tree contains another tree representing the next level.
- * 
- * @author Peter Erzberger, Thorsten Waertel
  */
-public abstract class Table<T> implements ITable {
+public abstract class Table<R> implements ITable<R> {
+
+    /**
+     * Contains all rows of this table.
+     */
+    // CSOFF: VisibilityModifierCheck
+    // directly written to from generated subclasses
+    protected List<R> rows;
+    // CSON: VisibilityModifierCheck
 
     /**
      * Contains the qualified name of this table.
      */
     private String name;
-
-    /**
-     * Contains all rows of this table.
-     */
-    protected List<T> rows;
 
     /**
      * Is used by the generated class to retrieve the values for a single row.
@@ -73,11 +75,11 @@ public abstract class Table<T> implements ITable {
      */
     public void initFromXml(InputStream is, IRuntimeRepository productRepository, String qualifiedTableName)
             throws Exception {
-        rows = new ArrayList<T>(200);
+        rows = new ArrayList<R>(200);
         name = qualifiedTableName;
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
         saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));
-        ((ArrayList<T>)rows).trimToSize();
+        ((ArrayList<R>)rows).trimToSize();
         init();
     }
 
@@ -87,11 +89,11 @@ public abstract class Table<T> implements ITable {
     }
 
     /**
-     * Template method to perform additional initializations. Is called during the initialization of
-     * the table (from XML), right after {@link #initKeyMaps()}.
+     * Template method to perform additional initializations. Is called during the initialization of the
+     * table (from XML), right after {@link #initKeyMaps()}.
      * <p>
-     * Subclasses may override to provide an implementation. The default implementation is empty, so
-     * no super-call is necessary.
+     * Subclasses may override to provide an implementation. The default implementation is empty, so no
+     * super-call is necessary.
      */
     protected void performAdditionalInitializations() {
         // implementation provided by subclasses
@@ -113,7 +115,7 @@ public abstract class Table<T> implements ITable {
     @Override
     public String toString() {
         StringBuffer output = new StringBuffer();
-        Iterator<T> it = rows.iterator();
+        Iterator<R> it = rows.iterator();
         for (int i = 0; it.hasNext() && i < 10; i++) {
             if (i != 0) {
                 output.append("\n");
@@ -126,6 +128,11 @@ public abstract class Table<T> implements ITable {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public List<R> getAllRows() {
+        return Collections.unmodifiableList(rows);
     }
 
 }

@@ -45,13 +45,13 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      */
     private HashMap<String, SortedSet<IProductComponentGeneration>> productCmptGenLists = new HashMap<String, SortedSet<IProductComponentGeneration>>();
 
-    private List<ITable> tables = new ArrayList<ITable>();
+    private List<ITable<?>> tables = new ArrayList<ITable<?>>();
 
     /**
-     * Contains the table contents for structures that allow multiple contents key is the qName,
-     * value the table.
+     * Contains the table contents for structures that allow multiple contents key is the qName, value
+     * the table.
      */
-    private Map<String, ITable> multipleContentTables = new HashMap<String, ITable>();
+    private Map<String, ITable<?>> multipleContentTables = new HashMap<String, ITable<?>>();
 
     /** Contains all test cases with their qualified name as key. */
     private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
@@ -125,7 +125,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    protected void getAllTables(List<ITable> result) {
+    protected void getAllTables(List<ITable<?>> result) {
         result.addAll(this.tables);
     }
 
@@ -136,8 +136,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * {@inheritDoc}
      */
     @Override
-    protected <T extends ITable> T getTableInternal(Class<T> tableClass) {
-        for (ITable table : tables) {
+    protected <T extends ITable<?>> T getTableInternal(Class<T> tableClass) {
+        for (ITable<?> table : tables) {
             if (tableClass.isAssignableFrom(table.getClass())) {
                 return tableClass.cast(table);
             }
@@ -146,15 +146,16 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Puts the table into the repository. Replaces any table instance of the same class or any of
-     * it's superclasses. The latter check is needed to replace tables with mock implementations.
+     * Puts the table into the repository. Replaces any table instance of the same class or any of it's
+     * superclasses. The latter check is needed to replace tables with mock implementations.
      * 
      * @throws NullPointerException if table is <code>null</code>.
      */
-    public void putTable(ITable table) {
+    public void putTable(ITable<?> table) {
+        @SuppressWarnings("rawtypes")
         Class<? extends ITable> tableClass = table.getClass();
-        for (Iterator<ITable> it = tables.iterator(); it.hasNext();) {
-            ITable each = it.next();
+        for (Iterator<ITable<?>> it = tables.iterator(); it.hasNext();) {
+            ITable<?> each = it.next();
             if (each.getClass().isAssignableFrom(tableClass)) {
                 it.remove();
             }
@@ -168,7 +169,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * 
      * @throws NullPointerException if table or qName is <code>null</code>.
      */
-    public void putTable(ITable table, String qName) {
+    public void putTable(ITable<?> table, String qName) {
         multipleContentTables.put(qName, table);
         putTable(table);
     }
@@ -186,7 +187,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    protected ITable getTableInternal(String qualifiedTableName) {
+    protected ITable<?> getTableInternal(String qualifiedTableName) {
         return multipleContentTables.get(qualifiedTableName);
     }
 
@@ -206,8 +207,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Puts the product component into the repository. If the repository already contains a
-     * component with the same id, the new component replaces the old one.
+     * Puts the product component into the repository. If the repository already contains a component
+     * with the same id, the new component replaces the old one.
      * 
      * @throws IllegalRepositoryModificationException if this repository does not allows to modify
      * @throws NullPointerException if cmpt is <code>null</code> it's contents.
@@ -250,8 +251,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * repository already contains a generation with the same id, the new component replaces the old
      * one. The same applies for the product component.
      * 
-     * @throws IllegalRepositoryModificationException if this repository does not allows to modify
-     *             it's contents.
+     * @throws IllegalRepositoryModificationException if this repository does not allows to modify it's
+     *             contents.
      * @throws NullPointerException if generation is <code>null</code>
      * 
      * @see IRuntimeRepository#isModifiable()
@@ -365,8 +366,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a
-     * enumeration content to this repository.
+     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a enumeration
+     * content to this repository.
      */
     public void addEnumXmlAdapter(XmlAdapter<?, ?> enumXmlAdapter) {
         enumXmlAdapters.add(enumXmlAdapter);

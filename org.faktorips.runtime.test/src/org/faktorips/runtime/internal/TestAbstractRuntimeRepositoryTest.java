@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class TestAbstractRuntimeRepositoryTest {
     private ProductComponent mainPc;
     private ProductComponentGeneration mainPcGen;
 
-    private final ITable testTable = new TestTable();
+    private final ITable<?> testTable = new TestTable();
     private TestProductComponent validToPc;
     private TestProductCmptGeneration validToPcGen;
 
@@ -228,10 +229,8 @@ public class TestAbstractRuntimeRepositoryTest {
         assertEquals(basePcGen, mainRepository.getProductComponentGeneration("basePc", effectiveDate));
         // Tests with validTo
         assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", effectiveDate));
-        assertEquals(
-                validToPcGen,
-                mainRepository.getProductComponentGeneration("validToPc",
-                        validTo.toGregorianCalendar(effectiveDate.getTimeZone())));
+        assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc",
+                validTo.toGregorianCalendar(effectiveDate.getTimeZone())));
         GregorianCalendar tooLate = validTo.toGregorianCalendar(effectiveDate.getTimeZone());
         tooLate.add(Calendar.MILLISECOND, 1);
         assertNull(mainRepository.getProductComponentGeneration("validToPc", tooLate));
@@ -450,11 +449,16 @@ public class TestAbstractRuntimeRepositoryTest {
 
     }
 
-    class TestTable implements ITable {
+    class TestTable implements ITable<Void> {
         // test class
         @Override
         public String getName() {
             return "qualifiedName";
+        }
+
+        @Override
+        public List<Void> getAllRows() {
+            return Collections.emptyList();
         }
     }
 

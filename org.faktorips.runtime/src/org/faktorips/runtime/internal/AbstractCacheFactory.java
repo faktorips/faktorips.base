@@ -31,17 +31,19 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
     }
 
     @Override
-    public IComputable<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable) {
+    public IComputable<String, IProductComponent> createProductCmptCache(
+            IComputable<String, IProductComponent> computable) {
         return createCache(computable);
     }
 
     @Override
-    public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable) {
+    public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(
+            IComputable<GenerationId, IProductComponentGeneration> computable) {
         return createCache(computable);
     }
 
     @Override
-    public IComputable<String, ITable> createTableCache(IComputable<String, ITable> computable) {
+    public IComputable<String, ITable<?>> createTableCache(IComputable<String, ITable<?>> computable) {
         return createCache(computable);
     }
 

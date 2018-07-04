@@ -113,12 +113,12 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         try {
             Class<?> implClass = getClass(implementationClassName, getClassLoader());
             Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { runtimeRepoClass, String.class,
-                    String.class, String.class });
+            Constructor<?> constructor = implClass
+                    .getConstructor(new Class[] { runtimeRepoClass, String.class, String.class, String.class });
             return constructor;
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Can't create product component instance for class name \""
-                    + implementationClassName);
+            throw new RuntimeException(
+                    "Can't create product component instance for class name \"" + implementationClassName);
         }
     }
 
@@ -170,8 +170,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
         Constructor<T> constructor = getCorrectConstructor(parameterSize, runtimeRepoClass, enumClass);
         if (constructor == null) {
-            throw new RuntimeException("No valid constructor found to create enumerations instances for the toc entry "
-                    + tocEntry);
+            throw new RuntimeException(
+                    "No valid constructor found to create enumerations instances for the toc entry " + tocEntry);
         }
         return constructor;
     }
@@ -189,14 +189,14 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), saxhandler);
         } catch (SAXException e) {
-            throw new RuntimeException("Can't parse the enumeration content of the resource "
-                    + tocEntry.getXmlResourceName(), e);
+            throw new RuntimeException(
+                    "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
         } catch (ParserConfigurationException e) {
-            throw new RuntimeException("Can't parse the enumeration content of the resource "
-                    + tocEntry.getXmlResourceName(), e);
+            throw new RuntimeException(
+                    "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
         } catch (IOException e) {
-            throw new RuntimeException("Can't parse the enumeration content of the resource "
-                    + tocEntry.getXmlResourceName(), e);
+            throw new RuntimeException(
+                    "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
         }
         return saxhandler;
     }
@@ -302,8 +302,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     /**
      * Override the default implementation for better performance. The default implementation
-     * instantiates all product component before using the class filter. In this implementation we
-     * use the information in the toc to filter the list of product components before instantiation.
+     * instantiates all product component before using the class filter. In this implementation we use
+     * the information in the toc to filter the list of product components before instantiation.
      */
     @Override
     protected <T extends IProductComponent> void getAllProductComponentsInternal(Class<T> productCmptClass,
@@ -321,7 +321,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     }
 
     @Override
-    protected ITable createTable(TableContentTocEntry tocEntry) {
+    protected ITable<?> createTable(TableContentTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         Table<?> table;
         try {
@@ -375,10 +375,10 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             throw createCannotInstantiateException(e, tocEntry);
         }
         /*
-         * sets the runtime repository which will be used to instantiate the test case, this could
-         * be a different one (e.g. contains more dependence repositories) as the test case belongs
-         * to, because the test case itself could contain objects from different repositories, the
-         * runtime repository should contain all needed repositories
+         * sets the runtime repository which will be used to instantiate the test case, this could be a
+         * different one (e.g. contains more dependence repositories) as the test case belongs to, because
+         * the test case itself could contain objects from different repositories, the runtime repository
+         * should contain all needed repositories
          */
         test.setRepository(runtimeRepository);
         if (test instanceof IpsTestCase2) {
@@ -422,9 +422,9 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     protected abstract Element getDocumentElement(TestCaseTocEntry tocEntry);
 
     /**
-     * This method returns the name of the product component generation implementation class
-     * identified by the tocEntry. This could either be an implementation class using the formula
-     * evaluation or an implementation class containing the compiled formulas.
+     * This method returns the name of the product component generation implementation class identified
+     * by the tocEntry. This could either be an implementation class using the formula evaluation or an
+     * implementation class containing the compiled formulas.
      */
     protected abstract String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry);
 

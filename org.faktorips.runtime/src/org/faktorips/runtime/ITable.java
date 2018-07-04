@@ -10,12 +10,14 @@
 
 package org.faktorips.runtime;
 
+import java.util.List;
+
 /**
  * Base interface for table contents
  * 
- * @author Peter Erzberger
+ * @param <R> the class representing a row of this table
  */
-public interface ITable {
+public interface ITable<R> {
 
     public static final String TAG_NAME = "TableContents";
 
@@ -23,4 +25,9 @@ public interface ITable {
      * Returns the qualified name of this table.
      */
     String getName();
+
+    /**
+     * Returns all rows of this table.
+     */
+    List<R> getAllRows();
 }

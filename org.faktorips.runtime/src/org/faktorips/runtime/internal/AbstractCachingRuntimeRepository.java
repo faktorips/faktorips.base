@@ -56,7 +56,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private ICacheFactory cacheFactory;
     private volatile IComputable<String, IProductComponent> productCmptCache;
     private volatile IComputable<GenerationId, IProductComponentGeneration> productCmptGenerationCache;
-    private volatile IComputable<String, ITable> tableCacheByQName;
+    private volatile IComputable<String, ITable<?>> tableCacheByQName;
     private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
     private List<XmlAdapter<?, ?>> enumXmlAdapters;
     private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<Class<?>, IComputable<String, Object>>();
@@ -70,8 +70,8 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     protected void initCaches(ClassLoader cl) {
         try {
             @SuppressWarnings("unchecked")
-            Class<IProductComponent> productCmptClass = (Class<IProductComponent>)cl.loadClass(IProductComponent.class
-                    .getName());
+            Class<IProductComponent> productCmptClass = (Class<IProductComponent>)cl
+                    .loadClass(IProductComponent.class.getName());
             IComputable<String, IProductComponent> productCmptComputer = new AbstractComputable<String, IProductComponent>(
                     productCmptClass) {
                 @Override
@@ -96,11 +96,11 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(productCmptGenComputer);
 
             @SuppressWarnings("unchecked")
-            Class<ITable> tableClass = (Class<ITable>)cl.loadClass(ITable.class.getName());
-            IComputable<String, ITable> tableComputer = new AbstractComputable<String, ITable>(tableClass) {
+            Class<ITable<?>> tableClass = (Class<ITable<?>>)cl.loadClass(ITable.class.getName());
+            IComputable<String, ITable<?>> tableComputer = new AbstractComputable<String, ITable<?>>(tableClass) {
 
                 @Override
-                public ITable compute(String key) throws InterruptedException {
+                public ITable<?> compute(String key) throws InterruptedException {
                     return getNotCachedTable(key);
                 }
 
@@ -158,7 +158,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     protected abstract <T> List<T> getNotCachedEnumValues(Class<T> clazz);
 
     @Override
-    protected ITable getTableInternal(String qualifiedTableName) {
+    protected ITable<?> getTableInternal(String qualifiedTableName) {
         try {
             return tableCacheByQName.compute(qualifiedTableName);
         } catch (InterruptedException e) {
@@ -166,7 +166,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         }
     }
 
-    protected abstract ITable getNotCachedTable(String qualifiedTableName);
+    protected abstract ITable<?> getNotCachedTable(String qualifiedTableName);
 
     @Override
     protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {

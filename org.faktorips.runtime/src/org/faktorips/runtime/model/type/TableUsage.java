@@ -29,29 +29,28 @@ public class TableUsage extends TypePart {
     private final Method getter;
 
     public TableUsage(Type parent, Method getterMethod) {
-        super(getterMethod.getAnnotation(IpsTableUsage.class).name(), parent, getterMethod
-                .getAnnotation(IpsExtensionProperties.class));
+        super(getterMethod.getAnnotation(IpsTableUsage.class).name(), parent,
+                getterMethod.getAnnotation(IpsExtensionProperties.class));
         getter = getterMethod;
     }
 
     /**
      * Returns the table the given product component references for this table usage. If this table
-     * usage is changing over time (resides in the generation) the date is used to retrieve the
-     * correct generation. If the date is <code>null</code> the latest generation is used. If the
-     * table usage is not changing over time the date will be ignored.
+     * usage is changing over time (resides in the generation) the date is used to retrieve the correct
+     * generation. If the date is <code>null</code> the latest generation is used. If the table usage is
+     * not changing over time the date will be ignored.
      * 
      * 
      * @param productComponent The product component that holds the table instance
-     * @param effectiveDate the date to determine the product component generation. If
-     *            <code>null</code> the latest generation is used. Is ignored if the table usage
-     *            configuration is not changing over time.
+     * @param effectiveDate the date to determine the product component generation. If <code>null</code>
+     *            the latest generation is used. Is ignored if the table usage configuration is not
+     *            changing over time.
      * 
-     * @return The table instance hold by the product component and is identified by this table
-     *         usage
+     * @return The table instance hold by the product component and is identified by this table usage
      */
-    public ITable getTable(IProductComponent productComponent, Calendar effectiveDate) {
+    public ITable<?> getTable(IProductComponent productComponent, Calendar effectiveDate) {
         try {
-            return (ITable)getter
+            return (ITable<?>)getter
                     .invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
         } catch (IllegalAccessException e) {
             throw getterError(productComponent, e);
@@ -71,7 +70,9 @@ public class TableUsage extends TypePart {
      * @throws UnsupportedOperationException if this table usage uses multiple table structures.
      */
     public TableStructure getTableStructure() {
-        Class<? extends ITable> tableClass = getter.getReturnType().asSubclass(ITable.class);
+        @SuppressWarnings("unchecked")
+        Class<? extends ITable<?>> tableClass = (Class<? extends ITable<?>>)getter.getReturnType()
+                .asSubclass(ITable.class);
 
         if (tableClass.equals(ITable.class)) {
             throw new UnsupportedOperationException("Cannot create new TableStructure as the table usage " + getName()
@@ -82,8 +83,8 @@ public class TableUsage extends TypePart {
     }
 
     private IllegalArgumentException getterError(IProductComponent source, Exception e) {
-        return new IllegalArgumentException(String.format("Could not get table %s on product component %s.", getName(),
-                source), e);
+        return new IllegalArgumentException(
+                String.format("Could not get table %s on product component %s.", getName(), source), e);
     }
 
     @Override

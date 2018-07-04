@@ -26,11 +26,13 @@ public interface ICacheFactory {
      */
     public <K, V> IComputable<K, V> createCache(IComputable<K, V> computable);
 
-    public IComputable<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable);
+    public IComputable<String, IProductComponent> createProductCmptCache(
+            IComputable<String, IProductComponent> computable);
 
-    public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable);
+    public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(
+            IComputable<GenerationId, IProductComponentGeneration> computable);
 
-    public IComputable<String, ITable> createTableCache(IComputable<String, ITable> computable);
+    public IComputable<String, ITable<?>> createTableCache(IComputable<String, ITable<?>> computable);
 
     public IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable);
 

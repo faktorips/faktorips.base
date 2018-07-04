@@ -188,14 +188,14 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     protected abstract IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry generationTocEntry);
 
     @Override
-    public void getAllTables(List<ITable> result) {
+    public void getAllTables(List<ITable<?>> result) {
         for (TocEntryObject entry : toc.getTableTocEntries()) {
             result.add(getTable(entry.getIpsObjectQualifiedName()));
         }
     }
 
     @Override
-    protected <T extends ITable> T getTableInternal(Class<T> tableClass) {
+    protected <T extends ITable<?>> T getTableInternal(Class<T> tableClass) {
         TableContentTocEntry tocEntry = toc.getTableTocEntryByClassname(tableClass.getName());
         if (tocEntry == null) {
             return null;
@@ -203,16 +203,16 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         return tableClass.cast(getTable(tocEntry.getIpsObjectQualifiedName()));
     }
 
-    private ITable getTableInternal(TableContentTocEntry tocEntry) {
+    private ITable<?> getTableInternal(TableContentTocEntry tocEntry) {
         if (tocEntry == null) {
             return null;
         }
-        ITable table = createTable(tocEntry);
+        ITable<?> table = createTable(tocEntry);
         return table;
     }
 
     @Override
-    protected ITable getNotCachedTable(String qualifiedTableName) {
+    protected ITable<?> getNotCachedTable(String qualifiedTableName) {
         TableContentTocEntry tocEntry = toc.getTableTocEntryByQualifiedTableName(qualifiedTableName);
         return getTableInternal(tocEntry);
     }
@@ -220,7 +220,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     /**
      * Creates the table object for the given toc entry.
      */
-    protected abstract ITable createTable(TableContentTocEntry tocEntry);
+    protected abstract ITable<?> createTable(TableContentTocEntry tocEntry);
 
     @Override
     protected void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository) {
