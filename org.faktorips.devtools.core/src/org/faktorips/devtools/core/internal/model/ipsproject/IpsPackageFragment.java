@@ -13,12 +13,16 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.transform.TransformerException;
@@ -27,15 +31,19 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -45,12 +53,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentArbitrarySortDefinition;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -63,6 +71,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     private final IPath path;
     private IFolder correspondingResourceFolder;
+    private final ChildOrderComparatorCache childOrderComparatorCache = new ChildOrderComparatorCache();
 
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
@@ -84,8 +93,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     /**
-     * {@inheritDoc} IpsPackageFragments are always returned, whether they are output locations of
-     * the javaproject corresponding to this packagefragments IpsProject or not.
+     * {@inheritDoc}
+     * 
+     * {@link IIpsPackageFragment IIpsPackageFragments} are always returned, whether they are output
+     * locations of the {@link IJavaProject} corresponding to this package fragment's {@link IpsProject}
+     * or not.
      */
     @Override
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
@@ -94,64 +106,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        IpsModel model = (IpsModel)getIpsModel();
-        IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(this);
-        return sortDef.copy();
+    public Comparator<IIpsElement> getChildOrderComparator() {
+        return childOrderComparatorCache.get();
     }
 
-    /**
-     * Read the sort definition from the <code>SORT_ORDER_FILE_NAME</code>. Returns a
-     * {@link IpsPackageFragmentDefaultSortDefinition} if no <code>SORT_ORDER_FILE_NAME</code> is
-     * found.
-     * 
-     * @return Sort definition.
-     */
-    public IIpsPackageFragmentSortDefinition loadSortDefinition() throws CoreException {
-
-        IFile file = getSortOrderFile();
-
-        if (file.exists()) {
-
-            try {
-                String content = StringUtil.readFromInputStream(file.getContents(), getIpsProject()
-                        .getPlainTextFileCharset());
-                IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-                sortDef.initPersistenceContent(content);
-                return sortDef;
-            } catch (IOException e) {
-                throw new CoreException(new IpsStatus(e));
-            }
+    public void setChildOrderComparator(Comparator<IIpsElement> newChildOrderComparator) {
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsPackageFragment.setChildOrderComparator: pack=" + this); //$NON-NLS-1$
         }
-
-        return null;
-    }
-
-    /**
-     * @return Handle to a sort order file. The folder/file doesn't need to exist!
-     */
-    @Override
-    public IFile getSortOrderFile() {
-        IFolder folder = null;
-
-        if (isDefaultPackage()) {
-            folder = (IFolder)getRoot().getCorrespondingResource();
-        } else {
-            folder = (IFolder)getParentIpsPackageFragment().getCorrespondingResource();
-        }
-
-        return folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
-    }
-
-    @Override
-    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
-
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
-
-        List<IIpsPackageFragment> sortedPacks = getChildIpsPackageFragmentsAsList();
-        Collections.sort(sortedPacks, comparator);
-
-        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+        childOrderComparatorCache.set(newChildOrderComparator);
     }
 
     /**
@@ -174,43 +137,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
 
         return list;
-    }
-
-    @Override
-    public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
-        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsPackageFragment.setSortDefinition: pack=" + this); //$NON-NLS-1$
-        }
-
-        IFile file = getSortOrderFile();
-
-        if (newDefinition == null) {
-            if (file.exists()) {
-                file.delete(true, null);
-            }
-            return;
-        }
-
-        if (newDefinition instanceof IIpsPackageFragmentArbitrarySortDefinition) {
-            IIpsPackageFragmentArbitrarySortDefinition newSortDef = (IIpsPackageFragmentArbitrarySortDefinition)newDefinition;
-
-            String content = newSortDef.toPersistenceContent();
-            byte[] bytes;
-
-            try {
-                bytes = content.getBytes(getIpsProject().getPlainTextFileCharset());
-            } catch (UnsupportedEncodingException e) {
-                throw new CoreException(new IpsStatus(e));
-            }
-
-            ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-            // overwrite existing files
-            if (!file.exists()) {
-                file.create(is, true, null);
-                return;
-            }
-            EclipseIOUtil.writeToFile(file, is, true, true, null);
-        }
     }
 
     @Override
@@ -489,8 +415,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {
-            throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, IStatus.ERROR, NLS.bind(
-                    "{0} is not a valid package name.", name), null)); //$NON-NLS-1$
+            throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, IStatus.ERROR,
+                    NLS.bind("{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
         return getRoot().createPackageFragment(getSubPackageName(name), true, null);
     }
@@ -521,6 +447,243 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             childSrcFile.delete();
         }
         getCorrespondingResource().delete(true, null);
+    }
+
+    private IFile getSortOrderFile() {
+        return childOrderComparatorCache.getSortOrderFile();
+    }
+
+    private class ChildOrderComparatorCache {
+
+        private IFile sortOrderFile;
+        private long lastModification = -1;
+        private Comparator<IIpsElement> childOrderComparator;
+
+        private Comparator<IIpsElement> get() {
+            IFile file = getSortOrderFile();
+            if (file.exists()) {
+                long modificationStamp = file.getModificationStamp();
+                if (lastModification == modificationStamp) {
+                    return childOrderComparator;
+                } else {
+                    childOrderComparator = DefinedOrderComparator.forPackage(IpsPackageFragment.this);
+                    if (childOrderComparator == null) {
+                        childOrderComparator = AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR;
+                    }
+                    lastModification = modificationStamp;
+                    return childOrderComparator;
+                }
+            } else {
+                lastModification = -1;
+            }
+            return AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR;
+        }
+
+        private IFile getSortOrderFile() {
+            if (sortOrderFile == null) {
+                IIpsElement parent = isDefaultPackage() ? getRoot() : IpsPackageFragment.this;
+                IFolder folder = (IFolder)parent.getCorrespondingResource();
+                sortOrderFile = folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
+            }
+            return sortOrderFile;
+        }
+
+        public void set(Comparator<IIpsElement> newChildOrderComparator) {
+            if (newChildOrderComparator instanceof DefinedOrderComparator) {
+                ((DefinedOrderComparator)newChildOrderComparator).persistTo(IpsPackageFragment.this);
+                sortOrderFile = getSortOrderFile();
+                lastModification = sortOrderFile.getModificationStamp();
+            } else {
+                if (sortOrderFile != null && sortOrderFile.exists()) {
+                    try {
+                        sortOrderFile.delete(true, null);
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
+                }
+            }
+            childOrderComparator = newChildOrderComparator;
+        }
+    }
+
+    public static class DefinedOrderComparator implements Comparator<IIpsElement>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final Map<IIpsElement, Integer> sortOrder;
+
+        public DefinedOrderComparator() {
+            sortOrder = new LinkedHashMap<IIpsElement, Integer>();
+        }
+
+        public DefinedOrderComparator(IIpsElement... orderedElements) {
+            sortOrder = new LinkedHashMap<IIpsElement, Integer>(orderedElements.length);
+            int i = 0;
+            for (IIpsElement element : orderedElements) {
+                sortOrder.put(element, i++);
+            }
+        }
+
+        private DefinedOrderComparator(Map<IIpsElement, Integer> sortOrder) {
+            this.sortOrder = sortOrder;
+        }
+
+        public static DefinedOrderComparator forPackage(IpsPackageFragment parentPackage) {
+            Map<IIpsElement, Integer> read = Persistence.read(parentPackage);
+            if (read != null) {
+                return new DefinedOrderComparator(read);
+            } else {
+                return null;
+            }
+        }
+
+        public void persistTo(IpsPackageFragment parentPackage) {
+            Persistence.write(parentPackage, sortOrder);
+        }
+
+        @Override
+        public int compare(IIpsElement o1, IIpsElement o2) {
+            if (o1 == null) {
+                throw new NullPointerException("o1 must not be null"); //$NON-NLS-1$
+            }
+            if (o2 == null) {
+                throw new NullPointerException("o2 must not be null"); //$NON-NLS-1$
+            }
+            boolean sortOrderContains1st = sortOrder.containsKey(o1);
+            boolean sortOrderContains2nd = sortOrder.containsKey(o2);
+            if (sortOrderContains1st && sortOrderContains2nd) {
+                Integer pos1 = sortOrder.get(o1);
+                Integer pos2 = sortOrder.get(o2);
+                return pos1.compareTo(pos2);
+            } else {
+                // elements not included in the sort-order will be put at the end of the list.
+                if (sortOrderContains1st) {
+                    return -1;
+                }
+                if (sortOrderContains2nd) {
+                    return 1;
+                }
+                return DEFAULT_CHILD_ORDER_COMPARATOR.compare(o1, o2);
+            }
+        }
+
+        public IIpsElement[] getElements() {
+            return sortOrder.keySet().toArray(new IIpsElement[sortOrder.size()]);
+        }
+
+        private static class Persistence {
+
+            static Map<IIpsElement, Integer> read(IpsPackageFragment parentPackage) {
+                IFile sortOrderFile = parentPackage.getSortOrderFile();
+                String charsetName = parentPackage.getIpsProject().getPlainTextFileCharset();
+                if (sortOrderFile != null && sortOrderFile.exists()) {
+                    try {
+                        String content = StringUtil.readFromInputStream(sortOrderFile.getContents(),
+                                Charset.forName(charsetName));
+                        /*
+                         * do not use system line separator here because the file could be transfered from another
+                         * system. This regex splits the content at \r\n (windows), \n (unix) or \r (old mac)
+                         */
+                        String[] lines = content.split("[\r\n]++"); //$NON-NLS-1$
+                        LinkedHashMap<IIpsElement, Integer> sortOrder = new LinkedHashMap<IIpsElement, Integer>(
+                                lines.length);
+                        for (String line : lines) {
+                            read(line.trim(), parentPackage, sortOrder);
+                        }
+                        return sortOrder;
+                    } catch (IOException e) {
+                        throw new CoreRuntimeException(new IpsStatus(e));
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+
+            private static boolean read(String line,
+                    final IpsPackageFragment parentPackage,
+                    LinkedHashMap<IIpsElement, Integer> sortOrder) {
+                if (isNeitherBlankNorComment(line)) {
+                    IIpsElement element = findElement(line, parentPackage);
+                    if (element != null) {
+                        // don't check for .exists(), as elements might arrive later during a refactoring
+                        sortOrder.put(element, sortOrder.size());
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            private static IIpsElement findElement(String line, final IpsPackageFragment parentPackage) {
+                if (line.contains(".")) { //$NON-NLS-1$
+                    return parentPackage.getIpsSrcFile(line);
+                } else {
+                    return parentPackage.isDefaultPackage() ? parentPackage.getRoot().getIpsPackageFragment(line)
+                            : parentPackage.getSubPackage(line);
+                }
+            }
+
+            /**
+             * Skip empty lines and lines starting with a comment ('#').
+             * 
+             * @param line One single line (String) of the sort order.
+             * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a
+             *         comment
+             */
+            private static boolean isNeitherBlankNorComment(String line) {
+                return !IpsStringUtils.isBlank(line) && !line.startsWith("#"); //$NON-NLS-1$
+            }
+
+            static void write(IpsPackageFragment parentPackage, Map<IIpsElement, Integer> sortOrder) {
+                final IFile sortOrderFile = parentPackage.getSortOrderFile();
+                final String charsetName = parentPackage.getIpsProject().getPlainTextFileCharset();
+                final String content = toPersistenceContent(sortOrder);
+
+                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+                    @Override
+                    public void run(IProgressMonitor monitor) throws CoreException {
+
+                        byte[] bytes = content.getBytes(Charset.forName(charsetName));
+
+                        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+                        try {
+                            // overwrite existing files
+                            if (sortOrderFile.exists()) {
+                                EclipseIOUtil.writeToFile(sortOrderFile, is, true, true, null);
+                            } else {
+                                sortOrderFile.create(is, true, null);
+                            }
+                        } catch (CoreException e) {
+                            throw new CoreRuntimeException(e);
+                        }
+                    }
+                };
+                try {
+                    ResourcesPlugin.getWorkspace().run(runnable, null);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+
+            }
+
+            static String toPersistenceContent(Map<IIpsElement, Integer> sortOrder) {
+                StringBuilder sb = new StringBuilder(Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine);
+                sb.append(StringUtil.getSystemLineSeparator());
+                for (IIpsElement element : sortOrder.keySet()) {
+                    String name = element instanceof IIpsSrcFile
+                            ? ((IIpsSrcFile)element).getQualifiedNameType().getFileName()
+                            : QNameUtil.getUnqualifiedName(element.getName());
+                    sb.append(name);
+                    sb.append(StringUtil.getSystemLineSeparator());
+                }
+                return sb.toString();
+            }
+
+        }
+
     }
 
 }

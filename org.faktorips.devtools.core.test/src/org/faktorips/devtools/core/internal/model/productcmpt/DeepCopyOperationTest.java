@@ -10,23 +10,29 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.IpsSrcFileNamesMatcher.containsInOrder;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -49,6 +56,9 @@ import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -110,9 +120,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     @Mock
     private IProductCmptReference structureMock;
     @Mock
-    private IIpsPackageFragment sourcePackageFragment;
+    private IpsPackageFragment sourcePackageFragment;
     @Mock
-    private IIpsPackageFragment targetPackageFragment;
+    private IpsPackageFragment targetPackageFragment;
     @Mock
     private IFile sortOrderFile;
     @Mock
@@ -130,8 +140,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * For this test, the comfort-product of the default test content is copied completely. After
-     * that, the new files are expected to be existant and not dirty.
+     * For this test, the comfort-product of the default test content is copied completely. After that,
+     * the new files are expected to be existant and not dirty.
      */
     @Test
     public void testCopyAll() throws Exception {
@@ -143,32 +153,12 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmptTreeStructure structure = productCmpt.getStructure(productCmpt.getFirstGeneration().getValidFrom(),
                 ipsProject);
         Set<IProductCmptStructureReference> toCopy = structure.toSet(false);
-        for (Iterator<IProductCmptStructureReference> iterator = toCopy.iterator(); iterator.hasNext();) {
-            IProductCmptStructureReference productCmptStructureReference = iterator.next();
-            if (!(productCmptStructureReference instanceof IProductCmptReference || productCmptStructureReference instanceof IProductCmptStructureTblUsageReference)) {
-                iterator.remove();
-            }
-        }
+        removeReferences(toCopy);
 
-        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = prependDeepCopyOf(toCopy);
 
-        for (IProductCmptStructureReference element : toCopy) {
-            IIpsObject ipsObject = element.getWrappedIpsObject();
-            handles.put(
-                    element,
-                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
-                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
-            assertFalse(handles.get(element).exists());
-        }
-
-        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
-                new GregorianCalendar());
-        dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
-        dco.setSourceIpsPackageFragment(productCmpt.getIpsPackageFragment());
-        dco.setTargetIpsPackageFragment(productCmpt.getIpsPackageFragment());
-        dco.setCreateEmptyTableContents(true);
-        dco.run(null);
+        IpsPackageFragment packageFragment = (IpsPackageFragment)productCmpt.getIpsPackageFragment();
+        deepCopy(structure, toCopy, handles, packageFragment, packageFragment);
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsSrcFile src = handles.get(element);
@@ -176,7 +166,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
             // we have a race condition, because files are written async. So loop for some times...
             int count = 0;
-            if (src.isDirty() && count < 100) {
+            while (src.isDirty() && count < 100) {
                 count++;
             }
 
@@ -190,32 +180,25 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     public void testExtPropertyCopy() throws Exception {
         createTestContent();
         IProductCmpt productCmpt = ipsProject.findProductCmpt("products.ComfortMotorProduct");
-        IProductCmptTreeStructure structure = productCmpt.getStructure(
-                (GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
+        IProductCmptTreeStructure structure = productCmpt
+                .getStructure((GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
-            handles.put(
-                    element,
-                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
-                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                    "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
         }
 
         String expPropValue = (String)standardVehicle.getExtPropertyValue("StringExtPropForProdCmpts");
         assertEquals("standardVehicleExtPropValue", expPropValue);
 
-        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
-                new GregorianCalendar());
-        dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
-        dco.setSourceIpsPackageFragment(productCmpt.getIpsPackageFragment());
-        dco.setTargetIpsPackageFragment(productCmpt.getIpsPackageFragment());
-        dco.run(null);
+        IpsPackageFragment packageFragment = (IpsPackageFragment)productCmpt.getIpsPackageFragment();
+        deepCopy(structure, toCopy, handles, packageFragment, packageFragment);
 
-        IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
-                standardVehicle.getQualifiedName());
+        IProductCmptStructureReference srcProdCmptRef = structure.getRoot()
+                .findProductCmptReference(standardVehicle.getQualifiedName());
         ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
         String actPropValue = (String)copiedProductCmpt.getExtPropertyValue("StringExtPropForProdCmpts");
 
@@ -255,13 +238,12 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmpt standardTplCoverage = ipsProject.findProductCmpt("products.StandardTplCoverage");
         assertNotNull(standardTplCoverage);
 
-        IProductCmptTreeStructure structure = comfortMotorProduct.getStructure(comfortMotorProduct.getFirstGeneration()
-                .getValidFrom(), ipsProject);
+        IProductCmptTreeStructure structure = comfortMotorProduct
+                .getStructure(comfortMotorProduct.getFirstGeneration().getValidFrom(), ipsProject);
         IProductCmptReference node = structure.getRoot();
         IProductCmptReference[] children = structure.getChildProductCmptReferences(node);
         for (IProductCmptReference element : children) {
-            if (element.getProductCmpt().equals(comfortMotorProduct)
-                    || element.getProductCmpt().equals(standardVehicle)
+            if (element.getProductCmpt().equals(comfortMotorProduct) || element.getProductCmpt().equals(standardVehicle)
                     || element.getProductCmpt().equals(comfortCollisionCoverageA)) {
                 toCopy[copyCount] = element;
                 copyCount++;
@@ -286,13 +268,15 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             assertFalse(handles.get(element).exists());
         }
 
-        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), new HashSet<IProductCmptStructureReference>(
-                Arrays.asList(toCopy)), new HashSet<IProductCmptStructureReference>(Arrays.asList(toRefer)), handles,
-                new GregorianCalendar(), new GregorianCalendar());
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(),
+                new HashSet<IProductCmptStructureReference>(Arrays.asList(toCopy)),
+                new HashSet<IProductCmptStructureReference>(Arrays.asList(toRefer)), handles, new GregorianCalendar(),
+                new GregorianCalendar());
         dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
         dco.setSourceIpsPackageFragment(comfortMotorProduct.getIpsPackageFragment());
         dco.setTargetIpsPackageFragment(comfortMotorProduct.getIpsPackageFragment());
         dco.run(null);
+
         for (IProductCmptReference element : toCopy) {
             IIpsSrcFile src = handles.get(element);
             assertTrue(src.exists());
@@ -346,16 +330,14 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
-            handles.put(
-                    element,
-                    ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(),
-                            ipsObject.getIpsObjectType()));
+            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(),
+                    ipsObject.getIpsObjectType()));
             assertFalse(handles.get(element).exists());
         }
 
         DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(), new GregorianCalendar(
-                        1990, 1, 1));
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new GregorianCalendar(1990, 1, 1));
         dco.setIpsPackageFragmentRoot(product.getIpsPackageFragment().getRoot());
         dco.setSourceIpsPackageFragment(product.getIpsPackageFragment());
         dco.setTargetIpsPackageFragment(product.getIpsPackageFragment());
@@ -378,17 +360,15 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     @Test
     public void testDeepCopyOperationFixups() throws CoreException, CycleInProductStructureException {
         createTestContent();
-        IProductCmptTreeStructure structure = comfortMotorProduct.getStructure(
-                (GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
+        IProductCmptTreeStructure structure = comfortMotorProduct
+                .getStructure((GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
-            handles.put(
-                    element,
-                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
-                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                    "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
         }
 
         IProductCmptGeneration generation = comfortMotorProduct.getGenerationEffectiveOn(new GregorianCalendar());
@@ -412,16 +392,11 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                     new IExtensionPoint[] { extensionPoint });
             doReturn(extensionRegistry).when(ipsPlugin).getExtensionRegistry();
 
-            DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                    new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
-                    new GregorianCalendar());
-            dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
-            dco.setSourceIpsPackageFragment(comfortMotorProduct.getIpsPackageFragment());
-            dco.setTargetIpsPackageFragment(comfortMotorProduct.getIpsPackageFragment());
-            dco.run(null);
+            IpsPackageFragment packageFragment = (IpsPackageFragment)comfortMotorProduct.getIpsPackageFragment();
+            deepCopy(structure, toCopy, handles, packageFragment, packageFragment);
 
-            IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
-                    comfortMotorProduct.getQualifiedName());
+            IProductCmptStructureReference srcProdCmptRef = structure.getRoot()
+                    .findProductCmptReference(comfortMotorProduct.getQualifiedName());
             ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
             generation = copiedProductCmpt.getGenerationEffectiveOn(new GregorianCalendar());
             configElement = generation.getConfiguredDefault("salesName");
@@ -474,8 +449,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                 coverage.findProductCmptType(ipsProject), "CoverageType", "CoverageTypes", 0, 1, true);
 
         // create association: MotorContract to Vehicle
-        createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
-                "Vehicle", "Vehicles", 0, 1);
+        createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL, "Vehicle",
+                "Vehicles", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
                 vehicle.findProductCmptType(ipsProject), "VehicleType", "VehicleTypes", 0, 1, true);
 
@@ -483,8 +458,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         createPolicyCmptTypeAssociation(motorContract, collisionCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "CollisionCoverage", "CollisionCoverages", 0, 2);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
-                collisionCoverage.findProductCmptType(ipsProject), "CollisionCoverageType", "CollisionCoverageTypes",
-                0, 2, true);
+                collisionCoverage.findProductCmptType(ipsProject), "CollisionCoverageType", "CollisionCoverageTypes", 0,
+                2, true);
 
         // create association: MotorContract to TplCoverage
         createPolicyCmptTypeAssociation(motorContract, tplCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
@@ -516,6 +491,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         comfortMotorProduct = newProductCmpt(motorContract.findProductCmptType(ipsProject),
                 "products.ComfortMotorProduct");
         comfortMotorProduct.setProductCmptType(motorContract.getProductCmptType());
+
+        sourcePackageFragment = (IpsPackageFragment)comfortMotorProduct.getIpsPackageFragment();
 
         standardVehicle = newProductCmpt(vehicle.findProductCmptType(ipsProject), "products.StandardVehicle");
         standardVehicle.setProductCmptType(vehicle.getProductCmptType());
@@ -599,15 +576,16 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopySortOrder_empty() throws Exception {
-        mockSourcePackage();
+        when(sourcePackageFragment.getCorrespondingResource()).thenReturn(mock(IFolder.class));
+        when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(new IIpsPackageFragment[] {});
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
 
-        deepCopyOperation.copySortOrder(null);
+        deepCopyOperation.copySortOrder(Collections.<IProductCmpt, IProductCmpt> emptyMap(), null);
 
-        verify(sortOrderFile).exists();
-        verifyNoMoreInteractions(sortOrderFile);
+        verifyNoMoreInteractions(targetSortOrderFile);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCopySortOrder_defaultPackage() throws Exception {
         when(targetPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
@@ -619,47 +597,220 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         when(targetPackageFragment.getSubPackage("abc")).thenReturn(subPackage);
 
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
-        when(sortOrderFile.exists()).thenReturn(true);
-        InputStream inputStream = mock(InputStream.class);
-        when(sortOrderFile.getContents(true)).thenReturn(inputStream);
 
-        deepCopyOperation.copySortOrder(progressMonitor);
+        DefinedOrderComparator sourceOrder = mockDefinedOrderComparator();
+        when(sourcePackageFragment.getChildOrderComparator()).thenReturn(sourceOrder);
+        when(targetPackageFragment.getChildOrderComparator()).thenReturn(sourceOrder);
+
+        deepCopyOperation.copySortOrder(Collections.<IProductCmpt, IProductCmpt> emptyMap(), progressMonitor);
 
         verify(subPackage).exists();
-        verify(sortOrderFile).exists();
-        verify(targetSortOrderFile).create(sortOrderFile.getContents(true), true, progressMonitor);
+        verify(targetPackageFragment, never()).setChildOrderComparator(any(Comparator.class));
     }
 
-    @Test
-    public void testCopySortOrder_noChild() throws Exception {
-        mockSourcePackage();
-        mockTargetPackage();
-        DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
-        when(sortOrderFile.exists()).thenReturn(true);
-        InputStream inputStream = mock(InputStream.class);
-        when(sortOrderFile.getContents(true)).thenReturn(inputStream);
-
-        deepCopyOperation.copySortOrder(progressMonitor);
-
-        verify(sortOrderFile).exists();
-        verify(targetSortOrderFile).create(sortOrderFile.getContents(true), true, progressMonitor);
+    private DefinedOrderComparator mockDefinedOrderComparator(IIpsElement... elements) {
+        DefinedOrderComparator definedOrderComparator = mock(DefinedOrderComparator.class);
+        when(definedOrderComparator.getElements()).thenReturn(elements);
+        return definedOrderComparator;
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testCopySortOrder_targetNotExists() throws Exception {
-        final IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
+    public void testCopySortOrder_targetAlreadyHasSortOrder() throws Exception {
+        when(targetPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
+        when(targetPackageFragment.isDefaultPackage()).thenReturn(true);
+        IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
+        when(subPackage.getLastSegmentName()).thenReturn("abc");
         mockSourcePackage(subPackage);
-        mockTargetPackage();
+        mockTargetPackage(subPackage);
+        when(targetPackageFragment.getSubPackage("abc")).thenReturn(subPackage);
+
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
-        when(sortOrderFile.exists()).thenReturn(true);
-        InputStream inputStream = mock(InputStream.class);
-        when(sortOrderFile.getContents(true)).thenReturn(inputStream);
-        when(targetPackageFragment.getSubPackage(anyString())).thenReturn(subPackage);
 
-        deepCopyOperation.copySortOrder(progressMonitor);
+        DefinedOrderComparator existingOrder = mockDefinedOrderComparator();
+        when(sourcePackageFragment.getChildOrderComparator()).thenReturn(existingOrder);
+        when(targetPackageFragment.getChildOrderComparator()).thenReturn(existingOrder);
 
-        verify(sortOrderFile).exists();
-        verify(targetSortOrderFile).create(sortOrderFile.getContents(true), true, progressMonitor);
+        deepCopyOperation.copySortOrder(Collections.<IProductCmpt, IProductCmpt> emptyMap(), progressMonitor);
+
+        verify(subPackage).exists();
+        verify(targetPackageFragment, never()).setChildOrderComparator(any(Comparator.class));
+    }
+
+    @Test
+    public void testCopySortOrder_renamedProductsInNewPackage() throws Exception {
+        createTestContent();
+
+        IProductCmptTreeStructure structure = comfortMotorProduct
+                .getStructure(comfortMotorProduct.getFirstGeneration().getValidFrom(), ipsProject);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(false);
+        removeReferences(toCopy);
+
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = prependDeepCopyOf(toCopy);
+
+        sourcePackageFragment.setChildOrderComparator(new DefinedOrderComparator(standardTplCoverage.getIpsSrcFile(),
+                comfortCollisionCoverageB.getIpsSrcFile(), comfortCollisionCoverageA.getIpsSrcFile()));
+
+        IIpsPackageFragment targetPackageFragment = comfortMotorProduct.getIpsPackageFragment().getRoot()
+                .createPackageFragment("targetpack", true, null);
+        deepCopy(structure, toCopy, handles, sourcePackageFragment, targetPackageFragment);
+
+        Comparator<IIpsElement> targetChildOrderComparator = targetPackageFragment.getChildOrderComparator();
+        assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
+
+        IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
+        assertThat(elements, containsInOrder("DeepCopyOfStandardTplCoverage.ipsproduct",
+                "DeepCopyOfComfortCollisionCoverageB.ipsproduct", "DeepCopyOfComfortCollisionCoverageA.ipsproduct"));
+    }
+
+    protected Hashtable<IProductCmptStructureReference, IIpsSrcFile> prependDeepCopyOf(
+            Set<IProductCmptStructureReference> toCopy) {
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject ipsObject = element.getWrappedIpsObject();
+            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                    "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+            assertFalse(handles.get(element).exists());
+        }
+        return handles;
+    }
+
+    @Test
+    public void testCopySortOrder_withPackages() throws Exception {
+        createTestContent();
+
+        IProductCmptTreeStructure structure = comfortMotorProduct
+                .getStructure(comfortMotorProduct.getFirstGeneration().getValidFrom(), ipsProject);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(false);
+        removeReferences(toCopy);
+
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = prependDeepCopyOf(toCopy);
+
+        IpsPackageFragment sourcePackageFoo = (IpsPackageFragment)sourcePackageFragment.createSubPackage("foo", true,
+                null);
+        IIpsPackageFragment sourcePackageFooBar = sourcePackageFoo.createSubPackage("bar", true, null);
+        IIpsPackageFragment sourcePackageFooBaz = sourcePackageFoo.createSubPackage("baz", true, null);
+        IIpsPackageFragment sourcePackageBar = sourcePackageFragment.createSubPackage("bar", true, null);
+
+        sourcePackageFragment.setChildOrderComparator(new DefinedOrderComparator(sourcePackageFoo, sourcePackageBar));
+        sourcePackageFoo.setChildOrderComparator(new DefinedOrderComparator(sourcePackageFooBaz, sourcePackageFooBar));
+
+        IIpsPackageFragment targetPackageFragment = sourcePackageFragment.getRoot().createPackageFragment("targetpack",
+                true, null);
+        IpsPackageFragment targetPackageFoo = (IpsPackageFragment)targetPackageFragment.createSubPackage("foo", true,
+                null);
+        targetPackageFoo.createSubPackage("bar", true, null);
+        targetPackageFoo.createSubPackage("baz", true, null);
+        targetPackageFragment.createSubPackage("bar", true, null);
+        deepCopy(structure, toCopy, handles, sourcePackageFragment, targetPackageFragment);
+
+        Comparator<IIpsElement> targetChildOrderComparator = targetPackageFragment.getChildOrderComparator();
+        assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
+
+        IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
+        assertThat(elements, containsInOrder("foo", "bar"));
+
+        Comparator<IIpsElement> targetSubChildOrderComparator = targetPackageFoo.getChildOrderComparator();
+        assertThat(targetSubChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
+
+        elements = ((DefinedOrderComparator)targetSubChildOrderComparator).getElements();
+        assertThat(elements, containsInOrder("baz", "bar"));
+    }
+
+    @Test
+    public void testCopySortOrder_dontCreateEmptySortOrder() throws Exception {
+        createTestContent();
+
+        IProductCmptTreeStructure structure = comfortMotorProduct
+                .getStructure(comfortMotorProduct.getFirstGeneration().getValidFrom(), ipsProject);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(false);
+        removeReferences(toCopy);
+
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = prependDeepCopyOf(toCopy);
+
+        IpsPackageFragment sourcePackageFoo = (IpsPackageFragment)sourcePackageFragment.createSubPackage("foo", true,
+                null);
+        IIpsPackageFragment sourcePackageFooBar = sourcePackageFoo.createSubPackage("bar", true, null);
+        IIpsPackageFragment sourcePackageFooBaz = sourcePackageFoo.createSubPackage("baz", true, null);
+        IIpsPackageFragment sourcePackageBar = sourcePackageFragment.createSubPackage("bar", true, null);
+
+        sourcePackageFragment.setChildOrderComparator(new DefinedOrderComparator(sourcePackageFoo, sourcePackageBar));
+        sourcePackageFoo.setChildOrderComparator(new DefinedOrderComparator(sourcePackageFooBaz, sourcePackageFooBar));
+
+        IIpsPackageFragment targetPackageFragment = sourcePackageFragment.getRoot().createPackageFragment("targetpack",
+                true, null);
+        IIpsPackageFragment targetPackageFoo = targetPackageFragment.createSubPackage("foo", true, null);
+        targetPackageFragment.createSubPackage("bar", true, null);
+        deepCopy(structure, toCopy, handles, sourcePackageFragment, targetPackageFragment);
+
+        Comparator<IIpsElement> targetChildOrderComparator = targetPackageFragment.getChildOrderComparator();
+        assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
+
+        IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
+        assertThat(elements, containsInOrder("foo", "bar"));
+
+        Comparator<IIpsElement> targetSubChildOrderComparator = targetPackageFoo.getChildOrderComparator();
+        assertThat(targetSubChildOrderComparator, is(not(instanceOf(DefinedOrderComparator.class))));
+    }
+
+    @Test
+    public void testCopySortOrder_onlyExistingElements() throws Exception {
+        createTestContent();
+
+        IProductCmptTreeStructure structure = comfortMotorProduct
+                .getStructure(comfortMotorProduct.getFirstGeneration().getValidFrom(), ipsProject);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(false);
+        removeReferences(toCopy);
+
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = prependDeepCopyOf(toCopy);
+
+        IIpsPackageFragment sourcePackageFoo = sourcePackageFragment.createSubPackage("foo", true, null);
+        IIpsPackageFragment sourcePackageBar = sourcePackageFragment.createSubPackage("bar", true, null);
+        ProductCmpt anotherCoverage = newProductCmpt(tplCoverage.findProductCmptType(ipsProject),
+                "products.AnotherCoverage");
+        anotherCoverage.setProductCmptType(tplCoverage.getProductCmptType());
+
+        sourcePackageFragment.setChildOrderComparator(new DefinedOrderComparator(sourcePackageFoo, sourcePackageBar,
+                standardTplCoverage.getIpsSrcFile(), comfortCollisionCoverageB.getIpsSrcFile(),
+                comfortCollisionCoverageA.getIpsSrcFile(), anotherCoverage.getIpsSrcFile()));
+
+        IIpsPackageFragment targetPackageFragment = sourcePackageFragment.getRoot().createPackageFragment("targetpack",
+                true, null);
+        targetPackageFragment.createSubPackage("foo", true, null);
+        deepCopy(structure, toCopy, handles, sourcePackageFragment, targetPackageFragment);
+
+        Comparator<IIpsElement> targetChildOrderComparator = targetPackageFragment.getChildOrderComparator();
+        assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
+
+        IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
+        assertThat(elements, containsInOrder("foo", "DeepCopyOfStandardTplCoverage.ipsproduct",
+                "DeepCopyOfComfortCollisionCoverageB.ipsproduct", "DeepCopyOfComfortCollisionCoverageA.ipsproduct"));
+    }
+
+    private void deepCopy(IProductCmptTreeStructure structure,
+            Set<IProductCmptStructureReference> toCopy,
+            Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles,
+            IpsPackageFragment sourcePackageFragment,
+            IIpsPackageFragment targetPackageFragment) throws CoreException {
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new GregorianCalendar());
+        dco.setIpsPackageFragmentRoot(sourcePackageFragment.getRoot());
+        dco.setSourceIpsPackageFragment(sourcePackageFragment);
+        dco.setTargetIpsPackageFragment(targetPackageFragment);
+        dco.setCreateEmptyTableContents(true);
+        dco.run(null);
+    }
+
+    protected void removeReferences(Set<IProductCmptStructureReference> toCopy) {
+        for (Iterator<IProductCmptStructureReference> iterator = toCopy.iterator(); iterator.hasNext();) {
+            IProductCmptStructureReference productCmptStructureReference = iterator.next();
+            if (!(productCmptStructureReference instanceof IProductCmptReference
+                    || productCmptStructureReference instanceof IProductCmptStructureTblUsageReference)) {
+                iterator.remove();
+            }
+        }
     }
 
     private DeepCopyOperation mockSortOrderDependencies() {
@@ -676,13 +827,17 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     private void mockSourcePackage(IIpsPackageFragment... childPackages) throws Exception {
-        when(sourcePackageFragment.getSortOrderFile()).thenReturn(sortOrderFile);
+        IFolder sourceFolder = mock(IFolder.class);
+        when(sourceFolder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME)).thenReturn(sortOrderFile);
+        when(sourcePackageFragment.getCorrespondingResource()).thenReturn(sourceFolder);
         when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
 
     }
 
     private void mockTargetPackage(IIpsPackageFragment... childPackages) throws Exception {
-        when(targetPackageFragment.getSortOrderFile()).thenReturn(targetSortOrderFile);
+        IFolder targetFolder = mock(IFolder.class);
+        when(targetFolder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME)).thenReturn(targetSortOrderFile);
+        when(targetPackageFragment.getCorrespondingResource()).thenReturn(targetFolder);
         when(targetPackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
         IIpsPackageFragmentRoot parent = mock(IIpsPackageFragmentRoot.class);
         when(targetPackageFragment.getRoot()).thenReturn(parent);

@@ -76,13 +76,6 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    @Override
-    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
-        List<IIpsPackageFragment> sortedPacks = getIpsPackageFragmentsAsList();
-        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
-    }
-
     private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
         if (getIpsStorage() == null) {
             return new ArrayList<IIpsPackageFragment>(0);
@@ -177,8 +170,8 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * <p>
      * Checks if two objects are "equal" without considering the parent. If {@link LibraryIpsSrcFile
      * LibraryIpsSrcFiles} from different projects refer the same jar file and the
-     * {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is different,
-     * the default implementation in {@link IIpsElement} may yield misleadingly <code>false</code>.
+     * {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is different, the
+     * default implementation in {@link IIpsElement} may yield misleadingly <code>false</code>.
      * Therefore we need to overwrite the default implementation in {@link IIpsElement}.
      */
     @Override

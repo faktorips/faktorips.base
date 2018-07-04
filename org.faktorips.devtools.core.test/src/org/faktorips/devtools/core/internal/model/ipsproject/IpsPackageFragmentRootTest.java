@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -235,50 +234,6 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(list.contains(nonIpsFile2));
         assertFalse(list.contains(fragment));
         assertFalse(list.contains(subFragment));
-    }
-
-    @Test
-    public void testGetSortedIpsPackageFragments() throws CoreException, IOException {
-        IIpsPackageFragment defaultFolder = ipsRoot.getIpsPackageFragment("");
-
-        IIpsPackageFragment[] children = ipsRoot.getSortedIpsPackageFragments();
-        assertEquals(children.length, 1);
-        assertEquals(defaultFolder, children[0]);
-
-        ipsRoot.createPackageFragment("hausrat", true, null);
-        IIpsPackageFragment kranken = ipsRoot.createPackageFragment("kranken", true, null);
-        ipsRoot.createPackageFragment("kranken.leistungsarten", true, null);
-        ipsRoot.createPackageFragment("kranken.vertragsarten", true, null);
-        ipsRoot.createPackageFragment("kranken.gruppenarten", true, null);
-        ipsRoot.createPackageFragment("unfall", true, null);
-        ipsRoot.createPackageFragment("haftpflicht", true, null);
-
-        ArrayList<String> strings = new ArrayList<String>();
-        strings.add("kranken");
-        strings.add("unfall");
-        strings.add("hausrat");
-        strings.add("haftpflicht");
-
-        createPackageOrderFile((IFolder)ipsRoot.getCorrespondingResource(), strings);
-
-        strings.clear();
-        strings.add("vertragsarten");
-        strings.add("gruppenarten");
-        strings.add("leistungsarten");
-
-        createPackageOrderFile((IFolder)kranken.getCorrespondingResource(), strings);
-
-        // sorted: valid files and entries
-        children = ipsRoot.getSortedIpsPackageFragments();
-        assertEquals(children.length, 8);
-        assertEquals(children[0].getName(), "");
-        assertEquals(children[1].getName(), "kranken");
-        assertEquals(children[2].getName(), "kranken.vertragsarten");
-        assertEquals(children[3].getName(), "kranken.gruppenarten");
-        assertEquals(children[4].getName(), "kranken.leistungsarten");
-        assertEquals(children[5].getName(), "unfall");
-        assertEquals(children[6].getName(), "hausrat");
-        assertEquals(children[7].getName(), "haftpflicht");
     }
 
     @Test

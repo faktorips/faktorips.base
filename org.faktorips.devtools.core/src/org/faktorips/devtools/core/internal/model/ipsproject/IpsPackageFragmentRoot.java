@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -43,8 +42,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     /**
-     * Returns the artefact destination for the artefacts generated on behalf of the ips objects
-     * within this ips package fragment root.
+     * Returns the artefact destination for the artefacts generated on behalf of the ips objects within
+     * this ips package fragment root.
      */
     @Override
     public IPackageFragmentRoot getArtefactDestination(boolean derived) throws CoreException {
@@ -59,8 +58,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     /**
-     * A root fragment exists if the underlying resource exists and the root fragment is on the
-     * object path.
+     * A root fragment exists if the underlying resource exists and the root fragment is on the object
+     * path.
      * <p>
      * Overridden method.
      * 
@@ -76,21 +75,13 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     /**
-     * IpsPackageFragments are always returned, whether they are output locations of the javaproject
-     * corresponding to this roots IpsProject or not.
+     * IpsPackageFragments are always returned, whether they are output locations of the java project
+     * corresponding to this root's IpsProject or not.
      */
     @Override
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
-    }
-
-    @Override
-    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
-        List<IIpsPackageFragment> sortedPacks = getIpsPackageFragmentsAsList();
-        Collections.sort(sortedPacks, comparator);
-        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
@@ -257,8 +248,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     @Override
     public void delete() throws CoreException {
         /*
-         * Just deleting the default package fragment as all other fragments have the default
-         * package as parent and will be deleted automatically.
+         * Just deleting the default package fragment as all other fragments have the default package as
+         * parent and will be deleted automatically.
          */
         getDefaultIpsPackageFragment().delete();
         getCorrespondingResource().delete(true, null);

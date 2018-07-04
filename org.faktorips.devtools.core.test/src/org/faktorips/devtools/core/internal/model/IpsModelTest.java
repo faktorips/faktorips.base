@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
@@ -59,7 +58,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -77,9 +75,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentArbitrarySortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -716,84 +712,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
             modifiedFiles.add(event.getIpsSrcFile());
         }
 
-    }
-
-    @Test
-    public void testGetSortDefinition() throws CoreException, IOException {
-        IIpsProject project = newIpsProject("TestProject");
-        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-
-        root.createPackageFragment("products.hausrat", true, null);
-        IIpsPackageFragment unfall = root.createPackageFragment("products.unfall", true, null);
-        IpsPackageFragment leistungsarten = (IpsPackageFragment)root
-                .createPackageFragment("products.unfall.leistungsarten", true, null);
-        root.createPackageFragment("products.unfall.leistungsartgruppen", true, null);
-        IpsPackageFragment kranken = (IpsPackageFragment)root.createPackageFragment("products.kranken", true, null);
-
-        IIpsPackageFragment products = root.getIpsPackageFragment("products");
-
-        List<String> list = new ArrayList<String>();
-        list.add("kranken");
-        list.add("unfall");
-        list.add("hausrat");
-        createPackageOrderFile((IFolder)products.getCorrespondingResource(), list);
-        list.clear();
-
-        list.add("leistungsarten");
-        list.add("leistungsartgruppen");
-        createPackageOrderFile((IFolder)unfall.getCorrespondingResource(), list);
-        list.clear();
-
-        // test default sort definition
-        IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(products);
-        assertNotNull(sortDef);
-        assertEquals("", sortDef.toPersistenceContent());
-        assertFalse(sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition);
-
-        // test sort definition 1. load
-        sortDef = model.getSortDefinition(unfall);
-        assertNotNull(sortDef);
-        assertTrue(sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition);
-
-        // test later
-
-        IFile file = leistungsarten.getSortOrderFile();
-        file.delete(true, null);
-
-        IIpsPackageFragmentSortDefinition sortDefKranken = model.getSortDefinition(kranken);
-        assertNotNull(sortDefKranken);
-        assertTrue(sortDefKranken instanceof IIpsPackageFragmentArbitrarySortDefinition);
-        String[] fragments = ((IIpsPackageFragmentArbitrarySortDefinition)sortDefKranken).getSegmentNames();
-
-        assertEquals(3, fragments.length);
-        assertEquals("kranken", fragments[0]);
-        assertEquals("unfall", fragments[1]);
-        assertEquals("hausrat", fragments[2]);
-
-        // test sort definition 2. load -> cached
-        IIpsPackageFragmentSortDefinition sortDefKranken2 = model.getSortDefinition(kranken);
-        assertEquals(sortDefKranken, sortDefKranken2);
-
-        // test later
-        file = kranken.getSortOrderFile();
-        file.touch(null);
-
-        // test deleted sort order
-        sortDef = model.getSortDefinition(leistungsarten);
-        assertNotNull(sortDef);
-        assertFalse(sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition);
-        assertEquals("", sortDef.toPersistenceContent());
-
-        // test sort definition 2. load -> cached & manipulated
-        IIpsPackageFragmentSortDefinition sortDefKranken3 = model.getSortDefinition(kranken);
-        assertNotNull(sortDefKranken3);
-        assertNotSame(sortDefKranken3, sortDefKranken);
-        fragments = ((IIpsPackageFragmentArbitrarySortDefinition)sortDefKranken).getSegmentNames();
-
-        assertEquals(3, fragments.length);
-        assertEquals("kranken", fragments[0]);
-        assertEquals("unfall", fragments[1]);
-        assertEquals("hausrat", fragments[2]);
     }
 
     @Test

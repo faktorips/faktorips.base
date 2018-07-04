@@ -14,23 +14,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 
 /**
@@ -190,16 +190,9 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsPackageFragmentSortDefinition getSortDefinition() {
+    public Comparator<IIpsElement> getChildOrderComparator() {
         // TODO the sort definition for archives needs to be implemented
-        return null;
-    }
-
-    @Override
-    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
-        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
-        List<IIpsPackageFragment> sortedPacks = getChildIpsPackageFragmentsAsList();
-        return sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+        return super.getChildOrderComparator();
     }
 
     /**
@@ -217,22 +210,6 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment {
         }
 
         return list;
-    }
-
-    /**
-     * This method is not supported for archives and throws a {@link RuntimeException} if called.
-     */
-    @Override
-    public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
-        throw new RuntimeException("Can't set the sort definition in archives!"); //$NON-NLS-1$
-    }
-
-    /**
-     * This method returns null since this archive package fragment doesn't have a sort order file.
-     */
-    @Override
-    public IFile getSortOrderFile() {
-        return null;
     }
 
     @Override

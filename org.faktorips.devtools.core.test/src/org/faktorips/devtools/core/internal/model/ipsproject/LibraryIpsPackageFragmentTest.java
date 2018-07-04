@@ -15,13 +15,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -31,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.junit.Before;
@@ -142,90 +139,6 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     public void testExists() {
         assertTrue(pack.exists());
         assertFalse(root.getIpsPackageFragment("unknownPack").exists());
-    }
-
-    @Test
-    public void testGetSortedChildIpsPackageFragmentsBasics() throws Exception {
-
-        IIpsProject project = createTestArchive();
-
-        LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
-        LibraryIpsPackageFragment pack = (LibraryIpsPackageFragment)root.getIpsPackageFragment("products");
-
-        IIpsPackageFragment[] children = pack.getSortedChildIpsPackageFragments();
-
-        assertEquals(4, children.length);
-        // assertEquals("products.hausrat", children[0].getName());
-        // assertEquals("products.haftpflicht", children[1].getName());
-        // assertEquals("products.kranken", children[2].getName());
-        // assertEquals("products.unfall", children[3].getName());
-
-        pack = (LibraryIpsPackageFragment)root.getIpsPackageFragment("products.kranken.leistungsarten");
-        children = pack.getSortedChildIpsPackageFragments();
-        assertEquals(2, children.length);
-        // assertEquals("products.kranken.leistungsarten.fix", children[0].getName());
-        // assertEquals("products.kranken.leistungsarten.optional", children[1].getName());
-
-    }
-
-    @Test
-    public void testSetSortDefinition() throws Exception {
-
-        IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-        try {
-            this.pack.setSortDefinition(sortDef);
-            fail();
-        } catch (Exception e) {
-        }
-    }
-
-    private IIpsProject createTestArchive() throws Exception {
-        IIpsProject archiveProject = newIpsProject("ArchiveProject2");
-        newPolicyCmptType(archiveProject, "products.hausrat.file1");
-        newPolicyCmptType(archiveProject, "products.kranken.file1");
-        newPolicyCmptType(archiveProject, "products.kranken.leistungsarten.fix.file1");
-        newPolicyCmptType(archiveProject, "products.kranken.leistungsarten.optional.file1");
-        newPolicyCmptType(archiveProject, "products.kranken.leistungsarten.file1");
-        newPolicyCmptType(archiveProject, "products.kranken.vertragsarten.file1");
-        newPolicyCmptType(archiveProject, "products.kranken.gruppenarten.file1");
-        newPolicyCmptType(archiveProject, "products.unfall.file1");
-        newPolicyCmptType(archiveProject, "products.haftpflicht.file1");
-
-        IIpsPackageFragmentRoot rootPackage = archiveProject.findIpsPackageFragmentRoot("productdef");
-        IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
-        IIpsPackageFragment service = rootPackage.getIpsPackageFragment("products.kranken.leistungsarten");
-
-        List<String> list = new ArrayList<String>();
-        list.add("products");
-
-        createPackageOrderFile((IFolder)rootPackage.getCorrespondingResource(), list);
-        list.clear();
-
-        list.add("unfall");
-        list.add("kranken");
-        list.add("folder");
-        list.add("haftpflicht");
-        list.add("hausrat");
-
-        createPackageOrderFile((IFolder)products.getCorrespondingResource(), list);
-        list.clear();
-
-        list.add("optional");
-        list.add("fix");
-
-        createPackageOrderFile((IFolder)service.getCorrespondingResource(), list);
-        list.clear();
-
-        IIpsProject project = newIpsProject("TestProjekt2");
-        archiveFile = project.getProject().getFile("test2.ipsar");
-
-        createArchive(archiveProject, archiveFile);
-
-        IIpsObjectPath path = project.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile.getLocation());
-        project.setIpsObjectPath(path);
-
-        return project;
     }
 
     @Test
