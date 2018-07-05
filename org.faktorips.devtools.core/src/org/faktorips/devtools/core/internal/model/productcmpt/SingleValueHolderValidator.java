@@ -59,7 +59,7 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
 
         ValueDatatype datatype = attribute.findDatatype(ipsProject);
 
-        value.validate(datatype, ipsProject, messages, invalidObjectProperties);
+        value.validate(datatype, attribute.getDatatype(), ipsProject, messages, invalidObjectProperties);
         if (!messages.isEmpty()) {
             return messages;
         }
@@ -73,8 +73,8 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
                 String text;
                 String formattedValue = getFormattedValue(value, datatype);
                 if (attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-                    text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, formattedValue, attribute.getValueSet()
-                            .toShortString());
+                    text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, formattedValue,
+                            attribute.getValueSet().toShortString());
                 } else {
                     text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, formattedValue, parent.getName());
                 }
@@ -90,8 +90,8 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
     }
 
     private String getFormattedValue(IValue<?> value, ValueDatatype datatype) {
-        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                .formatValue(datatype, value.getContentAsString());
+        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype,
+                value.getContentAsString());
 
     }
 

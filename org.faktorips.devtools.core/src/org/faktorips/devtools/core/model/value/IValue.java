@@ -50,11 +50,17 @@ public interface IValue<T> {
      * Validate the value, append messages to the MessagesList.
      * 
      * @param datatype the attributes datatype
+     * @param datatypeName the name of the attribute's datatype, used for error messages in case the
+     *            datatype is {@code null}
      * @param ipsproject the actual IpsProject
      * @param list Append new Messages to the MessageList
      * @param objectProperty ObjectProperty for Binding
      */
-    void validate(ValueDatatype datatype, IIpsProject ipsproject, MessageList list, ObjectProperty... objectProperty);
+    void validate(ValueDatatype datatype,
+            String datatypeName,
+            IIpsProject ipsproject,
+            MessageList list,
+            ObjectProperty... objectProperty);
 
     /**
      * Add an observer for the value.
@@ -71,16 +77,16 @@ public interface IValue<T> {
     void deleteObserver(Observer observer);
 
     /**
-     * Returns the content in the Locale that comes with the parameter. For non international values
-     * the result will be always the same value.
+     * Returns the content in the Locale that comes with the parameter. For non international values the
+     * result will be always the same value.
      * 
      * @param locale the Locale
      */
     String getLocalizedContent(Locale locale);
 
     /**
-     * Returns the content in the default project language. For non international values the result
-     * will be always the same value.
+     * Returns the content in the default project language. For non international values the result will
+     * be always the same value.
      * 
      * @param ipsProject the IPSProject
      * @see #getLocalizedContent(Locale)
@@ -88,8 +94,8 @@ public interface IValue<T> {
     String getDefaultLocalizedContent(IIpsProject ipsProject);
 
     /**
-     * Returns the first non-empty content, regardless of its locale. Returns an empty string if
-     * none could be found.
+     * Returns the first non-empty content, regardless of its locale. Returns an empty string if none
+     * could be found.
      * 
      * @see #getLocalizedContent(Locale)
      */

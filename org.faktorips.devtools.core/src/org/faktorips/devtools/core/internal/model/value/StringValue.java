@@ -110,12 +110,13 @@ public class StringValue extends AbstractValue<String> {
 
     @Override
     public void validate(ValueDatatype datatype,
+            String datatypeName,
             IIpsProject ipsproject,
             MessageList list,
             ObjectProperty... objectProperties) {
         MessageList newMsgList = new MessageList();
-        ValidationUtils.checkValue(datatype, getContent(), objectProperties[0].getObject(),
-                objectProperties[0].getProperty(), newMsgList);
+        ValidationUtils.checkValue(datatype, datatypeName, getContent(),
+                objectProperties[0].getObject(), objectProperties[0].getProperty(), newMsgList);
         for (Message message : newMsgList) {
             list.add(new Message(message.getCode(), message.getText(), message.getSeverity(), objectProperties));
         }

@@ -134,7 +134,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         MessageList list = new MessageList();
 
         // no Value set
-        internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
 
         list = new MessageList();
@@ -142,7 +142,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(expectedDe);
         internationalStringValue.getContent().add(expectedEn);
-        internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
 
         list = new MessageList();
@@ -150,7 +150,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, ENGLISCH_BAR));
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
-        internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         Message messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
         assertNotNull(messageByCode);
@@ -160,7 +160,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, null));
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR));
-        internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
         assertNotNull(messageByCode);
@@ -168,7 +168,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         list = new MessageList();
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR));
-        internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
         assertNotNull(messageByCode);
@@ -176,7 +176,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         list = new MessageList();
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
-        internationalStringValue.validate(null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
     }
 

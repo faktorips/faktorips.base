@@ -91,8 +91,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     /**
-     * Sets the row number of this row. To keep row numbers up to date the tableContents object
-     * calls this method every time the list of rows changes.
+     * Sets the row number of this row. To keep row numbers up to date the tableContents object calls
+     * this method every time the list of rows changes.
      */
     void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
@@ -193,16 +193,16 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     /**
-     * Validates the values in this row against unique-keys and datatypes defined by the
-     * TableStructure of this row's TableContents.
+     * Validates the values in this row against unique-keys and datatypes defined by the TableStructure
+     * of this row's TableContents.
      * <p>
-     * For every unique key the TableStructure defines all columns that are part of the unique key
-     * are processed. If a column of this row does not contain a value as dictated by unique keys, a
-     * new <code>ERROR</code>-<code>Message</code> is added to the given <code>MessageList</code>.
+     * For every unique key the TableStructure defines all columns that are part of the unique key are
+     * processed. If a column of this row does not contain a value as dictated by unique keys, a new
+     * <code>ERROR</code>-<code>Message</code> is added to the given <code>MessageList</code>.
      * <p>
-     * The datatype for every column is retrieved and the corresponding value is tested. If the
-     * value does not match the datatype (is not parsable) a new <code>ERROR</code>-
-     * <code>Message</code> is added to the given <code>MessageList</code>. {@inheritDoc}
+     * The datatype for every column is retrieved and the corresponding value is tested. If the value
+     * does not match the datatype (is not parsable) a new <code>ERROR</code>- <code>Message</code> is
+     * added to the given <code>MessageList</code>. {@inheritDoc}
      */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -353,7 +353,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             String value = getValue(i);
             if (dataType == null || !dataType.isParsable(value)) {
                 String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(column);
-                String text = NLS.bind(Messages.Row_ValueNotParsable, new Object[] { value, dataType, localizedLabel });
+                String datatypeName = dataType == null ? column.getDatatype() : dataType.toString();
+                String text = NLS.bind(Messages.Row_ValueNotParsable,
+                        new Object[] { value, datatypeName, localizedLabel });
                 Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR,
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, i));
                 list.add(message);

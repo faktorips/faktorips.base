@@ -14,6 +14,7 @@ import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * Default implementation of FunctionSignature.
@@ -117,13 +118,12 @@ public class FunctionSignatureImpl implements FunctionSignature {
     }
 
     /**
-     * Check whether the two data types matches or not. The functionDataType parameter is the data
-     * type provided by the function signature. It may be of type {@link AnyDatatype}. The
-     * expressionDataType is the type parsed from the formula expression. It must be a concrete data
-     * type.
+     * Check whether the two data types matches or not. The functionDataType parameter is the data type
+     * provided by the function signature. It may be of type {@link AnyDatatype}. The expressionDataType
+     * is the type parsed from the formula expression. It must be a concrete data type.
      */
     private boolean matchDatatype(Datatype functionDataType, Datatype expressionDataType) {
-        if (functionDataType.equals(expressionDataType)) {
+        if (ObjectUtil.equals(functionDataType, expressionDataType)) {
             return true;
         }
         if (expressionDataType instanceof AbstractDatatype) {

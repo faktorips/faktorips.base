@@ -233,15 +233,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         super.validateThis(result, ipsProject);
         validateProductRelevant(result, ipsProject);
         validateOverwrite(result, ipsProject);
-        validateValueSetType(result);
+        if (getValueDatatype() != null) {
+            validateValueSetType(result);
+        }
         validateChangingOverTimeFlag(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
             String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
-            result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
-                    this, PROPERTY_PRODUCT_RELEVANT));
+            result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this,
+                    PROPERTY_PRODUCT_RELEVANT));
         }
         if (isDerived() && isProductRelevant()) {
             if (StringUtils.isEmpty(computationMethodSignature)) {
@@ -294,7 +296,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 if (!attributeType.equals(superAttr.getAttributeType())) {
                     // there is only one allowed change: superAttribute is derived on the fly and
                     // this attribute is changeable. See FIPS-1103
-                    if (!(superAttr.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY && attributeType == AttributeType.CHANGEABLE)) {
+                    if (!(superAttr.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY
+                            && attributeType == AttributeType.CHANGEABLE)) {
                         String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
                         result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR,
                                 this, new String[] { PROPERTY_ATTRIBUTE_TYPE }));
@@ -306,11 +309,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     private void validateValueSetType(MessageList result) {
         if (!isAllowedValueSet(getValueSet())) {
-            String messageText = NLS.bind(
-                    Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
-                    getValueSet() == null ? StringUtils.EMPTY : org.faktorips.devtools.core.util.StringUtils
-                            .quote(getValueSet().getValueSetType().getName()));
-            result.add(new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this, PROPERTY_VALUE_SET));
+            String messageText = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
+                    getValueSet() == null ? StringUtils.EMPTY
+                            : org.faktorips.devtools.core.util.StringUtils
+                                    .quote(getValueSet().getValueSetType().getName()));
+            result.add(
+                    new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this, PROPERTY_VALUE_SET));
         }
     }
 
