@@ -339,7 +339,9 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
         try {
             table.initFromXml(is, this, tocEntry.getIpsObjectId());
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException("Can't parse xml for " + tocEntry.getIpsObjectId(), e);
         } finally {
             try {

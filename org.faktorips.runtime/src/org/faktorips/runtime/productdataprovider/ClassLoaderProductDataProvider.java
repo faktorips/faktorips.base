@@ -68,9 +68,9 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     private ReadonlyTableOfContents loadToc() {
         Element tocElement = getDocumentElement(tocResourcePath);
-        ReadonlyTableOfContents toc = new ReadonlyTableOfContents(dataSource.getClassLoader());
-        toc.initFromXml(tocElement);
-        return toc;
+        ReadonlyTableOfContents rotoc = new ReadonlyTableOfContents(dataSource.getClassLoader());
+        rotoc.initFromXml(tocElement);
+        return rotoc;
     }
 
     @Override

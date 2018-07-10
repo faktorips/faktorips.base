@@ -28,6 +28,13 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
         super(name);
     }
 
+    public IpsTestSuiteJUnitAdapter(IpsTestSuite suite) {
+        super(suite.getName());
+        for (IpsTest2 ipsTest : suite.getTests()) {
+            addTest(createJUnitTest(ipsTest));
+        }
+    }
+
     /**
      * Dummy test method to avoid a warning when running all JUnit tests in this project. Without
      * this method, Eclpise's JUnit support would create a warning that his suite hasn't got any
@@ -47,13 +54,6 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
             return new IpsTestSuiteJUnitAdapter((IpsTestSuite)ipsTest);
         } else {
             throw new RuntimeException("Unknown type " + ipsTest.getClass());
-        }
-    }
-
-    public IpsTestSuiteJUnitAdapter(IpsTestSuite suite) {
-        super(suite.getName());
-        for (IpsTest2 ipsTest : suite.getTests()) {
-            addTest(createJUnitTest(ipsTest));
         }
     }
 

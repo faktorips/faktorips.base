@@ -18,8 +18,10 @@ package org.faktorips.runtime.productdataprovider;
 public class DataModifiedException extends Exception {
 
     private static final long serialVersionUID = 1L;
+    // CSOFF: VisibilityModifier
     public final String oldVersion;
     public final String newVersion;
+    // CSON: VisibilityModifier
 
     public DataModifiedException(String message, String oldVersion, String newVersion) {
         super(message);

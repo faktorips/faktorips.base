@@ -64,8 +64,8 @@ public class ProductVariantRuntimeHelper {
             Element genElement) {
         GregorianCalendar validFrom = tocEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault());
         ProductComponent originalCmpt = getOriginalProdCmpt(runtimeRepository, genElement);
-        ProductComponent variedCmpt = (ProductComponent)runtimeRepository.getProductComponent(tocEntry.getParent()
-                .getIpsObjectId());
+        ProductComponent variedCmpt = (ProductComponent)runtimeRepository
+                .getProductComponent(tocEntry.getParent().getIpsObjectId());
         ProductComponentGeneration originalGeneration = (ProductComponentGeneration)originalCmpt
                 .getGenerationBase(validFrom);
         ProductComponentGeneration variedProductCmptGeneration = createNewInstance(originalGeneration, variedCmpt);
@@ -87,7 +87,9 @@ public class ProductVariantRuntimeHelper {
             Constructor<? extends ProductComponentGeneration> constructor = generationTemplate.getClass()
                     .getConstructor(parentProductCmpt.getClass());
             return constructor.newInstance(parentProductCmpt);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException("Could not create a new instance of class \"" + getClass().getName()
                     + "\" (ProductComponent: \"" + parentProductCmpt.getId() + "\" validfrom "
                     + generationTemplate.getValidFrom(TimeZone.getDefault()) + ")", e);

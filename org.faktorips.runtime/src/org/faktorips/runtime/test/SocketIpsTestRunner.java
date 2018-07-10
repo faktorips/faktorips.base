@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Socket test runner. Opens a socket connection to a given socket server port and runs the given
@@ -43,6 +44,17 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     private Socket socket;
     private PrintWriter writer;
 
+    public SocketIpsTestRunner() {
+        // nothing to do
+    }
+
+    public SocketIpsTestRunner(int port, String repositoryPackages, String additionalRepositoryPackages) {
+        this();
+        this.port = port;
+        setRepositoryPackages(repositoryPackages);
+        setAdditionalRepositoryPackages(additionalRepositoryPackages);
+    }
+
     /**
      * The entry point for the socket test runner. The arguments are: args[0]: the port number to
      * connect to args[1]: package name of the classpath repository args[2]: Name of the testsuite
@@ -61,17 +73,6 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         new SocketIpsTestRunner(Integer.parseInt(args[0]), args[1], additionalRepositoryPackages).run(suiteName);
     }
 
-    public SocketIpsTestRunner() {
-        // nothing to do
-    }
-
-    public SocketIpsTestRunner(int port, String repositoryPackages, String additionalRepositoryPackages) {
-        super();
-        this.port = port;
-        setRepositoryPackages(repositoryPackages);
-        setAdditionalRepositoryPackages(additionalRepositoryPackages);
-    }
-
     @Override
     public void run(String name) {
 
@@ -86,7 +87,9 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
             int testCount = 0;
             try {
                 testCount = super.countTests(name);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 exceptionDuringTestCount = e;
             }
             // format: SocketIpsTestRunner.ALL_TESTS_STARTED(<count>)
@@ -106,7 +109,9 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
             }
             testStartTime = System.currentTimeMillis();
             super.run(name);
+            // CSOFF: IllegalCatch
         } catch (Throwable e) {
+            // CSON: IllegalCatch
             // an exception occurred
             // inform the socket listener about the error
             postError(e, null);
@@ -157,7 +162,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
         List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
         for (String repositoryName : repositoryNameList) {
-            runtimeRepositories.add(ClassloaderRuntimeRepository.create(repositoryName, classLoader));
+            runtimeRepositories.add(ClassloaderRuntimeRepository.create(repositoryName, getClassLoader()));
         }
         return runtimeRepositories;
     }
@@ -264,36 +269,53 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
 
         writer.print(TEST_ERROR);
         writer.print(qualifiedTestName == null ? "" : qualifiedTestName);
-        while (t != null) {
-            String errorMsg = t.getLocalizedMessage();
-            if (!(errorMsg != null && errorMsg.length() > 0)) {
-                errorMsg = t.getMessage();
+        Throwable cause = t;
+        while (cause != null) {
+            String errorMsg = cause.getLocalizedMessage();
+            if (IpsStringUtils.isBlank(errorMsg)) {
+                errorMsg = cause.getMessage();
             }
-            if (!(errorMsg != null && errorMsg.length() > 0)) {
-                errorMsg = t.getClass().getName();
+            if (IpsStringUtils.isBlank(errorMsg)) {
+                errorMsg = cause.getClass().getName();
             }
-            if ("null".equals(errorMsg)) {
-                errorMsg = t.getClass().getName() + " " + errorMsg;
-            }
-            if (t instanceof ClassNotFoundException) {
-                errorMsg = "ClassNotFoundException " + errorMsg;
-            }
+            errorMsg = wrapNull(cause, errorMsg);
+            errorMsg = wrapClassNotFoundException(cause, errorMsg);
             writer.print(!(errorMsg != null && errorMsg.length() > 0) ? "" : "{");
             writer.print(TEST_ERROR_MESSAGE_INDICATOR);
             writer.print(errorMsg);
             writer.print("}");
-            StackTraceElement[] stackElems = t.getStackTrace();
-            for (StackTraceElement stackElem : stackElems) {
-                writer.print("{");
-                writer.print(TEST_ERROR_STACK_INDICATOR);
-                writer.print(stackElem.toString());
-                writer.print("}");
-            }
-            t = t.getCause();
+            printStack(cause);
+            cause = cause.getCause();
         }
 
         writer.println();
         writer.println(TEST_ERROR_END);
+    }
+
+    private String wrapClassNotFoundException(Throwable cause, String errorMsg) {
+        if (cause instanceof ClassNotFoundException) {
+            return "ClassNotFoundException " + errorMsg;
+        } else {
+            return errorMsg;
+        }
+    }
+
+    private String wrapNull(Throwable cause, String errorMsg) {
+        if ("null".equals(errorMsg)) {
+            return cause.getClass().getName() + " " + errorMsg;
+        } else {
+            return errorMsg;
+        }
+    }
+
+    private void printStack(Throwable cause) {
+        StackTraceElement[] stackElems = cause.getStackTrace();
+        for (StackTraceElement stackElem : stackElems) {
+            writer.print("{");
+            writer.print(TEST_ERROR_STACK_INDICATOR);
+            writer.print(stackElem.toString());
+            writer.print("}");
+        }
     }
 
 }

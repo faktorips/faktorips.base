@@ -28,21 +28,32 @@ import org.w3c.dom.NodeList;
  * identify and load the objects stored in the repository.
  * </p>
  * <p>
- * <em>The table of contents can be extended to read toc entries for new object types by implementing
- * and registering a {@link ITocEntryFactory}.</em>
+ * <em>The table of contents can be extended to read toc entries for new object types by
+ * implementing and registering a {@link ITocEntryFactory}.</em>
  * </p>
  * 
  * @author Jan Ortmann
  */
 public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableOfContents {
 
-    public final static String TOC_XML_ELEMENT = "FaktorIps-TableOfContents";
+    public static final String TOC_XML_ELEMENT = "FaktorIps-TableOfContents";
     public static final String PRODUCT_DATA_VERSION_XML_ELEMENT = "productDataVersion";
 
     private String productDataVersion;
 
     private Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
     private final ClassLoader classLoader;
+
+    /**
+     * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
+     * implementations via {@link ServiceLoader}.
+     * 
+     * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
+     *            implementations
+     */
+    public AbstractReadonlyTableOfContents(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
         if (tocEntryFactoriesByXmlTag == null) {
@@ -84,17 +95,6 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     }
 
     /**
-     * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
-     * implementations via {@link ServiceLoader}.
-     * 
-     * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
-     *            implementations
-     */
-    public AbstractReadonlyTableOfContents(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
-    /**
      * Initializes the table of contents with data stored in the xml element.
      */
     public void initFromXml(Element tocElement) {
@@ -106,8 +106,8 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element entryElement = (Element)nl.item(i);
-                internalAddEntry(getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(
-                        entryElement));
+                internalAddEntry(
+                        getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(entryElement));
             }
         }
     }

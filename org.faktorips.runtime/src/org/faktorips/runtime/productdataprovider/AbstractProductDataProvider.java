@@ -40,6 +40,18 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         }
     };
 
+    private final IVersionChecker versionChecker;
+
+    /**
+     * This constructor needs a {@link IVersionChecker} that is used to verify the compatibility of
+     * the product data versions
+     * 
+     * @param versionChecker the verison checker to check the product data version
+     */
+    public AbstractProductDataProvider(IVersionChecker versionChecker) {
+        this.versionChecker = versionChecker;
+    }
+
     /**
      * Creating a document builder. If you want to inject your own implementation of document
      * builder use the property specified in {@link DocumentBuilderFactory}.
@@ -72,18 +84,6 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
             }
         });
         return builder;
-    }
-
-    private final IVersionChecker versionChecker;
-
-    /**
-     * This constructor needs a {@link IVersionChecker} that is used to verify the compatibility of
-     * the product data versions
-     * 
-     * @param versionChecker the verison checker to check the product data version
-     */
-    public AbstractProductDataProvider(IVersionChecker versionChecker) {
-        this.versionChecker = versionChecker;
     }
 
     /**

@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.faktorips.runtime.IEnumValueLookupService;
@@ -83,8 +85,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * {@inheritDoc}
      * <p>
-     * This default implementation returns the class loader with which this repository class has been
-     * loaded.
+     * This default implementation returns the class loader with which this repository class has
+     * been loaded.
      */
     @Override
     public ClassLoader getClassLoader() {
@@ -187,8 +189,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getProductComponent(String kindId, String versionId) but searches only in this repository
-     * and not the ones, this repository depends on.
+     * Same as getProductComponent(String kindId, String versionId) but searches only in this
+     * repository and not the ones, this repository depends on.
      */
     protected abstract IProductComponent getProductComponentInternal(String kindId, String versionId);
 
@@ -207,8 +209,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getAllProductComponent(String kindId) but searches only in this repository and not the
-     * ones, this repository depends on. Adds the components found to the given result list.
+     * Same as getAllProductComponent(String kindId) but searches only in this repository and not
+     * the ones, this repository depends on. Adds the components found to the given result list.
      */
     protected abstract void getAllProductComponents(String kindId, List<IProductComponent> result);
 
@@ -315,8 +317,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getProductComponentGenerations() but searches only in this repository and not the ones,
-     * this repository depends on. Adds the components found to the given result list.
+     * Same as getProductComponentGenerations() but searches only in this repository and not the
+     * ones, this repository depends on. Adds the components found to the given result list.
      */
     public abstract void getProductComponentGenerations(IProductComponent productCmpt,
             List<IProductComponentGeneration> result);
@@ -333,8 +335,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getAllProductComponentIds() but searches only in this repository and not the ones, this
-     * repository depends on. Adds the components found to the given result list.
+     * Same as getAllProductComponentIds() but searches only in this repository and not the ones,
+     * this repository depends on. Adds the components found to the given result list.
      */
     protected abstract void getAllProductComponentIds(List<String> result);
 
@@ -350,8 +352,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as <code>getAllTables()</code> but searches only in this repository and not the ones, this
-     * repository depends on. Adds the tables found to the given result list.
+     * Same as <code>getAllTables()</code> but searches only in this repository and not the ones,
+     * this repository depends on. Adds the tables found to the given result list.
      */
     protected abstract void getAllTables(List<ITable<?>> result);
 
@@ -394,8 +396,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as {@link #getTable(String)}) but searches only in this repository and not the ones, this
-     * repository depends on.
+     * Same as {@link #getTable(String)}) but searches only in this repository and not the ones,
+     * this repository depends on.
      */
     protected abstract ITable<?> getTableInternal(String qualifiedTableName);
 
@@ -422,8 +424,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as {@link #getAllIpsTestCases(IRuntimeRepository)} but searches only in this repository and
-     * not the ones, this repository depends on. Adds the components found to the given result list.
+     * Same as {@link #getAllIpsTestCases(IRuntimeRepository)} but searches only in this repository
+     * and not the ones, this repository depends on. Adds the components found to the given result
+     * list.
      */
     protected abstract void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository);
 
@@ -474,10 +477,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as {@link #getIpsTestCase(String, IRuntimeRepository)} but searches only in this repository
-     * and not the ones, this repository depends on. The given runtimeRepository specifies the
-     * repository which will be used to instantiate the test case (e.g. the first repository which
-     * contains all dependence repositories).
+     * Same as {@link #getIpsTestCase(String, IRuntimeRepository)} but searches only in this
+     * repository and not the ones, this repository depends on. The given runtimeRepository
+     * specifies the repository which will be used to instantiate the test case (e.g. the first
+     * repository which contains all dependence repositories).
      */
     protected abstract IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository);
 
@@ -641,16 +644,16 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getAllModelTypeImplementationClasses() but searches only in this repository and not the
-     * ones, this repository depends on. Adds the types found to the given result list.
+     * Same as getAllModelTypeImplementationClasses() but searches only in this repository and not
+     * the ones, this repository depends on. Adds the types found to the given result list.
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
     /**
-     * @deprecated This method does only return valid enums if the id attribute of the enum is of type
-     *             {@link String}. You should never use this method! Use
-     *             {@link #getEnumValue(Class, Object)} instead. This method may be returned in future
-     *             releases.
+     * @deprecated This method does only return valid enums if the id attribute of the enum is of
+     *             type {@link String}. You should never use this method! Use
+     *             {@link #getEnumValue(Class, Object)} instead. This method may be returned in
+     *             future releases.
      */
     @Override
     @Deprecated
@@ -733,25 +736,25 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Returns the list of enumeration values of the enumeration type that is identified by its class
-     * which is provided to it.
+     * Returns the list of enumeration values of the enumeration type that is identified by its
+     * class which is provided to it.
      */
     protected abstract <T> List<T> getEnumValuesInternal(Class<T> clazz);
 
     /**
      * Returns the values that are defined in the type by a constant called 'VALUES'. If no such
-     * constant is available an empty list is returned. If the constant is available but is either not
-     * accessible or of wrong type an exception is thrown.
+     * constant is available an empty list is returned. If the constant is available but is either
+     * not accessible or of wrong type an exception is thrown.
      * <p>
-     * For performance optimization the values are cached in the static map {@link #ENUMVALUECACHE}. We
-     * only check once if there is already a cached value. We disclaim a double checking with
+     * For performance optimization the values are cached in the static map {@link #ENUMVALUECACHE}.
+     * We only check once if there is already a cached value. We disclaim a double checking with
      * synchronization because in worst case two threads simply getting the same result. The
      * {@link #ENUMVALUECACHE} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
      * will be put into the cache using {@link ConcurrentHashMap#putIfAbsent(Object, Object)}.
      * 
      * @param enumClass The class of which you want to get the enumeration values
-     * @return A list of instances of enumClass that are defined as enumeration values of the specified
-     *         type.
+     * @return A list of instances of enumClass that are defined as enumeration values of the
+     *         specified type.
      */
     protected <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
         if (ENUMVALUECACHE.containsKey(enumClass)) {
@@ -813,7 +816,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Returns all enumeration XmlAdapters available in this repository that generated by Faktor-IPS.
+     * Returns all enumeration XmlAdapters available in this repository that generated by
+     * Faktor-IPS.
      * 
      * @param repository the runtime repository that needs to be used by the XmlAdapters that are
      *            returned by this method
@@ -821,8 +825,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository);
 
     /**
-     * Adds all enumeration XmlAdapters available in this repository to the provided list. These are the
-     * internal adapters and the adapters specified by the enum value lookup services.
+     * Adds all enumeration XmlAdapters available in this repository to the provided list. These are
+     * the internal adapters and the adapters specified by the enum value lookup services.
      * 
      * @param adapters the list where the adapters are added to
      * @param repository the runtime repository that needs to be used by the XmlAdapters that are
@@ -843,9 +847,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Creates a {@link JAXBContext} that wraps the provided context and extends the marshaling methods
-     * to provide marshaling of Faktor-IPS enumerations and model objects configured by product
-     * components.
+     * Creates a {@link JAXBContext} that wraps the provided context and extends the marshaling
+     * methods to provide marshaling of Faktor-IPS enumerations and model objects configured by
+     * product components.
      */
     public JAXBContext newJAXBContext(JAXBContext ctx) {
         LinkedList<XmlAdapter<?, ?>> adapters = new LinkedList<XmlAdapter<?, ?>>();
@@ -859,31 +863,41 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     /**
      * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in this
-     * repository. If the repository references other repositories (directly or indirectly), the context
-     * can also handle the classes defined in those.
+     * repository. If the repository references other repositories (directly or indirectly), the
+     * context can also handle the classes defined in those.
      * 
-     * @throws RuntimeException Exceptions that are thrown while trying to load a class from the class
-     *             loader or creating the jaxb context are wrapped into a runtime exception
+     * @throws RuntimeException Exceptions that are thrown while trying to load a class from the
+     *             class loader or creating the jaxb context are wrapped into a runtime exception
      */
     @Override
     public JAXBContext newJAXBContext() {
         try {
             Set<String> classNames = getAllModelTypeImplementationClasses();
-            List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
+            Set<Class<?>> classes = new LinkedHashSet<Class<?>>(classNames.size());
             for (String className : classNames) {
                 Class<?> clazz = getClassLoader().loadClass(className);
-                if (AbstractModelObject.class.isAssignableFrom(clazz)) {
+                if (isAnnotatedXmlRootElement(clazz)) {
                     classes.add(clazz);
                 }
             }
-            classes.add(AbstractModelObject.class);
             JAXBContext ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
             return newJAXBContext(ctx);
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isAnnotatedXmlRootElement(Class<?> clazz) {
+        for (Class<?> c = clazz; c != null; c = clazz.getSuperclass()) {
+            if (c.isAnnotationPresent(XmlRootElement.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -920,8 +934,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as {@link #getCustomRuntimeObject(Class, String)} but searches only in this repository and
-     * not the ones this repository depends on.
+     * Same as {@link #getCustomRuntimeObject(Class, String)} but searches only in this repository
+     * and not the ones this repository depends on.
      */
     protected abstract <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName);
 

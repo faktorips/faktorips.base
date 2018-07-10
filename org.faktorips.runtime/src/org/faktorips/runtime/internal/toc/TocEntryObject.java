@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -90,24 +91,13 @@ public abstract class TocEntryObject extends TocEntry {
             return false;
         }
         TocEntryObject other = (TocEntryObject)obj;
-        if (ipsObjectId == null) {
-            if (other.ipsObjectId != null) {
-                return false;
-            }
-        } else if (!ipsObjectId.equals(other.ipsObjectId)) {
+        if (!ObjectUtil.equals(ipsObjectId, other.ipsObjectId)) {
             return false;
         }
-        if (ipsObjectQualifiedName == null) {
-            if (other.ipsObjectQualifiedName != null) {
-                return false;
-            }
-        } else if (!ipsObjectQualifiedName.equals(other.ipsObjectQualifiedName)) {
+        if (!ObjectUtil.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)) {
             return false;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        return true;
+        return super.equals(obj);
     }
 
 }

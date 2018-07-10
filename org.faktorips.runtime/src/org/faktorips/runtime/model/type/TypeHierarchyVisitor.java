@@ -45,11 +45,11 @@ public abstract class TypeHierarchyVisitor {
             return;
         }
         visitedTypes.add(type);
-        type = type.getSuperType();
-        if (visitedTypes.contains(type)) {
-            throw new RuntimeException("TypeHierarchy of type " + type + " contains a cycle.");
+        Type superType = type.getSuperType();
+        if (visitedTypes.contains(superType)) {
+            throw new RuntimeException("TypeHierarchy of type " + superType + " contains a cycle.");
         }
-        visitTypeInternal(type);
+        visitTypeInternal(superType);
     }
 
     /**

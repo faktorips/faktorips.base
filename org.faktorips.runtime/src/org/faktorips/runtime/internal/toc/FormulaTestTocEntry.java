@@ -60,6 +60,7 @@ public class FormulaTestTocEntry extends TestCaseTocEntry {
         return result;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -91,5 +92,6 @@ public class FormulaTestTocEntry extends TestCaseTocEntry {
         }
         return true;
     }
+    // CSON: CyclomaticComplexity
 
 }

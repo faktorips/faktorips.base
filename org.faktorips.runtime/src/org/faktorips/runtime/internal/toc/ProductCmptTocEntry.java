@@ -19,6 +19,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -55,8 +56,10 @@ public class ProductCmptTocEntry extends TocEntryObject {
      */
     private final String generationImplClassName;
 
+    // CSOFF: ParameterNumber
     public ProductCmptTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String kindId, String versionId,
             String xmlResourceName, String implementationClassName, String generationImplClassName, DateTime validTo) {
+        // CSON: ParameterNumber
         super(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
         this.kindId = kindId;
         this.versionId = versionId;
@@ -236,45 +239,22 @@ public class ProductCmptTocEntry extends TocEntryObject {
             return false;
         }
         ProductCmptTocEntry other = (ProductCmptTocEntry)obj;
-        if (generationEntries == null) {
-            if (other.generationEntries != null) {
-                return false;
-            }
-        } else if (!generationEntries.equals(other.generationEntries)) {
+        if (!ObjectUtil.equals(generationEntries, other.generationEntries)) {
             return false;
         }
-        if (generationImplClassName == null) {
-            if (other.generationImplClassName != null) {
-                return false;
-            }
-        } else if (!generationImplClassName.equals(other.generationImplClassName)) {
+        if (!ObjectUtil.equals(generationImplClassName, other.generationImplClassName)) {
             return false;
         }
-        if (kindId == null) {
-            if (other.kindId != null) {
-                return false;
-            }
-        } else if (!kindId.equals(other.kindId)) {
+        if (!ObjectUtil.equals(kindId, other.kindId)) {
             return false;
         }
-        if (validTo == null) {
-            if (other.validTo != null) {
-                return false;
-            }
-        } else if (!validTo.equals(other.validTo)) {
+        if (!ObjectUtil.equals(validTo, other.validTo)) {
             return false;
         }
-        if (versionId == null) {
-            if (other.versionId != null) {
-                return false;
-            }
-        } else if (!versionId.equals(other.versionId)) {
+        if (!ObjectUtil.equals(versionId, other.versionId)) {
             return false;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        return true;
+        return super.equals(obj);
     }
 
     static class InverseLongComparator implements Comparator<Long> {

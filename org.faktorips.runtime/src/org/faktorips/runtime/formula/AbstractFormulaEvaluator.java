@@ -55,7 +55,9 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
     public Object evaluate(String formularName, Object... parameters) {
         try {
             return evaluateInternal(formularName, parameters);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             StringBuffer parameterValues = new StringBuffer();
             parameterValues.append("Parameters: ");
             for (Object param : parameters) {

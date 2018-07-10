@@ -22,8 +22,12 @@ public class DefaultReferenceResolver {
     /**
      * Resolves the unresolved references in the given store.
      */
-    public void resolve(IObjectReferenceStore store) throws IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException {
+    // CSOFF: ThrowsCount
+    // CSOFF: RedundantThrows
+    public void resolve(IObjectReferenceStore store)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        // CSON: RedundantThrows
+        // CSON: ThrowsCount
         for (IUnresolvedReference unresolvedReference : store.getAllUnresolvedReferences()) {
             DefaultUnresolvedReference reference = (DefaultUnresolvedReference)unresolvedReference;
             Object target = store.getObject(reference.getTargetClass(), reference.getTargetId());
