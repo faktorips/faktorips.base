@@ -185,6 +185,20 @@
                <value value="None" />
             </discreteValues>
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               description="%baseClassPolicyComponentDescription"
+               label="%baseClassPolicyComponentLabel"
+               name="baseClassPolicyComponent"
+               defaultValue=""
+               type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               description="%baseClassProductComponentDescription"
+               label="%baseClassProductComponentLabel"
+               name="baseClassProductComponent"
+               defaultValue=""
+               type="string">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension
