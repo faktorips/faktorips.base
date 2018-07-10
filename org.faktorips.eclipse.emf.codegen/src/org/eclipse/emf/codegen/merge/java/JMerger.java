@@ -92,6 +92,8 @@ public class JMerger {
 
     private List<ImportDeclaration> additionalImportDeclarations;
 
+    private Set<String> retainedAnnotations;
+
     /**
      * This creates an empty instances, an when used as a runnable.
      */
@@ -235,6 +237,10 @@ public class JMerger {
     public void setAdditionalAnnotations(List<String> additionalImports, List<String> additionalAnnotations) {
         this.additionalImports = additionalImports;
         this.additionalAnnotations = additionalAnnotations;
+    }
+
+    public void setRetainedAnnotations(List<String> retainedAnnotations) {
+        this.retainedAnnotations = new HashSet<String>(retainedAnnotations);
     }
 
     public void remerge() {
@@ -496,10 +502,10 @@ public class JMerger {
     }
 
     /**
-     * This method is called if a sweep rule was NOT performed. If the node which was not swept is
-     * an annotation we might get in conflict with additional annotations. This might be the case if
-     * the user used &#64;customizedAnnotation tags. In case it is really an additional annotation
-     * which was not swept we must not generate a new one but keep the old one.
+     * This method is called if a sweep rule was NOT performed. If the node which was not swept is an
+     * annotation we might get in conflict with additional annotations. This might be the case if the
+     * user used &#64;customizedAnnotation tags. In case it is really an additional annotation which was
+     * not swept we must not generate a new one but keep the old one.
      * 
      */
     private void checkNodeNotSwept(JNode annotationNode, JNode targetParentNode) {
@@ -520,8 +526,8 @@ public class JMerger {
     }
 
     /**
-     * Method created to increase the performance of regular expressions by reducing the length of
-     * the string that is matched.
+     * Method created to increase the performance of regular expressions by reducing the length of the
+     * string that is matched.
      */
     private int getStartIndex(String string) {
         int index = string.indexOf("<!--");
@@ -753,6 +759,9 @@ public class JMerger {
     }
 
     protected boolean applySweepRules(JNode targetNode) {
+        if (targetNode instanceof JAnnotation && retainedAnnotations.contains(((JAnnotation)targetNode).getName())) {
+            return false;
+        }
         for (JControlModel.SweepRule sweepRule : getControlModel().getSweepRules()) {
             boolean sweep = (sweepRule.getSelector() == JImport.class && targetNode instanceof JImport
                     && sweepRule.getMarkup().matcher(targetNode.getName()).find())
@@ -789,8 +798,8 @@ public class JMerger {
     /**
      * Checks if two nodes are compatible and can be merged.
      * <p>
-     * This method must always return <code>false</code> if target node can have children that can
-     * not be added to source node.
+     * This method must always return <code>false</code> if target node can have children that can not
+     * be added to source node.
      * 
      * @param sourceNode
      * @param targetNode
@@ -885,12 +894,11 @@ public class JMerger {
      * <p>
      * Node is considered marked up by default if there are no push rules for this node class.
      * <p>
-     * The first push rule that matches the node makes the node marked up, and no further checking
-     * is performed.
+     * The first push rule that matches the node makes the node marked up, and no further checking is
+     * performed.
      * <p>
-     * If the push rule does not match the node, but the push rule is defined for the same node
-     * class, then the node will not be marked up, unless any of the following push rules will match
-     * the node.
+     * If the push rule does not match the node, but the push rule is defined for the same node class,
+     * then the node will not be marked up, unless any of the following push rules will match the node.
      * 
      * @param node
      * @return <code>true</code> if node should be pushed, <code>false</code> otherwise
@@ -1066,8 +1074,7 @@ public class JMerger {
 
     public class PushSourceVisitor extends FacadeVisitor {
         /**
-         * Returns whether the children should be visited (i.e., when the source is not in the
-         * target).
+         * Returns whether the children should be visited (i.e., when the source is not in the target).
          */
         protected boolean doPush(JNode sourceNode) {
             applySortRules(sourceNode);

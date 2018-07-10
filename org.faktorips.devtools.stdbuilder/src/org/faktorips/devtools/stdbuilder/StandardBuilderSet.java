@@ -162,8 +162,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     public static final String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
 
     /**
-     * Name of the configuration property that indicates whether toXml() methods should be
-     * generated.
+     * Name of the configuration property that indicates whether toXml() methods should be generated.
      */
     public static final String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
 
@@ -182,29 +181,35 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     public static final String CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS = "generateConvenienceGetters"; //$NON-NLS-1$
 
     /**
-     * Name of the configuration property that indicates whether to generate camel case constant
-     * names with underscore separator or without. For example if this property is true, the
-     * constant for the name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the
-     * property is false the constant name would be CHECKANYTHINGRUL.
+     * Name of the configuration property that indicates whether to generate camel case constant names
+     * with underscore separator or without. For example if this property is true, the constant for the
+     * name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the property is false the
+     * constant name would be CHECKANYTHINGRUL.
      */
     public static final String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
 
     /**
-     * Name of the configuration property that indicates whether to generate public interfaces or
-     * not.
+     * Name of the configuration property that indicates whether to generate public interfaces or not.
      * <p>
-     * Although this property is defined in this abstraction it needs to be configured in the
-     * extension point of every specific builder. If it is not specified as a configuration
-     * definition of any builder, the default value is <code>true</code>.
+     * Although this property is defined in this abstraction it needs to be configured in the extension
+     * point of every specific builder. If it is not specified as a configuration definition of any
+     * builder, the default value is <code>true</code>.
      */
     public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines additional annotations that are generated above all
-     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
+     * Configuration property that defines additional annotations that are generated above all generated
+     * methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType},
      * {@link TableStructure} and {@link TableContents}
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that defines annotations that are not removed from generated methods of
+     * {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType}, {@link TableStructure} and
+     * {@link TableContents}
+     */
+    public static final String CONFIG_PROPERTY_RETAIN_ANNOTATIONS = "retainAnnotations"; //$NON-NLS-1$
 
     /**
      * Configuration property that defines whether and which builder classes should be generated.
@@ -216,8 +221,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT = "Products only";
 
     /**
-     * Configuration property that defines which variant of local date should be used (joda or
-     * java8)
+     * Configuration property that defines which variant of local date should be used (joda or java8)
      */
     public static final String CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT = "localDateDatatypeHelperVariant"; //$NON-NLS-1$
 
@@ -442,10 +446,10 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     /**
-     * Returns whether to generate camel case constant names with underscore separator or without.
-     * For example if this property is true, the constant for the property
-     * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
-     * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
+     * Returns whether to generate camel case constant names with underscore separator or without. For
+     * example if this property is true, the constant for the property checkAnythingAndDoSomething would
+     * be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the property is false the constant name would
+     * be CHECKANYTHINGANDDOSOMETHING.
      */
     public boolean isGenerateSeparatedCamelCase() {
         return generatorModelContext.isGenerateSeparatedCamelCase();
@@ -572,8 +576,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     /**
-     * Returns the <tt>ProductCmptGenImplClassBuilder</tt> or <tt>null</tt> if non has been
-     * assembled yet.
+     * Returns the <tt>ProductCmptGenImplClassBuilder</tt> or <tt>null</tt> if non has been assembled
+     * yet.
      */
     public final ProductCmptGenerationClassBuilder getProductCmptGenImplClassBuilder() {
         return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
@@ -606,8 +610,17 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     @Override
     protected String getConfiguredAdditionalAnnotations() {
-        String propertyValueAsString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS);
-        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
+        return getStringProperty(CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS, StringUtils.EMPTY);
+    }
+
+    protected String getStringProperty(String propertyKey, String defaultValue) {
+        String propertyValueAsString = getConfig().getPropertyValueAsString(propertyKey);
+        return propertyValueAsString == null ? defaultValue : propertyValueAsString;
+    }
+
+    @Override
+    protected String getConfiguredRetainedAnnotations() {
+        return getStringProperty(CONFIG_PROPERTY_RETAIN_ANNOTATIONS, StringUtils.EMPTY);
     }
 
     public TableBuilder getTableBuilder() {
@@ -692,8 +705,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         }
 
         /**
-         * Returns the helper registered for the given data type or {@code null} if no helper is
-         * registered for that type.
+         * Returns the helper registered for the given data type or {@code null} if no helper is registered
+         * for that type.
          */
         public DatatypeHelper getDatatypeHelper(Datatype datatype) {
             return helperMap.get(datatype);
@@ -701,8 +714,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
         /**
          * Initializes the registered helpers using (all) the helpers provided via the
-         * {@link #DATATYPE_DEFINITION_EXTENSION_POINT extension point} and the data type defined in
-         * the given projects.
+         * {@link #DATATYPE_DEFINITION_EXTENSION_POINT extension point} and the data type defined in the
+         * given projects.
          */
         private void initialize(IIpsProject ipsProject) {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -750,8 +763,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         }
 
         /**
-         * Returns the helper registered for the given data type or {@code null} if no helper is
-         * registered for that type.
+         * Returns the helper registered for the given data type or {@code null} if no helper is registered
+         * for that type.
          */
         public DatatypeHelperFactory getFactory(Datatype datatype) {
             return factoryMap.get(datatype);
@@ -763,8 +776,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
         /**
          * Initializes the registered factories using (all) the helpers provided via the
-         * {@link #DATATYPE_HELPER_FACTORY_EXTENSION_POINT extension point} and the data type
-         * defined in the given projects.
+         * {@link #DATATYPE_HELPER_FACTORY_EXTENSION_POINT extension point} and the data type defined in the
+         * given projects.
          */
         private void initialize() {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
