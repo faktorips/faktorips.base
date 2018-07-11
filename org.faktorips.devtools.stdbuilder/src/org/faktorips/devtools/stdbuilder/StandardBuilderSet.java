@@ -225,6 +225,10 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public static final String CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT = "localDateDatatypeHelperVariant"; //$NON-NLS-1$
 
+    public static final String CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE = "baseClassPolicyComponent"; //$NON-NLS-1$
+
+    public static final String CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE = "baseClassProductComponent"; //$NON-NLS-1$
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;

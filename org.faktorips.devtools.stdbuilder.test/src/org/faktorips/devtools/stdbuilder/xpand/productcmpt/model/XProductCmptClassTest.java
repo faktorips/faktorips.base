@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -35,7 +35,6 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
-import org.faktorips.runtime.internal.ProductComponent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,9 +80,13 @@ public class XProductCmptClassTest {
 
     @Test
     public void testGetBaseSuperclassName() throws Exception {
+        when(modelContext.getBaseClassProductCmptType()).thenReturn("pack.MyBaseClass");
+        when(modelContext.addImport("pack.MyBaseClass")).thenReturn("MyBaseClass");
+
         String baseSuperclassName = xProductCmptClass.getBaseSuperclassName();
-        assertEquals(ProductComponent.class.getSimpleName(), baseSuperclassName);
-        verify(modelContext).addImport(ProductComponent.class.getName());
+
+        assertEquals("MyBaseClass", baseSuperclassName);
+        verify(modelContext).addImport("pack.MyBaseClass");
     }
 
     @Test
@@ -97,8 +100,8 @@ public class XProductCmptClassTest {
         XProductCmptClass xSuperType = mock(XProductCmptClass.class);
         XProductCmptClass xSuperSuperType = mock(XProductCmptClass.class);
         when(modelService.getModelNode(superType, XProductCmptClass.class, modelContext)).thenReturn(xSuperType);
-        when(modelService.getModelNode(superSuperType, XProductCmptClass.class, modelContext)).thenReturn(
-                xSuperSuperType);
+        when(modelService.getModelNode(superSuperType, XProductCmptClass.class, modelContext))
+                .thenReturn(xSuperSuperType);
 
         Set<XProductCmptClass> superclasses = xProductCmptClass.getClassHierarchy();
         assertEquals(3, superclasses.size());
@@ -143,8 +146,8 @@ public class XProductCmptClassTest {
 
         XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
         when(xPolicyCmptClass.isConfiguredBy(productCmptType.getQualifiedName())).thenReturn(true);
-        when(xPolicyCmptClass.getAttributes()).thenReturn(
-                new HashSet<XPolicyAttribute>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
+        when(xPolicyCmptClass.getAttributes())
+                .thenReturn(new HashSet<XPolicyAttribute>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
 
         XProductCmptClass xProductCmptClassSpy = spy(xProductCmptClass);
         doReturn(xPolicyCmptClass).when(xProductCmptClassSpy).getPolicyCmptClass();

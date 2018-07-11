@@ -19,7 +19,6 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.model.XProductBuilder;
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.internal.ProductComponent;
 
 public class XProductCmptClass extends XProductClass {
 
@@ -41,7 +40,7 @@ public class XProductCmptClass extends XProductClass {
 
     @Override
     protected String getBaseSuperclassName() {
-        return addImport(ProductComponent.class);
+        return addImport(getContext().getBaseClassProductCmptType());
     }
 
     @Override
