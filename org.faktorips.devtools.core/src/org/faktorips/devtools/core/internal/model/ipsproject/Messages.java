@@ -16,14 +16,6 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsproject.messages"; //$NON-NLS-1$
 
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    private Messages() {
-        // Messages bundles shall not be initialized.
-    }
-
     public static String DefaultIpsProjectNamingConventions_error;
     public static String DefaultIpsProjectNamingConventions_msgMissingName;
     public static String DefaultIpsProjectNamingConventions_msgMissingNameForProductCmpt;
@@ -57,6 +49,7 @@ public class Messages extends NLS {
 
     public static String IpsArtefactBuilderSetInfo_propertyInompatibleJDK;
     public static String IpsArtefactBuilderSetInfo_propertyNotSupported;
+    public static String IpsBuilderSetPropertyDef_NonParsableValue;
     public static String IpsContainer4JdtClasspathContainer_err_invalidClasspathContainer;
     public static String IpsContainerEntry_err_invalidConainerEntry;
     public static String IpsProjectRefEntry_noReferencedProjectSpecified;
@@ -81,5 +74,17 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed;
     public static String IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed;
     public static String VersionProviderExtensionPoint_error_invalidVersionProvider;
+
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages() {
+        // Messages bundles shall not be initialized.
+    }
+
+    public static String bind(String message, String... bindings) {
+        return NLS.bind(message, bindings);
+    }
 
 }

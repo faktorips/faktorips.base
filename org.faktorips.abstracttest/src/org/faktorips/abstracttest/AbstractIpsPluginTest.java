@@ -276,24 +276,24 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new IPS project with multi-language support for the given locales. The first locale in
-     * the list will be used as default language.
+     * Creates a new IPS project with multi-language support for the given locales. The first locale
+     * in the list will be used as default language.
      */
     protected IIpsProject newIpsProject(List<Locale> supportedLocales) throws CoreException {
         return newIpsProject(UUID.randomUUID().toString(), supportedLocales);
     }
 
     /**
-     * Creates a new IPS project with the given name and multi-language support for the given locales.
-     * The first locale in the list will be used as default language.
+     * Creates a new IPS project with the given name and multi-language support for the given
+     * locales. The first locale in the list will be used as default language.
      */
     private IIpsProject newIpsProject(String name, List<Locale> supportedLocales) throws CoreException {
         return newIpsProjectBuilder().name(name).supportedLocales(supportedLocales).build();
     }
 
     /**
-     * Returns an {@linkplain IpsProjectBuilder} that allows easy creation of {@linkplain IpsProject IPS
-     * Projects}.
+     * Returns an {@linkplain IpsProjectBuilder} that allows easy creation of {@linkplain IpsProject
+     * IPS Projects}.
      */
     protected IpsProjectBuilder newIpsProjectBuilder() {
         return new IpsProjectBuilder(this);
@@ -315,10 +315,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /*
      * TODO AW 03-12-2012: Attempt to move project creation code to IpsProjectBuilder and
-     * PlatformProjectBuilder - The following methods could not be moved because they can be overwritten
-     * by subclasses and are called during project creation (template method pattern style). E.g.
-     * setTestArtefactBuilderSet is overwritten in AbstractStdBuilderSetTest. This is very bad because
-     * it prevents us from moving that code to other classes.
+     * PlatformProjectBuilder - The following methods could not be moved because they can be
+     * overwritten by subclasses and are called during project creation (template method pattern
+     * style). E.g. setTestArtefactBuilderSet is overwritten in AbstractStdBuilderSetTest. This is
+     * very bad because it prevents us from moving that code to other classes.
      */
 
     /**
@@ -444,8 +444,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new ips package fragment root with the given name. It will be created into the
-     * indicated parent folder in the given ips project. If the parent folder is null the project will
-     * be the parent of the new package fragment root.
+     * indicated parent folder in the given ips project. If the parent folder is null the project
+     * will be the parent of the new package fragment root.
      * 
      * @param ipsProject The ips project in which to create a new package fragment root
      * @param parentFolder The folder in which to create the new package fragment root
@@ -483,8 +483,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes
+     * a package name, the package is created if it does not already exists.
      */
     protected IIpsObject newIpsObject(final IIpsPackageFragmentRoot root,
             final IpsObjectType type,
@@ -494,8 +494,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes
+     * a package name, the package is created if it does not already exists.
      */
     private IIpsObject newIpsObject(final IIpsPackageFragmentRoot root,
             final IpsObjectType type,
@@ -531,8 +531,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new enum content in the indicated package fragment root. If the qualified name includes
-     * a package name, the package is created if it does not already exists.
+     * Creates a new enum content in the indicated package fragment root. If the qualified name
+     * includes a package name, the package is created if it does not already exists.
      * 
      * @param root The package fragment root in which to create the new enum content.
      * @param qualifiedName The qualified name of the new enum content.
@@ -548,8 +548,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new enum content in the project's first package fragment root. If the qualified name
-     * includes a package name, the package is created if it does not already exist.
+     * Creates a new enum content in the project's first package fragment root. If the qualified
+     * name includes a package name, the package is created if it does not already exist.
      * 
      * @param ipsProject The ips project in which to create the new enum content.
      * @param qualifiedName The qualified name of the new enum content.
@@ -564,9 +564,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new enum content that is based on the given enum type. The product component is stored
-     * in the same package fragment root as the type. If the qualifiedName includes a package name, the
-     * package is created if it does not already exists.
+     * Creates a new enum content that is based on the given enum type. The product component is
+     * stored in the same package fragment root as the type. If the qualifiedName includes a package
+     * name, the package is created if it does not already exists.
      */
     protected EnumContent newEnumContent(IEnumType type, String qualifiedName) throws CoreException {
         EnumContent enumContent = (EnumContent)newIpsObject(type.getIpsPackageFragment().getRoot(),
@@ -577,8 +577,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new enum type in the indicated package fragment root. If the qualified name includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new enum type in the indicated package fragment root. If the qualified name
+     * includes a package name, the package is created if it does not already exists.
      * 
      * @param root The package fragment root in which to create the new enum type.
      * @param qualifiedName The qualified name of the new enum type.
@@ -608,8 +608,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new default enum type in the project's first package fragment root. The enum type has
-     * two attributes named "id" and "name" but does not contain any values, so it is defined as
+     * Creates a new default enum type in the project's first package fragment root. The enum type
+     * has two attributes named "id" and "name" but does not contain any values, so it is defined as
      * containing values.
      * 
      * If the qualified name includes a package name, the package is created if it does not already
@@ -643,8 +643,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new policy component type in the indicated package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exists.
+     * Creates a new policy component type in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
      */
     protected PolicyCmptType newPolicyCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
             throws CoreException {
@@ -660,9 +660,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new policy component type in the project's first package fragment root. Does not create
-     * a product component type. If the qualifiedName includes a package name, the package is created if
-     * it does not already exists.
+     * Creates a new policy component type in the project's first package fragment root. Does not
+     * create a product component type. If the qualifiedName includes a package name, the package is
+     * created if it does not already exists.
      */
     protected PolicyCmptType newPolicyCmptTypeWithoutProductCmptType(IIpsProject ipsProject, String qualifiedName)
             throws CoreException {
@@ -696,8 +696,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new product component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
-     * Creates the product component type's default categories if they have not yet been created. Sets
-     * the product component type to configure the given policy component type.
+     * Creates the product component type's default categories if they have not yet been created.
+     * Sets the product component type to configure the given policy component type.
      */
     protected ProductCmptType newProductCmptType(IIpsProject ipsProject,
             String qualifiedName,
@@ -711,8 +711,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new product component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
-     * Creates the product component type's default categories if they have not yet been created. Sets
-     * the product component type to configure the given policy component type.
+     * Creates the product component type's default categories if they have not yet been created.
+     * Sets the product component type to configure the given policy component type.
      */
     protected ProductCmptType newProductCmptType(IIpsProject ipsProject,
             String qualifiedName,
@@ -725,8 +725,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * qualifiedName includes a package name, the package is created if it does not already exist.
      * 
      * @param createDefaultCategories <code>true</code> if default categories should be created.
-     *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type is
-     *            intended to have a super type.
+     *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type
+     *            is intended to have a super type.
      */
     protected ProductCmptType newProductCmptType(IIpsProject ipsProject,
             String qualifiedName,
@@ -741,8 +741,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new product component type in the indicated package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exist.
+     * Creates a new product component type in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
             throws CoreException {
@@ -813,9 +813,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new product component type in the indicated package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exist. Creates the default
-     * categories if they have not yet been created.
+     * Creates a new product component type in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exist.
+     * Creates the default categories if they have not yet been created.
      */
     protected PolicyCmptType newPolicyAndProductCmptType(IIpsProject ipsProject,
             String policyCmptTypeName,
@@ -824,12 +824,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new product component type in the indicated package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exist.
+     * Creates a new product component type in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      * 
      * @param createDefaultCategories <code>true</code> if default categories should be created.
-     *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type is
-     *            intended to have a super type.
+     *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type
+     *            is intended to have a super type.
      */
     protected PolicyCmptType newPolicyAndProductCmptType(IIpsProject ipsProject,
             String policyCmptTypeName,
@@ -851,9 +851,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new composition (master-detail) between 'from' and 'to' type and the inverse
-     * detail-master association. The role name singular is set to the target's unqualified name. The
-     * plural name is the singular name followed by an 's'. Min cardinality is 1, max cardinality is
-     * '*'.
+     * detail-master association. The role name singular is set to the target's unqualified name.
+     * The plural name is the singular name followed by an 's'. Min cardinality is 1, max
+     * cardinality is '*'.
      * 
      * @param save <code>true</code> if the file that contain to and from are saved after adding the
      *            associations
@@ -891,9 +891,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new composition (master-detail) between 'from' and 'to' type and the inverse
-     * detail-master association. The role name singular is set to the target's unqualified name. The
-     * plural name is the singular name followed by an 's'. Min cardinality is 1, max cardinality is
-     * '*'.
+     * detail-master association. The role name singular is set to the target's unqualified name.
+     * The plural name is the singular name followed by an 's'. Min cardinality is 1, max
+     * cardinality is '*'.
      * <p>
      * The files containing from and to are saved. If you don't want to save the file use
      * {@link #newComposition(IPolicyCmptType, IPolicyCmptType, boolean)}.
@@ -943,9 +943,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new product component that is based on the given product component type and has one
-     * generation with it's valid from date set 2012-07-18, 00:00:00. The product component is stored in
-     * the same package fragment root as the type. If the qualifiedName includes a package name, the
-     * package is created if it does not already exists.
+     * generation with it's valid from date set 2012-07-18, 00:00:00. The product component is
+     * stored in the same package fragment root as the type. If the qualifiedName includes a package
+     * name, the package is created if it does not already exists.
      */
     protected ProductCmpt newProductCmpt(IProductCmptType type, String qualifiedName) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
@@ -955,9 +955,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new product template that is based on the given product component type and has one
-     * generation with it's valid from date set 2012-07-18, 00:00:00. The product template is stored in
-     * the same package fragment root as the type. If the qualifiedName includes a package name, the
-     * package is created if it does not already exists.
+     * generation with it's valid from date set 2012-07-18, 00:00:00. The product template is stored
+     * in the same package fragment root as the type. If the qualifiedName includes a package name,
+     * the package is created if it does not already exists.
      */
     protected ProductCmpt newProductTemplate(IProductCmptType type, String qualifiedName) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
@@ -989,8 +989,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new product template in the project's first package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exists.
+     * Creates a new product template in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
      * <p>
      * Note that this method does neither set the type nor creates any generations for the template.
      */
@@ -1000,8 +1000,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes
+     * a package name, the package is created if it does not already exists.
      */
     protected IIpsObject newIpsObject(IIpsPackageFragment pack, IpsObjectType type, String unqualifiedName)
             throws CoreException {
@@ -1019,8 +1019,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new table structure in the project's first package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exists.
+     * Creates a new table structure in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
      */
     protected TableStructure newTableStructure(IIpsProject ipsProject, String qualifiedName) throws CoreException {
         return (TableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, qualifiedName);
@@ -1029,8 +1029,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new table content that is based on the given table structure and has one generation
      * with it's valid from date set to the current working date. The table content is stored in the
-     * same package fragment root as the structure. If the qualifiedName includes a package name, the
-     * package is created if it does not already exists.
+     * same package fragment root as the structure. If the qualifiedName includes a package name,
+     * the package is created if it does not already exists.
      */
     protected TableContents newTableContents(ITableStructure ts0, String qualifiedName) throws CoreException {
         TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
@@ -1041,16 +1041,16 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new table content in the indicated package fragment root. If the qualifiedName includes
-     * a package name, the package is created if it does not already exists.
+     * Creates a new table content in the indicated package fragment root. If the qualifiedName
+     * includes a package name, the package is created if it does not already exists.
      */
     protected TableContents newTableContents(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
         return (TableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, qualifiedName);
     }
 
     /**
-     * Creates a new table content in the project's first package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exists.
+     * Creates a new table content in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
      */
     protected TableContents newTableContents(IIpsProject project, String qualifiedName) throws CoreException {
         return (TableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, qualifiedName);
@@ -1066,17 +1066,17 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new test case type in the project's first package fragment root. If the qualifiedName
-     * includes a package name, the package is created if it does not already exists.
+     * Creates a new test case type in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
      */
     protected TestCaseType newTestCaseType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
         return (TestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, qualifiedName);
     }
 
     /**
-     * Creates a new test case that is based on the given test case type. The test case is stored in the
-     * same package fragment root as the structure. If the qualifiedName includes a package name, the
-     * package is created if it does not already exists.
+     * Creates a new test case that is based on the given test case type. The test case is stored in
+     * the same package fragment root as the structure. If the qualifiedName includes a package
+     * name, the package is created if it does not already exists.
      */
     protected TestCase newTestCase(ITestCaseType tCase, String qualifiedName) throws CoreException {
         TestCase testCase = (TestCase)newIpsObject(tCase.getIpsPackageFragment().getRoot(), IpsObjectType.TEST_CASE,
@@ -1087,8 +1087,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new test case in the indicated package fragment root. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * Creates a new test case in the indicated package fragment root. If the qualifiedName includes
+     * a package name, the package is created if it does not already exists.
      */
     protected TestCase newTestCase(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
         return (TestCase)newIpsObject(root, IpsObjectType.TEST_CASE, qualifiedName);
@@ -1117,10 +1117,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Expects an array of classes that comply to the enum type pattern. The enum types are registered
-     * to the provided IpsProject as definded datatypes. The qualifiedName of a registered datatype is
-     * the unqualified class name of the enum type class. The enum type class must have the following
-     * methods:
+     * Expects an array of classes that comply to the enum type pattern. The enum types are
+     * registered to the provided IpsProject as definded datatypes. The qualifiedName of a
+     * registered datatype is the unqualified class name of the enum type class. The enum type class
+     * must have the following methods:
      * </p>
      * <ol>
      * <li>public final static &lt;EnumValue &gt; getAllValues()</li>
@@ -1128,8 +1128,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * <li>public String getName()</li>
      * <li>public boolean isValueOf(String)</li>
      * <li>public String toString(), must return the id of the enum value</li>
-     * <li>public final static &lt;EnumValue &gt; valueOf(String), the id is provided to this method and
-     * an enum values is supposed to be returned by this method</li>
+     * <li>public final static &lt;EnumValue &gt; valueOf(String), the id is provided to this method
+     * and an enum values is supposed to be returned by this method</li>
      * </ol>
      */
     protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project, Class<?>[] adaptedClass)
@@ -1206,8 +1206,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Copies the given project properties file and the given classes to the given project. The classes
-     * are added to the classpath of the project.
+     * Copies the given project properties file and the given classes to the given project. The
+     * classes are added to the classpath of the project.
      * 
      */
     protected void configureProject(IIpsProject project, String ipsProjectFileName, Class<?>[] dependencies)
@@ -1352,7 +1352,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a file ("file.txt") with the given String as content and places it in the given folder.
+     * Creates a file ("file.txt") with the given String as content and places it in the given
+     * folder.
      */
     protected void createFileWithContent(IFolder parentFolder, String fileName, String content) throws CoreException {
         IFile file = parentFolder.getFile(fileName);
@@ -1362,8 +1363,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsObjectPartContainer} and
-     * provided new name.
+     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsObjectPartContainer}
+     * and provided new name.
      */
     protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
             String newName) throws CoreException {
@@ -1384,8 +1385,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IProductCmpt} and provided new
-     * name, thereby allowing to adapt the runtime id.
+     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IProductCmpt} and provided
+     * new name, thereby allowing to adapt the runtime id.
      */
     protected final RefactoringStatus performRenameRefactoring(IProductCmpt productCmpt,
             String newName,
@@ -1434,8 +1435,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Performs the Faktor-IPS 'Move' refactoring for the given {@link IIpsObject} and provided target
-     * {@link IIpsPackageFragment}.
+     * Performs the Faktor-IPS 'Move' refactoring for the given {@link IIpsObject} and provided
+     * target {@link IIpsPackageFragment}.
      */
     protected final RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
@@ -1449,8 +1450,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Performs a composite Faktor-IPS 'Move' refactoring for the given {@link IIpsObject}s and provided
-     * target {@link IIpsPackageFragment}.
+     * Performs a composite Faktor-IPS 'Move' refactoring for the given {@link IIpsObject}s and
+     * provided target {@link IIpsPackageFragment}.
      */
     protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
@@ -1477,8 +1478,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Prints the validation result of the given {@link IIpsObjectPartContainer} to the console if the
-     * severity is at least at the warning level.
+     * Prints the validation result of the given {@link IIpsObjectPartContainer} to the console if
+     * the severity is at least at the warning level.
      */
     protected final void printValidationResult(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
         MessageList validationResult = ipsObjectPartContainer.validate(ipsObjectPartContainer.getIpsProject());
@@ -1488,8 +1489,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Clears the output folders of the given {@link IIpsProject} (to avoid code merging problems) and
-     * performs a full build.
+     * Clears the output folders of the given {@link IIpsProject} (to avoid code merging problems)
+     * and performs a full build.
      */
     protected final void performFullBuild(IIpsProject ipsProject) throws CoreException {
         // To avoid code merging problems

@@ -186,6 +186,7 @@
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
+               class="org.faktorips.devtools.stdbuilder.PolicyBaseClassBuilderSetPropertyDef"
                description="%baseClassPolicyComponentDescription"
                label="%baseClassPolicyComponentLabel"
                name="baseClassPolicyComponent"
@@ -193,6 +194,7 @@
                type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
+               class="org.faktorips.devtools.stdbuilder.ProductBaseClassBuilderSetPropertyDef"
                description="%baseClassProductComponentDescription"
                label="%baseClassProductComponentLabel"
                name="baseClassProductComponent"

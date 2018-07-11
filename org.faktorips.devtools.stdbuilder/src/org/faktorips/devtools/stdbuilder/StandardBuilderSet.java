@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -109,10 +110,8 @@ import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An <code>IpsArtefactBuilderSet</code> implementation that assembles the standard Faktor-IPS
- * <tt>IIpsArtefactBuilder</tt>s.
- * 
- * @author Peter Erzberger
+ * An {@link IIpsArtefactBuilderSet} implementation that assembles the standard Faktor-IPS
+ * {@link IIpsArtefactBuilder IIpsArtefactBuilders}.
  */
 public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilderSet {
 

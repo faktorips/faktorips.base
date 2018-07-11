@@ -32,12 +32,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 
 /**
- * The default implementation of the
- * <code>org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef</code> interface. If
- * no special class is defined in the plugin descriptor for the IpsArtefactBuilderSetPropertyDef
- * instances of this class are created
- * 
- * @author Peter Erzberger
+ * The default implementation of the {@link IIpsBuilderSetPropertyDef} interface. If no special
+ * class is defined in the plugin descriptor for the property, instances of this class are created.
  */
 public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
@@ -91,15 +87,15 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
     @Override
     @SuppressWarnings("unchecked")
-    public IStatus initialize(IIpsModel ipsModel, Map properties) {
+    public IStatus initialize(IIpsModel ipsModel, Map<String, Object> properties) {
         type = (String)properties.get("type"); //$NON-NLS-1$
         name = (String)properties.get("name"); //$NON-NLS-1$
         defaultValue = (String)properties.get("defaultValue"); //$NON-NLS-1$
         description = (String)properties.get("description"); //$NON-NLS-1$
         disableValue = (String)properties.get("disableValue"); //$NON-NLS-1$
         label = (String)properties.get("label"); //$NON-NLS-1$
-        discretePropertyValues = (List)properties.get("discreteValues"); //$NON-NLS-1$
-        supportedJdkVersions = (List)properties.get("jdkComplianceLevels"); //$NON-NLS-1$
+        discretePropertyValues = (List<String>)properties.get("discreteValues"); //$NON-NLS-1$
+        supportedJdkVersions = (List<String>)properties.get("jdkComplianceLevels"); //$NON-NLS-1$
         return null;
     }
 
@@ -158,10 +154,15 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return null;
     }
 
-    // TODO internationalize messages
+    @Override
+    public Message validateValue(IIpsProject ipsProject, String value) {
+        return validateValue(value);
+    }
+
     protected Message getStandardValidationMessage(String value) {
-        return new Message(MSGCODE_NON_PARSABLE_VALUE, "The value \"" + value + "\" is not supported for the type \""
-                + type + "\" of this property \"" + getName() + "\"", Message.ERROR);
+        return new Message(MSGCODE_NON_PARSABLE_VALUE,
+                Messages.bind(Messages.IpsBuilderSetPropertyDef_NonParsableValue, value, type, getName()),
+                Message.ERROR);
     }
 
     @Override
@@ -174,8 +175,10 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return discretePropertyValues.size() != 0;
     }
 
-    private final static void retrieveEnumValues(String type, List<String> discreteValues, IConfigurationElement element) {
-        if (!StringUtils.isEmpty(type) && type.equals("enum") && element.getName().equals("discreteValues")) { //$NON-NLS-1$ //$NON-NLS-2$
+    private static final void retrieveEnumValues(String type,
+            List<String> discreteValues,
+            IConfigurationElement element) {
+        if (!StringUtils.isEmpty(type) && "enum".equals(type) && "discreteValues".equals(element.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
             IConfigurationElement[] values = element.getChildren();
             for (IConfigurationElement value2 : values) {
                 String value = value2.getAttribute("value"); //$NON-NLS-1$
@@ -186,7 +189,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
     }
 
-    private final static boolean retrieveReferencedExtensionPoint(String type,
+    private static final boolean retrieveReferencedExtensionPoint(String type,
             List<String> discreteValues,
             IExtensionRegistry registry,
             String builderSetId,
@@ -198,10 +201,10 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
             String extensionPointId = element.getAttribute("extensionPointId"); //$NON-NLS-1$
             if (StringUtils.isEmpty(extensionPointId)) {
-                logger.log(new IpsStatus(
-                        "If the type attribute of the builder set property " + element.getName() + " of the builder set " + //$NON-NLS-1$ //$NON-NLS-2$
-                                builderSetId
-                                + " has the value \"extensionPoint\" then the \"extensionPointId\" attribute has to have a value.")); //$NON-NLS-1$
+                logger.log(new IpsStatus("If the type attribute of the builder set property " + element.getName() //$NON-NLS-1$
+                        + " of the builder set " + //$NON-NLS-1$
+                        builderSetId
+                        + " has the value \"extensionPoint\" then the \"extensionPointId\" attribute has to have a value.")); //$NON-NLS-1$
                 return false;
             }
             properties.put("extensionPointId", extensionPointId); //$NON-NLS-1$
@@ -214,9 +217,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return true;
     }
 
-    private final static void retrieveJdkComplianceLevels(List<String> jdkComplianceLevelList,
+    private static final void retrieveJdkComplianceLevels(List<String> jdkComplianceLevelList,
             IConfigurationElement element) {
-        if (element.getName().equals("jdkComplianceLevels")) { //$NON-NLS-1$
+        if ("jdkComplianceLevels".equals(element.getName())) { //$NON-NLS-1$
             IConfigurationElement[] values = element.getChildren();
             for (IConfigurationElement value : values) {
                 String level = value.getAttribute("value"); //$NON-NLS-1$
@@ -227,7 +230,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
     }
 
-    private final static boolean retrieveProperties(ILog logger,
+    private static final boolean retrieveProperties(ILog logger,
             IExtensionRegistry registry,
             String builderSetId,
             IConfigurationElement element,
@@ -239,22 +242,22 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
         String name = element.getAttribute("name"); //$NON-NLS-1$
         if (!classValueSpecified && StringUtils.isEmpty(name)) {
-            logger.log(new IpsStatus(
-                    "The required attribute \"name\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.log(new IpsStatus("The required attribute \"name\" of the builder set property " + element.getName() //$NON-NLS-1$
+                    + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         properties.put("name", name); //$NON-NLS-1$
         String label = element.getAttribute("label"); //$NON-NLS-1$
         if (!classValueSpecified && StringUtils.isEmpty(label)) {
-            logger.log(new IpsStatus(
-                    "The required attribute \"label\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.log(new IpsStatus("The required attribute \"label\" of the builder set property " + element.getName() //$NON-NLS-1$
+                    + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         properties.put("label", label); //$NON-NLS-1$
         String type = element.getAttribute("type"); //$NON-NLS-1$
         if (!classValueSpecified && StringUtils.isEmpty(type)) {
-            logger.log(new IpsStatus(
-                    "The required attribute \"type\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.log(new IpsStatus("The required attribute \"type\" of the builder set property " + element.getName() //$NON-NLS-1$
+                    + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         properties.put("type", type); //$NON-NLS-1$
@@ -268,7 +271,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         String description = element.getAttribute("description"); //$NON-NLS-1$
         properties.put("description", description); //$NON-NLS-1$
 
-        if (!retrieveReferencedExtensionPoint(type, discreteValues, registry, builderSetId, properties, element, logger)) {
+        if (!retrieveReferencedExtensionPoint(type, discreteValues, registry, builderSetId, properties, element,
+                logger)) {
             return false;
         }
 
@@ -282,7 +286,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         return true;
     }
 
-    public final static IIpsBuilderSetPropertyDef loadExtensions(IConfigurationElement element,
+    public static final IIpsBuilderSetPropertyDef loadExtensions(IConfigurationElement element,
             IExtensionRegistry registry,
             String builderSetId,
             ILog logger,

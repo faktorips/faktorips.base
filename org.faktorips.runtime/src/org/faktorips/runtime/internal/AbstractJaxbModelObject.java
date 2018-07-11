@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Abstract base class for policy component types enabled for JAXB persistence.
  */
@@ -28,6 +30,7 @@ public abstract class AbstractJaxbModelObject extends AbstractModelObject {
     /** Uniquely identifies this model object within the object graph it belongs to. */
     @XmlAttribute(name = "object.id")
     @XmlID
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "written and read by JAXB")
     private String jaxbId = "jaxbId-" + UUID.randomUUID().toString();
 
 }
