@@ -51,7 +51,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         javaProject = ipsProject.getJavaProject();
-        provider = new ClassLoaderProvider(javaProject, ClassLoader.getSystemClassLoader(), true, true);
+        provider = new ClassLoaderProvider(javaProject, ClassLoader.getSystemClassLoader());
     }
 
     /**
@@ -88,12 +88,11 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         ClassLoader cl = provider.getClassLoader();
         assertNotNull(cl);
 
-        Class<?> clazz = Class.forName("SomeClass", true, cl);
+        Class<?> clazz = cl.loadClass("SomeClass");
         assertEquals("SomeClass", clazz.getName());
 
-        clazz = Class.forName("org.faktorips.test.ClassInAJar", true, cl);
+        clazz = cl.loadClass("org.faktorips.test.ClassInAJar");
         assertEquals("org.faktorips.test.ClassInAJar", clazz.getName());
-
     }
 
     @Test
