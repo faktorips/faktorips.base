@@ -93,12 +93,12 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         assertEquals(gen2, generations[0]);
         assertEquals(gen1, generations[1]);
 
-        // gen2 has valid from date null => is should come last
+        // gen2 has valid from date null => it should come first
         gen2.setValidFrom(null);
         generations = timedObject.getGenerationsOrderedByValidDate();
         assertEquals(2, generations.length);
-        assertEquals(gen1, generations[0]);
-        assertEquals(gen2, generations[1]);
+        assertEquals(gen1, generations[1]);
+        assertEquals(gen2, generations[0]);
 
         // now also gen1 has valid from date null
         gen1.setValidFrom(null);

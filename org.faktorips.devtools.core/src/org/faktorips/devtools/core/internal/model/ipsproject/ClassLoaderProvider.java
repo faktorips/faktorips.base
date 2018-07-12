@@ -10,21 +10,19 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.jar.JarFile;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -34,12 +32,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -47,20 +41,11 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Provides a classloader for the classpath defined in a given Java project.
- * 
- * @author Jan Ortmann
  */
 public class ClassLoaderProvider {
 
-    private boolean includeProjectsOutputLocation;
     private IJavaProject javaProject;
     private URLClassLoader classLoader;
-
-    /** <code>true</code> if the jars should be copied as temporary jars */
-    private boolean copyJars = false;
-
-    /** The directory where the jar files are copies to (if copyJars = true). */
-    private File tempFileDir = null;
 
     /**
      * a list of IPaths that contain the class files, either a path to a file if it's a Jar-File or
@@ -82,18 +67,15 @@ public class ClassLoaderProvider {
      */
     private ClassLoader parentClassLoader = null;
 
-    public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean copyJars) {
-        this(project, ClassLoader.getSystemClassLoader(), includeProjectsOutputLocation, copyJars);
+    public ClassLoaderProvider(IJavaProject project) {
+        this(project, ClassLoader.getSystemClassLoader());
     }
 
-    public ClassLoaderProvider(IJavaProject project, ClassLoader parentClassLoader,
-            boolean includeProjectsOutputLocation, boolean copyJars) {
+    public ClassLoaderProvider(IJavaProject project, ClassLoader parentClassLoader) {
         ArgumentCheck.notNull(project);
         ArgumentCheck.notNull(parentClassLoader);
         javaProject = project;
         this.parentClassLoader = parentClassLoader;
-        this.includeProjectsOutputLocation = includeProjectsOutputLocation;
-        this.copyJars = copyJars;
     }
 
     /**
@@ -102,18 +84,15 @@ public class ClassLoaderProvider {
     public ClassLoader getClassLoader() {
         if (classLoader == null) {
             try {
-                setUpTempFileDir();
                 classLoader = getProjectClassloader(javaProject);
                 IWorkspace workspace = javaProject.getProject().getWorkspace();
                 if (resourceChangeListener != null) {
                     workspace.removeResourceChangeListener(resourceChangeListener);
                 }
                 resourceChangeListener = new ChangeListener();
-                javaProject
-                        .getProject()
-                        .getWorkspace()
-                        .addResourceChangeListener(resourceChangeListener,
-                                IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
+                javaProject.getProject().getWorkspace().addResourceChangeListener(resourceChangeListener,
+                        IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD
+                                | IResourceChangeEvent.PRE_DELETE);
 
             } catch (IOException e) {
                 throw new CoreRuntimeException(new IpsStatus(e));
@@ -154,217 +133,14 @@ public class ClassLoaderProvider {
      * Returns a classloader containing the project's output location and all it's libraries (jars).
      */
     private URLClassLoader getProjectClassloader(IJavaProject project) throws IOException, CoreException {
-        List<URL> urlsList = new ArrayList<URL>();
-        accumulateClasspath(project, urlsList);
-        URL[] urls = urlsList.toArray(new URL[urlsList.size()]);
+        String[] classPathEntries = JavaRuntime.computeDefaultRuntimeClassPath(project);
+        URL[] urls = new URL[classPathEntries.length];
+        for (int i = 0; i < classPathEntries.length; i++) {
+            IPath path = new Path(classPathEntries[i]);
+            addClassfileContainer(path);
+            urls[i] = path.toFile().toURI().toURL();
+        }
         return new URLClassLoader(urls, parentClassLoader);
-    }
-
-    private void accumulateClasspath(IJavaProject currentProject, List<URL> urlsList) throws IOException, CoreException {
-        if (isExistingProject(currentProject)) {
-            return;
-        }
-
-        IPath projectPath = currentProject.getProject().getLocation();
-        IPath root = projectPath.removeLastSegments(currentProject.getProject().getFullPath().segmentCount());
-
-        if (isIncludeOutputLocation(currentProject)) {
-            IPath outLocation = currentProject.getOutputLocation();
-            IPath output = root.append(outLocation);
-            urlsList.add(output.toFile().toURI().toURL());
-            addClassfileContainer(output);
-        }
-
-        Set<IPath> jreEntries = getJrePathEntries(currentProject);
-        IClasspathEntry[] entry = currentProject.getResolvedClasspath(true);
-        accumulateClasspathEntry(urlsList, root, jreEntries, entry);
-
-        String[] requiredProjectNames = currentProject.getRequiredProjectNames();
-        if (requiredProjectNames != null && requiredProjectNames.length > 0) {
-            for (String requiredProjectName : requiredProjectNames) {
-                accumulateClasspath(currentProject.getJavaModel().getJavaProject(requiredProjectName), urlsList);
-            }
-        }
-    }
-
-    private boolean isExistingProject(IJavaProject currentProject) {
-        return currentProject == null || !currentProject.exists();
-    }
-
-    private boolean isIncludeOutputLocation(IJavaProject currentProject) {
-        return currentProject != javaProject || includeProjectsOutputLocation;
-    }
-
-    private void setUpTempFileDir() {
-        if (copyJars) {
-            if (tempFileDir == null) {
-                boolean tmpDirCreated = initTempDir(javaProject);
-                if (!tmpDirCreated) {
-                    copyJars = false;
-                }
-            } else {
-                cleanupTemp(tempFileDir);
-            }
-        }
-    }
-
-    private void accumulateClasspathEntry(List<URL> urlsList, IPath root, Set<IPath> jreEntries, IClasspathEntry[] entry)
-            throws IOException {
-        for (IClasspathEntry element : entry) {
-            if (jreEntries.contains(element.getPath())) {
-                // assume that JRE libs are already available via the parent class loader
-                continue;
-            }
-            if (element.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-                IPath jarPath;
-                /*
-                 * evaluate the correct path of the classpath entry; if the entry path contains no
-                 * device then the root path will be added in front of the path, otherwise the path
-                 * is already an absolute path (e.g. external libraries) Remark: IPath#isAbsolute
-                 * didn't work in this case
-                 */
-                if (StringUtils.isEmpty(element.getPath().getDevice())) {
-                    jarPath = root.append(element.getPath());
-                } else {
-                    jarPath = element.getPath();
-                }
-
-                IPath currentPath;
-                if (copyJars) {
-                    currentPath = copyJar(jarPath, tempFileDir);
-                } else {
-                    currentPath = jarPath;
-                }
-                if (currentPath != null) {
-                    urlsList.add(currentPath.toFile().toURI().toURL());
-                    addClassfileContainer(jarPath);
-                }
-            }
-        }
-    }
-
-    private Set<IPath> getJrePathEntries(IJavaProject javaProject) throws JavaModelException {
-        Set<IPath> jreEntries = new HashSet<IPath>();
-        IClasspathContainer jreContainer = JavaCore.getClasspathContainer(new Path(
-                "org.eclipse.jdt.launching.JRE_CONTAINER"), javaProject); //$NON-NLS-1$
-        if (jreContainer == null) {
-            IpsPlugin.log(new IpsStatus("No JRE Classpath Container found for project " + javaProject)); //$NON-NLS-1$
-        } else {
-            IClasspathEntry[] entries = jreContainer.getClasspathEntries();
-            for (int i = 0; i < entries.length; i++) {
-                jreEntries.add(entries[i].getPath());
-            }
-        }
-        return jreEntries;
-    }
-
-    /**
-     * Creates a temporary directory to store temporary jars in the plug-in state location. (The
-     * plug-in state area is a file directory within the platform's .metadata area where a plug-in
-     * is free to create files (see {@link Plugin#getStateLocation()}). Each project gets its own
-     * temporary directory because each project gets its own classloader provider.) Cleanup the
-     * directory if it already exists. NOTE: this is necessary because the virtual machine doesn't
-     * delete all temporary jars correctly, the jars from which a class was instantiated by the
-     * classloader are not deleted automatically when the virtual machine terminates.
-     * 
-     * @return <code>true</code> if the directory is now available, <code>false</code> if it cannot
-     *         be created
-     */
-    private boolean initTempDir(IJavaProject project) {
-        tempFileDir = IpsPlugin.getDefault().getStateLocation().append(project.getProject().getName()).toFile();
-        if (tempFileDir.exists()) {
-            cleanupTemp(tempFileDir);
-        }
-        if (!tempFileDir.exists()) {
-            return tempFileDir.mkdirs();
-        }
-        return true;
-    }
-
-    private void cleanupTemp(File root) {
-        File[] files = root.listFiles();
-        for (int i = 0; files != null && i < files.length; i++) {
-            if (files[i].isDirectory()) {
-                cleanupTemp(files[i]);
-            }
-            if (!files[i].delete()) {
-                files[i].deleteOnExit();
-            }
-        }
-        classfileContainers.clear();
-    }
-
-    /**
-     * Copies the given jar as temporary jar.
-     */
-    private IPath copyJar(IPath jarPath, File tempFileDir) throws IOException {
-        File jarFile = jarPath.toFile();
-        if (jarFile == null) {
-            return null;
-        }
-        if (!jarFile.exists() || !jarFile.isFile()) {
-            return null;
-        }
-        int index = jarFile.getName().lastIndexOf('.');
-        String name = jarFile.getName();
-        File copy;
-        if (index == -1) {
-            copy = File.createTempFile(name + "tmp", "jar", tempFileDir); //$NON-NLS-1$ //$NON-NLS-2$
-        } else if (index < 3) {
-            // File.createTempFile required that the prefix is at least three characters long!
-            copy = File.createTempFile(name.substring(0, index) + "tmp", name.substring(index), tempFileDir); //$NON-NLS-1$
-        } else {
-            copy = File.createTempFile(name.substring(0, index), name.substring(index), tempFileDir);
-        }
-        copy.deleteOnExit();
-        InputStream is = null;
-        FileOutputStream os = null;
-        try {
-            is = new FileInputStream(jarFile);
-            os = new FileOutputStream(copy);
-            byte[] buffer = new byte[16384];
-            int bytesRead = 0;
-            while (bytesRead > -1) {
-                bytesRead = is.read(buffer);
-                if (bytesRead > 0) {
-                    os.write(buffer, 0, bytesRead);
-                }
-            }
-        } finally {
-            closeStream(is, os);
-        }
-        return new Path(copy.getPath());
-    }
-
-    private void closeStream(Closeable... closeables) {
-        Throwable pendingThrowable = closeAndReturnCaughtException(closeables);
-        throwIfNecessary(pendingThrowable);
-    }
-
-    private Throwable closeAndReturnCaughtException(Closeable... closeables) {
-        Throwable pending = null;
-        for (Closeable closeable : closeables) {
-            if (closeable != null) {
-                try {
-                    closeable.close();
-                } catch (IOException throwable) {
-                    if (pending == null) {
-                        pending = throwable;
-                    }
-                }
-            }
-        }
-        return pending;
-    }
-
-    private void throwIfNecessary(Throwable pendingThrowable) {
-        if (pendingThrowable != null) {
-            if (pendingThrowable instanceof RuntimeException) {
-                throw (RuntimeException)pendingThrowable;
-            } else {
-                throw new RuntimeException(pendingThrowable);
-            }
-        }
     }
 
     /**
@@ -384,12 +160,100 @@ public class ClassLoaderProvider {
                     && event.getBuildKind() == IncrementalProjectBuilder.CLEAN_BUILD) {
                 return;
             }
+            if (event.getType() == IResourceChangeEvent.PRE_DELETE) {
+                try {
+                    // TODO JAVA8: remove this hack and just use URLClassLoader#close()
+                    ClassLoaderCloser.close(classLoader);
+                } catch (IOException e) {
+                    IpsPlugin.log(e);
+                }
+                classfileContainers.clear();
+                classpathContentsChanged();
+            }
             for (IPath container : classfileContainers) {
                 IResourceDelta delta = event.getDelta().findMember(container);
                 if (delta != null) {
                     classpathContentsChanged();
                     break;
                 }
+            }
+        }
+    }
+
+    private static class ClassLoaderCloser {
+
+        /* adapted from http://planet.jboss.org/post/classloaders_keeping_jar_files_open */
+        static void close(URLClassLoader classLoader) throws IOException {
+            // on Java 7+, use the close()-Method
+            boolean closedViaMethodCall = invokeMethod(URLClassLoader.class, "close", classLoader); //$NON-NLS-1$
+            if (!closedViaMethodCall) {
+                Object urlClassPath = getFieldValue(URLClassLoader.class, classLoader, "ucp"); //$NON-NLS-1$
+                Collection<?> loaders = getFieldValue(urlClassPath, "loaders"); //$NON-NLS-1$
+                if (loaders != null) {
+                    List<IOException> errors = new LinkedList<IOException>();
+                    for (Object jarLoader : loaders) {
+                        JarFile jarFile = getFieldValue(jarLoader, "jar"); //$NON-NLS-1$
+                        if (jarFile != null) {
+                            try {
+                                jarFile.close();
+                            } catch (IOException e) {
+                                errors.add(e);
+                            }
+                        }
+                    }
+                    if (!errors.isEmpty()) {
+                        // Can't add other exceptions as suppressed in Java 6...
+                        throw errors.get(0);
+                    }
+                }
+            }
+        }
+
+        static boolean invokeMethod(Class<URLClassLoader> clazz, String methodName, URLClassLoader object) {
+            Method method = null;
+            try {
+                method = clazz.getMethod(methodName);
+            } catch (SecurityException e) {
+                return false;
+            } catch (NoSuchMethodException e) {
+                return false;
+            }
+            if (method != null) {
+                try {
+                    method.invoke(object);
+                    return true;
+                } catch (IllegalArgumentException e) {
+                    return false;
+                } catch (IllegalAccessException e) {
+                    return false;
+                } catch (InvocationTargetException e) {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        private static <V> V getFieldValue(Object o, String fieldName) {
+            return getFieldValue(o.getClass(), o, fieldName);
+        }
+
+        @SuppressWarnings("unchecked")
+        private static <V> V getFieldValue(Class<?> c, Object o, String fieldName) {
+            if (o == null) {
+                return null;
+            }
+            try {
+                Field field = c.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return (V)field.get(o);
+            } catch (SecurityException e) {
+                return null;
+            } catch (NoSuchFieldException e) {
+                return null;
+            } catch (IllegalArgumentException e) {
+                return null;
+            } catch (IllegalAccessException e) {
+                return null;
             }
         }
     }

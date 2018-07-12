@@ -12,28 +12,28 @@ package org.faktorips.runtime.internal;
 
 /**
  * A collection of utility methods for Strings. We don't use a class library like apache-commons
- * here to minimize the dependencies for the generated code.
+ * here to minimise the dependencies for the generated code.
  * 
  */
-public class IpsStringUtils {
+public final class IpsStringUtils {
 
     public static final String EMPTY = "";
 
     private IpsStringUtils() {
-        // Utility class not to be instantiated.
+        /* no instances */
     }
 
     /**
-     * Returns <code>true</code> if s is either null or the empty string, otherwise
-     * <code>false</code>.
+     * Returns {@code true} if {@code s} is either {@code null} or the empty string, otherwise
+     * {@code false}.
      */
     public static final boolean isEmpty(String s) {
         return s == null || s.isEmpty();
     }
 
     /**
-     * Returns <code>true</code> if s is either null, the empty string or a string that only
-     * contains whitespaces, otherwise <code>false</code>.
+     * Returns {@code true} if {@code s} is either {@code null}, the empty string or a string that
+     * only contains whitespace, otherwise {@code false}.
      */
     public static final boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();

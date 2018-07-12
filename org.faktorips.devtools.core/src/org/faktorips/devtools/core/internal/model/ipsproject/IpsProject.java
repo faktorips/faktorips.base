@@ -302,8 +302,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public ClassLoader getClassLoaderForJavaProject(ClassLoader parent) {
         ArgumentCheck.notNull(parent);
-        // always creates a new classloader,
-        final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), parent, true, false);
+        // always creates a new classloader
+        final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), parent);
         return classLoaderProvider.getClassLoader();
     }
 
