@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +28,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.runtime.internal.AbstractJaxbModelObject;
+import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.ProductComponent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,8 +69,8 @@ public class GeneratorModelContextTest {
 
         List<IAnnotationGenerator> policyCmptImplClassAnnotationGens = new ArrayList<IAnnotationGenerator>();
         policyCmptImplClassAnnotationGens.add(mock(IAnnotationGenerator.class));
-        when(annotationGeneratorMap.get(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS)).thenReturn(
-                policyCmptImplClassAnnotationGens);
+        when(annotationGeneratorMap.get(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS))
+                .thenReturn(policyCmptImplClassAnnotationGens);
 
         annotationGenerators = generatorModelContext
                 .getAnnotationGenerator(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS);
@@ -79,17 +84,15 @@ public class GeneratorModelContextTest {
 
     @Test
     public void testIsGenerateSerializablePolicyCmptSupport_True() {
-        when(
-                config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT))
-                .thenReturn(true);
+        when(config.getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT)).thenReturn(true);
         assertTrue(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
     }
 
     @Test
     public void testIsGenerateSerializablePolicyCmptSupport_False() {
-        when(
-                config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT))
-                .thenReturn(false);
+        when(config.getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT)).thenReturn(false);
         assertFalse(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
     }
 
@@ -105,6 +108,43 @@ public class GeneratorModelContextTest {
         when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS))
                 .thenReturn(true);
         assertTrue(generatorModelContext.isGenerateConvenienceGetters());
+    }
+
+    @Test
+    public void testGetBaseClassPolicyCmptType() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
+                .thenReturn("org.faktorips.FooBar");
+        assertThat(generatorModelContext.getBaseClassPolicyCmptType(), is("org.faktorips.FooBar"));
+    }
+
+    @Test
+    public void testGetBaseClassPolicyCmptType_default() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
+                .thenReturn("");
+        assertThat(generatorModelContext.getBaseClassPolicyCmptType(), is(AbstractModelObject.class.getName()));
+    }
+
+    @Test
+    public void testGetBaseClassPolicyCmptType_defaultJaxb() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
+                .thenReturn("");
+        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn(true);
+        assertThat(generatorModelContext.getBaseClassPolicyCmptType(), is(AbstractJaxbModelObject.class.getName()));
+    }
+
+    @Test
+    public void testGetBaseClassProductCmptType() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE))
+                .thenReturn("org.faktorips.Baz");
+        assertThat(generatorModelContext.getBaseClassProductCmptType(), is("org.faktorips.Baz"));
+    }
+
+    @Test
+    public void testGetBaseClassProductCmptType_default() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE))
+                .thenReturn("");
+        assertThat(generatorModelContext.getBaseClassProductCmptType(), is(ProductComponent.class.getName()));
     }
 
 }

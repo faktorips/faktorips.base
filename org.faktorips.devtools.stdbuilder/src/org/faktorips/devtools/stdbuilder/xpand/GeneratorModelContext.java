@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
+import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.ProductComponent;
 
@@ -393,7 +394,10 @@ public class GeneratorModelContext {
     public String getBaseClassPolicyCmptType() {
         String baseClass = getConfig()
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
-        return StringUtils.isBlank(baseClass) ? AbstractModelObject.class.getName() : baseClass;
+        return StringUtils.isBlank(baseClass)
+                ? getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)
+                        ? AbstractJaxbModelObject.class.getName() : AbstractModelObject.class.getName()
+                : baseClass;
     }
 
     public String getBaseClassProductCmptType() {
