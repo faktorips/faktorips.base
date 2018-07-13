@@ -262,7 +262,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     firstComment = false;
                 } else {
                     newText.append(SystemUtils.LINE_SEPARATOR);
-                    newText.append(SystemUtils.LINE_SEPARATOR);
                 }
             }
             newText.append(token);

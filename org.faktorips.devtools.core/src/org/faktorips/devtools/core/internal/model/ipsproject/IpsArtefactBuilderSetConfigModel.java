@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -68,20 +69,40 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     public final void initFromXml(Element el) {
         properties = new LinkedHashMap<String, String>();
         propertiesDescription = new LinkedHashMap<String, String>();
-        NodeList nl = el.getElementsByTagName(PROPERTY_XML_TAG);
+        NodeList nl = el.getChildNodes();
+        String commentBeforeElement = StringUtils.EMPTY;
         for (int i = 0; i < nl.getLength(); i++) {
-            Element propertyEl = (Element)nl.item(i);
-            String key = propertyEl.getAttribute(NAME_XML_ATTR);
-            String value = propertyEl.getAttribute(VALUE_XML_ATTR);
-            NodeList propertyElNodeList = propertyEl.getChildNodes();
-            for (int j = 0; j < propertyElNodeList.getLength(); j++) {
-                Node node = propertyElNodeList.item(j);
-                if (node instanceof Comment) {
-                    Comment comment = (Comment)node;
-                    propertiesDescription.put(key, comment.getData());
+            Node node = nl.item(i);
+            if (node instanceof Comment) {
+                commentBeforeElement = ((Comment)node).getData();
+                continue;
+            } else if (node.getNodeName().equals(PROPERTY_XML_TAG)) {
+                Element propertyEl = (Element)node;
+                String key = propertyEl.getAttribute(NAME_XML_ATTR);
+                String value = propertyEl.getAttribute(VALUE_XML_ATTR);
+                if (!commentBeforeElement.isEmpty()) {
+                    propertiesDescription.put(key, commentBeforeElement);
+                    commentBeforeElement = StringUtils.EMPTY;
+                } else {
+                    readOldStyleComment(propertyEl, key);
                 }
+                properties.put(key, value);
             }
-            properties.put(key, value);
+        }
+    }
+
+    /**
+     * Before IPS 3.22 the comment was nested as a child element of the property element. This
+     * method reads these comments if they still exists.
+     */
+    private void readOldStyleComment(Element propertyEl, String key) {
+        NodeList propertyElNodeList = propertyEl.getChildNodes();
+        for (int j = 0; j < propertyElNodeList.getLength(); j++) {
+            Node child = propertyElNodeList.item(j);
+            if (child instanceof Comment) {
+                Comment comment = (Comment)child;
+                propertiesDescription.put(key, comment.getData());
+            }
         }
     }
 
@@ -121,12 +142,12 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         Set<String> keys = properties.keySet();
         for (String key : keys) {
             String value = properties.get(key);
-            Element prop = doc.createElement(PROPERTY_XML_TAG);
             String description = propertiesDescription.get(key);
             if (description != null) {
                 Comment comment = doc.createComment(description);
-                prop.appendChild(comment);
+                root.appendChild(comment);
             }
+            Element prop = doc.createElement(PROPERTY_XML_TAG);
             root.appendChild(prop);
             prop.setAttribute(NAME_XML_ATTR, key);
             prop.setAttribute(VALUE_XML_ATTR, value);
