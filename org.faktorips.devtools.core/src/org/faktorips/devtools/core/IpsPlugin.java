@@ -88,8 +88,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public static final String CONFIG_ELEMENT_ID_MIGRATION_OPERATION = "migrationOperation"; //$NON-NLS-1$
 
-    public static final boolean TRACE_UI = Boolean.valueOf(
-            Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
+    public static final boolean TRACE_UI = Boolean
+            .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
 
     private static final String EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY = "teamOperationsFactory"; //$NON-NLS-1$
 
@@ -416,7 +416,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <strong>FOR INTERNAL TEST USE ONLY.</strong>
      * <p>
      * Returns the answer provider for testing purpose.
      */
@@ -425,7 +425,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <strong>FOR INTERNAL TEST USE ONLY.</strong>
      * <p>
      * Returns the answer provider for testing purpose.
      */
@@ -473,8 +473,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Initializes the array of all available table formats.
      */
     private void initExternalTableFormats() {
-        IConfigurationElement[] elements = getExtensionRegistry().getConfigurationElementsFor(
-                "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
+        IConfigurationElement[] elements = getExtensionRegistry()
+                .getConfigurationElementsFor("org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         List<ITableFormat> result = new ArrayList<ITableFormat>();
         for (IConfigurationElement element : elements) {
             try {
@@ -499,12 +499,12 @@ public class IpsPlugin extends AbstractUIPlugin {
         format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
         format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 
-        IConfigurationElement[] elements = getExtensionRegistry().getConfigurationElementsFor(
-                "org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
+        IConfigurationElement[] elements = getExtensionRegistry()
+                .getConfigurationElementsFor("org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
 
         for (IConfigurationElement element : elements) {
             String tableFormatId = formatElement.getAttribute("id"); //$NON-NLS-1$
-            if (element.getAttribute("tableFormatId").equals(tableFormatId)) { //$NON-NLS-1$")
+            if (element.getAttribute("tableFormatId").equals(tableFormatId)) { //$NON-NLS-1$
                 // Converter found for current table format id.
                 IConfigurationElement[] valueConverters = element.getChildren();
                 for (IConfigurationElement valueConverter : valueConverters) {
@@ -596,7 +596,8 @@ public class IpsPlugin extends AbstractUIPlugin {
                         } catch (CoreException e) {
                             log(new IpsStatus(
                                     "Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                                            + extension.getUniqueIdentifier(), e));
+                                            + extension.getUniqueIdentifier(),
+                                    e));
                         }
                     }
                 }
@@ -672,7 +673,7 @@ public class IpsPlugin extends AbstractUIPlugin {
             throws CoreException {
 
         IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
-        if (isTestMode()) {
+        if (isTestMode() && getTestAnswerProvider() != null) {
             Object obj = getTestAnswerProvider().getAnswer();
             if (obj instanceof IIpsFeatureVersionManager[]) {
                 managers = (IIpsFeatureVersionManager[])obj;
@@ -704,8 +705,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName) {
         Map<Version, IIpsProjectMigrationOperationFactory> result = new HashMap<Version, IIpsProjectMigrationOperationFactory>();
-        IConfigurationElement[] configurationElements = getExtensionRegistry().getConfigurationElementsFor(
-                EXTENSION_POINT_ID_MIGRATION_OPERATION);
+        IConfigurationElement[] configurationElements = getExtensionRegistry()
+                .getConfigurationElementsFor(EXTENSION_POINT_ID_MIGRATION_OPERATION);
         for (IConfigurationElement configElement : configurationElements) {
             if (configElement == null || !configElement.getName().equals(CONFIG_ELEMENT_ID_MIGRATION_OPERATION)) {
                 continue;
@@ -744,8 +745,8 @@ public class IpsPlugin extends AbstractUIPlugin {
             IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY);
             for (IExtension extension : extensions) {
                 for (IConfigurationElement configElement : extension.getConfigurationElements()) {
-                    ITeamOperationsFactory factory = ExtensionPoints.createExecutableExtension(extension,
-                            configElement, "class", ITeamOperationsFactory.class); //$NON-NLS-1$
+                    ITeamOperationsFactory factory = ExtensionPoints.createExecutableExtension(extension, configElement,
+                            "class", ITeamOperationsFactory.class); //$NON-NLS-1$
                     if (factory != null) {
                         teamOperationsFactories.add(factory);
                     }

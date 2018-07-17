@@ -45,6 +45,13 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     }
 
     @Override
+    public void tearDown() throws Exception {
+        plugin.setTestMode(false);
+        plugin.setTestAnswerProvider(null);
+        super.tearDown();
+    }
+
+    @Override
     protected void tearDownExtension() throws Exception {
         plugin.getLog().removeLogListener(this);
     }

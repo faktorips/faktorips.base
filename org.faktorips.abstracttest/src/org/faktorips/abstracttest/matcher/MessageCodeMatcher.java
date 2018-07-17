@@ -11,11 +11,12 @@ package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.util.message.MessageList;
 import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link MessageList} contains a message with a certain message code.
  */
-public class MessageCodeMatcher extends AbstractMessageListMatcher {
+public class MessageCodeMatcher extends TypeSafeMatcher<MessageList> {
     private final String msgCode;
     private boolean expectMessage;
 

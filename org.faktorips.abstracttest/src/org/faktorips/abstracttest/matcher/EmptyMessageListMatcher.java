@@ -11,11 +11,12 @@ package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.util.message.MessageList;
 import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link MessageList} is empty.
  */
-public class EmptyMessageListMatcher extends AbstractMessageListMatcher {
+public class EmptyMessageListMatcher extends TypeSafeMatcher<MessageList> {
 
     @Override
     public void describeTo(Description description) {
@@ -23,7 +24,7 @@ public class EmptyMessageListMatcher extends AbstractMessageListMatcher {
     }
 
     @Override
-    boolean matchesSafely(MessageList list) {
+    protected boolean matchesSafely(MessageList list) {
         return list.isEmpty();
     }
 
