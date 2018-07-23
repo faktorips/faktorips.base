@@ -21,10 +21,10 @@ public class ProductCmptGenerationNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = -5796918674803530938L;
 
-    private String repositoryName;
-    private String productCmptId;
-    private Calendar effectiveDate;
-    private boolean productCmptWasFound;
+    private final String repositoryName;
+    private final String productCmptId;
+    private final Calendar effectiveDate;
+    private final boolean productCmptWasFound;
 
     /**
      * Creates a new exception that indicates that no product component generation with the given id

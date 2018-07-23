@@ -7,25 +7,15 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.abstracttest.matcher;
+package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.util.message.MessageList;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import org.faktorips.runtime.internal.ProductComponent;
 
-/**
- * Checks whether a {@link MessageList} is empty.
- */
-public class EmptyMessageListMatcher extends TypeSafeMatcher<MessageList> {
+public class ProductBaseClassBuilderSetPropertyDef extends AbstractBaseClassBuilderSetPropertyDef {
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText("an empty message list");
-    }
-
-    @Override
-    protected boolean matchesSafely(MessageList list) {
-        return list.isEmpty();
+    protected Class<ProductComponent> getRequiredSuperClass() {
+        return ProductComponent.class;
     }
 
 }

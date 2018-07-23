@@ -175,26 +175,29 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * {@link Message} object is returned.
      */
     @Override
-    public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
+    public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject,
+            String propertyName,
+            String propertyValue) {
         IIpsBuilderSetPropertyDef propertyDef = propertyDefinitions.get(propertyName);
         if (propertyDef == null) {
             String text = NLS.bind(Messages.IpsArtefactBuilderSetInfo_propertyNotSupported, builderSetId, propertyName);
             return new Message(MSG_CODE_PROPERTY_NOT_SUPPORTED, text, Message.ERROR);
         }
-        Message msg = propertyDef.validateValue(propertyValue);
+        Message msg = propertyDef.validateValue(ipsProject, propertyValue);
         if (msg != null) {
             return msg;
         }
         String disableValue = propertyDef.getDisableValue(ipsProject);
         if (!propertyDef.isAvailable(ipsProject) && (disableValue != null && disableValue.equals(propertyValue))) {
-            return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE, NLS.bind(
-                    Messages.IpsArtefactBuilderSetInfo_propertyInompatibleJDK, propertyName, builderSetId),
+            return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE,
+                    NLS.bind(Messages.IpsArtefactBuilderSetInfo_propertyInompatibleJDK, propertyName, builderSetId),
                     Message.ERROR);
         }
         return null;
     }
 
-    private final static Map<String, IIpsBuilderSetPropertyDef> retrieveBuilderSetProperties(IExtensionRegistry registry,
+    private static final Map<String, IIpsBuilderSetPropertyDef> retrieveBuilderSetProperties(
+            IExtensionRegistry registry,
             String builderSetId,
             IIpsModel ipsModel,
             IConfigurationElement element,
@@ -203,8 +206,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         IConfigurationElement[] builderSetPropertyDefElements = element.getChildren(BUILDER_SET_PROPERTY_DEF);
         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<String, IIpsBuilderSetPropertyDef>();
         for (IConfigurationElement builderSetPropertyDefElement : builderSetPropertyDefElements) {
-            IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(
-                    builderSetPropertyDefElement, registry, builderSetId, logger, ipsModel);
+            IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef
+                    .loadExtensions(builderSetPropertyDefElement, registry, builderSetId, logger, ipsModel);
             if (propertyDef != null) {
                 builderSetPropertyDefs.put(propertyDef.getName(), propertyDef);
             }
@@ -215,7 +218,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     /**
      * Loads IpsArtefactBuilderSetInfos from the extension registry.
      */
-    public final static void loadExtensions(IExtensionRegistry registry,
+    public static final void loadExtensions(IExtensionRegistry registry,
             ILog logger,
             List<IIpsArtefactBuilderSetInfo> builderSetInfoList,
             IIpsModel ipsModel) {
@@ -242,9 +245,9 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
                     Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
                             registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
-                    builderSetInfoList.add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(),
-                            builderSetClassName, extension.getUniqueIdentifier(), extension.getLabel(),
-                            builderSetPropertyDefs));
+                    builderSetInfoList
+                            .add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(), builderSetClassName,
+                                    extension.getUniqueIdentifier(), extension.getLabel(), builderSetPropertyDefs));
                 }
             }
         }

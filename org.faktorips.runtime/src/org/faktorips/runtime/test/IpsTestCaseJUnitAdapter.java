@@ -22,20 +22,21 @@ import junit.framework.TestCase;
  * @author Joerg Ortmann
  */
 public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener {
-    // The ips test case this adapter works with
-    private IpsTestCaseBase ipsTestCase;
-
-    // Contains all failures occurred during the test run for this test case
-    private List<IpsTestFailure> failures = new ArrayList<IpsTestFailure>();
 
     /*
      * Format of the failure entries
      */
     private static final String FAILUREFORMAT_FAILUREIN = "Failure in: \"{0}\"";
-    private static final String FAILUREFORMAT_OBJECT = ", Object: \"{1}\"";
-    private static final String FAILUREFORMAT_ATTRIBUTE = ", Attribute: \"{2}\".";
-    private static final String FAILUREFORMAT_EXPECTED = ", expected: \"{3}\"";
-    private static final String FAILUREFORMAT_ACTUAL = " but was: \"{4}\"";
+    private static final String FAILUREFORMAT_OBJECT = ", Object: \"{0}\"";
+    private static final String FAILUREFORMAT_ATTRIBUTE = ", Attribute: \"{0}\".";
+    private static final String FAILUREFORMAT_EXPECTED = ", expected: \"{0}\"";
+    private static final String FAILUREFORMAT_ACTUAL = " but was: \"{0}\"";
+
+    // The ips test case this adapter works with
+    private IpsTestCaseBase ipsTestCase;
+
+    // Contains all failures occurred during the test run for this test case
+    private List<IpsTestFailure> failures = new ArrayList<IpsTestFailure>();
 
     public IpsTestCaseJUnitAdapter(IpsTestCaseBase ipsTestCase) {
         super(ipsTestCase.getName());
@@ -94,33 +95,20 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
      * Creates a string representing the given ips test failure.
      */
     private String failureToString(IpsTestFailure failure) {
-        String failureFormat = FAILUREFORMAT_FAILUREIN;
-        String failureActual = FAILUREFORMAT_ACTUAL;
-        String failureExpected = FAILUREFORMAT_EXPECTED;
-        String failureFormatAttribute = FAILUREFORMAT_ATTRIBUTE;
-        String failureFormatObject = FAILUREFORMAT_OBJECT;
+        StringBuilder failureMessage = new StringBuilder();
+        failureMessage.append(MessageFormat.format(FAILUREFORMAT_FAILUREIN,
+                failure.getTestCase() != null ? failure.getTestCase().getQualifiedName() : null));
+        appendFormatted(failureMessage, FAILUREFORMAT_EXPECTED, failure.getExpectedValue());
+        appendFormatted(failureMessage, FAILUREFORMAT_ACTUAL, failure.getActualValue());
+        appendFormatted(failureMessage, FAILUREFORMAT_OBJECT, failure.getTestObject());
+        appendFormatted(failureMessage, FAILUREFORMAT_ATTRIBUTE, failure.getTestedAttribute());
+        return failureMessage.toString();
+    }
 
-        List<String> failureDetails = new ArrayList<String>(5);
-        failureDetails.add(failure.getTestCase() != null ? failure.getTestCase().getQualifiedName() : null);
-        failureDetails.add(failure.getTestObject());
-        failureDetails.add(failure.getTestedAttribute());
-        failureDetails.add(failure.getExpectedValue() != null ? failure.getExpectedValue().toString() : null);
-        failureDetails.add(failure.getActualValue() != null ? failure.getActualValue().toString() : null);
-
-        if (failureDetails.size() > 3) {
-            failureFormat = failureFormat + (failureDetails.get(2) != null ? failureExpected : "");
+    private void appendFormatted(StringBuilder sb, String pattern, Object value) {
+        if (value != null) {
+            sb.append(MessageFormat.format(pattern, value));
         }
-        if (failureDetails.size() > 4) {
-            failureFormat = failureFormat + (failureDetails.get(3) != null ? failureActual : "");
-        }
-        if (failureDetails.size() > 1) {
-            failureFormat = failureFormat + (failureDetails.get(0) != null ? failureFormatObject : "");
-        }
-        if (failureDetails.size() > 2) {
-            failureFormat = failureFormat + (failureDetails.get(1) != null ? failureFormatAttribute : "");
-        }
-
-        return MessageFormat.format(failureFormat, failureDetails.toArray());
     }
 
     @Override

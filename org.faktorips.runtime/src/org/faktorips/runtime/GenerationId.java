@@ -44,7 +44,7 @@ public class GenerationId implements Comparable<GenerationId> {
             return false;
         }
         if (obj.hashCode() != hashCode) {
-            return false; // optimization
+            return false;
         }
         GenerationId other = (GenerationId)obj;
         return qName.equals(other.qName) && validFrom.equals(other.validFrom);

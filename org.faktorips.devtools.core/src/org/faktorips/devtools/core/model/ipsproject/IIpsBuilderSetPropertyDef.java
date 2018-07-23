@@ -97,8 +97,20 @@ public interface IIpsBuilderSetPropertyDef {
      * this property definition. If the validation fails a message object will be returned otherwise
      * <code>null</code> will be returned. If <code>null</code> is provided as parameter
      * <code>null</code> will be returned.
+     * 
+     * @deprecated implement {@link #validateValue(IIpsProject, String)} instead. Will be removed in
+     *             3.23
      */
+    @Deprecated
     public Message validateValue(String value);
+
+    /**
+     * Validates if the provided string representation can be converted into an object described by
+     * this property definition. If the validation fails a message object will be returned otherwise
+     * <code>null</code> will be returned. If <code>null</code> is provided as parameter
+     * <code>null</code> will be returned.
+     */
+    public Message validateValue(IIpsProject ipsProject, String value);
 
     /**
      * Initializes this property definition.

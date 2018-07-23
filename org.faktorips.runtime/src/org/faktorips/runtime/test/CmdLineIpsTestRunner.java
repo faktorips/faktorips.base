@@ -26,6 +26,14 @@ import org.faktorips.runtime.IRuntimeRepository;
 public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
 
     /**
+     * @param repositoryPackages package name of the classpath repository
+     */
+    public CmdLineIpsTestRunner(String repositoryPackages) {
+        super();
+        setRepositoryPackages(repositoryPackages);
+    }
+
+    /**
      * The entry point for the command line test runner. The arguments are: args[0]: package name of
      * the classpath repository args[1]: Name of the testsuite to run args[2]: additional classpath
      * repositories (to find objects in the runtime environment)
@@ -34,17 +42,11 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
         CmdLineIpsTestRunner runner = new CmdLineIpsTestRunner(args[0]);
         try {
             runner.run(args[1]);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @param repositoryPackages package name of the classpath repository
-     */
-    public CmdLineIpsTestRunner(String repositoryPackages) {
-        super();
-        setRepositoryPackages(repositoryPackages);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
         List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
         for (String repositoryName : repositoryNameList) {
-            runtimeRepositories.add(ClassloaderRuntimeRepository.create(repositoryName, classLoader));
+            runtimeRepositories.add(ClassloaderRuntimeRepository.create(repositoryName, getClassLoader()));
         }
         return runtimeRepositories;
     }
@@ -69,8 +71,8 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
 
     @Override
     public void testFailureOccured(IpsTestFailure failure) {
-        System.out.println("Test failed. Expected " + failure.getExpectedValue() + " but was "
-                + failure.getActualValue());
+        System.out.println(
+                "Test failed. Expected " + failure.getExpectedValue() + " but was " + failure.getActualValue());
     }
 
 }

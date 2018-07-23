@@ -47,7 +47,9 @@ public class IpsTestResult {
             notifyListenerAboutStart(test);
             test.executeBusinessLogic();
             test.executeAsserts(this);
+            // CSOFF: IllegalCatch
         } catch (Throwable t) {
+            // CSON: IllegalCatch
             addFailure(new IpsTestFailure(test, t));
         } finally {
             notifyListenerAboutFinished(test);

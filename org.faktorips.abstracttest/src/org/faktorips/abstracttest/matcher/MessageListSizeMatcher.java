@@ -11,11 +11,12 @@ package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.util.message.MessageList;
 import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link MessageList} is empty.
  */
-public class MessageListSizeMatcher extends AbstractMessageListMatcher {
+public class MessageListSizeMatcher extends TypeSafeMatcher<MessageList> {
 
     private final int size;
 
@@ -30,7 +31,7 @@ public class MessageListSizeMatcher extends AbstractMessageListMatcher {
     }
 
     @Override
-    boolean matchesSafely(MessageList list) {
+    protected boolean matchesSafely(MessageList list) {
         return list.size() == size;
     }
 

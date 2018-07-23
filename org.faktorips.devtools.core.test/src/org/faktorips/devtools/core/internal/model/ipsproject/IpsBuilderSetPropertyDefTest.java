@@ -61,8 +61,8 @@ public class IpsBuilderSetPropertyDefTest {
                 new IConfigurationElement[0]);
 
         TestConfigurationElement discreteValuesEl = new TestConfigurationElement("discreteValues",
-                new HashMap<String, String>(), null, new IConfigurationElement[] { discreteValue1, discreteValue2,
-                        discreteValue3 });
+                new HashMap<String, String>(), null,
+                new IConfigurationElement[] { discreteValue1, discreteValue2, discreteValue3 });
 
         attributes = new HashMap<String, String>();
         attributes.put("name", "logLevel");
@@ -139,8 +139,8 @@ public class IpsBuilderSetPropertyDefTest {
         assertEquals("0", propertyDef.getDisableValue(null));
         assertEquals(new Integer(0), propertyDef.parseValue(propertyDef.getDisableValue(null)));
 
-        assertNotNull(propertyDef.validateValue("hallo"));
-        assertNull(propertyDef.validateValue("1"));
+        assertNotNull(propertyDef.validateValue(null, "hallo"));
+        assertNull(propertyDef.validateValue(null, "1"));
 
         try {
             propertyDef.parseValue("hallo");
@@ -190,12 +190,12 @@ public class IpsBuilderSetPropertyDefTest {
         TestConfigurationElement propertyDefEl = new TestConfigurationElement("loggingConnectorElement", attributes,
                 null, new IConfigurationElement[] {});
 
-        IExtension loggingConnectorExt1 = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "."
-                + "javaLoggingConnector");
-        IExtension loggingConnectorExt2 = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "."
-                + "log4jLoggingConnector");
-        IExtension loggingConnectorExt3 = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "."
-                + "ownLoggingConnector");
+        IExtension loggingConnectorExt1 = TestMockingUtils
+                .mockExtension(IpsPlugin.PLUGIN_ID + "." + "javaLoggingConnector");
+        IExtension loggingConnectorExt2 = TestMockingUtils
+                .mockExtension(IpsPlugin.PLUGIN_ID + "." + "log4jLoggingConnector");
+        IExtension loggingConnectorExt3 = TestMockingUtils
+                .mockExtension(IpsPlugin.PLUGIN_ID + "." + "ownLoggingConnector");
         IExtension loggingConnectorExt4 = TestMockingUtils.mockExtension("None");
 
         IExtensionPoint loggingConnectorExtensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
@@ -216,8 +216,8 @@ public class IpsBuilderSetPropertyDefTest {
         assertEquals("None", propertyDef.getDisableValue(null));
         assertEquals("None", propertyDef.parseValue(propertyDef.getDisableValue(null)));
 
-        assertNotNull(propertyDef.validateValue("anotherConnector"));
-        assertNull(propertyDef.validateValue(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
+        assertNotNull(propertyDef.validateValue(null, "anotherConnector"));
+        assertNull(propertyDef.validateValue(null, IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
 
         List<String> values = Arrays.asList(propertyDef.getDiscreteValues());
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
@@ -230,9 +230,9 @@ public class IpsBuilderSetPropertyDefTest {
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
 
-        HashMap<String, Object> executableExtensionMap = new HashMap<String, Object>();
+        Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
 
-        HashMap<String, String> properties = new HashMap<String, String>();
+        Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("name", "testProperty");
         properties.put("type", "boolean");
         properties.put("defaultValue", "true");

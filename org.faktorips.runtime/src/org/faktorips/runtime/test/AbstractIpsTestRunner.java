@@ -32,7 +32,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     // Contains the created repository packages
     private List<IRuntimeRepository> repositories;
 
-    protected ClassLoader classLoader = getClass().getClassLoader();
+    private ClassLoader classLoader = getClass().getClassLoader();
 
     // contains the cached test suite
     private IpsTestSuite testSuite = null;
@@ -88,6 +88,10 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
             repositories = createRepositories();
         }
         return repositories;
+    }
+
+    protected ClassLoader getClassLoader() {
+        return classLoader;
     }
 
     /**
@@ -155,9 +159,10 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     public static List<String> extractListFromString(String input) {
         ArrayList<String> repositoryNameList = new ArrayList<String>();
         if (input != null) {
-            while (input.length() > 0) {
-                repositoryNameList.add(input.substring(input.indexOf("{") + 1, input.indexOf("}")));
-                input = input.substring(input.indexOf("}") + 1);
+            String restOfInput = input;
+            while (restOfInput.length() > 0) {
+                repositoryNameList.add(restOfInput.substring(restOfInput.indexOf("{") + 1, restOfInput.indexOf("}")));
+                restOfInput = restOfInput.substring(restOfInput.indexOf("}") + 1);
             }
         }
         return repositoryNameList;
@@ -215,7 +220,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
         IRuntimeRepository additionalRepositories = null;
         IRuntimeRepository currRepository = null;
         for (String pckg : runtimePackages) {
-            IRuntimeRepository addRep = ClassloaderRuntimeRepository.create(pckg, classLoader);
+            IRuntimeRepository addRep = ClassloaderRuntimeRepository.create(pckg, getClassLoader());
             if (currRepository != null) {
                 currRepository.addDirectlyReferencedRepository(addRep);
             } else {
@@ -229,21 +234,21 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
         testSuite = new IpsTestSuite("root");
 
         // create and get the repositories for searching the tests
+        String nextNames = names;
         List<IRuntimeRepository> createdRepositories = getRepositories();
         for (int i = 0; i < createdRepositories.size(); i++) {
             // add additional runtime repositories if given
             if (additionalRepositories != null) {
-                if (runtimePackages.contains(repositoryNameList.get(i))) {
-                    // the package which will be used to search the tests are already included
-                    // in the list of additional repositories
-                } else {
+                if (!runtimePackages.contains(repositoryNameList.get(i))) {
                     additionalRepositories.addDirectlyReferencedRepository(createdRepositories.get(i));
                 }
+                // else: the package which will be used to search the tests is already included in
+                // the list of additional repositories
             }
 
             // search for tests in the repository
-            (testSuite).addTest(createdRepositories.get(i).getIpsTest(getFirstTest(names), additionalRepositories));
-            names = getNextNames(names);
+            (testSuite).addTest(createdRepositories.get(i).getIpsTest(getFirstTest(nextNames), additionalRepositories));
+            nextNames = getNextNames(nextNames);
         }
 
         return testSuite;

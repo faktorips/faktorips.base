@@ -42,7 +42,6 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.IVisitorSupport;
-import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XType {
 
@@ -210,7 +209,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     protected String getBaseSuperclassName() {
-        return addImport(AbstractModelObject.class);
+        return addImport(getContext().getBaseClassPolicyCmptType());
     }
 
     @Override
@@ -292,7 +291,8 @@ public class XPolicyCmptClass extends XType {
      * derived-union-subset, the original detail to master derived union is determined and added to
      * the result.
      */
-    protected Set<XDetailToMasterDerivedUnionAssociation> findDetailToMasterDerivedUnionAssociations(Collection<? extends XPolicyAssociation> associations) {
+    protected Set<XDetailToMasterDerivedUnionAssociation> findDetailToMasterDerivedUnionAssociations(
+            Collection<? extends XPolicyAssociation> associations) {
         Set<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
         for (XPolicyAssociation association : associations) {
             if (!association.isDerived()) {

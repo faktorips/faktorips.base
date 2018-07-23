@@ -6,5 +6,6 @@
   </local-check-config>
   <fileset name="all" enabled="true" check-config-name="Fips Checkstyle" local="true">
     <file-match-pattern match-pattern="." include-pattern="true"/>
+    <file-match-pattern match-pattern=".+\.png$" include-pattern="false"/>
   </fileset>
 </fileset-config>

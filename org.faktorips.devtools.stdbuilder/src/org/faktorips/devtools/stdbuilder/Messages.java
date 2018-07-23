@@ -14,7 +14,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.stdbuilder.messages"; //$NON-NLS-1$
-    public static String Java5BuilderSetPropertiesDef_0;
+    public static String AbstractBaseClassBuilderSetPropertyDef_CantLoadJavaClass;
+    public static String AbstractBaseClassBuilderSetPropertyDef_NotSubclass;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -22,5 +23,9 @@ public class Messages extends NLS {
 
     private Messages() {
         // prohibit instantiation
+    }
+
+    public static String bind(String message, String... bindings) {
+        return NLS.bind(message, bindings);
     }
 }

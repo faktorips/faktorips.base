@@ -352,7 +352,9 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         }
         try {
             return createCustomObject(tocEntry);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
     }

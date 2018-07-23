@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -81,9 +82,8 @@ public class IpsArtefactBuilderSetInfoTest {
 
         attributes = new HashMap<String, String>();
         attributes.put("class", DefaultBuilderSet.class.getName());
-        IExtension extension = TestMockingUtils.mockExtension("mybuilderset", new TestConfigurationElement(
-                "builderSet", attributes, null,
-                new IConfigurationElement[] { propertyDef1, propertyDef2, propertyDef3 }));
+        IExtension extension = TestMockingUtils.mockExtension("mybuilderset", new TestConfigurationElement("builderSet",
+                attributes, null, new IConfigurationElement[] { propertyDef1, propertyDef2, propertyDef3 }));
 
         IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset",
                 extension);
@@ -146,7 +146,7 @@ public class IpsArtefactBuilderSetInfoTest {
                     if (args.length < 1) {
                         return null;
                     }
-                    HashMap<String, String> properties = new HashMap<String, String>();
+                    Map<String, Object> properties = new HashMap<String, Object>();
                     properties.put("type", "boolean");
                     properties.put("defaultValue", "false");
                     properties.put("disableValue", "false");

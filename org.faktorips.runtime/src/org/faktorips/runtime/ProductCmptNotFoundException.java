@@ -19,8 +19,8 @@ public class ProductCmptNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = -9147053421136751930L;
 
-    private String repositoryName;
-    private String productCmptId;
+    private final String repositoryName;
+    private final String productCmptId;
 
     /**
      * Creates a new exception that indicates that no product component with the given id has been

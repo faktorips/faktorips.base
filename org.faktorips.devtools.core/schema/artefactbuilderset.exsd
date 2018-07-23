@@ -113,14 +113,14 @@
          <attribute name="defaultValue" type="string">
             <annotation>
                <documentation>
-                  
+                  The value to be used for a new .ipsproject.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="disableValue" type="string">
             <annotation>
                <documentation>
-                  
+                  The value to be used if the property is missing from the .ipsproject.
                </documentation>
             </annotation>
          </attribute>

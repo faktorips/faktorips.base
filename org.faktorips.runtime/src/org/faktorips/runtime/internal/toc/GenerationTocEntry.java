@@ -22,28 +22,29 @@ import org.w3c.dom.Element;
  */
 public class GenerationTocEntry extends TocEntry {
 
-    public final static String XML_TAG = "Generation";
+    public static final String XML_TAG = "Generation";
 
     public static final String PROPERTY_VALID_FROM = "validFrom";
 
-    private final static TimeZone defaultTimeZone = TimeZone.getDefault();
-
-    public final static GenerationTocEntry createFromXml(ProductCmptTocEntry parent, Element element) {
-        DateTime validFrom = DateTime.parseIso(element.getAttribute(PROPERTY_VALID_FROM));
-        String className = element.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
-        String xmlResourceName = element.getAttribute(PROPERTY_XML_RESOURCE);
-        return new GenerationTocEntry(parent, validFrom, className, xmlResourceName);
-    }
+    private static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getDefault();
 
     private ProductCmptTocEntry parent;
     private DateTime validFrom;
     private long validFromAsLongInDefaultTimeZone;
 
-    public GenerationTocEntry(ProductCmptTocEntry parent, DateTime validFrom, String className, String xmlResourceName) {
+    public GenerationTocEntry(ProductCmptTocEntry parent, DateTime validFrom, String className,
+            String xmlResourceName) {
         super(className, xmlResourceName);
         this.parent = parent;
         this.validFrom = validFrom;
-        validFromAsLongInDefaultTimeZone = validFrom.toDate(defaultTimeZone).getTime();
+        validFromAsLongInDefaultTimeZone = validFrom.toDate(DEFAULT_TIME_ZONE).getTime();
+    }
+
+    public static final GenerationTocEntry createFromXml(ProductCmptTocEntry parent, Element element) {
+        DateTime validFrom = DateTime.parseIso(element.getAttribute(PROPERTY_VALID_FROM));
+        String className = element.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
+        String xmlResourceName = element.getAttribute(PROPERTY_XML_RESOURCE);
+        return new GenerationTocEntry(parent, validFrom, className, xmlResourceName);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class GenerationTocEntry extends TocEntry {
      * @throws NullPointerException if zone is <code>null</code>.
      */
     public final long getValidFromInMillisec(TimeZone zone) {
-        if (zone.equals(defaultTimeZone)) {
+        if (zone.equals(DEFAULT_TIME_ZONE)) {
             return validFromAsLongInDefaultTimeZone;
         }
         return validFrom.toDate(zone).getTime();

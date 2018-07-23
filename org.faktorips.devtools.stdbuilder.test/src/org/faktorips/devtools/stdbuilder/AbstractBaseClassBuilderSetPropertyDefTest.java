@@ -1,0 +1,111 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.devtools.stdbuilder;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
+import org.junit.Test;
+
+public class AbstractBaseClassBuilderSetPropertyDefTest {
+
+    @Test
+    public void testValidateValue_valid() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject,
+                TestSubClass.class.getName());
+
+        assertThat(message, is(nullValue()));
+    }
+
+    @Test
+    public void testValidateValue_usesSameClass() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject,
+                TestSuperClass.class.getName());
+
+        assertThat(message, is(nullValue()));
+    }
+
+    @Test
+    public void testValidateValue_noValue() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, "");
+
+        assertThat(message, is(nullValue()));
+    }
+
+    @Test
+    public void testValidateValue_nullValue() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, null);
+
+        assertThat(message, is(nullValue()));
+    }
+
+    @Test
+    public void testValidateValue_noSubclass() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, String.class.getName());
+
+        assertThat(message.getCode(), is(AbstractBaseClassBuilderSetPropertyDef.MSGCODE_NOT_SUBCLASS));
+    }
+
+    @Test
+    public void testValidateValue_noClass() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, "foobar");
+
+        assertThat(message.getCode(), is(AbstractBaseClassBuilderSetPropertyDef.MSGCODE_CANT_LOAD_JAVA_CLASS));
+    }
+
+    private static class TestSuperClass {
+
+    }
+
+    private static class TestSubClass extends TestSuperClass {
+
+    }
+
+    private static class TestBaseClassBuilderSetPropertyDef extends AbstractBaseClassBuilderSetPropertyDef {
+
+        public TestBaseClassBuilderSetPropertyDef() {
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("type", "string");
+            initialize(null, properties);
+        }
+
+        @Override
+        protected Class<TestSuperClass> getRequiredSuperClass() {
+            return TestSuperClass.class;
+        }
+
+    }
+
+}

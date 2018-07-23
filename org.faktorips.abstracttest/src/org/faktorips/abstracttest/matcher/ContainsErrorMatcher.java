@@ -10,18 +10,20 @@
 package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.util.message.MessageList;
-import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
-public abstract class AbstractMessageListMatcher extends BaseMatcher<MessageList> {
-
+/**
+ * Checks whether a {@link MessageList} contains an error message.
+ */
+public class ContainsErrorMatcher extends TypeSafeMatcher<MessageList> {
     @Override
-    public boolean matches(Object item) {
-        if (!(item instanceof MessageList)) {
-            return false;
-        }
-        return matchesSafely((MessageList)item);
+    public void describeTo(Description description) {
+        description.appendText("contain an error message");
     }
 
-    abstract boolean matchesSafely(MessageList item);
-
+    @Override
+    protected boolean matchesSafely(MessageList messageList) {
+        return messageList.containsErrorMsg();
+    }
 }

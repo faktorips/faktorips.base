@@ -48,4 +48,8 @@ public class Matchers {
         return new MessageSevertiyMatcher(severity);
     }
 
+    public static Matcher<MessageList> containsErrorMsg() {
+        return new ContainsErrorMatcher();
+    }
+
 }

@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -45,7 +45,6 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
-import org.faktorips.runtime.internal.AbstractModelObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -165,8 +164,8 @@ public class XPolicyCmptClassTest {
         IProductCmptType prodType = initProdType(policyCmptClass);
 
         XProductCmptGenerationClass xProdGenClass = mock(XProductCmptGenerationClass.class);
-        when(modelService.getModelNode(prodType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
-                xProdGenClass);
+        when(modelService.getModelNode(prodType, XProductCmptGenerationClass.class, modelContext))
+                .thenReturn(xProdGenClass);
 
         policyCmptClass.getProductCmptGenerationClassName();
         verify(xProdGenClass).getInterfaceName();
@@ -237,8 +236,8 @@ public class XPolicyCmptClassTest {
         when(associationNode2.isDerived()).thenReturn(true);
 
         XPolicyCmptClass xPolicyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        xPolicyCmptClass.findDetailToMasterDerivedUnionAssociations(Arrays.asList(new XPolicyAssociation[] {
-                associationNode1, associationNode2 }));
+        xPolicyCmptClass.findDetailToMasterDerivedUnionAssociations(
+                Arrays.asList(new XPolicyAssociation[] { associationNode1, associationNode2 }));
 
         verify(associationNode1).getSubsettedDetailToMasterAssociations();
         verify(associationNode2, times(0)).getSubsettedDetailToMasterAssociations();
@@ -354,8 +353,8 @@ public class XPolicyCmptClassTest {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1))).when(policyCmptClass)
-                .getAttributesToInit(true, true);
+        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1))).when(policyCmptClass).getAttributesToInit(true,
+                true);
         doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(false, true);
 
         assertTrue(policyCmptClass.isGenerateAttributeInitCode(true));
@@ -397,10 +396,13 @@ public class XPolicyCmptClassTest {
     public void testGetBaseSuperclassName() {
         when(type.hasSupertype()).thenReturn(false);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        when(modelContext.getBaseClassPolicyCmptType()).thenReturn("pack.MyBaseClass");
+        when(modelContext.addImport("pack.MyBaseClass")).thenReturn("MyBaseClass");
 
         String baseSuperclassName = policyCmptClass.getBaseSuperclassName();
 
-        assertTrue(AbstractModelObject.class.getName().endsWith(baseSuperclassName));
+        assertEquals("MyBaseClass", baseSuperclassName);
+        verify(modelContext).addImport("pack.MyBaseClass");
     }
 
     @Test
@@ -408,10 +410,13 @@ public class XPolicyCmptClassTest {
         when(type.hasSupertype()).thenReturn(false);
         when(type.isConfigurableByProductCmptType()).thenReturn(true);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        when(modelContext.getBaseClassPolicyCmptType()).thenReturn("pack.MyBaseClass");
+        when(modelContext.addImport("pack.MyBaseClass")).thenReturn("MyBaseClass");
 
         String baseSuperclassName = policyCmptClass.getBaseSuperclassName();
 
-        assertTrue(AbstractModelObject.class.getName().endsWith(baseSuperclassName));
+        assertEquals("MyBaseClass", baseSuperclassName);
+        verify(modelContext).addImport("pack.MyBaseClass");
     }
 
     @Test
@@ -601,10 +606,8 @@ public class XPolicyCmptClassTest {
         setUpGenerateSupport(true);
 
         LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
-        assertThat(
-                interfaces,
-                hasItems("INotificationSupport", "ICopySupport", "IDeltaSupport", "IVisitorSupport",
-                        "IDependantObject", "ITimedConfigurableModelObject"));
+        assertThat(interfaces, hasItems("INotificationSupport", "ICopySupport", "IDeltaSupport", "IVisitorSupport",
+                "IDependantObject", "ITimedConfigurableModelObject"));
     }
 
     @Test
@@ -622,10 +625,8 @@ public class XPolicyCmptClassTest {
         setUpGenerateSupport(true);
 
         LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
-        assertThat(
-                interfaces,
-                hasItems("INotificationSupport", "ICopySupport", "IDeltaSupport", "IVisitorSupport",
-                        "IDependantObject", "IConfigurableModelObject"));
+        assertThat(interfaces, hasItems("INotificationSupport", "ICopySupport", "IDeltaSupport", "IVisitorSupport",
+                "IDependantObject", "IConfigurableModelObject"));
     }
 
     @Test

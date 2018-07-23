@@ -10,15 +10,10 @@
 
 package org.faktorips.runtime.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.jaxb.IpsJAXBContext;
 
@@ -33,8 +28,11 @@ import org.faktorips.runtime.jaxb.IpsJAXBContext;
  *             {@link IpsJAXBContext} that includes all necessary adapters.
  */
 @Deprecated
-public enum JAXBContextFactory {
-    /* no instances */;
+public final class JAXBContextFactory {
+
+    private JAXBContextFactory() {
+        /* no instances */
+    }
 
     /**
      * Creates a new JAXBContext that can marshal / unmarshal all model classes defined in the given
@@ -76,16 +74,8 @@ public enum JAXBContextFactory {
      * @throws JAXBException The exception thrown by {@link JAXBContext#newInstance(Class...)}
      * @throws NullPointerException if one of the parameters is <code>null</code>.
      */
-    public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl) throws JAXBException,
-    ClassNotFoundException {
-        Set<String> classNames = repository.getAllModelTypeImplementationClasses();
-        List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
-        for (String className : classNames) {
-            Class<?> clazz = cl.loadClass(className);
-            if (AbstractModelObject.class.isAssignableFrom(clazz)) {
-                classes.add(clazz);
-            }
-        }
-        return JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
+    public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl)
+            throws JAXBException, ClassNotFoundException {
+        return repository.newJAXBContext();
     }
 }

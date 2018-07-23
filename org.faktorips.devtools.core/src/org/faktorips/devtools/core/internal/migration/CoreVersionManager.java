@@ -113,8 +113,9 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
             String versionToStart) throws CoreException {
 
-        if (IpsPlugin.getDefault().isTestMode()) {
-            loader = (ClassLoader)IpsPlugin.getDefault().getTestAnswerProvider().getAnswer();
+        IpsPlugin ipsPlugin = IpsPlugin.getDefault();
+        if (ipsPlugin.isTestMode() && ipsPlugin.getTestAnswerProvider() != null) {
+            loader = (ClassLoader)ipsPlugin.getTestAnswerProvider().getAnswer();
         }
 
         ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<AbstractIpsProjectMigrationOperation>();
@@ -129,8 +130,8 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 migrationClassName = packageName + ".Migration_" + underscoreVersion; //$NON-NLS-1$
                 Class<?> clazz = Class.forName(migrationClassName, true, loader);
                 Constructor<?> constructor = clazz.getConstructor(new Class[] { IIpsProject.class, String.class });
-                migrationOperation = (AbstractIpsProjectMigrationOperation)constructor.newInstance(new Object[] {
-                        projectToMigrate, getFeatureId() });
+                migrationOperation = (AbstractIpsProjectMigrationOperation)constructor
+                        .newInstance(new Object[] { projectToMigrate, getFeatureId() });
                 operations.add(migrationOperation);
                 version = migrationOperation.getTargetVersion();
             }

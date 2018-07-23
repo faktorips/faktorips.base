@@ -50,6 +50,12 @@ public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
         editorInput = ProductCmptEditorInput.createWithGeneration(generation);
     }
 
+    @Override
+    public void tearDown() throws Exception {
+        IpsPlugin.getDefault().setTestMode(false);
+        super.tearDown();
+    }
+
     @Test
     public void testOpenEditorWithConfigElementAndEnumDatatype() throws PartInitException, Exception {
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()

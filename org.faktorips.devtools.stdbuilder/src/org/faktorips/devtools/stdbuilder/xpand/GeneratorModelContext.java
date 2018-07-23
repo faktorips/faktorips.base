@@ -36,6 +36,9 @@ import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
+import org.faktorips.runtime.internal.AbstractJaxbModelObject;
+import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.ProductComponent;
 
 /**
  * This class holds all the context information needed to generate the java code with our XPAND
@@ -301,32 +304,32 @@ public class GeneratorModelContext {
      * @see StandardBuilderSet#CONFIG_PROPERTY_CAMELCASE_SEPARATED
      */
     public boolean isGenerateSeparatedCamelCase() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);
+        Boolean propertyValueAsBoolean = getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
     }
 
     public boolean isGenerateDeltaSupport() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public boolean isGenerateCopySupport() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public boolean isGenerateVisitorSupport() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public boolean isGenerateToXmlSupport() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_TO_XML_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_TO_XML_SUPPORT);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
@@ -369,22 +372,38 @@ public class GeneratorModelContext {
     }
 
     public boolean isGenerateConvenienceGetters() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
+        Boolean propertyValueAsBoolean = getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
     }
 
     public boolean isGeneratePolicyBuilder() {
-        String propertyValue = getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
-        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue) || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY
-                .equals(propertyValue));
+        String propertyValue = getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
+        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue)
+                || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY.equals(propertyValue));
     }
 
     public boolean isGenerateProductBuilder() {
-        String propertyValue = getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
-        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue) || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT
-                .equals(propertyValue));
+        String propertyValue = getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
+        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue)
+                || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT.equals(propertyValue));
     }
+
+    public String getBaseClassPolicyCmptType() {
+        String baseClass = getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
+        return StringUtils.isBlank(baseClass)
+                ? getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)
+                        ? AbstractJaxbModelObject.class.getName() : AbstractModelObject.class.getName()
+                : baseClass;
+    }
+
+    public String getBaseClassProductCmptType() {
+        String baseClass = getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE);
+        return StringUtils.isBlank(baseClass) ? ProductComponent.class.getName() : baseClass;
+    }
+
 }

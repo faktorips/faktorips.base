@@ -72,7 +72,7 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
     }
 
     @Override
-    public Message validateValue(String value) {
+    public Message validateValue(IIpsProject ipsProject, String value) {
         if (StringUtils.isEmpty(value)) {
             return null;
         }

@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -109,10 +110,8 @@ import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An <code>IpsArtefactBuilderSet</code> implementation that assembles the standard Faktor-IPS
- * <tt>IIpsArtefactBuilder</tt>s.
- * 
- * @author Peter Erzberger
+ * An {@link IIpsArtefactBuilderSet} implementation that assembles the standard Faktor-IPS
+ * {@link IIpsArtefactBuilder IIpsArtefactBuilders}.
  */
 public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilderSet {
 
@@ -224,6 +223,10 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      * Configuration property that defines which variant of local date should be used (joda or java8)
      */
     public static final String CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT = "localDateDatatypeHelperVariant"; //$NON-NLS-1$
+
+    public static final String CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE = "baseClassPolicyComponent"; //$NON-NLS-1$
+
+    public static final String CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE = "baseClassProductComponent"; //$NON-NLS-1$
 
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 

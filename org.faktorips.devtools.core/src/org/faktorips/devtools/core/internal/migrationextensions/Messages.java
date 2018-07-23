@@ -27,6 +27,7 @@ public class Messages extends NLS {
     public static String Migration_3_19_0_description;
     public static String Migration_3_20_0_description;
     public static String Migration_3_21_0_description;
+    public static String Migration_3_22_0_description;
 
     static {
         // initialize resource bundle
