@@ -19,6 +19,8 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.junit.Test;
@@ -79,8 +81,39 @@ public class AbstractBaseClassBuilderSetPropertyDefTest {
     public void testValidateValue_noClass() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+        IJavaProject javaProject = mock(IJavaProject.class);
+        when(ipsProject.getJavaProject()).thenReturn(javaProject);
 
         Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, "foobar");
+
+        assertThat(message.getCode(), is(AbstractBaseClassBuilderSetPropertyDef.MSGCODE_CANT_LOAD_JAVA_CLASS));
+    }
+
+    @Test
+    public void testValidateValue_noClassButAJavaType() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+        IJavaProject javaProject = mock(IJavaProject.class);
+        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        IType type = mock(IType.class);
+        when(type.exists()).thenReturn(true);
+        when(javaProject.findType("foo.Bar")).thenReturn(type);
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, "foo.Bar");
+
+        assertThat(message, is(nullValue()));
+    }
+
+    @Test
+    public void testValidateValue_noClassButANonExistantJavaType() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
+        IJavaProject javaProject = mock(IJavaProject.class);
+        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        IType type = mock(IType.class);
+        when(javaProject.findType("foo.Bar")).thenReturn(type);
+
+        Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, "foo.Bar");
 
         assertThat(message.getCode(), is(AbstractBaseClassBuilderSetPropertyDef.MSGCODE_CANT_LOAD_JAVA_CLASS));
     }

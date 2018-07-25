@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder;
 
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -34,12 +36,30 @@ public abstract class AbstractBaseClassBuilderSetPropertyDef extends IpsBuilderS
                                     getLabel(), superClass.getName()));
                 }
             } catch (ClassNotFoundException e) {
-                return Message.newError(MSGCODE_CANT_LOAD_JAVA_CLASS,
-                        Messages.bind(Messages.AbstractBaseClassBuilderSetPropertyDef_CantLoadJavaClass, value,
-                                getLabel(), e.getLocalizedMessage()));
+                if (!isJavaTypeInProject(ipsProject, value)) {
+                    return Message.newError(MSGCODE_CANT_LOAD_JAVA_CLASS,
+                            Messages.bind(Messages.AbstractBaseClassBuilderSetPropertyDef_CantLoadJavaClass, value,
+                                    getLabel(), e.getLocalizedMessage()));
+                }
             }
         }
         return validationMessage;
+    }
+
+    /**
+     * If the referenced base class is located in the same project we get an error on clean-build
+     * because the class file is not yet compiled (Faktor-IPS builder runs before java compiler).
+     * That means if the class file was not found on the project's classpath it could still be
+     * valid. Therefore we search for the corresponding type in the java project.
+     */
+    private boolean isJavaTypeInProject(IIpsProject ipsProject, String value) {
+        try {
+            IType type = ipsProject.getJavaProject().findType(value);
+            return type != null && type.exists();
+        } catch (JavaModelException e) {
+            // not found
+            return false;
+        }
     }
 
     @Override
