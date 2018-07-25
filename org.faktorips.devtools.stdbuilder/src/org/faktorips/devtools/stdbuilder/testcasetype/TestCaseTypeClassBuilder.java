@@ -833,7 +833,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    // CS-OFF: CyclomaticComplexityCheck
+    // CSOFF: CyclomaticComplexityCheck
     private boolean buildXmlCallbackBodyFor(JavaCodeFragment body,
             ITestPolicyCmptTypeParameter parameter,
             String parentPath) {
@@ -921,7 +921,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
         return extensionAttrExists;
     }
-    // CS-ON: CyclomaticComplexityCheck
+    // CSON: CyclomaticComplexityCheck
 
     private String generateTestAttributeConstant(ITestPolicyCmptTypeParameter parameter, String testAttribute) {
         String constName = parameter.getName();
