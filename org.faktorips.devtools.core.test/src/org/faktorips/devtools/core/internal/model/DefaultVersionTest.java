@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -142,6 +144,19 @@ public class DefaultVersionTest {
         DefaultVersion version2 = new DefaultVersion("1.4.aaa");
 
         assertTrue(version1.compareTo(version2) > 0);
+    }
+
+    @Test
+    public void testGetUnqualifiedVersion() throws Exception {
+        assertThat(new DefaultVersion("").getUnqualifiedVersion(), is("0"));
+        assertThat(new DefaultVersion("0.0.0").getUnqualifiedVersion(), is("0.0.0"));
+        assertThat(new DefaultVersion("1.5.").getUnqualifiedVersion(), is("1.5"));
+        assertThat(new DefaultVersion("blablablub").getUnqualifiedVersion(), is("0"));
+        assertThat(new DefaultVersion("1.5.7.9").getUnqualifiedVersion(), is("1.5.7.9"));
+        assertThat(new DefaultVersion("47.11-Abc").getUnqualifiedVersion(), is("47.11"));
+        assertThat(new DefaultVersion("42.23#432").getUnqualifiedVersion(), is("42.23"));
+        assertThat(new DefaultVersion("11.8.05-SNAPSHOT").getUnqualifiedVersion(), is("11.8.05"));
+        assertThat(new DefaultVersion("1.2.3.qualier").getUnqualifiedVersion(), is("1.2.3"));
     }
 
 }

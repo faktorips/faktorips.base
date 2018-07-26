@@ -14,8 +14,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Version;
 
 /**
- * This simple implementation of {@link IVersion} simply takes a string argument and uses it as
- * internal representation of the version.
+ * A version in the OSGi version syntax as described by {@link Version}.
  */
 public class OsgiVersion implements IVersion<OsgiVersion> {
 
@@ -35,6 +34,17 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
     @Override
     public String asString() {
         return version.toString();
+    }
+
+    @Override
+    public String getUnqualifiedVersion() {
+        if (version.getQualifier().isEmpty()) {
+            return version.toString();
+        } else {
+            String versionString = version.toString();
+            int qualifierSep = versionString.lastIndexOf('.');
+            return versionString.substring(0, qualifierSep);
+        }
     }
 
     @Override

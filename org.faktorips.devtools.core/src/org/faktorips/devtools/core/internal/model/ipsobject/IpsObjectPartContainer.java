@@ -145,7 +145,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             IVersion<?> version = versionProvider.getProjectVersion();
             if (version.isNotEmptyVersion()) {
-                sinceVersion = version.asString();
+                sinceVersion = version.getUnqualifiedVersion();
             } else {
                 sinceVersion = StringUtils.EMPTY;
             }

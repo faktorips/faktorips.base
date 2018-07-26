@@ -150,6 +150,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("501", versionedContainer.getSinceVersionString());
     }
 
+    @Test
+    public void testinitDefaultVersion_qualifiedVersion() {
+        setProjectVersion("0.0.501.qualifier");
+
+        versionedContainer.initDefaultVersion();
+
+        assertEquals("0.0.501", versionedContainer.getSinceVersionString());
+    }
+
     private void setProjectVersion(String version) {
         DefaultVersionProvider versionProvider = (DefaultVersionProvider)versionedContainer.getIpsProject()
                 .getVersionProvider();
@@ -854,8 +863,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     private void changeSupportedLanguagesOrder() throws CoreException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
-        ISupportedLanguage[] languageArray = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages
-                                                                                               .size()]);
+        ISupportedLanguage[] languageArray = supportedLanguages
+                .toArray(new ISupportedLanguage[supportedLanguages.size()]);
         properties.removeSupportedLanguage(languageArray[0]);
         properties.removeSupportedLanguage(languageArray[1]);
         properties.addSupportedLanguage(languageArray[1].getLocale());
@@ -903,8 +912,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopyFrom() throws CoreException {
-        TestIpsObjectPartContainer source = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(
-                ipsProject, "SourceParent"));
+        TestIpsObjectPartContainer source = new TestIpsObjectPartContainer(
+                newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SourceParent"));
 
         // Can't use Mockito as the mocked class will be recognized as a different class
         container.copyFrom(source);
@@ -1122,16 +1131,16 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     }
 
-    private static class TestIpsObjectPartContainerWithVersion extends TestIpsObjectPartContainer implements
-    IVersionControlledElement {
+    private static class TestIpsObjectPartContainerWithVersion extends TestIpsObjectPartContainer
+            implements IVersionControlledElement {
 
         public TestIpsObjectPartContainerWithVersion(IIpsElement parent) {
             super(parent);
         }
     }
 
-    private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
-    ILabeledElement {
+    private static class TestIpsObjectPartContainer extends IpsObjectPartContainer
+            implements IDescribedElement, ILabeledElement {
 
         private int numOfUpdateSrcFileCalls;
 
