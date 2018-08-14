@@ -11,7 +11,7 @@
 		<deploy.repositoryZip>${project.build.directory}/${deploy.repositoryZipName}.zip</deploy.repositoryZip>
 		<deploy.zipRuntimeAndValuetypes>${project.build.directory}/faktorips-runtime-valuetypes-${qualifiedVersion}.zip</deploy.zipRuntimeAndValuetypes>
 		<deploy.user>${user.name}</deploy.user>
-		<deploy.server>faktorzehn.org</deploy.server>
+		<deploy.server>update.faktorzehn.org</deploy.server>
 		<deploy.dir>/var/www/update.faktorzehn.org/</deploy.dir>
 		<!-- currently only one word groupId supported (e.g. not org.faktorips) -->
 		<deploy.module>faktorips</deploy.module>
