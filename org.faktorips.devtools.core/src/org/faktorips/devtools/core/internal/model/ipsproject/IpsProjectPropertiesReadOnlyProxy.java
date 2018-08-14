@@ -162,14 +162,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Returns the value of the underlying IIpsProjectProperties instance.
      */
     @Override
-    public boolean isJavaProjectContainsClassesForDynamicDatatypes() {
-        return propertiesInternal.isJavaProjectContainsClassesForDynamicDatatypes();
-    }
-
-    /**
-     * Returns the value of the underlying IIpsProjectProperties instance.
-     */
-    @Override
     public boolean isModelProject() {
         return propertiesInternal.isModelProject();
     }
@@ -258,14 +250,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */
     @Override
-    public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
-    }
-
-    /**
-     * Throws a runtime exceptions since manipulation of this object is disallowed.
-     */
-    @Override
     public void setMinRequiredVersionNumber(String featureId, String version) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
@@ -286,7 +270,8 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton) {
+    public void setResourcesPathExcludedFromTheProductDefiniton(
+            Set<String> resourcesPathExcludedFromTheProductDefiniton) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 

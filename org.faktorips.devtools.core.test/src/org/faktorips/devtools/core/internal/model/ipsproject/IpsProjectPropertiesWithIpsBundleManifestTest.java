@@ -86,7 +86,6 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
         IpsProjectProperties props = initPropertiesWithDocumentElement();
         assertTrue(props.isModelProject());
         assertTrue(props.isProductDefinitionProject());
-        assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
         assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());

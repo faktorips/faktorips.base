@@ -165,7 +165,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     // all datatypes defined in the project including(!) the value datatypes.
     private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0);
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
-    private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
@@ -198,7 +197,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private String versionProviderId;
 
-    /** Used to check if the additional setting "markerEnums" is configured in the .ipsproject file. */
+    /**
+     * Used to check if the additional setting "markerEnums" is configured in the .ipsproject file.
+     */
     private boolean markerEnumsConfiguredInIpsProjectFile = false;
 
     public IpsProjectProperties(IIpsProject ipsProject) {
@@ -509,8 +510,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
-        projectEl.setAttribute(
-                "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
         projectEl.setAttribute(ATTRIBUTE_PERSISTENT_PROJECT, Boolean.toString(persistentProject));
 
@@ -629,33 +628,33 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element additionalSettingsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
         projectEl.appendChild(additionalSettingsEl);
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED,
-                derivedUnionIsImplementedRuleEnabled));
+        additionalSettingsEl.appendChild(
+                createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED, derivedUnionIsImplementedRuleEnabled));
 
         additionalSettingsEl.appendChild(createSettingElement(doc,
                 SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE,
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE,
-                rulesWithoutReferencesAllowed));
+        additionalSettingsEl
+                .appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE, rulesWithoutReferencesAllowed));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS,
-                isSharedDetailToMasterAssociations()));
+        additionalSettingsEl.appendChild(
+                createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS, isSharedDetailToMasterAssociations()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
-                isAssociationsInFormulas()));
+        additionalSettingsEl
+                .appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS, isAssociationsInFormulas()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
-                formulaLanguageLocale.getLanguage()));
+        additionalSettingsEl.appendChild(
+                createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE, formulaLanguageLocale.getLanguage()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, isMarkerEnumsEnabled(),
-                getMarkerEnumsAsString()));
+        additionalSettingsEl.appendChild(
+                createSettingElement(doc, SETTING_MARKER_ENUMS, isMarkerEnumsEnabled(), getMarkerEnumsAsString()));
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
                 isBusinessFunctionsForValidationRulesEnabled()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT,
-                isChangingOverTimeDefaultEnabled()));
+        additionalSettingsEl.appendChild(
+                createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT, isChangingOverTimeDefaultEnabled()));
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD,
                 getInferredTemplateLinkThreshold().toString()));
@@ -746,11 +745,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         persistentProject = Boolean.valueOf(element.getAttribute(ATTRIBUTE_PERSISTENT_PROJECT)).booleanValue();
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
-        javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
-                element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
         changesInTimeConventionIdForGeneratedCode = element.getAttribute("changesInTimeNamingConvention"); //$NON-NLS-1$
-        changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode) ? IChangesOverTimeNamingConvention.VAA
-                : changesInTimeConventionIdForGeneratedCode;
+        changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)
+                ? IChangesOverTimeNamingConvention.VAA : changesInTimeConventionIdForGeneratedCode;
 
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         if (artefactEl != null) {
@@ -785,8 +782,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes")); //$NON-NLS-1$
         initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions")); //$NON-NLS-1$
         initRequiredFeatures(XmlUtil.getFirstElement(element, "RequiredIpsFeatures")); //$NON-NLS-1$
-        initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element,
-                "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
+        initResourcesExcludedFromProductDefinition(
+                XmlUtil.getFirstElement(element, "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
         initReleaseExtension(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
         initVersion(XmlUtil.getFirstElement(element, VERSION_TAG_NAME));
         initAdditionalSettings(element);
@@ -902,7 +899,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private Datatype createDefinedDatatype(IIpsProject ipsProject, Element element) {
-        if (!element.hasAttribute("valueObject") || Boolean.valueOf(element.getAttribute("valueObject")).booleanValue()) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!element.hasAttribute("valueObject") //$NON-NLS-1$
+                || Boolean.valueOf(element.getAttribute("valueObject")).booleanValue()) { //$NON-NLS-1$
             return DynamicValueDatatype.createFromXml(ipsProject, element);
         }
         String javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
@@ -951,14 +949,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void initAdditionalSettings(Element element) {
         // migration for 1.0 files
         if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) { //$NON-NLS-1$
-            derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(
-                    element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
+            derivedUnionIsImplementedRuleEnabled = Boolean
+                    .valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
         }
 
         // migration for 2.0-rc files
         if (element.hasAttribute("derivedUnionIsImplementedRuleEnabled")) { //$NON-NLS-1$
-            derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(
-                    element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
+            derivedUnionIsImplementedRuleEnabled = Boolean
+                    .valueOf(element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
         }
 
         // since 2.0: read from <AdditionalSettings> (and not from <OptionalConstraints> anymore)
@@ -1139,16 +1137,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public boolean isJavaProjectContainsClassesForDynamicDatatypes() {
-        return javaProjectContainsClassesForDynamicDatatypes;
-    }
-
-    @Override
-    public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue) {
-        javaProjectContainsClassesForDynamicDatatypes = newValue;
-    }
-
-    @Override
     public boolean isDerivedUnionIsImplementedRuleEnabled() {
         return derivedUnionIsImplementedRuleEnabled;
     }
@@ -1188,6 +1176,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
     }
 
+    // @formatter:off
     private void createIpsProjectDescriptionComment(Node parentEl) {
         String s = "This XML file contains the properties of the enclosing IPS project. It contains the following " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " information:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1203,12 +1192,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an extension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "   it, you can register this class as datatype in this file. See the details in the description of the datatype " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "   section below how to register the class. Naturally, the class must be available via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   There you have different options. It is strongly recommended to provide the class via a JAR file or in a separate" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   Java project. However you can also implement the class in this project itself. In this case you have to set the " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   javaProjectContainsClassesForDynamicDatatypes property to true so that Faktor-IPS also looks in this project " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   for the class. The disadvantage of this approach is that a clean build won't work properly. At the beginning" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   of the clean build the Java class is deleted, then Faktor-IPS checks the model, doesn't find the class and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   reports problems." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "   It is strongly recommended to provide the class via a JAR file or in a separate Java project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<IpsProject>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1216,18 +1200,19 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    changesInTimeNamingConvention                      Specifies the naming conventions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                                       are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <IpsObjectPath/>                                   The object path to search for model and product definition" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                                       objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <Datatypes/>                                       The datatypes used in the model. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <SupportedLanguages/>                              List of supported natural languages. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <SupportedLanguages/>                              List of supported natural languages. Details below." + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
                 + "</IpsProject>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl, "    "); //$NON-NLS-1$
     }
+    // @formatter:on
 
+    // @formatter:off
     private void createProductCmptNamingStrategyDescriptionComment(Element parentEl) {
         String s = "Product Component Naming Strategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1255,7 +1240,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    </ProductCmptNamingStrategy>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
+    // @formatter:on
 
+    // @formatter:off
     private void createDatatypeDescriptionComment(Node parentEl) {
         String s = "Datatypes" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1295,7 +1282,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "</DatatypeDefinitions>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
+    // @formatter:on
 
+    // @formatter:off
     private void createIpsArtefactBuilderSetDescriptionComment(Node parentEl) {
         String s = "Artefact builder set" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1312,7 +1301,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "including their descriptions." + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
-
+    // @formatter:on
+    
+    // @formatter:off
     private void createRequiredIpsFeaturesComment(Node parentEl) {
         String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "In this section, all required features are listed with the minimum version for these features." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1329,7 +1320,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + ""; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
+    // @formatter:on
 
+    // @formatter:off
     private void createResourcesExcludedFromProductDefinitionComment(Node parentEl) {
         String s = "Resources excluded from the product definition" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "In this section, all resources which will be excluded (hidden) in the product definition are listed." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1342,7 +1335,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + ""; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
-
+    // @formatter:on
+    
     private void createProductReleaseComment(Element parentEl) {
         String s = "Product Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
@@ -1360,6 +1354,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
 
+    // @formatter:off
     private void createVersionComment(Element parentEl) {
         String s = "Version" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
@@ -1374,7 +1369,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
     }
-
+    // @formatter:on
+    
     private void createAdditionalSettingsDescriptionComment(Node parentEl) {
         // @formatter:off
         String s = ADDITIONAL_SETTINGS_TAG_NAME + SystemUtils.LINE_SEPARATOR
@@ -1431,6 +1427,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         // @formatter:on
     }
 
+    // @formatter:off
     private void createPersistenceOptionsDescriptionComment(Node parentEl) {
         String s = "PersistenceOptions" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1438,7 +1435,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The attribute " + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+                + "The attribute " //$NON-NLS-1$
+                + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS
+                + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "on the association side which holds a single value (to-one relationship side)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1451,7 +1450,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    IdentifierName1 -> IDENTIFIER_NAME1" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
-
+    // @formatter:on
+    
+    // @formatter:off
     private void createSupportedLanguagesDescriptionComment(Node parentEl) {
         String s = "Supported Languages" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1470,7 +1471,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "</SupportedLanguages>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
-
+    // @formatter:on
+    
     private void createDescriptionComment(String text, Node parent) {
         createDescriptionComment(text, parent, "        "); //$NON-NLS-1$
     }
@@ -1536,7 +1538,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton) {
+    public void setResourcesPathExcludedFromTheProductDefiniton(
+            Set<String> resourcesPathExcludedFromTheProductDefiniton) {
         this.resourcesPathExcludedFromTheProductDefiniton = resourcesPathExcludedFromTheProductDefiniton;
     }
 

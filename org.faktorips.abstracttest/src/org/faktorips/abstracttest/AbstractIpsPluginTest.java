@@ -1158,7 +1158,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         DynamicEnumDatatype[] returnValue = dataTypes.toArray(new DynamicEnumDatatype[adaptedClass.length]);
         properties.setDefinedDatatypes(returnValue);
-        properties.setJavaProjectContainsClassesForDynamicDatatypes(true);
         project.setProperties(properties);
         return returnValue;
     }

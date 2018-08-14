@@ -220,7 +220,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         props.setModelProject(true);
         props.setProductDefinitionProject(true);
-        props.setJavaProjectContainsClassesForDynamicDatatypes(true);
         props.setChangesOverTimeNamingConventionIdForGeneratedCode("myConvention");
         props.setBuilderSetId("myBuilder");
         props.setRuntimeIdPrefix("newRuntimeIdPrefix");
@@ -276,7 +275,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
-        assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
         assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
         assertEquals("myBuilder", props.getBuilderSetId());
         assertTrue(props.getProductCmptNamingStrategy() instanceof DateBasedProductCmptNamingStrategy);
@@ -394,7 +392,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
         assertTrue(props.isModelProject());
         assertTrue(props.isProductDefinitionProject());
-        assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
         assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
@@ -447,10 +444,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(30, props.getPersistenceOptions().getMaxTableNameLength());
         assertEquals(60, props.getPersistenceOptions().getMaxColumnNameLenght());
         assertTrue(props.getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations());
-        assertEquals(CamelCaseToUpperUnderscoreColumnNamingStrategy.class.getName(), props.getPersistenceOptions()
-                .getTableColumnNamingStrategy().getClass().getName());
-        assertEquals(CamelCaseToUpperUnderscoreTableNamingStrategy.class.getName(), props.getPersistenceOptions()
-                .getTableNamingStrategy().getClass().getName());
+        assertEquals(CamelCaseToUpperUnderscoreColumnNamingStrategy.class.getName(),
+                props.getPersistenceOptions().getTableColumnNamingStrategy().getClass().getName());
+        assertEquals(CamelCaseToUpperUnderscoreTableNamingStrategy.class.getName(),
+                props.getPersistenceOptions().getTableNamingStrategy().getClass().getName());
 
         // product release
         assertEquals("myReleaseExtension", props.getReleaseExtensionId());

@@ -299,27 +299,6 @@ public interface IIpsProjectProperties {
     public void setRuntimeIdPrefix(String runtimeIdPrefix);
 
     /**
-     * Returns <code>true</code> if the Java project belonging to the IPS project, contains (value)
-     * classes that are used as defined dynamic data type, otherwise <code>false</code>.
-     * <p>
-     * Note that is preferable to develop and access these classes either in a separate Java project
-     * or to provide them in a JAR file. The reason for this is that in this scenario the clean
-     * build won't work properly. When the IpsBuilder builds the project the dynamic data type needs
-     * to load the class it is based upon. However as the Java builder hasn't compiled the Java
-     * source file into a class file the dynamic data type won't find it's class, the data type
-     * becomes invalid and hence we can't build the project.
-     * 
-     * @see DynamicValueDatatype
-     * @see org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider
-     */
-    public boolean isJavaProjectContainsClassesForDynamicDatatypes();
-
-    /**
-     * @see #isJavaProjectContainsClassesForDynamicDatatypes()
-     */
-    public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue);
-
-    /**
      * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>. See the
      * message code for the violation of this rule for further details.
      * 
@@ -417,7 +396,8 @@ public interface IIpsProjectProperties {
     public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath);
 
     /**
-     * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
+     * Returns <code>true</code> if the given resource will be excluded from the product
+     * definition.<br>
      * If the given resource is relevant for the product definition the method returns
      * <code>false</code>.
      */
@@ -435,7 +415,8 @@ public interface IIpsProjectProperties {
      * Setting the resourcesPathExcludedFromTheProductDefiniton.
      * 
      */
-    public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton);
+    public void setResourcesPathExcludedFromTheProductDefiniton(
+            Set<String> resourcesPathExcludedFromTheProductDefiniton);
 
     /**
      * Returns the persistence options for this IPS project, or <code>null</code> if the project
