@@ -18,20 +18,21 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public abstract class ProductClassBuilder<T extends XProductClass> extends TypeBuilder<T> {
+public abstract class ProductClassBuilder<T extends XProductClass> extends XtendTypeBuilder<T> {
 
     public ProductClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
             GeneratorModelContext modelContext, ModelService modelService, LocalizedStringsSet localizedStringsSet) {
         super(interfaceBuilder, builderSet, modelContext, modelService, localizedStringsSet);
+
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
                 return true;

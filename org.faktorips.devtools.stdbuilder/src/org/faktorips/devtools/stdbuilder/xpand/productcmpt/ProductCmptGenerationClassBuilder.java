@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -19,6 +20,8 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.template.ProductComponentGenInterfaceTmpl;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.template.ProductComponentGenTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProductCmptGenerationClass> {
@@ -27,8 +30,8 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
 
     public ProductCmptGenerationClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
             GeneratorModelContext modelContext, ModelService modelService) {
-        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                ProductCmptGenerationClassBuilder.class));
+        super(interfaceBuilder, builderSet, modelContext, modelService,
+                new LocalizedStringsSet(ProductCmptGenerationClassBuilder.class));
         javaClassNameProvider = XProductCmptGenerationClass.createProductCmptGenJavaClassNaming(
                 modelContext.isGeneratePublishedInterfaces(builderSet.getIpsProject()),
                 getLanguageUsedInGeneratedSourceCode());
@@ -49,9 +52,9 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
     }
 
     /**
-     * Returns whether the product component type of the given {@link IIpsSrcFile} is changing over
-     * time or not. If the {@link IIpsSrcFile} does not exists we assume it was changing over time
-     * to delete previously created java files.
+     * Returns whether the product component type of the given {@link IIpsSrcFile} is changing over time
+     * or not. If the {@link IIpsSrcFile} does not exists we assume it was changing over time to delete
+     * previously created java files.
      */
     private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) {
         return !ipsSrcFile.exists()
@@ -60,30 +63,26 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
 
     /**
      * If the generated java file already exists we need to build the generation also if the type
-     * currently is not changing over time. This is used to generate &#64;deprecated annotations in
-     * the generation class files.
+     * currently is not changing over time. This is used to generate &#64;deprecated annotations in the
+     * generation class files.
      */
     private boolean isGenerateDeprecatedGeneration(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getJavaFile(ipsSrcFile).exists();
     }
 
     @Override
-    protected Class<XProductCmptGenerationClass> getGeneratorModelNodeClass() {
+    protected Class<XProductCmptGenerationClass> getGeneratorModelRootType() {
         return XProductCmptGenerationClass.class;
     }
 
     @Override
-    public String getTemplate() {
-        if (isInterfaceBuilder()) {
-            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGenInterface::main";
+    protected String generateBody(IIpsObject ipsObject) {
+        if (generatesInterface()) {
+            return ProductComponentGenInterfaceTmpl.body(getGeneratorModelRoot(ipsObject));
         } else {
-            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGen::main";
-        }
-    }
+            return ProductComponentGenTmpl.body(getGeneratorModelRoot(ipsObject));
 
-    @Override
-    protected boolean generatesInterface() {
-        return isInterfaceBuilder();
+        }
     }
 
 }

@@ -19,19 +19,26 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
+import org.faktorips.devtools.stdbuilder.xpand.enumtype.template.EnumTypeTmpl;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class EnumTypeBuilder extends XpandBuilder<XEnumType> {
+public class EnumTypeBuilder extends XtendBuilder<XEnumType> {
 
     private IJavaClassNameProvider javaClassNameProvider;
 
-    public EnumTypeBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService) {
+    public EnumTypeBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
+            ModelService modelService) {
         super(builderSet, modelContext, modelService, new LocalizedStringsSet(EnumTypeBuilder.class));
-        javaClassNameProvider = XEnumType.createEnumJavaClassNameProvider(modelContext
-                .isGeneratePublishedInterfaces(getIpsProject()));
+        javaClassNameProvider = XEnumType
+                .createEnumJavaClassNameProvider(modelContext.isGeneratePublishedInterfaces(getIpsProject()));
+    }
+
+    @Override
+    protected String generateBody(IIpsObject ipsObject) {
+        return EnumTypeTmpl.body(getGeneratorModelRoot(ipsObject));
     }
 
     @Override
@@ -45,17 +52,12 @@ public class EnumTypeBuilder extends XpandBuilder<XEnumType> {
     }
 
     @Override
-    protected String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::enumtype::template::EnumType::main";
-    }
-
-    @Override
-    protected Class<XEnumType> getGeneratorModelNodeClass() {
+    protected Class<XEnumType> getGeneratorModelRootType() {
         return XEnumType.class;
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
         } catch (CoreException e) {

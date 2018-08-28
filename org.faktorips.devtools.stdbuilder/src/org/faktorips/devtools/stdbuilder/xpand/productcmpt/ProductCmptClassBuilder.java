@@ -11,20 +11,23 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.template.ProductComponentInterfaceTmpl;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.template.ProductComponentTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class ProductCmptClassBuilder extends ProductClassBuilder<XProductCmptClass> {
 
     public ProductCmptClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
             GeneratorModelContext modelContext, ModelService modelService) {
-        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                ProductCmptClassBuilder.class));
+        super(interfaceBuilder, builderSet, modelContext, modelService,
+                new LocalizedStringsSet(ProductCmptClassBuilder.class));
     }
 
     @Override
@@ -33,16 +36,18 @@ public class ProductCmptClassBuilder extends ProductClassBuilder<XProductCmptCla
     }
 
     @Override
-    protected Class<XProductCmptClass> getGeneratorModelNodeClass() {
+    protected Class<XProductCmptClass> getGeneratorModelRootType() {
         return XProductCmptClass.class;
     }
 
     @Override
-    public String getTemplate() {
-        if (isInterfaceBuilder()) {
-            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentInterface::main";
+    protected String generateBody(IIpsObject ipsObject) {
+        if (generatesInterface()) {
+            return ProductComponentInterfaceTmpl.body(getGeneratorModelRoot(ipsObject));
+
         } else {
-            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponent::main";
+            return ProductComponentTmpl.body(getGeneratorModelRoot(ipsObject));
+
         }
     }
 

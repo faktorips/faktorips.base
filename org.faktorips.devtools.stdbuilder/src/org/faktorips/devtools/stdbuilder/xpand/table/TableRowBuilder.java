@@ -19,16 +19,18 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTableRow;
+import org.faktorips.devtools.stdbuilder.xpand.table.template.TableRowTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class TableRowBuilder extends XpandBuilder<XTableRow> {
+public class TableRowBuilder extends XtendBuilder<XTableRow> {
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
-    public TableRowBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService) {
+    public TableRowBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
+            ModelService modelService) {
         super(builderSet, modelContext, modelService, new LocalizedStringsSet(TableRowBuilder.class));
         javaClassNameProvider = new TableRowBuilderClassNameProvider(builderSet.isGeneratePublishedInterfaces());
     }
@@ -45,17 +47,17 @@ public class TableRowBuilder extends XpandBuilder<XTableRow> {
     }
 
     @Override
-    protected String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::table::template::TableRow::main";
+    protected String generateBody(IIpsObject ipsObject) {
+        return TableRowTmpl.body(getGeneratorModelRoot(ipsObject));
     }
 
     @Override
-    protected Class<XTableRow> getGeneratorModelNodeClass() {
+    protected Class<XTableRow> getGeneratorModelRootType() {
         return XTableRow.class;
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
         } catch (CoreException e) {
@@ -82,5 +84,4 @@ public class TableRowBuilder extends XpandBuilder<XTableRow> {
     protected boolean generatesInterface() {
         return false;
     }
-
 }

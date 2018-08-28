@@ -56,9 +56,11 @@ import org.faktorips.util.LocalizedStringsSet;
  * needs to provide the name of the template and the corresponding generator model.
  * <p>
  * 
- * 
- * @author dirmeier
+ * @deprecated Since 3.22 we now use Xtend to generate templates for code generation. Use
+ *             {@link XtendBuilder} instead and refactor your templates for Xtend.
+ * @see XtendBuilder
  */
+@Deprecated
 public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuilder {
 
     /**
@@ -92,8 +94,8 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
     public XpandBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        javaClassNameProvider = XClass.createJavaClassNamingProvider(modelContext
-                .isGeneratePublishedInterfaces(builderSet.getIpsProject()));
+        javaClassNameProvider = XClass
+                .createJavaClassNamingProvider(modelContext.isGeneratePublishedInterfaces(builderSet.getIpsProject()));
         setMergeEnabled(true);
         generatorModelContext = modelContext;
         this.modelService = modelService;
@@ -173,8 +175,8 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
         JavaBeansMetaModel mm = new JavaBeansMetaModel();
         getXpandContext().registerMetaModel(mm);
 
-        final org.eclipse.xtend.typesystem.Type targetType = getXpandContext().getTypeForName(
-                getGeneratorModelNodeClass().getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
+        final org.eclipse.xtend.typesystem.Type targetType = getXpandContext()
+                .getTypeForName(getGeneratorModelNodeClass().getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
         ArgumentCheck.notNull(targetType);
         final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
         setTemplateDefinition(getXpandContext().findDefinition(getTemplate(), targetType, paramTypes));
@@ -207,15 +209,15 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
                 }
                 if (getIpsObject() != null) {
                     addToBuildStatus(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
-                            "Nullpointer in code generation at statement " + element, new EvaluationException(
-                                    "null evaluation", element, ctx)));
+                            "Nullpointer in code generation at statement " + element,
+                            new EvaluationException("null evaluation", element, ctx)));
                 }
                 return "null";
             }
         };
-        XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
-                .getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor, exceptionHandler,
-                nullEvaluationHandler, null);
+        XpandExecutionContextImpl context = new XpandExecutionContextImpl(
+                getGeneratorModelContext().getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor,
+                exceptionHandler, nullEvaluationHandler, null);
         return context;
     }
 
@@ -326,8 +328,8 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
         // generated for adjustments implementing formulas
         List<IType> generatedJavaTypes = getGeneratedJavaTypes(ipsObject);
         if (generatedJavaTypes.size() > 1) {
-            throw new IllegalArgumentException("Found more than one " + generatedJavaTypes + " for "
-                    + ipsObjectPartContainer);
+            throw new IllegalArgumentException(
+                    "Found more than one " + generatedJavaTypes + " for " + ipsObjectPartContainer);
         }
         IType javaType = generatedJavaTypes.get(0);
 

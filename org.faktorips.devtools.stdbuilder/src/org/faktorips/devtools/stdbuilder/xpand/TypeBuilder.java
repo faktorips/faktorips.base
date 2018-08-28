@@ -18,6 +18,14 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.util.LocalizedStringsSet;
 
+/**
+ * Common abstraction of {@link XpandBuilder} to generate classed of type {@link XType}.
+ * 
+ * @deprecated Since 3.22 we now use Xtend to generate templates for code generation. Use
+ *             {@link XtendTypeBuilder} instead and refactor your templates for Xtend.
+ * 
+ */
+@Deprecated
 public abstract class TypeBuilder<T extends XType> extends XpandBuilder<T> {
 
     private static final String GENERATE_INTERFACE = "generateInterface";

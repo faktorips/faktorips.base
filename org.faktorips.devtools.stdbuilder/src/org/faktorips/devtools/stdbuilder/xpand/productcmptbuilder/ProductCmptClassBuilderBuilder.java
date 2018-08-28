@@ -19,20 +19,21 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.BuilderJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.model.XProductBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.template.ProductBuilderTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptClassBuilderBuilder extends TypeBuilder<XProductBuilder> {
+public class ProductCmptClassBuilderBuilder extends XtendTypeBuilder<XProductBuilder> {
 
     private IJavaClassNameProvider javaClassNameProvider;
 
     public ProductCmptClassBuilderBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
             ModelService modelService) {
-        super(false, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                ProductCmptClassBuilderBuilder.class));
+        super(false, builderSet, modelContext, modelService,
+                new LocalizedStringsSet(ProductCmptClassBuilderBuilder.class));
         javaClassNameProvider = new BuilderJavaClassNameProvider();
     }
 
@@ -43,8 +44,8 @@ public class ProductCmptClassBuilderBuilder extends TypeBuilder<XProductBuilder>
 
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String configProperty = getBuilderSet().getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
+        String configProperty = getBuilderSet().getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
 
         if (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(configProperty)
                 || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT.equals(configProperty)) {
@@ -55,17 +56,17 @@ public class ProductCmptClassBuilderBuilder extends TypeBuilder<XProductBuilder>
     }
 
     @Override
-    protected String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template::ProductBuilder::main";
+    protected String generateBody(IIpsObject ipsObject) {
+        return ProductBuilderTmpl.body(getGeneratorModelRoot(ipsObject));
     }
 
     @Override
-    protected Class<XProductBuilder> getGeneratorModelNodeClass() {
+    protected Class<XProductBuilder> getGeneratorModelRootType() {
         return XProductBuilder.class;
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
         } catch (CoreException e) {
@@ -87,4 +88,5 @@ public class ProductCmptClassBuilderBuilder extends TypeBuilder<XProductBuilder>
     public boolean isBuildingPublishedSourceFile() {
         return true;
     }
+
 }

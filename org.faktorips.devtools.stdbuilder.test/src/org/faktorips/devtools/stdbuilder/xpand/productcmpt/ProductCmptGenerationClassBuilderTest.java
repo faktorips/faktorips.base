@@ -13,9 +13,7 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
-import java.net.URL;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
@@ -23,7 +21,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -31,9 +28,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,19 +70,6 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     public void testBuild_buildJavaFileIntoSrcFolder() throws CoreException {
         // build should not throw an exception even if the reference to the type is missing
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-    }
-
-    @Test
-    public void testGetTemplate_exists() {
-        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false,
-                mock(StandardBuilderSet.class), mock(GeneratorModelContext.class), null);
-
-        String template = policyCmptClassBuilder.getTemplate();
-        template = template.substring(0, template.lastIndexOf(SyntaxConstants.NS_DELIM));
-        String templatePath = template.replaceAll(SyntaxConstants.NS_DELIM, "/") + ".xpt";
-        URL resource = PolicyCmptClassBuilder.class.getClassLoader().getResource(templatePath);
-
-        assertNotNull(resource);
     }
 
     @Test

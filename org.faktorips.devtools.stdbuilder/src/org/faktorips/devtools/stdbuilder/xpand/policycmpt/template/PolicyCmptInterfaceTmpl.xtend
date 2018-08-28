@@ -1,0 +1,79 @@
+package org.faktorips.devtools.stdbuilder.xpand.policycmpt.template
+
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass
+
+import static org.faktorips.devtools.stdbuilder.xpand.template.CommonGeneratorExtensionsTmpl.*
+
+import static extension org.faktorips.devtools.stdbuilder.xpand.policycmpt.template.PolicyCmptAssociationTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xpand.policycmpt.template.PolicyCmptAttributeTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xpand.policycmpt.template.ValidationRuleTmpl.*
+import org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
+
+class PolicyCmptInterfaceTmpl {
+
+    def static String body(XPolicyCmptClass it) '''
+
+        /**
+        * «localizedJDoc("INTERFACE", name)» «description»
+        * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        * @generated
+        */
+        «getAnnotations(AnnotatedJavaElementType.PUBLISHED_INTERFACE_CLASS)»
+        «getAnnotationsForPublishedInterface(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS, genInterface())»
+        public interface «interfaceName» «IF extendsInterface» extends «FOR extendedInterface : extendedInterfaces SEPARATOR  ","»«extendedInterface»«ENDFOR» «ENDIF»
+            {
+                «IF generatePolicyBuilder && !abstract»
+                    /**
+                    * @generated
+                    */
+                    public final static «policyBuilderModelNode.factoryImplClassName» NEW = new «policyBuilderModelNode.factoryImplClassName»();
+                «ENDIF»
+
+                «FOR it : associations» «constants» «ENDFOR»
+                «FOR it : validationRules» «constants» «ENDFOR»
+
+                «FOR it : attributes»
+                    «IF published»
+                        «constantForPropertyName»
+                        «constantForValueSet»
+                    «ENDIF»
+                «ENDFOR»
+
+                «FOR it : attributes»
+                    «IF published»
+                        «PolicyCmptAttributeTmpl.constantField(it)»
+                    «ENDIF»
+                «ENDFOR»
+
+                «FOR it : attributes»
+                    «IF published»
+                        «allowedValuesMethod»
+                        «getter»
+                        «setter»
+                    «ENDIF»
+                «ENDFOR»
+
+                «FOR it : associations» «methods» «ENDFOR»
+
+                «IF configured»
+            «PolicyCmptTmpl.getAndSetProductComponent(productCmptNode)»
+            «IF generateGenerationAccessMethods»
+                «PolicyCmptTmpl.getAndSetProductComponentGeneration(productCmptGenerationNode)»
+            «ENDIF»
+                «ENDIF»
+
+                «FOR method : methods» «MethodsTmpl.method(method)» «ENDFOR»
+
+                «IF generatePolicyBuilder && !abstract»
+            «PolicyCmptCreateBuilderTmpl.builder(policyBuilderModelNode)»
+                «ENDIF»
+
+                «IF generateCopySupport»
+            «CopySupportTmpl.copyMethods(it)»
+                 «ENDIF»
+
+            }
+    '''
+
+}

@@ -1,6 +1,0 @@
-import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
-
-extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
-
-parentVar(XPolicyAssociation this) :
-	if (name.toLowerCase() == "parent") then "existingParent" else "parent";

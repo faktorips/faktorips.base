@@ -20,17 +20,19 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.template.PolicyCmptInterfaceTmpl;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.template.PolicyCmptTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class PolicyCmptClassBuilder extends TypeBuilder<XPolicyCmptClass> {
+public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
 
     public PolicyCmptClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
             GeneratorModelContext modelContext, ModelService modelService) {
-        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                PolicyCmptClassBuilder.class));
+        super(interfaceBuilder, builderSet, modelContext, modelService,
+                new LocalizedStringsSet(PolicyCmptClassBuilder.class));
     }
 
     @Override
@@ -39,21 +41,22 @@ public class PolicyCmptClassBuilder extends TypeBuilder<XPolicyCmptClass> {
     }
 
     @Override
-    protected Class<XPolicyCmptClass> getGeneratorModelNodeClass() {
+    protected Class<XPolicyCmptClass> getGeneratorModelRootType() {
         return XPolicyCmptClass.class;
     }
 
     @Override
-    public String getTemplate() {
-        if (isInterfaceBuilder()) {
-            return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptInterface::main";
+    public String generateBody(IIpsObject ipsObject) {
+        if (generatesInterface()) {
+            return PolicyCmptInterfaceTmpl.body(getGeneratorModelRoot(ipsObject));
         } else {
-            return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main";
+            return PolicyCmptTmpl.body(getGeneratorModelRoot(ipsObject));
+
         }
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
                 return true;

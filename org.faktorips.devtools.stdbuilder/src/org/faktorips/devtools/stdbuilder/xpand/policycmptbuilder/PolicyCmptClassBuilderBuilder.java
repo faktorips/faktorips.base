@@ -19,19 +19,20 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.model.XPolicyBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.template.PolicyBuilderTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class PolicyCmptClassBuilderBuilder extends TypeBuilder<XPolicyBuilder> {
+public class PolicyCmptClassBuilderBuilder extends XtendTypeBuilder<XPolicyBuilder> {
 
     private IJavaClassNameProvider javaClassNameProvider;
 
     public PolicyCmptClassBuilderBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
             ModelService modelService) {
-        super(false, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                PolicyCmptClassBuilderBuilder.class));
+        super(false, builderSet, modelContext, modelService,
+                new LocalizedStringsSet(PolicyCmptClassBuilderBuilder.class));
         javaClassNameProvider = new BuilderJavaClassNameProvider();
     }
 
@@ -42,8 +43,8 @@ public class PolicyCmptClassBuilderBuilder extends TypeBuilder<XPolicyBuilder> {
 
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String configProperty = getBuilderSet().getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
+        String configProperty = getBuilderSet().getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
         if (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(configProperty)
                 || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY.equals(configProperty)) {
             return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
@@ -53,17 +54,17 @@ public class PolicyCmptClassBuilderBuilder extends TypeBuilder<XPolicyBuilder> {
     }
 
     @Override
-    protected String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template::PolicyBuilder::main";
+    protected String generateBody(IIpsObject ipsObject) {
+        return PolicyBuilderTmpl.body(getGeneratorModelRoot(ipsObject));
     }
 
     @Override
-    protected Class<XPolicyBuilder> getGeneratorModelNodeClass() {
+    protected Class<XPolicyBuilder> getGeneratorModelRootType() {
         return XPolicyBuilder.class;
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
         } catch (CoreException e) {

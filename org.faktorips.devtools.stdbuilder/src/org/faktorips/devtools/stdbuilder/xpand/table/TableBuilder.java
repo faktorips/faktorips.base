@@ -18,12 +18,13 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.table.model.XTable;
+import org.faktorips.devtools.stdbuilder.xpand.table.template.TableTmpl;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class TableBuilder extends XpandBuilder<XTable> {
+public class TableBuilder extends XtendBuilder<XTable> {
 
     private TableRowBuilder tableRowBuilder;
 
@@ -37,17 +38,17 @@ public class TableBuilder extends XpandBuilder<XTable> {
     }
 
     @Override
-    protected String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::table::template::Table::main";
+    protected String generateBody(IIpsObject ipsObject) {
+        return TableTmpl.body(getGeneratorModelRoot(ipsObject));
     }
 
     @Override
-    protected Class<XTable> getGeneratorModelNodeClass() {
+    protected Class<XTable> getGeneratorModelRootType() {
         return XTable.class;
     }
 
     @Override
-    public boolean isGenerateingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
         try {
             return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
         } catch (CoreException e) {
