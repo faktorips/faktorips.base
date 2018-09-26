@@ -16,7 +16,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 
 /**
  * Abstract base class for annotation generators.

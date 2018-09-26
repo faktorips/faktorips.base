@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 
 /**
  * This class generates JPA annotations for fields derived from policy component type attributes.

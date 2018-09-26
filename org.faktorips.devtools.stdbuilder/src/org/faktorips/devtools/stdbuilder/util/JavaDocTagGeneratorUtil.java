@@ -18,8 +18,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.model.GenericGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xmodel.GenericGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 
 /**
  * This class is used to create the java doc tags provided by an {@link IAnnotationGenerator} in old

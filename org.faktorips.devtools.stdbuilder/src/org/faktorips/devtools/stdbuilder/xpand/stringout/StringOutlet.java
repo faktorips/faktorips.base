@@ -22,6 +22,7 @@ import org.eclipse.xpand2.output.PostProcessor;
 import org.eclipse.xpand2.output.VetoException;
 import org.eclipse.xpand2.output.VetoStrategy;
 import org.eclipse.xpand2.output.VetoStrategy2;
+import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 
 /**
  * This implementation of {@link Outlet} handles String output instead of file outputs. We use the
@@ -29,8 +30,9 @@ import org.eclipse.xpand2.output.VetoStrategy2;
  * could be a very good option to implement a {@link PostProcessor} instead to handle the merging
  * and formatting.
  * 
- * @author dirmeier
+ * @deprecated since 3.22 because {@link XpandBuilder} is deprecated and this is only used for xpand
  */
+@Deprecated
 public class StringOutlet extends Outlet {
 
     private int filesCreated = 0;

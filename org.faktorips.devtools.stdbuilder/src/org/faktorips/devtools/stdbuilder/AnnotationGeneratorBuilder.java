@@ -17,17 +17,17 @@ import java.util.Map;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.ExtensionPropertyAnnGen;
-import org.faktorips.devtools.stdbuilder.xpand.LabelAndDescriptionAnnGen;
-import org.faktorips.devtools.stdbuilder.xpand.PublishedInterfaceAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.attribute.AttributeAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptAssociationAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptDeclClassAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptAssociationAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptDeclClassAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.TableUsageAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.xpand.table.TableAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.ExtensionPropertyAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.LabelAndDescriptionAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.PublishedInterfaceAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptAssociationAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptDeclClassAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptAssociationAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptDeclClassAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.productcmpt.TableUsageAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.table.TableAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
 

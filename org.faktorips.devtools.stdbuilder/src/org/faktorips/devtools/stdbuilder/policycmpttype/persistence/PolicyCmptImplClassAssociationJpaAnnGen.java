@@ -29,8 +29,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 
 /**
  * This class generates JPA annotations for associations of policy component types.

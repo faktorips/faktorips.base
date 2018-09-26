@@ -42,12 +42,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
+import org.faktorips.devtools.stdbuilder.xmodel.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.nullout.NullOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
+import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xtend.XtendBuilder;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 

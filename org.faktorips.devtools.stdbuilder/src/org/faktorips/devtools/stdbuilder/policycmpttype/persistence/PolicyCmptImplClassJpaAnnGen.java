@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentTy
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 
 /**
  * A generator for JPA annotations of <code>IPolicyCmptType</code>s.

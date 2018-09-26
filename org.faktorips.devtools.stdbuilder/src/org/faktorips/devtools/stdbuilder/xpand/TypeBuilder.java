@@ -14,8 +14,10 @@ import java.util.Map;
 
 import org.eclipse.xtend.expression.Variable;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XType;
+import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
+import org.faktorips.devtools.stdbuilder.xmodel.XType;
+import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**

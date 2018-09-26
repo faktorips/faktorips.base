@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

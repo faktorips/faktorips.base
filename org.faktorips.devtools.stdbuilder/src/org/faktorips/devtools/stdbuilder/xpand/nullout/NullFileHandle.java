@@ -18,13 +18,15 @@ import org.eclipse.internal.xpand2.ast.Statement;
 import org.eclipse.xpand2.output.FileHandle;
 import org.eclipse.xpand2.output.InsertionPointSupport;
 import org.eclipse.xpand2.output.Outlet;
+import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 
 /**
  * This is an implementation of {@link FileHandle} to get String output instead of directly write to
  * files. We need Strings to merge and format the generated code before writing to file.
  * 
- * @author dirmeier
+ * @deprecated since 3.22 because {@link XpandBuilder} is deprecated and this is only used for xpand
  */
+@Deprecated
 public class NullFileHandle implements FileHandle, InsertionPointSupport {
 
     private final NullOutlet outlet;

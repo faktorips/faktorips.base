@@ -27,6 +27,7 @@ import org.eclipse.xpand2.output.InsertionPointSupport;
 import org.eclipse.xpand2.output.Outlet;
 import org.eclipse.xpand2.output.Output;
 import org.eclipse.xpand2.output.OutputImpl;
+import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 
 /**
  * This class is handles the output of for the xpand template generator. It was originally written
@@ -34,7 +35,9 @@ import org.eclipse.xpand2.output.OutputImpl;
  * <li>There was no possibility to change the default {@link Outlet}. We need to change the outlet
  * because of possibly different encodings</li>
  * 
+ * @deprecated since 3.22 because {@link XpandBuilder} is deprecated and this is only used for xpand
  */
+@Deprecated
 public class StringOutput implements Output, InsertionPointSupport {
 
     private final static Pattern p = Pattern.compile("(.+)://(.+)");
