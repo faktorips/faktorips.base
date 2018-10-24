@@ -129,7 +129,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         if (!isControlForDefaultValue(valueSet, datatype) && valueSet != null) {
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.TRUE.toString());
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.FALSE.toString());
-            disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, null);
         }
     }
 
@@ -226,13 +225,13 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     }
 
     public static String getTrueValue() {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter()
-                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.TRUE.toString());
+        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(Datatype.PRIMITIVE_BOOLEAN,
+                Boolean.TRUE.toString());
     }
 
     public static String getFalseValue() {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter()
-                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.FALSE.toString());
+        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(Datatype.PRIMITIVE_BOOLEAN,
+                Boolean.FALSE.toString());
     }
 
 }
