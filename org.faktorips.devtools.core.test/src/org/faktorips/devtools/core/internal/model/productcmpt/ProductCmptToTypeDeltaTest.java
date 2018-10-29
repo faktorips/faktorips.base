@@ -110,7 +110,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateEntriesForTemplateLinks_DeletInheritedLink() throws Exception {
+    public void testCreateEntriesForTemplateLinks_DeletedInheritedLink() throws Exception {
         ProductCmpt productTemplate = setUpTemplateAndAssociation();
         createLink(productCmpt, ASSOCIATION, TARGET1);
         IProductCmptLink link = createLink(productCmpt, ASSOCIATION, TARGET2);
@@ -150,6 +150,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
         asso.setTargetRoleSingular(ASSOCIATION);
         asso.setChangingOverTime(false);
         ProductCmpt productTemplate = newProductTemplate(ipsProject, "Template");
+        productTemplate.setProductCmptType(productCmptType.getQualifiedName());
         productCmpt.setTemplate(productTemplate.getQualifiedName());
         return productTemplate;
     }

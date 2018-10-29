@@ -66,11 +66,6 @@ public class TemplateValueSettings {
                     TemplateValueStatus.UNDEFINED, value);
             messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, value, PROPERTY_TEMPLATE_VALUE_STATUS);
         }
-        if (noInheritablePropertyFound(value, ipsProject)) {
-            String message = NLS.bind(Messages.TemplateValueSettings_msgNoInheritableValueFound,
-                    value.getPropertyName());
-            messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, value, PROPERTY_TEMPLATE_VALUE_STATUS);
-        }
         return messageList;
     }
 

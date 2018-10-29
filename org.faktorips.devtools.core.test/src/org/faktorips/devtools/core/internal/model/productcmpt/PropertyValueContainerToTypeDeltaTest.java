@@ -425,8 +425,11 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setProductRelevant(true);
         attr.setName("a1");
+        ProductCmpt template = newProductTemplate(productCmptType, "testTemplate");
+        template.fixAllDifferencesToModel(ipsProject);
+
         productCmpt.fixAllDifferencesToModel(ipsProject);
-        productCmpt.setTemplate("anyTemplate");
+        productCmpt.setTemplate("testTemplate");
         IConfiguredValueSet configValueSet = productCmpt.getFirstGeneration().getPropertyValue("a1",
                 IConfiguredValueSet.class);
         attr.setValueSetType(ValueSetType.RANGE);

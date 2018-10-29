@@ -44,6 +44,7 @@ public class SetTemplateValueStatusOperationTest extends AbstractIpsPluginTest {
         p1.setTemplate(t.getQualifiedName());
         p2.setTemplate(t.getQualifiedName());
 
+        t.newPropertyValue(attribute, IAttributeValue.class);
         IPropertyValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
         IPropertyValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
 

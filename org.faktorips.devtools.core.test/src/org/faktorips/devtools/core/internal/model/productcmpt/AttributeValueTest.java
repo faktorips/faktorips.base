@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
@@ -171,14 +172,14 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml_TemplateValueStatusIsRead() {
-        productCmpt.setTemplate("anyTemplate");
-        attributeValue.setAttribute("rate");
+        createTemplate();
+        attributeValue.setAttribute("minimumPremium");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         Element el = attributeValue.toXml(newDocument());
 
         AttributeValue fromXml = new AttributeValue(generation, "id");
         fromXml.initFromXml(el);
-        assertThat(fromXml.getAttribute(), is("rate"));
+        assertThat(fromXml.getAttribute(), is("minimumPremium"));
         assertThat(fromXml.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
     }
 
@@ -310,7 +311,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetTemplateStatus() {
-        productCmpt.setTemplate("anyTemplate");
+        createTemplate();
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         assertThat(attributeValue.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
@@ -323,7 +324,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_TemplateStatus_excludedNotAllowedForProductCmpt() throws CoreException {
-        productCmpt.setTemplate("anyTemplate");
+        createTemplate();
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         assertThat(attributeValue.validate(ipsProject),
@@ -344,7 +345,26 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
                 lacksMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
 
         productCmpt.setTemplate("invalid template");
+        // INHERITED status is not read if there is no template, so there is no such validation
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        assertThat(attributeValue.validate(ipsProject),
+                lacksMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+    }
+
+    @Test
+    public void testValidate_TemplateStatus_undefinedInProduct() throws CoreException {
+        ProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
+        IAttributeValue templateAV = templateGen.newAttributeValue(attribute);
+        templateAV.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        assertThat(attributeValue.validate(ipsProject),
+                lacksMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         assertThat(attributeValue.validate(ipsProject),
                 hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
     }
@@ -466,7 +486,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testIsConcreteValue() {
         // make product cmpt part of template hierarchy
-        productCmpt.setTemplate("someTemplate");
+        createTemplate();
         attributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         assertTrue(attributeValue.isConcreteValue());
 
@@ -475,6 +495,17 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         assertFalse(attributeValue.isConcreteValue());
+    }
+
+    private ProductCmpt createTemplate() {
+        try {
+            ProductCmpt template = newProductTemplate(productCmptType, "anyTemplate");
+            template.fixAllDifferencesToModel(ipsProject);
+            productCmpt.setTemplate("anyTemplate");
+            return template;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }

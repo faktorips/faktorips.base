@@ -18,8 +18,6 @@ import java.util.Locale;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -29,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -48,6 +47,8 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmptLink {
 
@@ -205,8 +206,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             return;
         }
         super.validateThis(list, ipsProject);
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT,
-                "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, "target", this, PROPERTY_TARGET, //$NON-NLS-1$
+                MSGCODE_UNKNWON_TARGET, list);
 
         IProductCmptTypeAssociation associationObj = findAssociation(ipsProject);
         if (associationObj == null) {
@@ -252,11 +253,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent, associationLabel,
                         getName());
             } else {
-                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration, new Object[] {
-                        associationLabel,
-                        getName(),
-                        IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                        .getGenerationConceptNameSingular(true) });
+                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
+                        new Object[] { associationLabel, getName(), IpsPlugin.getDefault().getIpsPreferences()
+                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -328,7 +327,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             addTotalMinMessage(list, minType);
         }
     }
-    
+
     private void addTotalMinMessage(MessageList list, int minType) {
         String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, this.getMinCardinality(),
                 Integer.toString(minType));
@@ -521,9 +520,31 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return TemplateValueFinder.findTemplateValue(this, IProductCmptLink.class);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * As individual links may be added and removed for an association instead of being "the"
+     * configuration for it, a link is only considered to be part of the hierarchy if the
+     * {@link ProductCmptType} configured by the template (if any) contains the association this
+     * link configures.
+     */
     @Override
     public boolean isPartOfTemplateHierarchy() {
-        return getProductCmptLinkContainer().isProductTemplate() || getProductCmptLinkContainer().isUsingTemplate();
+        return getTemplatedValueContainer().isPartOfTemplateHierarchy()
+                && (getTemplatedValueContainer().isProductTemplate() || isAssociationConfiguredInTemplate());
+    }
+
+    public boolean isAssociationConfiguredInTemplate() {
+        IProductCmptLinkContainer templatedValueContainer = getTemplatedValueContainer();
+        if (templatedValueContainer.isUsingTemplate()) {
+            IProductCmptLinkContainer template = templatedValueContainer.findTemplate(getIpsProject());
+            if (template != null) {
+                IProductCmpt productCmpt = template.getProductCmpt();
+                IProductCmptType templateProductCmptType = productCmpt.findProductCmptType(getIpsProject());
+                return templateProductCmptType.getAssociation(association) != null;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -112,35 +112,45 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml() {
-        productCmpt.setTemplate("anyTmpl");
-        link = generation.newLink("coverage");
+    public void testToXml() throws CoreException {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        templateLink.setTarget("newTarget");
+        templateLink.setMinCardinality(2);
+        templateLink.setMaxCardinality(3);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         link.setTarget("newTarget");
-        link.setMinCardinality(2);
-        link.setMaxCardinality(3);
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         Element element = link.toXml(newDocument());
 
-        IProductCmptLink copy = new ProductCmptLink(productCmpt, "asd");
+        IProductCmptLink copy = new ProductCmptLink(generation, "asd");
         copy.initFromXml(element);
         assertEquals(link.getId(), copy.getId());
         assertEquals("newTarget", copy.getTarget());
-        assertEquals("coverage", copy.getAssociation());
+        assertEquals("CoverageType", copy.getAssociation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
-        assertEquals(TemplateValueStatus.INHERITED, link.getTemplateValueStatus());
+        assertEquals(TemplateValueStatus.INHERITED, copy.getTemplateValueStatus());
 
-        link.setMaxCardinality(Integer.MAX_VALUE);
+        templateLink.setMaxCardinality(Integer.MAX_VALUE);
         element = link.toXml(newDocument());
         copy.initFromXml(element);
         assertEquals(Integer.MAX_VALUE, copy.getMaxCardinality());
     }
 
     @Test
-    public void testInitFromXml() {
-        productCmpt.setTemplate("anyTmpl");
-        link.initFromXml((Element)getTestDocument().getDocumentElement()
-                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(0));
+    public void testInitFromXml() throws CoreException {
+        setUpAssociation(true);
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setTargetRoleSingular("FullCoverage");
+        productCmpt.setTemplate("TestTemplate");
+        templateLink.setAssociation("FullCoverage");
+        templateLink.setTarget("FullCoveragePlus");
+        templateLink.setMinCardinality(2);
+        templateLink.setMaxCardinality(3);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
+                .item(0));
         assertEquals("42", link.getId());
         assertEquals("FullCoverage", link.getAssociation());
         assertEquals("FullCoveragePlus", link.getTarget());
@@ -148,14 +158,14 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals(3, link.getMaxCardinality());
         assertEquals(TemplateValueStatus.INHERITED, link.getTemplateValueStatus());
 
-        link.initFromXml((Element)getTestDocument().getDocumentElement()
-                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(1));
+        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
+                .item(1));
         assertEquals("43", link.getId());
         assertEquals(1, link.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
 
-        link.initFromXml((Element)getTestDocument().getDocumentElement()
-                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(2));
+        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
+                .item(2));
         assertEquals("44", link.getId());
         assertEquals(Cardinality.UNDEFINED, link.getCardinality());
     }
@@ -695,20 +705,33 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     protected IProductCmptLink createTemplateLink() throws CoreException {
+        setUpAssociation(true);
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         productCmpt.setTemplate(template.getQualifiedName());
         IProductCmptLink templateLink = template.getProductCmptGeneration(0).newLink("CoverageType");
+        templateLink.setTarget("newTarget");
+        link.setTarget("newTarget");
         return templateLink;
     }
 
     @Test
-    public void testIsConcreteValue() {
+    public void testIsConcreteValue() throws CoreException {
         // make product cmpt part of template hierarchy
-        productCmpt.setTemplate("someTemplate");
-        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-        assertTrue(link.isConcreteValue());
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        templateLink.setTarget("newTarget");
+        templateLink.setMinCardinality(2);
+        templateLink.setMaxCardinality(3);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertTrue(templateLink.isConcreteValue());
+
+        templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        assertTrue(templateLink.isConcreteValue());
+
+        link.setTarget("newTarget");
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         assertTrue(link.isConcreteValue());
 
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);

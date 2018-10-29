@@ -13,6 +13,7 @@ import java.util.Comparator;
 
 import com.google.common.base.Function;
 
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -84,6 +85,11 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * If the property's parent is a regular product component that does not use templates, the
      * template value status should always be {@link TemplateValueStatus#DEFINED}. In that case this
      * method returns <code>false</code>.
+     * 
+     * If the property's parent is using a template, the property is only considered part of that
+     * template hierarchy if the {@link ProductCmptType} configured by the template also includes
+     * the property (a template could configure a super-{@link ProductCmptType} and the property
+     * could be added in the sub-{@link ProductCmptType} this property's parent configures).
      * 
      * @return <code>true</code> if the corresponding container is using a template or if itself is
      *         a template.

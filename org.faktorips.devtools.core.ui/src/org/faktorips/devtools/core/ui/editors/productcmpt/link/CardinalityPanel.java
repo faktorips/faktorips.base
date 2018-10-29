@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -221,6 +222,18 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         } else {
             update(true);
         }
+        updateTemplateStatusVisibility();
+    }
+
+    private void updateTemplateStatusVisibility() {
+        boolean visible = true;
+        if (pmo.isEmpty()) {
+            visible = false;
+        } else {
+            IProductCmptLink link = pmo.getTemplateLinkPmo().getTemplatedProperty();
+            visible = ((ProductCmptLink)link).isAssociationConfiguredInTemplate();
+        }
+        templateStatusToolBar.setVisible(visible);
     }
 
     /**
@@ -486,8 +499,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         protected void addOpenTemplateAction(IMenuManager manager) {
             IProductCmptLink templateLink = pmo.getTemplateLinkPmo().findTemplateLink();
             if (templateLink != null) {
-                String text = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateLink
-                        .getProductCmptLinkContainer().getProductCmpt().getName());
+                String text = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate,
+                        templateLink.getProductCmptLinkContainer().getProductCmpt().getName());
                 IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateLink, text);
                 manager.add(openTemplateAction);
             }
@@ -501,8 +514,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                 manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
             } else if (pmo.getTemplateLinkPmo().findTemplateLink() != null) {
                 ITemplatedValue templateValue = pmo.getTemplateLinkPmo().findTemplateLink();
-                String text = NLS.bind(Messages.CardinalityPanel_MenuItem_showTemplateLinkUsage, templateValue
-                        .getTemplatedValueContainer().getProductCmpt().getName());
+                String text = NLS.bind(Messages.CardinalityPanel_MenuItem_showTemplateLinkUsage,
+                        templateValue.getTemplatedValueContainer().getProductCmpt().getName());
                 manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
             }
         }

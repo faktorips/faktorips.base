@@ -101,9 +101,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
-                    .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(
+                    getIpsObject().getQualifiedNameType(),
+                    new QualifiedNameType(tableContentUsage.getTableContentName(), IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -392,8 +392,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IFormula newFormula(IProductCmptTypeMethod signature) {
-        IFormula newPropertyValue = propertyValueCollection
-                .newPropertyValue(signature, getNextPartId(), IFormula.class);
+        IFormula newPropertyValue = propertyValueCollection.newPropertyValue(signature, getNextPartId(),
+                IFormula.class);
         objectHasChanged();
         return newPropertyValue;
     }
@@ -482,8 +482,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IProductCmptType type = findProductCmptType(ipsProject);
         // no type information available, so no further validation possible
         if (type == null) {
-            list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound,
-                    Message.ERROR, this));
+            list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound, Message.ERROR,
+                    this));
             return;
         }
 
@@ -596,4 +596,5 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public void removeUndefinedLinks() {
         linkCollection.removeUndefinedLinks();
     }
+
 }
