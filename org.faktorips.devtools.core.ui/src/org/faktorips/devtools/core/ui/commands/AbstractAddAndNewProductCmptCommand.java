@@ -11,11 +11,9 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -74,13 +72,8 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
         if (productCmptType == null) {
             return false;
         }
-        IProductCmptTypeAssociation typeAssociation = null;
-        try {
-            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
-                    productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptTypeAssociation typeAssociation = (IProductCmptTypeAssociation)productCmptType
+                .findAssociation(associationName, productCmpt.getIpsProject());
         if (typeAssociation == null) {
             return false;
         }

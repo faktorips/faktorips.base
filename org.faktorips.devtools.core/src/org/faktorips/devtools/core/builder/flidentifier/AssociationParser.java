@@ -16,7 +16,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -24,9 +23,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
 
 /**
  * This parser tires to match the identifier node to an association of the context type. It also
@@ -60,17 +57,9 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     @Override
     protected IdentifierNode parseInternal() {
         IPolicyCmptType policyCmptType = getContextType();
-        try {
-            IAssociation association = policyCmptType.findAssociation(getAssociationName(), getIpsProject());
-            if (association != null) {
-                return createNodeFor(association);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return nodeFactory().createInvalidIdentifier(
-                    Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                            Messages.AssociationParser_msgErrorWhileFindAssociation, getIdentifierPart(),
-                            getContextType())));
+        IAssociation association = policyCmptType.findAssociation(getAssociationName(), getIpsProject());
+        if (association != null) {
+            return createNodeFor(association);
         }
         return null;
     }
@@ -91,7 +80,9 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         return Collections.emptyList();
     }
 
-    private void addAssociationProposals(IAssociation association, String prefix, IdentifierProposalCollector collector) {
+    private void addAssociationProposals(IAssociation association,
+            String prefix,
+            IdentifierProposalCollector collector) {
         collector.addMatchingNode(getText(association, StringUtils.EMPTY), getDisplayText(association),
                 getDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
         collector.addMatchingNode(getText(association, INDEX_PROPOSAL), getIndexDisplayText(association),

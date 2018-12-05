@@ -24,7 +24,6 @@ public class Messages extends NLS {
     public static String AbstractParameterIdentifierResolver_msgIdentifierNotAllowed;
 
     public static String AssociationParser_msgErrorAssociationQualifierOrIndex;
-    public static String AssociationParser_msgErrorWhileFindAssociation;
     public static String AssociationParser_msgErrorAssociationQualifier;
     public static String AssociationParser_ListDatatypeDescriptionPrefix;
 

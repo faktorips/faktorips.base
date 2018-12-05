@@ -266,10 +266,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param name The association's name.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
-     * @throws CoreException If an error occurs while searching.
      */
-    public IAssociation findAssociation(String name, IIpsProject ipsProject) throws CoreException;
+    public IAssociation findAssociation(String name, IIpsProject ipsProject);
 
     /**
      * Searches an association with the given role name plural in the type and it's supertype

@@ -539,9 +539,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         if (templatedValueContainer.isUsingTemplate()) {
             IProductCmptLinkContainer template = templatedValueContainer.findTemplate(getIpsProject());
             if (template != null) {
-                IProductCmpt productCmpt = template.getProductCmpt();
-                IProductCmptType templateProductCmptType = productCmpt.findProductCmptType(getIpsProject());
-                return templateProductCmptType.getAssociation(association) != null;
+                IProductCmpt templateCmpt = template.getProductCmpt();
+                IProductCmptType templateProductCmptType = templateCmpt.findProductCmptType(getIpsProject());
+                return templateProductCmptType.findAssociation(association, getIpsProject()) != null;
             }
         }
         return false;

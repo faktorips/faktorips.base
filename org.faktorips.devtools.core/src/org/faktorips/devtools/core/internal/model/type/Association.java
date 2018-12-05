@@ -251,16 +251,12 @@ public abstract class Association extends TypePart implements IAssociation {
 
     @Override
     public IAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) {
-        try {
-            IType supertype = getType().findSupertype(ipsProject);
-            if (supertype == null) {
-                return null;
-            }
-            IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
-            return superAssociation;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IType supertype = getType().findSupertype(ipsProject);
+        if (supertype == null) {
+            return null;
         }
+        IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
+        return superAssociation;
     }
 
     @Override
@@ -422,8 +418,8 @@ public abstract class Association extends TypePart implements IAssociation {
     private void validateMinCardinality(MessageList list) {
         if (minCardinality > maxCardinality) {
             String text = Messages.Association_msg_MinCardinalityGreaterThanMaxCardinality;
-            list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
-                    PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
+            list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this,
+                    new String[] { PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
         }
     }
 
@@ -486,8 +482,8 @@ public abstract class Association extends TypePart implements IAssociation {
             if (constrainedAssociation == null) {
                 String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
                 list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text,
-                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this,
-                                PROPERTY_TARGET_ROLE_SINGULAR));
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN),
+                        new ObjectProperty(this, PROPERTY_TARGET_ROLE_SINGULAR));
             } else {
                 validateConstrainedAssociation(list, constrainedAssociation);
             }
@@ -498,8 +494,8 @@ public abstract class Association extends TypePart implements IAssociation {
             throws CoreException {
         if (!isCovariantTargetType(constrainedAssociation)) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
-            list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text, new ObjectProperty(this,
-                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
+            list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
 
         }
         if (!constrainedAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
@@ -544,10 +540,10 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
         if (!isSameAssociationTypeAs(superAssociation)) {
-            String text = NLS.bind(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation, superAssociation
-                    .getAssociationType().getName());
-            list.newError(MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
-                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_ASSOCIATION_TYPE));
+            String text = NLS.bind(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation,
+                    superAssociation.getAssociationType().getName());
+            list.newError(MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION, text,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_ASSOCIATION_TYPE));
         }
     }
 
@@ -559,14 +555,14 @@ public abstract class Association extends TypePart implements IAssociation {
         if (superAssociation.getMinCardinality() != getMinCardinality()) {
             String text = NLS.bind(Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation,
                     getStringCardinality(superAssociation.getMinCardinality()));
-            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
-                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
+            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
         }
         if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
             String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation,
                     getStringCardinality(superAssociation.getMaxCardinality()));
-            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text, new ObjectProperty(this,
-                    PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
+            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
         }
     }
 
@@ -594,8 +590,9 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         if (isSubsetOfADerivedUnion()) {
             list.newError(MSGCODE_CONSTRAIN_SUBSET_DERIVED_UNION,
-                    Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion, new ObjectProperty(this,
-                            PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_SUBSETTED_DERIVED_UNION));
+                    Messages.Association_msg_ConstraintIsSubsetOfDerivedUnion,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN),
+                    new ObjectProperty(this, PROPERTY_SUBSETTED_DERIVED_UNION));
         }
     }
 

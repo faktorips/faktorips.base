@@ -187,7 +187,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException {
+    public IAssociation findAssociation(String name, IIpsProject project) {
         AssociationFinder finder = new AssociationFinder(project, name);
         finder.start(this);
         return finder.association;
@@ -213,7 +213,8 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         if (includeSupertypes) {
-            AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
+            AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target,
+                    associationType);
             finder.start(this);
             return finder.getAssociationsFound();
         } else {
@@ -537,8 +538,8 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         List<IMethod> methods = findOverrideMethodCandidates(true, ipsProject);
         for (IMethod method : methods) {
-            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, method.getName(), method.getType()
-                    .getQualifiedName());
+            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, method.getName(),
+                    method.getType().getQualifiedName());
             list.add(new Message(MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
     }
@@ -638,8 +639,8 @@ public abstract class Type extends BaseIpsObject implements IType {
             MessageList msgList) {
         if (association.isDerivedUnion()) {
             if (!isSubsetted(association, candidateSubsets)) {
-                String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(), association
-                        .getType().getQualifiedName());
+                String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(),
+                        association.getType().getQualifiedName());
                 msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR, Type.this,
                         IType.PROPERTY_ABSTRACT));
             }
@@ -801,8 +802,8 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    protected abstract static class AbstractAssociationFinder<T extends IAssociation> extends
-    TypeHierarchyVisitor<IType> {
+    protected abstract static class AbstractAssociationFinder<T extends IAssociation>
+            extends TypeHierarchyVisitor<IType> {
 
         private List<T> associationsFound = new ArrayList<T>();
         private final boolean superTypeFirst;

@@ -12,14 +12,12 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -71,17 +69,11 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
         }
         IProductCmptGeneration sourceGeneration = getGenerationFromActiveEditor(activeEditor);
         if (sourceGeneration != null) {
-            try {
-                IProductCmptType productCmptType = sourceGeneration.findProductCmptType(sourceGeneration
-                        .getIpsProject());
-                IProductCmptTypeAssociation addToAssociation = (IProductCmptTypeAssociation)productCmptType
-                        .findAssociation(typedSelection.getFirstElement().getAssociationName(),
-                                sourceGeneration.getIpsProject());
-                if (addToAssociation != null) {
-                    initWizard(sourceGeneration, addToAssociation, null, HandlerUtil.getActiveShell(event));
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            IProductCmptType productCmptType = sourceGeneration.findProductCmptType(sourceGeneration.getIpsProject());
+            IProductCmptTypeAssociation addToAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation(
+                    typedSelection.getFirstElement().getAssociationName(), sourceGeneration.getIpsProject());
+            if (addToAssociation != null) {
+                initWizard(sourceGeneration, addToAssociation, null, HandlerUtil.getActiveShell(event));
             }
         }
     }
@@ -95,29 +87,23 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
         }
 
         IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
-        try {
-            IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
-                    .getAdapter(IProductCmptGeneration.class);
-            if (generation != null) {
-                String selectedAssociationParameter = event.getParameter(PARAMETER_SELECTED_ASSOCIATION);
-                IProductCmptTypeAssociation association;
-                if (selectedAssociationParameter != null) {
-                    association = (IProductCmptTypeAssociation)generation.findProductCmptType(
-                            generation.getIpsProject()).findAssociation(selectedAssociationParameter,
-                            generation.getIpsProject());
+        IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
+                .getAdapter(IProductCmptGeneration.class);
+        if (generation != null) {
+            String selectedAssociationParameter = event.getParameter(PARAMETER_SELECTED_ASSOCIATION);
+            IProductCmptTypeAssociation association;
+            if (selectedAssociationParameter != null) {
+                association = (IProductCmptTypeAssociation)generation.findProductCmptType(generation.getIpsProject())
+                        .findAssociation(selectedAssociationParameter, generation.getIpsProject());
+                initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
+            } else {
+                association = (IProductCmptTypeAssociation)structureReference
+                        .getAdapter(IProductCmptTypeAssociation.class);
+                if (association != null) {
                     initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
-                } else {
-                    association = (IProductCmptTypeAssociation)structureReference
-                            .getAdapter(IProductCmptTypeAssociation.class);
-                    if (association != null) {
-                        initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
-                    }
                 }
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
-
     }
 
     private void initWizard(IProductCmptGeneration sourceGeneration,

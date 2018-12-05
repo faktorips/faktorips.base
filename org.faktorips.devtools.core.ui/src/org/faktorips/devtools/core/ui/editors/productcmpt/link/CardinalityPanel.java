@@ -211,7 +211,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         minCard.setText(""); //$NON-NLS-1$
         maxCard.setText(""); //$NON-NLS-1$
         defaultCard.setText(""); //$NON-NLS-1$
-        if (templateStatusToolBar != null) {
+        if (showTemplateStatus) {
             templateStatusToolBar.setEnabled(!pmo.isEmpty());
         }
     }
@@ -226,14 +226,18 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     }
 
     private void updateTemplateStatusVisibility() {
-        boolean visible = true;
+        if (showTemplateStatus) {
+            templateStatusToolBar.setVisible(calculateTemplateStatusVisibility());
+        }
+    }
+
+    private boolean calculateTemplateStatusVisibility() {
         if (pmo.isEmpty()) {
-            visible = false;
+            return false;
         } else {
             IProductCmptLink link = pmo.getTemplateLinkPmo().getTemplatedProperty();
-            visible = ((ProductCmptLink)link).isAssociationConfiguredInTemplate();
+            return ((ProductCmptLink)link).isAssociationConfiguredInTemplate();
         }
-        templateStatusToolBar.setVisible(visible);
     }
 
     /**
