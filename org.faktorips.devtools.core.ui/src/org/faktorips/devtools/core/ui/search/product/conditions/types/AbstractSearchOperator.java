@@ -37,7 +37,12 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
 
     @Override
     public final boolean check(IProductPartsContainer productPartsContainer) {
-        return check(operandProvider.getSearchOperand(productPartsContainer), productPartsContainer);
+        Object searchOperand = operandProvider.getSearchOperand(productPartsContainer);
+        if (searchOperand != null) {
+            return check(searchOperand, productPartsContainer);
+        } else {
+            return false;
+        }
     }
 
     /**
