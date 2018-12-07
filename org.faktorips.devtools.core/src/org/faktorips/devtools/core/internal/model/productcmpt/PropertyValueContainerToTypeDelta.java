@@ -90,7 +90,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         createAdditionalEntriesAndChildren();
     }
 
-    protected void createEntriesForLinks() throws CoreException {
+    protected void createEntriesForLinks() {
         List<IProductCmptLink> links = getLinkContainer().getLinksAsList();
         for (IProductCmptLink link : links) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()

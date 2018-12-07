@@ -119,7 +119,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean performDrop(final Object data) {
-        SingleEventModification<List<IProductCmptLink>> modification = new LinkCreator(generation.getIpsSrcFile(), data);
+        SingleEventModification<List<IProductCmptLink>> modification = new LinkCreator(generation.getIpsSrcFile(),
+                data);
         try {
             List<IProductCmptLink> result = IpsPlugin.getDefault().getIpsModel()
                     .executeModificationsWithSingleEvent(modification);
@@ -220,7 +221,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         return associationName;
     }
 
-    private IProductCmptTypeAssociation getAssociation(Object target) throws CoreException {
+    private IProductCmptTypeAssociation getAssociation(Object target) {
         String associationName = getAssociationName(target);
         IProductCmptType type = generation.findProductCmptType(generation.getIpsProject());
         return (IProductCmptTypeAssociation)type.findAssociation(associationName, generation.getIpsProject());
@@ -353,7 +354,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return !createdCmptLinks.isEmpty();
         }
 
-        private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
+        private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target)
+                throws CoreException {
             if (!canCreateLinks(draggedCmpts, target)) {
                 return Collections.emptyList();
             }
@@ -365,9 +367,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return createdCmptLinks;
         }
 
-        private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target)
-                throws CoreException {
-
+        private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target) {
             IProductCmptTypeAssociation association = getAssociation(target);
             if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
                 IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName);

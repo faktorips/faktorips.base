@@ -114,17 +114,17 @@ public class ProductCmptGenerationToTypeDeltaTest {
     }
 
     @Test
-    public void testCreateLinkWithoutAssociationEntry1() throws CoreException {
+    public void testCreateLinkWithoutAssociationEntry1() {
         verifyAddEntryForLink("assoc1", link1);
     }
 
     @Test
-    public void testCreateLinkWithoutAssociationEntry2() throws CoreException {
+    public void testCreateLinkWithoutAssociationEntry2() {
         verifyAddEntryForLink("assoc2", link2, link3);
     }
 
     @Test
-    public void testChangingOverTimeMismatch() throws CoreException {
+    public void testChangingOverTimeMismatch() {
         when(gen.isContainerFor(assoc1)).thenReturn(false);
         when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
@@ -137,7 +137,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
     }
 
     @Test
-    public void testChangingOverTimeMismatch2() throws CoreException {
+    public void testChangingOverTimeMismatch2() {
         when(gen.isContainerFor(assoc2)).thenReturn(false);
         when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
@@ -151,7 +151,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
     }
 
     @Test
-    public void testChangingOverTimeMismatchStaticAssociation() throws CoreException {
+    public void testChangingOverTimeMismatchStaticAssociation() {
         when(gen.isContainerFor(staticAssociation)).thenReturn(true);
         when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(false);
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
@@ -166,7 +166,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
         assertEquals(staticLink2, captor.getAllValues().get(1).getLink());
     }
 
-    private void verifyAddEntryForLink(String assocName, IProductCmptLink... links) throws CoreException {
+    private void verifyAddEntryForLink(String assocName, IProductCmptLink... links) {
         when(type.findAssociation(assocName, ipsProject)).thenReturn(null);
         ArgumentCaptor<LinkWithoutAssociationEntry> captor = ArgumentCaptor.forClass(LinkWithoutAssociationEntry.class);
 

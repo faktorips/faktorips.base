@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionService;
@@ -58,7 +57,7 @@ public class AbstractAddAndNewProductCmptCommandTest {
     }
 
     @Test
-    public void testSetEnebledString() throws CoreException {
+    public void testSetEnebledString() {
 
         IWorkbenchPage workbenchPage = testInit();
 
@@ -159,7 +158,7 @@ public class AbstractAddAndNewProductCmptCommandTest {
     }
 
     @Test
-    public void testIsValidAssociationNameProductCmptTypeAssociationNull() throws CoreException {
+    public void testIsValidAssociationNameProductCmptTypeAssociationNull() {
 
         IWorkbenchPage workbenchPage = testInit();
         ProductCmptEditor productCmptEditor = mock(ProductCmptEditor.class);
@@ -184,7 +183,7 @@ public class AbstractAddAndNewProductCmptCommandTest {
     }
 
     @Test
-    public void testIsValidAssociationNameTargetProductCmptTypeNull() throws CoreException {
+    public void testIsValidAssociationNameTargetProductCmptTypeNull() {
 
         IWorkbenchPage workbenchPage = testInit();
         ProductCmptEditor productCmptEditor = mock(ProductCmptEditor.class);
