@@ -6,7 +6,7 @@
          <meta.schema plugin="org.faktorips.plugin" id="objectExtensionProperty" name="ObjectExtensionProperty"/>
       </appinfo>
       <documentation>
-         By extending this extension point you are able to add a extension property to an IPS object or part. Basically you could add an extension property to every IIpsObjectPartContainer but the ui part is not implemented for every part. Hence it would be an property that is only editable via XML. We add frequently new UI functionality for not yet supported objects, if your object is not yet supported please send a request.
+         By extending this extension point you are able to add an extension property to an IPS object or part. Basically you could add an extension property to every IIpsObjectPartContainer but the UI is not implemented for every part. Hence it would be a property that is only editable via XML. We add new UI functionality for not yet supported objects, if your object is not yet supported please send a request.
 
 Since 3.10 there is a new functionality to support extension properties that are not activated for every object of the same class. Have a look in the description of the class attribute.
       </documentation>
@@ -19,7 +19,7 @@ Since 3.10 there is a new functionality to support extension properties that are
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
+         <sequence minOccurs="1" maxOccurs="1">
             <element ref="property"/>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -32,7 +32,7 @@ Since 3.10 there is a new functionality to support extension properties that are
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Used as a reference for an extensionPropertyEditFieldFactory.
                </documentation>
             </annotation>
          </attribute>
