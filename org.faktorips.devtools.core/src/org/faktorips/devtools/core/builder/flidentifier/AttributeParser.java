@@ -60,9 +60,8 @@ public class AttributeParser extends TypeBasedIdentifierParser {
             return parseToNode();
         } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
-            return nodeFactory().createInvalidIdentifier(
-                    Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
-                            Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
+            return nodeFactory().createInvalidIdentifier(Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
+                    Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
         }
     }
 
@@ -161,11 +160,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     private IProductCmptType findProductCmptType(IPolicyCmptType policyCmptType) {
-        try {
-            return policyCmptType.findProductCmptType(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return policyCmptType.findProductCmptType(getIpsProject());
     }
 
     private boolean isAllowd(IAttribute anAttribute, boolean isDefaultIdentifier) {
@@ -174,9 +169,8 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     private IdentifierNode createInvalidIdentifierNode() {
-        return nodeFactory().createInvalidIdentifier(
-                Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                        Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
+        return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
+                NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
     }
 
     public String getText(IAttribute attribute, boolean defaultValueAccess) {

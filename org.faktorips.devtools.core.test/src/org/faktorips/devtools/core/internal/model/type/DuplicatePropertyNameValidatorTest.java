@@ -210,7 +210,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddInvalidPolicyAttributes() throws CoreException {
+    public void testAddInvalidPolicyAttributes() {
         IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
         policyCmptTypeA.newPolicyCmptTypeAttribute(productCmptType.getUnqualifiedName());
 
@@ -223,7 +223,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddPolicyAndProductAttributes_PolicyCmptType() throws CoreException {
+    public void testAddPolicyAndProductAttributes_PolicyCmptType() {
         IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
         productCmptType.newProductCmptTypeAttribute(ID);
         policyCmptTypeA.newPolicyCmptTypeAttribute(ID);

@@ -273,8 +273,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
                 @Override
                 public void run() {
-                    IpsUIPlugin.getDefault().openEditor(
-                            ((AssociationComponentNode)node).getTargetingType().getIpsSrcFile());
+                    IpsUIPlugin.getDefault()
+                            .openEditor(((AssociationComponentNode)node).getTargetingType().getIpsSrcFile());
                 }
 
             };
@@ -327,8 +327,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
      * @param input the selected {@link IIpsProject}
      */
     public void showStructure(IIpsProject input) {
-        List<IType> result = AbstractModelStructureContentProvider.getProjectITypes(input, new IpsObjectType[] {
-                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
+        List<IType> result = AbstractModelStructureContentProvider.getProjectITypes(input,
+                new IpsObjectType[] { IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
         List<IType> projectSpecificITypes = AbstractModelStructureContentProvider.getProjectSpecificITypes(result,
                 input);
         if (projectSpecificITypes.isEmpty()) {
@@ -347,28 +347,24 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
      */
     public void showStructure(IType input) {
         toggleProductPolicyAction.setEnabled(true);
-        try {
-            if (input instanceof PolicyCmptType) {
-                setProductCmptTypeImage();
-                IPolicyCmptType policy = (IPolicyCmptType)input;
-                toggledProductCmptInput = policy.findProductCmptType(policy.getIpsProject());
-                if (toggledProductCmptInput == null) {
-                    toggleProductPolicyAction.setEnabled(false);
-                }
-                toggledPolicyCmptInput = (IPolicyCmptType)input;
-                this.provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
-            } else if (input instanceof ProductCmptType) {
-                setPolicyCmptTypeImage();
-                IProductCmptType product = (IProductCmptType)input;
-                toggledPolicyCmptInput = product.findPolicyCmptType(product.getIpsProject());
-                if (toggledPolicyCmptInput == null) {
-                    toggleProductPolicyAction.setEnabled(false);
-                }
-                toggledProductCmptInput = (ProductCmptType)input;
-                this.provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
+        if (input instanceof PolicyCmptType) {
+            setProductCmptTypeImage();
+            IPolicyCmptType policy = (IPolicyCmptType)input;
+            toggledProductCmptInput = policy.findProductCmptType(policy.getIpsProject());
+            if (toggledProductCmptInput == null) {
+                toggleProductPolicyAction.setEnabled(false);
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            toggledPolicyCmptInput = (IPolicyCmptType)input;
+            this.provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+        } else if (input instanceof ProductCmptType) {
+            setPolicyCmptTypeImage();
+            IProductCmptType product = (IProductCmptType)input;
+            toggledPolicyCmptInput = product.findPolicyCmptType(product.getIpsProject());
+            if (toggledPolicyCmptInput == null) {
+                toggleProductPolicyAction.setEnabled(false);
+            }
+            toggledProductCmptInput = (ProductCmptType)input;
+            this.provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
         }
         this.treeViewer.setInput(input);
         this.showTree();
@@ -442,8 +438,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     private Action createRefreshAction() {
         // refresh action
-        Action newRefreshAction = new Action(Messages.ModelStructure_tooltipRefreshContents, IpsUIPlugin
-                .getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+        Action newRefreshAction = new Action(Messages.ModelStructure_tooltipRefreshContents,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 refresh();
@@ -695,8 +691,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
          * FIXME Do not misuse the HoverImageDescriptor for functionality that should be provided by
          * the normal image descriptor
          */
-        toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                POLICY_CMPT_TYPE_IMAGE));
+        toggleProductPolicyAction
+                .setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(POLICY_CMPT_TYPE_IMAGE));
     }
 
     private void setProductCmptTypeImage() {
@@ -704,8 +700,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
          * FIXME Do not misuse the HoverImageDescriptor for functionality that should be provided by
          * the normal image descriptor
          */
-        toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                PRODUCT_CMPT_TYPE_IMAGE));
+        toggleProductPolicyAction
+                .setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TYPE_IMAGE));
     }
 
     private void refresh() {

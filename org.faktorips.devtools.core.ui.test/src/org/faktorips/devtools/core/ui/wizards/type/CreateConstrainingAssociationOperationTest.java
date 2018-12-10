@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -20,7 +22,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -140,7 +141,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         operation.execute();
 
         assertConstrainingAssociationExistsFor(subSourcePolicy, policyAssociation);
-        assertMatchingAssociationExistsFor(subSourcePolicy, policyAssociation);
+        assertConstrainedMatchingAssociationExistsFor(subSourcePolicy, policyAssociation);
     }
 
     @Test
@@ -151,7 +152,23 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         operation.execute();
 
         assertConstrainingAssociationExistsFor(subSourceProduct, productAssociation);
-        assertMatchingAssociationExistsFor(subSourceProduct, productAssociation);
+        assertConstrainedMatchingAssociationExistsFor(subSourceProduct, productAssociation);
+    }
+
+    @Test
+    public void testCreateConstrainingAssociation_NotMarkMatchingAssociation_ProductSubclassed() {
+        // first setup subclasses, superclasses overwrites some properties
+        setUpConfiguration(sourcePolicy, subSourceProduct);
+        setUpConfiguration(targetPolicy, subTargetProduct);
+        setUpConfiguration(sourcePolicy, sourceProduct);
+        setUpConfiguration(targetPolicy, targetProduct);
+
+        CreateConstrainingAssociationOperation operation = new CreateConstrainingAssociationOperation(subSourceProduct,
+                productAssociation, subTargetProduct);
+        operation.execute();
+
+        assertConstrainingAssociationExistsFor(subSourceProduct, productAssociation);
+        assertThat(policyAssociation.isConstrain(), is(false));
     }
 
     @Test
@@ -174,7 +191,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         operation.execute();
 
         assertConstrainingAssociationExistsFor(subSourcePolicy, policyAssociation);
-        assertMatchingAssociationExistsFor(subSourcePolicy, policyAssociation);
+        assertConstrainedMatchingAssociationExistsFor(subSourcePolicy, policyAssociation);
         assertInverseAssociationExistsFor(subSourcePolicy, policyAssociation);
     }
 
@@ -187,7 +204,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         operation.execute();
 
         assertConstrainingAssociationExistsFor(subSourceProduct, productAssociation);
-        assertMatchingAssociationExistsFor(subSourceProduct, productAssociation);
+        assertConstrainedMatchingAssociationExistsFor(subSourceProduct, productAssociation);
         assertInverseAssociationExistsFor(subSourcePolicy, policyAssociation);
     }
 
@@ -282,16 +299,12 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
     }
 
     private IAssociation getConstrainedMatchingAssociation(IType type, IAssociation constrainedAssociation) {
-        try {
-            IAssociation association = getConstrainingAssociation(type, constrainedAssociation);
-            IAssociation matchingAssociation = association.findMatchingAssociation();
-            return matchingAssociation;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IAssociation association = getConstrainingAssociation(type, constrainedAssociation);
+        IAssociation matchingAssociation = association.findMatchingAssociation();
+        return matchingAssociation;
     }
 
-    private void assertMatchingAssociationExistsFor(IType type, IAssociation constrainedAssociation) {
+    private void assertConstrainedMatchingAssociationExistsFor(IType type, IAssociation constrainedAssociation) {
         IAssociation constrainedMatchingAssociation = getConstrainedMatchingAssociation(type, constrainedAssociation);
         assertExistsAndIsConstrain(constrainedMatchingAssociation);
     }

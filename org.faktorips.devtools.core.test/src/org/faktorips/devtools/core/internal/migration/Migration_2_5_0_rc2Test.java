@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -53,7 +52,7 @@ public class Migration_2_5_0_rc2Test extends AbstractIpsPluginTest {
      * master.
      */
     @Test
-    public void testFixInverseOfDetailToMasterAssociation() throws CoreException {
+    public void testFixInverseOfDetailToMasterAssociation() {
         MessageList ml = new MessageList();
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertFalse(Migration_2_5_0_rc2.fixInverseOfDetailToMasterAssociation(ipsProject, ml, association));

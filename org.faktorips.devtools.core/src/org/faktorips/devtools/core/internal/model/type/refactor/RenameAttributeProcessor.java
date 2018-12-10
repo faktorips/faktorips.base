@@ -241,7 +241,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * <p>
      * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
      */
-    private void updateProductCmptConfigElementReferences() throws CoreException {
+    private void updateProductCmptConfigElementReferences() {
         if (!((IPolicyCmptTypeAttribute)getAttribute()).isProductRelevant()) {
             return;
         }

@@ -105,8 +105,8 @@ public class AssociationQualificationGroup extends Composite {
         bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
         Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
-        bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation,
-                PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
+        bindingContext.add(
+                new ButtonTextBinding(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
 
         GridData gridData = new GridData();
         GC gc = new GC(getShell());
@@ -194,35 +194,26 @@ public class AssociationQualificationGroup extends Composite {
         }
 
         public String getConstrainedNote() {
-            try {
-                if (association.isCompositionDetailToMaster()) {
-                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                }
-                IProductCmptTypeAssociation matchingAss = association
-                        .findMatchingProductCmptTypeAssociation(ipsProject);
-                if (matchingAss != null) {
-                    String type = matchingAss.getProductCmptType().getName();
-                    return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type,
-                            matchingAss.getTargetRoleSingular())
-                            + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
-                } else {
-                    String note = Messages.AssociationQualificationGroup_noteIsNotConstrained;
-                    IProductCmptType sourceProductType = association.getPolicyCmptType()
-                            .findProductCmptType(ipsProject);
-                    IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
-                    if (sourceProductType != null && targetType != null) {
-                        IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
-                        if (targetProductType != null) {
-                            return note
-                                    + NLS.bind(Messages.AssociationQualificationGroup_noteContrainHowTo,
-                                            sourceProductType.getName(), targetProductType.getName());
-                        }
+            if (association.isCompositionDetailToMaster()) {
+                return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            IProductCmptTypeAssociation matchingAss = association.findMatchingProductCmptTypeAssociation(ipsProject);
+            if (matchingAss != null) {
+                String type = matchingAss.getProductCmptType().getName();
+                return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type,
+                        matchingAss.getTargetRoleSingular()) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
+            } else {
+                String note = Messages.AssociationQualificationGroup_noteIsNotConstrained;
+                IProductCmptType sourceProductType = association.getPolicyCmptType().findProductCmptType(ipsProject);
+                IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
+                if (sourceProductType != null && targetType != null) {
+                    IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
+                    if (targetProductType != null) {
+                        return note + NLS.bind(Messages.AssociationQualificationGroup_noteContrainHowTo,
+                                sourceProductType.getName(), targetProductType.getName());
                     }
-                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return ""; //$NON-NLS-1$
+                return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }

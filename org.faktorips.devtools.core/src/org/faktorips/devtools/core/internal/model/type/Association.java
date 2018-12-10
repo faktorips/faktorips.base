@@ -58,7 +58,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public abstract IAssociation findMatchingAssociation() throws CoreException;
+    public abstract IAssociation findMatchingAssociation();
 
     @Override
     public AggregationKind getAggregationKind() {
@@ -510,24 +510,31 @@ public abstract class Association extends TypePart implements IAssociation {
         validateConstrainedIsMatchingAssociationParallel(list, constrainedAssociation);
     }
 
-    private void validateConstrainedIsMatchingAssociationParallel(MessageList list, IAssociation constrainedAssociation)
-            throws CoreException {
+    private void validateConstrainedIsMatchingAssociationParallel(MessageList list,
+            IAssociation constrainedAssociation) {
         if (!isMatchingAssociationParallel(constrainedAssociation)) {
             String text = Messages.Association_msg_ConstrainedInvalidMatchingAssociation;
             list.newError(MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION, text, this, PROPERTY_CONSTRAIN);
         }
     }
 
-    private boolean isMatchingAssociationParallel(IAssociation constrainedAssociation) throws CoreException {
+    private boolean isMatchingAssociationParallel(IAssociation constrainedAssociation) {
         IAssociation matchingAssociation = findMatchingAssociation();
         IAssociation constrainedMatchingAssociation = constrainedAssociation.findMatchingAssociation();
 
         if (isNoMatchingAssociationsDefined(matchingAssociation, constrainedMatchingAssociation)) {
             return true;
         } else if (matchingAssociation != null && constrainedMatchingAssociation != null) {
-            IAssociation matchingConstrainedAssociation = matchingAssociation
-                    .findConstrainedAssociation(getIpsProject());
-            return constrainedMatchingAssociation.equals(matchingConstrainedAssociation);
+            if (matchingAssociation.equals(constrainedMatchingAssociation)) {
+                // for product associations it is valid to have a constrained association only on
+                // product side. In this case the matching association and the constrained matching
+                // association is the same. For policy association it is simply not possible at all
+                return true;
+            } else {
+                IAssociation matchingConstrainedAssociation = matchingAssociation
+                        .findConstrainedAssociation(getIpsProject());
+                return constrainedMatchingAssociation.equals(matchingConstrainedAssociation);
+            }
         } else {
             return false;
         }

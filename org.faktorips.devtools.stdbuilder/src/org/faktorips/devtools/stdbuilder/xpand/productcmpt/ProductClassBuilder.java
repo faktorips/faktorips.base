@@ -56,11 +56,7 @@ public abstract class ProductClassBuilder<T extends XProductClass> extends TypeB
         } else if (ipsObject instanceof IPolicyCmptType) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
             if (policyCmptType.isConfigurableByProductCmptType()) {
-                try {
-                    return policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                return policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
             }
         }
         return null;

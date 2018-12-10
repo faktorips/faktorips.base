@@ -159,7 +159,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void returnProdGenerationClassName() throws CoreException {
+    public void returnProdGenerationClassName() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         IProductCmptType prodType = initProdType(policyCmptClass);
 
@@ -171,7 +171,7 @@ public class XPolicyCmptClassTest {
         verify(xProdGenClass).getInterfaceName();
     }
 
-    private IProductCmptType initProdType(XPolicyCmptClass policyCmptClass) throws CoreException {
+    private IProductCmptType initProdType(XPolicyCmptClass policyCmptClass) {
         IPolicyCmptType polType = mock(IPolicyCmptType.class);
         when(policyCmptClass.getType()).thenReturn(polType);
 
@@ -181,7 +181,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void returnProdClassName() throws CoreException {
+    public void returnProdClassName() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         IProductCmptType prodType = initProdType(policyCmptClass);
 
@@ -431,7 +431,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedInterfaces_configuredPolicyCmptType_changingOverTime() throws CoreException {
+    public void testGetExtendedInterfaces_configuredPolicyCmptType_changingOverTime() {
         when(productCmptType.isChangingOverTime()).thenReturn(true);
 
         when(type.hasSupertype()).thenReturn(false);
@@ -446,7 +446,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedInterfaces_configuredPolicyCmptType_notChangingOverTime() throws CoreException {
+    public void testGetExtendedInterfaces_configuredPolicyCmptType_notChangingOverTime() {
         when(productCmptType.isChangingOverTime()).thenReturn(false);
 
         when(type.hasSupertype()).thenReturn(false);

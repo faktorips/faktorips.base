@@ -304,8 +304,8 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         if (XProductClass.class.isAssignableFrom(getModelNodeType(false))) {
             return getJavaNamingConvention().getGetterMethodName("NumOf" + getAssociation().getTargetRolePlural());
         }
-        return getJavaNamingConvention().getGetterMethodName(
-                "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
+        return getJavaNamingConvention()
+                .getGetterMethodName("NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
     }
 
     public String getMethodNameContains() {
@@ -360,15 +360,11 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     public XAssociation getMatchingAssociation() {
-        try {
-            IAssociation matchingAssociation = getAssociation().findMatchingAssociation();
-            if (matchingAssociation != null) {
-                return getModelNode(matchingAssociation, getMatchingClass());
-            } else {
-                return null;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IAssociation matchingAssociation = getAssociation().findMatchingAssociation();
+        if (matchingAssociation != null) {
+            return getModelNode(matchingAssociation, getMatchingClass());
+        } else {
+            return null;
         }
     }
 

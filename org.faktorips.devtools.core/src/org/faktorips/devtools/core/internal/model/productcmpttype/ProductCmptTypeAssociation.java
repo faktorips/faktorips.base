@@ -208,8 +208,19 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             return null;
         }
         // check if the policy component type is configured by this product component type.
-        // (FIPS-714)
+        // (FIPS-734)
         if (!policyCmptType.getProductCmptType().equals(getProductCmptType().getQualifiedName())) {
+            // it is allowed to have subtypes on product side only. In this case we match the same
+            // association as the constrained association (FIPS-4966)
+            if (isConstrain()) {
+                // need to find the next one in super type hierarchy instead of
+                // findConstrainedAssociation which returns the base constrained association
+                IProductCmptTypeAssociation constrainedAssociation = (IProductCmptTypeAssociation)findSuperAssociationWithSameName(
+                        ipsProject);
+                if (constrainedAssociation != null) {
+                    return constrainedAssociation.findDefaultPolicyCmptTypeAssociation(ipsProject);
+                }
+            }
             return null;
         }
         IProductCmptType targetType = findTargetProductCmptType(ipsProject);
@@ -323,7 +334,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             }
             return;
         }
-        if (!this.equals(matchingPolicyCmptTypeAssociation.findMatchingProductCmptTypeAssociation(ipsProject))) {
+        if (!isRematchingAssociation(matchingPolicyCmptTypeAssociation, ipsProject)) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
                     NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid,
                             getMatchingAssociationName(), getMatchingAssociationSource()),
@@ -361,6 +372,21 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                         Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
         }
+    }
+
+    /**
+     * Returns <code>true</code> if the matching product association of the given policy association
+     * matches again to this association.
+     * <p>
+     * Note: We only check the name because it is also valid when the rematching association is a
+     * constrained association in the supertype. In both cases the name match or there are some
+     * other validation errors (like not matching policy/product association)
+     */
+    private boolean isRematchingAssociation(IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation,
+            IIpsProject ipsProject) {
+        String rematchingAssociationName = matchingPolicyCmptTypeAssociation
+                .findMatchingProductCmptTypeAssociation(ipsProject).getName();
+        return getName().equals(rematchingAssociationName);
     }
 
     private boolean isMatchingAssociationSourceAndNameNotEmpty() {
@@ -445,7 +471,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public IAssociation findMatchingAssociation() throws CoreException {
+    public IAssociation findMatchingAssociation() {
         return findMatchingPolicyCmptTypeAssociation(getIpsProject());
     }
 

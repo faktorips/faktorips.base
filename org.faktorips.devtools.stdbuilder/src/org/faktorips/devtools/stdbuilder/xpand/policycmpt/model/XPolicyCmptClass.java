@@ -322,16 +322,12 @@ public class XPolicyCmptClass extends XType {
     }
 
     protected IProductCmptType getProductCmptType() {
-        try {
-            IProductCmptType prodType = getType().findProductCmptType(getIpsProject());
-            if (prodType == null) {
-                throw new NullPointerException(NLS.bind(
-                        "The policy component type {0} is not configured by a product component type.", getType()));
-            }
-            return prodType;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptType prodType = getType().findProductCmptType(getIpsProject());
+        if (prodType == null) {
+            throw new NullPointerException(NLS
+                    .bind("The policy component type {0} is not configured by a product component type.", getType()));
         }
+        return prodType;
     }
 
     public XProductCmptClass getProductCmptNode() {

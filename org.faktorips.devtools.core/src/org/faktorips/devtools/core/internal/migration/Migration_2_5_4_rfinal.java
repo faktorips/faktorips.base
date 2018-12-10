@@ -64,8 +64,8 @@ public class Migration_2_5_4_rfinal extends AbstractIpsProjectMigrationOperation
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-            InterruptedException {
+    public MessageList migrate(IProgressMonitor monitor)
+            throws CoreException, InvocationTargetException, InterruptedException {
         MessageList msgResultList = new MessageList();
         List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
         getIpsProject().collectAllIpsSrcFilesOfSrcFolderEntries(allIpsSrcFiles);
@@ -93,13 +93,11 @@ public class Migration_2_5_4_rfinal extends AbstractIpsProjectMigrationOperation
         }
     }
 
-    private void migrateAssociations(MessageList msgResultList, IPolicyCmptTypeAssociation association)
-            throws CoreException {
+    private void migrateAssociations(MessageList msgResultList, IPolicyCmptTypeAssociation association) {
         fixInverseAssociation(msgResultList, association);
     }
 
-    private void fixInverseAssociation(MessageList msgResultList, IPolicyCmptTypeAssociation association)
-            throws CoreException {
+    private void fixInverseAssociation(MessageList msgResultList, IPolicyCmptTypeAssociation association) {
         fixInverseOfDetailToMasterAssociation(getIpsProject(), msgResultList, association);
     }
 
@@ -114,9 +112,9 @@ public class Migration_2_5_4_rfinal extends AbstractIpsProjectMigrationOperation
      */
     public static boolean fixInverseOfDetailToMasterAssociation(IIpsProject ipsProject,
             MessageList msgList,
-            IPolicyCmptTypeAssociation association) throws CoreException {
-        if (!(association.getAssociationType().isCompositionDetailToMaster() && StringUtils.isEmpty(association
-                .getInverseAssociation()))) {
+            IPolicyCmptTypeAssociation association) {
+        if (!(association.getAssociationType().isCompositionDetailToMaster()
+                && StringUtils.isEmpty(association.getInverseAssociation()))) {
             // fix only detail to master associations with empty inverse association
             return false;
         }
@@ -128,8 +126,8 @@ public class Migration_2_5_4_rfinal extends AbstractIpsProjectMigrationOperation
             msgList.add(new Message(MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS, text, Message.WARNING, association));
             return true;
         }
-        List<IAssociation> associationCandidates = targetPolicyCmptType.getAssociationsForTarget(association
-                .getPolicyCmptType().getQualifiedName());
+        List<IAssociation> associationCandidates = targetPolicyCmptType
+                .getAssociationsForTarget(association.getPolicyCmptType().getQualifiedName());
         List<IPolicyCmptTypeAssociation> masterDetailcanditates = searchMasterToDetailCandidate(association,
                 associationCandidates);
         if (masterDetailcanditates.size() == 1) {
@@ -141,18 +139,19 @@ public class Migration_2_5_4_rfinal extends AbstractIpsProjectMigrationOperation
         } else if (masterDetailcanditates.size() == 0) {
             // error: no master detail found
             String text = "Detail to master association couldn't be fixed, no corresponding master to detail association found"; //$NON-NLS-1$
-            msgList.add(new Message(MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS, text, Message.WARNING,
-                    association));
+            msgList.add(
+                    new Message(MSGCODE_NO_MASTER_TO_DETAIL_CANDIDATE_NOT_EXISTS, text, Message.WARNING, association));
         } else {
             // error: to many master detail found, not unique
             String text = "Detail to master association couldn't be fixed, no unique master to detail association found"; //$NON-NLS-1$
-            msgList.add(new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING, association));
+            msgList.add(
+                    new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING, association));
         }
         return true;
     }
 
-    private static List<IPolicyCmptTypeAssociation> searchMasterToDetailCandidate(IPolicyCmptTypeAssociation association,
-            List<IAssociation> associationCandidates) {
+    private static List<IPolicyCmptTypeAssociation> searchMasterToDetailCandidate(
+            IPolicyCmptTypeAssociation association, List<IAssociation> associationCandidates) {
         List<IPolicyCmptTypeAssociation> candidates = new ArrayList<IPolicyCmptTypeAssociation>();
         for (IAssociation associationCandidate : associationCandidates) {
             IPolicyCmptTypeAssociation candidate = (IPolicyCmptTypeAssociation)associationCandidate;

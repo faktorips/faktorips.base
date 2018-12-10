@@ -456,9 +456,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public List<IAssociation> getExistingInverseAssociationCandidates() {
         try {
-            return targetPolicyCmptType.findAssociationsForTargetAndAssociationType(getAssociation()
-                    .getPolicyCmptType().getQualifiedName(), getAssociation().getAssociationType()
-                    .getCorrespondingAssociationType(), getAssociation().getIpsProject(), false);
+            return targetPolicyCmptType.findAssociationsForTargetAndAssociationType(
+                    getAssociation().getPolicyCmptType().getQualifiedName(),
+                    getAssociation().getAssociationType().getCorrespondingAssociationType(),
+                    getAssociation().getIpsProject(), false);
         } catch (CoreException e) {
             showAndLogError(e);
         }
@@ -507,9 +508,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             try {
                 // get all existing association that matches as inverse for the new association
                 List<IAssociation> existingAssociations = targetPolicyCmptType
-                        .findAssociationsForTargetAndAssociationType(
-                                association.getPolicyCmptType().getQualifiedName(), association.getAssociationType()
-                                        .getCorrespondingAssociationType(), association.getIpsProject(), false);
+                        .findAssociationsForTargetAndAssociationType(association.getPolicyCmptType().getQualifiedName(),
+                                association.getAssociationType().getCorrespondingAssociationType(),
+                                association.getIpsProject(), false);
 
                 if (existingAssociations.size() > 0) {
                     String[] names = new String[existingAssociations.size()];
@@ -567,8 +568,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         try {
             productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);
             productCmptTypeAssociation.setTarget(productCmptTypeTarget.getQualifiedName());
-            confProdCmptTypePropertyPage
-                    .setProductCmptTypeAssociationAndUpdatePage((IProductCmptTypeAssociation)productCmptTypeAssociation);
+            confProdCmptTypePropertyPage.setProductCmptTypeAssociationAndUpdatePage(
+                    (IProductCmptTypeAssociation)productCmptTypeAssociation);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch
@@ -726,13 +727,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     public IProductCmptType findProductCmptType() {
-        IProductCmptType productCmptType = null;
-        try {
-            productCmptType = association.getPolicyCmptType().findProductCmptType(ipsProject);
-        } catch (CoreException e) {
-            showAndLogError(e);
-        }
-        return productCmptType;
+        return association.getPolicyCmptType().findProductCmptType(ipsProject);
     }
 
     public void restoreMementoProductCmptTypeBeforeChange() {
@@ -801,12 +796,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * @see #isProductCmptTypeAvailable(IIpsProject, IPolicyCmptType, IPolicyCmptType)
      */
     public boolean isProductCmptTypeAvailable() {
-        try {
-            return isProductCmptTypeAvailable(ipsProject, association.getPolicyCmptType(), targetPolicyCmptType);
-        } catch (CoreException e) {
-            showAndLogError(e);
-            return false;
-        }
+        return isProductCmptTypeAvailable(ipsProject, association.getPolicyCmptType(), targetPolicyCmptType);
     }
 
     /**
@@ -817,7 +807,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public static boolean isProductCmptTypeAvailable(IIpsProject ipsProject,
             IPolicyCmptType sourcePolicyCmptType,
-            IPolicyCmptType targetPolicyCmptType) throws CoreException {
+            IPolicyCmptType targetPolicyCmptType) {
         if (targetPolicyCmptType == null) {
             // target not set
             return false;
@@ -921,7 +911,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         // if one association found and the last operation was create new the this is the created
         // association
-        if (correspondingAssociations.size() == 1 && previousInverseAssociationManipulation == NEW_INVERSE_ASSOCIATION) {
+        if (correspondingAssociations.size() == 1
+                && previousInverseAssociationManipulation == NEW_INVERSE_ASSOCIATION) {
             return false;
         }
         return true;

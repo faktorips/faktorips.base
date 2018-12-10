@@ -309,7 +309,6 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_labelUnique;
 
-    public static String AttributeEditDialog_msgErrorWhileSearchingProductComponentType;
     public static String AttributeEditDialog_ruleTitle;
     public static String AttributeEditDialog_textNotSupportedByPersistenceProvider;
 

@@ -204,10 +204,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * got a target or the target does not exists.
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
      */
-    public IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the target policy component class.
@@ -429,11 +427,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Policy-Coverage composition.
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
      */
-    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
-            throws CoreException;
+    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Finding the default matching product component association. The dafault is used when no

@@ -137,8 +137,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // target
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
-        ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(),
-                workArea, getToolkit(), false);
+        ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(), workArea,
+                getToolkit(), false);
         getBindingContext().bindContent(targetControl, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         targetControl.setFocus();
 
@@ -150,11 +150,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // Changing over time checkbox
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_changeOverTimeLabel);
-        Button changeOverTimeCheckbox = getToolkit().createButton(
-                workArea,
+        Button changeOverTimeCheckbox = getToolkit().createButton(workArea,
                 NLS.bind(Messages.AssociationEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
-                        SWT.CHECK);
+                SWT.CHECK);
         getBindingContext().bindContent(changeOverTimeCheckbox, association,
                 IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME);
 
@@ -273,8 +272,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             newConstrainedAssociation.setMatchingAssociationSource(association.getProductCmptType().getQualifiedName());
             if (needToSave) {
                 try {
-                    newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile()
-                    .save(false, new NullProgressMonitor());
+                    newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile().save(false,
+                            new NullProgressMonitor());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -285,7 +284,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private void needToSaveOldMatchingAssociation(IPolicyCmptTypeAssociation newConstrainedAssociation) {
         if ((!pmoAssociation.matchingExplicitly || !oldMatchingAssociation.equals(newConstrainedAssociation))
                 && association.getProductCmptType().getQualifiedName()
-                .equals(oldMatchingAssociation.getMatchingAssociationSource())
+                        .equals(oldMatchingAssociation.getMatchingAssociationSource())
                 && association.getName().equals(oldMatchingAssociation.getMatchingAssociationName())) {
 
             boolean needToSave = !oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().isDirty();
@@ -306,8 +305,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         association.setTargetRoleSingular(initialName);
         association.setTargetRolePlural(initialPluralName);
 
-        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
-                association, newName, newPluralName, false);
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(association,
+                newName, newPluralName, false);
         IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
         refactoringOperation.runDirectExecution();
     }
@@ -365,8 +364,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             comboViewerField.setLabelProvider(new MatchingAssociationLabelProvider());
             try {
                 IPolicyCmptTypeAssociation[] possiblyMatchingAssociations = association
-                        .findPossiblyMatchingPolicyCmptTypeAssociations(association.getIpsProject()).toArray(
-                                new IPolicyCmptTypeAssociation[0]);
+                        .findPossiblyMatchingPolicyCmptTypeAssociations(association.getIpsProject())
+                        .toArray(new IPolicyCmptTypeAssociation[0]);
                 comboViewerField.setInput(possiblyMatchingAssociations);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -439,14 +438,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (matchingExplicitly) {
                 if (matchingAssociation != null) {
                     getAssociation().setMatchingAssociationName(matchingAssociation.getName());
-                    getAssociation().setMatchingAssociationSource(
-                            matchingAssociation.getPolicyCmptType().getQualifiedName());
+                    getAssociation()
+                            .setMatchingAssociationSource(matchingAssociation.getPolicyCmptType().getQualifiedName());
                 }
             } else {
                 getAssociation().setMatchingAssociationName(StringUtils.EMPTY);
                 getAssociation().setMatchingAssociationSource(StringUtils.EMPTY);
-                matchingAssociation = getAssociation().findMatchingPolicyCmptTypeAssociation(
-                        getAssociation().getIpsProject());
+                matchingAssociation = getAssociation()
+                        .findMatchingPolicyCmptTypeAssociation(getAssociation().getIpsProject());
             }
             notifyListeners();
         }
@@ -477,8 +476,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         public String getInfoLabel() {
             IPolicyCmptTypeAssociation defaultPolicyCmptTypeAssociation;
-            defaultPolicyCmptTypeAssociation = getAssociation().findDefaultPolicyCmptTypeAssociation(
-                    getAssociation().getIpsProject());
+            defaultPolicyCmptTypeAssociation = getAssociation()
+                    .findDefaultPolicyCmptTypeAssociation(getAssociation().getIpsProject());
             if (defaultPolicyCmptTypeAssociation != null) {
                 return defaultPolicyCmptTypeAssociation.getPolicyCmptType().getName() + "." //$NON-NLS-1$
                         + defaultPolicyCmptTypeAssociation.getName();
@@ -515,15 +514,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 String pcType = policyCmptTypeAssociation.getPolicyCmptType().getName();
                 result.append(NLS.bind(Messages.AssociationEditDialog_associationLabel_AssociationNameInPolicyCmptType,
                         associationName, pcType));
-                try {
-                    IProductCmptTypeAssociation matchingProductCmptTypeAssociation = policyCmptTypeAssociation
-                            .findMatchingProductCmptTypeAssociation(association.getIpsProject());
-                    if (matchingProductCmptTypeAssociation != null && matchingProductCmptTypeAssociation != association) {
-                        result.append(NLS.bind(" (" + Messages.AssociationEditDialog_hint_AlreadyConfiguredIn + ")", //$NON-NLS-1$//$NON-NLS-2$
-                                matchingProductCmptTypeAssociation.getName()));
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                IProductCmptTypeAssociation matchingProductCmptTypeAssociation = policyCmptTypeAssociation
+                        .findMatchingProductCmptTypeAssociation(association.getIpsProject());
+                if (matchingProductCmptTypeAssociation != null && matchingProductCmptTypeAssociation != association) {
+                    result.append(NLS.bind(" (" + Messages.AssociationEditDialog_hint_AlreadyConfiguredIn + ")", //$NON-NLS-1$//$NON-NLS-2$
+                            matchingProductCmptTypeAssociation.getName()));
                 }
             }
             return result.toString();

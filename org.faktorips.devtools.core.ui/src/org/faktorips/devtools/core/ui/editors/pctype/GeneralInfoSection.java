@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -18,7 +17,6 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -59,8 +57,8 @@ public class GeneralInfoSection extends IpsSection {
 
             @Override
             public void linkActivated(HyperlinkEvent event) {
-                IPolicyCmptType supertype = (IPolicyCmptType)policyCmptType.findSupertype(policyCmptType
-                        .getIpsProject());
+                IPolicyCmptType supertype = (IPolicyCmptType)policyCmptType
+                        .findSupertype(policyCmptType.getIpsProject());
                 if (supertype != null) {
                     IpsUIPlugin.getDefault().openEditor(supertype);
                 }
@@ -68,8 +66,8 @@ public class GeneralInfoSection extends IpsSection {
 
         });
 
-        PcTypeRefControl supertypeRefControl = toolkit
-                .createPcTypeRefControl(policyCmptType.getIpsProject(), composite);
+        PcTypeRefControl supertypeRefControl = toolkit.createPcTypeRefControl(policyCmptType.getIpsProject(),
+                composite);
         getBindingContext().bindContent(supertypeRefControl, policyCmptType, IType.PROPERTY_SUPERTYPE);
 
         extFactory.createControls(composite, toolkit, policyCmptType, IExtensionPropertyDefinition.POSITION_TOP);
@@ -101,16 +99,10 @@ public class GeneralInfoSection extends IpsSection {
 
             @Override
             public void linkActivated(HyperlinkEvent event) {
-                try {
-                    IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType
-                            .getIpsProject());
-                    if (productCmptType != null) {
-                        IpsUIPlugin.getDefault().openEditor(productCmptType);
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+                if (productCmptType != null) {
+                    IpsUIPlugin.getDefault().openEditor(productCmptType);
                 }
-
             }
 
         });

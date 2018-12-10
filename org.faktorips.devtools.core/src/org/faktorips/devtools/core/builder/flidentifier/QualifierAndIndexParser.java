@@ -86,9 +86,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IdentifierNode invalidIndexNode() {
-        return nodeFactory().createInvalidIdentifier(
-                Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS.bind(
-                        Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0, getIdentifierPart())));
+        return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS
+                .bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0, getIdentifierPart())));
     }
 
     private IdentifierNode createQualifierNode() {
@@ -98,9 +97,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
             return nodeFactory().createQualifierNode(productCmpt, getQualifier(), isListOfType());
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return nodeFactory().createInvalidIdentifier(
-                    Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS.bind(
-                            Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
+            return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS
+                    .bind(Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
         }
     }
 
@@ -135,13 +133,13 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return foundProductCmpt;
     }
 
-    private boolean isMatchingProductCmptType(IProductCmpt productCmpt) throws CoreException {
+    private boolean isMatchingProductCmptType(IProductCmpt productCmpt) {
         IProductCmptType foundProductCmptType = productCmpt.findProductCmptType(getIpsProject());
         return foundProductCmptType.isSubtypeOrSameType(findProductCmptType(), getIpsProject());
 
     }
 
-    private IProductCmptType findProductCmptType() throws CoreException {
+    private IProductCmptType findProductCmptType() {
         return ((IPolicyCmptType)getContextType()).findProductCmptType(getIpsProject());
     }
 
@@ -155,9 +153,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     private IdentifierNode handleInvalidIndex(NumberFormatException e) {
         IpsPlugin.log(e);
-        return nodeFactory().createInvalidIdentifier(
-                Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS.bind(
-                        Messages.AssociationParser_msgErrorAssociationQualifierOrIndex, getQualifierOrIndex(),
+        return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER,
+                NLS.bind(Messages.AssociationParser_msgErrorAssociationQualifierOrIndex, getQualifierOrIndex(),
                         getIdentifierPart())));
     }
 
@@ -200,8 +197,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     private void addIndexProposal(String prefix, IdentifierProposalCollector collector) {
         String text = getIndexText(0);
-        collector
-                .addMatchingNode(text, QUALIFIER_START + text, getIndexDescription(), prefix, IdentifierNodeType.INDEX);
+        collector.addMatchingNode(text, QUALIFIER_START + text, getIndexDescription(), prefix,
+                IdentifierNodeType.INDEX);
     }
 
     private void addQualifierProposal(String prefix, IdentifierProposalCollector collector) {

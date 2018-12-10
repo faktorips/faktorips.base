@@ -111,9 +111,8 @@ public interface IPolicyCmptType extends IType {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the type.
      */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the product component type that configures this type.

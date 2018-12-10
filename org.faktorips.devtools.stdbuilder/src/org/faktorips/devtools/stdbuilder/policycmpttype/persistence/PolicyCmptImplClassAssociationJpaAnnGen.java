@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.IPersistenceProvider;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -102,8 +101,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
                 // add import and annotation depending on the relationship type (e.g. oneToMany)
                 RelationshipType relationShip = RelationshipType.UNKNOWN;
                 if (xInverseAssociation != null) {
-                    relationShip = persistenceAssociatonInfo.evalBidirectionalRelationShipType(xInverseAssociation
-                            .getAssociation());
+                    relationShip = persistenceAssociatonInfo
+                            .evalBidirectionalRelationShipType(xInverseAssociation.getAssociation());
                 } else {
                     relationShip = persistenceAssociatonInfo.evalUnidirectionalRelationShipType();
                 }
@@ -255,7 +254,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             fragment.addImport(IMPORT_CASCADE_TYPE);
         }
         if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
-                && persistenceAssociatonInfo.isCascadeTypePersist() && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
+                && persistenceAssociatonInfo.isCascadeTypePersist()
+                && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
             attributesToAppend.add("cascade=CascadeType.ALL");
             return;
         }
@@ -390,13 +390,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
      * <code>false</code>
      */
     static boolean isTargetPolicyCmptTypePersistenceEnabled(IPolicyCmptTypeAssociation pcTypeAssociation) {
-        try {
-            IPolicyCmptType targetPolicyCmptType = pcTypeAssociation.findTargetPolicyCmptType(pcTypeAssociation
-                    .getIpsProject());
-            return targetPolicyCmptType.isPersistentEnabled();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptType targetPolicyCmptType = pcTypeAssociation
+                .findTargetPolicyCmptType(pcTypeAssociation.getIpsProject());
+        return targetPolicyCmptType.isPersistentEnabled();
     }
 
     private void addAnnotationIndex(IPersistenceProvider persistenceProvider,

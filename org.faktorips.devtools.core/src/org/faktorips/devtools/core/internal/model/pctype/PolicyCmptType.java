@@ -144,7 +144,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return ipsProject.findProductCmptType(getProductCmptType());
     }
 
@@ -307,8 +307,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE))
                 .booleanValue();
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
-        forceExtensionCompilationUnitGeneration = Boolean.valueOf(
-                element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
+        forceExtensionCompilationUnitGeneration = Boolean
+                .valueOf(element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
     }
 
     @Override
@@ -316,8 +316,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
-        newElement
-                .setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU,
+                "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
     }
 
     @Override
@@ -337,13 +337,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                         IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
             } else {
                 IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkAndGetIpsObjectReference(
-                        productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE, Messages.PolicyCmptType_productCmptType,
-                        this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
-                        IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
+                        productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE, Messages.PolicyCmptType_productCmptType, this,
+                        IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE, IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND,
+                        list, ipsProject);
                 if (productCmptTypeObj != null) {
                     if (productCmptTypeObj.findPolicyCmptType(ipsProject) != this) {
-                        String text = NLS
-                                .bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType, productCmptType);
+                        String text = NLS.bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType,
+                                productCmptType);
                         list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE,
                                 text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
                     }
@@ -429,8 +429,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * @param dependencies is the result set which will contain all dependencies
      */
     private void dependsOnAddValidationDependency(Set<IDependency> dependencies) {
-        dependencies.add(IpsObjectDependency.create(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(),
-                IpsObjectType.PRODUCT_CMPT_TYPE), DependencyType.VALIDATION));
+        dependencies.add(IpsObjectDependency.create(getQualifiedNameType(),
+                new QualifiedNameType(getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE), DependencyType.VALIDATION));
     }
 
     @Override
@@ -780,11 +780,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
         @Override
         protected IProductCmptType getMatchingType(IType currentType) {
-            try {
-                return ((IPolicyCmptType)currentType).findProductCmptType(getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return ((IPolicyCmptType)currentType).findProductCmptType(getIpsProject());
         }
 
         @Override

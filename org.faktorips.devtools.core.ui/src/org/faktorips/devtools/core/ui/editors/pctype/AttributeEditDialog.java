@@ -104,7 +104,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     /** the attribute being edited. */
     private final IPolicyCmptTypeAttribute attribute;
 
-    /** Keep track of the content of the name field to be able to determine whether it has changed. */
+    /**
+     * Keep track of the content of the name field to be able to determine whether it has changed.
+     */
     private final String initialName;
 
     private IIpsProject ipsProject;
@@ -469,26 +471,20 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void bindRefreshAllowedValueSetTypes(Checkbox checkbox) {
-        getBindingContext().add(
-                new ControlPropertyBinding(checkbox, attribute, PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT,
-                        Boolean.TYPE) {
+        getBindingContext().add(new ControlPropertyBinding(checkbox, attribute,
+                PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Boolean.TYPE) {
 
-                    @Override
-                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                        if (PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
-                            updateAllowedValueSetTypes();
-                        }
-                    }
-                });
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                if (PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
+                    updateAllowedValueSetTypes();
+                }
+            }
+        });
     }
 
     private IProductCmptType getProductCmptType() {
-        try {
-            return attribute.getPolicyCmptType().findProductCmptType(ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
-        }
+        return attribute.getPolicyCmptType().findProductCmptType(ipsProject);
     }
 
     private void createMethodAndOpenDialog() {
@@ -567,16 +563,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private IProductCmptType findProductCmptTypeAndInformUserIfNotExists() {
         IPolicyCmptType policyCmptType = attribute.getPolicyCmptType();
         IProductCmptType productCmptType = null;
-        try {
-            productCmptType = policyCmptType.findProductCmptType(ipsProject);
-            if (productCmptType == null) {
-                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound,
-                        policyCmptType.getProductCmptType());
-                MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
-            }
-        } catch (CoreException e) {
-            String text = NLS.bind(Messages.AttributeEditDialog_msgErrorWhileSearchingProductComponentType,
-                    policyCmptType.getProductCmptType());
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        if (productCmptType == null) {
+            String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound, policyCmptType.getProductCmptType());
             MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
         }
         return productCmptType;
@@ -633,8 +622,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDefaultValueEditField(Composite workArea) {
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                currentDatatype);
+        ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), workArea, currentDatatype,
                 attribute.getValueSet(), ipsProject);
         adjustLabelWidth();
@@ -658,10 +647,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 final IPolicyCmptTypeAttribute overwrittenAttribute = (IPolicyCmptTypeAttribute)attribute
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
-                    IpsPlugin
-                    .getDefault()
-                    .getIpsModel()
-                    .executeModificationsWithSingleEvent(
+                    IpsPlugin.getDefault().getIpsModel().executeModificationsWithSingleEvent(
                             new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
                                 @Override
@@ -714,9 +700,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             defaultValueField.getControl().setEnabled(enabled);
         }
         if (valueSetSpecificationControl != null) {
-            valueSetSpecificationControl
-            .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                    : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+            valueSetSpecificationControl.setEditMode(attribute.isProductRelevant()
+                    ? ValueSetControlEditMode.ALL_KIND_OF_SETS : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }
@@ -729,8 +714,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void updateAllowedValueSetTypes() {
         ValueSetType currentValueSetType = valueSetSpecificationControl.getValueSetType();
         try {
-            valueSetSpecificationControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute
-                    .getIpsProject()));
+            valueSetSpecificationControl
+                    .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
         } catch (CoreException e) {
             IpsPlugin.log(e);
             valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
@@ -805,8 +790,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (validationRuleAdded != null) {
             getBindingContext().bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
         }
-        getBindingContext().add(
-                new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
+        getBindingContext()
+                .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
                     @Override
                     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                         if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
@@ -886,42 +871,40 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         addIndexText(workArea);
 
         // disable all tab page controls if policy component type shouldn't persist
-        getBindingContext().add(
-                new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
-                        "enabled", Boolean.TYPE) { //$NON-NLS-1$
-                    @Override
-                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                        if (!isPersistentEnabled()) {
-                            getToolkit().setDataChangeable(persistencePage.getControl(), false);
-                            return;
-                        }
-                        if (attribute.getPersistenceAttributeInfo().isTransient()) {
-                            getToolkit().setDataChangeable(group, false);
-                            return;
-                        }
-                        getToolkit().setDataChangeable(persistencePage.getControl(),
-                                ((IPersistentTypeInfo)getObject()).isEnabled());
-                    }
-                });
+        getBindingContext().add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
+                "enabled", Boolean.TYPE) { //$NON-NLS-1$
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                if (!isPersistentEnabled()) {
+                    getToolkit().setDataChangeable(persistencePage.getControl(), false);
+                    return;
+                }
+                if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                    getToolkit().setDataChangeable(group, false);
+                    return;
+                }
+                getToolkit().setDataChangeable(persistencePage.getControl(),
+                        ((IPersistentTypeInfo)getObject()).isEnabled());
+            }
+        });
 
         // disable property controls if attribute is marked as transient
-        getBindingContext().add(
-                new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
-                        IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
-                    @Override
-                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                        if (!isPersistentEnabled()) {
-                            getToolkit().setDataChangeable(group, false);
-                            return;
-                        }
-                        if (attribute.getPersistenceAttributeInfo().isTransient()) {
-                            getToolkit().setDataChangeable(group, false);
-                            return;
-                        }
-                        enableOrDisableDatatypeDependingControls();
-                    }
+        getBindingContext().add(new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                if (!isPersistentEnabled()) {
+                    getToolkit().setDataChangeable(group, false);
+                    return;
+                }
+                if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                    getToolkit().setDataChangeable(group, false);
+                    return;
+                }
+                enableOrDisableDatatypeDependingControls();
+            }
 
-                });
+        });
         // datatype depending enabled or disabled controls
         getBindingContext().add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
             @Override
@@ -1058,8 +1041,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         private void addToResult(List<ICompletionProposal> result, IMethod method, int documentOffset) {
             String name = method.getSignatureString();
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(method);
-            CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), IpsUIPlugin
-                    .getImageHandling().getImage(method), name, null, localizedDescription);
+            CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(),
+                    IpsUIPlugin.getImageHandling().getImage(method), name, null, localizedDescription);
             result.add(proposal);
         }
 

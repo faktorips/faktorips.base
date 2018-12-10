@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -137,10 +140,11 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     }
 
     /**
-     * Test for FIPS-714
+     * Test for FIPS-734
      */
     @Test
-    public void shouldNotFindMatchingAssociationForDifferingHierarchy() throws Exception {
+    public void testFindDefaultPolicyCmptTypeAssociation_FindNoMatchingAssociationForDifferingHierarchy()
+            throws Exception {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "MyProduct");
         IProductCmptType product = policy.findProductCmptType(ipsProject);
         ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct", policy);
@@ -149,19 +153,117 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         PolicyCmptType cover = newPolicyAndProductCmptType(ipsProject, "Coverage", "MyCoverageType");
         IProductCmptType coverType = cover.findProductCmptType(ipsProject);
 
-        IPolicyCmptTypeAssociation policyToCover = policy.newPolicyCmptTypeAssociation();
-        policyToCover.setTarget(cover.getQualifiedName());
-
-        IProductCmptTypeAssociation productToCoverType = product.newProductCmptTypeAssociation();
-        productToCoverType.setTarget(coverType.getQualifiedName());
+        IPolicyCmptTypeAssociation policyToCover = newPolicyCmptTypeAssociation(policy, cover);
+        IProductCmptTypeAssociation productToCoverType = newProductCmptTypeAssociation(product, coverType);
 
         assertEquals(policyToCover, productToCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject));
         assertEquals(productToCoverType, policyToCover.findDefaultMatchingProductCmptTypeAssociation(ipsProject));
 
-        IProductCmptTypeAssociation subProductToCoverType = subProduct.newProductCmptTypeAssociation();
-        subProductToCoverType.setTarget(coverType.getQualifiedName());
+        IProductCmptTypeAssociation subProductToCoverType = newProductCmptTypeAssociation(subProduct, coverType);
 
         assertNull(subProductToCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject));
+    }
+
+    /**
+     * Test for FIPS-4966
+     */
+    @Test
+    public void testFindDefaultPolicyCmptTypeAssociation_FindMatchingAssociationForConstrainedAssociation()
+            throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "MyProduct");
+        IProductCmptType product = policy.findProductCmptType(ipsProject);
+        ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct", policy);
+        subProduct.setSupertype(product.getQualifiedName());
+
+        PolicyCmptType cover = newPolicyAndProductCmptType(ipsProject, "Coverage", "MyCoverageType");
+        IProductCmptType coverType = cover.findProductCmptType(ipsProject);
+        ProductCmptType subCoverType = newProductCmptType(ipsProject, "SubCoverType", cover);
+        subCoverType.setSupertype(coverType.getQualifiedName());
+
+        IPolicyCmptTypeAssociation policyToCover = newPolicyCmptTypeAssociation(policy, cover);
+        newProductCmptTypeAssociation(product, coverType);
+
+        IProductCmptTypeAssociation subProductToSubCoverType = newProductCmptTypeAssociation(subProduct, subCoverType);
+        subProductToSubCoverType.setConstrain(true);
+
+        assertThat(subProductToSubCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject), is(policyToCover));
+    }
+
+    /**
+     * Test for FIPS-4966
+     */
+    @Test
+    public void testFindDefaultPolicyCmptTypeAssociation_FindMatchingAssociationForConstrainedAssociation_twoHierarchyStages()
+            throws Exception {
+        PolicyCmptType superPolicy = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperMyProduct");
+        IProductCmptType superProduct = superPolicy.findProductCmptType(ipsProject);
+
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "MyProduct");
+        policy.setSupertype(superPolicy.getQualifiedName());
+        IProductCmptType product = policy.findProductCmptType(ipsProject);
+        product.setSupertype(superProduct.getQualifiedName());
+        ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct", policy);
+        subProduct.setSupertype(product.getQualifiedName());
+
+        PolicyCmptType superCover = newPolicyAndProductCmptType(ipsProject, "SuperCoverage", "MySuperCoverageType");
+        IProductCmptType superCoverType = superCover.findProductCmptType(ipsProject);
+        PolicyCmptType cover = newPolicyAndProductCmptType(ipsProject, "Coverage", "MyCoverageType");
+        IProductCmptType coverType = cover.findProductCmptType(ipsProject);
+        ProductCmptType subCoverType = newProductCmptType(ipsProject, "SubCoverType", cover);
+        subCoverType.setSupertype(coverType.getQualifiedName());
+
+        newPolicyCmptTypeAssociation(superPolicy, superCover);
+        newProductCmptTypeAssociation(superProduct, superCoverType);
+
+        IPolicyCmptTypeAssociation policyToCover = newPolicyCmptTypeAssociation(policy, cover);
+        policyToCover.setConstrain(true);
+        IProductCmptTypeAssociation productToCoverType = newProductCmptTypeAssociation(product, coverType);
+        productToCoverType.setConstrain(true);
+
+        IProductCmptTypeAssociation subProductToSubCoverType = newProductCmptTypeAssociation(subProduct, subCoverType);
+        subProductToSubCoverType.setConstrain(true);
+
+        assertThat(subProductToSubCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject), is(policyToCover));
+    }
+
+    /**
+     * Validate constrained association with subclasses on product side only (FIPS-4966)
+     */
+    @Test
+    public void testValidateMatchingAsoociation_FindMatchingAssociationForConstrainedAssociation() throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "MyProduct");
+        IProductCmptType product = policy.findProductCmptType(ipsProject);
+        ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct", policy);
+        subProduct.setSupertype(product.getQualifiedName());
+
+        PolicyCmptType cover = newPolicyAndProductCmptType(ipsProject, "Coverage", "MyCoverageType");
+        IProductCmptType coverType = cover.findProductCmptType(ipsProject);
+        ProductCmptType subCoverType = newProductCmptType(ipsProject, "SubCoverType", cover);
+        subCoverType.setSupertype(coverType.getQualifiedName());
+
+        newPolicyCmptTypeAssociation(policy, cover);
+        newProductCmptTypeAssociation(product, coverType);
+
+        IProductCmptTypeAssociation subProductToSubCoverType = newProductCmptTypeAssociation(subProduct, subCoverType);
+        subProductToSubCoverType.setConstrain(true);
+
+        assertThat(subProductToSubCoverType.validate(ipsProject), isEmpty());
+    }
+
+    private IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation(IPolicyCmptType from, IPolicyCmptType to) {
+        IPolicyCmptTypeAssociation policyToCover = from.newPolicyCmptTypeAssociation();
+        policyToCover.setTarget(to.getQualifiedName());
+        policyToCover.setTargetRoleSingular("coverage");
+        policyToCover.setTargetRolePlural("coverages");
+        return policyToCover;
+    }
+
+    private IProductCmptTypeAssociation newProductCmptTypeAssociation(IProductCmptType from, IProductCmptType to) {
+        IProductCmptTypeAssociation policyToCover = from.newProductCmptTypeAssociation();
+        policyToCover.setTarget(to.getQualifiedName());
+        policyToCover.setTargetRoleSingular("coverageType");
+        policyToCover.setTargetRolePlural("coverageTypes");
+        return policyToCover;
     }
 
     /**
@@ -381,8 +483,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
      */
     @Test
     public void testSetTarget() {
-        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
-                IProductCmptTypeAssociation.PROPERTY_TARGET, association, "newTarget");
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET,
+                association, "newTarget");
     }
 
     /**
@@ -477,8 +579,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
 
         MessageList messageList = subAssociation.validate(ipsProject);
 
-        assertNotNull(messageList
-                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+        assertNotNull(
+                messageList.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
     @Test
@@ -494,8 +596,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
 
         MessageList messageList = subAssociation.validate(ipsProject);
 
-        assertNotNull(messageList
-                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+        assertNotNull(
+                messageList.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
     @Test
@@ -511,8 +613,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
 
         MessageList messageList = subAssociation.validate(ipsProject);
 
-        assertNull(messageList
-                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+        assertNull(
+                messageList.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
     @Test
@@ -528,8 +630,8 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
 
         MessageList messageList = subAssociation.validate(ipsProject);
 
-        assertNull(messageList
-                .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
+        assertNull(
+                messageList.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
     @Test
@@ -539,29 +641,29 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         association.setChangingOverTime(false);
 
         MessageList ml = association.validate(association.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productType.setChangingOverTime(true);
         association.setChangingOverTime(true);
 
         ml = association.validate(association.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productType.setChangingOverTime(false);
         association.setChangingOverTime(false);
 
         ml = association.validate(association.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         association.setChangingOverTime(false);
         association.setChangingOverTime(true);
 
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test

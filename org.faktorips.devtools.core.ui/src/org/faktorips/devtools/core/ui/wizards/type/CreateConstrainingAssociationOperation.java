@@ -87,27 +87,26 @@ public class CreateConstrainingAssociationOperation {
 
     private void assertSameType() {
         if (!getSourceType().getClass().equals(getTargetType().getClass())) {
-            throw new IllegalArgumentException(NLS.bind(
-                    Messages.CreateConstrainingAssociationOperation_sourceAndTargetTypeMustBeOfSameClass,
-                    getSourceType().getClass(), getTargetType().getClass()));
+            throw new IllegalArgumentException(
+                    NLS.bind(Messages.CreateConstrainingAssociationOperation_sourceAndTargetTypeMustBeOfSameClass,
+                            getSourceType().getClass(), getTargetType().getClass()));
         }
     }
 
     private void assertAssociationMatchesType() {
         IType typeContainingTheAssociation = getConstrainedAssociation().getType();
         if (!getSourceType().getClass().equals(typeContainingTheAssociation.getClass())) {
-            throw new IllegalArgumentException(NLS.bind(
-                    Messages.CreateConstrainingAssociationOperation_sourceTypeAndAssociationClassMustMatch,
-                    getSourceType().getClass(), typeContainingTheAssociation.getClass()));
+            throw new IllegalArgumentException(
+                    NLS.bind(Messages.CreateConstrainingAssociationOperation_sourceTypeAndAssociationClassMustMatch,
+                            getSourceType().getClass(), typeContainingTheAssociation.getClass()));
         }
     }
 
     private void assertTargetSubtype() {
         if (!isTargetTypeValid()) {
-            throw new IllegalArgumentException(
-                    NLS.bind(
-                            Messages.CreateConstrainingAssociationOperation_targetTypeMustBeSubclassOfTheConstrainedAssociationTarget,
-                            getTargetType().getName(), getConstrainedTargetType().getName()));
+            throw new IllegalArgumentException(NLS.bind(
+                    Messages.CreateConstrainingAssociationOperation_targetTypeMustBeSubclassOfTheConstrainedAssociationTarget,
+                    getTargetType().getName(), getConstrainedTargetType().getName()));
         }
     }
 
@@ -131,7 +130,7 @@ public class CreateConstrainingAssociationOperation {
     public void execute() {
         IAssociation constrainingAssociation = setUpConstrainingAssociation();
         setUpInverseAssociationIfApplicable(constrainingAssociation);
-        IAssociation matchingAssociation = setupMatchingAssociationIfPossible();
+        IAssociation matchingAssociation = setupMatchingAssociationIfPossible(constrainingAssociation);
         setUpInverseAssociationIfApplicable(matchingAssociation);
     }
 
@@ -155,10 +154,11 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private boolean isInverseRequired(IPolicyCmptTypeAssociation constrainedAssoc) {
-        return constrainedAssoc.hasInverseAssociation();
+        return constrainedAssoc != null && constrainedAssoc.hasInverseAssociation();
     }
 
-    private void createInverseAssociation(IPolicyCmptTypeAssociation assoc, IPolicyCmptTypeAssociation constrainedAssoc) {
+    private void createInverseAssociation(IPolicyCmptTypeAssociation assoc,
+            IPolicyCmptTypeAssociation constrainedAssoc) {
         try {
             IPolicyCmptTypeAssociation templateInverseAssociation = constrainedAssoc
                     .findInverseAssociation(getIpsProject());
@@ -171,21 +171,23 @@ public class CreateConstrainingAssociationOperation {
         }
     }
 
-    private IAssociation setupMatchingAssociationIfPossible() {
+    private IAssociation setupMatchingAssociationIfPossible(IAssociation constrainingAssociation) {
         IType matchingSourceType = findMatchingType(getSourceType());
         IType matchingTargetType = findMatchingType(getTargetType());
         if (matchingSourceType != null && matchingTargetType != null) {
-            return createMatchingAssociation(matchingSourceType, matchingTargetType);
+            return createMatchingAssociation(constrainingAssociation, matchingSourceType, matchingTargetType);
         }
         return null;
     }
 
-    private IAssociation createMatchingAssociation(IType matchingSourceType, IType matchingTargetType) {
-        if (isMatchingAssociationRequired()) {
+    private IAssociation createMatchingAssociation(IAssociation constrainingAssociation,
+            IType matchingSourceType,
+            IType matchingTargetType) {
+        if (isMatchingAssociationRequired(constrainingAssociation)) {
             IAssociation constrainedMatchingAssociation = getConstrainedMatchingAssociation();
             boolean isMatchingSourceSrcFileDirty = matchingSourceType.getIpsSrcFile().isDirty();
-            IAssociation createdConstrainAssociation = matchingSourceType.constrainAssociation(
-                    constrainedMatchingAssociation, matchingTargetType);
+            IAssociation createdConstrainAssociation = matchingSourceType
+                    .constrainAssociation(constrainedMatchingAssociation, matchingTargetType);
             saveIfNecessary(matchingSourceType, isMatchingSourceSrcFileDirty);
             return createdConstrainAssociation;
         }
@@ -203,31 +205,23 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private IType findMatchingType(IType type) {
-        try {
-            if (type instanceof IProductCmptType) {
-                IProductCmptType productCmptType = (IProductCmptType)type;
-                return productCmptType.findPolicyCmptType(getIpsProject());
-            } else if (type instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)type;
-                return policyCmptType.findProductCmptType(getIpsProject());
-            } else {
-                return null;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (type instanceof IProductCmptType) {
+            IProductCmptType productCmptType = (IProductCmptType)type;
+            return productCmptType.findPolicyCmptType(getIpsProject());
+        } else if (type instanceof IPolicyCmptType) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)type;
+            return policyCmptType.findProductCmptType(getIpsProject());
+        } else {
+            return null;
         }
     }
 
-    private boolean isMatchingAssociationRequired() {
-        return getConstrainedMatchingAssociation() != null;
+    private boolean isMatchingAssociationRequired(IAssociation constrainingAssociation) {
+        return getConstrainedMatchingAssociation() != null && constrainingAssociation.findMatchingAssociation() == null;
     }
 
     private IAssociation getConstrainedMatchingAssociation() {
-        try {
-            return getConstrainedAssociation().findMatchingAssociation();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getConstrainedAssociation().findMatchingAssociation();
     }
 
     public IAssociation getConstrainedAssociation() {

@@ -480,12 +480,8 @@ public class XPolicyAssociation extends XAssociation {
      * 
      */
     public XPolicyCmptClass getTargetPolicyCmptClass() {
-        try {
-            IPolicyCmptType polCmptType = getAssociation().findTargetPolicyCmptType(getIpsProject());
-            return getModelNode(polCmptType, XPolicyCmptClass.class);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptType polCmptType = getAssociation().findTargetPolicyCmptType(getIpsProject());
+        return getModelNode(polCmptType, XPolicyCmptClass.class);
     }
 
     public boolean isProductRelevant() {
