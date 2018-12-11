@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -146,6 +150,20 @@ public class GeneratorModelContextTest {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE))
                 .thenReturn("");
         assertThat(generatorModelContext.getBaseClassProductCmptType(), is(ProductComponent.class.getName()));
+    }
+
+    @Test
+    public void testGetChangesOverTimeNamingConvention() {
+        String id = "FIPS";
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION))
+                .thenReturn(id);
+        IIpsModel ipsModel = mock(IpsModel.class);
+        when(ipsProject.getIpsModel()).thenReturn(ipsModel);
+        IChangesOverTimeNamingConvention convention = mock(IChangesOverTimeNamingConvention.class);
+        when(ipsModel.getChangesOverTimeNamingConvention(id)).thenReturn(convention);
+
+        assertThat(generatorModelContext.getChangesOverTimeNamingConvention(), is(convention));
+        verify(ipsModel).getChangesOverTimeNamingConvention(id);
     }
 
 }

@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -381,6 +382,12 @@ public class GeneratorModelContext {
         String baseClass = getConfig()
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE);
         return StringUtils.isBlank(baseClass) ? ProductComponent.class.getName() : baseClass;
+    }
+
+    public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
+        String changesOverTimeNamingConventionId = getConfig()
+                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION);
+        return ipsProject.getIpsModel().getChangesOverTimeNamingConvention(changesOverTimeNamingConventionId);
     }
 
 }

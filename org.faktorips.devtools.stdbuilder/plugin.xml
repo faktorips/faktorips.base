@@ -201,6 +201,14 @@
                defaultValue=""
                type="string">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               class="org.faktorips.devtools.stdbuilder.ChangesOverTimeNamingConventionPropertyDef"
+               description="%changesOverTimeNamingConventionDescription"
+               label="%changesOverTimeNamingConventionLabel"
+               name="changesOverTimeNamingConvention"
+               defaultValue=""
+               type="string">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

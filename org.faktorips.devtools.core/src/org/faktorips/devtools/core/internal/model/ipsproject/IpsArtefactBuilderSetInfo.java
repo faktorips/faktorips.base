@@ -95,8 +95,10 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject) {
         IpsArtefactBuilderSetConfigModel configModel = new IpsArtefactBuilderSetConfigModel();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefinitions.values()) {
-            configModel.setPropertyValue(propertyDef.getName(), propertyDef.getDefaultValue(ipsProject),
-                    propertyDef.getDescription());
+            if (propertyDef.isAvailable(ipsProject)) {
+                configModel.setPropertyValue(propertyDef.getName(), propertyDef.getDefaultValue(ipsProject),
+                        propertyDef.getDescription());
+            }
         }
         return configModel;
     }
@@ -186,12 +188,6 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         Message msg = propertyDef.validateValue(ipsProject, propertyValue);
         if (msg != null) {
             return msg;
-        }
-        String disableValue = propertyDef.getDisableValue(ipsProject);
-        if (!propertyDef.isAvailable(ipsProject) && (disableValue != null && disableValue.equals(propertyValue))) {
-            return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE,
-                    NLS.bind(Messages.IpsArtefactBuilderSetInfo_propertyInompatibleJDK, propertyName, builderSetId),
-                    Message.ERROR);
         }
         return null;
     }

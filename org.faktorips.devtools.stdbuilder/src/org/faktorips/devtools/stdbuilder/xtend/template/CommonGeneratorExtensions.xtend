@@ -70,7 +70,7 @@ class CommonGeneratorExtensions {
         overrideAnnotationForPublishedMethodImplementationOr(it, constrain)
     }
 
-    // User it function for attribute methods (e.g. getter, setter).
+    // Use it function for attribute methods (e.g. getter, setter).
     // Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
     // If the attribute does not override another attribute, the boolean parameter specifies whether the attribute
     // is published

@@ -10,17 +10,30 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.clazz;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.defaultValue;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.description;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.disableValue;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.label;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.name;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.type;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.AttributeSetter.value;
+import static org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfoTest.ChildElement.child;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -35,6 +48,7 @@ import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
@@ -43,6 +57,9 @@ import org.junit.Test;
 
 public class IpsArtefactBuilderSetInfoTest {
 
+    private static final String COPY_SUPPORT = "copySupport";
+    private static final String USE_CHANGE_LISTENER = "useChangeListener";
+    private static final String LOGGING_CONNECTORS = "loggingConnectors";
     private TestExtensionRegistry registry;
     private TestLogger logger;
     private IpsArtefactBuilderSetInfo builderSetInfo;
@@ -50,40 +67,21 @@ public class IpsArtefactBuilderSetInfoTest {
     @Before
     public void setUp() {
 
-        HashMap<String, String> attributes = new HashMap<String, String>();
-        attributes.put("name", "loggingConntectors");
-        attributes.put("type", "boolean");
-        attributes.put("label", "Logging Connectors");
-        attributes.put("defaultValue", "true");
-        attributes.put("disableValue", "false");
-        attributes.put("description", "Hello");
-        TestConfigurationElement propertyDef1 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
-                new IConfigurationElement[] {});
+        TestConfigurationElement propertyDef1 = builderSetPropertyDef(name(LOGGING_CONNECTORS), type("boolean"),
+                label("Logging Connectors"), defaultValue("true"), disableValue("false"), description("Hello"));
 
-        attributes = new HashMap<String, String>();
-        attributes.put("name", "useChangeListener");
-        attributes.put("type", "boolean");
-        attributes.put("label", "Use Change Listener");
-        attributes.put("defaultValue", "true");
-        attributes.put("disableValue", "false");
-        attributes.put("description", "Hello");
-        TestConfigurationElement propertyDef2 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
-                new IConfigurationElement[] {});
+        TestConfigurationElement propertyDef2 = builderSetPropertyDef(name(USE_CHANGE_LISTENER), type("boolean"),
+                label("Use Change Listener"), defaultValue("true"), disableValue("false"), description("Hello"));
 
-        attributes = new HashMap<String, String>();
-        attributes.put("name", "coypSupport");
-        attributes.put("type", "boolean");
-        attributes.put("label", "Copy Support");
-        attributes.put("defaultValue", "true");
-        attributes.put("disableValue", "false");
-        attributes.put("description", "Hello");
-        TestConfigurationElement propertyDef3 = new TestConfigurationElement("builderSetPropertyDef", attributes, null,
-                new IConfigurationElement[] {});
+        TestConfigurationElement propertyDef3 = builderSetPropertyDef(name(COPY_SUPPORT), type("boolean"),
+                label("Copy Support"), defaultValue("true"), disableValue("false"), description("Hello"),
+                // restricted availability
+                child(configElement("jdkComplianceLevels", name("jdkComplianceLevels"),
+                        child(configElement("jdkComplianceLevel", value("1.4"))))));
 
-        attributes = new HashMap<String, String>();
-        attributes.put("class", DefaultBuilderSet.class.getName());
-        IExtension extension = TestMockingUtils.mockExtension("mybuilderset", new TestConfigurationElement("builderSet",
-                attributes, null, new IConfigurationElement[] { propertyDef1, propertyDef2, propertyDef3 }));
+        IExtension extension = TestMockingUtils.mockExtension("mybuilderset",
+                configElement("builderSet", clazz(DefaultBuilderSet.class.getName()), child(propertyDef1),
+                        child(propertyDef2), child(propertyDef3)));
 
         IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset",
                 extension);
@@ -92,7 +90,7 @@ public class IpsArtefactBuilderSetInfoTest {
 
         logger = new TestLogger();
         ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>();
-        IIpsModel ipsModel = createTestIpsModel();
+        IIpsModel ipsModel = mock(IIpsModel.class);
 
         IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
         builderSetInfo = (IpsArtefactBuilderSetInfo)builderSetInfoList.get(0);
@@ -103,100 +101,164 @@ public class IpsArtefactBuilderSetInfoTest {
     public void testLoadExtensions() {
         assertEquals(3, builderSetInfo.getPropertyDefinitions().length);
         assertEquals("mybuilderset", builderSetInfo.getBuilderSetId());
-
     }
 
     @Test
-    public void testValidateIpsBuilderSetPropertyValue() {
-        IIpsProject ipsProject = createTestIpsProject("1.4");
-        assertNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "loggingConntectors", "true"));
-        assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "loggingConntectors", "hallo"));
+    public void testValidateIpsBuilderSetPropertyValue_OK() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        assertNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, LOGGING_CONNECTORS, "true"));
+    }
+
+    @Test
+    public void testValidateIpsBuilderSetPropertyValue_WrongDatatype() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, LOGGING_CONNECTORS, "hallo"));
+    }
+
+    @Test
+    public void testValidateIpsBuilderSetPropertyValue_UnknownProperty() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
         assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "hanswurst", "hallo"));
-
     }
 
     @Test
-    public void testValidateIpsArtefactBuilderSetConfig() {
-        IIpsProject ipsProject = createTestIpsProject("1.4");
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put("loggingConntectors", "true");
-        properties.put("useChangeListener", "false");
+    public void testValidateIpsArtefactBuilderSetConfig_OK() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put(LOGGING_CONNECTORS, "true");
+        properties.put(USE_CHANGE_LISTENER, "false");
         IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
 
         MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
+
         assertTrue(msgList.isEmpty());
+    }
 
-        properties = new HashMap<String, String>();
-        properties.put("loggingConntectors", "true");
-        properties.put("useChangeListener", "false");
+    @Test
+    public void testValidateIpsArtefactBuilderSetConfig_UnknownProperty() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put(LOGGING_CONNECTORS, "true");
+        properties.put(USE_CHANGE_LISTENER, "false");
         properties.put("hanswurst", "false");
-        builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
+        IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
 
-        msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
+        MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
+
         assertFalse(msgList.isEmpty());
+    }
+
+    @Test
+    public void testCreateDefaultConfiguration() {
+        IIpsProject ipsProject = mockIpsAndJavaProject("1.4");
+        IIpsArtefactBuilderSetConfigModel configuration = builderSetInfo.createDefaultConfiguration(ipsProject);
+        assertThat(configuration.getPropertyValue(USE_CHANGE_LISTENER), is("true"));
+        assertThat(configuration.getPropertyValue(LOGGING_CONNECTORS), is("true"));
+        assertThat(configuration.getPropertyValue(COPY_SUPPORT), is("true"));
+    }
+
+    @Test
+    public void testCreateDefaultConfiguration_OnlyAvailable() {
+        IIpsProject ipsProject = mockIpsAndJavaProject("1.5");
+        IIpsArtefactBuilderSetConfigModel configuration = builderSetInfo.createDefaultConfiguration(ipsProject);
+        assertThat(configuration.getPropertyValue(USE_CHANGE_LISTENER), is("true"));
+        assertThat(configuration.getPropertyValue(LOGGING_CONNECTORS), is("true"));
+        // only available for compliance level 1.4
+        assertThat(configuration.getPropertyValue(COPY_SUPPORT), is(nullValue()));
+    }
+
+    private IIpsProject mockIpsAndJavaProject(String complianceLevel) {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IJavaProject javaProject = mock(IJavaProject.class);
+        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true)).thenReturn(complianceLevel);
+        return ipsProject;
+    }
+
+    private static TestConfigurationElement builderSetPropertyDef(ConfigElementModifier... modifiers) {
+        return configElement("builderSetPropertyDef", modifiers);
+    }
+
+    private static TestConfigurationElement configElement(String name, ConfigElementModifier... modifiers) {
+        Map<String, String> attributes = new HashMap<String, String>();
+        List<IConfigurationElement> children = new LinkedList<IConfigurationElement>();
+        for (ConfigElementModifier modifier : modifiers) {
+            if (modifier instanceof AttributeSetter) {
+                ((AttributeSetter)modifier).set(attributes);
+            }
+            if (modifier instanceof ChildElement) {
+                children.add(((ChildElement)modifier).get());
+            }
+        }
+        return new TestConfigurationElement(name, attributes, null,
+                children.toArray(new IConfigurationElement[children.size()]));
+    }
+
+    public static interface ConfigElementModifier {
 
     }
 
-    private IIpsModel createTestIpsModel() {
+    public static class ChildElement implements ConfigElementModifier {
 
-        InvocationHandler ipsModelHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("getIpsBuilderSetPropertyDef")) {
-                    if (args.length < 1) {
-                        return null;
-                    }
-                    Map<String, Object> properties = new HashMap<String, Object>();
-                    properties.put("type", "boolean");
-                    properties.put("defaultValue", "false");
-                    properties.put("disableValue", "false");
+        private IConfigurationElement child;
 
-                    if (((String)args[0]).equals("loggingConntectors")) {
-                        properties.put("name", "loggingConntectors");
-                    }
-                    if (((String)args[0]).equals("useChangeListener")) {
-                        properties.put("name", "useChangeListener");
-                    }
-                    if (((String)args[0]).equals("coypSupport")) {
-                        properties.put("name", "coypSupport");
-                    }
-                    IpsBuilderSetPropertyDef propertyDef = new IpsBuilderSetPropertyDef();
-                    propertyDef.initialize(null, properties);
-                    return propertyDef;
-                }
-                return null;
-            }
-        };
-        return (IIpsModel)Proxy.newProxyInstance(IIpsModel.class.getClassLoader(), new Class[] { IIpsModel.class },
-                ipsModelHandler);
+        public ChildElement(IConfigurationElement child) {
+            this.child = child;
+        }
+
+        public IConfigurationElement get() {
+            return child;
+        }
+
+        public static ChildElement child(IConfigurationElement child) {
+            return new ChildElement(child);
+        }
     }
 
-    private IIpsProject createTestIpsProject(final String complianceLevel) {
+    public static class AttributeSetter implements ConfigElementModifier {
+        private final String attribute;
+        private String value;
 
-        InvocationHandler javaProjectHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("getOption") && args.length > 0
-                        && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
-                    return complianceLevel;
-                }
-                return null;
-            }
-        };
-        final IJavaProject javaProject = (IJavaProject)Proxy.newProxyInstance(IJavaProject.class.getClassLoader(),
-                new Class[] { IJavaProject.class }, javaProjectHandler);
+        public AttributeSetter(String attribute, String value) {
+            this.attribute = attribute;
+            this.value = value;
+        }
 
-        InvocationHandler ipsProjectHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("getJavaProject")) {
-                    return javaProject;
-                }
-                return null;
-            }
-        };
-        return (IIpsProject)Proxy.newProxyInstance(IIpsProject.class.getClassLoader(),
-                new Class[] { IIpsProject.class }, ipsProjectHandler);
+        public void set(Map<String, String> attributes) {
+            attributes.put(attribute, value);
+        }
+
+        public static AttributeSetter name(String name) {
+            return new AttributeSetter("name", name);
+        }
+
+        public static AttributeSetter type(String type) {
+            return new AttributeSetter("type", type);
+        }
+
+        public static AttributeSetter label(String label) {
+            return new AttributeSetter("label", label);
+        }
+
+        public static AttributeSetter defaultValue(String defaultValue) {
+            return new AttributeSetter("defaultValue", defaultValue);
+        }
+
+        public static AttributeSetter disableValue(String disableValue) {
+            return new AttributeSetter("disableValue", disableValue);
+        }
+
+        public static AttributeSetter description(String description) {
+            return new AttributeSetter("description", description);
+        }
+
+        public static AttributeSetter value(String value) {
+            return new AttributeSetter("value", value);
+        }
+
+        public static AttributeSetter clazz(String clazz) {
+            return new AttributeSetter("class", clazz);
+        }
     }
 
 }

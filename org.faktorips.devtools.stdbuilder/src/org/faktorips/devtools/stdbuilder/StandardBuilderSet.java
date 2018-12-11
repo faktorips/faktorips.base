@@ -231,6 +231,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     public static final String CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE = "baseClassProductComponent"; //$NON-NLS-1$
 
+    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = ChangesOverTimeNamingConventionPropertyDef.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION;
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;

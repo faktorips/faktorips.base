@@ -1,0 +1,60 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.devtools.stdbuilder;
+
+import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBuilderSetPropertyDef;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.util.message.Message;
+
+/**
+ * Property Definition that mirrors the {@link ChangesOverTimeNamingConvention} setting from the
+ * {@link IIpsProjectProperties} as a builder property so that all settings relevant to the builder
+ * can be accessed in one place.
+ */
+public class ChangesOverTimeNamingConventionPropertyDef extends IpsBuilderSetPropertyDef {
+
+    public static final String MSG_CODE_DERIVED_PROPERTY_SET_MANUALLY = "derivedPropertySetManually"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = "changesOverTimeNamingConvention"; //$NON-NLS-1$
+
+    /**
+     * Always returns <code>false</code>, because the property can not be set manually as it is
+     * mirrored from
+     * {@link IIpsProjectProperties#getChangesOverTimeNamingConventionIdForGeneratedCode()}.
+     */
+    @Override
+    public boolean isAvailable(IIpsProject ipsProject) {
+        return false;
+    }
+
+    @Override
+    public String getDefaultValue(IIpsProject ipsProject) {
+        return getValueFromIpsProject(ipsProject);
+    }
+
+    @Override
+    public String getDisableValue(IIpsProject ipsProject) {
+        return getValueFromIpsProject(ipsProject);
+    }
+
+    private String getValueFromIpsProject(IIpsProject ipsProject) {
+        return ipsProject.getProperties().getChangesOverTimeNamingConventionIdForGeneratedCode();
+    }
+
+    @Override
+    public Message validateValue(IIpsProject ipsProject, String value) {
+        return Message.newWarning(MSG_CODE_DERIVED_PROPERTY_SET_MANUALLY,
+                Messages.bind(Messages.ChangesOverTimeNamingConventionPropertyDef_msgDerivedPropertySetManually,
+                        CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION, value,
+                        getValueFromIpsProject(ipsProject)));
+    }
+
+}
