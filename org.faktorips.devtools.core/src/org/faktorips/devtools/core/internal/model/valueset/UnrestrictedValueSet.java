@@ -73,6 +73,11 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public String toShortString() {
+        return getCanonicalString();
+    }
+
+    @Override
+    public String getCanonicalString() {
         if (isContainsNull()) {
             return Messages.ValueSetFormat_unrestricted;
         } else {

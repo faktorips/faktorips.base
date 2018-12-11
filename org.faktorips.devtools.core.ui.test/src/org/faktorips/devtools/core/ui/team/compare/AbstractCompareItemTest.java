@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCo
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
+public class AbstractCompareItemTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new TableContentsCompareItemCreator();
     private ITableRows generation;

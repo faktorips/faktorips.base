@@ -35,8 +35,8 @@ import org.w3c.dom.Element;
  * 
  * Every writing call leads to an {@link IllegalStateException}
  */
-public class DelegatingValueSet extends AtomicIpsObjectPart implements IEnumValueSet, IRangeValueSet,
-IUnrestrictedValueSet {
+public class DelegatingValueSet extends AtomicIpsObjectPart
+        implements IEnumValueSet, IRangeValueSet, IUnrestrictedValueSet {
 
     private final ValueSet delegate;
 
@@ -158,6 +158,11 @@ IUnrestrictedValueSet {
     @Override
     public String toShortString() {
         return delegate.toShortString();
+    }
+
+    @Override
+    public String getCanonicalString() {
+        return delegate.getCanonicalString();
     }
 
     @Override
@@ -289,8 +294,8 @@ IUnrestrictedValueSet {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        AbstractValueSetValidator<?> validator = delegate.createValidator(getValueSetOwner(), getValueSetOwner()
-                .findValueDatatype(ipsProject));
+        AbstractValueSetValidator<?> validator = delegate.createValidator(getValueSetOwner(),
+                getValueSetOwner().findValueDatatype(ipsProject));
         list.add(validator.validate());
     }
 

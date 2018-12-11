@@ -24,8 +24,6 @@ import java.util.Map;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -47,6 +45,8 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * EnumSet represents a value set of discrete values, each value has to be explicitly defined.
@@ -75,8 +75,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private List<String> values = new ArrayList<String>();
 
     /**
-     * A map with the values as keys and the index positions of the occurrences of a value as
-     * "map value". The "map value" is a list containing the indexes of the occurrences.
+     * A map with the values as keys and the index positions of the occurrences of a value as "map
+     * value". The "map value" is a list containing the indexes of the occurrences.
      */
     private Map<String, List<Integer>> valuesToIndexMap = new HashMap<String, List<Integer>>();
 
@@ -355,14 +355,24 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
+    @Override
+    public String getCanonicalString() {
+        if (isAbstract()) {
+            return toStringAbstractEnumValueSet();
+        } else {
+            return ENUM_VALUESET_START + StringUtils.join(values, ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE)
+                    + ENUM_VALUESET_END;
+        }
+    }
+
     private String toStringAbstractEnumValueSet() {
         String nullText;
         if (isContainsNull()) {
-            nullText = NLS.bind(Messages.ValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
-                    .getNullPresentation());
+            nullText = NLS.bind(Messages.ValueSet_includingNull,
+                    IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         } else {
-            nullText = NLS.bind(Messages.ValueSet_excludingNull, IpsPlugin.getDefault().getIpsPreferences()
-                    .getNullPresentation());
+            nullText = NLS.bind(Messages.ValueSet_excludingNull,
+                    IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         }
         return NLS.bind(Messages.EnumValueSet_abstract, nullText);
     }
