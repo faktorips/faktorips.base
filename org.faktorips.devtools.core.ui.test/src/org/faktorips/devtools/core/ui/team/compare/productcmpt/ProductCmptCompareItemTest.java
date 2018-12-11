@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -26,9 +27,11 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -268,4 +271,21 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         generation2.setValidFrom(generation1.getValidFrom());
         assertThat(compareItemGen1.equals(new ProductCmptCompareItem(productCompareItem, generation2)), is(true));
     }
+
+    @Test
+    public void testGetContentString() {
+        configValueSet1.setValueSet(new EnumValueSet(attribute1, Arrays.asList("true"), "false"));
+
+        ProductCmptCompareItem productCmptCompareItem = new ProductCmptCompareItem(null, configValueSet1);
+        productCmptCompareItem.init();
+        String contentStringWithoutDatatype = productCmptCompareItem.getContentString();
+
+        attribute1.setDatatype(ValueDatatype.BOOLEAN.getName());
+        ProductCmptCompareItem productCmptCompareItem2 = new ProductCmptCompareItem(null, configValueSet1);
+        productCmptCompareItem2.init();
+        String contentStringWithDatatype = productCmptCompareItem2.getContentString();
+
+        assertEquals(contentStringWithoutDatatype, contentStringWithDatatype);
+    }
+
 }

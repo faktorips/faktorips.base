@@ -229,9 +229,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * Another range is a subset of this range if the following conditions match:
      * <ul>
      * <li>An abstract valueset is considered containing all values and thus all non-abstract
-     * rangeValueSets.</li>
-     * </li>If this range is not abstract, an other abstract range cannot be a subset of this
-     * range</li>
+     * rangeValueSets.</li></li>If this range is not abstract, an other abstract range cannot be a
+     * subset of this range</li>
      * <li>The other range is no subset if it contains null but this range does not</li>
      * <li>If both ranges are not abstract, the other range is a subset if every value that is
      * allowed in the other range is also allowed in this range, according to lower bound, upper
@@ -375,6 +374,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     @Override
     public String toShortString() {
+        return getCanonicalString();
+    }
+
+    @Override
+    public String getCanonicalString() {
         StringBuffer sb = new StringBuffer();
         sb.append(RANGE_VALUESET_START);
         sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));

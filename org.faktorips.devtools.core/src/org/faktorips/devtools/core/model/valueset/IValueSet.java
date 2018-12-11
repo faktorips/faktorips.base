@@ -112,6 +112,15 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
     public String toShortString();
 
     /**
+     * Returns a string representation that always represents this value set in the same way
+     * independent from the datatype or project. It could be used to compare the content of two
+     * value sets for equality.
+     * 
+     * @return a canonical string representation of this value set
+     */
+    public String getCanonicalString();
+
+    /**
      * Returns the same value as {@link #isContainsNull()}. This method was introduced in mistake.
      * 
      * @deprecated use {@link #isContainsNull()} instead.
