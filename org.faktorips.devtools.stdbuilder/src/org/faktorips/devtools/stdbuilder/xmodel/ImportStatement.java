@@ -13,9 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * This class represents an import statement for the XPAND builder.
- * 
- * @author dirmeier
+ * This class represents an import statement for the Xtend builder.
  */
 public class ImportStatement {
 

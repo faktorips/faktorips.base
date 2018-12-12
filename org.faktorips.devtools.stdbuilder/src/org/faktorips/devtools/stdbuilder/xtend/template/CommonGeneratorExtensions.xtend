@@ -105,17 +105,8 @@ class CommonGeneratorExtensions {
         inheritDocOrJavaDocIf(false, key)
     }
 
-    def static inheritDocOrJavaDoc(AbstractGeneratorModelNode it, String key, String param) {
-        inheritDocOrJavaDocIf(false, key, param)
-    }
-
-    def static inheritDocOrJavaDoc(AbstractGeneratorModelNode it, String key, String param1, String param2) {
-        inheritDocOrJavaDocIf(false, key, param1, param2)
-    }
-
-    def static inheritDocOrJavaDoc(AbstractGeneratorModelNode it, String key, String param1, String param2,
-        String param3) {
-        inheritDocOrJavaDocIf(false, key, param1, param2, param3)
+    def static inheritDocOrJavaDoc(AbstractGeneratorModelNode it, String key, String... params) {
+        inheritDocOrJavaDocIf(false, key, params)
     }
 
     def static inheritDocOrJavaDocIf(AbstractGeneratorModelNode it, boolean generatesInterface, String key) {
@@ -123,21 +114,8 @@ class CommonGeneratorExtensions {
     }
 
     def static inheritDocOrJavaDocIf(AbstractGeneratorModelNode it, boolean generatesInterface, String key,
-        String param) {
-        if(generatePublishedInterfaces && !generatesInterface) inheritDoc() else localizedJDoc(key, param)
-    }
-
-    def static inheritDocOrJavaDocIf(AbstractGeneratorModelNode it, boolean generatesInterface, String key,
-        String param1, String param2) {
-        if(generatePublishedInterfaces && !generatesInterface) inheritDoc() else localizedJDoc(key, param1, param2)
-    }
-
-    def static inheritDocOrJavaDocIf(AbstractGeneratorModelNode it, boolean generatesInterface, String key,
-        String param1, String param2, String param3) {
-        if (generatePublishedInterfaces && !generatesInterface)
-            inheritDoc()
-        else
-            localizedJDoc(key, param1, param2, param3)
+        String... params) {
+        if(generatePublishedInterfaces && !generatesInterface) inheritDoc() else localizedJDoc(key, params)
     }
 
     def static localizedJDocOrDescription(AbstractGeneratorModelNode it, String key, String param, String description) {

@@ -52,22 +52,20 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Base class for every Xpand generator model object. This class provides some useful methods e.g.
+ * Base class for every Xtend generator model object. This class provides some useful methods e.g.
  * for localization and import statements and handles the common needs for every generator model
  * object.
  * <p>
  * The class is instantiated by the {@link ModelService}. You need to specify an constructor with
  * the arguments like
  * {@link #AbstractGeneratorModelNode(IIpsObjectPartContainer, GeneratorModelContext, ModelService)}
- * to be isntantiated by the model service.
+ * to be instantiated by the model service.
  * <p>
  * It is also very important that the model service may reuse the same instance for more than one
  * build. Hence the generator model node needs strictly to be stateless! Every information should be
  * called directly from the Faktor-IPS meta model objects. If you need to cache any information due
  * to performance issues you could use the {@link GeneratorModelContext} which could hold
  * information for the lifetime of a build cycle.
- * 
- * @author dirmeier, widmaier
  */
 public abstract class AbstractGeneratorModelNode {
 
@@ -293,19 +291,19 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean forceImplementation) {
-        return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
-                BuilderAspect.getValue(!forceImplementation));
+        return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class)
+                .getSimpleName(BuilderAspect.getValue(!forceImplementation));
     }
 
     private String getJavaClassNameForProductCmptType(Datatype datatype,
             boolean useGeneration,
             boolean forceImplementation) {
         if (useGeneration && ((IProductCmptType)datatype).isChangingOverTime()) {
-            return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class).getSimpleName(
-                    BuilderAspect.getValue(!forceImplementation));
+            return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class)
+                    .getSimpleName(BuilderAspect.getValue(!forceImplementation));
         } else {
-            return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
-                    BuilderAspect.getValue(!forceImplementation));
+            return getModelNode((IProductCmptType)datatype, XProductCmptClass.class)
+                    .getSimpleName(BuilderAspect.getValue(!forceImplementation));
         }
     }
 
@@ -396,59 +394,12 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Returns the localized java doc for the given key. The key is added by the suffix _JAVADOC and
-     * is provided by the corresponding localized string set. Additionally you add one replacement
-     * parameter.
-     * 
-     * @see #localizedJDoc(String, Object...)
-     * @param key The key to search the localized java doc statement
-     * @param replacement The replacement parameter inserted in the localized text
-     * @return the localized java doc statement
-     */
-    public String localizedJDoc(String key, Object replacement) {
-        return localizedJDoc(key, new Object[] { replacement });
-    }
-
-    /**
-     * Returns the localized java doc for the given key. The key is added by the suffix _JAVADOC and
-     * is provided by the corresponding localized string set. Additionally you add two replacement
-     * parameter.
-     * 
-     * @see #localizedJDoc(String, Object...)
-     * @param key The key to search the localized java doc statement
-     * @param replacement1 The first replacement parameter inserted in the localized text
-     * @param replacement2 The second replacement parameter inserted in the localized text
-     * @return the localized java doc statement
-     */
-    public String localizedJDoc(String key, Object replacement1, Object replacement2) {
-        return localizedJDoc(key, new Object[] { replacement1, replacement2 });
-    }
-
-    /**
-     * Returns the localized java doc for the given key. The key is added by the suffix _JAVADOC and
-     * is provided by the corresponding localized string set. Additionally you add two replacement
-     * parameter.
-     * 
-     * @see #localizedJDoc(String, Object...)
-     * @param key The key to search the localized java doc statement
-     * @param replacement1 The first replacement parameter inserted in the localized text
-     * @param replacement2 The second replacement parameter inserted in the localized text
-     * @param replacement3 The third replacement parameter inserted in the localized text
-     * @return the localized java doc statement
-     */
-    public String localizedJDoc(String key, Object replacement1, Object replacement2, Object replacement3) {
-        return localizedJDoc(key, new Object[] { replacement1, replacement2, replacement3 });
-    }
-
-    /**
-     * Returns the localized java doc for the given key. The key is added by the suffix _JAVADOC and
      * is provided by the corresponding localized string set. Additionally you add replacement
      * parameters.
-     * <p>
-     * Because XPAND cannot call methods with varargs we need the other methods with single
-     * arguments
      * 
      * @see #localizedJDoc(String)
-     * @param key The key to search the localized java doc statement
+     * @param key the key to search the localized java doc statement
+     * @param replacements the replacement parameters inserted in the localized text
      * @return the localized java doc statement
      */
     public String localizedJDoc(String key, Object... replacements) {
@@ -629,8 +580,8 @@ public abstract class AbstractGeneratorModelNode {
      * @param nodeClass the expected concrete generator model class (subclass of
      *            {@link AbstractGeneratorModelNode}) that will be created for each part
      */
-    protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(Collection<? extends IIpsObjectPart> parts,
-            Class<T> nodeClass) {
+    protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(
+            Collection<? extends IIpsObjectPart> parts, Class<T> nodeClass) {
         Set<T> nodes = new LinkedHashSet<T>();
         for (IIpsObjectPart part : parts) {
             nodes.add(getModelNode(part, nodeClass));
@@ -703,169 +654,32 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Adds a method with no parameter to the list of generated method signatures.
-     * <p>
-     * Use to register a method that should be included in the refactoring support and the
-     * jump-to-source-code feature.
-     * 
-     * @param methodName The name of the generated method
-     * @return The methods definition. For example for a method name <em>getFoo</em> the method
-     *         definition is <em>getFoo()</em>
-     */
-    public String method(String methodName) {
-        return methodInternal(methodName, new MethodParameter[0]);
-    }
-
-    /**
-     * Adds a method with one parameter to the list of generated method signatures. The method
-     * parameter is defined by the parameter type and the parameter name.
-     * <p>
-     * Use to register a method that should be included in the refactoring support and the
-     * jump-to-source-code feature.
-     * 
-     * @param methodName The name of the generated method
-     * @param parameterType The (Java-)type of the method parameter
-     * @param parameterName The name of the method parameter
-     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
-     *         <em>bar</em> of type <em>String</em> the method definition is
-     *         <em>SetFoo(String bar)<em>
-     */
-    public String method(String methodName, String parameterType, String parameterName) {
-        return methodInternal(methodName, new MethodParameter(parameterType, parameterName));
-    }
-
-    /**
-     * Adds a method with two parameters to the list of generated method signatures.
+     * Adds a method with parameters to the list of generated method signatures.
      * <p>
      * Use to register a method that should be included in the refactoring support and the
      * jump-to-source-code feature.
      * <p>
-     * We cannot simply use varagrs because they are not supported ba XPAND.
      * 
-     * @param methodName The name of the generated method
-     * @param parameterType1 The type of the first method parameter
-     * @param parameterName1 The name of the first method parameter
-     * @param parameterType2 The type of the second method parameter
-     * @param parameterName2 The name of the second method parameter
-     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
-     *         <em>bar</em> of type <em>String</em> the method definition is
-     *         <em>SetFoo(String bar)<em>
+     * @param methodName the name of the generated method
+     * @param parameterTypesAndNames The types and names for the parameters of the generated method.
+     *            If you want to create the Method {@link String#indexOf(String, int)}, you would
+     *            pass {@code "String", "str", "int", "fromIndex"}.
+     * @return The method's definition. For example for a method name <em>setFoo</em> with parameter
+     *         <em>bar</em> of type <em>String</em> the method definition is <em>setFoo(String
+     *         bar)<em>
      */
-    public String method(String methodName,
-            String parameterType1,
-            String parameterName1,
-            String parameterType2,
-            String parameterName2) {
-        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
-                parameterType2, parameterName2));
+    public String method(String methodName, String... parameterTypesAndNames) {
+        if (parameterTypesAndNames.length % 2 == 0) {
+            List<MethodParameter> methodParameters = new ArrayList<MethodParameter>();
+            for (int i = 0; i < parameterTypesAndNames.length; i = i + 2) {
+                methodParameters.add(new MethodParameter(parameterTypesAndNames[i], parameterTypesAndNames[i + 1]));
+            }
+            return methodInternal(methodName, methodParameters.toArray(new MethodParameter[methodParameters.size()]));
+        } else {
+            throw new IllegalArgumentException(
+                    "Invalid number of parameters. The number of parameters has to be even.");
+        }
     }
-
-    /**
-     * Adds a method with two parameters to the list of generated method signatures.
-     * <p>
-     * Use to register a method that should be included in the refactoring support and the
-     * jump-to-source-code feature.
-     * <p>
-     * We cannot simply use varagrs because they are not supported ba XPAND.
-     * 
-     * @param methodName The name of the generated method
-     * @param parameterType1 The type of the first method parameter
-     * @param parameterName1 The name of the first method parameter
-     * @param parameterType2 The type of the second method parameter
-     * @param parameterName2 The name of the second method parameter
-     * @param parameterType3 The type of the third method parameter
-     * @param parameterName3 The name of the third method parameter
-     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
-     *         <em>bar</em> of type <em>String</em> the method definition is
-     *         <em>SetFoo(String bar)<em>
-     */
-    public String method(String methodName,
-            String parameterType1,
-            String parameterName1,
-            String parameterType2,
-            String parameterName2,
-            String parameterType3,
-            String parameterName3) {
-        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
-                parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3));
-    }
-
-    /**
-     * Adds a method with two parameters to the list of generated method signatures.
-     * <p>
-     * Use to register a method that should be included in the refactoring support and the
-     * jump-to-source-code feature.
-     * <p>
-     * We cannot simply use varagrs because they are not supported ba XPAND.
-     * 
-     * @param methodName The name of the generated method
-     * @param parameterType1 The type of the first method parameter
-     * @param parameterName1 The name of the first method parameter
-     * @param parameterType2 The type of the second method parameter
-     * @param parameterName2 The name of the second method parameter
-     * @param parameterType3 The type of the third method parameter
-     * @param parameterName3 The name of the third method parameter
-     * @param parameterType4 The type of the fourth method parameter
-     * @param parameterName4 The name of the fourth method parameter
-     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
-     *         <em>bar</em> of type <em>String</em> the method definition is
-     *         <em>SetFoo(String bar)<em>
-     */
-    // CSOFF: ParameterNumberCheck
-    public String method(String methodName,
-            String parameterType1,
-            String parameterName1,
-            String parameterType2,
-            String parameterName2,
-            String parameterType3,
-            String parameterName3,
-            String parameterType4,
-            String parameterName4) {
-        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
-                parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3),
-                new MethodParameter(parameterType4, parameterName4));
-    }
-
-    /**
-     * Adds a method with two parameters to the list of generated method signatures.
-     * <p>
-     * Use to register a method that should be included in the refactoring support and the
-     * jump-to-source-code feature.
-     * <p>
-     * We cannot simply use varagrs because they are not supported ba XPAND.
-     * 
-     * @param methodName The name of the generated method
-     * @param parameterType1 The type of the first method parameter
-     * @param parameterName1 The name of the first method parameter
-     * @param parameterType2 The type of the second method parameter
-     * @param parameterName2 The name of the second method parameter
-     * @param parameterType3 The type of the third method parameter
-     * @param parameterName3 The name of the third method parameter
-     * @param parameterType4 The type of the fourth method parameter
-     * @param parameterName4 The name of the fourth method parameter
-     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
-     *         <em>bar</em> of type <em>String</em> the method definition is
-     *         <em>SetFoo(String bar)<em>
-     */
-    // CSOFF: ParameterNumberCheck
-    public String method(String methodName,
-            String parameterType1,
-            String parameterName1,
-            String parameterType2,
-            String parameterName2,
-            String parameterType3,
-            String parameterName3,
-            String parameterType4,
-            String parameterName4,
-            String parameterType5,
-            String parameterName5) {
-        return methodInternal(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
-                parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3),
-                new MethodParameter(parameterType4, parameterName4),
-                new MethodParameter(parameterType5, parameterName5));
-    }
-
-    // CSON: ParameterNumberCheck
 
     public String method(String methodName, List<MethodParameter> parameters) {
         return methodInternal(methodName, parameters.toArray(new MethodParameter[parameters.size()]));
