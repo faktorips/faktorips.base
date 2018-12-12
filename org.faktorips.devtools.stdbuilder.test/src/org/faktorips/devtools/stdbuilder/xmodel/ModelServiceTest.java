@@ -12,11 +12,10 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.XClass;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
@@ -33,6 +32,9 @@ public class ModelServiceTest {
     private GeneratorModelContext modelContext;
 
     @Mock
+    private GeneratorConfig generatorConfig;
+
+    @Mock
     private IPolicyCmptType policyCmptType;
 
     @Mock
@@ -41,6 +43,7 @@ public class ModelServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test
@@ -56,8 +59,8 @@ public class ModelServiceTest {
         assertSame(node2, modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext));
 
         // same ipsObjectPart other type
-        XProductClass node3 = modelService.getModelNode(productCmptType,
-                XProductCmptGenerationClass.class, modelContext);
+        XProductClass node3 = modelService.getModelNode(productCmptType, XProductCmptGenerationClass.class,
+                modelContext);
         assertNotNull(node3);
         assertSame(node, modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext));
         assertSame(node2, modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext));

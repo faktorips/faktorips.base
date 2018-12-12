@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
@@ -96,7 +97,8 @@ public class XPolicyAttribute extends XAttribute {
         if (isConstant()) {
             return false;
         } else {
-            boolean getterIsDefinedHere = !isOverwrite() || generatingInterface || !isGeneratePublishedInterfaces();
+            boolean getterIsDefinedHere = !isOverwrite() || generatingInterface
+                    || !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
             boolean attributeIsOrOverridesDerivedOnTheFly = isDerivedOnTheFly() || isOverwritingDerivedOnTheFly();
             return getterIsDefinedHere || attributeIsOrOverridesDerivedOnTheFly;
         }
@@ -121,11 +123,11 @@ public class XPolicyAttribute extends XAttribute {
     /**
      * Returns {@code true} if internal setters should be generated.
      * <p>
-     * This is the case if both {@link #isGenerateSetter()} and {@link #isGenerateChangeSupport()}
-     * return {@code true}.
+     * This is the case if both {@link #isGenerateSetter()} and
+     * {@link GeneratorConfig#isGenerateChangeSupport()} return {@code true}.
      */
     public boolean isGenerateSetterInternal() {
-        return isGenerateSetter() && isGenerateChangeSupport();
+        return isGenerateSetter() && getGeneratorConfig().isGenerateChangeSupport();
     }
 
     public boolean isDerived() {
@@ -259,8 +261,8 @@ public class XPolicyAttribute extends XAttribute {
             String stepExp,
             String containsNullExp) {
         JavaCodeFragment newRangeInstance = getValuesetDatatypeHelper().newRangeInstance(
-                new JavaCodeFragment(lowerBoundExp), new JavaCodeFragment(upperBoundExp),
-                new JavaCodeFragment(stepExp), new JavaCodeFragment(containsNullExp), false);
+                new JavaCodeFragment(lowerBoundExp), new JavaCodeFragment(upperBoundExp), new JavaCodeFragment(stepExp),
+                new JavaCodeFragment(containsNullExp), false);
         addImport(newRangeInstance.getImportDeclaration());
         return newRangeInstance.getSourcecode();
     }
@@ -325,8 +327,8 @@ public class XPolicyAttribute extends XAttribute {
         }
         boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
                 .isGenerateGetAllowedValuesForAndGetDefaultValue()
-                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor().equals(
-                        getMethodNameGetAllowedValuesFor());
+                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor()
+                        .equals(getMethodNameGetAllowedValuesFor());
         return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
     }
 
@@ -399,8 +401,8 @@ public class XPolicyAttribute extends XAttribute {
      * 
      */
     public String getTypeName() {
-        return getPolicyCmptNode().getSimpleName(
-                BuilderAspect.getValue(isGeneratePublishedInterfaces() && isPublished()));
+        return getPolicyCmptNode().getSimpleName(BuilderAspect
+                .getValue(getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()) && isPublished()));
     }
 
     public String getProductGenerationClassName() {
@@ -451,7 +453,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getConstantNameValueSet() {
         String name = getName();
-        if (isGenerateSeparatedCamelCase()) {
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
             name = StringUtil.camelCaseToUnderscore(name, false);
         }
         String constName = StringUtils.upperCase(name);

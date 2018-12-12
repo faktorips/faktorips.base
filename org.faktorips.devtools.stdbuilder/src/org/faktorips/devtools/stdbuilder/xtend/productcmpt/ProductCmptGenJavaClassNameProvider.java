@@ -12,10 +12,10 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 
 public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNameProvider {
 
@@ -48,8 +48,8 @@ public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNamePro
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
     public String getAbbreviationForGenerationConcept(IIpsElement element) {
-        return JavaSourceFileBuilder.getChangesInTimeNamingConvention(element).getGenerationConceptNameAbbreviation(
-                locale);
+        return GeneratorModelContext.forElement(element).getGeneratorConfig().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameAbbreviation(locale);
     }
 
 }

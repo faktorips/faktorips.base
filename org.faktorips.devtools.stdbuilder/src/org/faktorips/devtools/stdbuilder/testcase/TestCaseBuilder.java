@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -180,7 +181,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreException {
         Element testCaseElm = doc.createElement("TestCase");
         testCaseElm.setAttribute("testCaseType", testCase.getTestCaseType());
-        Locale generatorLocale = getBuilderSet().getLanguageUsedInGeneratedSourceCode();
+        Locale generatorLocale = GeneratorModelContext.forElement(testCase).getGeneratorConfig()
+                .getLanguageUsedInGeneratedSourceCode();
         String description = testCase.getDescriptionText(generatorLocale);
         DescriptionHelper.setDescription(testCaseElm, description);
         doc.appendChild(testCaseElm);

@@ -32,8 +32,8 @@ public class EnumTypeBuilder extends XtendBuilder<XEnumType> {
     public EnumTypeBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(builderSet, modelContext, modelService, new LocalizedStringsSet(EnumTypeBuilder.class));
-        javaClassNameProvider = XEnumType
-                .createEnumJavaClassNameProvider(modelContext.isGeneratePublishedInterfaces(getIpsProject()));
+        javaClassNameProvider = XEnumType.createEnumJavaClassNameProvider(
+                modelContext.getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()));
     }
 
     @Override

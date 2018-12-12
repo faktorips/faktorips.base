@@ -36,7 +36,51 @@ class CommonGeneratorExtensions {
     def static overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode it) {
         if(generatePublishedInterfaces) "@Override"
     }
-
+    
+    def static generatePublishedInterfaces(AbstractGeneratorModelNode it){
+        generatorConfig.isGeneratePublishedInterfaces(ipsProject)
+    }
+    
+    def static formulaCompiling(AbstractGeneratorModelNode it){
+        generatorConfig.formulaCompiling
+    }
+    
+    def static generateToXmlSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateToXmlSupport
+    }
+    
+    def static generateProductBuilder(AbstractGeneratorModelNode it){
+        generatorConfig.generateProductBuilder
+    }
+    
+    def static generateChangeSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateChangeSupport
+    }
+    
+    def static generatePolicyBuilder(AbstractGeneratorModelNode it){
+        generatorConfig.generatePolicyBuilder
+    }
+    
+    def static generateCopySupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateCopySupport
+    }
+    
+    def static generateSerializablePolicyCmptsSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateSerializablePolicyCmptSupport
+    }
+    
+    def static generateConvenienceGetters(AbstractGeneratorModelNode it){
+        generatorConfig.generateConvenienceGetters
+    }
+    
+    def static generateDeltaSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateDeltaSupport
+    }
+    
+    def static generateVisitorSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateVisitorSupport
+    }
+    
     // Use it function for published methods. i.e. methods that are defined in a published interface.
     // Returns the @Override annotation if the condition is true and at the same time published interfaces are being generated
     def static overrideAnnotationForPublishedMethodImplementation(AbstractGeneratorModelNode it) {

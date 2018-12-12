@@ -40,6 +40,9 @@ public class AbstractGeneratorModelNodeTest {
     private GeneratorModelContext modelContext;
 
     @Mock
+    private GeneratorConfig generatorConfig;
+
+    @Mock
     private ModelService modelService;
 
     @Mock
@@ -49,6 +52,7 @@ public class AbstractGeneratorModelNodeTest {
 
     @Before
     public void setUp() throws Exception {
+        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
         xClass = new XPolicyCmptClass(type, modelContext, modelService);
         when(modelContext.addImport(anyString())).thenReturn("dummyImportStatement");
     }
@@ -146,41 +150,6 @@ public class AbstractGeneratorModelNodeTest {
         String sinceVersion = modelNode.getSinceVersion();
 
         assertNull(sinceVersion);
-    }
-
-    @Test
-    public void testIsGenerateSerializablePolicyCmptsSupport() {
-        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
-        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
-        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
-
-        assertTrue(modelNode.isGenerateSerializablePolicyCmptsSupport());
-    }
-
-    @Test
-    public void testIsGenerateSerializablePolicyCmptsSupport_Default() {
-        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
-        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
-
-        assertFalse(modelNode.isGenerateSerializablePolicyCmptsSupport());
-    }
-
-    @Test
-    public void testIsGenerateConvenienceGetterst_False() {
-        when(modelContext.isGenerateConvenienceGetters()).thenReturn(false);
-        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
-        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
-
-        assertFalse(modelNode.isGenerateConvenienceGetters());
-    }
-
-    @Test
-    public void testIsGenerateConvenienceGetters_True() {
-        when(modelContext.isGenerateConvenienceGetters()).thenReturn(true);
-        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
-        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
-
-        assertTrue(modelNode.isGenerateConvenienceGetters());
     }
 
     public static class Inner {

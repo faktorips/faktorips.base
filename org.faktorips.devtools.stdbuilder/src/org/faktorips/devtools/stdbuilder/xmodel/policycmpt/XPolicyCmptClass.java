@@ -155,7 +155,7 @@ public class XPolicyCmptClass extends XType {
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
         LinkedHashSet<String> list = super.getImplementedInterfaces();
-        if (!hasSupertype() && isGenerateSerializablePolicyCmptsSupport()) {
+        if (!hasSupertype() && getGeneratorConfig().isGenerateSerializablePolicyCmptSupport()) {
             list.add(addImport(Serializable.class));
         }
         return list;
@@ -177,16 +177,16 @@ public class XPolicyCmptClass extends XType {
     protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = super.getExtendedOrImplementedInterfaces();
         if (!hasSupertype()) {
-            if (isGenerateDeltaSupport()) {
+            if (getGeneratorConfig().isGenerateDeltaSupport()) {
                 extendedInterfaces.add(addImport(IDeltaSupport.class));
             }
-            if (isGenerateCopySupport()) {
+            if (getGeneratorConfig().isGenerateCopySupport()) {
                 extendedInterfaces.add(addImport(ICopySupport.class));
             }
-            if (isGenerateVisitorSupport()) {
+            if (getGeneratorConfig().isGenerateVisitorSupport()) {
                 extendedInterfaces.add(addImport(IVisitorSupport.class));
             }
-            if (isGenerateChangeSupport()) {
+            if (getGeneratorConfig().isGenerateChangeSupport()) {
                 extendedInterfaces.add(addImport(INotificationSupport.class));
             }
         }
@@ -209,7 +209,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     protected String getBaseSuperclassName() {
-        return addImport(getContext().getBaseClassPolicyCmptType());
+        return addImport(getContext().getGeneratorConfig().getBaseClassPolicyCmptType());
     }
 
     @Override
@@ -517,7 +517,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public boolean isGenerateNotifyChangeListeners() {
-        return isGenerateChangeSupport() && (!hasSupertype() || hasCompositionDetailToMaster());
+        return getGeneratorConfig().isGenerateChangeSupport() && (!hasSupertype() || hasCompositionDetailToMaster());
     }
 
     /**

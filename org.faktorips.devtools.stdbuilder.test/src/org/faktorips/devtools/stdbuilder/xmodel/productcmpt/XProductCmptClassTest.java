@@ -30,10 +30,10 @@ import java.util.Set;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelCaches;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
@@ -52,6 +52,9 @@ public class XProductCmptClassTest {
     private GeneratorModelContext modelContext;
 
     @Mock
+    private GeneratorConfig generatorConfig;
+
+    @Mock
     private ModelService modelService;
 
     @Mock
@@ -67,21 +70,18 @@ public class XProductCmptClassTest {
 
     @Before
     public void initMocks() throws Exception {
+        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
         when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
-    }
-
-    @Before
-    public void createXProductCmptClass() {
         xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
     }
 
     @Test
     public void testGetBaseSuperclassName() throws Exception {
-        when(modelContext.getBaseClassProductCmptType()).thenReturn("pack.MyBaseClass");
+        when(generatorConfig.getBaseClassProductCmptType()).thenReturn("pack.MyBaseClass");
         when(modelContext.addImport("pack.MyBaseClass")).thenReturn("MyBaseClass");
 
         String baseSuperclassName = xProductCmptClass.getBaseSuperclassName();

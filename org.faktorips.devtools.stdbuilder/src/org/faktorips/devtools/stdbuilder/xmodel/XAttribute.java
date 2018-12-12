@@ -57,7 +57,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public String getMethodNameSetterInternalIfGenerateChangeSupport() {
-        return isGenerateChangeSupport() ? getMethodNameSetterInternal() : getMethodNameSetter();
+        return getGeneratorConfig().isGenerateChangeSupport() ? getMethodNameSetterInternal() : getMethodNameSetter();
     }
 
     public String getMethodNameGetter() {
@@ -69,8 +69,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public String fieldPropertyNameSuffix() {
-        return getContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName()).toUpperCase()
-                : getName().toUpperCase();
+        return getGeneratorConfig().isGenerateSeparatedCamelCase()
+                ? StringUtil.camelCaseToUnderscore(getName()).toUpperCase() : getName().toUpperCase();
     }
 
     /**
@@ -172,8 +172,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
                 throw new CoreRuntimeException(e);
             }
         } else {
-            throw new RuntimeException("Attribute is not overwritten so there is no overwritten attribute for "
-                    + getAttribute());
+            throw new RuntimeException(
+                    "Attribute is not overwritten so there is no overwritten attribute for " + getAttribute());
         }
     }
 

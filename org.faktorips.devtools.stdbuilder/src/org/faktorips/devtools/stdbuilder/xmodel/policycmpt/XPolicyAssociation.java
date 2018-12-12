@@ -324,7 +324,7 @@ public class XPolicyAssociation extends XAssociation {
 
     public String getConstantNamePropertyName() {
         String constName = getName(isOneToMany());
-        if (isGenerateSeparatedCamelCase()) {
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
             constName = StringUtil.camelCaseToUnderscore(constName, false);
         }
         return "ASSOCIATION_" + constName.toUpperCase();
@@ -332,7 +332,7 @@ public class XPolicyAssociation extends XAssociation {
 
     public String getConstantNameMaxCardinalityFor() {
         String constName = getName();
-        if (isGenerateSeparatedCamelCase()) {
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
             constName = StringUtil.camelCaseToUnderscore(constName, false);
         }
         return "MAX_MULTIPLICITY_OF_" + constName.toUpperCase();
@@ -423,7 +423,7 @@ public class XPolicyAssociation extends XAssociation {
      * 
      */
     public boolean isGenerateInternalSetterOrAdder() {
-        return isGenerateChangeSupport();
+        return getGeneratorConfig().isGenerateChangeSupport();
     }
 
     public boolean isTypeConfigurableByProductCmptType() {

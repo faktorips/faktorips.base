@@ -35,14 +35,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelCaches;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -75,6 +71,9 @@ public class XProductClassTest {
 
     @Mock
     private GeneratorModelContext modelContext;
+
+    @Mock
+    private GeneratorConfig generatorConfig;
 
     @Mock
     private ModelService modelService;
@@ -110,6 +109,7 @@ public class XProductClassTest {
 
     @Before
     public void initModelContext() {
+        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
     }
 

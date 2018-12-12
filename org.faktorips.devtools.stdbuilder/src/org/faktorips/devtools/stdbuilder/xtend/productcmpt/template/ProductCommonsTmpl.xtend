@@ -3,13 +3,12 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
 
-
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.DefaultAndAllowedValuesTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.TableUsagesTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 class ProductCommonsTmpl {

@@ -46,7 +46,8 @@ public class XEnumType extends XClass {
 
     public XEnumType(IEnumType enumtype, GeneratorModelContext context, ModelService modelService) {
         super(enumtype, context, modelService);
-        javaClassNameProvider = createEnumJavaClassNameProvider(isGeneratePublishedInterfaces());
+        javaClassNameProvider = createEnumJavaClassNameProvider(
+                getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()));
     }
 
     /* private */boolean isMarkerEnum() {
@@ -257,8 +258,8 @@ public class XEnumType extends XClass {
             if (enumValue == null) {
                 return fragment;
             }
-            IEnumAttributeValue literalNameAttributeValue = enumValue.getEnumAttributeValue(getEnumType()
-                    .getEnumLiteralNameAttribute());
+            IEnumAttributeValue literalNameAttributeValue = enumValue
+                    .getEnumAttributeValue(getEnumType().getEnumLiteralNameAttribute());
             if (literalNameAttributeValue == null) {
                 return fragment;
             }
@@ -380,8 +381,8 @@ public class XEnumType extends XClass {
         if (!isExtensible()) {
             XEnumAttribute enumAttribute = getIdentifierAttribute();
             if (enumAttribute != null) {
-                DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(
-                        enumAttribute.getDatatype().getQualifiedName());
+                DatatypeHelper idAttrDatatypeHelper = getIpsProject()
+                        .findDatatypeHelper(enumAttribute.getDatatype().getQualifiedName());
                 JavaCodeFragment fragment = new JavaCodeFragment();
                 fragment.appendClassName(getQualifiedClassName());
                 fragment.append('.');
@@ -441,8 +442,8 @@ public class XEnumType extends XClass {
     }
 
     public String getDefaultLocale() {
-        JavaCodeFragment defaultLocaleExpr = LocaleGeneratorUtil.getLocaleCodeFragment(getIpsProject()
-                .getReadOnlyProperties().getDefaultLanguage().getLocale());
+        JavaCodeFragment defaultLocaleExpr = LocaleGeneratorUtil
+                .getLocaleCodeFragment(getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale());
         addImport(defaultLocaleExpr.getImportDeclaration());
         return defaultLocaleExpr.getSourcecode();
     }
@@ -473,8 +474,8 @@ public class XEnumType extends XClass {
 
         for (XEnumAttribute attribute : getAllAttributesWithField()) {
             if (attribute.isMultilingual()) {
-                parameters.add(new MethodParameter(addImport(InternationalString.class), attribute
-                        .getStringConstructorParamName()));
+                parameters.add(new MethodParameter(addImport(InternationalString.class),
+                        attribute.getStringConstructorParamName()));
             } else {
                 parameters.add(new MethodParameter(addImport(String.class), attribute.getStringConstructorParamName()));
             }

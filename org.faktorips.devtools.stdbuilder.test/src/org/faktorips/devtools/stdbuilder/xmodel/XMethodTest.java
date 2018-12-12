@@ -19,8 +19,6 @@ import java.lang.reflect.Modifier;
 
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +33,9 @@ public class XMethodTest {
     private GeneratorModelContext context;
 
     @Mock
+    private GeneratorConfig generatorConfig;
+
+    @Mock
     private IProductCmptTypeMethod method;
 
     @Mock
@@ -45,6 +46,7 @@ public class XMethodTest {
     @Before
     public void createXMethod() throws Exception {
         xMethod = new XMethod(method, context, modelService);
+        when(context.getGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test
@@ -79,7 +81,7 @@ public class XMethodTest {
     public void testGetModifier_notAbstractFormulaGeneratingInSubclasses() throws Exception {
         when(method.isFormulaMandatory()).thenReturn(true);
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
-        when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
+        when(generatorConfig.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
         when(method.getJavaModifier()).thenReturn(Modifier.PUBLIC);
 
         String resultModifier = xMethod.getModifier(false);
@@ -106,7 +108,7 @@ public class XMethodTest {
     @Test
     public void testIsGenerateMethodBody_formulaXmlGen() throws Exception {
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
-        when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.XML);
+        when(generatorConfig.getFormulaCompiling()).thenReturn(FormulaCompiling.XML);
 
         boolean generateMethodBody = xMethod.isGenerateMethodBody(false);
 
@@ -116,7 +118,7 @@ public class XMethodTest {
     @Test
     public void testIsGenerateMethodBody_formulaBothGen() throws Exception {
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
-        when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Both);
+        when(generatorConfig.getFormulaCompiling()).thenReturn(FormulaCompiling.Both);
 
         boolean generateMethodBody = xMethod.isGenerateMethodBody(false);
 
@@ -127,7 +129,7 @@ public class XMethodTest {
     public void testIsGenerateMethodBody_optionalFormulaBothGen() throws Exception {
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
-        when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Both);
+        when(generatorConfig.getFormulaCompiling()).thenReturn(FormulaCompiling.Both);
 
         boolean generateMethodBody = xMethod.isGenerateMethodBody(false);
 
@@ -138,7 +140,7 @@ public class XMethodTest {
     public void testIsGenerateMethodBody_formulaSubclassGen() throws Exception {
         when(method.isFormulaMandatory()).thenReturn(true);
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
-        when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
+        when(generatorConfig.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
 
         boolean generateMethodBody = xMethod.isGenerateMethodBody(false);
 
@@ -149,7 +151,7 @@ public class XMethodTest {
     public void testIsGenerateMethodBody_optionalFormulaSubclassGen() throws Exception {
         when(method.isFormulaSignatureDefinition()).thenReturn(true);
         when(method.isFormulaMandatory()).thenReturn(false);
-        when(context.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
+        when(generatorConfig.getFormulaCompiling()).thenReturn(FormulaCompiling.Subclass);
 
         boolean generateMethodBody = xMethod.isGenerateMethodBody(false);
 

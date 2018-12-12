@@ -31,9 +31,8 @@ import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +54,9 @@ public class XPolicyAttributeTest {
 
     @Mock
     private GeneratorModelContext modelContext;
+
+    @Mock
+    private GeneratorConfig generatorConfig;
 
     @Mock
     private ModelService modelService;
@@ -81,6 +83,8 @@ public class XPolicyAttributeTest {
 
         policyClass = mock(XPolicyCmptClass.class);
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
+
+        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
 
         xPolicyAttribute = new XPolicyAttribute(attribute, modelContext, modelService);
     }
@@ -188,8 +192,8 @@ public class XPolicyAttributeTest {
         when(attribute.isOverwrite()).thenReturn(true);
         when(attribute.findOverwrittenAttribute(any(IIpsProject.class))).thenReturn(superAttribute);
         when(attribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
-        when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext)).thenReturn(
-                superXPolicyAttribute);
+        when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext))
+                .thenReturn(superXPolicyAttribute);
         when(superAttribute.getIpsProject()).thenReturn(ipsProject);
         when(superAttribute.isChangeable()).thenReturn(false);
 
@@ -267,7 +271,7 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateSetterInternal_GenerateChangeSupportAndSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isGenerateChangeSupport();
+        doReturn(true).when(generatorConfig).isGenerateChangeSupport();
         doReturn(true).when(xPolicyAttribute).isGenerateSetter();
 
         assertTrue(xPolicyAttribute.isGenerateSetterInternal());
@@ -276,7 +280,7 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateSetterInternal_DoNotGenerateChangeSupportNorSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(xPolicyAttribute).isGenerateChangeSupport();
+        doReturn(false).when(generatorConfig).isGenerateChangeSupport();
         doReturn(false).when(xPolicyAttribute).isGenerateSetter();
 
         assertFalse(xPolicyAttribute.isGenerateSetterInternal());
@@ -285,7 +289,7 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateSetterInternal_GenerateChangeSupportButDoNotGenerateSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isGenerateChangeSupport();
+        doReturn(true).when(generatorConfig).isGenerateChangeSupport();
         doReturn(false).when(xPolicyAttribute).isGenerateSetter();
 
         assertFalse(xPolicyAttribute.isGenerateSetterInternal());
@@ -294,7 +298,7 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateSetterInternal_DoNotGenerateChangeSupportButGenerateSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(xPolicyAttribute).isGenerateChangeSupport();
+        doReturn(false).when(generatorConfig).isGenerateChangeSupport();
         doReturn(true).when(xPolicyAttribute).isGenerateSetter();
 
         assertFalse(xPolicyAttribute.isGenerateSetterInternal());

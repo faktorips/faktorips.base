@@ -173,7 +173,7 @@ public class XProductAttribute extends XAttribute {
     }
 
     public boolean isGenerateAbstractGetter() {
-        return !isGeneratePublishedInterfaces() && !isGenerateContentCode() && !isOverwrite();
+        return !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()) && !isGenerateContentCode() && !isOverwrite();
     }
 
     public boolean isGenerateInterfaceGetter() {

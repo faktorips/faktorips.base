@@ -7,8 +7,8 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.ValidationRuleTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
-import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 
 class PolicyCmptInterfaceTmpl {
 

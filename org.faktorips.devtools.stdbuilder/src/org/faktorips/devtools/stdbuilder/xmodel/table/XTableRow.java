@@ -27,7 +27,8 @@ public class XTableRow extends XTableStructure {
 
     public XTableRow(ITableStructure row, GeneratorModelContext context, ModelService modelService) {
         super(row, context, modelService);
-        nameProvider = new TableRowBuilderClassNameProvider(context.isGeneratePublishedInterfaces(row.getIpsProject()));
+        nameProvider = new TableRowBuilderClassNameProvider(
+                context.getGeneratorConfig().isGeneratePublishedInterfaces(row.getIpsProject()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 
 class PolicyCmptAttributeExtensionTmpl {
 

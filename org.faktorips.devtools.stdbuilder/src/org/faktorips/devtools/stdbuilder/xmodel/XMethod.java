@@ -86,7 +86,8 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     protected String getJavaClassName(Datatype datatype) {
-        boolean useInterface = (getMethod().getModifier().isPublished() || getMethod() instanceof IPolicyCmptTypeMethod);
+        boolean useInterface = (getMethod().getModifier().isPublished()
+                || getMethod() instanceof IPolicyCmptTypeMethod);
         boolean useGeneration = getMethod() instanceof IProductCmptTypeMethod;
         return getJavaClassName(datatype, useGeneration, !useInterface);
     }
@@ -163,7 +164,7 @@ public class XMethod extends AbstractGeneratorModelNode {
             return false;
         }
         if (isFormulaSignature()) {
-            if (getFormulaCompiling() == FormulaCompiling.Subclass) {
+            if (getGeneratorConfig().getFormulaCompiling() == FormulaCompiling.Subclass) {
                 return isFormulaOptional();
             }
         }

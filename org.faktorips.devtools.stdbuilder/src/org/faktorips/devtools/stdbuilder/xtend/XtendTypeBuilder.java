@@ -26,7 +26,8 @@ public abstract class XtendTypeBuilder<T extends XType> extends XtendBuilder<T> 
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        return interfaceBuilder || !getGeneratorModelContext().isGeneratePublishedInterfaces(getIpsProject());
+        return interfaceBuilder
+                || !getGeneratorModelContext().getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
     }
 
     @Override

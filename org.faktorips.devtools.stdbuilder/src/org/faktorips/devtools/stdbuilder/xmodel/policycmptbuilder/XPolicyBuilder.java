@@ -28,8 +28,8 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.XTypeBuilderClassNameProvider;
 
-public class XPolicyBuilder extends XPolicyCmptClass implements
-        XPBuilder<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> {
+public class XPolicyBuilder extends XPolicyCmptClass
+        implements XPBuilder<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> {
 
     private XTypeBuilderClassNameProvider nameProvider;
     private XPBuilderUtil<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute> xpBuilderUtil;
@@ -187,6 +187,11 @@ public class XPolicyBuilder extends XPolicyCmptClass implements
     @Override
     public Set<XPolicyAttribute> getAttributes() {
         return super.getAttributes();
+    }
+
+    @Override
+    public boolean isGeneratePublishedInterfaces() {
+        return getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
     }
 
 }

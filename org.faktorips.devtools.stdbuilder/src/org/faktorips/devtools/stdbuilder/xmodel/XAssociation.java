@@ -328,7 +328,8 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         if (generatingInterface) {
             return true;
         }
-        return !isGeneratePublishedInterfaces() && !isSubsetImplementedInSameType(getSourceModelNode());
+        return !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())
+                && !isSubsetImplementedInSameType(getSourceModelNode());
     }
 
     protected boolean isSubsetImplementedInSameType(XType contextType) {

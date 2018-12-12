@@ -392,7 +392,7 @@ public abstract class XProductClass extends XType {
     }
 
     private IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
-        return getContext().getChangesOverTimeNamingConvention();
+        return getGeneratorConfig().getChangesOverTimeNamingConvention();
     }
 
     /**
