@@ -2,9 +2,9 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template
 
 class ProductBuilderNamesTmpl {
 
-// ---------------------------------
-// Methods in IRuntimeRepository
-// ---------------------------------
+    // ---------------------------------
+    // Methods in IRuntimeRepository
+    // ---------------------------------
     def package static putProductCmptGeneration(String generationName) {
         "putProductCmptGeneration(" + generationName + ")"
     }
@@ -21,9 +21,9 @@ class ProductBuilderNamesTmpl {
         "getExistingProductComponent(" + id + ")"
     }
 
-// ---------------------------------
-// Methods in ProductComponent / Generation
-// ---------------------------------
+    // ---------------------------------
+    // Methods in ProductComponent / Generation
+    // ---------------------------------
     def package static setValidFrom(String arg) {
         "setValidFrom (" + arg + ")"
     }

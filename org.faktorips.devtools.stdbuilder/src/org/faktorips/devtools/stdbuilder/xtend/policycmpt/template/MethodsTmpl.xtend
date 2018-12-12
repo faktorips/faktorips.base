@@ -7,7 +7,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonG
 
 class MethodsTmpl{
 
-//TODO Sadly there are some minor differences between product methods and policy methos. Maybe we want to join these templates and generate more equal code
+//TODO Sadly there are some minor differences between product methods and policy methods. Maybe we want to join these templates and generate more equal code
 
 def package static method (XMethod it) '''
     «IF published || !genInterface()»

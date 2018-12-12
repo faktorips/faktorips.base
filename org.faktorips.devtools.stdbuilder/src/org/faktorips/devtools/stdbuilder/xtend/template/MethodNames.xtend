@@ -5,6 +5,7 @@ class MethodNames {
     // ---------------------------------
     // Methods in ListUtil
     // ---------------------------------
+    
     def static convert(String list, String newType) {     "convert("+list+", "+newType+")"    }
 
     // ---------------------------------
@@ -12,7 +13,6 @@ class MethodNames {
     // ---------------------------------
 
     def static createUnresolvedReference(String arguments) {     "createUnresolvedReference("+arguments+")"    }
-
 
     // ---------------------------------
     // Methods in IConfigurableModelObject or AbstractConfigurableModelObject
@@ -67,6 +67,7 @@ class MethodNames {
     def static writeReferencesToXml(String paramElement)  {     "writeReferencesToXml(" + paramElement + ")"    }
 
     def static writeTableUsagesToXml(String paramElement)  {     "writeTableUsagesToXml(" + paramElement + ")"    }
+    
     // ---------------------------------
     // Methods in IProductComponentGeneration
     // ---------------------------------
@@ -186,7 +187,6 @@ class MethodNames {
 
     def static computeDelta(String arg1, String arg2) {     "computeDelta("+arg1+","+arg2+")"    }
 
-
     // ---------------------------------
     // Methods in ICopySupport
     // ---------------------------------
@@ -216,4 +216,5 @@ class MethodNames {
     //----------------------------------
 
     def static init() {     "init()"    }
+    
 }

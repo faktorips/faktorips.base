@@ -14,7 +14,6 @@ class EnumEnumTypeTmpl {
 
     def package static String body(XEnumType it) '''
 
-
         /**
         «IF described»
             *  «description»

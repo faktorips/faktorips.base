@@ -25,37 +25,37 @@ class CommonGeneratorExtensions {
         StringUtil.camelCaseToUnderscore(s)
     }
 
-// Use it function for methods that overrides another method (no interface method) on a given condition.
-// Returns the override annotation if the given condition is true.
+    // Use it function for methods that overrides another method (no interface method) on a given condition.
+    // Returns the override annotation if the given condition is true.
     def static overrideAnnotationIf(AbstractGeneratorModelNode it, boolean condition) {
         if(condition) "@Override"
     }
 
-// Use it function for published methods. i.e. methods that are defined in a published interface.
-// Returns the @Override annotation if published interfaces are beeing generated
+    // Use it function for published methods. i.e. methods that are defined in a published interface.
+    // Returns the @Override annotation if published interfaces are being generated
     def static overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode it) {
         if(generatePublishedInterfaces) "@Override"
     }
 
-// Use it function for published methods. i.e. methods that are defined in a published interface.
-// Returns the @Override annotation if the condition is true and at the same time published interfaces are beeing generated
+    // Use it function for published methods. i.e. methods that are defined in a published interface.
+    // Returns the @Override annotation if the condition is true and at the same time published interfaces are being generated
     def static overrideAnnotationForPublishedMethodImplementation(AbstractGeneratorModelNode it) {
         if (!genInterface() && generatePublishedInterfaces)
             "@Override"
     }
 
-// Use it function for published methods that require an override in a special condition. i.e. methods
-// that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the
-// @Override annotation if published interfaces are beeing generated or if the condition is true .
+    // Use it function for published methods that require an override in a special condition. i.e. methods
+    // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the
+    // @Override annotation if published interfaces are being generated or if the condition is true .
     def static overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode it, boolean condition) {
         if (generatePublishedInterfaces || condition)
             "@Override"
     }
 
-// Use it function for potentially published methods that require an override in a special condition. i.e. methods
-// that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the
-// @Override annotation if the first parameter (isPublished) is true and at the same time published interfaces are beeing generated
-// or if the condition is true.
+    // Use it function for potentially published methods that require an override in a special condition. i.e. methods
+    // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the
+    // @Override annotation if the first parameter (isPublished) is true and at the same time published interfaces are being generated
+    // or if the condition is true.
     def static overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode it, boolean isPublished,
         boolean condition) {
         if (generatePublishedInterfaces && isPublished || condition)
@@ -70,18 +70,18 @@ class CommonGeneratorExtensions {
         overrideAnnotationForPublishedMethodImplementationOr(it, constrain)
     }
 
-// User it function for attribute methods (e.g. getter, setter).
-// Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
-// If the attribute does not override another attribute, the boolean parameter specifies wether the attribute
-// is publishe
+    // User it function for attribute methods (e.g. getter, setter).
+    // Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
+    // If the attribute does not override another attribute, the boolean parameter specifies whether the attribute
+    // is published
     def static overrideAnnotationForAttribute(XAttribute it) {
         overrideAnnotationForPublishedMethodOrIf(published, overwrite)
     }
 
-// Use it function if the method in question is generated for all generated classes and subclasses always
-// override their super class' implementation. The method in question should not be an interface method.
-// Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
-// Returns nothing in all other cases.
+    // Use it function if the method in question is generated for all generated classes and subclasses always
+    // override their super class' implementation. The method in question should not be an interface method.
+    // Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
+    // Returns nothing in all other cases.
     def static overrideAnnotationIfHasSuperclass(XType it) {
         if(hasSupertype()) "@Override"
     }

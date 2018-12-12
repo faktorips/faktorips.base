@@ -196,7 +196,7 @@ class ProductComponentTmpl {
         «ENDIF»
     '''
 
-// The content of the method is always the same (use currentType). The methodName is derived from different types
+    // The content of the method is always the same (use currentType). The methodName is derived from different types
     def package static createPolicyCmpt(XProductCmptClass currentType, XPolicyCmptClass it) '''
         «IF currentType.isGenerateMethodCreatePolicyCmpt(it)»
             /**

@@ -192,4 +192,4 @@ class DefaultAndAllowedValuesTmpl {
         valueSetElement.appendChild(valueSetValuesElement);
     '''
 
-    }
+}

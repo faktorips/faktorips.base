@@ -9,8 +9,8 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.MethodN
 
 class ProductCmptCreateBuilderTmpl {
 
-//Methods to initialize a builder.
-//If no published interfaces are generated, with methods are static methods in the product classes. Else, they are in the factory class
+    //Methods to initialize a builder.
+    //If no published interfaces are generated, with methods are static methods in the product classes. Else, they are in the factory class
     def static with(boolean isStatic, XProductBuilder it) '''
         /**
         * «localizedJDoc("METHOD_WITH_IDS_DEFAULT",productName)»
@@ -73,7 +73,7 @@ class ProductCmptCreateBuilderTmpl {
         }
     '''
 
-//Method to get a builder from a product
+    // Method to get a builder from a product
     def static builder(XProductBuilder it) '''
         /**
         * «localizedJDoc("METHOD_BUILDER", name)»

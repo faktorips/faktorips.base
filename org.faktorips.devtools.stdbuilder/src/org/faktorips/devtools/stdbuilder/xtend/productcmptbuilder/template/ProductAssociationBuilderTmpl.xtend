@@ -85,7 +85,6 @@ class ProductAssociationBuilderTmpl {
     '''
 
     //    An association can have up to 4 association setters.
-
     def private static associationEvaluation(XProductBuilder builder, XProductBuilderAssociation it) '''
         ««« for generic subtype
         «associationSetterWithType(builder, it, false, false, targetBuilderClass)»

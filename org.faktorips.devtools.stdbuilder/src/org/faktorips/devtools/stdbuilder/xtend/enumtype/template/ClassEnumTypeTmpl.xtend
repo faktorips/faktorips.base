@@ -13,7 +13,6 @@ class ClassEnumTypeTmpl {
 
     def static String body(XEnumType it) '''
 
-
         /**
         «IF described»
         *  «description»
@@ -145,7 +144,6 @@ class ClassEnumTypeTmpl {
         }
     '''
 
-
     def private static valuesConstant(XEnumType it) '''
         «IF !enumValues.isEmpty»
             /**
@@ -172,9 +170,5 @@ class ClassEnumTypeTmpl {
             «ENDFOR»
         );
     '''
-
-
-
-
 
 }

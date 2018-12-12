@@ -129,7 +129,6 @@ class CopySupportTmpl {
         }
     '''
 
-//Siehe PolicyCmptImplClassBuilder Z.394
     def private static copyAttributes(XPolicyCmptClass it) '''
         «FOR it : attributesToCopy»
             «IF considerInCopySupport»
@@ -172,7 +171,6 @@ class CopySupportTmpl {
         «ENDFOR»
     '''
 
-//Siehe PolicyCmptImplClassBuilder Z.523
     def private static copyAssociationInternal(XPolicyAssociation it) '''
         «IF considerInCopySupport»
             «IF typeAssociation»

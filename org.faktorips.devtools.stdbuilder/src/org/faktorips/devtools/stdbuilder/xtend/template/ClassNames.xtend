@@ -115,17 +115,17 @@ class ClassNames {
 
     def static AssociationChangedEvent(AbstractGeneratorModelNode it) { addImport(typeof(AssociationChangedEvent)) }
 
-// Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
+    // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
     def static Collection_(AbstractGeneratorModelNode it, String genericType) {
         addImport("java.util.Collection") + "<" + genericType + ">"
     }
 
-// List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
+    // List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
     def static List_(AbstractGeneratorModelNode it, String genericType) {
         addImport("java.util.List") + "<" + genericType + ">"
     }
 
-// ArrayList.name does return java.util.ArrayList. Thats why we have to use the string reference in addImport
+    // ArrayList.name does return java.util.ArrayList. Thats why we have to use the string reference in addImport
     def static ArrayList(AbstractGeneratorModelNode it, String genericType) {
         addImport("java.util.ArrayList") + "<" + genericType + ">"
     }
@@ -228,7 +228,7 @@ class ClassNames {
 
     def static MessagesHelper(AbstractGeneratorModelNode it) { addImport(typeof(MessagesHelper)) }
 
-// EXECPTIONS
+    // EXECPTIONS
     def static NoSuchElementException(AbstractGeneratorModelNode it) { addImport(typeof(NoSuchElementException)) }
 
     def static IllegalRepositoryModificationException(AbstractGeneratorModelNode it) {

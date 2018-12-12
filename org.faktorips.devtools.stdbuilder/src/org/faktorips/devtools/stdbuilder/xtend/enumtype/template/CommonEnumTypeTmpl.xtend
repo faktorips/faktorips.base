@@ -57,7 +57,6 @@ class CommonEnumTypeTmpl {
         }
     '''
 
-
     def package static fieldInitializations(boolean hasIndex, XEnumType it) '''
         «IF hasIndex»
             this.«varNameIndex» = «varNameIndex»;
