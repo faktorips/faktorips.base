@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.runtime.Message.Builder;
 import org.faktorips.values.Money;
 import org.junit.Test;
 
@@ -496,6 +497,47 @@ public class MessageTest extends XmlAbstractTestCase {
         Message message = Message.error("messageText").invalidObjectWithProperties(new Object()).create();
 
         assertEquals(1, message.getNumOfInvalidObjectProperties());
+    }
+
+    @Test
+    public void testBuilderWithMessage() {
+        Set<IMarker> markers = new HashSet<IMarker>();
+        markers.add(mock(IMarker.class));
+
+        Message message = Message.error("messageText") //
+                .code("TestCode") //
+                .invalidObjectWithProperties(new Object()) //
+                .replacements(new MsgReplacementParameter("ReplaceName", "ReplaceValue")) //
+                .markers(markers) //
+                .create();
+
+        Message messageCreated = new Builder(message).create();
+
+        assertEquals(message, messageCreated);
+    }
+
+    @Test
+    public void testBuilderWithMessageAndAddObjectProperty() {
+        Set<IMarker> markers = new HashSet<IMarker>();
+        markers.add(mock(IMarker.class));
+
+        Message message = Message.error("messageText") //
+                .code("TestCode") //
+                .invalidObjectWithProperties(new Object())
+                .replacements(new MsgReplacementParameter("ReplaceName", "ReplaceValue")) //
+                .markers(markers) //
+                .create();
+
+        List<ObjectProperty> invalidObjectProperties = Arrays.asList(new ObjectProperty(new Object()),
+                new ObjectProperty(new Object()));
+        Message messageCreated = new Builder(message).invalidObjects(invalidObjectProperties).create();
+
+        assertEquals(2, messageCreated.getNumOfInvalidObjectProperties());
+        assertEquals(message.getText(), messageCreated.getText());
+        assertEquals(message.getCode(), messageCreated.getCode());
+        assertEquals(message.getSeverity(), messageCreated.getSeverity());
+        assertEquals(1, messageCreated.getNumOfReplacementParameters());
+        assertTrue(messageCreated.hasMarkers());
     }
 
 }

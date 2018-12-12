@@ -608,6 +608,20 @@ public class Message implements Serializable {
         }
 
         /**
+         * Creates a new builder from a given {@link Message} to create a copy of the
+         * {@link Message} with all information.
+         * 
+         * @param message the {@link Message} to copy
+         */
+        public Builder(Message message) {
+            this(message.text, message.severity);
+            this.code = message.code;
+            this.invalidObjectProperties = message.getInvalidObjectProperties();
+            this.replacementParams = message.getReplacementParameters();
+            this.markers = message.getMarkers();
+        }
+
+        /**
          * Set the message's code that identifies the kind of the message.
          * 
          * @param code A message code that identifies the kind of the message
