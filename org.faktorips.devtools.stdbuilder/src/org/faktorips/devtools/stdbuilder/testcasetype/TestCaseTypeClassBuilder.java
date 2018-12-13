@@ -47,7 +47,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultReferenceResolver;
 import org.faktorips.runtime.IModelObject;
@@ -152,7 +152,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
-        mainSection.setSuperClass(getSuperClassName());
+        mainSection.setSuperClass(getSuperclassName());
         String description = getDescriptionInGeneratorLanguage(getIpsObject());
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), description,
                 mainSection.getJavaDocForTypeBuilder());
@@ -165,7 +165,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.getMethodBuilder().append(xmlCallbackBuilder.getFragment());
     }
 
-    protected String getSuperClassName() {
+    protected String getSuperclassName() {
         return IpsTestCase2.class.getName();
     }
 

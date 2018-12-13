@@ -57,7 +57,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * <code>IpsSrcFileImmutable</code> (<code>FilteredBufferedResourceNode</code>) is created
      * reading remote contents via an input stream. {@inheritDoc}
      */
-    // CSOFF: CaclomaticComplexity
+    // CSOFF: CyclomaticComplexity
     @Override
     public IStructureComparator getStructure(Object input) {
         if (input instanceof IAdaptable) {
@@ -105,7 +105,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
         return null;
     }
 
-    // CSON: CaclomaticComplexity
+    // CSON: CyclomaticComplexity
 
     /**
      * Returns a tree of <code>AbstractCompareItem</code>s. Each <code>AbstractCompareItem</code>

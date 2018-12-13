@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 
 /**
  * This class generates JPA annotations for attribute setter methods on policy component types.

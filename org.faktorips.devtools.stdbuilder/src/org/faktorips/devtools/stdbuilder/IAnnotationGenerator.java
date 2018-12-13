@@ -11,7 +11,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 
 /**
  * Defines an interface for generators which create annotations for IpsElements.

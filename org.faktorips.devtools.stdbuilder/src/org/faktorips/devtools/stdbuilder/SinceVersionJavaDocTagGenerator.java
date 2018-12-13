@@ -11,7 +11,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 
 /**
  * Generates the java doc tag <code>@since</code> with the configured version.

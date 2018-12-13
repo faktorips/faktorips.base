@@ -18,7 +18,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAssoc
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAttributeFieldJaxbGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassProductConfigurationJaxbGen;
-import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumDeclClassJaxbAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumDeclClassJaxbAnnGen;
 
 public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
 

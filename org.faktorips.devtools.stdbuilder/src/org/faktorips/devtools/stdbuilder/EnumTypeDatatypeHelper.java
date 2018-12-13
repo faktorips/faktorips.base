@@ -17,8 +17,8 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.stdbuilder.xpand.enumtype.EnumTypeBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.enumtype.model.XEnumType;
+import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
+import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -39,7 +39,6 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     public EnumTypeDatatypeHelper(XEnumType enumType, EnumTypeDatatypeAdapter enumTypeAdapter) {
         super(enumTypeAdapter);
 
-        enumTypeAdapter.getEnumType();
         ArgumentCheck.notNull(enumType, this);
         ArgumentCheck.notNull(enumTypeAdapter, this);
 

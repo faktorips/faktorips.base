@@ -14,8 +14,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -33,7 +34,7 @@ public class SinceVersionJavaDocTagGeneratorTest {
     public void testCreateAnnotation_withSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(true);
         when(modelNode.getSinceVersion()).thenReturn("1.2.3");
-        JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3\n");
+        JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3" + SystemUtils.LINE_SEPARATOR);
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);
 
@@ -44,13 +45,13 @@ public class SinceVersionJavaDocTagGeneratorTest {
      * This case should never happen because the caller needs to check
      * {@link SinceVersionJavaDocTagGenerator#isGenerateAnnotationFor(AbstractGeneratorModelNode)}
      * before calling
-     * {@link SinceVersionJavaDocTagGenerator#createAnnotation(AbstractGeneratorModelNode)}. But we
-     * want to ensure that there is no error if it happens in mistake.
+     * {@link SinceVersionJavaDocTagGenerator#createAnnotation(AbstractGeneratorModelNode)}. But we want
+     * to ensure that there is no error if it happens in mistake.
      */
     @Test
     public void testCreateAnnotation_noSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(false);
-        JavaCodeFragment expected = new JavaCodeFragment("@since null\n");
+        JavaCodeFragment expected = new JavaCodeFragment("@since null" + SystemUtils.LINE_SEPARATOR);
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);
 
