@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
@@ -318,16 +317,8 @@ public abstract class AbstractGeneratorModelNode {
         return clazz.getSimpleName();
     }
 
-    public String addImport(org.eclipse.xtend.typesystem.Type type) {
-        return type.getName();
-    }
-
     /**
      * Add the qualified name to the list of import statements and return the unqualified name.
-     * <p>
-     * To support qualified names provided by a template, this method is also able to handle xpand
-     * namespace syntax. For example the string <code>java::util::Map</code> is converted to
-     * <code>java.util.Map</code>
      * <p>
      * To avoid the import of classes in the default package and the import of primitive data types
      * ("int", "boolean") qualified class names without package (or without "." respectively) will
@@ -337,13 +328,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(String qName) {
-        String javaQName;
-        if (qName.indexOf(SyntaxConstants.NS_DELIM) != -1) {
-            javaQName = qName.replaceAll(SyntaxConstants.NS_DELIM, ".");
-        } else {
-            javaQName = qName;
-        }
-        String className = getContext().addImport(javaQName);
+        String className = getContext().addImport(qName);
         return className;
     }
 

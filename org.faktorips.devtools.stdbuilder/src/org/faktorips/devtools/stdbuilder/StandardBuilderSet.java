@@ -549,7 +549,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
@@ -572,13 +571,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                     if (xtendBuilder.isGeneratingArtifactsFor(ipsObjectPartContainer)) {
                         javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                     }
-                } else if (javaBuilder instanceof org.faktorips.devtools.stdbuilder.xpand.XpandBuilder<?>) {
-                    org.faktorips.devtools.stdbuilder.xpand.XpandBuilder<?> xtendBuilder = (org.faktorips.devtools.stdbuilder.xpand.XpandBuilder<?>)javaBuilder;
-                    if (xtendBuilder.isGenerateingArtifactsFor(ipsObjectPartContainer)) {
-                        javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                    }
                 }
-
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

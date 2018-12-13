@@ -54,13 +54,7 @@ public class AbstractGeneratorModelNodeTest {
     }
 
     @Test
-    public void addTemplateImport() {
-        xClass.addImport("java::util::Map");
-        verify(modelContext).addImport("java.util.Map");
-    }
-
-    @Test
-    public void addNormalImport() {
+    public void addImport() {
         xClass.addImport("java.util.Map");
         xClass.addImport("package.subpackage.ClassName");
         verify(modelContext).addImport("java.util.Map");
