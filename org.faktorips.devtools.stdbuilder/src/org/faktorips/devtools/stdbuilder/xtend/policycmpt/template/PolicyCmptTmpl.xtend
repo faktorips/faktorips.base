@@ -154,7 +154,6 @@ def private static  initializeAttributes(String methodNameGetProductConfiguratio
             «FOR it : getAttributesToInit(true, changingOverTime)»
                 «initConfigurableAttribute»
             «ENDFOR»
-
             «IF hasSupertype()»
             «FOR it : getAttributesToInit(false, changingOverTime)»
             «methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);

@@ -63,9 +63,11 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
         return false;
     }
 
+    // CSOFF: ThrowsCountCheck
     @Override
     public MessageList migrate(IProgressMonitor monitor)
             throws CoreException, InvocationTargetException, InterruptedException {
+        // CSON: ThrowsCountCheck
         MessageList msgResultList = new MessageList();
         List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
         getIpsProject().collectAllIpsSrcFilesOfSrcFolderEntries(allIpsSrcFiles);

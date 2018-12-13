@@ -68,7 +68,6 @@ class ProductComponentGenTmpl {
                 public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
                     super(productCmpt);
                     «FOR it : attributesInclOverwritten» «setDefaultValue» «ENDFOR»
-
                 }
 
                 «FOR it : attributesInclOverwritten»

@@ -175,7 +175,6 @@ def private static getters (XPolicyAssociation it) '''
                             if (element.«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
                                 result.add(element);
                             }
-
                         }
         «««FIPS-1142.remove this if-else
                     «ELSE»
@@ -185,7 +184,6 @@ def private static getters (XPolicyAssociation it) '''
                                 if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
                                     result.add(«targetClassName.toFirstLower()»);
                                 }
-
                             }
                     «ENDIF»
                     return result;
@@ -210,7 +208,6 @@ def private static getters (XPolicyAssociation it) '''
                             if (element.«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
                                 return element;
                             }
-
                         }
         «««FIPS-1142.remove this if-else
                     «ELSE»
@@ -219,7 +216,6 @@ def private static getters (XPolicyAssociation it) '''
                             if («targetClassName.toFirstLower».«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
                                 return «targetClassName.toFirstLower»;
                             }
-
                         }
                     «ENDIF»
                     return null;

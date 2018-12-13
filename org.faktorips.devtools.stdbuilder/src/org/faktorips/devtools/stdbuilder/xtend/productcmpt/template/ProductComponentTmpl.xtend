@@ -117,7 +117,6 @@ class ProductComponentTmpl {
                     super.«doInitPropertiesFromXml("configMap")»;
                     «FOR it : attributes» «initFromXmlMethodCall»«ENDFOR»
                     «FOR it : configuredAttributes» «initFromXmlMethodCall» «ENDFOR»
-
                 }
 
                 «FOR it : attributes» «initFromXmlMethod» «ENDFOR»

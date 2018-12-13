@@ -80,7 +80,6 @@ class EnumEnumTypeTmpl {
         static{
             «val keyClassName = identifierAttribute.datatypeNameUseWrappers»
             «varNameIdMap» = new «HashMap(keyClassName, unqualifiedClassName)»();
-
             for(«name» value : values()){
                 «varNameIdMap».put(value.«identifierAttribute.memberVarName», value);
             }
