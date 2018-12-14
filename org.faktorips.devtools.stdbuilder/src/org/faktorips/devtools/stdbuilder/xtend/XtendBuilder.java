@@ -54,8 +54,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     @Override
     protected String generate() throws CoreException {
         if (getGeneratorModelRoot(getIpsObject()).isValidForCodeGeneration()) {
-            CommonGeneratorExtensions.setGenInterface(generatesInterface());
-            String body = generateBody(getIpsObject());
+            String body = generateBodyInternal(getIpsObject());
             String packageDef = generatePackageDef();
             String importBlock = generateImportBlock();
             return packageDef + importBlock + body;
@@ -63,6 +62,20 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
             return null;
         }
     }
+
+    private String generateBodyInternal(IIpsObject ipsObject) {
+        CommonGeneratorExtensions.setGenInterface(generatesInterface());
+        return generateBody(ipsObject);
+    }
+
+    /**
+     * Implementations of this class must override this method to provide the the body of the java
+     * source file.
+     * 
+     * @param ipsObject that is used to create the body.
+     * @return the body for a java source as a String.
+     */
+    protected abstract String generateBody(IIpsObject ipsObject);
 
     protected String generatePackageDef() {
         return CommonDefinitions.packageDef(getGeneratorModelRoot(getIpsObject()),
@@ -90,15 +103,6 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
         super.afterBuild(ipsSrcFile);
         generatorModelContext.resetContext(null);
     }
-
-    /**
-     * Implementations of this class must override this method to provide the the body of the java
-     * source file.
-     * 
-     * @param ipsObject that is used to create the body.
-     * @return the body for a java source as a String.
-     */
-    protected abstract String generateBody(IIpsObject ipsObject);
 
     protected T getGeneratorModelRoot(IIpsObject ipsObject) {
         T xClass = getModelService().getModelNode(ipsObject, getGeneratorModelRootType(), generatorModelContext);
@@ -168,7 +172,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
 
         generatorModelContext.resetContext(null);
 
-        generateBody(ipsObject);
+        generateBodyInternal(ipsObject);
 
         // At the moment only one java type per generator is supported. Multiple types are only
         // generated for adjustments implementing formulas
