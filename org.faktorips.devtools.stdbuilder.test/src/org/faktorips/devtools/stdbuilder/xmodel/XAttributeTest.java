@@ -52,12 +52,12 @@ public class XAttributeTest {
     private XAttribute xAttribute;
 
     public void setUpMocks() {
+        when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         xAttribute = new TestXAttribute(attribute, context, modelService);
         when(annotationGenerator.createAnnotation(xAttribute)).thenReturn(new JavaCodeFragment(TEST_ANNOTATION));
         when(annotationGenerator.isGenerateAnnotationFor(xAttribute)).thenReturn(true);
         when(context.getAnnotationGenerator(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER))
                 .thenReturn(Arrays.asList(annotationGenerator));
-        when(context.getGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test

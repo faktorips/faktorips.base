@@ -84,7 +84,7 @@ public class XPolicyAttributeTest {
         policyClass = mock(XPolicyCmptClass.class);
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
 
         xPolicyAttribute = new XPolicyAttribute(attribute, modelContext, modelService);
     }

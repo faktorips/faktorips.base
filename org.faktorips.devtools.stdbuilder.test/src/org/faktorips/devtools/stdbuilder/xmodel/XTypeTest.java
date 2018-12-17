@@ -63,7 +63,8 @@ public class XTypeTest {
             }
         };
         when(context.addImport(anyString())).thenAnswer(inputAnswer);
-        when(context.getGeneratorConfig()).thenReturn(generatorConfig);
+        doReturn(generatorConfig).when(xType).getGeneratorConfig();
+        doReturn(generatorConfig).when(xSuperType).getGeneratorConfig();
     }
 
     @Before

@@ -45,7 +45,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
         this.javaClassNameProvider = XClass.createJavaClassNamingProvider(
-                modelContext.getGeneratorConfig().isGeneratePublishedInterfaces(builderSet.getIpsProject()));
+                modelContext.getBaseGeneratorConfig().isGeneratePublishedInterfaces(builderSet.getIpsProject()));
         setMergeEnabled(true);
         this.generatorModelContext = modelContext;
         this.modelService = modelService;

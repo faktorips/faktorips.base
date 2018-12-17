@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
 /**
@@ -72,7 +71,7 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
      */
     @Override
     protected void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
-        GeneratorConfig generatorConfig = GeneratorModelContext.forElement(getIpsSrcFile()).getGeneratorConfig();
+        GeneratorConfig generatorConfig = GeneratorConfig.forIpsSrcFile(getIpsSrcFile());
         Locale language = generatorConfig.getLanguageUsedInGeneratedSourceCode();
         String genName = generatorConfig.getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular(language);

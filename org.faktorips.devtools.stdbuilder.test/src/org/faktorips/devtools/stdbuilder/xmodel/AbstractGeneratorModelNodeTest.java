@@ -10,11 +10,14 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -24,7 +27,9 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.core.internal.model.DefaultVersion;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
@@ -52,13 +57,38 @@ public class AbstractGeneratorModelNodeTest {
 
     @Before
     public void setUp() throws Exception {
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         xClass = new XPolicyCmptClass(type, modelContext, modelService);
         when(modelContext.addImport(anyString())).thenReturn("dummyImportStatement");
     }
 
     @Test
-    public void addImport() {
+    public void testGetGeneratorConfig_Base() {
+        assertThat(xClass.getGeneratorConfig(), is(generatorConfig));
+        verify(modelContext, atLeastOnce()).getBaseGeneratorConfig();
+    }
+
+    @Test
+    public void testGetGeneratorConfig_ForIpsObject() {
+        when(type.getIpsObject()).thenReturn(type);
+
+        GeneratorConfig generatorConfig2 = mock(GeneratorConfig.class);
+
+        GeneratorModelContext modelContext2 = mock(GeneratorModelContext.class);
+        when(modelContext2.getGeneratorConfig(type)).thenReturn(generatorConfig2);
+
+        StandardBuilderSet builderSet = mock(StandardBuilderSet.class);
+        when(builderSet.getGeneratorModelContext()).thenReturn(modelContext2);
+
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+
+        assertThat(xClass.getGeneratorConfig(), is(generatorConfig2));
+    }
+
+    @Test
+    public void testAddImport() {
         xClass.addImport("java.util.Map");
         xClass.addImport("package.subpackage.ClassName");
         verify(modelContext).addImport("java.util.Map");
@@ -66,13 +96,13 @@ public class AbstractGeneratorModelNodeTest {
     }
 
     @Test
-    public void addImportByClass() {
+    public void testAddImportByClass() {
         xClass.addImport(java.util.Map.class);
         verify(modelContext).addImport("java.util.Map");
     }
 
     @Test
-    public void addImportByInnerClass() {
+    public void testAddImportByInnerClass() {
         xClass.addImport(org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNodeTest.Inner.class);
         verify(modelContext).addImport("org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNodeTest.Inner");
     }

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -443,8 +444,21 @@ public abstract class AbstractGeneratorModelNode {
         return getGeneratorConfig().getLanguageUsedInGeneratedSourceCode();
     }
 
+    /**
+     * Returns the {@link GeneratorConfig} for the {@link #getIpsObjectPartContainer()
+     * IIpsObjectPartContainer} this model node represents. If the container is not yet set, the
+     * {@link GeneratorModelContext#getBaseGeneratorConfig() base configuration from the context} is
+     * returned.
+     */
     public GeneratorConfig getGeneratorConfig() {
-        return getContext().getGeneratorConfig();
+        IIpsObjectPartContainer container = getIpsObjectPartContainer();
+        if (container != null) {
+            IIpsObject ipsObject = container.getIpsObject();
+            if (ipsObject != null) {
+                return GeneratorConfig.forIpsObject(ipsObject);
+            }
+        }
+        return getContext().getBaseGeneratorConfig();
     }
 
     public GeneratorModelContext getContext() {

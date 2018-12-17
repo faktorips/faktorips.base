@@ -70,7 +70,7 @@ public class XProductCmptClassTest {
 
     @Before
     public void initMocks() throws Exception {
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());

@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.UUIDFilterStream;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -203,7 +203,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     private void compileFormulas(IPropertyValueContainer propertyValueContainer, Document document, Element node) {
-        if (GeneratorModelContext.forElement(propertyValueContainer).getGeneratorConfig().getFormulaCompiling()
+        if (GeneratorConfig.forIpsObject(propertyValueContainer.getIpsObject()).getFormulaCompiling()
                 .isCompileToXml()) {
             List<IFormula> formulas = propertyValueContainer.getPropertyValues(IFormula.class);
             List<Element> formulaElements = getElements(node, Formula.TAG_NAME);

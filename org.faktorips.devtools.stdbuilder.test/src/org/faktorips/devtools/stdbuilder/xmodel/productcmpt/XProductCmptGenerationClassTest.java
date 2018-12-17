@@ -68,7 +68,7 @@ public class XProductCmptGenerationClassTest {
 
     @Before
     public void initMocks() {
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getQualifiedName()).thenReturn("ProductCmptType");
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);

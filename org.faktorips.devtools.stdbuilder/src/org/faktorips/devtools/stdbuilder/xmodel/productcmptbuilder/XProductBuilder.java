@@ -209,7 +209,7 @@ public class XProductBuilder extends XProductCmptClass
 
     private String getGenerationConceptName() {
         return getProductCmptGenerationNode().getJavaClassNameProvider()
-                .getAbbreviationForGenerationConcept(getIpsObjectPartContainer());
+                .getAbbreviationForGenerationConcept(getIpsObjectPartContainer().getIpsSrcFile());
     }
 
     public String getMethodNameGeneration() {

@@ -46,7 +46,7 @@ public class XMethodTest {
     @Before
     public void createXMethod() throws Exception {
         xMethod = new XMethod(method, context, modelService);
-        when(context.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test

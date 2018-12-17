@@ -575,17 +575,17 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     @Override
     public boolean isGeneratePublishedInterfaces() {
-        return generatorModelContext.getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
+        return generatorModelContext.getBaseGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
     }
 
     @Override
     protected String getConfiguredAdditionalAnnotations() {
-        return generatorModelContext.getGeneratorConfig().getConfiguredAdditionalAnnotations();
+        return generatorModelContext.getBaseGeneratorConfig().getConfiguredAdditionalAnnotations();
     }
 
     @Override
     protected String getConfiguredRetainedAnnotations() {
-        return generatorModelContext.getGeneratorConfig().getConfiguredRetainedAnnotations();
+        return generatorModelContext.getBaseGeneratorConfig().getConfiguredRetainedAnnotations();
     }
 
     public TableBuilder getTableBuilder() {

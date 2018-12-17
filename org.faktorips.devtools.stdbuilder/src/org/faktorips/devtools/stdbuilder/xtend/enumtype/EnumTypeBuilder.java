@@ -33,7 +33,7 @@ public class EnumTypeBuilder extends XtendBuilder<XEnumType> {
             ModelService modelService) {
         super(builderSet, modelContext, modelService, new LocalizedStringsSet(EnumTypeBuilder.class));
         javaClassNameProvider = XEnumType.createEnumJavaClassNameProvider(
-                modelContext.getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()));
+                modelContext.getBaseGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()));
     }
 
     @Override

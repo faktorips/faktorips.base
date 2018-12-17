@@ -209,7 +209,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     protected String getBaseSuperclassName() {
-        return addImport(getContext().getGeneratorConfig().getBaseClassPolicyCmptType());
+        return addImport(getContext().getGeneratorConfig(getType()).getBaseClassPolicyCmptType());
     }
 
     @Override

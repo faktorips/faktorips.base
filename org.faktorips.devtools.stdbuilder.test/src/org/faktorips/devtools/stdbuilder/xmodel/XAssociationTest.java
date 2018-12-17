@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -57,7 +58,7 @@ public class XAssociationTest {
 
     @Before
     public void initMocks() {
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
         when(association.getTargetRoleSingular()).thenReturn("singular");
         when(association.getTargetRolePlural()).thenReturn("plural");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);

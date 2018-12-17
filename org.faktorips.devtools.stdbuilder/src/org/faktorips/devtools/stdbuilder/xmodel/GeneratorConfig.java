@@ -13,12 +13,16 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
+import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -35,6 +39,28 @@ public class GeneratorConfig {
     public GeneratorConfig(IIpsArtefactBuilderSetConfig config, IIpsProject ipsProject) {
         this.config = config;
         this.ipsProject = ipsProject;
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} from the {@link StandardBuilderSet} associated with the
+     * given object's {@link IIpsPackageFragmentRoot}.
+     * 
+     * @see GeneratorModelContext#getGeneratorConfig(IIpsObject)
+     */
+    public static GeneratorConfig forIpsObject(IIpsObject ipsObject) {
+        GeneratorModelContext generatorModelContext = GeneratorModelContext.forElement(ipsObject);
+        return generatorModelContext == null ? null : generatorModelContext.getGeneratorConfig(ipsObject);
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} from the {@link StandardBuilderSet} associated with the
+     * given file's {@link IIpsPackageFragmentRoot}.
+     * 
+     * @see GeneratorModelContext#getGeneratorConfig(IIpsSrcFile)
+     */
+    public static GeneratorConfig forIpsSrcFile(IIpsSrcFile ipsSrcFile) {
+        GeneratorModelContext generatorModelContext = GeneratorModelContext.forElement(ipsSrcFile);
+        return generatorModelContext == null ? null : generatorModelContext.getGeneratorConfig(ipsSrcFile);
     }
 
     public boolean isGenerateChangeSupport() {

@@ -106,7 +106,7 @@ public class XDetailToMasterDerivedUnionAssociationTest {
 
     @Before
     public void initModelContext() {
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test

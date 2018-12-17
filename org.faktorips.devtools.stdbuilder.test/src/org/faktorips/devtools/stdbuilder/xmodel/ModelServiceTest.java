@@ -43,7 +43,7 @@ public class ModelServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        when(modelContext.getGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test

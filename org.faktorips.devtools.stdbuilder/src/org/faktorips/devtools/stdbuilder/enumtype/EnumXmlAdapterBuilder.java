@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -83,7 +83,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (!GeneratorModelContext.forElement(ipsSrcFile).getGeneratorConfig().isGenerateJaxbSupport()) {
+        if (!GeneratorConfig.forIpsSrcFile(ipsSrcFile).isGenerateJaxbSupport()) {
             return;
         }
         super.build(ipsSrcFile);

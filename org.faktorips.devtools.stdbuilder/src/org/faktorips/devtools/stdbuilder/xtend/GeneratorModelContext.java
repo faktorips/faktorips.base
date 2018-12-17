@@ -21,7 +21,12 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -42,9 +47,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
  * The import handler for a single file build is also stored in this context and need to be reseted
  * for every new file. In fact this is not the optimum but ok for the moment. To be thread safe the
  * import handler is stored as {@link ThreadLocal} variable.
- * 
- * 
- * @author widmaier
  */
 public class GeneratorModelContext {
 
@@ -66,7 +68,9 @@ public class GeneratorModelContext {
 
     private final IJavaPackageStructure javaPackageStructure;
 
-    private final GeneratorConfig generatorConfig;
+    private final Map<IIpsPackageFragmentRoot, GeneratorConfig> generatorConfigs = new HashMap<IIpsPackageFragmentRoot, GeneratorConfig>();
+
+    private final GeneratorConfig baseGeneratorConfig;
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
             IIpsProject ipsProject) {
@@ -80,11 +84,60 @@ public class GeneratorModelContext {
         this.javaPackageStructure = javaPackageStructure;
         this.annotationGeneratorMap = annotationGeneratorMap;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
-        this.generatorConfig = new GeneratorConfig(config, ipsProject);
+        baseGeneratorConfig = new GeneratorConfig(config, ipsProject);
+        for (IIpsPackageFragmentRoot packageFragmentRoot : ipsProject.getIpsPackageFragmentRoots()) {
+            IIpsProject rootIpsProject = packageFragmentRoot.getIpsProject();
+            if (ipsProject.equals(rootIpsProject)) {
+                generatorConfigs.put(packageFragmentRoot, baseGeneratorConfig);
+            } else {
+                GeneratorModelContext generatorModelContext = GeneratorModelContext.forElement(rootIpsProject);
+                GeneratorConfig generatorConfig = generatorModelContext.getGeneratorConfig(packageFragmentRoot);
+                generatorConfigs.put(packageFragmentRoot, generatorConfig);
+            }
+        }
     }
 
-    public GeneratorConfig getGeneratorConfig() {
-        return generatorConfig;
+    /**
+     * Returns the {@link GeneratorConfig} to be used when generating code for the given
+     * {@link IIpsObject}. The {@link GeneratorConfig} is specific to the
+     * {@link IIpsPackageFragmentRoot} the {@link IIpsObject} is contained in.
+     * <p>
+     * If the {@link IIpsPackageFragmentRoot} is not known to this {@link IIpsArtefactBuilderSet},
+     * the {@link #getBaseGeneratorConfig()} for this {@link IIpsProject} is returned.
+     */
+    public GeneratorConfig getGeneratorConfig(IIpsObject ipsObject) {
+        return getGeneratorConfig(ipsObject.getIpsPackageFragment());
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} to be used when generating code for the
+     * {@link IIpsObject} contained in the given {@link IIpsSrcFile}. The {@link GeneratorConfig} is
+     * specific to the {@link IIpsPackageFragmentRoot} the {@link IIpsSrcFile} is contained in.
+     * <p>
+     * If the {@link IIpsPackageFragmentRoot} is not known to this {@link IIpsArtefactBuilderSet},
+     * the {@link #getBaseGeneratorConfig()} for this {@link IIpsProject} is returned.
+     */
+    public GeneratorConfig getGeneratorConfig(IIpsSrcFile ipsSrcFile) {
+        return getGeneratorConfig(ipsSrcFile.getIpsPackageFragment());
+    }
+
+    private GeneratorConfig getGeneratorConfig(IIpsPackageFragment packageFragment) {
+        return getGeneratorConfig(packageFragment.getRoot());
+    }
+
+    private GeneratorConfig getGeneratorConfig(IIpsPackageFragmentRoot packageFragmentRoot) {
+        GeneratorConfig generatorConfig = generatorConfigs.get(packageFragmentRoot);
+        return generatorConfig != null ? generatorConfig : getBaseGeneratorConfig();
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} for objects directly contained in the {@link IIpsProject}
+     * this {@link GeneratorModelContext} was created with. {@link GeneratorConfig GeneratorConfigs}
+     * for {@link IIpsObject IIpsObjects} contained in other {@link IIpsPackageFragmentRoot
+     * IIpsPackageFragmentRoots} should be retrieved via {@link #getGeneratorConfig(IIpsObject)}.
+     */
+    public GeneratorConfig getBaseGeneratorConfig() {
+        return baseGeneratorConfig;
     }
 
     /**
@@ -92,7 +145,9 @@ public class GeneratorModelContext {
      * the element's {@link IIpsProject}.
      */
     public static GeneratorModelContext forElement(IIpsElement element) {
-        return ((StandardBuilderSet)element.getIpsProject().getIpsArtefactBuilderSet()).getGeneratorModelContext();
+        IIpsProject ipsProject = element.getIpsProject();
+        IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
+        return ((StandardBuilderSet)builderSet).getGeneratorModelContext();
     }
 
     /**
