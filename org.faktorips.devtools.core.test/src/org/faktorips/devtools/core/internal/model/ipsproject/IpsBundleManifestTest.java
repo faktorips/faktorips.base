@@ -10,12 +10,16 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -24,6 +28,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +37,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IpsBundleManifestTest {
+
+    private static final String STANDARD_BUILDER_SET_ID = "org.faktorips.devtools.stdbuilder.StandardBuilderSet";
+
+    private static final String TRUE = Boolean.TRUE.toString();
+
+    private static final String ATTRIBUTE_GENERATE_PUBLISHED_INTERFACES = "generatePublishedInterfaces";
 
     private static final String MY_BASE_PACKAGE = "myBasePackage";
 
@@ -79,14 +90,18 @@ public class IpsBundleManifestTest {
         when(attributes.getValue(IpsBundleManifest.HEADER_UNIQUE_QUALIFIER)).thenReturn(MY_UNIQUE_QUALIFIER);
         when(attributes.getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(MY_SRC_OUT);
         when(attributes.getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(MY_RESOURCE_OUT);
-        when(attributes.getValue(IpsBundleManifest.HEADER_OBJECT_DIR)).thenReturn(
-                MY_OBJECT_DIR + " ; toc=\"" + MY_TOC + "\";messages=\"" + MY_MESSAGES + "\"");
+        when(attributes.getValue(IpsBundleManifest.HEADER_OBJECT_DIR))
+                .thenReturn(MY_OBJECT_DIR + " ; toc=\"" + MY_TOC + "\";messages=\"" + MY_MESSAGES + "\"");
+        when(attributes.getValue(IpsBundleManifest.HEADER_GENERATOR_CONFIG)).thenReturn(
+                STANDARD_BUILDER_SET_ID + ";" + IpsProjectProperties.ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION + "=\""
+                        + IChangesOverTimeNamingConvention.FAKTOR_IPS + "\";" + ATTRIBUTE_GENERATE_PUBLISHED_INTERFACES
+                        + "=\"" + TRUE + "\"");
 
         Attributes attributesForObjectDir = mock(Attributes.class);
         when(manifest.getAttributes(MY_OBJECT_DIR)).thenReturn(attributesForObjectDir);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(MY_BASE_PACKAGE2);
-        when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_UNIQUE_QUALIFIER)).thenReturn(
-                MY_UNIQUE_QUALIFIER2);
+        when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_UNIQUE_QUALIFIER))
+                .thenReturn(MY_UNIQUE_QUALIFIER2);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(MY_SRC_OUT2);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(MY_RESOURCE_OUT2);
     }
@@ -100,8 +115,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetBasePackage() {
-        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
-                " " + MY_BASE_PACKAGE + " ");
+        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE))
+                .thenReturn(" " + MY_BASE_PACKAGE + " ");
 
         String basePackage = ipsBundleManifest.getBasePackage();
 
@@ -124,8 +139,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetBasePackage_forObjectDirTrim() {
-        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
-                " " + MY_BASE_PACKAGE2 + " ");
+        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE))
+                .thenReturn(" " + MY_BASE_PACKAGE2 + " ");
 
         String basePackage = ipsBundleManifest.getBasePackage(MY_OBJECT_DIR);
 
@@ -148,8 +163,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetUniqueQualifier_trim() {
-        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
-                " " + MY_UNIQUE_QUALIFIER + " ");
+        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE))
+                .thenReturn(" " + MY_UNIQUE_QUALIFIER + " ");
 
         String uniqueQualifier = ipsBundleManifest.getUniqueQualifier();
 
@@ -165,8 +180,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetUniqueQualifier_forObjectDirTrim() {
-        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE)).thenReturn(
-                " " + MY_UNIQUE_QUALIFIER2 + " ");
+        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE))
+                .thenReturn(" " + MY_UNIQUE_QUALIFIER2 + " ");
 
         String uniqueQualifier = ipsBundleManifest.getUniqueQualifier(MY_OBJECT_DIR);
 
@@ -205,8 +220,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetSourcecodeOutput_objectDirAndTrim() {
-        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(
-                MY_SRC_OUT2 + " ");
+        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_SRC_OUT))
+                .thenReturn(MY_SRC_OUT2 + " ");
 
         String srcOutput = ipsBundleManifest.getSourcecodeOutput(MY_OBJECT_DIR);
 
@@ -229,8 +244,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetResourceOutput_trim() {
-        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(
-                MY_RESOURCE_OUT + " ");
+        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_RESOURCE_OUT))
+                .thenReturn(MY_RESOURCE_OUT + " ");
 
         String srcOutput = ipsBundleManifest.getResourceOutput();
 
@@ -246,8 +261,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetResourceOutput_forObjectDirTrim() {
-        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(
-                MY_RESOURCE_OUT2 + " ");
+        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_RESOURCE_OUT))
+                .thenReturn(MY_RESOURCE_OUT2 + " ");
 
         String srcOutput = ipsBundleManifest.getResourceOutput(MY_OBJECT_DIR);
 
@@ -329,6 +344,35 @@ public class IpsBundleManifestTest {
         String messages = ipsBundleManifest.getValidationMessagesBundle(objectDirElement);
 
         assertEquals(MY_MESSAGES, messages);
+    }
+
+    @Test
+    public void testGetGeneratorConfig_ConfiguredBuilderSet() {
+        Map<String, String> generatorConfig = ipsBundleManifest.getGeneratorConfig(STANDARD_BUILDER_SET_ID);
+
+        assertThat(generatorConfig, is(notNullValue()));
+        assertThat(generatorConfig.get(IpsProjectProperties.ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION),
+                is(IChangesOverTimeNamingConvention.FAKTOR_IPS));
+        assertThat(generatorConfig.get(ATTRIBUTE_GENERATE_PUBLISHED_INTERFACES), is(TRUE));
+    }
+
+    @Test
+    public void testGetGeneratorConfig_ConfiguredBuilderSet_caseInsensitive() {
+        Map<String, String> generatorConfig = ipsBundleManifest
+                .getGeneratorConfig(STANDARD_BUILDER_SET_ID.toLowerCase());
+
+        assertThat(generatorConfig, is(notNullValue()));
+        assertThat(generatorConfig.get(IpsProjectProperties.ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION),
+                is(IChangesOverTimeNamingConvention.FAKTOR_IPS));
+        assertThat(generatorConfig.get(ATTRIBUTE_GENERATE_PUBLISHED_INTERFACES), is(TRUE));
+    }
+
+    @Test
+    public void testGetGeneratorConfig_UnknownBuilderSet() {
+        Map<String, String> generatorConfig = ipsBundleManifest.getGeneratorConfig("FooBar");
+
+        assertThat(generatorConfig, is(notNullValue()));
+        assertThat(generatorConfig.isEmpty(), is(true));
     }
 
 }

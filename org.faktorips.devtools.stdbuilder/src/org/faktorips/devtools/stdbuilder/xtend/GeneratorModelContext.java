@@ -15,20 +15,29 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.AbstractIpsBundle;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.AnnotationGeneratorBuilder;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
@@ -38,6 +47,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xmodel.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
+import org.w3c.dom.Element;
 
 /**
  * This class holds all the context information needed to generate the java code with our XPAND
@@ -86,14 +96,41 @@ public class GeneratorModelContext {
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
         baseGeneratorConfig = new GeneratorConfig(config, ipsProject);
         for (IIpsPackageFragmentRoot packageFragmentRoot : ipsProject.getIpsPackageFragmentRoots()) {
-            IIpsProject rootIpsProject = packageFragmentRoot.getIpsProject();
-            if (ipsProject.equals(rootIpsProject)) {
-                generatorConfigs.put(packageFragmentRoot, baseGeneratorConfig);
+            IIpsStorage ipsStorage = packageFragmentRoot.getIpsStorage();
+            if (ipsStorage instanceof AbstractIpsBundle) {
+                generatorConfigs.put(packageFragmentRoot, createConfigWithOverrides(packageFragmentRoot, ipsStorage));
             } else {
-                GeneratorModelContext generatorModelContext = GeneratorModelContext.forElement(rootIpsProject);
-                GeneratorConfig generatorConfig = generatorModelContext.getGeneratorConfig(packageFragmentRoot);
-                generatorConfigs.put(packageFragmentRoot, generatorConfig);
+                generatorConfigs.put(packageFragmentRoot, baseGeneratorConfig);
             }
+        }
+    }
+
+    private GeneratorConfig createConfigWithOverrides(IIpsPackageFragmentRoot packageFragmentRoot,
+            IIpsStorage ipsStorage) {
+        IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel = clone(properties.getBuilderSetConfig());
+        overwriteProperties(ipsArtefactBuilderSetConfigModel, properties, ipsStorage);
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
+                .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
+        IIpsArtefactBuilderSetConfig config = ipsArtefactBuilderSetConfigModel.create(ipsProject, builderSetInfo);
+        return new GeneratorConfig(config, ipsProject);
+    }
+
+    private IpsArtefactBuilderSetConfigModel clone(IIpsArtefactBuilderSetConfigModel builderSetConfig) {
+        Element xml = builderSetConfig.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        IpsArtefactBuilderSetConfigModel clone = new IpsArtefactBuilderSetConfigModel();
+        clone.initFromXml(xml);
+        return clone;
+    }
+
+    private void overwriteProperties(IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel,
+            IIpsProjectProperties properties,
+            IIpsStorage ipsStorage) {
+        IpsBundleManifest bundleManifest = ((AbstractIpsBundle)ipsStorage).getBundleManifest();
+        Map<String, String> generatorConfig = bundleManifest.getGeneratorConfig(properties.getBuilderSetId());
+        for (Entry<String, String> entry : generatorConfig.entrySet()) {
+            ipsArtefactBuilderSetConfigModel.setPropertyValue(entry.getKey(), entry.getValue(), null);
         }
     }
 
