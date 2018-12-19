@@ -9,20 +9,23 @@
  *******************************************************************************/
 package org.faktorips.runtime.model.type.read;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.faktorips.runtime.model.type.PolicyAssociation;
 import org.faktorips.runtime.model.type.Type;
 
-public class PolicyAssociationCollector extends
-AssociationCollector<PolicyAssociation, PolicyAssociationCollector.PolicyAssociationDescriptor> {
+public class PolicyAssociationCollector
+        extends AssociationCollector<PolicyAssociation, PolicyAssociationCollector.PolicyAssociationDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
     public PolicyAssociationCollector() {
-        super(
-                Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(new IpsAssociationProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>()));
+        super(Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(
+                new IpsAssociationProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
+                new IpsAssociationAdderProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
+                new IpsAssociationRemoverProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>()));
     }
 
     @Override
@@ -32,11 +35,21 @@ AssociationCollector<PolicyAssociation, PolicyAssociationCollector.PolicyAssocia
 
     static class PolicyAssociationDescriptor extends AbstractAssociationDescriptor<PolicyAssociation> {
 
+        private Method addMethod;
+        private Method removeMethod;
+
         @Override
         public PolicyAssociation createValid(Type type) {
-            return new PolicyAssociation(type, getAnnotatedElement());
+            return new PolicyAssociation(type, getAnnotatedElement(), addMethod, removeMethod);
         }
 
+        public void setAddMethod(Method adderMethod) {
+            this.addMethod = adderMethod;
+        }
+
+        public void setRemoveMethod(Method removeMethod) {
+            this.removeMethod = removeMethod;
+        }
     }
 
 }

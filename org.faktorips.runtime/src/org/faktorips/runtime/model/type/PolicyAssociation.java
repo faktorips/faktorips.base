@@ -20,8 +20,22 @@ import org.faktorips.runtime.IModelObject;
  */
 public class PolicyAssociation extends Association {
 
-    public PolicyAssociation(Type type, Method getterMethod) {
+    private final Method addMethod;
+    private final Method removeMethod;
+
+    /**
+     * 
+     * @param type the type the association belongs to
+     * @param getterMethod the getter method for retrieving all associated instances
+     * @param addMethod the method for associating new instances (add-method for ..N associations,
+     *            set-method for ..1 associations)
+     * @param removeMethod the method for removing instances from the association (<code>null</code>
+     *            in case of a ..1 association, as no method is generated)
+     */
+    public PolicyAssociation(Type type, Method getterMethod, Method addMethod, Method removeMethod) {
         super(type, getterMethod);
+        this.addMethod = addMethod;
+        this.removeMethod = removeMethod;
     }
 
     /**
@@ -45,7 +59,7 @@ public class PolicyAssociation extends Association {
 
     @Override
     public PolicyAssociation createOverwritingAssociationFor(Type subType) {
-        return new PolicyAssociation(subType, getGetterMethod());
+        return new PolicyAssociation(subType, getGetterMethod(), addMethod, removeMethod);
     }
 
     /**
@@ -89,4 +103,48 @@ public class PolicyAssociation extends Association {
         return targets;
     }
 
+    /**
+     * Adds the target object to this association in the source object. If this is a ..1 ("to one")
+     * association, the target object is set (and thus the potentially existing object is
+     * overwritten).
+     * 
+     * @param source the object to add a target object to
+     * @param target the object to add to source
+     * @return the changed source object
+     */
+    public <S extends IModelObject> S addTargetObject(S source, IModelObject target) {
+        invokeMethod(addMethod, source, target);
+        return source;
+    }
+
+    /**
+     * Removes the target object from this association in the source object. Does nothing if the
+     * target object is not currently referenced (in this association). Sets to <code>null</code> if
+     * this is a ..1 ("to one") association.
+     * 
+     * @param source the object to remove a target object from
+     * @param targetToRemove the object to remove from this association in source
+     * @return the changed source object
+     */
+    public <S extends IModelObject> S removeTargetObject(S source, IModelObject targetToRemove) {
+        if (getMaxCardinality() == 1) {
+            resetTargetObject(source, targetToRemove);
+        } else {
+            invokeMethod(removeMethod, source, targetToRemove);
+        }
+        return source;
+    }
+
+    /**
+     * ..1 associations have no remove method. Call set(null) instead. Does nothing if the currently
+     * associated object is not equal to targetToReset.
+     * 
+     * Uses getTargetObjects().contains() to check whether the single instance is the one that
+     * should be removed.
+     */
+    private <S extends IModelObject> void resetTargetObject(S source, IModelObject targetToReset) {
+        if (getTargetObjects(source).contains(targetToReset)) {
+            addTargetObject(source, null);
+        }
+    }
 }

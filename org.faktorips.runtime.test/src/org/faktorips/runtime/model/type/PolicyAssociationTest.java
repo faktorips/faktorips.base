@@ -5,9 +5,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +21,8 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
+import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
@@ -34,6 +38,7 @@ public class PolicyAssociationTest {
     private final PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(Source.class);
     private final PolicyAssociation association = policyCmptType.getAssociation("asso");
     private final PolicyAssociation association2 = policyCmptType.getAssociation("asso2");
+    private final PolicyAssociation association1ToN = policyCmptType.getAssociation("targets1toN");
 
     @Test
     public void testGetTarget() {
@@ -124,12 +129,91 @@ public class PolicyAssociationTest {
         assertEquals(Product.class, association2.getMatchingAssociationSourceType().getJavaClass());
     }
 
+    @Test
+    public void testAddTargetObject_to1_association() {
+        Source source = new Source();
+        Target target = new Target();
+
+        association.addTargetObject(source, target);
+        assertSame(target, source.getTarget());
+    }
+
+    @Test
+    public void testAddTargetObject_to1_replaceAssociatedObject() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+
+        association.addTargetObject(source, target);
+        assertSame(target, source.getTarget());
+        association.addTargetObject(source, target2);
+        assertSame(target2, source.getTarget());
+    }
+
+    @Test
+    public void testAddTargetObject_toN_Composition() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+
+        association1ToN.addTargetObject(source, target);
+        assertEquals(1, source.getTargets1toN().size());
+        association1ToN.addTargetObject(source, target2);
+        assertEquals(2, source.getTargets1toN().size());
+    }
+
+    @Test
+    public void testAddRemoveObject_to1_association() {
+        Source source = new Source();
+        Target target = new Target();
+        source.setTarget(target);
+
+        association.removeTargetObject(source, target);
+        assertNull(source.getTarget());
+    }
+
+    @Test
+    public void testAddRemoveObject_to1_doNothingIfDifferentObject() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+        source.setTarget(target);
+
+        association.removeTargetObject(source, target2);
+        assertSame(target, source.getTarget());
+    }
+
+    @Test
+    public void testAddRemoveObject_toN_composition() {
+        Source source = new Source();
+        Target target = new Target();
+        source.addTargets1toN(target);
+
+        assertEquals(1, source.getTargets1toN().size());
+        association1ToN.removeTargetObject(source, target);
+        assertEquals(0, source.getTargets1toN().size());
+        association1ToN.removeTargetObject(source, target);
+        assertEquals(0, source.getTargets1toN().size());
+    }
+
+    @Test
+    public void testAddRemoveObject_toN_doNothingIfNotPresent() {
+        Source source = new Source();
+        Target target = new Target();
+        source.addTargets1toN(target);
+        Target target2 = new Target();
+
+        association1ToN.removeTargetObject(source, target2);
+        assertSame(target, source.getTargets1toN().get(0));
+    }
+
     @IpsPolicyCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2" })
+    @IpsAssociations({ "asso", "asso2", "targets1toN" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Source implements IModelObject {
 
         private Target target;
+        private final List<Target> targets1toN = new ArrayList<PolicyAssociationTest.Target>();
 
         @Override
         public MessageList validate(IValidationContext context) {
@@ -143,11 +227,31 @@ public class PolicyAssociationTest {
             return target;
         }
 
+        @IpsAssociationAdder(association = "asso")
+        public void setTarget(Target objectToAdd) {
+            target = objectToAdd;
+        }
+
         @IpsAssociation(name = "asso2", pluralName = "assos2", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
         @IpsMatchingAssociation(source = Product.class, name = "Matching")
         @IpsInverseAssociation("Inverse")
         public List<Target> getTargets() {
             return Arrays.asList(target);
+        }
+
+        @IpsAssociation(name = "targets1toN", pluralName = "targets", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
+        public List<Target> getTargets1toN() {
+            return targets1toN;
+        }
+
+        @IpsAssociationAdder(association = "targets1toN")
+        public void addTargets1toN(Target objectToAdd) {
+            targets1toN.add(objectToAdd);
+        }
+
+        @IpsAssociationRemover(association = "targets1toN")
+        public void removeTargets1toN(Target objectToRemove) {
+            targets1toN.remove(objectToRemove);
         }
 
     }

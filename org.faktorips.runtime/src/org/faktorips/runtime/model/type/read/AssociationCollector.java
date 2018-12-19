@@ -17,8 +17,11 @@ import java.util.List;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
+import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.type.Association;
+import org.faktorips.runtime.model.type.read.PolicyAssociationCollector.PolicyAssociationDescriptor;
 
 public abstract class AssociationCollector<T extends Association, D extends AbstractAssociationDescriptor<T>>
         extends TypePartCollector<T, D> {
@@ -61,6 +64,48 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
                 AnnotatedDeclaration annotatedDeclaration,
                 AnnotatedElement annotatedElement) {
             descriptor.setAnnotatedElement((Method)annotatedElement);
+        }
+
+    }
+
+    static class IpsAssociationAdderProcessor<D extends PolicyAssociationCollector.PolicyAssociationDescriptor>
+            extends AnnotationProcessor<IpsAssociationAdder, D> {
+
+        public IpsAssociationAdderProcessor() {
+            super(IpsAssociationAdder.class);
+        }
+
+        @Override
+        public String getName(IpsAssociationAdder annotation) {
+            return annotation.association();
+        }
+
+        @Override
+        public void process(PolicyAssociationDescriptor descriptor,
+                AnnotatedDeclaration annotatedDeclaration,
+                AnnotatedElement annotatedElement) {
+            descriptor.setAddMethod((Method)annotatedElement);
+        }
+
+    }
+
+    static class IpsAssociationRemoverProcessor<D extends PolicyAssociationCollector.PolicyAssociationDescriptor>
+            extends AnnotationProcessor<IpsAssociationRemover, D> {
+
+        public IpsAssociationRemoverProcessor() {
+            super(IpsAssociationRemover.class);
+        }
+
+        @Override
+        public String getName(IpsAssociationRemover annotation) {
+            return annotation.association();
+        }
+
+        @Override
+        public void process(PolicyAssociationDescriptor descriptor,
+                AnnotatedDeclaration annotatedDeclaration,
+                AnnotatedElement annotatedElement) {
+            descriptor.setRemoveMethod((Method)annotatedElement);
         }
 
     }
