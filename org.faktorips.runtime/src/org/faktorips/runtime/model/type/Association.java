@@ -33,8 +33,8 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
     private final Method getter;
 
     public Association(Type type, Method getterMethod) {
-        super(getAssociationAnnotation(getterMethod).name(), type, getterMethod
-                .getAnnotation(IpsExtensionProperties.class));
+        super(getAssociationAnnotation(getterMethod).name(), type,
+                getterMethod.getAnnotation(IpsExtensionProperties.class));
         this.annotation = getAssociationAnnotation(getterMethod);
         getter = getterMethod;
     }
@@ -285,6 +285,15 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
         }
         sb.append(')');
         return sb.toString();
+    }
+
+    /**
+     * Determines whether this association is a ..1 ("to one") association.
+     * 
+     * @return <code>true</code> if this is a ..1 association, <code>false</code> else.
+     */
+    protected boolean isToOneAssociation() {
+        return getMaxCardinality() == 1;
     }
 
 }

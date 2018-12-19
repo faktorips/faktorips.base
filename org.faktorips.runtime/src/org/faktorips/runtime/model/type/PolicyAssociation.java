@@ -127,7 +127,7 @@ public class PolicyAssociation extends Association {
      * @return the changed source object
      */
     public <S extends IModelObject> S removeTargetObject(S source, IModelObject targetToRemove) {
-        if (getMaxCardinality() == 1) {
+        if (isToOneAssociation()) {
             resetTargetObject(source, targetToRemove);
         } else {
             invokeMethod(removeMethod, source, targetToRemove);
