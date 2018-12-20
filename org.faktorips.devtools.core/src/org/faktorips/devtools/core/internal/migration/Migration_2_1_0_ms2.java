@@ -67,9 +67,9 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
             String changesInTimeNamingConventionValue = getIpsProject()
                     .getChangesInTimeNamingConventionForGeneratedCode().getId();
             String docLanguageValue = "en"; //$NON-NLS-1$
-            NodeList GeneratedSourcecodeNl = doc.getElementsByTagName("GeneratedSourcecode"); //$NON-NLS-1$
-            if (GeneratedSourcecodeNl.getLength() > 0) {
-                Element generatedSourcecodeEl = (Element)GeneratedSourcecodeNl.item(0);
+            NodeList generatedSourcecodeNl = doc.getElementsByTagName("GeneratedSourcecode"); //$NON-NLS-1$
+            if (generatedSourcecodeNl.getLength() > 0) {
+                Element generatedSourcecodeEl = (Element)generatedSourcecodeNl.item(0);
                 changesInTimeNamingConventionValue = generatedSourcecodeEl
                         .getAttribute("changesInTimeNamingConvention"); //$NON-NLS-1$
                 docLanguageValue = generatedSourcecodeEl.getAttribute("docLanguage"); //$NON-NLS-1$
