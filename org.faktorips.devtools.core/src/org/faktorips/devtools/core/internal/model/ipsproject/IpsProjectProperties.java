@@ -77,6 +77,8 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    public static final String ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION = "changesInTimeNamingConvention"; //$NON-NLS-1$
+
     public static final String TAG_NAME = "IpsProject"; //$NON-NLS-1$
 
     private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
@@ -510,7 +512,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
-        projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
+        projectEl.setAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION, changesInTimeConventionIdForGeneratedCode);
         projectEl.setAttribute(ATTRIBUTE_PERSISTENT_PROJECT, Boolean.toString(persistentProject));
 
         // required features
@@ -745,7 +747,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         persistentProject = Boolean.valueOf(element.getAttribute(ATTRIBUTE_PERSISTENT_PROJECT)).booleanValue();
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
-        changesInTimeConventionIdForGeneratedCode = element.getAttribute("changesInTimeNamingConvention"); //$NON-NLS-1$
+        changesInTimeConventionIdForGeneratedCode = element.getAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
         changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)
                 ? IChangesOverTimeNamingConvention.VAA : changesInTimeConventionIdForGeneratedCode;
 
@@ -1198,7 +1200,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    changesInTimeNamingConvention                      Specifies the naming conventions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    " + ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION + "                      Specifies the naming conventions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "                                                       are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <IpsObjectPath/>                                   The object path to search for model and product definition" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1302,7 +1304,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
-    
+
     // @formatter:off
     private void createRequiredIpsFeaturesComment(Node parentEl) {
         String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
@@ -1336,7 +1338,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
-    
+
     private void createProductReleaseComment(Element parentEl) {
         String s = "Product Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
@@ -1370,7 +1372,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
-    
+
     private void createAdditionalSettingsDescriptionComment(Node parentEl) {
         // @formatter:off
         String s = ADDITIONAL_SETTINGS_TAG_NAME + SystemUtils.LINE_SEPARATOR
@@ -1451,7 +1453,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
-    
+
     // @formatter:off
     private void createSupportedLanguagesDescriptionComment(Node parentEl) {
         String s = "Supported Languages" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1472,7 +1474,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
-    
+
     private void createDescriptionComment(String text, Node parent) {
         createDescriptionComment(text, parent, "        "); //$NON-NLS-1$
     }

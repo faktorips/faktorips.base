@@ -34,7 +34,7 @@ public class XProductCmptGenerationClass extends XProductClass {
     public XProductCmptGenerationClass(IProductCmptType productCmptType, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(productCmptType, modelContext, modelService);
-        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(isGeneratePublishedInterfaces(),
+        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()),
                 getLanguageUsedInGeneratedSourceCode());
     }
 

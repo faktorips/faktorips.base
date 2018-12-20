@@ -20,13 +20,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
-import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -44,6 +42,9 @@ public class XAssociationTest {
     private GeneratorModelContext modelContext;
 
     @Mock
+    private GeneratorConfig generatorConfig;
+
+    @Mock
     private ModelService modelService;
 
     @Mock
@@ -57,6 +58,7 @@ public class XAssociationTest {
 
     @Before
     public void initMocks() {
+        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
         when(association.getTargetRoleSingular()).thenReturn("singular");
         when(association.getTargetRolePlural()).thenReturn("plural");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
@@ -148,7 +150,7 @@ public class XAssociationTest {
     @Test
     public void testGetTargetInterfaceName() throws Exception {
         initMocksForGetNameTests();
-        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(true);
+        when(generatorConfig.isGeneratePublishedInterfaces(xAssociation.getIpsProject())).thenReturn(true);
 
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
@@ -157,7 +159,7 @@ public class XAssociationTest {
     @Test
     public void testGetTargetInterfaceName_differingPublishedInterfaceSettings() throws Exception {
         initMocksForGetNameTests();
-        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(false);
+        when(generatorConfig.isGeneratePublishedInterfaces(xAssociation.getIpsProject())).thenReturn(false);
 
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
@@ -176,9 +178,11 @@ public class XAssociationTest {
         when(xAssociation.isConstrain()).thenReturn(true);
         when(xAssociation.getConstrainedAssociation()).thenReturn(xConstrainedAssociation);
 
-        doReturn(false).when(xSuperProductCmptClass).isGeneratePublishedInterfaces();
-        doReturn(false).when(xProductCmptClass).isGeneratePublishedInterfaces();
-        doReturn(false).when(xAssociation).isGeneratePublishedInterfaces();
+        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
+
+        doReturn(generatorConfig).when(xSuperProductCmptClass).getGeneratorConfig();
+        doReturn(generatorConfig).when(xProductCmptClass).getGeneratorConfig();
+        doReturn(generatorConfig).when(xAssociation).getGeneratorConfig();
 
         String targetClassName = xAssociation.getTargetInterfaceNameBase();
         assertEquals("ITargetSuperType", targetClassName);
@@ -188,7 +192,7 @@ public class XAssociationTest {
     public void testGetTargetInterfaceNameBase_differingPublishedInterfaceSettings() throws Exception {
         initMocksForGetNameTests();
         when(xAssociation.isConstrain()).thenReturn(false);
-        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(false);
+        when(generatorConfig.isGeneratePublishedInterfaces(xAssociation.getIpsProject())).thenReturn(false);
 
         String targetClassName = xAssociation.getTargetInterfaceNameBase();
         assertEquals("ITargetType", targetClassName);
@@ -198,7 +202,9 @@ public class XAssociationTest {
         XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class, CALLS_REAL_METHODS);
         doReturn(xProductCmptClass).when(xAssociation).getTargetModelNode();
 
-        doReturn(true).when(xProductCmptClass).isGeneratePublishedInterfaces();
+        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
+        doReturn(generatorConfig).when(xProductCmptClass).getGeneratorConfig();
+
         doReturn("ITargetType").when(xProductCmptClass).getPublishedInterfaceName();
         doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType(false);
         return xProductCmptClass;
@@ -259,8 +265,8 @@ public class XAssociationTest {
     public void testGetSubsettedDerivedUnion_subsetFound() throws Exception {
         IAssociation derivedUnion = mock(IAssociation.class);
         XDerivedUnionAssociation xDerivedUnion = mock(XDerivedUnionAssociation.class);
-        when(modelService.getModelNode(derivedUnion, XDerivedUnionAssociation.class, modelContext)).thenReturn(
-                xDerivedUnion);
+        when(modelService.getModelNode(derivedUnion, XDerivedUnionAssociation.class, modelContext))
+                .thenReturn(xDerivedUnion);
 
         when(association.isSubsetOfADerivedUnion()).thenReturn(true);
         when(association.findSubsettedDerivedUnion(any(IIpsProject.class))).thenReturn(derivedUnion);

@@ -79,4 +79,12 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
                 is(instanceOf(org.faktorips.codegen.dthelpers.java8.MonthDayHelper.class)));
     }
 
+    @Test
+    public void testGetConfig_AllowsAccessToProjectSettingForNamingConvention() {
+        assertThat(
+                builderSet.getConfig().getPropertyValueAsString(
+                        StandardBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION),
+                is(ipsProject.getProperties().getChangesOverTimeNamingConventionIdForGeneratedCode()));
+    }
+
 }

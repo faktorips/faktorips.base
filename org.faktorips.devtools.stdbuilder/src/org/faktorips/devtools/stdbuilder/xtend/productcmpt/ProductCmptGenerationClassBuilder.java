@@ -33,7 +33,7 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
         super(interfaceBuilder, builderSet, modelContext, modelService,
                 new LocalizedStringsSet(ProductCmptGenerationClassBuilder.class));
         javaClassNameProvider = XProductCmptGenerationClass.createProductCmptGenJavaClassNaming(
-                modelContext.isGeneratePublishedInterfaces(builderSet.getIpsProject()),
+                modelContext.getBaseGeneratorConfig().isGeneratePublishedInterfaces(builderSet.getIpsProject()),
                 getLanguageUsedInGeneratedSourceCode());
     }
 

@@ -53,7 +53,7 @@ public class IpsBundleEntry extends IpsLibraryEntry {
 
     private IIpsStorage ipsBundle;
 
-    private IpsStrorageFactory ipsStrorageFactory;
+    private IpsStorageFactory ipsStorageFactory;
 
     /**
      * This constructor creates a new {@link IpsBundleEntry} for the given {@link IpsObjectPath}.
@@ -64,11 +64,11 @@ public class IpsBundleEntry extends IpsLibraryEntry {
      */
     public IpsBundleEntry(IpsObjectPath ipsObjectPath) {
         super(ipsObjectPath);
-        ipsStrorageFactory = new IpsStrorageFactory();
+        ipsStorageFactory = new IpsStorageFactory();
     }
 
-    protected void setIpsStorageFactory(IpsStrorageFactory ipsStrorageFactory) {
-        this.ipsStrorageFactory = ipsStrorageFactory;
+    protected void setIpsStorageFactory(IpsStorageFactory ipsStorageFactory) {
+        this.ipsStorageFactory = ipsStorageFactory;
     }
 
     @Override
@@ -84,14 +84,14 @@ public class IpsBundleEntry extends IpsLibraryEntry {
 
     private void initFolderBundle(IPath bundlePath) throws IOException {
         IpsFolderBundle ipsFolderBundle;
-        ipsFolderBundle = ipsStrorageFactory.createFolderBundle(getIpsProject(), bundlePath);
+        ipsFolderBundle = ipsStorageFactory.createFolderBundle(getIpsProject(), bundlePath);
         ipsFolderBundle.initBundle();
         ipsBundle = ipsFolderBundle;
     }
 
     private void initJarBundle(IPath bundlePath) throws IOException {
         JarFileFactory jarFileFactory = new JarFileFactory(bundlePath);
-        IpsJarBundle ipsJarBundle = ipsStrorageFactory.createJarBundle(getIpsProject(), jarFileFactory);
+        IpsJarBundle ipsJarBundle = ipsStorageFactory.createJarBundle(getIpsProject(), jarFileFactory);
         ipsJarBundle.initBundle();
         ipsBundle = ipsJarBundle;
     }
@@ -155,7 +155,12 @@ public class IpsBundleEntry extends IpsLibraryEntry {
         return getIpsStorage().getLocation();
     }
 
-    protected class IpsStrorageFactory {
+    @Override
+    public String toString() {
+        return "BundleEntry[" + getXmlPathRepresentation() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    protected class IpsStorageFactory {
 
         public IpsFolderBundle createFolderBundle(IIpsProject ipsProject, IPath bundlePath) {
             return new IpsFolderBundle(ipsProject, bundlePath);

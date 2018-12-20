@@ -90,7 +90,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
         return getBasePackageNameForMergableArtefacts(qnt);
     }
 
-    protected IpsBundleManifest getBundleManifest() {
+    public IpsBundleManifest getBundleManifest() {
         return bundleManifest;
     }
 

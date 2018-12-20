@@ -10,10 +10,14 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBuilderSetPropertyDef;
+import org.faktorips.devtools.core.internal.model.ipsproject.Messages;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
 
 /**
  * An implementation of the {@link IIpsBuilderSetPropertyDef} interface specific for Java 5
@@ -54,5 +58,18 @@ public class Java5BuilderSetPropertiesDef extends IpsBuilderSetPropertyDef {
     @Override
     public String getType() {
         return "boolean";
+    }
+
+    @Override
+    public Message validateValue(IIpsProject ipsProject, String value) {
+        Message validationMessage = super.validateValue(ipsProject, value);
+        if (validationMessage == null && !isAvailable(ipsProject)
+                && (getDisableValue(ipsProject) != null && getDisableValue(ipsProject).equals(value))) {
+            validationMessage = new Message(IIpsArtefactBuilderSetInfo.MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE,
+                    NLS.bind(Messages.IpsArtefactBuilderSetInfo_propertyInompatibleJDK, getName(),
+                            ipsProject.getIpsArtefactBuilderSet().getId()),
+                    Message.ERROR);
+        }
+        return validationMessage;
     }
 }

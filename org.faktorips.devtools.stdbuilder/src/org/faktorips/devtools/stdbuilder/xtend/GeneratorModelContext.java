@@ -14,30 +14,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.builder.AbstractBuilderSet;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.AbstractIpsBundle;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.AnnotationGeneratorBuilder;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xmodel.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
-import org.faktorips.runtime.internal.AbstractJaxbModelObject;
-import org.faktorips.runtime.internal.AbstractModelObject;
-import org.faktorips.runtime.internal.ProductComponent;
+import org.w3c.dom.Element;
 
 /**
  * This class holds all the context information needed to generate the java code with our XPAND
@@ -47,9 +57,6 @@ import org.faktorips.runtime.internal.ProductComponent;
  * The import handler for a single file build is also stored in this context and need to be reseted
  * for every new file. In fact this is not the optimum but ok for the moment. To be thread safe the
  * import handler is stored as {@link ThreadLocal} variable.
- * 
- * 
- * @author widmaier
  */
 public class GeneratorModelContext {
 
@@ -67,13 +74,13 @@ public class GeneratorModelContext {
 
     private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>>();
 
-    private final IIpsArtefactBuilderSetConfig config;
-
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
 
     private final IJavaPackageStructure javaPackageStructure;
 
-    private final IIpsProject ipsProject;
+    private final Map<IIpsPackageFragmentRoot, GeneratorConfig> generatorConfigs = new HashMap<IIpsPackageFragmentRoot, GeneratorConfig>();
+
+    private final GeneratorConfig baseGeneratorConfig;
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
             IIpsProject ipsProject) {
@@ -84,11 +91,100 @@ public class GeneratorModelContext {
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap, IIpsProject ipsProject) {
-        this.config = config;
         this.javaPackageStructure = javaPackageStructure;
         this.annotationGeneratorMap = annotationGeneratorMap;
-        this.ipsProject = ipsProject;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
+        baseGeneratorConfig = new GeneratorConfig(config, ipsProject);
+        for (IIpsPackageFragmentRoot packageFragmentRoot : ipsProject.getIpsPackageFragmentRoots()) {
+            IIpsStorage ipsStorage = packageFragmentRoot.getIpsStorage();
+            if (ipsStorage instanceof AbstractIpsBundle) {
+                generatorConfigs.put(packageFragmentRoot, createConfigWithOverrides(packageFragmentRoot, ipsStorage));
+            } else {
+                generatorConfigs.put(packageFragmentRoot, baseGeneratorConfig);
+            }
+        }
+    }
+
+    private GeneratorConfig createConfigWithOverrides(IIpsPackageFragmentRoot packageFragmentRoot,
+            IIpsStorage ipsStorage) {
+        IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel = clone(properties.getBuilderSetConfig());
+        overwriteProperties(ipsArtefactBuilderSetConfigModel, properties, ipsStorage);
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
+                .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
+        IIpsArtefactBuilderSetConfig config = ipsArtefactBuilderSetConfigModel.create(ipsProject, builderSetInfo);
+        return new GeneratorConfig(config, ipsProject);
+    }
+
+    private IpsArtefactBuilderSetConfigModel clone(IIpsArtefactBuilderSetConfigModel builderSetConfig) {
+        Element xml = builderSetConfig.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        IpsArtefactBuilderSetConfigModel clone = new IpsArtefactBuilderSetConfigModel();
+        clone.initFromXml(xml);
+        return clone;
+    }
+
+    private void overwriteProperties(IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel,
+            IIpsProjectProperties properties,
+            IIpsStorage ipsStorage) {
+        IpsBundleManifest bundleManifest = ((AbstractIpsBundle)ipsStorage).getBundleManifest();
+        Map<String, String> generatorConfig = bundleManifest.getGeneratorConfig(properties.getBuilderSetId());
+        for (Entry<String, String> entry : generatorConfig.entrySet()) {
+            ipsArtefactBuilderSetConfigModel.setPropertyValue(entry.getKey(), entry.getValue(), null);
+        }
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} to be used when generating code for the given
+     * {@link IIpsObject}. The {@link GeneratorConfig} is specific to the
+     * {@link IIpsPackageFragmentRoot} the {@link IIpsObject} is contained in.
+     * <p>
+     * If the {@link IIpsPackageFragmentRoot} is not known to this {@link IIpsArtefactBuilderSet},
+     * the {@link #getBaseGeneratorConfig()} for this {@link IIpsProject} is returned.
+     */
+    public GeneratorConfig getGeneratorConfig(IIpsObject ipsObject) {
+        return getGeneratorConfig(ipsObject.getIpsPackageFragment());
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} to be used when generating code for the
+     * {@link IIpsObject} contained in the given {@link IIpsSrcFile}. The {@link GeneratorConfig} is
+     * specific to the {@link IIpsPackageFragmentRoot} the {@link IIpsSrcFile} is contained in.
+     * <p>
+     * If the {@link IIpsPackageFragmentRoot} is not known to this {@link IIpsArtefactBuilderSet},
+     * the {@link #getBaseGeneratorConfig()} for this {@link IIpsProject} is returned.
+     */
+    public GeneratorConfig getGeneratorConfig(IIpsSrcFile ipsSrcFile) {
+        return getGeneratorConfig(ipsSrcFile.getIpsPackageFragment());
+    }
+
+    private GeneratorConfig getGeneratorConfig(IIpsPackageFragment packageFragment) {
+        return getGeneratorConfig(packageFragment.getRoot());
+    }
+
+    private GeneratorConfig getGeneratorConfig(IIpsPackageFragmentRoot packageFragmentRoot) {
+        GeneratorConfig generatorConfig = generatorConfigs.get(packageFragmentRoot);
+        return generatorConfig != null ? generatorConfig : getBaseGeneratorConfig();
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} for objects directly contained in the {@link IIpsProject}
+     * this {@link GeneratorModelContext} was created with. {@link GeneratorConfig GeneratorConfigs}
+     * for {@link IIpsObject IIpsObjects} contained in other {@link IIpsPackageFragmentRoot
+     * IIpsPackageFragmentRoots} should be retrieved via {@link #getGeneratorConfig(IIpsObject)}.
+     */
+    public GeneratorConfig getBaseGeneratorConfig() {
+        return baseGeneratorConfig;
+    }
+
+    /**
+     * Returns the {@link GeneratorModelContext} from the {@link StandardBuilderSet} associated with
+     * the element's {@link IIpsProject}.
+     */
+    public static GeneratorModelContext forElement(IIpsElement element) {
+        IIpsProject ipsProject = element.getIpsProject();
+        IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
+        return ((StandardBuilderSet)builderSet).getGeneratorModelContext();
     }
 
     /**
@@ -102,10 +198,6 @@ public class GeneratorModelContext {
         importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
         generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
         generatedJavaElements.set(new LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>());
-    }
-
-    IIpsArtefactBuilderSetConfig getConfig() {
-        return config;
     }
 
     /**
@@ -221,14 +313,6 @@ public class GeneratorModelContext {
         return list;
     }
 
-    public Locale getLanguageUsedInGeneratedSourceCode() {
-        String localeString = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATOR_LOCALE);
-        if (localeString == null) {
-            return Locale.ENGLISH;
-        }
-        return AbstractBuilderSet.getLocale(localeString);
-    }
-
     /**
      * Returns the list of annotation generators for the given type. This method never returns null.
      * If there is no annotation generator for the specified type an empty list will be returned.
@@ -253,134 +337,6 @@ public class GeneratorModelContext {
         String baseName = javaPackageStructure.getBasePackageName(entry, true, false) + "."
                 + entry.getValidationMessagesBundle();
         return baseName;
-    }
-
-    public boolean isGenerateChangeSupport() {
-        return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
-                .booleanValue();
-    }
-
-    public FormulaCompiling getFormulaCompiling() {
-        String kind = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_FORMULA_COMPILING);
-        try {
-            return FormulaCompiling.valueOf(kind);
-            // CSOFF: IllegalCatch
-        } catch (Exception e) {
-            // CSON: IllegalCatch
-            // if value is not set correctly we use Both as default value
-            return FormulaCompiling.Both;
-        }
-    }
-
-    /**
-     * Returns whether to generate camel case constant names with underscore separator or without.
-     * For example if this property is true, the constant for the property
-     * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
-     * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
-     * 
-     * @see StandardBuilderSet#CONFIG_PROPERTY_CAMELCASE_SEPARATED
-     */
-    public boolean isGenerateSeparatedCamelCase() {
-        Boolean propertyValueAsBoolean = getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
-    }
-
-    public boolean isGenerateDeltaSupport() {
-        Boolean propertyValueAsBoolean = getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
-    }
-
-    public boolean isGenerateCopySupport() {
-        Boolean propertyValueAsBoolean = getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
-    }
-
-    public boolean isGenerateVisitorSupport() {
-        Boolean propertyValueAsBoolean = getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
-    }
-
-    public boolean isGenerateToXmlSupport() {
-        Boolean propertyValueAsBoolean = getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_TO_XML_SUPPORT);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
-    }
-
-    /**
-     * Returns <code>true</code> if the given project is configured to generate published
-     * interfaces, <code>false</code> else.
-     * <p>
-     * If the given project differs from this context's project, this method always asks the current
-     * {@link IIpsArtefactBuilderSet} for its {@link IIpsArtefactBuilderSetConfig} and retrieves the
-     * value of the generate-published-interfaces setting.
-     * <p>
-     * If, however, the given project is equal to the project of this context, this method uses the
-     * context's own {@link IIpsArtefactBuilderSetConfig}. This is important as the project's
-     * {@link IIpsArtefactBuilderSetConfig config} may not be available during initialization of the
-     * builder set.
-     * 
-     * @param ipsProject The project in which the property is configured
-     * @return <code>true</code> if the project is configured to generate published interfaces,
-     *         <code>false</code> if not.
-     */
-    public boolean isGeneratePublishedInterfaces(IIpsProject ipsProject) {
-        if (this.ipsProject.equals(ipsProject)) {
-            return isGeneratePublishedInterfaces(getConfig());
-        } else {
-            IIpsArtefactBuilderSetConfig configuration = ipsProject.getIpsArtefactBuilderSet().getConfig();
-            return isGeneratePublishedInterfaces(configuration);
-        }
-    }
-
-    private boolean isGeneratePublishedInterfaces(IIpsArtefactBuilderSetConfig config) {
-        Boolean propertyValueAsBoolean = config
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES);
-        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
-    }
-
-    public boolean isGenerateSerializablePolicyCmptSupport() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
-    }
-
-    public boolean isGenerateConvenienceGetters() {
-        Boolean propertyValueAsBoolean = getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
-        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
-    }
-
-    public boolean isGeneratePolicyBuilder() {
-        String propertyValue = getConfig()
-                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
-        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue)
-                || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY.equals(propertyValue));
-    }
-
-    public boolean isGenerateProductBuilder() {
-        String propertyValue = getConfig()
-                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
-        return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue)
-                || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT.equals(propertyValue));
-    }
-
-    public String getBaseClassPolicyCmptType() {
-        String baseClass = getConfig()
-                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
-        return StringUtils.isBlank(baseClass)
-                ? getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)
-                        ? AbstractJaxbModelObject.class.getName() : AbstractModelObject.class.getName()
-                : baseClass;
-    }
-
-    public String getBaseClassProductCmptType() {
-        String baseClass = getConfig()
-                .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE);
-        return StringUtils.isBlank(baseClass) ? ProductComponent.class.getName() : baseClass;
     }
 
 }

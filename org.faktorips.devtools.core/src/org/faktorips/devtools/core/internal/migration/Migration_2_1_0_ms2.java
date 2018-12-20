@@ -71,7 +71,7 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
             if (generatedSourcecodeNl.getLength() > 0) {
                 Element generatedSourcecodeEl = (Element)generatedSourcecodeNl.item(0);
                 changesInTimeNamingConventionValue = generatedSourcecodeEl
-                        .getAttribute("changesInTimeNamingConvention"); //$NON-NLS-1$
+                        .getAttribute(IpsProjectProperties.ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
                 docLanguageValue = generatedSourcecodeEl.getAttribute("docLanguage"); //$NON-NLS-1$
                 generatedSourcecodeEl.getParentNode().removeChild(generatedSourcecodeEl);
             }
@@ -80,7 +80,8 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
             NodeList ipsProjectNl = doc.getElementsByTagName(IpsProjectProperties.TAG_NAME);
             if (ipsProjectNl.getLength() == 1) {
                 Element projectEl = (Element)ipsProjectNl.item(0);
-                projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeNamingConventionValue); //$NON-NLS-1$
+                projectEl.setAttribute(IpsProjectProperties.ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION,
+                        changesInTimeNamingConventionValue);
             }
 
             // Deleting the attribute "loggingFrameworkConnectorId" from the tag

@@ -11,7 +11,10 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -87,6 +90,8 @@ public class IpsBundleManifest {
     public static final String HEADER_OBJECT_DIR = "Fips-ObjectDir"; //$NON-NLS-1$
 
     public static final String HEADER_UNIQUE_QUALIFIER = "Fips-UniqueQualifier"; //$NON-NLS-1$
+
+    public static final String HEADER_GENERATOR_CONFIG = "Fips-GeneratorConfig"; //$NON-NLS-1$
 
     public static final String ATTRIBUTE_TOC = "toc"; //$NON-NLS-1$
 
@@ -235,6 +240,29 @@ public class IpsBundleManifest {
 
     private String getValue(Attributes attributes, String name) {
         return StringUtils.trim(attributes.getValue(name));
+    }
+
+    public Map<String, String> getGeneratorConfig(String builderSetId) {
+        Map<String, String> generatorConfig = new HashMap<String, String>();
+        Attributes attributes = manifest.getMainAttributes();
+        if (attributes != null) {
+            String generatorConfigString = getValue(attributes, HEADER_GENERATOR_CONFIG);
+            ManifestElement[] manifestElements = getManifestElements(generatorConfigString);
+            if (manifestElements != null) {
+                for (ManifestElement manifestElement : manifestElements) {
+                    if (manifestElement.getValue().toLowerCase().contains(builderSetId.toLowerCase())) {
+                        Enumeration<String> keys = manifestElement.getKeys();
+                        while (keys.hasMoreElements()) {
+                            String key = keys.nextElement();
+                            String value = manifestElement.getAttribute(key);
+                            generatorConfig.put(key, value);
+                        }
+                    }
+                }
+            }
+
+        }
+        return generatorConfig;
     }
 
 }

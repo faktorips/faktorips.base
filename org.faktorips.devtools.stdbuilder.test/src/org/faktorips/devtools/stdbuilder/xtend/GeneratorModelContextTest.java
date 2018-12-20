@@ -11,9 +11,8 @@
 package org.faktorips.devtools.stdbuilder.xtend;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,15 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.runtime.internal.AbstractJaxbModelObject;
-import org.faktorips.runtime.internal.AbstractModelObject;
-import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,13 +49,14 @@ public class GeneratorModelContextTest {
     @Mock
     private IJavaPackageStructure javaPackageStructure;
 
-    private GeneratorModelContext generatorModelContext;
-
     @Mock
     private IIpsProject ipsProject;
 
+    private GeneratorModelContext generatorModelContext;
+
     @Before
     public void createGeneratorModelContext() throws Exception {
+        when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[0]);
         generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
                 ipsProject);
         generatorModelContext.resetContext("any");
@@ -78,74 +78,94 @@ public class GeneratorModelContextTest {
         assertEquals(policyCmptImplClassAnnotationGens, annotationGenerators);
     }
 
-    @Test
-    public void testIsGenerateSerializablePolicyCmptSupport_Default() {
-        assertFalse(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
+    @Test(expected = NullPointerException.class)
+    public void testGetGeneratorConfig_IpsObject_Null() {
+        generatorModelContext.getGeneratorConfig((IIpsObject)null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetGeneratorConfig_IpsObject_NoPackageFragment() {
+        generatorModelContext.getGeneratorConfig(mock(IIpsObject.class));
     }
 
     @Test
-    public void testIsGenerateSerializablePolicyCmptSupport_True() {
-        when(config.getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT)).thenReturn(true);
-        assertTrue(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
+    public void testGetGeneratorConfig_IpsObject_NoPackageFragmentRoot() {
+        GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        when(ipsObject.getIpsPackageFragment()).thenReturn(packageFragment);
+        assertThat(generatorModelContext.getGeneratorConfig(ipsObject), is(baseGeneratorConfig));
     }
 
     @Test
-    public void testIsGenerateSerializablePolicyCmptSupport_False() {
-        when(config.getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT)).thenReturn(false);
-        assertFalse(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
+    public void testGetGeneratorConfig_IpsObject_PackageFragmentRootNotInProject() {
+        GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        IIpsPackageFragmentRoot packageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
+        when(packageFragment.getRoot()).thenReturn(packageFragmentRoot);
+        when(ipsObject.getIpsPackageFragment()).thenReturn(packageFragment);
+        assertThat(generatorModelContext.getGeneratorConfig(ipsObject), is(baseGeneratorConfig));
     }
 
     @Test
-    public void testIsGenerateConvenienceGetters_False() {
-        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS))
-                .thenReturn(false);
-        assertFalse(generatorModelContext.isGenerateConvenienceGetters());
+    public void testGetGeneratorConfig_IpsObject() {
+        IIpsPackageFragmentRoot packageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
+        when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { packageFragmentRoot });
+        when(packageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
+        generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
+                ipsProject);
+        GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        when(packageFragment.getRoot()).thenReturn(packageFragmentRoot);
+        when(ipsObject.getIpsPackageFragment()).thenReturn(packageFragment);
+        assertThat(generatorModelContext.getGeneratorConfig(ipsObject), is(baseGeneratorConfig));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetGeneratorConfig_IpsSrcFile_Null() {
+        generatorModelContext.getGeneratorConfig((IIpsSrcFile)null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetGeneratorConfig_IpsSrcFile_NoPackageFragment() {
+        generatorModelContext.getGeneratorConfig(mock(IIpsSrcFile.class));
     }
 
     @Test
-    public void testIsGenerateConvenienceGetters_True() {
-        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS))
-                .thenReturn(true);
-        assertTrue(generatorModelContext.isGenerateConvenienceGetters());
+    public void testGetGeneratorConfig_IpsSrcFile_NoPackageFragmentRoot() {
+        GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+        assertThat(generatorModelContext.getGeneratorConfig(ipsSrcFile), is(baseGeneratorConfig));
     }
 
     @Test
-    public void testGetBaseClassPolicyCmptType() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("org.faktorips.FooBar");
-        assertThat(generatorModelContext.getBaseClassPolicyCmptType(), is("org.faktorips.FooBar"));
+    public void testGetGeneratorConfig_IpsSrcFile_PackageFragmentRootNotInProject() {
+        GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        IIpsPackageFragmentRoot packageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
+        when(packageFragment.getRoot()).thenReturn(packageFragmentRoot);
+        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+        assertThat(generatorModelContext.getGeneratorConfig(ipsSrcFile), is(baseGeneratorConfig));
     }
 
     @Test
-    public void testGetBaseClassPolicyCmptType_default() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("");
-        assertThat(generatorModelContext.getBaseClassPolicyCmptType(), is(AbstractModelObject.class.getName()));
-    }
-
-    @Test
-    public void testGetBaseClassPolicyCmptType_defaultJaxb() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("");
-        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn(true);
-        assertThat(generatorModelContext.getBaseClassPolicyCmptType(), is(AbstractJaxbModelObject.class.getName()));
-    }
-
-    @Test
-    public void testGetBaseClassProductCmptType() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE))
-                .thenReturn("org.faktorips.Baz");
-        assertThat(generatorModelContext.getBaseClassProductCmptType(), is("org.faktorips.Baz"));
-    }
-
-    @Test
-    public void testGetBaseClassProductCmptType_default() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE))
-                .thenReturn("");
-        assertThat(generatorModelContext.getBaseClassProductCmptType(), is(ProductComponent.class.getName()));
+    public void testGetGeneratorConfig_IpsSrcFile() {
+        IIpsPackageFragmentRoot packageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
+        when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { packageFragmentRoot });
+        when(packageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
+        generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
+                ipsProject);
+        GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
+        when(packageFragment.getRoot()).thenReturn(packageFragmentRoot);
+        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+        assertThat(generatorModelContext.getGeneratorConfig(ipsSrcFile), is(baseGeneratorConfig));
     }
 
 }

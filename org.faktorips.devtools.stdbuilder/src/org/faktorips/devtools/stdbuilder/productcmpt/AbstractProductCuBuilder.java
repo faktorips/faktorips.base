@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -132,7 +133,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(propertyValueContainer);
         setPropertyValueContainer(propertyValueContainer);
         beforeBuild(ipsSrcFile, buildStatus);
-        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+        if (GeneratorConfig.forIpsSrcFile(ipsSrcFile).getFormulaCompiling().isCompileToSubclass()) {
             build(ipsSrcFile);
         }
         afterBuild(ipsSrcFile);
@@ -195,8 +196,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             if (addOverrideAnnotationIfNecessary) {
                 // if the formula is also compiled to XML we have a standard implementation of this
                 // method
-                appendOverrideAnnotation(builder,
-                        method.getModifier().isPublished() && !getBuilderSet().getFormulaCompiling().isCompileToXml());
+                appendOverrideAnnotation(builder, method.getModifier().isPublished() && !GeneratorConfig
+                        .forIpsObject(formula.getIpsObject()).getFormulaCompiling().isCompileToXml());
             }
 
             generateSignatureForModelMethod(method, builder);
@@ -314,7 +315,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
      *            formula or method
      */
     public String getImplementationClass(T container) {
-        if (isContainingAvailableFormula(container) && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+        if (isContainingAvailableFormula(container)
+                && GeneratorConfig.forIpsObject(container.getIpsObject()).getFormulaCompiling().isCompileToSubclass()) {
             return getQualifiedClassName(container);
         } else {
             return getSuperClassQualifiedClassName(container);

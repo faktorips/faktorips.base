@@ -31,7 +31,7 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry.IpsStrorageFactory;
+import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry.IpsStorageFactory;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
@@ -57,7 +57,7 @@ public class IpsBundleEntryTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private IpsStrorageFactory ipsStorageFactory;
+    private IpsStorageFactory ipsStorageFactory;
 
     @Mock
     private IPath bundlePath;

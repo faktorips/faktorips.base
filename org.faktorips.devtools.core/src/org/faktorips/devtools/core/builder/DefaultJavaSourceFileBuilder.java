@@ -186,8 +186,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * <code>CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR</code> of this builder.
      */
     public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
-        return (IIpsLoggingFrameworkConnector)getBuilderSet().getConfig().getPropertyValue(
-                CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
+        return (IIpsLoggingFrameworkConnector)getBuilderSet().getConfig()
+                .getPropertyValue(CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
     }
 
     /**
@@ -291,8 +291,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         generateLoggerConstantIfNecessary();
         List<String> usedClasses = new ArrayList<String>();
         frag.append("if ("); //$NON-NLS-1$
-        frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(level, getLoggerInstanceExpession(),
-                usedClasses));
+        frag.append(
+                getIpsLoggingFrameworkConnector().getLogConditionExp(level, getLoggerInstanceExpession(), usedClasses));
         frag.append(")"); //$NON-NLS-1$
         frag.appendOpenBracket();
         generateLoggingStmtForMessageExpression(level, frag, messageExp);
@@ -319,8 +319,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         generateLoggerConstantIfNecessary();
         List<String> usedClasses = new ArrayList<String>();
-        frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(level, getLoggerInstanceExpession(),
-                usedClasses));
+        frag.append(
+                getIpsLoggingFrameworkConnector().getLogConditionExp(level, getLoggerInstanceExpession(), usedClasses));
         addLoggingConnectorImports(usedClasses, frag);
     }
 
@@ -332,8 +332,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         generateLoggerConstantIfNecessary();
         List<String> usedClasses = new ArrayList<String>();
         frag.append("if ("); //$NON-NLS-1$
-        frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(level, getLoggerInstanceExpession(),
-                usedClasses));
+        frag.append(
+                getIpsLoggingFrameworkConnector().getLogConditionExp(level, getLoggerInstanceExpession(), usedClasses));
         frag.append(")"); //$NON-NLS-1$
         frag.appendOpenBracket();
         generateLoggingStmt(level, frag, message);
@@ -537,10 +537,15 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      *            configuration information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
+     * @deprecated since 3.22. Access to builder settings is builder set specific. If you use the
+     *             StandardBuilderSet, use
+     *             GeneratorConfig#getChangesOverTimeNamingConvention()#getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode())
+     *             instead.
      */
+    @Deprecated
     public String getNameForGenerationConcept(IIpsElement element) {
-        return getChangesInTimeNamingConvention(element).getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode());
+        return getChangesInTimeNamingConvention(element)
+                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
     }
 
 }

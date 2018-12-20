@@ -44,10 +44,8 @@ public class ProductCmptClassBuilder extends ProductClassBuilder<XProductCmptCla
     protected String generateBody(IIpsObject ipsObject) {
         if (generatesInterface()) {
             return ProductComponentInterfaceTmpl.body(getGeneratorModelRoot(ipsObject));
-
         } else {
             return ProductComponentTmpl.body(getGeneratorModelRoot(ipsObject));
-
         }
     }
 

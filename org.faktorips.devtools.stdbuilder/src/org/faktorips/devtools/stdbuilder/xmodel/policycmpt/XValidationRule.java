@@ -138,7 +138,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
 
     public String getConstantNameMessageCode() {
         String upperCaseName = getName();
-        if (isGenerateSeparatedCamelCase()) {
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
             upperCaseName = StringUtil.camelCaseToUnderscore(upperCaseName, false);
         }
         upperCaseName = upperCaseName.toUpperCase();

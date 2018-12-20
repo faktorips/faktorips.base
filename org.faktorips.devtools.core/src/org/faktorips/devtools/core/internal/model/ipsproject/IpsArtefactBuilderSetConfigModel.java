@@ -173,10 +173,6 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
                 continue;
             }
             String valueAsString = this.properties.get(name);
-            if (!propertyDef.isAvailable(ipsProject)) {
-                parsedValueMap.put(name, propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
-                continue;
-            }
             Object value = propertyDef.parseValue(valueAsString);
             parsedValueMap.put(name, value);
         }

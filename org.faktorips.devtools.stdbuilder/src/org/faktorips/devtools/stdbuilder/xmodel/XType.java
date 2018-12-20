@@ -137,7 +137,7 @@ public abstract class XType extends XClass {
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
         LinkedHashSet<String> list = new LinkedHashSet<String>();
-        if (isGeneratePublishedInterfaces()) {
+        if (getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())) {
             list.add(getInterfaceName());
         } else {
             list.addAll(getExtendedOrImplementedInterfaces());
@@ -191,13 +191,14 @@ public abstract class XType extends XClass {
      * 
      * @param associations all associations defined for this class
      */
-    protected <X extends XAssociation> Set<XDerivedUnionAssociation> findSubsettedDerivedUnions(Collection<X> associations) {
+    protected <X extends XAssociation> Set<XDerivedUnionAssociation> findSubsettedDerivedUnions(
+            Collection<X> associations) {
         Set<XDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDerivedUnionAssociation>();
         for (X association : associations) {
             if (association.isSubsetOfADerivedUnion()) {
                 XAssociation subsettedDerivedUnionNode = association.getSubsettedDerivedUnion();
-                resultingAssociations.add(getModelNode(subsettedDerivedUnionNode.getAssociation(),
-                        XDerivedUnionAssociation.class));
+                resultingAssociations
+                        .add(getModelNode(subsettedDerivedUnionNode.getAssociation(), XDerivedUnionAssociation.class));
             }
         }
         return resultingAssociations;

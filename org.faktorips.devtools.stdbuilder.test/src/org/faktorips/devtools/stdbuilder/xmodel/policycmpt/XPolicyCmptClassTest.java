@@ -34,16 +34,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelCaches;
@@ -59,6 +58,9 @@ public class XPolicyCmptClassTest {
 
     @Mock
     private GeneratorModelContext modelContext;
+
+    @Mock
+    private GeneratorConfig generatorConfig;
 
     @Mock
     private ModelService modelService;
@@ -91,6 +93,8 @@ public class XPolicyCmptClassTest {
     public void initModelContext() {
         GeneratorModelCaches generatorModelCache = new GeneratorModelCaches();
         when(modelContext.getGeneratorModelCache()).thenReturn(generatorModelCache);
+        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test
@@ -399,7 +403,7 @@ public class XPolicyCmptClassTest {
     public void testGetBaseSuperclassName() {
         when(type.hasSupertype()).thenReturn(false);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        when(modelContext.getBaseClassPolicyCmptType()).thenReturn("pack.MyBaseClass");
+        when(generatorConfig.getBaseClassPolicyCmptType()).thenReturn("pack.MyBaseClass");
         when(modelContext.addImport("pack.MyBaseClass")).thenReturn("MyBaseClass");
 
         String baseSuperclassName = policyCmptClass.getBaseSuperclassName();
@@ -413,7 +417,7 @@ public class XPolicyCmptClassTest {
         when(type.hasSupertype()).thenReturn(false);
         when(type.isConfigurableByProductCmptType()).thenReturn(true);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        when(modelContext.getBaseClassPolicyCmptType()).thenReturn("pack.MyBaseClass");
+        when(generatorConfig.getBaseClassPolicyCmptType()).thenReturn("pack.MyBaseClass");
         when(modelContext.addImport("pack.MyBaseClass")).thenReturn("MyBaseClass");
 
         String baseSuperclassName = policyCmptClass.getBaseSuperclassName();
@@ -539,7 +543,7 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testGetImplementedInterfaces_WithSerializableSupportWithoutSupertype() {
-        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        when(generatorConfig.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
         when(type.hasSupertype()).thenReturn(false);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
 
@@ -550,10 +554,10 @@ public class XPolicyCmptClassTest {
     @Test
     public void testGetImplementedInterfaces_WithSerializableSupportWithSupertype() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
-        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        when(generatorConfig.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
         when(type.hasSupertype()).thenReturn(true);
         when(type.getIpsProject()).thenReturn(ipsProject);
-        when(modelContext.isGeneratePublishedInterfaces(ipsProject)).thenReturn(true);
+        when(generatorConfig.isGeneratePublishedInterfaces(ipsProject)).thenReturn(true);
         doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
@@ -563,10 +567,10 @@ public class XPolicyCmptClassTest {
     @Test
     public void testGetImplementedInterfaces_WithoutSerializableSupportWithSupertype() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
-        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        when(generatorConfig.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
         when(type.hasSupertype()).thenReturn(true);
         when(type.getIpsProject()).thenReturn(ipsProject);
-        when(modelContext.isGeneratePublishedInterfaces(ipsProject)).thenReturn(true);
+        when(generatorConfig.isGeneratePublishedInterfaces(ipsProject)).thenReturn(true);
         doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
@@ -575,7 +579,7 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testGetImplementedInterfaces_WithoutSerializableSupportWithoutSupertype() {
-        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        when(generatorConfig.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
         when(type.hasSupertype()).thenReturn(false);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
 
@@ -683,9 +687,9 @@ public class XPolicyCmptClassTest {
     }
 
     private void setUpGenerateSupport(boolean returnValue) {
-        when(modelContext.isGenerateChangeSupport()).thenReturn(returnValue);
-        when(modelContext.isGenerateCopySupport()).thenReturn(returnValue);
-        when(modelContext.isGenerateDeltaSupport()).thenReturn(returnValue);
-        when(modelContext.isGenerateVisitorSupport()).thenReturn(returnValue);
+        when(generatorConfig.isGenerateChangeSupport()).thenReturn(returnValue);
+        when(generatorConfig.isGenerateCopySupport()).thenReturn(returnValue);
+        when(generatorConfig.isGenerateDeltaSupport()).thenReturn(returnValue);
+        when(generatorConfig.isGenerateVisitorSupport()).thenReturn(returnValue);
     }
 }

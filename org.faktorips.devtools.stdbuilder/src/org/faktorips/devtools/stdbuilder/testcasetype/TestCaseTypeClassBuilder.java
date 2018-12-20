@@ -925,12 +925,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
     private String generateTestAttributeConstant(ITestPolicyCmptTypeParameter parameter, String testAttribute) {
         String constName = parameter.getName();
-        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+        boolean generateSeparatedCamelCase = getBuilderSet().getGeneratorModelContext()
+                .getGeneratorConfig(parameter.getIpsObject()).isGenerateSeparatedCamelCase();
+        if (generateSeparatedCamelCase) {
             constName = StringUtil.camelCaseToUnderscore(constName, false);
         }
         constName = StringUtils.upperCase(constName);
         String upperCasetestAttribute = testAttribute;
-        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+        if (generateSeparatedCamelCase) {
             upperCasetestAttribute = StringUtil.camelCaseToUnderscore(upperCasetestAttribute, false);
         }
         upperCasetestAttribute = StringUtils.upperCase(upperCasetestAttribute);

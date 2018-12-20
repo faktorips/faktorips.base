@@ -40,7 +40,7 @@ public class XProductCmptClass extends XProductClass {
 
     @Override
     protected String getBaseSuperclassName() {
-        return addImport(getContext().getBaseClassProductCmptType());
+        return addImport(getGeneratorConfig().getBaseClassProductCmptType());
     }
 
     @Override

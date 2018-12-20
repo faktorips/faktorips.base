@@ -7,7 +7,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 
 class PropertyChangeSupportTmpl {
 

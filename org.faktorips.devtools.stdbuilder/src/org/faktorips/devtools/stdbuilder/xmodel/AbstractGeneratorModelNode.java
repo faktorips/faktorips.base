@@ -27,9 +27,9 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -40,8 +40,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
@@ -443,7 +441,24 @@ public abstract class AbstractGeneratorModelNode {
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public final Locale getLanguageUsedInGeneratedSourceCode() {
-        return getContext().getLanguageUsedInGeneratedSourceCode();
+        return getGeneratorConfig().getLanguageUsedInGeneratedSourceCode();
+    }
+
+    /**
+     * Returns the {@link GeneratorConfig} for the {@link #getIpsObjectPartContainer()
+     * IIpsObjectPartContainer} this model node represents. If the container is not yet set, the
+     * {@link GeneratorModelContext#getBaseGeneratorConfig() base configuration from the context} is
+     * returned.
+     */
+    public GeneratorConfig getGeneratorConfig() {
+        IIpsObjectPartContainer container = getIpsObjectPartContainer();
+        if (container != null) {
+            IIpsObject ipsObject = container.getIpsObject();
+            if (ipsObject != null) {
+                return GeneratorConfig.forIpsObject(ipsObject);
+            }
+        }
+        return getContext().getBaseGeneratorConfig();
     }
 
     public GeneratorModelContext getContext() {
@@ -461,97 +476,6 @@ public abstract class AbstractGeneratorModelNode {
 
     public IJavaNamingConvention getJavaNamingConvention() {
         return getIpsProject().getJavaNamingConvention();
-    }
-
-    /**
-     * Returns the kind of formula compiling.
-     * 
-     * @see FormulaCompiling
-     */
-    public FormulaCompiling getFormulaCompiling() {
-        return getContext().getFormulaCompiling();
-    }
-
-    /**
-     * Returns whether or not methods for delta-support should be added to generated classes.
-     */
-    public boolean isGenerateDeltaSupport() {
-        return getContext().isGenerateDeltaSupport();
-    }
-
-    /**
-     * Returns whether or not methods for copy-support should be added to generated classes.
-     */
-    public boolean isGenerateCopySupport() {
-        return getContext().isGenerateCopySupport();
-    }
-
-    /**
-     * Returns whether or not methods for the visitor-support should be added to generated classes.
-     */
-    public boolean isGenerateVisitorSupport() {
-        return getContext().isGenerateVisitorSupport();
-    }
-
-    /**
-     * Returns whether or not published interfaces should be generated.
-     */
-    public boolean isGeneratePublishedInterfaces() {
-        return getContext().isGeneratePublishedInterfaces(getIpsObjectPartContainer().getIpsProject());
-    }
-
-    /**
-     * Returns whether or not change support should be generated.
-     */
-    public boolean isGenerateChangeSupport() {
-        return getContext().isGenerateChangeSupport();
-    }
-
-    /**
-     * Returns whether or not serializable should be generated.
-     */
-    public boolean isGenerateSerializablePolicyCmptsSupport() {
-        return getContext().isGenerateSerializablePolicyCmptSupport();
-    }
-
-    /**
-     * Returns whether or not getter methods of {@link ProductCmptType} attributes in the according
-     * {@link IPolicyCmptType} class should be generated.
-     */
-    public boolean isGenerateConvenienceGetters() {
-        return getContext().isGenerateConvenienceGetters();
-    }
-
-    /**
-     * Returns whether to generate camel case constant names with underscore separator or without.
-     * For example if this property is true, the constant for the property
-     * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
-     * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
-     * 
-     * @see StandardBuilderSet#CONFIG_PROPERTY_CAMELCASE_SEPARATED
-     */
-    public boolean isGenerateSeparatedCamelCase() {
-        return getContext().isGenerateSeparatedCamelCase();
-    }
-
-    /**
-     */
-    public boolean isGenerateToXmlSupport() {
-        return getContext().isGenerateToXmlSupport();
-    }
-
-    /**
-     * 
-     */
-    public boolean isGeneratePolicyBuilder() {
-        return getContext().isGeneratePolicyBuilder();
-    }
-
-    /**
-     * 
-     */
-    public boolean isGenerateProductBuilder() {
-        return getContext().isGenerateProductBuilder();
     }
 
     /**
@@ -600,11 +524,12 @@ public abstract class AbstractGeneratorModelNode {
     /**
      * Returns all annotations like {@link #getAnnotations(AnnotatedJavaElementType)}, but only if
      * currently an interface is generated ({@code isGeneratingInterface} is {@code true} or
-     * interfaces aren't generated at all( {@link #isGeneratePublishedInterfaces()} is {@code false}
-     * ).
+     * interfaces aren't generated at all(
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(IIpsProject)} is {@code false} ).
      */
     public String getAnnotationsForPublishedInterface(AnnotatedJavaElementType type, boolean isGeneratingInterface) {
-        if (isGeneratingInterface || !isGeneratePublishedInterfaces()) {
+        if (isGeneratingInterface
+                || !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsObjectPartContainer().getIpsProject())) {
             return getAnnotations(type);
         } else {
             return "";

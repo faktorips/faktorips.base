@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
@@ -70,8 +71,9 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
      */
     @Override
     protected void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
-        Locale language = getLanguageUsedInGeneratedSourceCode();
-        String genName = getChangesInTimeNamingConvention(getPropertyValueContainer())
+        GeneratorConfig generatorConfig = GeneratorConfig.forIpsSrcFile(getIpsSrcFile());
+        Locale language = generatorConfig.getLanguageUsedInGeneratedSourceCode();
+        String genName = generatorConfig.getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(AbstractProductCuBuilder.CONSTRUCTOR_JAVADOC, genName);
         try {

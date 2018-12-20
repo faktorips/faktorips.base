@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -27,11 +27,11 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelCaches;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
@@ -56,6 +56,9 @@ public class XProductCmptGenerationClassTest {
     private GeneratorModelContext modelContext;
 
     @Mock
+    private GeneratorConfig generatorConfig;
+
+    @Mock
     private ModelService modelService;
 
     @Mock
@@ -65,15 +68,12 @@ public class XProductCmptGenerationClassTest {
 
     @Before
     public void initMocks() {
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getQualifiedName()).thenReturn("ProductCmptType");
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
         when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
-    }
-
-    @Before
-    public void createXProductCmptGenerationClass() throws Exception {
         xProductCmptGenerationClass = new XProductCmptGenerationClass(productCmptType, modelContext, modelService);
     }
 
@@ -81,10 +81,10 @@ public class XProductCmptGenerationClassTest {
     public void testGetClassHierarchy_productCmptGenerationClass() throws Exception {
         XProductCmptGenerationClass xSuperType = mock(XProductCmptGenerationClass.class);
         XProductCmptGenerationClass xSuperSuperType = mock(XProductCmptGenerationClass.class);
-        when(modelService.getModelNode(superType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
-                xSuperType);
-        when(modelService.getModelNode(superSuperType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
-                xSuperSuperType);
+        when(modelService.getModelNode(superType, XProductCmptGenerationClass.class, modelContext))
+                .thenReturn(xSuperType);
+        when(modelService.getModelNode(superSuperType, XProductCmptGenerationClass.class, modelContext))
+                .thenReturn(xSuperSuperType);
 
         Set<XProductCmptGenerationClass> superclasses = xProductCmptGenerationClass.getClassHierarchy();
         assertEquals(3, superclasses.size());
@@ -105,12 +105,14 @@ public class XProductCmptGenerationClassTest {
         when(optionalOverloadedMethod.isFormulaMandatory()).thenReturn(false);
         when(optionalOverloadedMethod.isOverloadsFormula()).thenReturn(true);
 
-        XProductCmptGenerationClass xSuperType = new XProductCmptGenerationClass(superType, modelContext, modelService) {
+        XProductCmptGenerationClass xSuperType = new XProductCmptGenerationClass(superType, modelContext,
+                modelService) {
             @Override
             public Set<XMethod> getMethods() {
-                Set<XMethod> methods = new HashSet<XMethod>(Arrays.asList(new XMethod(superOptionalMethod,
-                        modelContext, modelService), new XMethod(superMandatoryMethod, modelContext, modelService),
-                        new XMethod(optionalOverloadedMethod, modelContext, modelService)));
+                Set<XMethod> methods = new HashSet<XMethod>(
+                        Arrays.asList(new XMethod(superOptionalMethod, modelContext, modelService),
+                                new XMethod(superMandatoryMethod, modelContext, modelService),
+                                new XMethod(optionalOverloadedMethod, modelContext, modelService)));
                 return methods;
             }
         };
@@ -136,8 +138,8 @@ public class XProductCmptGenerationClassTest {
 
         XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
         when(xPolicyCmptClass.isConfiguredBy(productCmptType.getQualifiedName())).thenReturn(true);
-        when(xPolicyCmptClass.getAttributes()).thenReturn(
-                new HashSet<XPolicyAttribute>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
+        when(xPolicyCmptClass.getAttributes())
+                .thenReturn(new HashSet<XPolicyAttribute>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
 
         XProductCmptGenerationClass xGenerationClassSpy = spy(xProductCmptGenerationClass);
         doReturn(xPolicyCmptClass).when(xGenerationClassSpy).getPolicyCmptClass();

@@ -62,6 +62,7 @@ import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
@@ -457,7 +458,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     public TocEntryObject createTocEntry(IEnumType enumType) {
-        if (!getBuilderSet().isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
+        if (!GeneratorConfig.forIpsObject(enumType).isGenerateJaxbSupport()
+                || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }
         if (enumType.isInextensibleEnum() || enumType.isAbstract()) {

@@ -26,8 +26,8 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.XTypeBuilderClassNameProvider;
 
-public class XProductBuilder extends XProductCmptClass implements
-XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
+public class XProductBuilder extends XProductCmptClass
+        implements XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
 
     private XTypeBuilderClassNameProvider nameProvider;
     private XPBuilderUtil<XProductBuilder, XProductBuilderAssociation, XProductAttribute> xpBuilderUtil;
@@ -197,7 +197,7 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
 
     public String getProdGenFieldName() {
         if (hasSupertype()) {
-            if (isGeneratePublishedInterfaces()) {
+            if (getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())) {
                 return "((" + getProdGenImplClassName() + ") " + "getCurrentGeneration())";
             } else {
                 return "getCurrentGeneration()";
@@ -208,8 +208,8 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
     }
 
     private String getGenerationConceptName() {
-        return getProductCmptGenerationNode().getJavaClassNameProvider().getAbbreviationForGenerationConcept(
-                getIpsObjectPartContainer());
+        return getProductCmptGenerationNode().getJavaClassNameProvider()
+                .getAbbreviationForGenerationConcept(getIpsObjectPartContainer().getIpsSrcFile());
     }
 
     public String getMethodNameGeneration() {
@@ -226,5 +226,10 @@ XPBuilder<XProductBuilder, XProductBuilderAssociation, XProductAttribute> {
 
     public String getMethodNameSetLatestGeneration() {
         return "latest" + StringUtils.capitalize(getGenerationConceptName());
+    }
+
+    @Override
+    public boolean isGeneratePublishedInterfaces() {
+        return getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
     }
 }

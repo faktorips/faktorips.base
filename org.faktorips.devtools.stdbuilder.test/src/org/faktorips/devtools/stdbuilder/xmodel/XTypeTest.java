@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -24,7 +24,6 @@ import java.util.LinkedHashSet;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.xmodel.XType;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +39,9 @@ public class XTypeTest {
 
     @Mock
     private GeneratorModelContext context;
+
+    @Mock
+    private GeneratorConfig generatorConfig;
 
     @Mock
     private IType type;
@@ -61,13 +63,15 @@ public class XTypeTest {
             }
         };
         when(context.addImport(anyString())).thenAnswer(inputAnswer);
+        doReturn(generatorConfig).when(xType).getGeneratorConfig();
+        doReturn(generatorConfig).when(xSuperType).getGeneratorConfig();
     }
 
     @Before
     public void createXType() {
         when(xType.getContext()).thenReturn(context);
         when(xType.getIpsObjectPartContainer()).thenReturn(type);
-        when(context.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
+        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         doReturn("myInterface").when(xType).getInterfaceName();
     }
 
@@ -96,7 +100,7 @@ public class XTypeTest {
 
     @Test
     public void testGetImplementedInterfaces_withSuperclassNoPublishedInterfaces() throws Exception {
-        when(context.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
+        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
         when(xType.hasSupertype()).thenReturn(true);
         doReturn(xSuperType).when(xType).getSupertype();
         doReturn("superInterfaceName").when(xSuperType).getQualifiedName(BuilderAspect.INTERFACE);
@@ -108,7 +112,7 @@ public class XTypeTest {
 
     @Test
     public void testGetSuperclassName_withSuperclassNoPublishedInterfaces() throws Exception {
-        when(context.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
+        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
         when(xType.hasSupertype()).thenReturn(true);
         doReturn(xSuperType).when(xType).getSupertype();
         doReturn("superClassName").when(xSuperType).getQualifiedName(BuilderAspect.IMPLEMENTATION);

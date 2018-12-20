@@ -36,7 +36,51 @@ class CommonGeneratorExtensions {
     def static overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode it) {
         if(generatePublishedInterfaces) "@Override"
     }
-
+    
+    def static generatePublishedInterfaces(AbstractGeneratorModelNode it){
+        generatorConfig.isGeneratePublishedInterfaces(ipsProject)
+    }
+    
+    def static formulaCompiling(AbstractGeneratorModelNode it){
+        generatorConfig.formulaCompiling
+    }
+    
+    def static generateToXmlSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateToXmlSupport
+    }
+    
+    def static generateProductBuilder(AbstractGeneratorModelNode it){
+        generatorConfig.generateProductBuilder
+    }
+    
+    def static generateChangeSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateChangeSupport
+    }
+    
+    def static generatePolicyBuilder(AbstractGeneratorModelNode it){
+        generatorConfig.generatePolicyBuilder
+    }
+    
+    def static generateCopySupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateCopySupport
+    }
+    
+    def static generateSerializablePolicyCmptsSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateSerializablePolicyCmptSupport
+    }
+    
+    def static generateConvenienceGetters(AbstractGeneratorModelNode it){
+        generatorConfig.generateConvenienceGetters
+    }
+    
+    def static generateDeltaSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateDeltaSupport
+    }
+    
+    def static generateVisitorSupport(AbstractGeneratorModelNode it){
+        generatorConfig.generateVisitorSupport
+    }
+    
     // Use it function for published methods. i.e. methods that are defined in a published interface.
     // Returns the @Override annotation if the condition is true and at the same time published interfaces are being generated
     def static overrideAnnotationForPublishedMethodImplementation(AbstractGeneratorModelNode it) {
@@ -70,7 +114,7 @@ class CommonGeneratorExtensions {
         overrideAnnotationForPublishedMethodImplementationOr(it, constrain)
     }
 
-    // User it function for attribute methods (e.g. getter, setter).
+    // Use it function for attribute methods (e.g. getter, setter).
     // Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
     // If the attribute does not override another attribute, the boolean parameter specifies whether the attribute
     // is published

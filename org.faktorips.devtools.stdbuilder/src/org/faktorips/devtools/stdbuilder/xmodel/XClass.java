@@ -31,7 +31,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public XClass(IIpsObject ipsObject, GeneratorModelContext context, ModelService modelService) {
         super(ipsObject, context, modelService);
-        javaClassNameProvider = createJavaClassNamingProvider(isGeneratePublishedInterfaces());
+        javaClassNameProvider = createJavaClassNamingProvider(
+                getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()));
     }
 
     public abstract boolean isValidForCodeGeneration();
@@ -56,8 +57,9 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getFileName(BuilderAspect aspect) {
-        return getJavaClassNaming().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile(), aspect,
-                getJavaClassNameProvider()).toOSString();
+        return getJavaClassNaming()
+                .getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile(), aspect, getJavaClassNameProvider())
+                .toOSString();
     }
 
     @Override
@@ -70,7 +72,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * of the published interface. Else the name of the implementation class is returned.
      */
     public String getPublishedInterfaceName() {
-        return getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+        return getSimpleName(
+                BuilderAspect.getValue(getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())));
     }
 
     /**
@@ -78,14 +81,16 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * on the specified {@link BuilderAspect} and this class' project settings. Use
      * {@link BuilderAspect#IMPLEMENTATION} if the implementation class name is required explicitly.
      * Use {@link BuilderAspect#INTERFACE} to let the project setting
-     * {@link #isGeneratePublishedInterfaces()} decide whether to return the published interface
-     * name or implementation class name.
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * decide whether to return the published interface name or implementation class name.
      * <p>
      * Note that this method should <em>not</em> be called with the
-     * {@link #isGeneratePublishedInterfaces()} setting of another model node. This is due to the
-     * fact that {@link #isGeneratePublishedInterfaces()} may differ from one project to another.
-     * Use {@link #getPublishedInterfaceName()} instead in such cases. It lets a class decide which
-     * name to return depending on its own project settings in any case.
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * setting of another model node. This is due to the fact that
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * may differ from one project to another. Use {@link #getPublishedInterfaceName()} instead in
+     * such cases. It lets a class decide which name to return depending on its own project settings
+     * in any case.
      * 
      * @param aspect {@link BuilderAspect#IMPLEMENTATION} to always return the qualified class name,
      *            {@link BuilderAspect#INTERFACE} to return the qualified published interface name
