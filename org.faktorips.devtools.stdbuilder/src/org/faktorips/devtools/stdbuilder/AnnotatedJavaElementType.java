@@ -35,6 +35,14 @@ public enum AnnotatedJavaElementType {
      * being generated.
      */
     PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+
+    /**
+     * Represents the declaration of methods that return all links for an association. The link
+     * getters are either declared in the published interface or in the implementation class, in
+     * case no published interfaces are being generated.
+     */
+    PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS,
+
     /**
      * Represents the published interface if it is generated, else the implementation class.
      */
@@ -62,6 +70,20 @@ public enum AnnotatedJavaElementType {
      * being generated.
      */
     POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+
+    /**
+     * Represents the declaration of association setter(..1)/adder(..*) methods. The setters/adders
+     * are either declared in the published interface or in the implementation class, in case no
+     * published interfaces are being generated.
+     */
+    POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER,
+
+    /**
+     * Represents the declaration of association remover methods. The removers are either declared
+     * in the published interface or in the implementation class, in case no published interfaces
+     * are being generated.
+     */
+    POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER,
 
     /**
      * Represents the published interface if it is generated, else the implementation class.

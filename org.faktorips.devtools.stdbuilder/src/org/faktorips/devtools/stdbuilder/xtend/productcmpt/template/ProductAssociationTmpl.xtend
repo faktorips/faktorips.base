@@ -172,7 +172,8 @@ class ProductAssociationTmpl {
          * «getAnnotations(ELEMENT_JAVA_DOC)»
          * @generated
          */
-         «overrideAnnotationForPublishedMethodImplementation»
+        «getAnnotationsForPublishedInterface(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS, genInterface())»
+        «overrideAnnotationForPublishedMethodImplementation»
         «IF oneToMany»
             public «Collection_(IProductComponentLink(targetInterfaceName))» «method(methodNameGetLinksFor)»
             «IF genInterface»;«ELSE»

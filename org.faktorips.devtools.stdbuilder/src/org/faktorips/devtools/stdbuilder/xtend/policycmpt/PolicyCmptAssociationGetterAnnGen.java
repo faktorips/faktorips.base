@@ -14,10 +14,10 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
-import org.faktorips.devtools.stdbuilder.xtend.AbstractAssociationAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.association.AbstractAssociationAnnGen;
 import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
 
-public class PolicyCmptAssociationAnnGen extends AbstractAssociationAnnGen {
+public class PolicyCmptAssociationGetterAnnGen extends AbstractAssociationAnnGen {
 
     @Override
     public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode node) {

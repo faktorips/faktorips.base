@@ -13,6 +13,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
+import org.faktorips.devtools.stdbuilder.xtend.association.SimpleAssociationAnnGen;
+import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 
 public class ProductCmptAssociationAnnGenFactory implements IAnnotationGeneratorFactory {
 
@@ -23,10 +26,14 @@ public class ProductCmptAssociationAnnGenFactory implements IAnnotationGenerator
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        if (type == AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER) {
-            return new ProductCmptAssociationAnnGen();
-        } else {
-            return null;
+        switch (type) {
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER:
+                return new ProductCmptAssociationAnnGen();
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS:
+                return new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationLinks.class);
+
+            default:
+                return null;
         }
     }
 
