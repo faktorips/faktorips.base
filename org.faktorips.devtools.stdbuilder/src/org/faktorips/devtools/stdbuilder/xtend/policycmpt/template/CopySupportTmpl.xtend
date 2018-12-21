@@ -64,6 +64,7 @@ class CopySupportTmpl {
                 «implClassName» newCopy = («implClassName»)copyMap.get(this);
                 if (newCopy == null) {
                     newCopy = new «implClassName»();
+                    copyMap.put(this, newCopy);
                     «IF configured»
                         newCopy.copyProductCmptAndGenerationInternal(this);
                     «ENDIF»
@@ -155,15 +156,13 @@ class CopySupportTmpl {
                                 «copySupportCopyVarName».«inverseAssociation.methodNameSetOrAddInternal»(concreteCopy);
                             «ENDIF»
                             concreteCopy.«fieldName».add(«copySupportCopyVarName»);
-                            copyMap.put(«copySupportLoopVarName», «copySupportCopyVarName»);
                         }
                     «ELSE»
-                        if («fieldName» != null) { ««« TODO cast ohne published interfaces nicht noetig
-                        concreteCopy.«fieldName» = («targetClassName»)«fieldName».newCopyInternal(copyMap);
+                        if («fieldName» != null) {
+                        concreteCopy.«fieldName» = «fieldName».newCopyInternal(copyMap);
                             «IF setInverseAssociationInCopySupport»
                                 concreteCopy.«fieldName».«inverseAssociation.methodNameSetOrAddInternal»(concreteCopy);
                             «ENDIF»
-                            copyMap.put(«fieldName», concreteCopy.«fieldName»);
                         }
                     «ENDIF»
                 «ENDIF»
