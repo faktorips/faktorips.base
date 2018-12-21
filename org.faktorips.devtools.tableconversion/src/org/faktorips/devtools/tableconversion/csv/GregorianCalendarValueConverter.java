@@ -53,23 +53,25 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
         GregorianCalendar cal = new GregorianCalendar();
         GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
         if (externalDataValue instanceof String) {
+            // CSOFF: EmptyBlockCheck
             try {
                 cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
                 return datatype.valueToString(cal);
             } catch (IllegalArgumentException ignored) {
+                // generic error message is created outside of this block
             }
             try {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
                 Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] { dateFormat });
                 return DateUtil.dateToIsoDateString(parseDate);
             } catch (ParseException ignored) {
+                // generic error message is created outside of this block
             }
+            // CSON: EmptyBlockCheck
         }
 
-        messageList
-                .add(ExtSystemsMessageUtil
-                        .createConvertExtToIntErrorMessage(
-                                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, //$NON-NLS-1$
+                externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

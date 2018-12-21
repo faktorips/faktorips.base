@@ -19,18 +19,12 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.util;visibility:=reexport,
  org.faktorips.dtflcommon;visibility:=reexport,
  org.faktorips.valuetypes,
- org.eclipse.search;bundle-version="3.4.0",
- org.eclipse.team.ui;bundle-version="3.4.0",
- org.eclipse.debug.core;bundle-version="3.4.0",
- org.eclipse.compare;bundle-version="3.4.0",
  org.eclipse.debug.ui;bundle-version="3.4.0",
  org.faktorips.eclipse.emf.codegen,
- org.eclipse.jdt.debug.ui;bundle-version="3.3.0",
- com.ibm.icu,
  org.eclipse.team.core;bundle-version="3.4.0",
  org.eclipse.gef;bundle-version="3.4.0",
  org.eclipse.core.filesystem;bundle-version="1.2.0",
- com.google.guava;bundle-version="12.0.0",
+ com.google.guava;bundle-version="18.0.0",
  opencsv;bundle-version="2.3.0",
  findbugsAnnotations;bundle-version="2.0.3";resolution:=optional
 Bundle-ActivationPolicy: lazy
@@ -102,6 +96,4 @@ Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.apache.commons.collections;version="3.2.1",
- org.apache.commons.collections.comparators;version="3.2.1",
- org.apache.commons.collections.map;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]"
