@@ -162,8 +162,16 @@ public class PolicyAssociationTest {
         assertEquals(2, source.getTargets1toN().size());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddTargetObject_NoMethod() {
+        Source source = new Source();
+        Target target = new Target();
+
+        association2.addTargetObject(source, target);
+    }
+
     @Test
-    public void testAddRemoveObject_to1_association() {
+    public void testRemoveTargetObject_to1_association() {
         Source source = new Source();
         Target target = new Target();
         source.setTarget(target);
@@ -173,7 +181,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddRemoveObject_to1_doNothingIfDifferentObject() {
+    public void testRemoveTargetObject_to1_doNothingIfDifferentObject() {
         Source source = new Source();
         Target target = new Target();
         Target target2 = new Target();
@@ -184,7 +192,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddRemoveObject_toN_composition() {
+    public void testRemoveTargetObject_toN_composition() {
         Source source = new Source();
         Target target = new Target();
         source.addTargets1toN(target);
@@ -197,7 +205,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddRemoveObject_toN_doNothingIfNotPresent() {
+    public void testRemoveTargetObject_toN_doNothingIfNotPresent() {
         Source source = new Source();
         Target target = new Target();
         source.addTargets1toN(target);
@@ -205,6 +213,15 @@ public class PolicyAssociationTest {
 
         association1ToN.removeTargetObject(source, target2);
         assertSame(target, source.getTargets1toN().get(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveTargetObject_NoMethod() {
+        Source source = new Source();
+        Target target = new Target();
+        source.setTarget(target);
+
+        association2.removeTargetObject(source, target);
     }
 
     @IpsPolicyCmptType(name = "MySource")

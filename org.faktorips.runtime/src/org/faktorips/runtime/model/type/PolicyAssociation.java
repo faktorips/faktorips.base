@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
+import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 
 /**
  * An association between two {@link PolicyCmptType PolicyCmptTypes}.
@@ -111,8 +113,17 @@ public class PolicyAssociation extends Association {
      * @param source the object to add a target object to
      * @param target the object to add to source
      * @return the changed source object
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationAdder @IpsAssociationAdder}. This is the case if the
+     *             association {@link #isDerivedUnion() is a derived union}.
      */
     public <S extends IModelObject> S addTargetObject(S source, IModelObject target) {
+        if (addMethod == null) {
+            throw new IllegalArgumentException(String.format(
+                    "The association %s on source object %s does not allow %s target objects%s.", getName(), source,
+                    isToOneAssociation() ? "setting" : "adding", isDerivedUnion() ? " because it is a derived union"
+                            : ("; make sure a method annotated with @" + IpsAssociationAdder.class + " exists")));
+        }
         invokeMethod(addMethod, source, target);
         return source;
     }
@@ -125,11 +136,21 @@ public class PolicyAssociation extends Association {
      * @param source the object to remove a target object from
      * @param targetToRemove the object to remove from this association in source
      * @return the changed source object
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationRemover @IpsAssociationRemover} (or
+     *             {@link IpsAssociationAdder @IpsAssociationAdder} for a ..1 association). This is
+     *             the case if the association {@link #isDerivedUnion() is a derived union}.
      */
     public <S extends IModelObject> S removeTargetObject(S source, IModelObject targetToRemove) {
         if (isToOneAssociation()) {
             resetTargetObject(source, targetToRemove);
         } else {
+            if (removeMethod == null) {
+                throw new IllegalArgumentException(String.format(
+                        "The association %s on source object %s does not allow removing target objects%s.", getName(),
+                        source, isDerivedUnion() ? " because it is a derived union"
+                                : ("; make sure a method annotated with @" + IpsAssociationRemover.class + " exists")));
+            }
             invokeMethod(removeMethod, source, targetToRemove);
         }
         return source;

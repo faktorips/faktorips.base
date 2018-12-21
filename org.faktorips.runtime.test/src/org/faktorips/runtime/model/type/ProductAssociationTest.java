@@ -205,8 +205,16 @@ public class ProductAssociationTest {
         assertSame(productGen2.target2.getId(), linksGen2Iter.next().getTargetId());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetLinks_NoMethod() {
+        Source source = new Source();
+        ProductAssociation association4 = productCmptType.getAssociation("asso4");
+
+        association4.getLinks(source, effectiveDate);
+    }
+
     @IpsProductCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "asso3" })
+    @IpsAssociations({ "asso", "asso2", "asso3", "asso4" })
     @IpsChangingOverTime(ProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class Source extends ProductComponent {
@@ -239,6 +247,12 @@ public class ProductAssociationTest {
         @IpsAssociationLinks(association = "asso3")
         public IProductComponentLink<Target> getLinkForAsso3() {
             return null;
+        }
+
+        @IpsAssociation(name = "asso4", pluralName = "assos4", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsDerivedUnion
+        public Target getTarget4() {
+            return target;
         }
 
         @Override

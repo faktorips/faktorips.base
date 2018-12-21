@@ -19,6 +19,7 @@ import java.util.List;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
+import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 
 public class ProductAssociation extends Association {
 
@@ -122,11 +123,14 @@ public class ProductAssociation extends Association {
      * component.
      * 
      * @param prodCmpt the source product component to retrieve the links from
-     * @param effectiveDate the effective-date of the adjustment (aka product component generation).
-     *            If <code>null</code> the latest product component generation is used. Ignored if
-     *            this is a static association ({@link #isChangingOverTime()}==false).
+     * @param effectiveDate the effective-date of the adjustment (a.k.a. product component
+     *            generation). Ignored if this is a static association
+     *            ({@link #isChangingOverTime()}==false).
      * @return the list of all link instances defined in the product component for this association.
      *         Returns a list with a single link instance for ..1 associations.
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationLinks @IpsAssociationLinks}. This is the case if the
+     *             association {@link #isDerivedUnion() is a derived union}.
      */
     public <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinks(IProductComponent prodCmpt,
             Calendar effectiveDate) {
@@ -141,6 +145,12 @@ public class ProductAssociation extends Association {
     @SuppressWarnings("unchecked")
     private <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinksFromObject(
             Object prodCmptOrGeneration) {
+        if (getLinksMethod == null) {
+            throw new IllegalArgumentException(String.format(
+                    "The association %s on %s does not allow retrieving links%s.", getName(), prodCmptOrGeneration,
+                    isDerivedUnion() ? " because it is a derived union"
+                            : ("; make sure a method annotated with @" + IpsAssociationLinks.class + " exists")));
+        }
         if (isToOneAssociation()) {
             IProductComponentLink<T> link = (IProductComponentLink<T>)invokeMethod(getLinksMethod,
                     prodCmptOrGeneration);
