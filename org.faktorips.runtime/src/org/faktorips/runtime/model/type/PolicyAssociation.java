@@ -11,6 +11,8 @@ package org.faktorips.runtime.model.type;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.faktorips.runtime.IModelObject;
@@ -106,44 +108,137 @@ public class PolicyAssociation extends Association {
     }
 
     /**
-     * Adds the target object to this association in the source object. If this is a ..1 ("to one")
+     * Adds the target objects to this association in the source object. If this is a ..1 ("to one")
      * association, the target object is set (and thus the potentially existing object is
      * overwritten).
+     * <p>
+     * The return value is the updated source object. It could be used to directly create a tree of
+     * objects. For example with a model like:
+     * 
+     * <pre>
+     * {@code
+     * Policy <>---- Contract <>---- Coverage
+     * }
+     * </pre>
+     *
+     * You could write such code:
+     * 
+     * <pre>
+     * <code>
+     *      contracts.addTargetObjects(policy,
+     *          coverages.addTargetObjects(contract,
+     *              coverage1, coverage2));
+     * </code>
+     * </pre>
      * 
      * @param source the object to add a target object to
-     * @param target the object to add to source
+     * @param targets the objects to add to source
      * @return the changed source object
      * @throws IllegalArgumentException if there is no method annotated with
      *             {@link IpsAssociationAdder @IpsAssociationAdder}. This is the case if the
      *             association {@link #isDerivedUnion() is a derived union}.
+     * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
+     *             one") association
      */
-    public <S extends IModelObject> S addTargetObject(S source, IModelObject target) {
+    public <S extends IModelObject> S addTargetObjects(S source, Collection<IModelObject> targets) {
         if (addMethod == null) {
             throw new IllegalArgumentException(String.format(
                     "The association %s on source object %s does not allow %s target objects%s.", getName(), source,
                     isToOneAssociation() ? "setting" : "adding", isDerivedUnion() ? " because it is a derived union"
                             : ("; make sure a method annotated with @" + IpsAssociationAdder.class + " exists")));
         }
-        invokeMethod(addMethod, source, target);
+        if (isToOneAssociation() && targets.size() > 1) {
+            throw new IllegalArgumentException(String.format(
+                    "The association %s on source object %s allows a maxmimum of one target object but %s were provided.",
+                    getName(), source, targets.size()));
+        }
+        for (IModelObject target : targets) {
+            invokeMethod(addMethod, source, target);
+        }
         return source;
+    }
+
+    /**
+     * Adds the target objects to this association in the source object. If this is a ..1 ("to one")
+     * association, the target object is set (and thus the potentially existing object is
+     * overwritten).
+     * <p>
+     * The return value is the updated source object. It could be used to directly create a tree of
+     * objects. For example with a model like:
+     * 
+     * <pre>
+     * {@code
+     * Policy <>---- Contract <>---- Coverage
+     * }
+     * </pre>
+     *
+     * You could write such code:
+     * 
+     * <pre>
+     * <code>
+     *      contracts.addTargetObjects(policy,
+     *          coverages.addTargetObjects(contract,
+     *              coverage1, coverage2));
+     * </code>
+     * </pre>
+     * 
+     * @param source the object to add a target object to
+     * @param targets the objects to add to source
+     * @return the changed source object
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationAdder @IpsAssociationAdder}. This is the case if the
+     *             association {@link #isDerivedUnion() is a derived union}.
+     * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
+     *             one") association
+     */
+    public <S extends IModelObject> S addTargetObjects(S source, IModelObject... targets) {
+        return addTargetObjects(source, Arrays.asList(targets));
     }
 
     /**
      * Removes the target object from this association in the source object. Does nothing if the
      * target object is not currently referenced (in this association). Sets to <code>null</code> if
      * this is a ..1 ("to one") association.
+     * <p>
+     * The return value is the updated source object. It could be used to directly remove objects in
+     * a tree of objects. For example with a model like:
+     * 
+     * <pre>
+     * {@code
+     * Policy <>---- Contract <>---- Coverage
+     * }
+     * </pre>
+     *
+     * You could write such code:
+     * 
+     * <pre>
+     * <code>
+     *      contracts.removeTargetObjects(policy,
+     *          coverages.removeTargetObjects(contract,
+     *              coverage1, coverage2));
+     * </code>
+     * </pre>
      * 
      * @param source the object to remove a target object from
-     * @param targetToRemove the object to remove from this association in source
+     * @param targetsToRemove the objects to remove from this association in source
      * @return the changed source object
      * @throws IllegalArgumentException if there is no method annotated with
      *             {@link IpsAssociationRemover @IpsAssociationRemover} (or
      *             {@link IpsAssociationAdder @IpsAssociationAdder} for a ..1 association). This is
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
+     * @throws IllegalArgumentException if there are multiple or no target objects provided for a
+     *             ..1 ("to one") association
      */
-    public <S extends IModelObject> S removeTargetObject(S source, IModelObject targetToRemove) {
+    public <S extends IModelObject> S removeTargetObjects(S source, List<IModelObject> targetsToRemove) {
         if (isToOneAssociation()) {
-            resetTargetObject(source, targetToRemove);
+            if (targetsToRemove.size() > 1) {
+                throw new IllegalArgumentException(String.format(
+                        "The association %s on source object %s allows a maxmimum of one target object but %s were tried to remove.",
+                        getName(), source, targetsToRemove.size()));
+            }
+            if (targetsToRemove.size() == 1) {
+                resetTargetObject(source, targetsToRemove.get(0));
+            }
         } else {
             if (removeMethod == null) {
                 throw new IllegalArgumentException(String.format(
@@ -151,9 +246,49 @@ public class PolicyAssociation extends Association {
                         source, isDerivedUnion() ? " because it is a derived union"
                                 : ("; make sure a method annotated with @" + IpsAssociationRemover.class + " exists")));
             }
-            invokeMethod(removeMethod, source, targetToRemove);
+            for (IModelObject targetToRemove : targetsToRemove) {
+                invokeMethod(removeMethod, source, targetToRemove);
+            }
         }
         return source;
+    }
+
+    /**
+     * Removes the target objects from this association in the source object. Does nothing if the
+     * target object is not currently referenced (in this association). Sets to <code>null</code> if
+     * this is a ..1 ("to one") association.
+     * <p>
+     * The return value is the updated source object. It could be used to directly remove objects in
+     * a tree of objects. For example with a model like:
+     * 
+     * <pre>
+     * {@code
+     * Policy <>---- Contract <>---- Coverage
+     * }
+     * </pre>
+     *
+     * You could write such code:
+     * 
+     * <pre>
+     * <code>
+     *      contracts.removeTargetObjects(policy,
+     *          coverages.removeTargetObjects(contract,
+     *              coverage1, coverage2));
+     * </code>
+     * </pre>
+     * 
+     * @param source the object to remove a target object from
+     * @param targetsToRemove the objects to remove from this association in source
+     * @return the changed source object
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationRemover @IpsAssociationRemover} (or
+     *             {@link IpsAssociationAdder @IpsAssociationAdder} for a ..1 association). This is
+     *             the case if the association {@link #isDerivedUnion() is a derived union}.
+     * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
+     *             one") association
+     */
+    public <S extends IModelObject> S removeTargetObjects(S source, IModelObject... targetsToRemove) {
+        return removeTargetObjects(source, Arrays.asList(targetsToRemove));
     }
 
     /**
@@ -165,7 +300,7 @@ public class PolicyAssociation extends Association {
      */
     private <S extends IModelObject> void resetTargetObject(S source, IModelObject targetToReset) {
         if (getTargetObjects(source).contains(targetToReset)) {
-            addTargetObject(source, null);
+            addTargetObjects(source, new IModelObject[] { null });
         }
     }
 }
