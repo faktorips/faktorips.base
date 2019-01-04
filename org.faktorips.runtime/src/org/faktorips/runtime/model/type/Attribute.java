@@ -38,11 +38,11 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
     }
 
     /**
-     * Checks whether this attribute is changing over time. For product attribute that means the
+     * Returns true if this attribute is changing over time. For product attribute that means the
      * attribute resides in the generation. For policy attributes the optional product configuration
-     * ({@link #isProductRelevant()}) resides in the generation.
+     * resides in the generation.
      * 
-     * @return whether or not this attribute is changing over time.
+     * @return <code>true</code> if the attribute is changing over time, <code>false</code> if not
      */
     @Override
     public boolean isChangingOverTime() {
@@ -50,22 +50,29 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
     }
 
     /**
-     * Returns if this attribute is product relevant.
+     * Returns true if this attribute is configured by the product. Product attributes are always
+     * product relevant.
+     * 
+     * @return <code>true</code> if this attribute is configured by the product, <code>false</code>
+     *         if not
      */
     @Override
     public abstract boolean isProductRelevant();
 
     /**
-     * @return this attribute's datatype <code>Class</code>.
-     * @throws ClassNotFoundException if the datatype's class can not be loaded.
+     * Returns the data type of this attribute.
+     * 
+     * @return the attribute's datatype <code>Class</code>
      */
     @Override
-    public Class<?> getDatatype() throws ClassNotFoundException {
+    public Class<?> getDatatype() {
         return datatype;
     }
 
     /**
-     * @return what kind of attribute this is.
+     * Returns the possible kinds of this attribute.
+     * 
+     * @return the kind of attribute
      */
     public AttributeKind getAttributeKind() {
         return attributeAnnotation.kind();
@@ -83,6 +90,8 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
     }
 
     /**
+     * Returns the <code>ValueSetKind</code> of this attribute.
+     * 
      * @return the kind of value set restricting this attribute
      */
     public ValueSetKind getValueSetKind() {

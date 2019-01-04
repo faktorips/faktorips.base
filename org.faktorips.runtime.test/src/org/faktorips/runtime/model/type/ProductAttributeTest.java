@@ -68,7 +68,8 @@ public class ProductAttributeTest {
                 is(equalTo((Object)"foofoo")));
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foobaz")));
-        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, new GregorianCalendar(1999, 1, 2)),
+        assertThat(
+                productCmptType.getAttribute("attrGen").getValue(productComponent, new GregorianCalendar(1999, 1, 2)),
                 is(equalTo((Object)"2ndGen")));
     }
 
@@ -78,7 +79,8 @@ public class ProductAttributeTest {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)42)));
-        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null), is(equalTo((Object)"foobar")));
+        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
+                is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
                 is(equalTo((Object)Arrays.asList("hello", "world"))));
         productComponent = new SubProdukt();
@@ -87,8 +89,10 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
                 is(equalTo((Object)Arrays.asList("hello", "world"))));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)23)));
-        assertThat(productCmptType.getAttribute("attr3").getValue(productComponent, null), is(equalTo((Object)"foofoo")));
-        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null), is(equalTo((Object)"foobaz")));
+        assertThat(productCmptType.getAttribute("attr3").getValue(productComponent, null),
+                is(equalTo((Object)"foofoo")));
+        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
+                is(equalTo((Object)"foobaz")));
     }
 
     @Test
@@ -122,7 +126,7 @@ public class ProductAttributeTest {
     }
 
     @Test
-    public void testGetDatatype() throws ClassNotFoundException {
+    public void testGetDatatype() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         assertThat(productCmptType.getAttribute("attr1").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));

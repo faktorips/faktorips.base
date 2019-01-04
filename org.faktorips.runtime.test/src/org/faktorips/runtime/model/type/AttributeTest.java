@@ -37,7 +37,7 @@ public class AttributeTest {
     private final Attribute subAttr2 = subtype.getAttribute("attr2");
 
     @Test
-    public void testGetDatatype() throws ClassNotFoundException {
+    public void testGetDatatype() {
         assertEquals(String.class, constant.getDatatype());
         assertEquals(Integer.TYPE, attr1.getDatatype());
         assertEquals(Date.class, attr2.getDatatype());
