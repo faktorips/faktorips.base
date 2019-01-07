@@ -106,9 +106,9 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
 
         try {
             IProductCmpt productCmpt = productCmptGeneration.getProductCmpt();
-            IProductCmptTreeStructure structure = productCmpt.getStructure(getOldValidFrom().getValidFrom(),
+            IProductCmptTreeStructure newStructure = productCmpt.getStructure(getOldValidFrom().getValidFrom(),
                     productCmpt.getIpsProject());
-            initialize(structure);
+            initialize(newStructure);
         } catch (CycleInProductStructureException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             setOldValidFrom(oldValue);

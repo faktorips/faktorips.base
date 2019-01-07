@@ -54,15 +54,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
     private final int type;
 
     /**
-     * @param type The type of the wizard displaying this page.
-     * 
-     * @return The title for this page - which depends on the given type.
-     */
-    private static String getTitle(int type) {
-        return Messages.ReferenceAndPreviewPage_title;
-    }
-
-    /**
      * Create a new page to show the previously selected products with new names and allow the user
      * to choose between copy and reference, select the target package, search- and replace-pattern.
      * 
@@ -83,6 +74,15 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         //
         setPageComplete(true);
+    }
+
+    /**
+     * @param type The type of the wizard displaying this page.
+     * 
+     * @return The title for this page - which depends on the given type.
+     */
+    private static String getTitle(int type) {
+        return Messages.ReferenceAndPreviewPage_title;
     }
 
     @Override
@@ -138,10 +138,11 @@ public class ReferenceAndPreviewPage extends WizardPage {
         if (visible) {
             if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
                 String productCmptTypeName;
-                productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
-                        getStructure().getRoot().getProductCmpt()
+                productCmptTypeName = IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedLabel(getStructure().getRoot().getProductCmpt()
                                 .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
-                setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy, productCmptTypeName));
+                setDescription(
+                        NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy, productCmptTypeName));
             } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
                 String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
                         .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
@@ -154,20 +155,19 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         updateWorkingDateLabel();
-
-                        if (monitor == null) {
-                            monitor = new NullProgressMonitor();
+                        IProgressMonitor theMonitor = monitor;
+                        if (theMonitor == null) {
+                            theMonitor = new NullProgressMonitor();
                         }
-                        monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
-
-                        monitor.worked(1);
+                        theMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
+                        theMonitor.worked(1);
                         tree.setInput(getStructure());
-                        monitor.worked(1);
+                        theMonitor.worked(1);
                         tree.expandAll();
-                        monitor.worked(1);
-                        monitor.worked(1);
-                        monitor.worked(1);
-                        monitor.worked(1);
+                        theMonitor.worked(1);
+                        theMonitor.worked(1);
+                        theMonitor.worked(1);
+                        theMonitor.worked(1);
                     }
 
                 });
@@ -177,6 +177,25 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
+    }
+
+    @Override
+    public DeepCopyWizard getWizard() {
+        return (DeepCopyWizard)super.getWizard();
+    }
+
+    private DeepCopyPresentationModel getPresentationModel() {
+        if (getWizard() == null) {
+            return null;
+        }
+        return getWizard().getPresentationModel();
+    }
+
+    private IProductCmptTreeStructure getStructure() {
+        if (getPresentationModel() == null) {
+            return null;
+        }
+        return getPresentationModel().getStructure();
     }
 
     /**
@@ -196,8 +215,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
         @Override
         public Object[] getChildren(Object parentElement) {
             if (treeStatus.isEnabled((IProductCmptStructureReference)parentElement)) {
-                IProductCmptStructureReference[] children = (IProductCmptStructureReference[])super
-                        .getChildren(parentElement);
+                IProductCmptStructureReference[] children = (IProductCmptStructureReference[])super.getChildren(
+                        parentElement);
                 List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
                 for (IProductCmptStructureReference child : children) {
                     if (treeStatus.isEnabled(child)) {
@@ -226,25 +245,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
             return new Object[0];
         }
 
-    }
-
-    @Override
-    public DeepCopyWizard getWizard() {
-        return (DeepCopyWizard)super.getWizard();
-    }
-
-    private DeepCopyPresentationModel getPresentationModel() {
-        if (getWizard() == null) {
-            return null;
-        }
-        return getWizard().getPresentationModel();
-    }
-
-    private IProductCmptTreeStructure getStructure() {
-        if (getPresentationModel() == null) {
-            return null;
-        }
-        return getPresentationModel().getStructure();
     }
 
 }

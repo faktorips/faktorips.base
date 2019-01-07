@@ -70,7 +70,7 @@ public class LinkStatus {
         LINK(Messages.SourcePage_operationLink),
         UNDEFINED(""); //$NON-NLS-1$
 
-        public final String text;
+        private final String text;
 
         private CopyOrLink(String text) {
             this.text = text;

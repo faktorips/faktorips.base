@@ -98,14 +98,14 @@ public class DeepCopyWizard extends ResizableWizard {
 
         if (type == TYPE_COPY_PRODUCT) {
             super.setWindowTitle(Messages.DeepCopyWizard_title);
-            super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "wizards/DeepCopyWizard.png")); //$NON-NLS-1$
+            super.setDefaultPageImageDescriptor(
+                    IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeepCopyWizard.png")); //$NON-NLS-1$
         } else {
             String title = NLS.bind(Messages.DeepCopyWizard_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
             super.setWindowTitle(title);
-            super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "wizards/NewVersionWizard.png")); //$NON-NLS-1$
+            super.setDefaultPageImageDescriptor(
+                    IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewVersionWizard.png")); //$NON-NLS-1$
         }
         settingDefaults();
 
@@ -219,8 +219,8 @@ public class DeepCopyWizard extends ResizableWizard {
                 @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InterruptedException {
                     monitor.beginTask("", 2); //$NON-NLS-1$
-                    final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview.getHandles(
-                            new SubProgressMonitor(monitor, 1), toCopy);
+                    final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
+                            .getHandles(new SubProgressMonitor(monitor, 1), toCopy);
                     DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());

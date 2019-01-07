@@ -18,7 +18,6 @@ import java.util.Set;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 
@@ -56,8 +56,11 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
 
     private IIpsPackageFragmentRoot root;
 
+    private final IDeepCopySmartModeBehavior deepCopySmartModeBehavior;
+
     public DeepCopyTreeStatus() {
         ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        deepCopySmartModeBehavior = IpsUIPlugin.getDefault().getDeepCopySmartModeBehavior();
     }
 
     /**
@@ -228,18 +231,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     private CopyOrLink getCopyOrLinkInSmartMode(IProductCmptStructureReference reference) {
-        IIpsObject wrappedIpsObject = reference.getWrappedIpsObject();
-        // wrappedIpsObject may be null for ProductCmptStructureTblUsageReference
-        if (wrappedIpsObject != null && wrappedIpsObject.getIpsPackageFragment() != null) {
-            IIpsPackageFragmentRoot referencePackageFragmentRoot = wrappedIpsObject.getIpsPackageFragment().getRoot();
-            if (root.equals(referencePackageFragmentRoot)) {
-                return CopyOrLink.COPY;
-            } else {
-                return CopyOrLink.LINK;
-            }
-        } else {
-            return CopyOrLink.UNDEFINED;
-        }
+        return deepCopySmartModeBehavior.getCopyOrLink(root, reference);
     }
 
     /**
