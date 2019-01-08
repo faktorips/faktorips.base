@@ -52,7 +52,7 @@ def package static field (XPolicyAssociation it) '''
         «ELSEIF compositionDetailToMaster»
             /**
              * «localizedJDoc("FIELD_PARENT", targetClassName)»
-             * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+             * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
             «getAnnotations(POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD)»
@@ -240,6 +240,7 @@ def private static generateSetter (XPolicyAssociation it) '''
             /** «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
              * @generated
              */
+            «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
             «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAddInternal,targetInterfaceNameBase, "newParent")» {
                 «IF constrain»
@@ -267,6 +268,7 @@ def private static generateSetter (XPolicyAssociation it) '''
              * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
              * @generated
              */
+            «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
             «overrideAnnotationForConstainedAssociation()»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "newObject")»
             «IF genInterface()»;«ELSE»
@@ -332,7 +334,8 @@ def private static generateAdder (XPolicyAssociation it) '''
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          * @generated
          */
-           «overrideAnnotationForConstainedAssociation()»
+        «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
+        «overrideAnnotationForConstainedAssociation()»
         public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "objectToAdd")»
         «IF genInterface()»;«ELSE»
         {
@@ -501,6 +504,7 @@ def private static remove (XPolicyAssociation it) '''
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          * @generated
          */
+        «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER, genInterface())»
          «overrideAnnotationForPublishedMethodImplementation()»
         public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»
         «IF genInterface()»;«ELSE»

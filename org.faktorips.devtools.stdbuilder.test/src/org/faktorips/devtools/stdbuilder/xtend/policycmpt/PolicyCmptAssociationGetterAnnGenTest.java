@@ -17,17 +17,17 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
-import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptAssociationAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptAssociationGetterAnnGen;
 import org.junit.Test;
 
-public class PolicyCmptAssociationAnnGenTest {
+public class PolicyCmptAssociationGetterAnnGenTest {
 
     private static final String INVERSE_ASSOCIATION = "inverseAssociation";
 
     private String annInverseAssociation = "@IpsInverseAssociation(\"" + INVERSE_ASSOCIATION + "\")"
             + System.getProperty("line.separator");
 
-    private PolicyCmptAssociationAnnGen annGen = new PolicyCmptAssociationAnnGen();
+    private PolicyCmptAssociationGetterAnnGen annGen = new PolicyCmptAssociationGetterAnnGen();
 
     @Test
     public void testIsGenerateAnnotationFor() {

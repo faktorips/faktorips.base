@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.stdbuilder.xtend;
+package org.faktorips.devtools.stdbuilder.xtend.association;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
-import org.faktorips.devtools.stdbuilder.xtend.AbstractAssociationAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.association.AbstractAssociationAnnGen;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.Test;
 import org.junit.runner.RunWith;

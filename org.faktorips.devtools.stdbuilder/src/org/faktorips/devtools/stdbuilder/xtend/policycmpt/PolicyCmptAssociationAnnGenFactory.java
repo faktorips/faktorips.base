@@ -13,6 +13,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xtend.association.SimpleAssociationAnnGen;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
+import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 
 public class PolicyCmptAssociationAnnGenFactory implements IAnnotationGeneratorFactory {
 
@@ -23,10 +27,16 @@ public class PolicyCmptAssociationAnnGenFactory implements IAnnotationGeneratorF
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        if (type == AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER) {
-            return new PolicyCmptAssociationAnnGen();
-        } else {
-            return null;
+        switch (type) {
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER:
+                return new PolicyCmptAssociationGetterAnnGen();
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER:
+                return new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationAdder.class);
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER:
+                return new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationRemover.class);
+
+            default:
+                return null;
         }
     }
 

@@ -12,23 +12,29 @@ package org.faktorips.runtime.model.type;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductComponentLink;
+import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 
 public class ProductAssociation extends Association {
 
-    private boolean changingOverTime;
+    private final boolean changingOverTime;
+    private final Method getLinksMethod;
 
-    public ProductAssociation(Type type, Method getterMethod, boolean changingOverTime) {
+    public ProductAssociation(Type type, Method getterMethod, boolean changingOverTime, Method getLinksMethod) {
         super(type, getterMethod);
         this.changingOverTime = changingOverTime;
+        this.getLinksMethod = getLinksMethod;
     }
 
     @Override
     public ProductAssociation createOverwritingAssociationFor(Type subType) {
-        return new ProductAssociation(subType, getGetterMethod(), changingOverTime);
+        return new ProductAssociation(subType, getGetterMethod(), changingOverTime, getLinksMethod);
     }
 
     /**
@@ -110,5 +116,51 @@ public class ProductAssociation extends Association {
      */
     public boolean isChangingOverTime() {
         return changingOverTime;
+    }
+
+    /**
+     * Retrieves all {@link IProductComponentLink links} for this association from a product
+     * component.
+     * 
+     * @param prodCmpt the source product component to retrieve the links from
+     * @param effectiveDate the effective-date of the adjustment (a.k.a. product component
+     *            generation). Ignored if this is a static association
+     *            ({@link #isChangingOverTime()}==false).
+     * @return the list of all link instances defined in the product component for this association.
+     *         Returns a list with a single link instance for ..1 associations.
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationLinks @IpsAssociationLinks}. This is the case if the
+     *             association {@link #isDerivedUnion() is a derived union}.
+     */
+    public <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinks(IProductComponent prodCmpt,
+            Calendar effectiveDate) {
+        if (isChangingOverTime()) {
+            Object generation = getRelevantProductObject(prodCmpt, effectiveDate, true);
+            return getLinksFromObject(generation);
+        } else {
+            return getLinksFromObject(prodCmpt);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinksFromObject(
+            Object prodCmptOrGeneration) {
+        if (getLinksMethod == null) {
+            throw new IllegalArgumentException(String.format(
+                    "The association %s on %s does not allow retrieving links%s.", getName(), prodCmptOrGeneration,
+                    isDerivedUnion() ? " because it is a derived union"
+                            : ("; make sure a method annotated with @" + IpsAssociationLinks.class + " exists")));
+        }
+        if (isToOneAssociation()) {
+            IProductComponentLink<T> link = (IProductComponentLink<T>)invokeMethod(getLinksMethod,
+                    prodCmptOrGeneration);
+            if (link == null) {
+                return Collections.emptyList();
+            } else {
+                return Collections.singletonList(link);
+            }
+        } else {
+            return (Collection<IProductComponentLink<T>>)invokeMethod(getLinksMethod, prodCmptOrGeneration);
+        }
     }
 }

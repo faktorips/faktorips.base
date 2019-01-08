@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
-import org.faktorips.devtools.stdbuilder.xtend.AbstractAssociationAnnGen;
+import org.faktorips.devtools.stdbuilder.xtend.association.AbstractAssociationAnnGen;
 
 public class ProductCmptAssociationAnnGen extends AbstractAssociationAnnGen {
 
