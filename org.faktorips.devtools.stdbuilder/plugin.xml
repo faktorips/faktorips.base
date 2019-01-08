@@ -205,7 +205,7 @@
                class="org.faktorips.devtools.stdbuilder.ChangesOverTimeNamingConventionPropertyDef"
                description="%changesOverTimeNamingConventionDescription"
                label="%changesOverTimeNamingConventionLabel"
-               name="changesOverTimeNamingConvention"
+               name="changesInTimeNamingConvention"
                defaultValue=""
                type="string">
          </builderSetPropertyDef>
