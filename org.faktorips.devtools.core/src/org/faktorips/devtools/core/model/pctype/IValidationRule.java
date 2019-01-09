@@ -44,6 +44,8 @@ public interface IValidationRule extends IProductCmptProperty {
 
     public static final String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
 
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+
     /**
      * The separator to concatenate the key. We use the minus character because this character is
      * not allowed in names.
@@ -290,5 +292,10 @@ public interface IValidationRule extends IProductCmptProperty {
      * Sets the list of markers.
      */
     public void setMarkers(List<String> markers);
+
+    /**
+     * Set the given value to changingOverTime property
+     */
+    public void setChangingOverTime(boolean changingOverTime);
 
 }

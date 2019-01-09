@@ -134,6 +134,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("messageText", validationRule.getMessageText().get(Locale.GERMAN).getValue());
         assertEquals(MessageSeverity.WARNING, validationRule.getMessageSeverity());
         assertFalse(validationRule.isAppliedForAllBusinessFunctions());
+        assertTrue(validationRule.isChangingOverTime());
         String[] functions = validationRule.getBusinessFunctions();
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
@@ -152,6 +153,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule = policyCmptType.newRule(); // => id=1 because it's the second validationRule
         validationRule.setName("checkAge");
         validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.setChangingOverTime(true);
         validationRule.setMessageCode("ageMissing");
         validationRule.getMessageText().add(new LocalizedString(Locale.GERMAN, "messageText"));
         validationRule.setMessageSeverity(MessageSeverity.WARNING);
@@ -171,6 +173,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("messageText", copy.getMessageText().get(Locale.GERMAN).getValue());
         assertEquals(MessageSeverity.WARNING, copy.getMessageSeverity());
         assertTrue(copy.isAppliedForAllBusinessFunctions());
+        assertTrue(copy.isChangingOverTime());
         String[] functions = copy.getBusinessFunctions();
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
@@ -313,12 +316,12 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         a.setName("a1");
         a.setAttributeType(AttributeType.CONSTANT);
         validationRule.addValidatedAttribute("a1");
-        assertNotNull(validationRule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
-                IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+        assertNotNull(validationRule.validate(ipsSrcFile.getIpsProject())
+                .getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
 
         a.setAttributeType(AttributeType.CHANGEABLE);
-        assertNull(validationRule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
-                IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+        assertNull(validationRule.validate(ipsSrcFile.getIpsProject())
+                .getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
     }
 
     @Test
@@ -400,8 +403,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.setConfigurableByProductComponent(true);
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -415,8 +418,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
     }
 
@@ -431,8 +434,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
     }
 
@@ -447,8 +450,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
     }
 
@@ -463,8 +466,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
     }
 
@@ -479,8 +482,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
 }

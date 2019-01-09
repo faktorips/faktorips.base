@@ -82,6 +82,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private boolean activatedByDefault = true;
 
+    private boolean changingOverTime = true;
+
     /** The markers that are applied to this rule. */
     private List<String> markers = new ArrayList<String>();
 
@@ -248,8 +250,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
         }
         if (!isAppliedForAllBusinessFunctions() && functions.isEmpty()) {
             String text = Messages.ValidationRule_msgOneBusinessFunction;
-            list.add(new Message(
-                    "", text, Message.ERROR, this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)); //$NON-NLS-1$
+            list.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
+                    IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
         }
     }
 
@@ -262,8 +264,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
             }
             if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())) {
                 String text = Messages.ValidationRule_msgValueSetRule;
-                msgList.add(new Message(
-                        "", text, Message.ERROR, this, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE)); //$NON-NLS-1$
+                msgList.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
+                        IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
             }
         }
     }
@@ -282,11 +284,11 @@ public class ValidationRule extends TypePart implements IValidationRule {
             String validatedAttribute = validatedAttributes.get(i);
             if (!attributeNames.contains(validatedAttribute)) {
                 String text = Messages.ValidationRule_msgUndefinedAttribute;
-                list.add(new Message(MSGCODE_UNDEFINED_ATTRIBUTE, text, Message.ERROR, new ObjectProperty(this,
-                        "validatedAttributes", i))); //$NON-NLS-1$
+                list.add(new Message(MSGCODE_UNDEFINED_ATTRIBUTE, text, Message.ERROR,
+                        new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
             } else {
-                IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findPolicyCmptTypeAttribute(
-                        validatedAttribute, ipsProject);
+                IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findPolicyCmptTypeAttribute(validatedAttribute,
+                        ipsProject);
                 if (attribute.getAttributeType() == AttributeType.CONSTANT) {
                     list.add(new Message(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED,
                             Messages.ValidationRule_ConstantAttributesCantBeValidated, Message.ERROR,
@@ -310,9 +312,10 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private void validateNoLineSeperators(MessageList list) {
         for (LocalizedString localizedString : msgText.values()) {
             String message = localizedString.getValue();
-            if (StringUtils.isNotEmpty(SystemUtils.LINE_SEPARATOR) && message.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
-                String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed, localizedString.getLocale()
-                        .getDisplayLanguage());
+            if (StringUtils.isNotEmpty(SystemUtils.LINE_SEPARATOR)
+                    && message.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
+                String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed,
+                        localizedString.getLocale().getDisplayLanguage());
                 list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, text, Message.ERROR, this,
                         IValidationRule.PROPERTY_MESSAGE_TEXT));
             }
@@ -362,16 +365,17 @@ public class ValidationRule extends TypePart implements IValidationRule {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
-        appliedForAllBusinessFunction = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
+        appliedForAllBusinessFunction = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
         msgCode = element.getAttribute(PROPERTY_MESSAGE_CODE);
         msgSeverity = MessageSeverity.getMessageSeverity(element.getAttribute(PROPERTY_MESSAGE_SEVERITY));
-        checkValueAgainstValueSetRule = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
-        validatedAttrSpecifiedInSrc = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
-        configurableByProductComponent = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
+        checkValueAgainstValueSetRule = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
+        validatedAttrSpecifiedInSrc = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
+        configurableByProductComponent = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
+        changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         if (element.hasAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)) {
             activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
         } else {
@@ -430,6 +434,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
                 String.valueOf(configurableByProductComponent));
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
+        newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
         appendChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, newElement);
         appendChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
         appendChildrenForMarkers(newElement);
@@ -563,7 +568,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     @Override
     public boolean isChangingOverTime() {
-        return true;
+        return changingOverTime;
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changingOverTime) {
+        this.changingOverTime = changingOverTime;
     }
 
     @Override
