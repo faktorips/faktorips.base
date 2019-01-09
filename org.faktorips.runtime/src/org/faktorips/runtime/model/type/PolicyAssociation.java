@@ -139,6 +139,8 @@ public class PolicyAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
+     * 
+     * @since 3.22
      */
     public <S extends IModelObject> S addTargetObjects(S source, Collection<IModelObject> targets) {
         if (addMethod == null) {
@@ -190,6 +192,8 @@ public class PolicyAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
+     * 
+     * @since 3.22
      */
     public <S extends IModelObject> S addTargetObjects(S source, IModelObject... targets) {
         return addTargetObjects(source, Arrays.asList(targets));
@@ -228,6 +232,8 @@ public class PolicyAssociation extends Association {
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple or no target objects provided for a
      *             ..1 ("to one") association
+     * 
+     * @since 3.22
      */
     public <S extends IModelObject> S removeTargetObjects(S source, List<IModelObject> targetsToRemove) {
         if (isToOneAssociation()) {
@@ -286,6 +292,8 @@ public class PolicyAssociation extends Association {
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
+     * 
+     * @since 3.22
      */
     public <S extends IModelObject> S removeTargetObjects(S source, IModelObject... targetsToRemove) {
         return removeTargetObjects(source, Arrays.asList(targetsToRemove));
