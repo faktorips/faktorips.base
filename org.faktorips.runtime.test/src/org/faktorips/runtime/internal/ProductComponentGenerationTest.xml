@@ -39,10 +39,8 @@
 	<Formula formulaSignature="emptyFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b2">
     	<Expression isNull="false"></Expression>
     </Formula>
-	
-	
-	<ValidationRuleConfig ruleName="Regel1" active="true"/>
-	<ValidationRuleConfig ruleName="RegelZwei" active="false"/>
-	<ValidationRuleConfig ruleName="RegelDrei" active="xxx"/>
+    <ValidationRuleConfig ruleName="activeRule" active="true" />
+    <ValidationRuleConfig ruleName="inactiveRule" active="false" />
+    <ValidationRuleConfig ruleName="invalidActivationRule" active="xxx" />
 </Generation>
 

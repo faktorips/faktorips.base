@@ -295,6 +295,16 @@ public class IpsModelTest {
             return null;
         }
 
+        @Override
+        public boolean isValidationRuleActivated(String ruleName) {
+            return false;
+        }
+
+        @Override
+        public void setValidationRuleActivated(String ruleName, boolean active) {
+            // nothing to do
+        }
+
     }
 
     private abstract static class TestProductWithoutAnnotation implements IProductComponent {

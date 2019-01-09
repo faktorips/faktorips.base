@@ -44,4 +44,31 @@ public interface IProductObject extends IProductComponentLinkSource {
      */
     public Date getValidFrom(TimeZone zone);
 
+    /**
+     * Returns whether the validation rule with the given name is configured as active in this
+     * {@link IProductObject}. If there is no configuration for the given rule, <code>false</code>
+     * is returned.
+     * <p>
+     * Please be aware that only one of {@link IProductComponent} or
+     * {@link IProductComponentGeneration} can configure any given rule depending on its
+     * changing-over-time configuration.
+     * 
+     * @param ruleName the name of the rule in question
+     * @return <code>true</code> if the rule was activated, <code>false</code> else.
+     * @since 3.22
+     */
+    public boolean isValidationRuleActivated(String ruleName);
+
+    /**
+     * Enables or disables validation for a specific rule.
+     * 
+     * @param ruleName the name of the rule in question
+     * @param active indicating whether the validation rule is configured as active
+     * @throws IllegalRepositoryModificationException if the {@link IRuntimeRepository} containing
+     *             this {@link IProductObject} is not {@link IRuntimeRepository#isModifiable()
+     *             modifiable}
+     * @since 3.22
+     */
+    public void setValidationRuleActivated(String ruleName, boolean active);
+
 }

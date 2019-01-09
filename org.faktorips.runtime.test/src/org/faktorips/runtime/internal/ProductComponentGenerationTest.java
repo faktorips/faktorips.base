@@ -68,24 +68,16 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
 
     @Test
     public void testSetValidationRuleActivated() {
-        Element genElement = getTestDocument().getDocumentElement();
-        gen.initFromXml(genElement);
 
-        gen.setValidationRuleActivated("Regel1", true);
-        gen.setValidationRuleActivated("RegelZwei", true);
-        gen.setValidationRuleActivated("RegelDrei", true);
+        assertEquals(false, gen.isValidationRuleActivated("MyRule"));
+        
+        gen.setValidationRuleActivated("MyRule", true);
 
-        assertEquals(true, gen.isValidationRuleActivated("Regel1"));
-        assertEquals(true, gen.isValidationRuleActivated("RegelZwei"));
-        assertEquals(true, gen.isValidationRuleActivated("RegelDrei"));
+        assertEquals(true, gen.isValidationRuleActivated("MyRule"));
 
-        gen.setValidationRuleActivated("Regel1", false);
-        gen.setValidationRuleActivated("RegelZwei", false);
-        gen.setValidationRuleActivated("RegelDrei", false);
+        gen.setValidationRuleActivated("MyRule", false);
 
-        assertEquals(false, gen.isValidationRuleActivated("Regel1"));
-        assertEquals(false, gen.isValidationRuleActivated("RegelZwei"));
-        assertEquals(false, gen.isValidationRuleActivated("RegelDrei"));
+        assertEquals(false, gen.isValidationRuleActivated("MyRule"));
 
     }
 
@@ -94,9 +86,9 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         Element genElement = getTestDocument().getDocumentElement();
         gen.initFromXml(genElement);
 
-        assertEquals(true, gen.isValidationRuleActivated("Regel1"));
-        assertEquals(false, gen.isValidationRuleActivated("RegelZwei"));
-        assertEquals(false, gen.isValidationRuleActivated("RegelDrei"));
+        assertEquals(true, gen.isValidationRuleActivated("activeRule"));
+        assertEquals(false, gen.isValidationRuleActivated("inactiveRule"));
+        assertEquals(false, gen.isValidationRuleActivated("invalidActivationRule"));
 
         assertEquals(false, gen.isValidationRuleActivated("nonExistentRule"));
     }
