@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -53,6 +54,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValidations;
@@ -834,6 +836,29 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public void removeUndefinedLinks() {
         linkCollection.removeUndefinedLinks();
+    }
+
+    @Override
+    public int getNumOfValidationRules() {
+        return getValidationRuleConfigs().size();
+    }
+
+    @Override
+    public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
+        return propertyValueCollection.getPropertyValue(validationRuleName, IValidationRuleConfig.class);
+    }
+
+    @Override
+    public List<IValidationRuleConfig> getValidationRuleConfigs() {
+        return propertyValueCollection.getPropertyValues(IValidationRuleConfig.class);
+    }
+
+    @Override
+    public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured) {
+        IValidationRuleConfig ruleConfig = propertyValueCollection.newPropertyValue(ruleToBeConfigured, getNextPartId(),
+                IValidationRuleConfig.class);
+        objectHasChanged();
+        return ruleConfig;
     }
 
 }

@@ -510,21 +510,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return propertyValueCollection.getPropertyValues(IValidationRuleConfig.class);
     }
 
-    /**
-     * Creates a new inactive {@link ValidationRuleConfig} for this generation.
-     * 
-     * @param id the part-ID to be assigned to the new validation rule
-     * 
-     * @return new validation rule
-     */
-    private IValidationRuleConfig newValidationRuleInternal(IValidationRule ruleToBeConfigured, String id) {
-        return propertyValueCollection.newPropertyValue(ruleToBeConfigured, getNextPartId(),
-                IValidationRuleConfig.class);
-    }
-
     @Override
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured) {
-        IValidationRuleConfig ruleConfig = newValidationRuleInternal(ruleToBeConfigured, getNextPartId());
+        IValidationRuleConfig ruleConfig = propertyValueCollection.newPropertyValue(ruleToBeConfigured, getNextPartId(),
+                IValidationRuleConfig.class);
         objectHasChanged();
         return ruleConfig;
     }

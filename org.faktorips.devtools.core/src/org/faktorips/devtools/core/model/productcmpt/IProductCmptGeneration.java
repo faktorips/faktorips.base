@@ -15,14 +15,13 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
-IProductCmptLinkContainer {
+IProductCmptLinkContainer, IValidationRuleConfigContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -195,31 +194,6 @@ IProductCmptLinkContainer {
      * is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);
-
-    /**
-     * Returns the number of validation rules defined (or configured respectively) in this
-     * generation.
-     */
-    public int getNumOfValidationRules();
-
-    /**
-     * Returns the validation with the given name if defined in this generation. Returns <null> no
-     * validation rule with the given name can be found or if the given name is {@code null}.
-     */
-    public IValidationRuleConfig getValidationRuleConfig(String validationRuleName);
-
-    /**
-     * Returns the validation rules defined in this generation. Returns an empty array if this
-     * generation does not configure any validation rules.
-     */
-    public List<IValidationRuleConfig> getValidationRuleConfigs();
-
-    /**
-     * Creates a new validation rule that configures the given {@link IValidationRule}. If signature
-     * is {@code null} the validation rule configuration is still created, but no reference to an
-     * {@link IValidationRule} is set.
-     */
-    public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
 
     /**
      * Returns a list containing the property values of the given class defined in the product
