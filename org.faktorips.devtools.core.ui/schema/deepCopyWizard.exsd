@@ -17,8 +17,13 @@
          </appInfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="additionalPage"/>
+         <sequence minOccurs="0" maxOccurs="1">
+            <choice minOccurs="0" maxOccurs="1">
+               <element ref="smartModeBehavior"/>
+            </choice>
+            <sequence minOccurs="1" maxOccurs="unbounded">
+               <element ref="additionalPage"/>
+            </sequence>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -61,6 +66,27 @@
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizardPage"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="smartModeBehavior">
+      <annotation>
+         <documentation>
+            The Smart Mode Behavior is used to determine whether an element should initially be set to reference or copy in the Deep Copy Wizard. If none is configured, the DefaultDeepCopySmartModeBehavior will be used.
+            Only one installed extension may define this element.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior"/>
                </appInfo>
             </annotation>
          </attribute>
