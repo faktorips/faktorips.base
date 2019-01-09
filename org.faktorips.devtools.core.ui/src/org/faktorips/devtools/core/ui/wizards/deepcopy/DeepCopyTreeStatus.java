@@ -59,8 +59,13 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     private final IDeepCopySmartModeBehavior deepCopySmartModeBehavior;
 
     public DeepCopyTreeStatus() {
-        ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-        deepCopySmartModeBehavior = IpsUIPlugin.getDefault().getDeepCopySmartModeBehavior();
+        this(IpsPlugin.getDefault().getIpsPreferences(), IpsUIPlugin.getDefault().getDeepCopySmartModeBehavior());
+    }
+
+    /* for testing */
+    DeepCopyTreeStatus(IpsPreferences ipsPreferences, IDeepCopySmartModeBehavior deepCopySmartModeBehavior) {
+        this.ipsPreferences = ipsPreferences;
+        this.deepCopySmartModeBehavior = deepCopySmartModeBehavior;
     }
 
     /**

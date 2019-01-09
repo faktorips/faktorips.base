@@ -86,7 +86,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopyOrLinkInitializer"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior"/>
                </appInfo>
             </annotation>
          </attribute>

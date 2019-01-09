@@ -13,13 +13,14 @@ package org.faktorips.devtools.core.ui;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -290,18 +291,18 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDeepCopySmartModeBehavior_ExtensionDefined() throws Exception {
-        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior = mock(IDeepCopySmartModeBehavior.class);
+        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior = new DefaultDeepCopySmartModeBehavior();
         mockBehaviorExtensions(testDeepCopySmartModeBehavior);
 
         IDeepCopySmartModeBehavior deepCopySmartModeBehavior = IpsUIPlugin.getDefault().getDeepCopySmartModeBehavior();
 
-        assertThat(deepCopySmartModeBehavior, is(testDeepCopySmartModeBehavior));
+        assertThat(deepCopySmartModeBehavior, is(sameInstance(testDeepCopySmartModeBehavior)));
     }
 
     @Test
     public void testGetDeepCopySmartModeBehavior_MultipleExtensionsDefined() throws Exception {
-        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior1 = mock(IDeepCopySmartModeBehavior.class);
-        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior2 = mock(IDeepCopySmartModeBehavior.class);
+        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior1 = new DefaultDeepCopySmartModeBehavior();
+        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior2 = new DefaultDeepCopySmartModeBehavior();
         ILogListener listener = new ILogListener() {
 
             @Override
@@ -324,6 +325,8 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         IDeepCopySmartModeBehavior deepCopySmartModeBehavior = IpsUIPlugin.getDefault().getDeepCopySmartModeBehavior();
 
         assertThat(deepCopySmartModeBehavior, is(instanceOf(DefaultDeepCopySmartModeBehavior.class)));
+        assertThat(deepCopySmartModeBehavior, is(not(sameInstance(testDeepCopySmartModeBehavior1))));
+        assertThat(deepCopySmartModeBehavior, is(not(sameInstance(testDeepCopySmartModeBehavior2))));
     }
 
     private void mockBehaviorExtensions(IDeepCopySmartModeBehavior... testDeepCopySmartModeBehaviors) {

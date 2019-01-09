@@ -18,9 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +31,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
@@ -54,7 +51,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.junit.Before;
 import org.junit.Test;
@@ -198,9 +194,14 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     }
 
     private void initDeepCopyTreeStatusWithStructure() throws CycleInProductStructureException {
+        initDeepCopyTreeStatusWithStructure(new DefaultDeepCopySmartModeBehavior());
+    }
+
+    private void initDeepCopyTreeStatusWithStructure(IDeepCopySmartModeBehavior deepCopySmartModeBehavior)
+            throws CycleInProductStructureException {
         structure = new ProductCmptTreeStructure(productCmpts[0], new GregorianCalendar(), mock(IIpsProject.class));
 
-        deepCopyTreeStatus = new DeepCopyTreeStatus();
+        deepCopyTreeStatus = new DeepCopyTreeStatus(ipsPreferences, deepCopySmartModeBehavior);
         deepCopyTreeStatus.initialize(structure);
     }
 
@@ -326,28 +327,23 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
         mockProducts();
         mockTableContentUsage();
-        SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
-        IDeepCopySmartModeBehavior testDeepCopyOrLinkInitializer = mock(IDeepCopySmartModeBehavior.class);
-        when(testDeepCopyOrLinkInitializer.getCopyOrLink(any(IIpsPackageFragmentRoot.class),
+        IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior = mock(IDeepCopySmartModeBehavior.class);
+        when(testDeepCopySmartModeBehavior.getCopyOrLink(any(IIpsPackageFragmentRoot.class),
                 any(IProductCmptStructureReference.class))).thenReturn(CopyOrLink.LINK);
-        try {
-            mockDeepCopyOrLinkInitializer(singletonMockHelper, testDeepCopyOrLinkInitializer);
-            initDeepCopyTreeStatusWithStructure();
 
-            // 6 product references and 1 table content usage
-            verify(testDeepCopyOrLinkInitializer, times(7)).getCopyOrLink(any(IIpsPackageFragmentRoot.class),
-                    any(IProductCmptStructureReference.class));
-            for (IProductCmptStructureReference reference : structure.toSet(false)) {
-                if (reference.isRoot()) {
-                    assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
-                } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                    assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
-                } else {
-                    assertEquals(CopyOrLink.LINK, deepCopyTreeStatus.getCopyOrLink(reference));
-                }
+        initDeepCopyTreeStatusWithStructure(testDeepCopySmartModeBehavior);
+
+        // 6 product references and 1 table content usage
+        verify(testDeepCopySmartModeBehavior, times(7)).getCopyOrLink(any(IIpsPackageFragmentRoot.class),
+                any(IProductCmptStructureReference.class));
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            if (reference.isRoot()) {
+                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+            } else if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+            } else {
+                assertEquals(CopyOrLink.LINK, deepCopyTreeStatus.getCopyOrLink(reference));
             }
-        } finally {
-            singletonMockHelper.reset();
         }
     }
 
@@ -358,15 +354,6 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         ITableContents tableContents = mock(ITableContents.class);
         when(tableContentUsage.findTableContents(any(IIpsProject.class))).thenReturn(tableContents);
         when(tableContentUsage.getTableContentName()).thenReturn("MyTableContent");
-    }
-
-    private void mockDeepCopyOrLinkInitializer(SingletonMockHelper singletonMockHelper,
-            IDeepCopySmartModeBehavior deepCopySmartModeBehavior) {
-
-        IpsUIPlugin ipsUIPlugin = IpsUIPlugin.getDefault();
-        ipsUIPlugin = spy(ipsUIPlugin);
-        singletonMockHelper.setSingletonInstance(IpsUIPlugin.class, ipsUIPlugin);
-        doReturn(deepCopySmartModeBehavior).when(ipsUIPlugin).getDeepCopySmartModeBehavior();
     }
 
     @Test
