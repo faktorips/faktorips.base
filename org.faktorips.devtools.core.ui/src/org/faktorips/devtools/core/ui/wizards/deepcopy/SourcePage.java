@@ -201,8 +201,8 @@ public class SourcePage extends WizardPage {
         height[4] = targetPackageControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
         toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
-        copyTableContentsBtn = toolkit
-                .createCheckbox(copyComposite, Messages.SourcePage_labelRadioBtnCopyTableContents);
+        copyTableContentsBtn = toolkit.createCheckbox(copyComposite,
+                Messages.SourcePage_labelRadioBtnCopyTableContents);
         copyTableContentsBtn.setChecked(true);
 
         // create content in origin group
@@ -236,8 +236,8 @@ public class SourcePage extends WizardPage {
                 .getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath().toString().substring(1),
                 height[3]);
 
-        createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
-                .getIpsPackageFragment().getName(), height[4]);
+        createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage,
+                rootProductCmpt.getIpsPackageFragment().getName(), height[4]);
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             Group searchReplaceGroup = toolkit.createGroup(root, Messages.SourcePage_searchAndReplace);
@@ -259,8 +259,8 @@ public class SourcePage extends WizardPage {
         deactivationHint = new CLabel(root, SWT.NONE);
         String deactivationHintText = NLS.bind(Messages.SourcePage_deactivationHintText, generationConceptNamePlural);
         deactivationHint.setText(deactivationHintText);
-        deactivationHint.setImage(IpsUIPlugin.getImageHandling().getImage(
-                IpsProblemOverlayIcon.getOverlay(Message.INFO), false));
+        deactivationHint.setImage(
+                IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(Message.INFO), false));
         deactivationHintData = new GridData();
         deactivationHintData.exclude = true;
         deactivationHint.setLayoutData(deactivationHintData);
@@ -286,15 +286,19 @@ public class SourcePage extends WizardPage {
     @Override
     public String getTitle() {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            return NLS.bind(Messages.SourcePage_title, getPresentationModel().getStructure().getRoot().getProductCmpt()
-                    .getName());
+            return NLS.bind(Messages.SourcePage_title,
+                    getPresentationModel().getStructure().getRoot().getProductCmpt().getName());
         } else {
             return NLS.bind(Messages.SourcePage_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
         }
     }
 
-    private Label createLabel(UIToolkit toolkit, Composite parent, String descriptionLabel, String text, int maxHeight) {
+    private Label createLabel(UIToolkit toolkit,
+            Composite parent,
+            String descriptionLabel,
+            String text,
+            int maxHeight) {
         toolkit.createLabel(parent, descriptionLabel);
         Label label = toolkit.createLabel(parent, text);
         toolkit.createVerticalSpacer(parent, maxHeight);
@@ -355,8 +359,8 @@ public class SourcePage extends WizardPage {
         ChangeListener propertyChangeListener = new ChangeListener();
         getPresentationModel().addPropertyChangeListener(propertyChangeListener);
 
-        StructuredViewerField<GenerationDate> generationDateField = StructuredViewerField.newInstance(
-                generationDateViewer, GenerationDate.class);
+        StructuredViewerField<GenerationDate> generationDateField = StructuredViewerField
+                .newInstance(generationDateViewer, GenerationDate.class);
         bindingContext.bindContent(generationDateField, getPresentationModel(),
                 DeepCopyPresentationModel.OLD_VALID_FROM);
 
@@ -374,8 +378,8 @@ public class SourcePage extends WizardPage {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             TextField searchInputField = new TextField(searchInput);
             TextField replaceInputField = new TextField(replaceInput);
-            bindingContext
-            .bindContent(searchInputField, getPresentationModel(), DeepCopyPresentationModel.SEARCH_INPUT);
+            bindingContext.bindContent(searchInputField, getPresentationModel(),
+                    DeepCopyPresentationModel.SEARCH_INPUT);
             bindingContext.bindContent(replaceInputField, getPresentationModel(),
                     DeepCopyPresentationModel.REPLACE_INPUT);
 
@@ -436,7 +440,8 @@ public class SourcePage extends WizardPage {
     private boolean updateCheckedAndGrayStatus(IProductCmptStructureReference reference) {
         if (reference instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
-            if (associationReference.getChildren().length == 0 || associationReference.getAssociation().isAssoziation()) {
+            if (associationReference.getChildren().length == 0
+                    || associationReference.getAssociation().isAssoziation()) {
                 // these elements are not visible so should never change gray state
                 return false;
             }
@@ -475,9 +480,8 @@ public class SourcePage extends WizardPage {
     private void setMessagePleaseEnterWorkingDate() {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             String productCmptTypeName;
-            productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
-                    getStructure().getRoot().getProductCmpt()
-                            .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+            productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(getStructure().getRoot()
+                    .getProductCmpt().findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
             setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
         } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
             String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
@@ -661,6 +665,7 @@ public class SourcePage extends WizardPage {
         setPageComplete(getPresentationModel().getTargetPackageRoot() != null);
     }
 
+    // CSOFF: CyclomaticComplexity
     private void validate() {
         setMessage(null);
         setErrorMessage(null);
@@ -699,8 +704,8 @@ public class SourcePage extends WizardPage {
         }
 
         if (SourcePage.this.getTargetPackage() != null && !SourcePage.this.getTargetPackage().exists()) {
-            setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, SourcePage.this.getTargetPackage()
-                    .getName()), Message.WARNING);
+            setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated,
+                    SourcePage.this.getTargetPackage().getName()), Message.WARNING);
         } else if (SourcePage.this.getTargetPackage() == null) {
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
             return;
@@ -712,8 +717,8 @@ public class SourcePage extends WizardPage {
         }
 
         if (getWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
-            setErrorMessage(Messages.SourcePage_msgCopyNotPossible
-                    + getWizard().getDeepCopyPreview().getFirstErrorText());
+            setErrorMessage(
+                    Messages.SourcePage_msgCopyNotPossible + getWizard().getDeepCopyPreview().getFirstErrorText());
             return;
         }
 
@@ -724,6 +729,7 @@ public class SourcePage extends WizardPage {
 
         setPageComplete(true);
     }
+    // CSON: CyclomaticComplexity
 
     private void validateSearchPattern() {
         if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
@@ -815,14 +821,7 @@ public class SourcePage extends WizardPage {
             if (evt.getPropertyName().equals(LinkStatus.CHECKED)
                     || evt.getPropertyName().equals(LinkStatus.COPY_OR_LINK)) {
                 if (evt.getSource() instanceof IProductCmptStructureReference) {
-                    IProductCmptStructureReference reference = (IProductCmptStructureReference)evt.getSource();
-                    if (!reference.isRoot()) {
-                        if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
-                            tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
-                        } else {
-                            tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
-                        }
-                    }
+                    expandOrCollapse(evt, (IProductCmptStructureReference)evt.getSource());
                 }
                 updateCheckedAndGrayedStatus(getStructure());
             }
@@ -841,6 +840,16 @@ public class SourcePage extends WizardPage {
                 tree.getTree().getParent().layout();
             }
             refreshPageAfterValueChange();
+        }
+
+        private void expandOrCollapse(PropertyChangeEvent evt, IProductCmptStructureReference reference) {
+            if (!reference.isRoot()) {
+                if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
+                    tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                } else {
+                    tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                }
+            }
         }
 
     }

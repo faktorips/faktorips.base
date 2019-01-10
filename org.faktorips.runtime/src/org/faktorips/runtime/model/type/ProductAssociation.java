@@ -131,6 +131,8 @@ public class ProductAssociation extends Association {
      * @throws IllegalArgumentException if there is no method annotated with
      *             {@link IpsAssociationLinks @IpsAssociationLinks}. This is the case if the
      *             association {@link #isDerivedUnion() is a derived union}.
+     * 
+     * @since 3.22
      */
     public <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinks(IProductComponent prodCmpt,
             Calendar effectiveDate) {

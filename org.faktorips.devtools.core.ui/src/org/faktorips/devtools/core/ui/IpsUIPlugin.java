@@ -15,6 +15,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -108,6 +109,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.IpsElement;
@@ -132,6 +134,10 @@ import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.DefaultDeepCopySmartModeBehavior;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizardPage;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -251,6 +257,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     private List<IProductCmptPropertyFilter> propertyVisibilityFilters;
 
+    private IDeepCopySmartModeBehavior deepCopySmartModeBehavior;
+
     /**
      * This method is for test purposes only.
      * <p>
@@ -328,8 +336,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new RuntimeException("A problem occured while trying to load the extension: " //$NON-NLS-1$
-                            + extension.getExtensionPointUniqueIdentifier()
-                            + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified."); //$NON-NLS-1$ //$NON-NLS-2$
+                            + extension.getExtensionPointUniqueIdentifier() + ". The attribute \"" //$NON-NLS-1$
+                            + CONFIG_PROPERTY_CLASS + "\" is not specified."); //$NON-NLS-1$
                 } else {
                     IIpsDropAdapterProvider handler = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, IIpsDropAdapterProvider.class);
@@ -374,8 +382,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                    + extension.getExtensionPointUniqueIdentifier()
-                                    + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
+                                    + extension.getExtensionPointUniqueIdentifier() + ". The attribute \"" //$NON-NLS-1$
+                                    + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$
                 } else {
                     ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
@@ -386,6 +394,33 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             }
         }
         return factories.toArray(new ValueDatatypeControlFactory[factories.size()]);
+    }
+
+    /* private */ void initDeepCopySmartModeBehavior() {
+        ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
+        IExtension[] extensions = extensionPoints
+                .getExtension(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
+        Map<IDeepCopySmartModeBehavior, String> behaviors = new HashMap<IDeepCopySmartModeBehavior, String>();
+        for (IExtension extension : extensions) {
+            List<IDeepCopySmartModeBehavior> executableExtensions = ExtensionPoints.createExecutableExtensions(
+                    extension, IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR,
+                    IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS, IDeepCopySmartModeBehavior.class);
+            for (IDeepCopySmartModeBehavior executableExtension : executableExtensions) {
+                behaviors.put(executableExtension, extension.getUniqueIdentifier());
+            }
+        }
+        if (behaviors.size() > 1) {
+            IpsPlugin.log(new IpsStatus(MessageFormat.format(
+                    "Only one extension for the extension point {0}.{1} may define a {2} but it is defined in {3}", //$NON-NLS-1$
+                    IpsUIPlugin.PLUGIN_ID, IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD,
+                    IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR,
+                    StringUtils.join(behaviors.values(), ", ")))); //$NON-NLS-1$
+        }
+        if (behaviors.size() == 1) {
+            deepCopySmartModeBehavior = behaviors.keySet().iterator().next();
+        } else {
+            deepCopySmartModeBehavior = new DefaultDeepCopySmartModeBehavior();
+        }
     }
 
     @Override
@@ -404,8 +439,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     @Override
     public ImageRegistry getImageRegistry() {
-        IpsPlugin.log(new CoreException(new Status(IStatus.WARNING, PLUGIN_ID,
-                "Image Registry is used - please use resource manager"))); //$NON-NLS-1$
+        IpsPlugin.log(new CoreException(
+                new Status(IStatus.WARNING, PLUGIN_ID, "Image Registry is used - please use resource manager"))); //$NON-NLS-1$
         return super.getImageRegistry();
     }
 
@@ -572,7 +607,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public boolean hasTableFormatCustomProperties(ITableFormat tableFormat) {
         try {
-            TableFormatConfigurationCompositeFactory tableFormatPropertiesControlFactory = getTableFormatPropertiesControlFactory(tableFormat);
+            TableFormatConfigurationCompositeFactory tableFormatPropertiesControlFactory = getTableFormatPropertiesControlFactory(
+                    tableFormat);
             return (tableFormatPropertiesControlFactory != null);
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -912,9 +948,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 openIpsObjectHistory.load(memento);
             }
         } catch (WorkbenchException e) {
-            StatusManager.getManager().handle(
-                    new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
-                            "Could not load OpenIpsObjecHistory", e)); //$NON-NLS-1$
+            StatusManager.getManager().handle(new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
+                    "Could not load OpenIpsObjecHistory", e)); //$NON-NLS-1$
         }
     }
 
@@ -936,9 +971,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             settings.put(HISTORY_SETTING, writer.getBuffer().toString());
         } catch (IOException e) {
             // Simply don't store the settings
-            StatusManager.getManager().handle(
-                    new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
-                            "Could not write OpenIpsObjecHistory", e)); //$NON-NLS-1$
+            StatusManager.getManager().handle(new Status(IStatus.ERROR, IpsUIPlugin.PLUGIN_ID, IStatus.ERROR,
+                    "Could not write OpenIpsObjecHistory", e)); //$NON-NLS-1$
         }
     }
 
@@ -1253,6 +1287,24 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Returns the {@link IDeepCopySmartModeBehavior} to be used by the {@link DeepCopyWizard} in
+     * {@link IpsPreferences#isCopyWizardModeSmartmode() Smart Mode}. The behavior can be provided
+     * via the
+     * {@link #PLUGIN_ID}.{@link IAdditionalDeepCopyWizardPage#EXTENSION_POINT_ID_DEEP_COPY_WIZARD}
+     * extension point's {@link IDeepCopySmartModeBehavior#CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR}
+     * element. If none is configured, the {@link DefaultDeepCopySmartModeBehavior} will be used.
+     * 
+     * @return the {@link IDeepCopySmartModeBehavior} to be used by the {@link DeepCopyWizard} in
+     *         {@link IpsPreferences#isCopyWizardModeSmartmode() Smart Mode}.
+     */
+    public IDeepCopySmartModeBehavior getDeepCopySmartModeBehavior() {
+        if (deepCopySmartModeBehavior == null) {
+            initDeepCopySmartModeBehavior();
+        }
+        return deepCopySmartModeBehavior;
+    }
+
+    /**
      * Logs the status and shows the status in a standard error dialog.
      */
     public static final void logAndShowErrorDialog(final IStatus status) {
@@ -1340,9 +1392,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
             IEditorDescriptor[] editors = workbench.getEditorRegistry().getEditors("", contentType); //$NON-NLS-1$
             if (editors.length != 1) {
-                throw new CoreException(new IpsStatus(NLS.bind(
-                        "No registered editors (or more then one) for content-type id {0} found!", //$NON-NLS-1$
-                        defaultContentTypeOfIpsSrcFilesId)));
+                throw new CoreException(new IpsStatus(
+                        NLS.bind("No registered editors (or more then one) for content-type id {0} found!", //$NON-NLS-1$
+                                defaultContentTypeOfIpsSrcFilesId)));
             }
             try {
                 IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
@@ -1357,9 +1409,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                  * show information in the status bar about using the default text editor instead of
                  * using the default IPS object editor.
                  */
-                ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                        .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                                Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+                ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
+                        getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                        Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
                 return editorPart;
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);

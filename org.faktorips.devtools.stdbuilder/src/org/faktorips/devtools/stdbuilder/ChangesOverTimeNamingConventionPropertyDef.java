@@ -23,7 +23,7 @@ import org.faktorips.util.message.Message;
 public class ChangesOverTimeNamingConventionPropertyDef extends IpsBuilderSetPropertyDef {
 
     public static final String MSG_CODE_DERIVED_PROPERTY_SET_MANUALLY = "derivedPropertySetManually"; //$NON-NLS-1$
-    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = "changesOverTimeNamingConvention"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = "changesInTimeNamingConvention"; //$NON-NLS-1$
 
     /**
      * Always returns <code>false</code>, because the property can not be set manually as it is
