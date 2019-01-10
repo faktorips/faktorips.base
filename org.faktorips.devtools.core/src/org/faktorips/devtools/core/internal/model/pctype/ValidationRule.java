@@ -375,7 +375,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 .parseBoolean(element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
         configurableByProductComponent = Boolean
                 .parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
-        changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+        String changingOverTimeValue = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
+        changingOverTime = StringUtils.isBlank(changingOverTimeValue) || Boolean.parseBoolean(changingOverTimeValue);
         if (element.hasAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)) {
             activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
         } else {

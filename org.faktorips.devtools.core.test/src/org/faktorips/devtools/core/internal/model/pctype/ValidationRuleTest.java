@@ -127,6 +127,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Document doc = getTestDocument();
         validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.setChangingOverTime(false);
         validationRule.initFromXml(doc.getDocumentElement());
         assertEquals("42", validationRule.getId());
         assertEquals("checkAge", validationRule.getName());
@@ -146,6 +147,15 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals(2, markers.size());
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
+    }
+
+    @Test
+    public void testInitFromXml_ChangingOverTimeDefaultsToTrue() {
+        Document doc = getTestDocument();
+        doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertTrue(validationRule.isChangingOverTime());
     }
 
     @Test
