@@ -60,7 +60,7 @@ def private static execRuleMethod (XValidationRule it) '''
               ) {
         «ENDIF»
         «IF configured»
-            if («getProductCmptGeneration()».«isValidationRuleActivated(constantNameRuleName)») {
+            if («IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
         «ENDIF»
         «IF !checkValueAgainstValueSetRule»
              // begin-user-code

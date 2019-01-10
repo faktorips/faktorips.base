@@ -51,6 +51,10 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return getValidationRule().isConfigurableByProductComponent();
     }
 
+    public boolean isChangingOverTime() {
+        return getValidationRule().isChangingOverTime();
+    }
+
     public boolean isValidatedAttrSpecifiedInSrc() {
         return getValidationRule().isValidatedAttrSpecifiedInSrc();
     }
