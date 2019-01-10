@@ -24,6 +24,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
@@ -109,6 +110,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 objectHasChanged();
             }
         });
+        initDefaultChangingOverTime();
     }
 
     @Override
@@ -364,6 +366,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        initDefaultChangingOverTime();
         name = element.getAttribute(PROPERTY_NAME);
         appliedForAllBusinessFunction = Boolean
                 .parseBoolean(element.getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
@@ -419,6 +422,15 @@ public class ValidationRule extends TypePart implements IValidationRule {
                     initChildrenFor(XML_TAG_MARKER, markers, (Element)childNodes.item(i));
                 }
             }
+        }
+    }
+
+    private void initDefaultChangingOverTime() {
+        try {
+            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+            setChangingOverTime(productCmptType != null && productCmptType.isChangingOverTime());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 

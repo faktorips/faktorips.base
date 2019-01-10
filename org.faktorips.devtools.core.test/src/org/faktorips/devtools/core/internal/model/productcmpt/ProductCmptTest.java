@@ -1094,11 +1094,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.newPropertyValues(attr2);
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
 
-        productCmpt.newPropertyValues(new ValidationRule(mock(IPolicyCmptType.class), ""));
+        productCmpt.newPropertyValues(policyCmptType.newRule());
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValues(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValues(new TableStructureUsage(mock(IProductCmptType.class), ""));
+        productCmpt.newPropertyValues(new TableStructureUsage(productCmptType, ""));
         assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass()).size());
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValues(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));

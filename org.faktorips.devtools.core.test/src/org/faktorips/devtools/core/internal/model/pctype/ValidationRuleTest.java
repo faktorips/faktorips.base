@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.List;
@@ -175,7 +174,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         Element element = validationRule.toXml(newDocument());
 
-        ValidationRule copy = new ValidationRule(mock(IPolicyCmptType.class), "");
+        ValidationRule copy = new ValidationRule(policyCmptType, "");
         copy.initFromXml(element);
         assertEquals(validationRule.getId(), copy.getId());
         assertEquals("checkAge", copy.getName());
@@ -494,6 +493,35 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         assertNotNull(
                 ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testChangingOverTimeInitialValue_PolicyNotConfigured() {
+        policyCmptType.setProductCmptType("");
+        policyCmptType.setConfigurableByProductCmptType(false);
+        validationRule = policyCmptType.newRule();
+
+        assertFalse(validationRule.isChangingOverTime());
+    }
+
+    @Test
+    public void testChangingOverTimeInitialValue_ProductNotChangingOverTime() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(false);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule = policyCmptType.newRule();
+
+        assertFalse(validationRule.isChangingOverTime());
+    }
+
+    @Test
+    public void testChangingOverTimeInitialValue_ProductChangingOverTime() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(true);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule = policyCmptType.newRule();
+
+        assertTrue(validationRule.isChangingOverTime());
     }
 
 }
