@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import static org.faktorips.abstracttest.matcher.IpsSrcFileNamesMatcher.containsInOrder;
+import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
@@ -100,7 +102,8 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         IIpsElement[] elements = ((DefinedOrderComparator)originalIpsPackageFragment.getChildOrderComparator())
                 .getElements();
         // still there, to allow undo
-        assertThat(elements, containsInOrder("Prod.ipsproduct", "Prod2.ipsproduct"));
+        assertThat(Arrays.asList(elements),
+                containsInOrder(ORIGINAL_PACKAGE_NAME + "." + "Prod", ORIGINAL_PACKAGE_NAME + "." + "Prod2"));
     }
 
     @Test

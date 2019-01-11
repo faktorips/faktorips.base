@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import static org.faktorips.abstracttest.matcher.IpsSrcFileNamesMatcher.containsInOrder;
+import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -140,8 +140,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * For this test, the comfort-product of the default test content is copied completely. After that,
-     * the new files are expected to be existant and not dirty.
+     * For this test, the comfort-product of the default test content is copied completely. After
+     * that, the new files are expected to be existent and not dirty.
      */
     @Test
     public void testCopyAll() throws Exception {
@@ -659,8 +659,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
 
         IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
-        assertThat(elements, containsInOrder("DeepCopyOfStandardTplCoverage.ipsproduct",
-                "DeepCopyOfComfortCollisionCoverageB.ipsproduct", "DeepCopyOfComfortCollisionCoverageA.ipsproduct"));
+        assertThat(Arrays.asList(elements), containsInOrder("products.DeepCopyOfStandardTplCoverage",
+                "products.DeepCopyOfComfortCollisionCoverageB", "products.DeepCopyOfComfortCollisionCoverageA"));
     }
 
     protected Hashtable<IProductCmptStructureReference, IIpsSrcFile> prependDeepCopyOf(
@@ -709,13 +709,13 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
 
         IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
-        assertThat(elements, containsInOrder("foo", "bar"));
+        assertThat(Arrays.asList(elements), containsInOrder("targetpack.foo", "targetpack.bar"));
 
         Comparator<IIpsElement> targetSubChildOrderComparator = targetPackageFoo.getChildOrderComparator();
         assertThat(targetSubChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
 
         elements = ((DefinedOrderComparator)targetSubChildOrderComparator).getElements();
-        assertThat(elements, containsInOrder("baz", "bar"));
+        assertThat(Arrays.asList(elements), containsInOrder("targetpack.foo.baz", "targetpack.foo.bar"));
     }
 
     @Test
@@ -748,7 +748,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
 
         IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
-        assertThat(elements, containsInOrder("foo", "bar"));
+        assertThat(Arrays.asList(elements), containsInOrder("targetpack.foo", "targetpack.bar"));
 
         Comparator<IIpsElement> targetSubChildOrderComparator = targetPackageFoo.getChildOrderComparator();
         assertThat(targetSubChildOrderComparator, is(not(instanceOf(DefinedOrderComparator.class))));
@@ -784,8 +784,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertThat(targetChildOrderComparator, is(instanceOf(DefinedOrderComparator.class)));
 
         IIpsElement[] elements = ((DefinedOrderComparator)targetChildOrderComparator).getElements();
-        assertThat(elements, containsInOrder("foo", "DeepCopyOfStandardTplCoverage.ipsproduct",
-                "DeepCopyOfComfortCollisionCoverageB.ipsproduct", "DeepCopyOfComfortCollisionCoverageA.ipsproduct"));
+        assertThat(Arrays.asList(elements), containsInOrder("targetpack.foo", "products.DeepCopyOfStandardTplCoverage",
+                "products.DeepCopyOfComfortCollisionCoverageB", "products.DeepCopyOfComfortCollisionCoverageA"));
     }
 
     private void deepCopy(IProductCmptTreeStructure structure,

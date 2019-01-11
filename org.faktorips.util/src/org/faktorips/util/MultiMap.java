@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -61,6 +62,11 @@ public class MultiMap<K, V> implements Serializable {
 
     public static <K, V> MultiMap<K, V> createWithListsAsValues() {
         MultiMap<K, V> multiMap = new MultiMap<K, V>(new ArrayListFactory<V>());
+        return multiMap;
+    }
+
+    public static <K, V> MultiMap<K, V> createWithLinkedSetAsValues() {
+        MultiMap<K, V> multiMap = new MultiMap<K, V>(new LinkedHashSetFactory<V>());
         return multiMap;
     }
 
@@ -186,6 +192,14 @@ public class MultiMap<K, V> implements Serializable {
         return internalMap.keySet();
     }
 
+    public Collection<V> values() {
+        Collection<V> collection = collectionFactory.createCollection();
+        for (Collection<V> value : internalMap.values()) {
+            collection.addAll(value);
+        }
+        return collection;
+    }
+
     /**
      * Returns the count of objects contained in this multi map. That means the sum of the size of
      * all value collections.
@@ -249,6 +263,23 @@ public class MultiMap<K, V> implements Serializable {
         @Override
         public Collection<V> createCollection() {
             return new HashSet<V>();
+        }
+
+    }
+
+    /**
+     * Creates {@link HashSet} instances as {@link MultiMap} values.
+     */
+    public static class LinkedHashSetFactory<V> implements CollectionFactory<V> {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 2534395916683559784L;
+
+        @Override
+        public Collection<V> createCollection() {
+            return new LinkedHashSet<V>();
         }
 
     }
