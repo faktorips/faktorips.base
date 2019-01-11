@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -93,7 +92,7 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEvalTestPolicyCmptParamPath() throws CoreException {
+    public void testEvalTestPolicyCmptParamPath() {
         // eval path for testPolicyCmpt2 => testPolicyCmptType10.testPolicyCmptTypeRelation10
         String testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.testPolicyCmpt2);
         assertEquals("testPolicyCmptType1#0.testPolicyCmptTypeRelation1#0", testPolicyCmptParamPath);

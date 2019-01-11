@@ -148,7 +148,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
         when(proj.findAllIpsSrcFiles()).thenReturn(result);
     }
 
-    private void initDependencySetUp() throws CoreException {
+    private void initDependencySetUp() {
         IDependency dependencyObj1ToObjRef = IpsObjectDependency.create(object1.getQualifiedNameType(),
                 objectReferenced.getQualifiedNameType(), DependencyType.REFERENCE);
         IDependency dependencyObj1ToObjRef2 = IpsObjectDependency.create(object1.getQualifiedNameType(),
@@ -158,8 +158,8 @@ public class ReferencesToIpsObjectSearchQueryTest {
                 object1.getQualifiedNameType(), DependencyType.REFERENCE);
         IDependency dependencyObjRefToObjRef2 = IpsObjectDependency.create(objectReferenced.getQualifiedNameType(),
                 objectReferenced2.getQualifiedNameType(), DependencyType.REFERENCE);
-        when(objectReferenced.dependsOn()).thenReturn(
-                new IDependency[] { dependencyObjRefToObj1, dependencyObjRefToObjRef2 });
+        when(objectReferenced.dependsOn())
+                .thenReturn(new IDependency[] { dependencyObjRefToObj1, dependencyObjRefToObjRef2 });
         when(objectReferenced2.dependsOn()).thenReturn(new IDependency[] {});
     }
 

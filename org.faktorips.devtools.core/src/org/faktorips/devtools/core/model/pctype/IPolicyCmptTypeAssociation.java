@@ -266,10 +266,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * for a detailed description.
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
      */
-    public boolean isConstrainedByProductStructure(IIpsProject ipsProject) throws CoreException;
+    public boolean isConstrainedByProductStructure(IIpsProject ipsProject);
 
     /**
      * Returns the name of the reverse relation.

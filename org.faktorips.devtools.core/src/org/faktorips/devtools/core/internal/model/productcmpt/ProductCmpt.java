@@ -297,7 +297,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IDependency> dependencySet = new HashSet<IDependency>();
 
         if (!StringUtils.isEmpty(productCmptType)) {

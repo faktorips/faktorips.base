@@ -304,8 +304,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // field wasn't found, maybe the 0 index was not given
         // identify with obj.child => obj#0.child#0
-        String fieldKeyWithOffset = failureDetails.getObjectName().replaceAll(
-                "\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
+        String fieldKeyWithOffset = failureDetails.getObjectName().replaceAll("\\.", //$NON-NLS-1$
+                TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$
         uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", //$NON-NLS-1$
                 failureDetails.getAttributeName());
         editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
@@ -429,8 +429,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
         actionAssociation.setChecked(true); // default is show associations
         actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_ShowAssociations);
-        actionAssociation.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
+        actionAssociation.setImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
 
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(structureSection);
@@ -470,8 +470,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
         actionRunAndStoreExpectedResult.setToolTipText(Messages.TestCaseSection_Action_RunTestAndStoreExpectedResults);
-        actionRunAndStoreExpectedResult.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "TestCaseRunAndStoreExpResult.png")); //$NON-NLS-1$
+        actionRunAndStoreExpectedResult.setImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRunAndStoreExpResult.png")); //$NON-NLS-1$
         // enable run test case functionality only if a TOC file exists for this test case
         actionRunAndStoreExpectedResult.setEnabled(getTocFilePackage() != null);
 
@@ -669,8 +669,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     actionEnableState.addEnable = isNoTestPolicyCmptExistsFor(association);
                     actionEnableState.removeEnable = false;
                 } else {
-                    modelAssociation = association.findAssociation(association.getParentTestPolicyCmpt()
-                            .getIpsProject());
+                    modelAssociation = association
+                            .findAssociation(association.getParentTestPolicyCmpt().getIpsProject());
                 }
                 if (modelAssociation == null) {
                     // failure in test case type definition
@@ -782,11 +782,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 if (selected instanceof ITestPolicyCmptLink) {
                     // an association link was clicked
                     ITestPolicyCmpt target = null;
-                    try {
-                        target = ((ITestPolicyCmptLink)selected).findTarget();
-                    } catch (CoreException e) {
-                        // ignore exception, don't move the focus
-                    }
+                    target = ((ITestPolicyCmptLink)selected).findTarget();
                     if (target != null) {
                         selectInTreeByObject(target, true);
                     }
@@ -1004,8 +1000,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (parentItem instanceof ITestPolicyCmpt && !contentProvider.isWithoutAssociations()) {
             for (Object child : contentProvider.getChildren(parentItem)) {
                 try {
-                    if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject).equals(
-                            ((TestCaseTypeAssociation)child).getTestPolicyCmptTypeParam())) {
+                    if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject)
+                            .equals(((TestCaseTypeAssociation)child).getTestPolicyCmptTypeParam())) {
                         parentItem = child;
                         break;
                     }
@@ -1639,8 +1635,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
 
                 // create context menu to store actual value
-                EditField<?> editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(
-                        failureDetailsObj.getObjectName(), failureDetailsObj.getAttributeName()));
+                EditField<?> editField = testCaseDetailArea.getEditField(
+                        getUniqueEditFieldKey(failureDetailsObj.getObjectName(), failureDetailsObj.getAttributeName()));
                 if (editField != null) {
                     ArrayList<FailureDetails> list = new ArrayList<FailureDetails>(1);
                     list.add(failureDetailsObj);
@@ -2522,8 +2518,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 actionStoreActualValue.setText(Messages.TestCaseSection_Action_StoreExpectedResult);
                 actionStoreActualValue.setToolTipText(Messages.TestCaseSection_Action_ToolTipStoreExpectedResult);
             }
-            actionStoreActualValue.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "TestCaseStoreExpResult.gif")); //$NON-NLS-1$
+            actionStoreActualValue.setImageDescriptor(
+                    IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseStoreExpResult.gif")); //$NON-NLS-1$
 
             manager.add(actionStoreActualValue);
         }
@@ -2572,8 +2568,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         private static final String IMAGE_FILENAME = "Add.gif"; //$NON-NLS-1$
 
         private AddAction() {
-            super(Messages.TestCaseSection_ButtonAdd, IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    IMAGE_FILENAME));
+            super(Messages.TestCaseSection_ButtonAdd,
+                    IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));
         }
 
         @Override
@@ -2638,8 +2634,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             selectDialog.setTitle(Messages.TestCaseSection_DialogSelectTestAssociation_Title);
             selectDialog.setMessage(Messages.TestCaseSection_DialogSelectTestAssociation_Description);
 
-            ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptTypeParameter(getTestCase()
-                    .getIpsProject());
+            ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt
+                    .findTestPolicyCmptTypeParameter(getTestCase().getIpsProject());
             TestCaseTypeAssociation[] dummyAssociations = new TestCaseTypeAssociation[param
                     .getTestPolicyCmptTypeParamChilds().length];
             ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
@@ -2700,8 +2696,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // target requires a product component
                 chooseProductCmpts = true;
 
-                IPolicyCmptTypeAssociation association = associationType.findAssociation(associationType
-                        .getParentTestPolicyCmpt().getIpsProject());
+                IPolicyCmptTypeAssociation association = associationType
+                        .findAssociation(associationType.getParentTestPolicyCmpt().getIpsProject());
                 if (association == null) {
                     // validation error
                     return;
@@ -2729,8 +2725,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return;
             }
 
-            final IPolicyCmptTypeAssociation association = associationType.findAssociation(associationType
-                    .getParentTestPolicyCmpt().getIpsProject());
+            final IPolicyCmptTypeAssociation association = associationType
+                    .findAssociation(associationType.getParentTestPolicyCmpt().getIpsProject());
             if (association == null) {
                 // association not found, no add allowed
                 return;
@@ -2837,8 +2833,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         private static final String IMAGE_FILENAME = "elcl16/trash.gif"; //$NON-NLS-1$
 
         private RemoveAction() {
-            super(Messages.TestCaseSection_ButtonRemove, IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    IMAGE_FILENAME));
+            super(Messages.TestCaseSection_ButtonRemove,
+                    IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));
         }
 
         @Override

@@ -28,19 +28,15 @@ public class TestPolicyCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAd
                 // return the linked product cmpt image if the target relates a product cmpt,
                 // or return the linked policy cmpt if target not found or no product cmpt is
                 // related
-                try {
-                    ITestPolicyCmpt cmpt = policyCmptLink.findTarget();
-                    if (cmpt != null && cmpt.hasProductCmpt()) {
-                        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("LinkProductCmpt.gif", true); //$NON-NLS-1$
-                    }
-                } catch (CoreException e) {
-                    // ignored exception, return default image
+                ITestPolicyCmpt cmpt = policyCmptLink.findTarget();
+                if (cmpt != null && cmpt.hasProductCmpt()) {
+                    return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("LinkProductCmpt.gif", true); //$NON-NLS-1$
                 }
                 return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("LinkedPolicyCmptType.gif", true); //$NON-NLS-1$
             } else {
                 try {
-                    ITestPolicyCmptTypeParameter param = policyCmptLink.findTestPolicyCmptTypeParameter(policyCmptLink
-                            .getIpsProject());
+                    ITestPolicyCmptTypeParameter param = policyCmptLink
+                            .findTestPolicyCmptTypeParameter(policyCmptLink.getIpsProject());
                     if (param != null) {
                         IPolicyCmptTypeAssociation association = param.findAssociation(policyCmptLink.getIpsProject());
                         if (association != null) {

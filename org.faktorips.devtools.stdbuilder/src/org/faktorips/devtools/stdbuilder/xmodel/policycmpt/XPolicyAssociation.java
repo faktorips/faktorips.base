@@ -485,11 +485,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isProductRelevant() {
-        try {
-            return getAssociation().isConstrainedByProductStructure(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getAssociation().isConstrainedByProductStructure(getIpsProject());
     }
 
     public boolean isComposition() {

@@ -215,9 +215,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt> .
-     * It can be specified whether to include copied inherited attributes or not and whether to include
-     * literal name attributes or not.
+     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * . It can be specified whether to include copied inherited attributes or not and whether to
+     * include literal name attributes or not.
      */
     private List<IEnumAttribute> getEnumAttributesInternal(boolean includeInheritedCopies,
             boolean includeLiteralNameAttributes) {
@@ -416,8 +416,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     /**
      * @deprecated Since 3.11 use {@link #getIndexOfEnumAttribute(IEnumAttribute,boolean)} instead
-     *             because in the case of enum contents there we need to ignore the literal name column
-     *             if we want to get the column index
+     *             because in the case of enum contents there we need to ignore the literal name
+     *             column if we want to get the column index
      */
     @Deprecated
     @Override
@@ -448,7 +448,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     /**
      * Moves the <tt>IEnumAttributeValue</tt> corresponding to the given <tt>IEnumAttribute</tt>
-     * identified by its index in each given <tt>IEnumValue</tt> up or down in the containing list by 1.
+     * identified by its index in each given <tt>IEnumValue</tt> up or down in the containing list
+     * by 1.
      */
     private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up) {
         for (IEnumValue currentEnumValue : enumValues) {
@@ -555,8 +556,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Validates whether this <tt>IEnumType</tt> contains at least one
      * <tt>IEnumLiteralNameAttribute</tt>.
      * <p>
-     * If this <tt>IEnumType</tt> is abstract or is extensible the validation will succeed even if there
-     * is no <tt>IEnumLiteralNameAttribute</tt>.
+     * If this <tt>IEnumType</tt> is abstract or is extensible the validation will succeed even if
+     * there is no <tt>IEnumLiteralNameAttribute</tt>.
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
         if (isAbstract()) {
@@ -567,8 +568,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being marked
-     * to be used as ID in the Faktor-IPS UI.
+     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being
+     * marked to be used as ID in the Faktor-IPS UI.
      * <p>
      * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
      * <tt>IEnumAttribute</tt>.
@@ -590,8 +591,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being marked
-     * to be used as name in the Faktor-IPS UI.
+     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being
+     * marked to be used as name in the Faktor-IPS UI.
      * <p>
      * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
      * <tt>IEnumAttribute</tt>.
@@ -614,8 +615,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether the <tt>IEnumContent</tt> specified by this <tt>IEnumType</tt> is already used
-     * by another <tt>IEnumType</tt>.
+     * Validates whether the <tt>IEnumContent</tt> specified by this <tt>IEnumType</tt> is already
+     * used by another <tt>IEnumType</tt>.
      */
     private void validateEnumContentAlreadyUsed(MessageList validationMessageList, IIpsProject ipsProject) {
 
@@ -658,8 +659,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (identifierAttribute != null) {
             ValueDatatype identifierAttributeDatatype = identifierAttribute.findDatatype(getIpsProject());
             String identifierBoundaryString = getIdentifierBoundary();
-            ValidationUtils.checkValue(identifierAttributeDatatype, identifierAttribute.getDatatype(), identifierBoundaryString,
-                    this, PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
+            ValidationUtils.checkValue(identifierAttributeDatatype, identifierAttribute.getDatatype(),
+                    identifierBoundaryString, this, PROPERTY_IDENTIFIER_BOUNDARY, validationMessageList);
         }
     }
 
@@ -693,11 +694,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> inherits all <tt>IEnumAttribute</tt>s defined in its
-     * supertype hierarchy.
+     * Validates whether this <tt>IEnumType</tt> inherits all <tt>IEnumAttribute</tt>s defined in
+     * its supertype hierarchy.
      * <p>
-     * Adds validation messages to the given message list. The validation will pass immediately if the
-     * <tt>IEnumType</tt> is abstract.
+     * Adds validation messages to the given message list. The validation will pass immediately if
+     * the <tt>IEnumType</tt> is abstract.
      */
     private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
             throws CoreException {
@@ -755,8 +756,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
 
         /*
-         * Go over all EnumAttributes of every EnumType in the supertype hierarchy. Do this backwards so the
-         * attributes of the EnumType up highest in the hierarchy will be showed first.
+         * Go over all EnumAttributes of every EnumType in the supertype hierarchy. Do this
+         * backwards so the attributes of the EnumType up highest in the hierarchy will be showed
+         * first.
          */
         List<IEnumType> superEnumTypes = findAllSuperEnumTypes(ipsProject);
         for (int i = superEnumTypes.size() - 1; i >= 0; i--) {
@@ -1011,7 +1013,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
         if (hasSuperEnumType()) {
             IDependency superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(),
@@ -1056,13 +1058,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this <tt>IEnumType</tt>.
-     * Depending on the boolean flag the supertype copies are included in the check.
+     * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
+     * <tt>IEnumType</tt>. Depending on the boolean flag the supertype copies are included in the
+     * check.
      */
     private boolean containsEnumAttribute(String attributeName, boolean includeSupertypeCopies) {
         List<IEnumAttribute> enumAttributesToCheck = includeSupertypeCopies
-                ? getEnumAttributesIncludeSupertypeCopies(true)
-                : getEnumAttributes(true);
+                ? getEnumAttributesIncludeSupertypeCopies(true) : getEnumAttributes(true);
         for (IEnumAttribute currentEnumAttribute : enumAttributesToCheck) {
             if (currentEnumAttribute.getName().equals(attributeName)) {
                 return true;
@@ -1139,9 +1141,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         /**
-         * If there are multiple attributes with the same name and none of them is marked as inherited, add
-         * all those attributes (or "duplicates") to the list. This case is necessary to detect errors
-         * during object validation.
+         * If there are multiple attributes with the same name and none of them is marked as
+         * inherited, add all those attributes (or "duplicates") to the list. This case is necessary
+         * to detect errors during object validation.
          */
         private final boolean contains(IEnumAttribute attribute) {
             for (IEnumAttribute enumAttribute : allAttributes) {

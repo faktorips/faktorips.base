@@ -357,7 +357,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     /**
      * Finds the test policy component by the given path.
      */
-    public ITestPolicyCmpt findPolicyCmpt(String path) throws CoreException {
+    public ITestPolicyCmpt findPolicyCmpt(String path) {
         return testCase.findTestPolicyCmpt(path);
     }
 
@@ -377,15 +377,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             ITestPolicyCmptLink[] associations = parent.getTestPolicyCmptLinks(dummyAssociation.getName());
             for (ITestPolicyCmptLink association : associations) {
                 if (association.isComposition()) {
-                    try {
-                        if (isExpectedResultOrInput(association)) {
-                            childs.add(association.findTarget());
-                        }
-                        // CSOFF: Empty Statement
-                    } catch (CoreException e) {
-                        // ignore exception, the failure will be displayed by the validation
+                    if (isExpectedResultOrInput(association)) {
+                        childs.add(association.findTarget());
                     }
-                    // CSON: Empty Statement
                 } else {
                     childs.add(association);
                 }
@@ -401,7 +395,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         return childs.toArray(new IIpsElement[0]);
     }
 
-    private boolean isExpectedResultOrInput(ITestPolicyCmptLink association) throws CoreException {
+    private boolean isExpectedResultOrInput(ITestPolicyCmptLink association) {
         return (isExpectedResult() && association.findTarget().isExpectedResult())
                 || (isInput() && association.findTarget().isInput());
     }
@@ -414,11 +408,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             return EMPTY_ARRAY;
         } else {
             ITestPolicyCmpt[] childs = new ITestPolicyCmpt[1];
-            try {
-                childs[0] = testPcAssociation.findTarget();
-            } catch (CoreException e) {
-                return EMPTY_ARRAY;
-            }
+            childs[0] = testPcAssociation.findTarget();
             return childs;
         }
     }
@@ -483,15 +473,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         for (ITestPolicyCmptLink link : links) {
             if (link.isComposition()) {
                 ITestPolicyCmpt target = null;
-                try {
-                    target = link.findTarget();
-                    if (target != null) {
-                        if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
-                            childTestPolicyCmpt.add(target);
-                        }
+                target = link.findTarget();
+                if (target != null) {
+                    if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
+                        childTestPolicyCmpt.add(target);
                     }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
                 }
             } else {
                 // the link is an association will be added

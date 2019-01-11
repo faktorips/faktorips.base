@@ -163,7 +163,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public boolean isConstrainedByProductStructure(IIpsProject ipsProject) throws CoreException {
+    public boolean isConstrainedByProductStructure(IIpsProject ipsProject) {
         return findMatchingProductCmptTypeAssociation(ipsProject) != null;
     }
 

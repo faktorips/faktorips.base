@@ -81,7 +81,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    public ITestPolicyCmpt findTarget() throws CoreException {
+    public ITestPolicyCmpt findTarget() {
         if (targetChild != null) {
             return targetChild;
         }
@@ -199,8 +199,8 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
         if (messageList.getMessageByCode(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND) == null) {
             if (testCaseTypeParam == null) {
-                String text = NLS
-                        .bind(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeParamNotFound, getName());
+                String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeParamNotFound,
+                        getName());
                 Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this,
                         PROPERTY_POLICYCMPTTYPE);
                 messageList.add(msg);
@@ -224,7 +224,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         }
     }
 
-    public void validateSingle(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+    public void validateSingle(MessageList messageList, IIpsProject ipsProject) {
         // validate if the test case type param exists
         ITestPolicyCmptTypeParameter param = null;
         try {

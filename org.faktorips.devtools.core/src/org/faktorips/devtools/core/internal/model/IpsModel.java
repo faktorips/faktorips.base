@@ -62,10 +62,10 @@ import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileOffRoot;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileOffRoot;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
@@ -118,8 +118,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public static final boolean TRACE_VALIDATION;
 
     /**
-     * We must use a value different from {@link IResource#NULL_STAMP} because otherwise files which do
-     * not exist in workspace (like {@link LibraryIpsSrcFile}) would remain cached forever.
+     * We must use a value different from {@link IResource#NULL_STAMP} because otherwise files which
+     * do not exist in workspace (like {@link LibraryIpsSrcFile}) would remain cached forever.
      * <p>
      * Described in FIPS-5745
      */
@@ -151,14 +151,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             100);
 
     /**
-     * a map that contains per thread if changes should be broadcasted to the registered listeners or
-     * squeezed.
+     * a map that contains per thread if changes should be broadcasted to the registered listeners
+     * or squeezed.
      */
     private Map<Thread, Integer> listenerNoticicationLevelMap = new HashMap<Thread, Integer>();
 
     /**
-     * A map containing the datatypes (value) by id (key). The map is initialized with null to point at
-     * the lazy loading mechanism
+     * A map containing the datatypes (value) by id (key). The map is initialized with null to point
+     * at the lazy loading mechanism
      */
     private Map<String, Datatype> datatypes = null;
 
@@ -556,8 +556,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns an IpsElement of an IPS project that is not categorized as such (For example the parent
-     * folder of an IPS project).
+     * Returns an IpsElement of an IPS project that is not categorized as such (For example the
+     * parent folder of an IPS project).
      * 
      * @param resource the input file
      * @return the respective IPS file or <code>null</code> if the resource isn't an IPS SRC File
@@ -583,14 +583,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Tells the model to stop broadcasting any changes made to ips objects by the current thread. By
-     * default changes are broadcasted until this method is called. To restart brodcasting changes the
-     * method resumeBroadcastingChangesMadeByCurrentThread() has to be called.
+     * Tells the model to stop broadcasting any changes made to ips objects by the current thread.
+     * By default changes are broadcasted until this method is called. To restart brodcasting
+     * changes the method resumeBroadcastingChangesMadeByCurrentThread() has to be called.
      * <p>
      * <strong>Note<strong> that these two method have a "nested transaction behavior". That means
-     * broadcasting resumes only if the resume method has been called as many times as the stop method.
-     * This allows to implement method that stop/resume broadcasting to call other method that use these
-     * methods without resuming broadcasting to early.
+     * broadcasting resumes only if the resume method has been called as many times as the stop
+     * method. This allows to implement method that stop/resume broadcasting to call other method
+     * that use these methods without resuming broadcasting to early.
      */
     public void stopBroadcastingChangesMadeByCurrentThread() {
         Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
@@ -610,9 +610,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Tells the model to resume broadcasting any changes made to ips objects by the current thread.
      * <p>
      * <strong>Note<strong> that these two method have a "nested transaction behavior". That means
-     * broadcasting resumes only if the resume method has been called as many times as the stop method.
-     * This allows to implement method that stop/resume broadcasting to call other method that use these
-     * methods without resuming broadcasting to early.
+     * broadcasting resumes only if the resume method has been called as many times as the stop
+     * method. This allows to implement method that stop/resume broadcasting to call other method
+     * that use these methods without resuming broadcasting to early.
      */
     public void resumeBroadcastingChangesMadeByCurrentThread() {
         Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
@@ -627,8 +627,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns <code>true</code> if the model is currently broadcasting changes made to an ips object by
-     * the current thread.
+     * Returns <code>true</code> if the model is currently broadcasting changes made to an ips
+     * object by the current thread.
      */
     public boolean isBroadcastingChangesForCurrentThread() {
         Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
@@ -760,8 +760,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the datatype identified by the given qualified name or null, if the ips project does not
-     * contain such a datatype.
+     * Returns the datatype identified by the given qualified name or null, if the ips project does
+     * not contain such a datatype.
      */
     public Datatype getDatatypeDefinedInProjectProperties(IIpsProject ipsProject, String qName) {
         Map<String, Datatype> map = getDatatypesDefinedInProjectProperties(ipsProject);
@@ -824,8 +824,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns the IIpsArtefactBuilderSet that is set for the provided IIpsProject by means of the
      * project's builder set id. If no builder set is set for the project an EmptyBuilderSet will be
-     * returned. If the builder set for the current builder set id is not found in the set of registered
-     * builder sets a warning is logged and an EmptyBuilderSet will be returned.
+     * returned. If the builder set for the current builder set id is not found in the set of
+     * registered builder sets a warning is logged and an EmptyBuilderSet will be returned.
      */
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
         ArgumentCheck.notNull(project, this);
@@ -888,9 +888,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the <code>DependencyGraph</code> of the provided <code>IpsProject</code>. If the provided
-     * IpsProject doesn't exist or if it isn't a valid <code>IpsProject</code> <code>null</code> will be
-     * returned by this method. This method is not part of the published interface.
+     * Returns the <code>DependencyGraph</code> of the provided <code>IpsProject</code>. If the
+     * provided IpsProject doesn't exist or if it isn't a valid <code>IpsProject</code>
+     * <code>null</code> will be returned by this method. This method is not part of the published
+     * interface.
      * 
      * @throws NullPointerException if the argument is null
      */
@@ -916,9 +917,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the dependency graph objects that are currently hold by this model. This method doesn't
-     * guarantee to return the dependency graph objects for all IpsProjects within the workspace but
-     * only for those whom have already been instantiated.
+     * Returns the dependency graph objects that are currently hold by this model. This method
+     * doesn't guarantee to return the dependency graph objects for all IpsProjects within the
+     * workspace but only for those whom have already been instantiated.
      * <p>
      * This method is not part of the published interface.
      */
@@ -933,9 +934,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the properties (stored in the .ipsproject file) for the given IPS project. If an error
-     * occurs while accessing the .ipsproject file or the file does not exist an error is logged and an
-     * empty IPS project data instance is returned.
+     * Returns the properties (stored in the .ipsproject file) for the given IPS project. If an
+     * error occurs while accessing the .ipsproject file or the file does not exist an error is
+     * logged and an empty IPS project data instance is returned.
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
@@ -957,8 +958,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Clears caches for a given project. Affects only caches whose objects depend on project settings,
-     * e.g. IPS project properties or manifest files.
+     * Clears caches for a given project. Affects only caches whose objects depend on project
+     * settings, e.g. IPS project properties or manifest files.
      * 
      * @param ipsProject whose properties and or settings changed
      */
@@ -1064,10 +1065,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Releases a cached {@link IIpsSrcFile} from the ipsObjectMap cache.
      * <p>
-     * Do not really remove the IpsSrcFileContent from ipsObjectMap because we want to have the same IPS
-     * object (same object reference) after reloading the file. The object identity should never change
-     * until we have no other references remaining. Instead of removing the file we simply set the
-     * modification stamp invalid and force a reload on next access.
+     * Do not really remove the IpsSrcFileContent from ipsObjectMap because we want to have the same
+     * IPS object (same object reference) after reloading the file. The object identity should never
+     * change until we have no other references remaining. Instead of removing the file we simply
+     * set the modification stamp invalid and force a reload on next access.
      * <p>
      * Only alternative would be to use a soft reference cache.
      * 
@@ -1098,8 +1099,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * This method is for test purposes only. Usually the builder set infos are loaded via the according
-     * extension point.
+     * This method is for test purposes only. Usually the builder set infos are loaded via the
+     * according extension point.
      */
     public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos) {
         builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
@@ -1113,8 +1114,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *             extension property is applicable or not. Use
      *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
      *             <p>
-     *             If you are interested in all extension properties regardless of their applicability
-     *             to specific objects, use
+     *             If you are interested in all extension properties regardless of their
+     *             applicability to specific objects, use
      *             {@link #getExtensionPropertyDefinitionsForClass(Class, boolean)} explicitly.
      */
     @Override
@@ -1225,9 +1226,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         convention = changesOverTimeNamingConventionMap.get(IChangesOverTimeNamingConvention.VAA);
         if (convention != null) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknown changes in time naming convention " + id //$NON-NLS-1$
-                    + ". Using default " //$NON-NLS-1$
-                    + IChangesOverTimeNamingConvention.VAA, null));
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING,
+                    "Unknown changes in time naming convention " + id //$NON-NLS-1$
+                            + ". Using default " //$NON-NLS-1$
+                            + IChangesOverTimeNamingConvention.VAA,
+                    null));
             return convention;
         }
         IpsPlugin.log(new IpsStatus("Unknown changes in time naming convention " + id //$NON-NLS-1$
@@ -1267,8 +1270,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the ClassLoaderProvider for the given ips project. Uses the System class loader as parent
-     * of the class loader that is provided by the returned provider.
+     * Returns the ClassLoaderProvider for the given ips project. Uses the System class loader as
+     * parent of the class loader that is provided by the returned provider.
      * 
      * @throws NullPointerException if ipsProject is <code>null</code>.
      * 
@@ -1288,8 +1291,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the cache for all function resolvers (registered via extension point) for the given IPS
-     * project.
+     * Returns the cache for all function resolvers (registered via extension point) for the given
+     * IPS project.
      * 
      * @param ipsProject the project to return a cache for
      */
@@ -1441,7 +1444,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object
-     * represents an IpsArtefactBuilderSet that is a registered at the corresponding extension point.
+     * represents an IpsArtefactBuilderSet that is a registered at the corresponding extension
+     * point.
      */
     @Override
     public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
@@ -1605,9 +1609,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the {@link IIpsSrcFile ips source files} of the markers that are configured in the given
-     * {@link IIpsProject}. This method only handles the caching in the project data. Always call
-     * {@link IIpsProject#getMarkerEnums()} directly.
+     * Returns the {@link IIpsSrcFile ips source files} of the markers that are configured in the
+     * given {@link IIpsProject}. This method only handles the caching in the project data. Always
+     * call {@link IIpsProject#getMarkerEnums()} directly.
      * 
      * @see IIpsProject#getMarkerEnums()
      */

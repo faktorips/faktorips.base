@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -68,13 +66,9 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
         String[] overlays = new String[4];
         if (association instanceof IPolicyCmptTypeAssociation) {
             IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
-            try {
-                if (polAssociation.isConfigurable()
-                        && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
-                    overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_OVR;
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+            if (polAssociation.isConfigurable()
+                    && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
+                overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_OVR;
             }
         }
         if (association instanceof IProductCmptTypeAssociation) {

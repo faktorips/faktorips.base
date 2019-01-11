@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -470,11 +469,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         public boolean isConfigurableCheckboxEnabled() {
-            try {
-                return getAssociation().isConstrainedByProductStructure(ipsProject);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return getAssociation().isConstrainedByProductStructure(ipsProject);
         }
 
         public String getQualificationLabel() {
@@ -634,12 +629,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
          * @return Returns the configured.
          */
         public boolean isConfigurable() {
-            try {
-                if (!getAssociation().isConstrainedByProductStructure(ipsProject)) {
-                    return false;
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+            if (!getAssociation().isConstrainedByProductStructure(ipsProject)) {
+                return false;
             }
             return getAssociation().isConfigurable();
         }

@@ -300,7 +300,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             List<IBFElement> list = elements.get(key);
             if (list.size() > 1) {
                 for (IBFElement element : list) {
-                    if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list) || checkIfOnlyMethodCallDecisions(list))) {
+                    if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list)
+                            || checkIfOnlyMethodCallDecisions(list))) {
                         String text = NLS.bind(Messages.BusinessFunction_duplicateNames, key);
                         msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
                     }
@@ -397,8 +398,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForEnd.contains(element)) {
-                String text = NLS
-                        .bind(Messages.BusinessFunction_elementNotConnectedWithEnd, element.getDisplayString());
+                String text = NLS.bind(Messages.BusinessFunction_elementNotConnectedWithEnd,
+                        element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }
         }
@@ -489,7 +490,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         List<IDependency> dependencies = new ArrayList<IDependency>();
         for (IIpsObjectPart part : actions.getParts()) {
             IActionBFE action = (IActionBFE)part;

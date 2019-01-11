@@ -202,8 +202,8 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         toolBarManager.add(subtypeSearchAction);
 
         // refresh action
-        refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+        refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setInputData(contentProvider.getActualElement());
@@ -221,8 +221,8 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         toolBarManager.add(retargetAction);
 
         // clear action
-        clearAction = new Action(Messages.InstanceExplorer_tooltipClear, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+        clearAction = new Action(Messages.InstanceExplorer_tooltipClear,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setInputData(null);
@@ -361,8 +361,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    protected boolean isDependendObjectChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles)
-            throws CoreException {
+    protected boolean isDependendObjectChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             if (ipsSrcFile.exists()) {
                 IDependency[] dependencys = ipsSrcFile.getIpsObject().dependsOn();
@@ -508,8 +507,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                         contentProvider.removeActualElement();
                         return;
                     }
-                    if (containsRootElement(changedIpsSrcFiles)
-                            || isDependendObjectChanged(element, changedIpsSrcFiles)
+                    if (containsRootElement(changedIpsSrcFiles) || isDependendObjectChanged(element, changedIpsSrcFiles)
                             || containsElement(changedIpsSrcFiles)) {
                         showInstancesOf(contentProvider.getActualElement());
                     }
@@ -675,7 +673,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
 
         @Override
-        public IDependency[] dependsOn() throws CoreException {
+        public IDependency[] dependsOn() {
             return new IDependency[0];
         }
 

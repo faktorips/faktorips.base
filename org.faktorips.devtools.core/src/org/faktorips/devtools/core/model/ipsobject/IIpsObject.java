@@ -94,7 +94,7 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * deleted. However, if the deleted object is created again, we must rebuild this dependent
      * object so that the problem marker will be removed.
      */
-    public IDependency[] dependsOn() throws CoreException;
+    public IDependency[] dependsOn();
 
     /**
      * Returns the dependency details describing which parts and properties are causing the given

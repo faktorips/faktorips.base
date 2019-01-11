@@ -231,8 +231,8 @@ public class TestCaseDetailArea {
         if (parent.isDisposed()) {
             return null;
         }
-        final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.BORDER);
+        final ScrolledComposite scrolledComposite = new ScrolledComposite(parent,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         scrolledComposite.setShowFocusedControl(true);
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
@@ -272,8 +272,8 @@ public class TestCaseDetailArea {
         }
         String uniqueKey = testCaseSection.getUniqueKey(testPolicyCmpt);
 
-        if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult()) || (testCaseSection
-                .getContentProvider().isInput() && testPolicyCmpt.isInput()))) {
+        if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult())
+                || (testCaseSection.getContentProvider().isInput() && testPolicyCmpt.isInput()))) {
             // check if the parameter wasn't found
             // if the parameter not exists then the type couldn't be determined, therefore display
             // the content in any case
@@ -400,7 +400,7 @@ public class TestCaseDetailArea {
     private void storeAndMarkEditField(final ITestPolicyCmpt testPolicyCmpt,
             final ITestPolicyCmpt testPolicyCmptForSelection,
             final ITestAttributeValue attributeValue,
-            EditField<?> editField) throws CoreException {
+            EditField<?> editField) {
         String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
         // store the edit field
         putEditField(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
@@ -418,14 +418,14 @@ public class TestCaseDetailArea {
     private void markAsFailure(final ITestAttributeValue attributeValue,
             EditField<?> editField,
             String testPolicyCmptTypeParamPath) {
-        String failureLastTestRun = failureMessageCache.get(testPolicyCmptTypeParamPath
-                + attributeValue.getTestAttribute());
+        String failureLastTestRun = failureMessageCache
+                .get(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute());
         if (failureLastTestRun != null) {
             if (!fixedFieldsCache.contains(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute())) {
                 testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
                 // create context menu
-                String[] failureDetails = failureDetailCache.get(testPolicyCmptTypeParamPath
-                        + attributeValue.getTestAttribute());
+                String[] failureDetails = failureDetailCache
+                        .get(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute());
                 if (failureDetails != null) {
                     testCaseSection.postAddExpectedResultContextMenu(editField.getControl(), failureDetails);
                 }
@@ -464,22 +464,14 @@ public class TestCaseDetailArea {
 
         // create a hyperlink to the target
         ITestPolicyCmpt target = null;
-        try {
-            target = contentProvider.getTestCase().findTestPolicyCmpt(currLink.getTarget());
-        } catch (CoreException e2) {
-            // ignore the exception, error searching for the target
-        }
+        target = contentProvider.getTestCase().findTestPolicyCmpt(currLink.getTarget());
         if (target != null) {
             Hyperlink linkHyperlink = toolkit.getFormToolkit().createHyperlink(hyperlinkArea,
                     TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()), SWT.WRAP);
             linkHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
                 @Override
                 public void linkActivated(HyperlinkEvent e) {
-                    try {
-                        testCaseSection.selectInTreeByObject(currLink.findTarget(), true);
-                    } catch (CoreException e1) {
-                        throw new RuntimeException(e1);
-                    }
+                    testCaseSection.selectInTreeByObject(currLink.findTarget(), true);
                 }
             });
             linkHyperlink.addFocusListener(new FocusListener() {
@@ -494,7 +486,8 @@ public class TestCaseDetailArea {
                     // Nothing to do
                 }
             });
-            String hyperLinkPath = " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "; //$NON-NLS-1$ //$NON-NLS-2$
+            String hyperLinkPath = " (" //$NON-NLS-1$
+                    + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "; //$NON-NLS-1$
             String hyperLinklabel = hyperLinkPath;
             if (hyperLinklabel.length() > 60) {
                 hyperLinklabel = hyperLinkPath.substring(0, 27);
@@ -651,8 +644,9 @@ public class TestCaseDetailArea {
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
-        final EditField<?> editField = new EnumValueField(toolkit.createCombo(composite,
-                TestRuleViolationType.getEnumType()), TestRuleViolationType.getEnumType());
+        final EditField<?> editField = new EnumValueField(
+                toolkit.createCombo(composite, TestRuleViolationType.getEnumType()),
+                TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
@@ -808,8 +802,8 @@ public class TestCaseDetailArea {
             } else if (object instanceof ITestAttributeValue) {
                 ((ITestAttributeValue)object).setValue(actualValueToSet);
             } else if (object instanceof ITestRule) {
-                ((ITestRule)object).setViolationType((TestRuleViolationType)TestRuleViolationType.getEnumType()
-                        .getEnumValue(actualValue));
+                ((ITestRule)object).setViolationType(
+                        (TestRuleViolationType)TestRuleViolationType.getEnumType().getEnumValue(actualValue));
             }
         }
     }
