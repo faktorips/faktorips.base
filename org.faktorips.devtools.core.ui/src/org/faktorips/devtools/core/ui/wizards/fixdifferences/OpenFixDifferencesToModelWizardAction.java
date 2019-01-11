@@ -33,6 +33,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -40,7 +41,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -151,8 +151,8 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
             addIpsElements((IIpsPackageFragment)selected, ipsElementsToFix);
         } else if (selected instanceof IIpsSrcFile) {
             addElementToFix(ipsElementsToFix, ((IIpsSrcFile)selected).getIpsObject());
-        } else if (selected instanceof InstanceIpsSrcFileViewItem) {
-            addElementToFix(ipsElementsToFix, ((InstanceIpsSrcFileViewItem)selected).getIpsSrcFile().getIpsObject());
+        } else if (selected instanceof IIpsSrcFileWrapper) {
+            addElementToFix(ipsElementsToFix, ((IIpsSrcFileWrapper)selected).getWrappedIpsSrcFile().getIpsObject());
         } else if (selected instanceof IFixDifferencesToModelSupport) {
             IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
             addIpsElement(ipsElementToFix, ipsElementsToFix);

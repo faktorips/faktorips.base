@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.dependency.SortedByDependency;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
@@ -31,10 +32,10 @@ import org.faktorips.util.ArgumentCheck;
  * @author Daniel Hohenberger
  */
 public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWizard {
-    private Set<? extends Object> ipsElementsToFix;
+    private Set<IFixDifferencesToModelSupport> ipsElementsToFix;
     private ElementSelectionPage elementSelectionPage;
 
-    public FixDifferencesToModelWizard(Set<? extends Object> ipsElementsToFix) {
+    public FixDifferencesToModelWizard(Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
         ArgumentCheck.notNull(ipsElementsToFix, this);
         this.ipsElementsToFix = ipsElementsToFix;
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);
@@ -44,13 +45,15 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
 
     @Override
     public boolean performFinish() {
-        final IFixDifferencesToModelSupport[] elementsToFix = elementSelectionPage.getElementsToFix();
+        final Set<IFixDifferencesToModelSupport> elementsToFix = elementSelectionPage.getElementsToFix();
         final IWorkspaceRunnable op = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) {
-                monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.length);
+                monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.size() + 1);
+                Set<IFixDifferencesToModelSupport> sortedElements = SortedByDependency.sortByInstanceOf(elementsToFix);
+                monitor.worked(1);
                 try {
-                    for (IFixDifferencesToModelSupport element : elementsToFix) {
+                    for (IFixDifferencesToModelSupport element : sortedElements) {
                         element.fixAllDifferencesToModel(element.getIpsSrcFile().getIpsProject());
                         element.getIpsSrcFile().save(true, null);
                         monitor.worked(1);

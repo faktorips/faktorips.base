@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -21,10 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * object that is derived from a meta class
  * 
  * e.g. IProductCmpt, IEnumContent, ITableContents and ITestCase.
- * 
- * @author dirmeier
  */
-public interface IIpsMetaObject extends IFixDifferencesToModelSupport, IIpsObject {
+public interface IIpsMetaObject extends IFixDifferencesToModelSupport {
 
     /**
      * This method returns the qualified name of the meta class, defining this meta object
