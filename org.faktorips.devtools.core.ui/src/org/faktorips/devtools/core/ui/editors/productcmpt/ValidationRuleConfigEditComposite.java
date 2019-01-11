@@ -37,8 +37,8 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @see IValidationRuleConfig
  */
-public class ValidationRuleConfigEditComposite extends
-EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
+public class ValidationRuleConfigEditComposite
+        extends EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -51,6 +51,7 @@ EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
     protected void createEditFields(List<EditField<?>> editFields) {
         EditField<?> editField = createActiveEditField();
         createTemplateStatusButton(editField);
+        addChangingOverTimeDecorationIfRequired(editField);
         editFields.add(editField);
     }
 
