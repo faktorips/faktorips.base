@@ -586,7 +586,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     @Override
     public void setChangingOverTime(boolean changingOverTime) {
+        boolean oldVal = this.changingOverTime;
         this.changingOverTime = changingOverTime;
+        valueChanged(oldVal, changingOverTime, PROPERTY_CHANGING_OVER_TIME);
     }
 
     @Override
