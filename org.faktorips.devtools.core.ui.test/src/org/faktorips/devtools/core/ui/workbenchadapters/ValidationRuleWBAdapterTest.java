@@ -15,10 +15,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +27,7 @@ public class ValidationRuleWBAdapterTest extends AbstractIpsPluginTest {
 
     private IValidationRule rule;
     private ValidationRuleWorkbenchAdapter adapter;
+    private String[] overlays = new String[4];
 
     @Override
     @Before
@@ -42,27 +43,42 @@ public class ValidationRuleWBAdapterTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImage() {
         ImageDescriptor imageDesc = adapter.getImageDescriptor(rule);
-
-        ImageDescriptor expectedImageDesc = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
-                "ValidationRuleDef.gif", true);
+        ImageDescriptor expectedImageDesc = IpsUIPlugin.getImageHandling()
+                .getSharedImageDescriptor(ValidationRuleWorkbenchAdapter.VALIDATION_RULE_DEF_BASE_IMAGE, true);
         assertEquals(expectedImageDesc, imageDesc);
     }
 
     @Test
-    public void testGetConfigurableImage() {
+    public void testGetConfigurableImage_withChangingOverTime() {
         when(rule.isConfigurableByProductComponent()).thenReturn(true);
+        when(rule.isChangingOverTime()).thenReturn(true);
 
-        ImageDescriptor imageDesc = adapter.getImageDescriptor(rule);
+        assertEquals(createImageDescriptorWithOverlays(true, true), adapter.getImageDescriptor(rule));
+    }
 
-        ImageDescriptor expectedImageDesc = IpsUIPlugin.getImageHandling().getSharedOverlayImage(
-                "ValidationRuleDef.gif", "ProductRelevantOverlay.gif", IDecoration.TOP_RIGHT);
-        assertEquals(expectedImageDesc, imageDesc);
+    @Test
+    public void testGetConfigurableImage_withoutChangingOverTime() {
+        when(rule.isConfigurableByProductComponent()).thenReturn(true);
+        when(rule.isChangingOverTime()).thenReturn(false);
+
+        assertEquals(createImageDescriptorWithOverlays(true, false), adapter.getImageDescriptor(rule));
     }
 
     @Test
     @Ignore
     public void testGetLabel() {
         assertEquals("RegelName", adapter.getLabel(rule));
+    }
+
+    private ImageDescriptor createImageDescriptorWithOverlays(boolean productRelevant, boolean nonChangingOverTime) {
+        if (productRelevant) {
+            overlays[1] = OverlayIcons.PRODUCT_OVR;
+            if (!nonChangingOverTime) {
+                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+            }
+        }
+        return IpsUIPlugin.getImageHandling()
+                .getSharedOverlayImage(ValidationRuleWorkbenchAdapter.VALIDATION_RULE_DEF_BASE_IMAGE, overlays);
     }
 
 }

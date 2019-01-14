@@ -11,18 +11,20 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 
 public class ValidationRuleWorkbenchAdapter extends IpsElementWorkbenchAdapter {
+
+    public static final String VALIDATION_RULE_DEF_BASE_IMAGE = "ValidationRuleDef.gif"; //$NON-NLS-1$
 
     private final ImageDescriptor imageDescriptor;
 
     public ValidationRuleWorkbenchAdapter() {
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE, true);
     }
 
     /**
@@ -46,12 +48,15 @@ public class ValidationRuleWorkbenchAdapter extends IpsElementWorkbenchAdapter {
      */
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
+        String[] overlays = new String[4];
         if (ipsElement instanceof IValidationRule) {
             IValidationRule rule = (IValidationRule)ipsElement;
             if (rule.isConfigurableByProductComponent()) {
-                return IpsUIPlugin.getImageHandling().getSharedOverlayImage("ValidationRuleDef.gif", //$NON-NLS-1$
-                        "ProductRelevantOverlay.gif", //$NON-NLS-1$
-                        IDecoration.TOP_RIGHT);
+                overlays[1] = OverlayIcons.PRODUCT_OVR;
+                if (!rule.isChangingOverTime()) {
+                    overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                }
+                return IpsUIPlugin.getImageHandling().getSharedOverlayImage(VALIDATION_RULE_DEF_BASE_IMAGE, overlays);
             } else {
                 return getDefaultImageDescriptor();
             }
