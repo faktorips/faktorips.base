@@ -428,7 +428,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private void initDefaultChangingOverTime() {
         try {
             IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-            setChangingOverTime(productCmptType != null && productCmptType.isChangingOverTime());
+            this.changingOverTime = productCmptType != null && productCmptType.isChangingOverTime();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
