@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
@@ -81,6 +82,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -90,6 +92,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
@@ -360,7 +363,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         product.setRuntimeId("");
 
         MessageList validationMessages = product.validate(ipsProject);
-        assertNotNull(validationMessages.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT));
+        assertNotNull(
+                validationMessages.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT));
     }
 
     @Test
@@ -392,8 +396,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_illegalDates() throws CoreException,
-    Exception {
+    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_illegalDates()
+            throws CoreException, Exception {
         setUpLinkForDateValidityCheck();
         productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
@@ -420,8 +424,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_projectSetting() throws CoreException,
-            Exception {
+    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_projectSetting()
+            throws CoreException, Exception {
         setUpLinkForDateValidityCheck();
         productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
@@ -444,8 +448,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_legalDates() throws CoreException,
-    Exception {
+    public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_legalDates()
+            throws CoreException, Exception {
         setUpLinkForDateValidityCheck();
         productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
@@ -792,8 +796,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml_Formula() throws CoreException {
-        IFormula newFormula = productCmpt.newPropertyValue(
-                new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
+        IFormula newFormula = productCmpt
+                .newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
         Element xml = productCmpt.toXml(newDocument());
 
@@ -818,12 +822,37 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXml_ValidationRuleConfig() {
+        productCmpt.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals(2, productCmpt.getNumOfValidationRules());
+        IValidationRuleConfig activeValidationRuleConfig = productCmpt.getValidationRuleConfig("activeRule");
+        assertNotNull(activeValidationRuleConfig);
+        assertTrue(activeValidationRuleConfig.isActive());
+        IValidationRuleConfig inactiveValidationRuleConfig = productCmpt.getValidationRuleConfig("inactiveRule");
+        assertNotNull(inactiveValidationRuleConfig);
+        assertFalse(inactiveValidationRuleConfig.isActive());
+    }
+
+    @Test
+    public void testToXml_ValidationRuleConfig() throws CoreException {
+        IValidationRule validationRule = policyCmptType.newRule();
+        validationRule.setName("MyRule");
+        IValidationRuleConfig validationRuleConfig = productCmpt.newValidationRuleConfig(validationRule);
+        validationRuleConfig.setValidationRuleName("MyRule");
+        Element xml = productCmpt.toXml(newDocument());
+
+        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
+        copy.initFromXml(xml);
+        assertEquals(1, productCmpt.getNumOfValidationRules());
+    }
+
+    @Test
     public void testContainsGenerationFormula() {
         assertFalse(productCmpt.containsGenerationFormula());
-        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2000, 1,
-                1));
-        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2010, 1,
-                1));
+        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt
+                .newGeneration(new GregorianCalendar(2000, 1, 1));
+        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt
+                .newGeneration(new GregorianCalendar(2010, 1, 1));
         gen1.newFormula();
         assertTrue(productCmpt.containsGenerationFormula());
 
@@ -1094,12 +1123,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.newPropertyValues(attr2);
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
 
-        productCmpt.newPropertyValues(new ValidationRule(mock(IPolicyCmptType.class), ""));
+        productCmpt.newPropertyValues(policyCmptType.newRule());
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValues(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
-        productCmpt.newPropertyValues(new TableStructureUsage(mock(IProductCmptType.class), ""));
-        assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass()).size());
+        productCmpt.newPropertyValues(new TableStructureUsage(productCmptType, ""));
+        assertEquals(1,
+                productCmpt.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass()).size());
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValues(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));
         assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
@@ -1188,10 +1218,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLinksIncludingGenerations() {
-        IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
-                2010, 0, 1));
-        IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
-                2011, 0, 1));
+        IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt
+                .newGeneration(new GregorianCalendar(2010, 0, 1));
+        IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt
+                .newGeneration(new GregorianCalendar(2011, 0, 1));
         ArrayList<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
         links.add(productCmpt.newLink("asdff"));
         links.add(productCmpt.newLink("asdff2"));
@@ -1206,8 +1236,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetTableContentUsages() {
-        ITableContentUsage contentUsagePC = productCmpt.newPropertyValue(new TableStructureUsage(
-                mock(IProductCmptType.class), ""), ITableContentUsage.class);
+        ITableContentUsage contentUsagePC = productCmpt
+                .newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), ""), ITableContentUsage.class);
         assertNotNull(contentUsagePC);
 
         assertEquals(1, productCmpt.getTableContentUsages().length);
@@ -1438,5 +1468,74 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         assertThat(product.removePartThis(configDefault), is(true));
         assertNull(product.getPropertyValue(policyAttr, IConfiguredDefault.class));
+    }
+
+    @Test
+    public void testGetValidationRules() {
+        List<IValidationRuleConfig> rules = productCmpt.getValidationRuleConfigs();
+        assertEquals(0, rules.size());
+
+        newValidationRuleConfig();
+        rules = productCmpt.getValidationRuleConfigs();
+        assertEquals(1, rules.size());
+
+        newValidationRuleConfig();
+        rules = productCmpt.getValidationRuleConfigs();
+        assertEquals(2, rules.size());
+    }
+
+    private IValidationRuleConfig newValidationRuleConfig() {
+        IValidationRule rule = mock(IValidationRule.class);
+        when(rule.getPropertyName()).thenReturn("newRule");
+        when(rule.isActivatedByDefault()).thenReturn(false);
+        when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE);
+        return productCmpt.newValidationRuleConfig(rule);
+    }
+
+    @Test
+    public void testGetNumValidationRules() {
+        assertEquals(0, productCmpt.getNumOfValidationRules());
+
+        newValidationRuleConfig();
+        assertEquals(1, productCmpt.getNumOfValidationRules());
+
+        newValidationRuleConfig();
+        assertEquals(2, productCmpt.getNumOfValidationRules());
+    }
+
+    @Test
+    public void testNewValidationRule() {
+        assertEquals(0, productCmpt.getNumOfValidationRules());
+
+        newValidationRuleConfig();
+        assertEquals(1, productCmpt.getChildren().length);
+
+        newValidationRuleConfig();
+        assertEquals(2, productCmpt.getChildren().length);
+    }
+
+    @Test
+    public void testGetValidationRuleByName() {
+        IValidationRule rule;
+
+        rule = policyCmptType.newRule();
+        rule.setName("rule1");
+        productCmpt.newValidationRuleConfig(rule);
+
+        rule = policyCmptType.newRule();
+        rule.setName("ruleTwo");
+        productCmpt.newValidationRuleConfig(rule);
+
+        rule = policyCmptType.newRule();
+        rule.setName("ruleThree");
+        productCmpt.newValidationRuleConfig(rule);
+
+        assertEquals(3, productCmpt.getValidationRuleConfigs().size());
+
+        assertNotNull(productCmpt.getValidationRuleConfig("rule1"));
+        assertNotNull(productCmpt.getValidationRuleConfig("ruleTwo"));
+        assertNotNull(productCmpt.getValidationRuleConfig("ruleThree"));
+        assertNull(productCmpt.getValidationRuleConfig("nonExistingRule"));
+        assertNull(productCmpt.getValidationRuleConfig(null));
     }
 }

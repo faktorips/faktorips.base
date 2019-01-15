@@ -124,14 +124,14 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     public void testWriteTableUsageToXml() {
         Element prodCmptElement = getTestDocument().getDocumentElement();
         NodeList childNodes = prodCmptElement.getChildNodes();
-        assertEquals(15, childNodes.getLength());
+        assertEquals(21, childNodes.getLength());
 
         pc.writeTableUsageToXml(prodCmptElement, "structureUsageValue", "tableContentNameValue");
 
-        Node node = childNodes.item(15);
+        assertEquals(22, childNodes.getLength());
+        Node node = childNodes.item(21);
         Node namedItem = node.getAttributes().getNamedItem("structureUsage");
         String nodeValue = node.getFirstChild().getTextContent();
-        assertEquals(16, childNodes.getLength());
         assertEquals("structureUsageValue", namedItem.getNodeValue());
         assertEquals("tableContentNameValue", nodeValue);
     }
@@ -318,6 +318,17 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         assertNull(pc.getVariedBase());
         verify(repository).getProductComponent(id);
+    }
+
+    @Test
+    public void testInitVRuleConfigs() {
+        pc.initFromXml(getTestDocument().getDocumentElement());
+
+        assertEquals(true, pc.isValidationRuleActivated("activeRule"));
+        assertEquals(false, pc.isValidationRuleActivated("inactiveRule"));
+        assertEquals(false, pc.isValidationRuleActivated("invalidActivationRule"));
+
+        assertEquals(false, pc.isValidationRuleActivated("nonExistentRule"));
     }
 
     /**

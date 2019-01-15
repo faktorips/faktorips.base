@@ -2,21 +2,23 @@
 
 <!-- Test data for ProductCmptTest.java -->
 <ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId" template="MyLittleTemplate">
-	<Generation validFrom="2004-01-01">
+    <Generation validFrom="2004-01-01">
         <ConfigElement attribute="rate" id="c1">
             <Value isNull="false">1.5</Value>
-		</ConfigElement>
-	</Generation>
-	<Generation validFrom="2005-01-01" />
-	<AttributeValue id="abc123" attribute="bezeichnung">
-		<Value>testtesttest</Value>
-	</AttributeValue>
-    <Link id="3" association="staticCoverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
-    <Link id="4" association="staticIDontKnow" target="IDK" minCardinality="2" maxCardinality="3"/>
+        </ConfigElement>
+    </Generation>
+    <Generation validFrom="2005-01-01" />
+    <AttributeValue id="abc123" attribute="bezeichnung">
+        <Value>testtesttest</Value>
+    </AttributeValue>
+    <Link id="3" association="staticCoverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3" />
+    <Link id="4" association="staticIDontKnow" target="IDK" minCardinality="2" maxCardinality="3" />
     <TableContentUsage id="10" structureUsage="staticTable">
         <TableContentName isNull="false">produkt.Table1</TableContentName>
     </TableContentUsage>
     <Formula id="2" formulaSignature="PremiumCalculation">
-    	<Expression isNull="false">120EUR</Expression>
+        <Expression isNull="false">120EUR</Expression>
     </Formula>
+    <ValidationRuleConfig id="5" active="true" ruleName="activeRule" />
+    <ValidationRuleConfig id="6" active="false" ruleName="inactiveRule" />
 </ProductCmpt>

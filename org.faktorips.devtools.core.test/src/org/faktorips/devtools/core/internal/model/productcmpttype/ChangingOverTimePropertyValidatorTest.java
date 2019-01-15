@@ -9,11 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -31,6 +35,7 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
     private IProductCmptTypeAttribute productAttribute;
     private IProductCmptProperty productCmptProperty;
     private IProductCmptType productCmptType;
+    private PolicyCmptType policyCmptType;
 
     @Override
     @Before
@@ -38,8 +43,8 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
         super.setUp();
         ipsProject = newIpsProject();
 
-        productCmptType = newProductCmptType(ipsProject, "Product");
-        productCmptType.setPolicyCmptType("Policy");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        productCmptType = ipsProject.findProductCmptType("Product");
 
         productAttribute = productCmptType.newProductCmptTypeAttribute();
         productAttribute.setName("productAttribute");
@@ -54,32 +59,32 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
         propertyValidator = new ChangingOverTimePropertyValidator(productCmptProperty);
         MessageList ml = new MessageList();
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(true);
         productAttribute.setChangingOverTime(true);
 
         ml = new MessageList();
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(false);
 
         ml = new MessageList();
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(true);
 
         ml = new MessageList();
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -92,8 +97,8 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
         MessageList ml = new MessageList();
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -109,8 +114,46 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
         MessageList ml = new MessageList();
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
+    @Test
+    public void testValidateTypeDoesNotAcceptChangingOverTime_RuleChangingOverTimeFlag() {
+        IValidationRule policyRule = policyCmptType.newRule();
+        policyRule.setName("rule");
+        propertyValidator = new ChangingOverTimePropertyValidator(policyRule);
+
+        policyRule.setChangingOverTime(true);
+        productCmptType.setChangingOverTime(false);
+
+        MessageList ml = new MessageList();
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
+        assertThat(null, is(not(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME))));
+
+        policyRule.setChangingOverTime(true);
+        productCmptType.setChangingOverTime(true);
+
+        ml.clear();
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
+        assertThat(null, is(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME)));
+
+        policyRule.setChangingOverTime(false);
+        productCmptType.setChangingOverTime(true);
+
+        ml.clear();
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
+        assertThat(null, is(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME)));
+
+        policyRule.setChangingOverTime(false);
+        productCmptType.setChangingOverTime(false);
+
+        ml.clear();
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(ml);
+        assertThat(null, is(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME)));
+    }
 }

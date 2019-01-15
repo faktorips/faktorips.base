@@ -11,7 +11,6 @@
 package org.faktorips.runtime.internal;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -26,7 +25,6 @@ import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -48,11 +46,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     // handles the formulas
     private final FormulaHandler formulaHandler;
 
-    private Map<String, ValidationRuleConfiguration> nameToValidationRuleConfigMap = new HashMap<String, ValidationRuleConfiguration>();
+    private final ValidationRules validationRules;
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
         this.formulaHandler = new FormulaHandler(this, getRepository());
+        this.validationRules = new ValidationRules(this);
     }
 
     /**
@@ -203,24 +202,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject
      * Creates a map containing the validation rule configurations found in the indicated
      * generation's XML element. For each validation rule configuration the map contains an entry
      * with the rule name as a key and an {@link ValidationRuleConfiguration} instance as value.
-     * <p>
-     * IPSPV-199 : removed the cleaning of <code>nameToValidationRuleConfigMap</code> because if the
-     * method <code>initFromXML</code> is called twice, the product variant would have no validation
-     * rules when cleaning is used.
      * 
      * @param genElement An XML element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     protected void doInitValidationRuleConfigsFromXml(Element genElement) {
-        NodeList nl = genElement.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node node = nl.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && "ValidationRuleConfig".equals(node.getNodeName())) {
-                Element childElement = (Element)nl.item(i);
-                ValidationRuleConfiguration config = new ValidationRuleConfiguration(childElement);
-                nameToValidationRuleConfigMap.put(config.getRuleName(), config);
-            }
-        }
+        validationRules.doInitValidationRuleConfigsFromXml(genElement);
     }
 
     protected Element getRangeElement(Element configElement) {
@@ -272,10 +259,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     @Override
     public void setValidationRuleActivated(String ruleName, boolean active) {
-        if (getRepository() != null && !getRepository().isModifiable()) {
-            throw new IllegalRepositoryModificationException();
-        }
-        nameToValidationRuleConfigMap.put(ruleName, new ValidationRuleConfiguration(ruleName, active));
+        validationRules.setValidationRuleActivated(ruleName, active);
     }
 
     @Override
@@ -300,13 +284,9 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValidationRuleActivated(String ruleName) {
-        ValidationRuleConfiguration ruleConfig = nameToValidationRuleConfigMap.get(ruleName);
-        return ruleConfig != null && ruleConfig.isActive();
+        return validationRules.isValidationRuleActivated(ruleName);
     }
 
     /**
@@ -374,13 +354,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     }
 
     protected void writeValidationRuleConfigsToXml(Element genElement) {
-        for (String vRuleName : nameToValidationRuleConfigMap.keySet()) {
-            Element vRuleElement = genElement.getOwnerDocument().createElement("ValidationRuleConfig");
-            ValidationRuleConfiguration vRule = nameToValidationRuleConfigMap.get(vRuleName);
-            vRuleElement.setAttribute("ruleName", vRuleName);
-            vRuleElement.setAttribute("active", Boolean.toString(vRule.isActive()));
-            genElement.appendChild(vRuleElement);
-        }
+        validationRules.writeValidationRuleConfigsToXml(genElement);
     }
 
     /**

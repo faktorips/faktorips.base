@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
-        IPropertyValueContainer {
+        IPropertyValueContainer, IValidationRuleConfigContainer {
 
     /**
      * The name of the product component type property

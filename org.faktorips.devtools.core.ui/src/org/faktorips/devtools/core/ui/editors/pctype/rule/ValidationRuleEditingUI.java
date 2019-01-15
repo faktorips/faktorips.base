@@ -76,6 +76,7 @@ public class ValidationRuleEditingUI {
     private TextField msgCodeField;
     private EnumValueField msgSeverityField;
     private TextField msgTextField;
+    private Checkbox changingOverTimeBox;
     private Checkbox configurableByProductBox;
     private Checkbox defaultActivationBox;
 
@@ -170,6 +171,11 @@ public class ValidationRuleEditingUI {
                 Messages.RuleEditDialog_Configurable_CheckboxLabel);
         configurableByProductBox.setLayoutData(checkboxLayoutData);
 
+        changingOverTimeBox = uiToolkit.createCheckbox(labelEditColumnComposite,
+                NLS.bind(Messages.RuleEditDialog_ChangingOverTime_CheckboxLabel, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+        changingOverTimeBox.setLayoutData(checkboxLayoutData);
+
         defaultActivationBox = uiToolkit.createCheckbox(labelEditColumnComposite,
                 Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
         defaultActivationBox.setLayoutData(checkboxLayoutData);
@@ -239,6 +245,8 @@ public class ValidationRuleEditingUI {
 
         bindingContext.bindContent(new CheckboxField(configurableByProductBox), rule,
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
+        bindingContext.bindContent(new CheckboxField(changingOverTimeBox), rule,
+                IValidationRule.PROPERTY_CHANGING_OVER_TIME);
         bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,
                 IValidationRule.PROPERTY_ACTIVATED_BY_DEFAULT);
 
@@ -246,6 +254,8 @@ public class ValidationRuleEditingUI {
 
         bindingContext.bindEnabled(configurableByProductBox, rule.getIpsObject(),
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
+        bindingContext.bindEnabled(changingOverTimeBox, rule,
+                IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
         bindingContext.bindEnabled(defaultActivationBox, rule,
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
         bindingContext.bindEnabled(categoryField.getControl(), rule,
@@ -297,6 +307,7 @@ public class ValidationRuleEditingUI {
         bindingContext.removeBindings(msgCodeField.getControl());
         bindingContext.removeBindings(msgSeverityField.getControl());
         bindingContext.removeBindings(configurableByProductBox);
+        bindingContext.removeBindings(changingOverTimeBox);
         bindingContext.removeBindings(defaultActivationBox);
         bindingContext.removeBindings(localeComboField.getControl());
         bindingContext.removeBindings(msgTextField.getControl());

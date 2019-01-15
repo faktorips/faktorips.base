@@ -97,6 +97,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     private InternationalString description;
 
+    private final ValidationRules validationRules;
+
     /**
      * Creates a new product component with the indicate id, kind id and version id.
      * 
@@ -127,6 +129,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.productKindId = productKindId;
         this.versionId = versionId;
         this.formulaHandler = new FormulaHandler(this, this.repository);
+        this.validationRules = new ValidationRules(this);
     }
 
     @Override
@@ -258,6 +261,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         doInitTableUsagesFromXml(propertyElements);
         doInitFormulaFromXml(cmptElement);
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
+        doInitValidationRuleConfigsFromXml(cmptElement);
         initExtensionPropertiesFromXml(cmptElement);
         initDescriptions(cmptElement);
 
@@ -308,7 +312,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
-     * 
      * @param linkElements the XML elements used to initialize {@link ProductComponentLink}
      *            instances.
      */
@@ -317,6 +320,19 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         //
         // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to super.doInitReferencesFromXml().
+    }
+
+    /**
+     * Creates a map containing the validation rule configurations found in the indicated XML
+     * element. For each validation rule configuration the map contains an entry with the rule name
+     * as a key and an {@link ValidationRuleConfiguration} instance as value.
+     * 
+     * @param element an XML element containing a product component's data
+     * @throws NullPointerException if element is <code>null</code>.
+     * @since 3.22
+     */
+    protected void doInitValidationRuleConfigsFromXml(Element element) {
+        validationRules.doInitValidationRuleConfigsFromXml(element);
     }
 
     private void initDescriptions(Element cmptElement) {
@@ -370,6 +386,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeTableUsagesToXml(prodCmptElement);
         writeFormulaToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
+        writeValidationRuleConfigsToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
         writeDescriptionToXml(prodCmptElement);
         if (includeGenerations) {
@@ -467,7 +484,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * @since 3.8
      */
     protected void writeReferencesToXml(Element element) {
-
         /*
          * Nothing to be done base class. Note that this method is deliberately not declaredtoXml
          * abstract to allow calls to super.writeReferencesToXml() in subclasses.
@@ -475,10 +491,27 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
+     * @since 3.22
+     */
+    protected void writeValidationRuleConfigsToXml(Element genElement) {
+        validationRules.writeValidationRuleConfigsToXml(genElement);
+    }
+
+    /**
      * This method is used for writing a formulas to the XML of the given {@link Element}.
      */
     protected void writeFormulaToXml(Element element) {
         formulaHandler.writeFormulaToXml(element);
+    }
+
+    @Override
+    public boolean isValidationRuleActivated(String ruleName) {
+        return validationRules.isValidationRuleActivated(ruleName);
+    }
+
+    @Override
+    public void setValidationRuleActivated(String ruleName, boolean active) {
+        validationRules.setValidationRuleActivated(ruleName, active);
     }
 
 }

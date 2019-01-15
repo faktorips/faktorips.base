@@ -321,7 +321,7 @@ public class Messages extends NLS {
     public static String RuleEditDialog_ActivatedByDefault_CheckboxLabel;
 
     public static String RuleEditDialog_attrTitle;
-
+    public static String RuleEditDialog_ChangingOverTime_CheckboxLabel;
     public static String RuleEditDialog_Configurable_CheckboxLabel;
     public static String RuleEditDialog_contains;
     public static String RuleEditDialog_functionTitle;

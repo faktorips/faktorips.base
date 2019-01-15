@@ -6,46 +6,49 @@
     <Generation description="" validFrom="2005-05-01">
         <ConfigElement attribute="Faktor" value="2">
             <ValueSet>
-                <AllValues/>
+                <AllValues />
             </ValueSet>
         </ConfigElement>
         <ConfigElement attribute="zahlungsweise" value="m">
             <ValueSet>
-                <AllValues/>
+                <AllValues />
             </ValueSet>
         </ConfigElement>
         <AttributeValue attribute="produktkurzbezeichnung" value="A">
         </AttributeValue>
-        <Link association="relation1" target="target1" minCardinality="0" maxCardinality="1"/>
+        <Link association="relation1" target="target1" minCardinality="0" maxCardinality="1" />
     </Generation>
     <Generation description="" validFrom="2006-01-01">
         <ConfigElement attribute="Faktor" value="2">
             <ValueSet>
-                <AllValues/>
+                <AllValues />
             </ValueSet>
         </ConfigElement>
         <ConfigElement attribute="zahlungsweise" value="m">
             <ValueSet>
-                <AllValues/>
+                <AllValues />
             </ValueSet>
         </ConfigElement>
         <AttributeValue attribute="produktkurzbezeichnung" value="A">
         </AttributeValue>
-        <Link association="relation1" target="target1" minCardinality="0" maxCardinality="1"/>
-        <Link association="relation2" target="target2" minCardinality="0" maxCardinality="1"/>
+        <Link association="relation1" target="target1" minCardinality="0" maxCardinality="1" />
+        <Link association="relation2" target="target2" minCardinality="0" maxCardinality="1" />
     </Generation>
     <Formula formulaSignature="testFormula" changingOverTime="true" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b2">
-		<Expression isNull="false">WENN(parameter_1 = 0; 0 ; 1)</Expression>
-		<compiledExpression>
+        <Expression isNull="false">WENN(parameter_1 = 0; 0 ; 1)</Expression>
+        <compiledExpression>
 		<![CDATA[
 			public int computeTestFormula(int parameter_1, String parameter_2) {
 				return new Integer((parameter_1==0?0:1)).intValue();
 			}
 		]]>
-		</compiledExpression>
-	</Formula>
-	<Formula formulaSignature="emptyFormula" changingOverTime="true" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b2">
-    	<Expression isNull="false"></Expression>
+        </compiledExpression>
     </Formula>
+    <Formula formulaSignature="emptyFormula" changingOverTime="true" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b2">
+        <Expression isNull="false"></Expression>
+    </Formula>
+    <ValidationRuleConfig ruleName="activeRule" active="true" />
+    <ValidationRuleConfig ruleName="inactiveRule" active="false" />
+    <ValidationRuleConfig ruleName="invalidActivationRule" active="xxx" />
 </ProductCmpt>
 
