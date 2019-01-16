@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.model.testcase;
 
-import org.eclipse.core.runtime.CoreException;
-
 /**
  * Class to evaluate and navigate a hierarchy path for test case or test case types.
  * 
@@ -42,7 +40,7 @@ public class TestCaseHierarchyPath {
     /**
      * Evaluate the test policy component type parameter path of the given test policy component.
      */
-    public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) {
         String pathWithOffset = ""; //$NON-NLS-1$
 
         while (!testPolicyCmpt.isRoot()) {

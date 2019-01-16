@@ -252,7 +252,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         IDependency enumTypeDependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
                 new QualifiedNameType(getEnumType(), IpsObjectType.ENUM_TYPE));
         addDetails(details, enumTypeDependency, this, PROPERTY_ENUM_TYPE);

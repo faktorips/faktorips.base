@@ -171,10 +171,8 @@ public interface ITestCase extends IIpsMetaObject {
      * @param testPolicyCmptPath the complete path to the policy component within the test case
      *            including links and parent type names.
      * 
-     * @throws CoreException in case of an error.
-     * 
      */
-    public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath) throws CoreException;
+    public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath);
 
     /**
      * Evaluates and returns an unique name (inside this test case) for the given test policy

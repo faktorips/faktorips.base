@@ -154,7 +154,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public IDependency[] dependsOn() throws CoreException {
+    public IDependency[] dependsOn() {
         return dependsOn(null);
     }
 
@@ -186,10 +186,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * @return An array of found dependencies. If no dependencies are found, this method has to
      *         return an empty array.
      * 
-     * @throws CoreException exceptions can be wrapped into CoreExceptions and propagated by this
-     *             method
      */
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         return new IDependency[0];
     }
 
@@ -218,7 +216,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     @Override
     public String toString() {
         if (getParent() == null) {
-            return "unnamed object"; // Can only happen in test cases.  //$NON-NLS-1$
+            return "unnamed object"; // Can only happen in test cases. //$NON-NLS-1$
         }
         return super.toString();
     }
@@ -241,8 +239,9 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject) {
 
         if (ipsProject.findDuplicateIpsSrcFile(getQualifiedNameType())) {
-            list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD, NLS.bind(
-                    Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()), Message.WARNING, this));
+            list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD,
+                    NLS.bind(Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()), Message.WARNING,
+                    this));
         }
     }
 
@@ -258,8 +257,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             throws CoreException {
 
         MessageList mlForNameValidation = new MessageList();
-        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(
-                getIpsObjectType(), nameToValidate));
+        mlForNameValidation.add(getIpsProject().getNamingConventions()
+                .validateUnqualifiedIpsObjectName(getIpsObjectType(), nameToValidate));
         for (Message msg : mlForNameValidation) {
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);

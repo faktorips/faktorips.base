@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Daniel Hohenberger
  */
-public interface IFixDifferencesToModelSupport {
+public interface IFixDifferencesToModelSupport extends IIpsObject {
 
     /**
      * Returns <code>true</code> if this element contains structural differences to its
@@ -55,6 +55,7 @@ public interface IFixDifferencesToModelSupport {
      * 
      * @see org.faktorips.devtools.core.model.ipsobject.IIpsObject#getIpsSrcFile()
      */
+    @Override
     public IIpsSrcFile getIpsSrcFile();
 
     /**

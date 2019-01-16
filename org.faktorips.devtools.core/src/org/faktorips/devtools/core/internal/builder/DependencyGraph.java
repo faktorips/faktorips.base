@@ -19,11 +19,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -47,8 +45,9 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     private static final long serialVersionUID = 5692023485881401223L;
 
     static {
-        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(
-                Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue(); //$NON-NLS-1$
+        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean
+                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")) //$NON-NLS-1$
+                .booleanValue();
     }
 
     private final MultiMap<Object, IDependency> dependantsForMap = MultiMap.createWithSetsAsValues();
@@ -110,15 +109,11 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     }
 
     private void addEntries(IIpsObject ipsObject) {
-        try {
-            IDependency[] dependencies = ipsObject.dependsOn();
-            if (dependencies != null) {
-                QualifiedNameType qualifiedNameType = ipsObject.getQualifiedNameType();
-                addEntriesToDependsOnMap(qualifiedNameType, dependencies);
-                addEntryToDependantsForMap(dependencies);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IDependency[] dependencies = ipsObject.dependsOn();
+        if (dependencies != null) {
+            QualifiedNameType qualifiedNameType = ipsObject.getQualifiedNameType();
+            addEntriesToDependsOnMap(qualifiedNameType, dependencies);
+            addEntryToDependantsForMap(dependencies);
         }
     }
 

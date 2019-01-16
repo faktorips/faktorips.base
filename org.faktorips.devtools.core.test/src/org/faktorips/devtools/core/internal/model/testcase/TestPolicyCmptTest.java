@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.GregorianCalendar;
 
@@ -278,13 +277,9 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     private void assertAssociation(ITestPolicyCmptLink association, String policyCmptTypeName) {
         assertNotNull(association);
         ITestPolicyCmpt targetChild = null;
-        try {
-            targetChild = association.findTarget();
-            assertNotNull(targetChild);
-            assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
-        } catch (CoreException e) {
-            fail(e.getLocalizedMessage());
-        }
+        targetChild = association.findTarget();
+        assertNotNull(targetChild);
+        assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
     }
 
     @Test
@@ -506,12 +501,12 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetIndexOfChildTestPolicyCmpt() throws CoreException {
-        ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput.addTestPcTypeLink(
-                childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
-        ITestPolicyCmptLink associationPos1 = testPolicyCmptObjectInput.addTestPcTypeLink(
-                childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "B");
-        ITestPolicyCmptLink associationPos2 = testPolicyCmptObjectInput.addTestPcTypeLink(
-                childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "C");
+        ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput
+                .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
+        ITestPolicyCmptLink associationPos1 = testPolicyCmptObjectInput
+                .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "B");
+        ITestPolicyCmptLink associationPos2 = testPolicyCmptObjectInput
+                .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "C");
 
         ITestPolicyCmpt testPolicyCmptChild0 = associationPos0.newTargetTestPolicyCmptChild();
         ITestPolicyCmpt testPolicyCmptChild1 = associationPos1.newTargetTestPolicyCmptChild();
@@ -524,12 +519,12 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testMoveTestPolicyCmptAssociations() throws CoreException {
-        ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput.addTestPcTypeLink(
-                childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
-        ITestPolicyCmptLink associationPos1 = testPolicyCmptObjectInput.addTestPcTypeLink(
-                childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "B");
-        ITestPolicyCmptLink associationPos2 = testPolicyCmptObjectInput.addTestPcTypeLink(
-                childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "C");
+        ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput
+                .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
+        ITestPolicyCmptLink associationPos1 = testPolicyCmptObjectInput
+                .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "B");
+        ITestPolicyCmptLink associationPos2 = testPolicyCmptObjectInput
+                .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "C");
 
         assertEquals(associationPos0, testPolicyCmptObjectInput.getTestPolicyCmptLinks()[0]);
         assertEquals(associationPos1, testPolicyCmptObjectInput.getTestPolicyCmptLinks()[1]);
@@ -588,8 +583,8 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         attr.setDefaultValue("attrCoverage_Default");
         attr.setProductRelevant(true);
 
-        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration(new GregorianCalendar(1742,
-                11, 1));
+        IProductCmptGeneration generation = (IProductCmptGeneration)product
+                .newGeneration(new GregorianCalendar(1742, 11, 1));
         IConfiguredDefault ce = generation.newPropertyValue(attr, IConfiguredDefault.class);
         ce.setValue("attrCoverage_Default_Product");
 

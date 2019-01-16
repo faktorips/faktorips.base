@@ -112,7 +112,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         addDependenciesForTestPolicyCmptTypeParams(dependencies, details, getTestPolicyCmptTypeParameters());
         return dependencies.toArray(new IDependency[dependencies.size()]);
@@ -166,8 +166,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters() {
-        return getTestParameters(null, TestPolicyCmptTypeParameter.class, null).toArray(
-                new ITestPolicyCmptTypeParameter[0]);
+        return getTestParameters(null, TestPolicyCmptTypeParameter.class, null)
+                .toArray(new ITestPolicyCmptTypeParameter[0]);
     }
 
     //
@@ -181,14 +181,14 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public ITestValueParameter[] getInputTestValueParameters() {
-        return getTestParameters(TestParameterType.INPUT, TestValueParameter.class, null).toArray(
-                new ITestValueParameter[0]);
+        return getTestParameters(TestParameterType.INPUT, TestValueParameter.class, null)
+                .toArray(new ITestValueParameter[0]);
     }
 
     @Override
     public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters() {
-        return getTestParameters(TestParameterType.INPUT, TestPolicyCmptTypeParameter.class, null).toArray(
-                new ITestPolicyCmptTypeParameter[0]);
+        return getTestParameters(TestParameterType.INPUT, TestPolicyCmptTypeParameter.class, null)
+                .toArray(new ITestPolicyCmptTypeParameter[0]);
     }
 
     @Override
@@ -203,9 +203,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOneValueParamWithTypeAndName, TestParameterType.INPUT,
-                inputTestValueParameter)));
+        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOneValueParamWithTypeAndName,
+                TestParameterType.INPUT, inputTestValueParameter)));
     }
 
     @Override
@@ -213,8 +212,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             throws CoreException {
 
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.INPUT,
-                TestPolicyCmptTypeParameter.class, inputTestPolicyCmptTypeParameter).toArray(
-                new ITestPolicyCmptTypeParameter[0]);
+                TestPolicyCmptTypeParameter.class, inputTestPolicyCmptTypeParameter)
+                        .toArray(new ITestPolicyCmptTypeParameter[0]);
 
         if (parameters.length == 0) {
             return null;
@@ -224,9 +223,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName, TestParameterType.INPUT,
-                inputTestPolicyCmptTypeParameter)));
+        throw new CoreException(
+                new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
+                        TestParameterType.INPUT, inputTestPolicyCmptTypeParameter)));
     }
 
     @Override
@@ -260,14 +259,14 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public ITestValueParameter[] getExpectedResultTestValueParameters() {
-        return getTestParameters(TestParameterType.EXPECTED_RESULT, TestValueParameter.class, null).toArray(
-                new ITestValueParameter[0]);
+        return getTestParameters(TestParameterType.EXPECTED_RESULT, TestValueParameter.class, null)
+                .toArray(new ITestValueParameter[0]);
     }
 
     @Override
     public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters() {
-        return getTestParameters(TestParameterType.EXPECTED_RESULT, TestPolicyCmptTypeParameter.class, null).toArray(
-                new ITestPolicyCmptTypeParameter[0]);
+        return getTestParameters(TestParameterType.EXPECTED_RESULT, TestPolicyCmptTypeParameter.class, null)
+                .toArray(new ITestPolicyCmptTypeParameter[0]);
     }
 
     @Override
@@ -288,11 +287,11 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter)
-            throws CoreException {
+    public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(
+            String expResultTestPolicyCmptTypeParameter) throws CoreException {
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.EXPECTED_RESULT,
-                TestPolicyCmptTypeParameter.class, expResultTestPolicyCmptTypeParameter).toArray(
-                new ITestPolicyCmptTypeParameter[0]);
+                TestPolicyCmptTypeParameter.class, expResultTestPolicyCmptTypeParameter)
+                        .toArray(new ITestPolicyCmptTypeParameter[0]);
 
         if (parameters.length == 0) {
             return null;
@@ -302,9 +301,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName, TestParameterType.INPUT,
-                expResultTestPolicyCmptTypeParameter)));
+        throw new CoreException(
+                new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
+                        TestParameterType.INPUT, expResultTestPolicyCmptTypeParameter)));
     }
 
     //

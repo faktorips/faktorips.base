@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.model.IDependency;
@@ -146,7 +147,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
@@ -169,7 +170,7 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     private void addDependenciesForTestPolicyCmpt(Set<IpsObjectDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details,
-            ITestPolicyCmpt cmpt) throws CoreException {
+            ITestPolicyCmpt cmpt) {
         if (cmpt == null) {
             return;
         }
@@ -451,8 +452,8 @@ public class TestCase extends IpsObject implements ITestCase {
                 throw new RuntimeException("Unsupported test object type: " + testObject.getClass()); //$NON-NLS-1$
             }
             if (testParameter == null) {
-                throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestParameterNotFound,
-                        testParameterName)));
+                throw new CoreException(
+                        new IpsStatus(NLS.bind(Messages.TestCase_Error_TestParameterNotFound, testParameterName)));
             }
 
             List<ITestObject> oldObjectsToTestParam = oldTestObject.get(testParameter);
@@ -580,8 +581,8 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts() {
-        return getTestObjects(TestParameterType.EXPECTED_RESULT, TestPolicyCmpt.class, null).toArray(
-                new ITestPolicyCmpt[0]);
+        return getTestObjects(TestParameterType.EXPECTED_RESULT, TestPolicyCmpt.class, null)
+                .toArray(new ITestPolicyCmpt[0]);
     }
 
     @Override
@@ -604,8 +605,8 @@ public class TestCase extends IpsObject implements ITestCase {
         return findTestPolicyCmptTypeParameter(testPolicyCmpt, null, ipsProject);
     }
 
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptLink link, IIpsProject ipsProject)
-            throws CoreException {
+    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptLink link,
+            IIpsProject ipsProject) throws CoreException {
         return findTestPolicyCmptTypeParameter(null, link, ipsProject);
     }
 
@@ -685,8 +686,8 @@ public class TestCase extends IpsObject implements ITestCase {
                 TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(testPolicyCmpt);
                 testPolicyCmpt = findTestPolicyCmpt(hierarchyPath.toString());
                 if (testPolicyCmpt == null) {
-                    throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestPolicyCmptNotFound,
-                            hierarchyPath.toString())));
+                    throw new CoreException(new IpsStatus(
+                            NLS.bind(Messages.TestCase_Error_TestPolicyCmptNotFound, hierarchyPath.toString())));
                 }
 
                 ITestPolicyCmptLink link = (ITestPolicyCmptLink)testPolicyCmpt.getParent();
@@ -700,7 +701,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath) throws CoreException {
+    public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath) {
         TestCaseHierarchyPath path = new TestCaseHierarchyPath(testPolicyCmptPath);
         ITestPolicyCmpt pc = null;
         String currElem = path.next();
@@ -712,19 +713,18 @@ public class TestCase extends IpsObject implements ITestCase {
         } else if (testPoliyCmpts.size() == 0) {
             return null;
         } else {
-            throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_MoreThanOneObject, currElem)));
+            throw new CoreRuntimeException(
+                    new IpsStatus(NLS.bind(Messages.TestCase_Error_MoreThanOneObject, currElem)));
         }
         return pc;
     }
 
     /**
      * Assert the correct instance of ITestPolicyCmpt for the given testObject.
-     * 
-     * @throws CoreException if the check fails.
      */
-    private void assertInstanceOfTestPolicyCmpt(String currElem, ITestObject testObject) throws CoreException {
+    private void assertInstanceOfTestPolicyCmpt(String currElem, ITestObject testObject) {
         if (!(testObject instanceof ITestPolicyCmpt)) {
-            throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_WrongInstanceTestPolicyCmpt,
+            throw new CoreRuntimeException(new IpsStatus(NLS.bind(Messages.TestCase_Error_WrongInstanceTestPolicyCmpt,
                     currElem, testObject.getClass().getName())));
         }
     }
@@ -732,8 +732,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Search the test policy component by the given path.
      */
-    private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path)
-            throws CoreException {
+    private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path) {
         String searchedPath = path.toString();
         while (pc != null && path.hasNext()) {
             boolean found = false;
@@ -753,8 +752,8 @@ public class TestCase extends IpsObject implements ITestCase {
                 if (currElem.equals(pcTarget.getName())) {
                     if (found) {
                         // exception more than one element found with the given path
-                        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_MoreThanOneObject,
-                                searchedPath)));
+                        throw new CoreRuntimeException(
+                                new IpsStatus(NLS.bind(Messages.TestCase_Error_MoreThanOneObject, searchedPath)));
                     }
                     found = true;
                     pc = pcTarget;
@@ -787,13 +786,9 @@ public class TestCase extends IpsObject implements ITestCase {
             ArrayList<String> names = new ArrayList<String>();
             for (ITestPolicyCmptLink link : links) {
                 if (link.isComposition()) {
-                    try {
-                        ITestPolicyCmpt child = link.findTarget();
-                        if (!child.equals(newTestPolicyCmpt)) {
-                            names.add(child.getName());
-                        }
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
+                    ITestPolicyCmpt child = link.findTarget();
+                    if (!child.equals(newTestPolicyCmpt)) {
+                        names.add(child.getName());
                     }
                 }
             }
@@ -977,7 +972,8 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     /**
-     * Returns <code>true</code> if the given type is the type of the corresponding test parameter.<br>
+     * Returns <code>true</code> if the given type is the type of the corresponding test
+     * parameter.<br>
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */

@@ -83,10 +83,8 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
 
     /**
      * Returns the target or <code>null</code> if the target does not exists.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
      */
-    public ITestPolicyCmpt findTarget() throws CoreException;
+    public ITestPolicyCmpt findTarget();
 
     /**
      * Creates a new test policy component as child and returns it.

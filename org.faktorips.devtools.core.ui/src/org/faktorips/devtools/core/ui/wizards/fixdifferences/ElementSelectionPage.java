@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -33,17 +31,18 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.util.MultiMap;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
 public class ElementSelectionPage extends WizardPage {
-    private Set<? extends Object> ipsElementsToFix;
+    private Set<IFixDifferencesToModelSupport> ipsElementsToFix;
     private CheckboxTreeViewer treeViewer;
     private ContentProvider contentProvider;
 
-    public ElementSelectionPage(Set<? extends Object> ipsElementsToFix) {
+    public ElementSelectionPage(Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
         super(Messages.ElementSelectionPage_SelectElementsMessage);
         this.ipsElementsToFix = ipsElementsToFix;
         setTitle(Messages.FixDifferencesToModelWizard_Title);
@@ -63,7 +62,7 @@ public class ElementSelectionPage extends WizardPage {
         root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         treeViewer = new CheckboxTreeViewer(root);
-        contentProvider = new ContentProvider();
+        contentProvider = new ContentProvider(ipsElementsToFix);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(new TreeLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -94,26 +93,26 @@ public class ElementSelectionPage extends WizardPage {
                     }
                     treeViewer.setChecked(parent, checked);
                 }
-                setPageComplete(getElementsToFix().length > 0);
+                setPageComplete(getElementsToFix().size() > 0);
             }
 
         });
-        setPageComplete(getElementsToFix().length > 0);
+        setPageComplete(getElementsToFix().size() > 0);
         super.setControl(root);
     }
 
     /**
      * @return all IIpsElements to be fixed.
      */
-    protected IFixDifferencesToModelSupport[] getElementsToFix() {
+    protected Set<IFixDifferencesToModelSupport> getElementsToFix() {
         Object[] checked = treeViewer.getCheckedElements();
-        Set<Object> elements = new HashSet<Object>();
+        Set<IFixDifferencesToModelSupport> elements = new HashSet<IFixDifferencesToModelSupport>();
         for (Object element : checked) {
             if (element instanceof IFixDifferencesToModelSupport) {
-                elements.add(element);
+                elements.add((IFixDifferencesToModelSupport)element);
             }
         }
-        return elements.toArray(new IFixDifferencesToModelSupport[elements.size()]);
+        return elements;
     }
 
     private class TreeLabelProvider extends LabelProvider {
@@ -129,32 +128,22 @@ public class ElementSelectionPage extends WizardPage {
         }
     }
 
-    private class ContentProvider implements ITreeContentProvider {
+    private static class ContentProvider implements ITreeContentProvider {
 
-        private Map<IIpsPackageFragment, Set<Object>> packages;
-        private Object[] allElements;
+        private MultiMap<IIpsPackageFragment, IFixDifferencesToModelSupport> packages;
 
-        ContentProvider() {
-            Object[] elements = ipsElementsToFix.toArray();
-            packages = new HashMap<IIpsPackageFragment, Set<Object>>();
-            for (Object object : elements) {
-                if (object instanceof IpsObject) {
-                    IIpsPackageFragment pack = ((IpsObject)object).getIpsPackageFragment();
-                    Set<Object> children = packages.get(pack);
-                    if (children == null) {
-                        children = new HashSet<Object>();
-                    }
-                    children.add(object);
-                    packages.put(pack, children);
-                }
+        ContentProvider(Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
+            packages = MultiMap.createWithLinkedSetAsValues();
+            for (IFixDifferencesToModelSupport fixDifferenceObject : ipsElementsToFix) {
+                IIpsPackageFragment pack = fixDifferenceObject.getIpsSrcFile().getIpsPackageFragment();
+                packages.put(pack, fixDifferenceObject);
             }
-            allElements = new Object[elements.length + packages.size()];
-            System.arraycopy(elements, 0, allElements, 0, elements.length);
-            int i = elements.length;
-            for (Iterator<IIpsPackageFragment> it = packages.keySet().iterator(); it.hasNext();) {
-                Object pack = it.next();
-                allElements[i++] = pack;
-            }
+        }
+
+        public Object[] getAllElements() {
+            ArrayList<Object> result = new ArrayList<Object>(packages.keySet());
+            result.addAll(packages.values());
+            return result.toArray();
         }
 
         /**
@@ -196,10 +185,6 @@ public class ElementSelectionPage extends WizardPage {
         @Override
         public Object[] getElements(Object inputElement) {
             return packages.keySet().toArray();
-        }
-
-        private Object[] getAllElements() {
-            return allElements;
         }
 
         /**

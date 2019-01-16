@@ -1255,7 +1255,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddDependenciesFromFormulaExpressions() throws CoreException {
+    public void testAddDependenciesFromFormulaExpressions() {
         ProductCmpt productCmptSpy = spy(productCmpt);
         IDependency dependency = mock(IDependency.class);
         ExpressionDependencyDetail dependencyDetail1 = mock(ExpressionDependencyDetail.class);

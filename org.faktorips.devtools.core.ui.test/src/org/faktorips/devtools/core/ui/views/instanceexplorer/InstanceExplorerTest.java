@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
@@ -60,7 +59,7 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsChanged() throws CoreException {
+    public void testIsChanged() {
         InstanceExplorer test = new InstanceExplorer();
 
         Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();

@@ -69,7 +69,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
+    protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
         for (IColumn column : columns) {
             String datatype = column.getDatatype();
