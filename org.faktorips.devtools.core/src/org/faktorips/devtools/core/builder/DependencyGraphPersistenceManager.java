@@ -61,12 +61,14 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             ois.close();
             graph.setIpsProject(project);
             return graph;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus(IStatus.WARNING,
                     "An Exception occurred while trying to establish the last state of the dependency graph for the project " //$NON-NLS-1$
                             + project.getName(),
                     e));
             return new DependencyGraph(project);
+            // CSON: IllegalCatch
         } finally {
             if (ois != null) {
                 try {

@@ -644,6 +644,8 @@ public class TestCaseDetailArea {
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
+
+        @SuppressWarnings("deprecation")
         final EditField<?> editField = new EnumValueField(
                 toolkit.createCombo(composite, TestRuleViolationType.getEnumType()),
                 TestRuleViolationType.getEnumType());
@@ -793,6 +795,7 @@ public class TestCaseDetailArea {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     private void updateValue(EditField<?> editField, String actualValue) {
         IIpsObjectPart object = editField2ModelObject.get(editField);
         String actualValueToSet = nullIfNullRepresentation(actualValue);

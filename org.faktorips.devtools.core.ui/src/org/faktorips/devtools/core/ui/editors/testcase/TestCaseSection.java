@@ -116,7 +116,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.StyledCellMessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -427,7 +426,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 showAssociationsClicked();
             }
         };
-        actionAssociation.setChecked(true); // default is show associations
+        // default is show associations
+        actionAssociation.setChecked(true);
         actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_ShowAssociations);
         actionAssociation.setImageDescriptor(
                 IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
@@ -672,14 +672,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     modelAssociation = association
                             .findAssociation(association.getParentTestPolicyCmpt().getIpsProject());
                 }
-                if (modelAssociation == null) {
-                    // failure in test case type definition
-                    // test case type or model association not found
-                    // no add and removed allowed, because the test case type definition is wrong
-                } else {
+                if (modelAssociation != null) {
                     actionEnableState.addEnable = true;
                     actionEnableState.removeEnable = false;
                 }
+                // else {
+                // failure in test case type definition
+                // test case type or model association not found
+                // no add and removed allowed, because the test case type definition is wrong
+                // }
             } catch (CoreException e) {
                 // disable add and enable remove button and ignore exception
                 // maybe the test case type model and test case are inconsistent
@@ -987,11 +988,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * This operation can handle both configurations of
      * {@link TestCaseContentProvider#isWithoutAssociations()}.
      * 
-     * @param parentItem parent of the provided test policy component within the tree (this is
+     * @param parentItemParam parent of the provided test policy component within the tree (this is
      *            either a {@link TestCaseTypeAssociation} or another test policy component
      * @param testPolicyCmpt test policy component to expand in the tree (including children)
      */
-    void expandTreeAfterAdd(Object parentItem, ITestPolicyCmpt testPolicyCmpt) {
+    void expandTreeAfterAdd(Object parentItemParam, ITestPolicyCmpt testPolicyCmpt) {
+        Object parentItem = parentItemParam;
         /*
          * If the user adds a test policy component onto another test policy component AND the
          * content provider is configured to also contain association nodes, we need to expand the
@@ -1280,7 +1282,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             String title,
             String description) {
 
-        IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), title, description);
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.core.ui.IpsObjectSelectionDialog dialog = new org.faktorips.devtools.core.ui.IpsObjectSelectionDialog(
+                getShell(), title, description);
         dialog.setElements(elements);
         dialog.setMultipleSelection(multiSelectiion);
         if (dialog.open() == Window.OK) {
