@@ -167,6 +167,15 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(foo2.getMyId(), is(foo.getMyId()));
     }
 
+    @Test
+    public void testNewJAXBContext_SuperSuperClass() {
+        AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(FooSuppe2.class);
+
+        JAXBContext jaxbContext = repository.newJAXBContext();
+
+        assertNotNull(jaxbContext);
+    }
+
     private final class TestAbstractRuntimeRepository extends AbstractRuntimeRepository {
         private final Class<? extends IModelObject> modelObjectClass;
 
@@ -290,6 +299,14 @@ public class AbstractRuntimeRepositoryTest {
         protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
             return Collections.emptyList();
         }
+    }
+
+    public static class FooSuppe2 extends FooSuppe {
+
+    }
+
+    public static class FooSuppe extends Foo {
+
     }
 
     @XmlRootElement(name = "Foo")

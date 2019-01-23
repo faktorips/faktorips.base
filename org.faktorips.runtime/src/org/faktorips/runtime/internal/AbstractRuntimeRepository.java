@@ -892,7 +892,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     private boolean isAnnotatedXmlRootElement(Class<?> clazz) {
-        for (Class<?> c = clazz; c != null; c = clazz.getSuperclass()) {
+        for (Class<?> c = clazz; c != null; c = c.getSuperclass()) {
             if (c.isAnnotationPresent(XmlRootElement.class)) {
                 return true;
             }
