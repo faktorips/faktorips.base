@@ -43,8 +43,8 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     @Override
     public String getDescription() {
-        return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc, new String[] { getPropertyName(),
-                getCurrentAttributeValue(), attribute.getDefaultValue() });
+        return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc,
+                new String[] { getPropertyName(), getCurrentAttributeValue(), attribute.getDefaultValue() });
     }
 
     public String getCurrentAttributeValue() {
@@ -83,7 +83,8 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
     private boolean valuesDiffer() {
         IAttributeValue attributeValue = getAttributeValue();
         IValueHolder<?> valueHolder = createDefaultValueHolder();
-        return attributeValue.getValueHolder() == null || !attributeValue.getValueHolder().equals(valueHolder);
+        return attributeValue.getValueHolder() == null
+                || !attributeValue.getValueHolder().equalsValueHolder(valueHolder);
     }
 
     private boolean isAttributeHidden() {

@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.AbstractValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
+import org.faktorips.devtools.core.internal.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -119,6 +121,22 @@ public class HiddenAttributeMismatchEntryTest extends AbstractIpsPluginTest {
         doReturn(valueHolder).when(attributeValue).getValueHolder();
         when(attribute.getDefaultValue()).thenReturn("default1 |default2");
         when(attribute.isMultiValueAttribute()).thenReturn(true);
+
+        HiddenAttributeMismatchEntry mismatchEntry = new HiddenAttributeMismatchEntry(attributeValue, attribute);
+        assertFalse(mismatchEntry.isMismatch());
+    }
+
+    @Test
+    public void testIsMismatch_noMissmatchWhenDelegateMatches() throws Exception {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IValueHolder<?> valueHolder = AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue,
+                ValueFactory.createStringValue("default"));
+        @SuppressWarnings("unchecked")
+        DelegatingValueHolder<String> delegatingValueHolder = new DelegatingValueHolder<String>(attributeValue,
+                (AbstractValueHolder<String>)valueHolder);
+        doReturn(delegatingValueHolder).when(attributeValue).getValueHolder();
+        when(attribute.getDefaultValue()).thenReturn("default");
 
         HiddenAttributeMismatchEntry mismatchEntry = new HiddenAttributeMismatchEntry(attributeValue, attribute);
         assertFalse(mismatchEntry.isMismatch());

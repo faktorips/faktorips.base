@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.AbstractValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.Validatable;
@@ -137,5 +138,11 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * @return A new value holder with the same content as this value holder
      */
     public IValueHolder<?> copy(IAttributeValue parent);
+
+    /**
+     * Compares this {@link IValueHolder} with the given one, unwrapping
+     * {@link DelegatingValueHolder DelegatingValueHolders}.
+     */
+    public boolean equalsValueHolder(IValueHolder<?> valueHolder);
 
 }

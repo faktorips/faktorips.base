@@ -10,7 +10,9 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.faktorips.devtools.core.internal.model.value.StringValue;
@@ -45,6 +47,19 @@ public class DelegatingValueHolderTest<T> {
     @Test(expected = UnsupportedOperationException.class)
     public void testSetValue() {
         delegatingValueHolder.setValue(new StringValue("foo"));
+    }
+
+    @Test
+    public void testEqualsValueHolder() throws Exception {
+        assertTrue(delegatingValueHolder.equalsValueHolder(delegatingValueHolder));
+        assertTrue(delegate.equalsValueHolder(delegate));
+        assertTrue(delegate.equalsValueHolder(delegatingValueHolder));
+        assertTrue(delegatingValueHolder.equalsValueHolder(delegate));
+        SingleValueHolder other = new SingleValueHolder(delegateParent, "bar");
+        assertFalse(delegate.equalsValueHolder(other));
+        assertFalse(other.equalsValueHolder(delegate));
+        assertFalse(delegatingValueHolder.equalsValueHolder(other));
+        assertFalse(other.equalsValueHolder(delegatingValueHolder));
     }
 
 }

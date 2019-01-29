@@ -122,6 +122,22 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
+    public boolean equalsValueHolder(IValueHolder<?> o) {
+        if (o == null) {
+            return false;
+        }
+        if (o == this) {
+            return true;
+        }
+
+        if (o instanceof DelegatingValueHolder) {
+            return delegate.equals(((DelegatingValueHolder<?>)o).delegate);
+        } else {
+            return delegate.equals(o);
+        }
+    }
+
+    @Override
     public IAttributeValue getParent() {
         return parent;
     }

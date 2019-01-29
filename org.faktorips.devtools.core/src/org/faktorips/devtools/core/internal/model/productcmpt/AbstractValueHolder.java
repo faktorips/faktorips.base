@@ -151,6 +151,22 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
         return "ValueHolder: " + getStringValue(); //$NON-NLS-1$
     }
 
+    @Override
+    public boolean equalsValueHolder(IValueHolder<?> o) {
+        if (o == null) {
+            return false;
+        }
+        if (o == this) {
+            return true;
+        }
+
+        if (o instanceof DelegatingValueHolder) {
+            return equals(((DelegatingValueHolder<?>)o).getDelegate());
+        } else {
+            return equals(o);
+        }
+    }
+
     /**
      * Creates a new validator to validate this value holder.
      * 
