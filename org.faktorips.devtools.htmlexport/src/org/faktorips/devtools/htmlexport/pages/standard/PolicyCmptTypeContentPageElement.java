@@ -58,11 +58,12 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 
     private void addValidationRuleTable() {
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
-        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.PolicyCmptTypeContentPageElement_rules), TextType.HEADING_2, getContext()));
+        wrapper.addPageElements(
+                new TextPageElement(getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_rules),
+                        TextType.HEADING_2, getContext()));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject(),
-                getContext()),
+        wrapper.addPageElements(getTableOrAlternativeText(
+                new ValidationRuleTablePageElement(getDocumentedIpsObject(), getContext()),
                 getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_noValidationrules)));
 
         addPageElements(wrapper);
@@ -94,16 +95,20 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         to = getDocumentedIpsObject().getIpsProject()
                 .findProductCmptType(getDocumentedIpsObject().getProductCmptType());
         if (to == null) {
-            addPageElements(TextPageElement
-                    .createParagraph(
-                            IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                            + ": " + getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_none), getContext())); //$NON-NLS-1$
+            addPageElements(
+                    TextPageElement
+                            .createParagraph(
+                                    IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": " //$NON-NLS-1$
+                                            + getContext().getMessage(
+                                                    HtmlExportMessages.PolicyCmptTypeContentPageElement_none),
+                                    getContext()));
             return;
         }
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-                new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
-                new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT,
-                    getContext().getLabel(to), true) }));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(),
+                new IPageElement[] {
+                        new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+                        new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT,
+                                getContext().getLabel(to), true) }));
 
     }
 }
