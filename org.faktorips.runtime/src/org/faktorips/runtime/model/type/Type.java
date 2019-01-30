@@ -198,11 +198,23 @@ public abstract class Type extends ModelElement implements IModelType {
     public abstract Association getDeclaredAssociation(String name);
 
     /**
+     * Returns whether the association with the given <code>name</code> is declared in this type.
+     * Associations defined in the type's super types are not considered.
+     */
+    protected abstract boolean hasDeclaredAssociation(String name);
+
+    /**
      * Returns a list containing all attributes declared in this model type. Attributes defined in
      * the type's super types are not returned.
      */
     @Override
     public abstract List<? extends Attribute> getDeclaredAttributes();
+
+    /**
+     * Returns whether the attribute with the given <code>name</code> is declared in this type.
+     * Attributes defined in the type's super types are not considered.
+     */
+    protected abstract boolean hasDeclaredAttribute(String name);
 
     /**
      * Returns a list containing the type's attributes including those defined in the type's super
@@ -277,12 +289,11 @@ public abstract class Type extends ModelElement implements IModelType {
 
         @Override
         public boolean visitType(Type type) {
-            try {
+            boolean hasDeclaredAttribute = type.hasDeclaredAttribute(attrName);
+            if (hasDeclaredAttribute) {
                 attribute = type.getDeclaredAttribute(attrName);
-                return false;
-            } catch (IllegalArgumentException e) {
-                return true;
             }
+            return !hasDeclaredAttribute;
         }
 
     }
@@ -323,10 +334,12 @@ public abstract class Type extends ModelElement implements IModelType {
 
         @Override
         public boolean visitType(Type type) {
-            association = type.getDeclaredAssociation(associationName);
-            return association == null;
+            boolean hasDeclaredAssociation = type.hasDeclaredAssociation(associationName);
+            if (hasDeclaredAssociation) {
+                association = type.getDeclaredAssociation(associationName);
+            }
+            return !hasDeclaredAssociation;
         }
-
     }
 
 }

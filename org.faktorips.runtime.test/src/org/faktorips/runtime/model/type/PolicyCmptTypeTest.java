@@ -98,7 +98,6 @@ public class PolicyCmptTypeTest {
         PolicyAssociation association = policyCmptType.getDeclaredAssociation("asso");
         PolicyAssociation association2 = policyCmptType.getDeclaredAssociation("Asso2");
         PolicyAssociation association2lowerCase = policyCmptType.getDeclaredAssociation("asso2");
-        PolicyAssociation superAsso = policyCmptType.getDeclaredAssociation("supAsso");
         PolicyAssociation superAssoInSuper = superPolicyCmptType.getDeclaredAssociation("supAsso");
 
         assertThat(association.getName(), is("asso"));
@@ -106,19 +105,19 @@ public class PolicyCmptTypeTest {
         assertThat(association2.getName(), is("Asso2"));
         assertThat(association2.getNamePlural(), is("Asso2s"));
         assertSame(association2, association2lowerCase);
-        assertThat(superAsso, is(nullValue()));
         assertThat(superAssoInSuper.getName(), is("supAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetDeclaredAssociation_thowsException() {
+        policyCmptType.getDeclaredAssociation("supAsso");
+    }
+
     @Test
     public void testGetDeclaredAssociation_Plural() {
-        PolicyAssociation association = policyCmptType.getDeclaredAssociation("assos");
-        PolicyAssociation superAsso = policyCmptType.getDeclaredAssociation("supAssos");
         PolicyAssociation superAssoInSuper = superPolicyCmptType.getDeclaredAssociation("supAssos");
 
-        assertThat(association, is(nullValue()));
-        assertThat(superAsso, is(nullValue()));
         assertThat(superAssoInSuper.getName(), is("supAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
     }

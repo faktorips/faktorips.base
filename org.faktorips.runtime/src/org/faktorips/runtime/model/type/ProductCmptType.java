@@ -156,6 +156,14 @@ public class ProductCmptType extends Type {
     }
 
     /**
+     * Returns whether the {@link TableUsage} for the specified <code>name</code> is declared in
+     * this type.
+     */
+    protected boolean hasDeclaredTableUsage(String name) {
+        return tableUsages.containsKey(name);
+    }
+
+    /**
      * Returns a list of {@link TableUsage TableUsages} which are declared in this type or in any
      * super type.
      * 
@@ -226,18 +234,32 @@ public class ProductCmptType extends Type {
     }
 
     @Override
+    protected boolean hasDeclaredAttribute(String name) {
+        return attributes.containsKey(name);
+    }
+
+    @Override
     public ProductAssociation getDeclaredAssociation(int index) {
         return (ProductAssociation)super.getDeclaredAssociation(index);
     }
 
     @Override
     public ProductAssociation getDeclaredAssociation(String name) {
-        return associations.get(IpsStringUtils.toLowerFirstChar(name));
+        ProductAssociation productAssociation = associations.get(IpsStringUtils.toLowerFirstChar(name));
+        if (productAssociation == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared association " + name);
+        }
+        return productAssociation;
     }
 
     @Override
     public List<ProductAssociation> getDeclaredAssociations() {
         return new ArrayList<ProductAssociation>(new LinkedHashSet<ProductAssociation>(associations.values()));
+    }
+
+    @Override
+    protected boolean hasDeclaredAssociation(String name) {
+        return associations.containsKey(name);
     }
 
     @Override
@@ -276,12 +298,12 @@ public class ProductCmptType extends Type {
 
         @Override
         public boolean visitType(Type type) {
-            try {
+            boolean hasDeclaredTableUsage = ((ProductCmptType)type).hasDeclaredTableUsage(tableUsageName);
+            if (hasDeclaredTableUsage) {
                 tableUsage = ((ProductCmptType)type).getDeclaredTableUsage(tableUsageName);
-                return false;
-            } catch (IllegalArgumentException e) {
-                return true;
             }
+            return !hasDeclaredTableUsage;
         }
     }
+
 }

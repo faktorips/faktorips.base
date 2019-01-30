@@ -123,7 +123,11 @@ public class PolicyCmptType extends Type {
 
     @Override
     public PolicyAssociation getDeclaredAssociation(String name) {
-        return associations.get(IpsStringUtils.toLowerFirstChar(name));
+        PolicyAssociation policyAssociation = associations.get(IpsStringUtils.toLowerFirstChar(name));
+        if (policyAssociation == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared association " + name);
+        }
+        return policyAssociation;
     }
 
     @Override
@@ -146,5 +150,15 @@ public class PolicyCmptType extends Type {
         AssociationsCollector<PolicyAssociation> asscCollector = new AssociationsCollector<PolicyAssociation>();
         asscCollector.visitHierarchy(this);
         return asscCollector.getResult();
+    }
+
+    @Override
+    protected boolean hasDeclaredAssociation(String name) {
+        return associations.containsKey(name);
+    }
+
+    @Override
+    protected boolean hasDeclaredAttribute(String name) {
+        return attributes.containsKey(name);
     }
 }

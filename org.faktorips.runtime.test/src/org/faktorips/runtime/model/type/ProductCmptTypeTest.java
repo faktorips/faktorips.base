@@ -118,27 +118,26 @@ public class ProductCmptTypeTest {
     @Test
     public void testGetDeclaredAssociation() {
         ProductAssociation association = productCmptType.getDeclaredAssociation("asso");
-        ProductAssociation superAsso = productCmptType.getDeclaredAssociation("SupAsso");
         ProductAssociation superAssoInSuper = superProductModel.getDeclaredAssociation("SupAsso");
         ProductAssociation superAssoInSuperLowerCase = superProductModel.getDeclaredAssociation("supAsso");
 
         assertThat(association.getName(), is("asso"));
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
-        assertThat(superAsso, is(nullValue()));
         assertThat(superAssoInSuper.getName(), is("SupAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("SupAssos"));
         assertSame(superAssoInSuper, superAssoInSuperLowerCase);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetDeclaredAssociation_withexception() {
+        productCmptType.getDeclaredAssociation("SupAsso");
+    }
+
     @Test
     public void testGetDeclaredAssociation_Plural() {
-        ProductAssociation association = productCmptType.getDeclaredAssociation("assos");
-        ProductAssociation superAsso = productCmptType.getDeclaredAssociation("SupAssos");
         ProductAssociation superAssoInSuper = superProductModel.getDeclaredAssociation("SupAssos");
         ProductAssociation superAssoInSuperLowerCase = superProductModel.getDeclaredAssociation("supAssos");
 
-        assertThat(association, is(nullValue()));
-        assertThat(superAsso, is(nullValue()));
         assertThat(superAssoInSuper.getName(), is("SupAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("SupAssos"));
         assertSame(superAssoInSuper, superAssoInSuperLowerCase);
