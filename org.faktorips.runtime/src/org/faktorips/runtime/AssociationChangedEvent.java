@@ -22,27 +22,32 @@ public class AssociationChangedEvent extends PropertyChangeEvent {
 
     private static final long serialVersionUID = 7545458044844395021L;
 
-    private final Object addedAssociationTarget;
-    private final Object removedAssociationTarget;
-
     public AssociationChangedEvent(Object source, String associationName, Object removedAssociationTarget,
             Object addedAssociationTarget) {
-
-        super(source, associationName, null, null);
-        this.addedAssociationTarget = addedAssociationTarget;
-        this.removedAssociationTarget = removedAssociationTarget;
+        super(source, associationName, removedAssociationTarget, addedAssociationTarget);
     }
 
     public Object getAddedAssociationTarget() {
-        return addedAssociationTarget;
+        return getNewValue();
     }
 
     public Object getRemovedAssociationTarget() {
-        return removedAssociationTarget;
+        return getOldValue();
     }
 
     public String getAssociationName() {
         return getPropertyName();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getName());
+        sb.append("[propertyName=").append(getPropertyName());
+        sb.append("; added=").append(getAddedAssociationTarget());
+        sb.append("; removed=").append(getRemovedAssociationTarget());
+        sb.append("; propagationId=").append(getPropagationId());
+        sb.append("; source=").append(getSource());
+        return sb.append("]").toString();
     }
 
 }
