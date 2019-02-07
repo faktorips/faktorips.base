@@ -130,16 +130,18 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         } else {
             Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
                     getParameterSize(enumValueList));
-            return getCreatedEnumValueList(tocEntry, enumValueList, constructor);
+            return getCreatedEnumValueList(tocEntry, enumValueList, constructor,
+                    getEnumValuesDefinedInType(enumClass).size());
         }
     }
 
     private <T> List<T> getCreatedEnumValueList(EnumContentTocEntry tocEntry,
             List<List<Object>> enumValueList,
-            Constructor<T> constructor) {
+            Constructor<T> constructor,
+            int startIndex) {
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
-        int valueCounterForIndexParameter = 0;
+        int valueCounterForIndexParameter = startIndex;
         for (List<Object> enumValueAsStrings : enumValueList) {
             constructor.setAccessible(true);
             Object[] enumAttributeValues = enumValueAsStrings.toArray();
@@ -302,8 +304,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     /**
      * Override the default implementation for better performance. The default implementation
-     * instantiates all product component before using the class filter. In this implementation we use
-     * the information in the toc to filter the list of product components before instantiation.
+     * instantiates all product component before using the class filter. In this implementation we
+     * use the information in the toc to filter the list of product components before instantiation.
      */
     @Override
     protected <T extends IProductComponent> void getAllProductComponentsInternal(Class<T> productCmptClass,
@@ -377,10 +379,10 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             throw createCannotInstantiateException(e, tocEntry);
         }
         /*
-         * sets the runtime repository which will be used to instantiate the test case, this could be a
-         * different one (e.g. contains more dependence repositories) as the test case belongs to, because
-         * the test case itself could contain objects from different repositories, the runtime repository
-         * should contain all needed repositories
+         * sets the runtime repository which will be used to instantiate the test case, this could
+         * be a different one (e.g. contains more dependence repositories) as the test case belongs
+         * to, because the test case itself could contain objects from different repositories, the
+         * runtime repository should contain all needed repositories
          */
         test.setRepository(runtimeRepository);
         if (test instanceof IpsTestCase2) {
@@ -424,9 +426,9 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     protected abstract Element getDocumentElement(TestCaseTocEntry tocEntry);
 
     /**
-     * This method returns the name of the product component generation implementation class identified
-     * by the tocEntry. This could either be an implementation class using the formula evaluation or an
-     * implementation class containing the compiled formulas.
+     * This method returns the name of the product component generation implementation class
+     * identified by the tocEntry. This could either be an implementation class using the formula
+     * evaluation or an implementation class containing the compiled formulas.
      */
     protected abstract String getProductComponentGenerationImplClass(GenerationTocEntry tocEntry);
 

@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -24,9 +26,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -130,13 +134,28 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     }
 
     @Test
-    public void testCreateEnumValues() throws Exception {
+    public void testCreateEnumValues_Empty() throws Exception {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
         when(tocEntry.getXmlResourceName()).thenReturn("org/faktorips/runtime/internal/EmptyEnum.xml");
 
         List<Object> enumValues = repo.createEnumValues(tocEntry, Object.class);
 
         assertTrue(enumValues.isEmpty());
+    }
+
+    @Test
+    public void testCreateEnumValues_WithCorrectIndex() throws Exception {
+        EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
+        when(tocEntry.getXmlResourceName()).thenReturn("org/faktorips/runtime/internal/EnumSaxHandlerTest.xml");
+
+        List<TestEnum> enumValues = repo.createEnumValues(tocEntry, TestEnum.class);
+
+        assertThat(enumValues.size(), is(3));
+        for (int i = 0; i < enumValues.size(); i++) {
+            // repo.createEnumValues only creates extend values, the two static values are not
+            // included, but the index must start with 2 instead of 0
+            assertThat(enumValues.get(i).index, is(i + 2));
+        }
     }
 
     @Test
@@ -153,4 +172,42 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         assertNotNull(table.getName());
         assertEquals(tocEntry.getIpsObjectId(), table.getName());
     }
+
+    public static class TestEnum {
+
+        public static final List<TestEnum> VALUES = Arrays.asList(new TestEnum(0, "A", "A", null),
+                new TestEnum(1, "B", "B", null));
+
+        private final int index;
+
+        private final String id;
+
+        private final String name;
+
+        protected TestEnum(int index, String id, String name,
+                @SuppressWarnings("unused") IRuntimeRepository runtimeRepository) {
+            this.index = index;
+            this.id = id;
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return "TestEnum [index=" + index + ", id=" + id + ", name=" + name + "]";
+        }
+
+    }
+
 }
