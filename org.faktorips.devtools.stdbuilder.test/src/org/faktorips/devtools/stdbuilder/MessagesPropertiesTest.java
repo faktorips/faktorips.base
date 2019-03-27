@@ -130,7 +130,7 @@ public class MessagesPropertiesTest {
         OutputStream outputStream = mock(OutputStream.class);
         validationMessages.store(outputStream);
 
-        verify(outputStream, times(10)).write(anyInt());
+        verify(outputStream, times(9 + System.getProperty("line.separator").length())).write(anyInt());
         verify(outputStream).flush();
         verify(outputStream).close();
         verifyNoMoreInteractions(outputStream);

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -45,7 +46,7 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
 
         IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
         assertTrue(project.exists());
-        assertThat(project.getProject().getLocation(), is((IPath)new Path(newProjectPath)));
+        assertThat(getCanonicalPath(project.getProject().getLocation()), is(getCanonicalPath(newProjectPath)));
     }
 
     @Test
@@ -84,7 +85,14 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
             dir = new File(fakeDir);
         }
 
-        return fakeDir;
+        return new Path(fakeDir).toPortableString();
     }
 
+    private String getCanonicalPath(IPath path) throws IOException {
+        return new File(path.toPortableString()).getCanonicalPath();
+    }
+
+    private String getCanonicalPath(String path) throws IOException {
+        return new File(path).getCanonicalPath();
+    }
 }
