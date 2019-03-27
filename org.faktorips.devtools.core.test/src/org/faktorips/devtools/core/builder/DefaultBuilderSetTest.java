@@ -74,10 +74,11 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         builderSet.beforeBuildProcess(0);
         List<String> annotations = builderSet.getAdditionalAnnotations();
 
-        assertEquals(3, annotations.size());
+        assertEquals(4, annotations.size());
         assertTrue(annotations.contains("SuppressWarning(all)"));
         assertTrue(annotations.contains("Generated(test)"));
         assertTrue(annotations.contains("SomeAnnotation"));
+        assertTrue(annotations.contains("foo.bar.Generated(\"Baz\")"));
     }
 
     @Test
@@ -86,15 +87,16 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         List<String> imports = builderSet.getAdditionalImports();
 
         assertEquals(2, imports.size());
-        assertFalse(imports.contains("SuppressWarning(all)"));
-        assertFalse(imports.contains("Generated(test)"));
+        assertTrue(imports.contains("javax.test.Generated"));
+        assertTrue(imports.contains("xyz.SomeAnnotation"));
+        assertFalse(imports.contains("foo.bar.Generated"));
     }
 
     class TestBuilderSet extends DefaultBuilderSet {
 
         @Override
         protected String getConfiguredAdditionalAnnotations() {
-            return "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation";
+            return "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation; foo.bar.Generated(\"Baz\")";
         }
 
         @Override

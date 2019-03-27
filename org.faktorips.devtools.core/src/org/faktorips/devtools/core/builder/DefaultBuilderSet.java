@@ -11,9 +11,11 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -147,8 +149,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public void beforeBuildProcess(int buildKind) throws CoreException {
         super.beforeBuildProcess(buildKind);
-        initAdditionalImports();
-        additionalAnnotations = initAdditionalAnnotations();
+        initAdditionalAnnotationsAndImports();
         retainedAnnotations = initRetainedAnnotations();
     }
 
@@ -160,20 +161,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return IpsStringUtils.EMPTY;
     }
 
-    private void initAdditionalImports() {
-        additionalImports = new ArrayList<String>();
-        // we only need the additional imports for additional annotations. The imports for retained
-        // annotations will have been added by whomever created those annotations and are not removed by
-        // jMerge.
-        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
-        for (String splitString : splitInput) {
-            String importStatement = removeParenthesis(splitString);
-            if (!importStatement.equals(QNameUtil.getUnqualifiedName(importStatement))) {
-                additionalImports.add(importStatement);
-            }
-        }
-    }
-
     private List<String> splitString(String input) {
         List<String> splitInput = new ArrayList<String>();
         String[] split = input.split(SEMI_COLON_CHARACTER);
@@ -183,26 +170,25 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return splitInput;
     }
 
-    private String removeParenthesis(String importWithParenthesis) {
-        if (importWithParenthesis.contains(PARENTHESIS_CHARACTER)) {
-            int bracket = importWithParenthesis.indexOf(PARENTHESIS_CHARACTER);
-            return importWithParenthesis.substring(0, bracket);
-        }
-        return importWithParenthesis;
-    }
-
-    private List<String> initAdditionalAnnotations() {
-        List<String> annotations = new LinkedList<String>();
+    private void initAdditionalAnnotationsAndImports() {
+        additionalAnnotations = new LinkedList<String>();
+        additionalImports = new LinkedList<String>();
+        Set<String> unqualifiedNames = new HashSet<String>();
         List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
             int i = splitString.indexOf(PARENTHESIS_CHARACTER);
             if (i < 0) {
                 i = splitString.length();
             }
-            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString.substring(0, i));
-            annotations.add(unqualifiedName + splitString.substring(i));
+            String qualifiedName = splitString.substring(0, i);
+            String unqualifiedName = QNameUtil.getUnqualifiedName(qualifiedName);
+            String nameForAnnotation = unqualifiedNames.contains(unqualifiedName) ? qualifiedName : unqualifiedName;
+            unqualifiedNames.add(unqualifiedName);
+            if (!qualifiedName.equals(nameForAnnotation)) {
+                additionalImports.add(qualifiedName);
+            }
+            additionalAnnotations.add(nameForAnnotation + splitString.substring(i));
         }
-        return annotations;
     }
 
     private List<String> initRetainedAnnotations() {
