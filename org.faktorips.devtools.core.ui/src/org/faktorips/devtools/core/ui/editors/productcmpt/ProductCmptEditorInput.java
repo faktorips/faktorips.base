@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Product cmpt editor input based on file editor input. Contains product cmpt relevant information
@@ -23,24 +23,23 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  */
 public class ProductCmptEditorInput extends FileEditorInput {
 
-    /**
-     * Creates a product cmpt editor input with a given generation.<br>
-     * Could be used to open a product cmpt and initially showing the given generation.
-     */
-    public static IFileEditorInput createWithGeneration(IProductCmptGeneration productCmptGeneration) {
-        return new ProductCmptEditorInput(productCmptGeneration);
-    }
-
     private final IProductCmptGeneration productCmptGeneration;
-
-    private ProductCmptEditorInput(IFile file) {
-        super(file);
-        productCmptGeneration = null;
-    }
 
     private ProductCmptEditorInput(IProductCmptGeneration productCmptGeneration) {
         super(productCmptGeneration.getIpsObject().getIpsSrcFile().getCorrespondingFile());
         this.productCmptGeneration = productCmptGeneration;
+    }
+
+    /**
+     * Creates a product cmpt editor input with a given generation.<br>
+     * Could be used to open a product cmpt and initially showing the given generation.
+     *
+     * @deprecated deprecated since 3.22, use {@link IpsUIPlugin#openEditor(IProductCmptGeneration)}
+     *             instead
+     */
+    @Deprecated
+    public static IFileEditorInput createWithGeneration(IProductCmptGeneration productCmptGeneration) {
+        return new ProductCmptEditorInput(productCmptGeneration);
     }
 
     /**
@@ -50,5 +49,4 @@ public class ProductCmptEditorInput extends FileEditorInput {
     public IProductCmptGeneration getProductCmptGeneration() {
         return productCmptGeneration;
     }
-
 }

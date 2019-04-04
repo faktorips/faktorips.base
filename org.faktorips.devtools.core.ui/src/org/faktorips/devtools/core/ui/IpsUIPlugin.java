@@ -129,7 +129,6 @@ import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
@@ -740,7 +739,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return null;
         }
         // Open the editor
-        IEditorPart openedEditor = openEditor(ProductCmptEditorInput.createWithGeneration(productCmptGeneration));
+        IEditorPart openedEditor = openEditor(productCmptGeneration.getIpsObject());
         if (openedEditor == null) {
             return null;
         }
