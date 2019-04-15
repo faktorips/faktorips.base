@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
@@ -17,8 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -250,12 +250,12 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         IIpsProject otherIpsProject = mock(IIpsProject.class);
         IIpsPackageFragmentRoot packageRoot = mock(IIpsPackageFragmentRoot.class);
-        when(otherIpsProject.getSourceIpsPackageFragmentRoots()).thenReturn(
-                new IIpsPackageFragmentRoot[] { packageRoot });
+        when(otherIpsProject.getSourceIpsPackageFragmentRoots())
+                .thenReturn(new IIpsPackageFragmentRoot[] { packageRoot });
         when(otherIpsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(new IIpsSrcFile[0]);
         IProductCmptNamingStrategy productCmptNamingStrategy = mockProductCmptNamingStrategy(otherIpsProject);
-        when(productCmptNamingStrategy.getUniqueRuntimeId(any(IIpsProject.class), anyString())).thenReturn(
-                "Foo_Product");
+        when(productCmptNamingStrategy.getUniqueRuntimeId(any(IIpsProject.class), anyString()))
+                .thenReturn("Foo_Product");
 
         pmo.setIpsProject(otherIpsProject);
 
@@ -283,8 +283,8 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         when(ipsPackageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.findIpsSrcFiles(any(IpsObjectType.class))).thenReturn(new IIpsSrcFile[0]);
         mockProductCmptNamingStrategy(ipsProject);
-        when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(
-                new IIpsPackageFragmentRoot[] { ipsPackageFragmentRoot });
+        when(ipsProject.getSourceIpsPackageFragmentRoots())
+                .thenReturn(new IIpsPackageFragmentRoot[] { ipsPackageFragmentRoot });
         return ipsPackageFragmentRoot;
     }
 
@@ -297,8 +297,8 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
 
-        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
-                ipsSrcFiles.toArray(new IIpsSrcFile[0]));
+        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE))
+                .thenReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0]));
         when(ipsProject.getName()).thenReturn(PROJECT_NAME);
 
         when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
@@ -318,8 +318,8 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         ipsSrcFiles.add(ipsSrcFile1);
         ipsSrcFiles.add(ipsSrcFile2);
         ipsSrcFiles.add(ipsSrcFile3);
-        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
-                ipsSrcFiles.toArray(new IIpsSrcFile[0]));
+        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE))
+                .thenReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0]));
 
         when(ipsSrcFile1.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn("true");
         when(ipsSrcFile1.getIpsObject()).thenReturn(productCmptType1);
@@ -357,8 +357,8 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
 
-        doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject).findIpsSrcFiles(
-                IpsObjectType.PRODUCT_CMPT_TYPE);
+        doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject)
+                .findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
         doReturn(PROJECT_NAME).when(ipsProject).getName();
 
         doReturn(ipsProject).when(ipsModel).getIpsProject(PROJECT_NAME);
@@ -378,8 +378,8 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         ipsSrcFiles.add(ipsSrcFile1);
         ipsSrcFiles.add(ipsSrcFile2);
         ipsSrcFiles.add(ipsSrcFile3);
-        doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject).findIpsSrcFiles(
-                IpsObjectType.PRODUCT_CMPT_TYPE);
+        doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject)
+                .findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
 
         doReturn("true").when(ipsSrcFile1).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
         doReturn(productCmptType1).when(ipsSrcFile1).getIpsObject();
@@ -391,13 +391,69 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         doReturn("findSuperType").when(ipsSrcFile3).getPropertyValue(IType.PROPERTY_SUPERTYPE);
 
-        doReturn(ipsSrcFile1).when(ipsProject).findIpsSrcFile(
-                new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE));
+        doReturn(ipsSrcFile1).when(ipsProject)
+                .findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE));
         // refresh the list
         pmo.setIpsProject(ipsProject);
 
         assertEquals(1, pmo.getBaseTypes().size());
         assertTrue(pmo.getBaseTypes().contains(productCmptType3));
+    }
+
+    @Test
+    public void testUpdateBaseTypeList_includeAbstractTypesForTemplates() throws Exception {
+        pmo.setEffectiveDate(new GregorianCalendar());
+
+        IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
+        IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
+
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+
+        doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject)
+                .findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
+        doReturn(PROJECT_NAME).when(ipsProject).getName();
+
+        doReturn(ipsProject).when(ipsModel).getIpsProject(PROJECT_NAME);
+
+        pmo.setIpsProject(ipsProject);
+        assertTrue(pmo.getBaseTypes().isEmpty());
+
+        IIpsSrcFile layerSupertypeIpsSrcFile = mock(IIpsSrcFile.class);
+        IProductCmptType layerSupertypeProductCmptType = mock(IProductCmptType.class);
+        doReturn("layerSupertype").when(layerSupertypeProductCmptType).getName();
+        doReturn(layerSupertypeProductCmptType).when(layerSupertypeIpsSrcFile).getIpsObject();
+        doReturn("true").when(layerSupertypeIpsSrcFile).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
+
+        IIpsSrcFile abstractIpsSrcFile = mock(IIpsSrcFile.class);
+        IProductCmptType abstractProductCmptType = mock(IProductCmptType.class);
+        doReturn("abstract").when(abstractProductCmptType).getName();
+        doReturn("false").when(abstractIpsSrcFile).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
+        doReturn("true").when(abstractIpsSrcFile).getPropertyValue(IType.PROPERTY_ABSTRACT);
+        doReturn(abstractProductCmptType).when(abstractIpsSrcFile).getIpsObject();
+
+        IIpsSrcFile concreteIpsSrcFile = mock(IIpsSrcFile.class);
+        IProductCmptType concreteProductCmptType = mock(IProductCmptType.class);
+        doReturn("concrete").when(concreteProductCmptType).getName();
+        // Older types may not have the layer supertype property. This is handled as false.
+        doReturn(null).when(concreteIpsSrcFile).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
+        doReturn(concreteProductCmptType).when(concreteIpsSrcFile).getIpsObject();
+        doReturn("findSuperType").when(concreteIpsSrcFile).getPropertyValue(IType.PROPERTY_SUPERTYPE);
+        doReturn(layerSupertypeIpsSrcFile).when(ipsProject)
+                .findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE));
+
+        ipsSrcFiles.add(layerSupertypeIpsSrcFile);
+        ipsSrcFiles.add(abstractIpsSrcFile);
+        ipsSrcFiles.add(concreteIpsSrcFile);
+        doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject)
+                .findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
+
+        pmo.setTemplate(true);
+        // refresh the list
+        pmo.setIpsProject(ipsProject);
+
+        assertEquals(2, pmo.getBaseTypes().size());
+        assertTrue(pmo.getBaseTypes().contains(abstractProductCmptType));
+        assertTrue(pmo.getBaseTypes().contains(concreteProductCmptType));
     }
 
     @Test

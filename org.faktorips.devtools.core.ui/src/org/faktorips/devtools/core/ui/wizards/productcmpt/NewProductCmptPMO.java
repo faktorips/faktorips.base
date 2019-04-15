@@ -107,6 +107,11 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         this(false);
     }
 
+    /**
+     * Creates a new {@link NewProductCmptPMO}.
+     * 
+     * @param template whether the new product component is a template
+     */
     public NewProductCmptPMO(boolean template) {
         super();
         this.template = template;
@@ -161,9 +166,10 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         try {
             IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
             Set<IIpsSrcFile> concreteTypes = new HashSet<IIpsSrcFile>();
-            // 1. making a list containing all NOT ABSTRACT types
+            // 1. making a list containing all NOT ABSTRACT types if the new product component is
+            // not a template
             for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
-                if (!Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
+                if (isTemplate() || !Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
                     concreteTypes.add(ipsSrcFile);
                 }
             }
@@ -182,12 +188,11 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             String superType = ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_SUPERTYPE);
             IIpsSrcFile superTypeIpsSrcFile = null;
             if (StringUtils.isNotEmpty(superType)) {
-                superTypeIpsSrcFile = ipsProject.findIpsSrcFile(new QualifiedNameType(superType,
-                        IpsObjectType.PRODUCT_CMPT_TYPE));
+                superTypeIpsSrcFile = ipsProject
+                        .findIpsSrcFile(new QualifiedNameType(superType, IpsObjectType.PRODUCT_CMPT_TYPE));
             }
-            if (superTypeIpsSrcFile != null
-                    && !Boolean.parseBoolean(superTypeIpsSrcFile
-                            .getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
+            if (superTypeIpsSrcFile != null && !Boolean
+                    .parseBoolean(superTypeIpsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
                 superTypes.add(superTypeIpsSrcFile);
             } else {
                 baseTypes.add((IProductCmptType)ipsSrcFile.getIpsObject());
@@ -280,7 +285,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         if (referenceType != null) {
             List<IType> subtypesList = referenceType.findSubtypes(true, true, getIpsProject());
             for (IType type : subtypesList) {
-                if (template || !type.isAbstract()) {
+                if (isTemplate() || !type.isAbstract()) {
                     subtypes.add((IProductCmptType)type);
                 }
             }
@@ -485,8 +490,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         if (addToProductCmptGeneration == null || addToAssociation == null) {
             return;
         }
-        IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(addToProductCmptGeneration
-                .getIpsProject());
+        IProductCmptType targetProductCmptType = addToAssociation
+                .findTargetProductCmptType(addToProductCmptGeneration.getIpsProject());
         this.addToProductCmptGeneration = addToProductCmptGeneration;
         this.addToAssociation = addToAssociation;
         setEffectiveDate(addToProductCmptGeneration.getValidFrom());

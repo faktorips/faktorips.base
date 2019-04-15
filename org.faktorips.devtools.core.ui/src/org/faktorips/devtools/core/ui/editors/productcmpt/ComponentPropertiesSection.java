@@ -213,17 +213,17 @@ public class ComponentPropertiesSection extends IpsSection {
             }
         });
 
-        productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
+        productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit,
+                !product.isProductTemplate());
         toolkit.setEnabled(productCmptTypeControl.getTextControl(), false);
-        getBindingContext().add(
-                new PropertyChangeBinding<String>(productCmptTypeControl, product,
-                        IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE, String.class) {
+        getBindingContext().add(new PropertyChangeBinding<String>(productCmptTypeControl, product,
+                IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE, String.class) {
 
-                    @Override
-                    protected void propertyChanged(String oldValue, String newValue) {
-                        editor.checkForInconsistenciesToModel();
-                    }
-                });
+            @Override
+            protected void propertyChanged(String oldValue, String newValue) {
+                editor.checkForInconsistenciesToModel();
+            }
+        });
     }
 
     private void initTemplateRow(UIToolkit toolkit) {
@@ -240,15 +240,14 @@ public class ComponentPropertiesSection extends IpsSection {
         templateControl.setSearchTemplates(true);
         templateControl.setProductCmptsToExclude(new IProductCmpt[] { product });
         toolkit.setEnabled(templateControl.getTextControl(), false);
-        getBindingContext().add(
-                new PropertyChangeBinding<String>(templateControl, product, IProductCmpt.PROPERTY_TEMPLATE,
-                        String.class) {
+        getBindingContext().add(new PropertyChangeBinding<String>(templateControl, product,
+                IProductCmpt.PROPERTY_TEMPLATE, String.class) {
 
-                    @Override
-                    protected void propertyChanged(String oldValue, String newValue) {
-                        editor.checkForInconsistenciesToModel();
-                    }
-                });
+            @Override
+            protected void propertyChanged(String oldValue, String newValue) {
+                editor.checkForInconsistenciesToModel();
+            }
+        });
     }
 
     private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {
@@ -353,8 +352,8 @@ public class ComponentPropertiesSection extends IpsSection {
             super(productCmpt);
             this.productCmpt = productCmpt;
             productCmptTypeChangingOverTime = productCmpt.allowGenerations();
-            mapValidationMessagesFor(new ObjectProperty(productCmpt, IIpsObjectGeneration.PROPERTY_VALID_FROM)).to(
-                    new ObjectProperty(this, PROPERTY_VALID_FROM));
+            mapValidationMessagesFor(new ObjectProperty(productCmpt, IIpsObjectGeneration.PROPERTY_VALID_FROM))
+                    .to(new ObjectProperty(this, PROPERTY_VALID_FROM));
         }
 
         public GregorianCalendar getValidFrom() {
