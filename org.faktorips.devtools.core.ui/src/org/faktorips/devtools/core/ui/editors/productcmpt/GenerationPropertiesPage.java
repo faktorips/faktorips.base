@@ -326,7 +326,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .showView(ModelDescriptionView.EXTENSION_ID);
+                            .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -343,7 +343,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     /**
-     * Refreshes the page when the active generation has changed.
+     * Refreshes the page when the active generation or the template has changed.
      * <p>
      * A call to this method causes the currently displayed composite to be disposed. A completely
      * new composite is created and stacked on top of the layout. This is done to avoid complex code
@@ -355,6 +355,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             updateStack();
             createPageContent();
             updateGenerationName();
+            getManagedForm().getForm().getToolBarManager().removeAll();
+            createToolbar();
             updateTabFolderName(getPartControl());
             resetDataChangeableState();
             refresh();
