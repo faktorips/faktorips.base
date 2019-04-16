@@ -32,11 +32,11 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
         if (ipsObjectPart instanceof IProductCmptLink) {
             IProductCmptLink link = (IProductCmptLink)ipsObjectPart;
             try {
-                IProductCmpt findTarget = link.findTarget(ipsObjectPart.getIpsProject());
+                IProductCmpt target = link.findTarget(ipsObjectPart.getIpsProject());
                 ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
-                ImageDescriptor imageDescTarget = imageHandling.getImageDescriptor(findTarget);
-                return imageHandling.getSharedOverlayImageDescriptor(imageDescTarget.createImage(), OVERLAY_GIF,
-                        IDecoration.BOTTOM_RIGHT);
+                ImageDescriptor imageDescTarget = imageHandling.getImageDescriptor(target);
+                return imageHandling.getSharedOverlayImageDescriptor(imageHandling.getImage(imageDescTarget),
+                        OVERLAY_GIF, IDecoration.BOTTOM_RIGHT);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return getDefaultImageDescriptor();

@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -100,6 +105,38 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
         assertEquals(prodCmptDefaultIcon, imageDescriptor);
         iconDesc = cmptAdapter.getProductCmptIconDesc(cSubType);
         assertTrue(iconDesc instanceof DefaultIconDesc);
+    }
+
+    @Test
+    public void testIconDescriptorsForTemplatesAreReused() throws CoreException {
+        // create Types
+        IProductCmptType productType = newProductCmptType(root, "a.ProductType");
+        // create components
+        ProductCmpt template = newProductTemplate(productType, "a.Template");
+        IProductCmpt standardProductCmpt1 = newProductCmpt(productType, "a.StandardProduct1");
+        IProductCmpt standardProductCmpt2 = newProductCmpt(productType, "a.StandardProduct2");
+        IProductCmpt templatedProductCmpt1 = newProductCmpt(productType, "a.TemplatedProduct1");
+        templatedProductCmpt1.setTemplate(template.getQualifiedName());
+        templatedProductCmpt1.getIpsSrcFile().save(true, null);
+        IProductCmpt templatedProductCmpt2 = newProductCmpt(productType, "a.TemplatedProduct2");
+        templatedProductCmpt2.setTemplate(template.getQualifiedName());
+        templatedProductCmpt2.getIpsSrcFile().save(true, null);
+
+        IWorkbenchAdapter adapter = (IWorkbenchAdapter)standardProductCmpt1.getAdapter(IWorkbenchAdapter.class);
+        assertNotNull(adapter);
+        assertTrue(adapter instanceof ProductCmptWorkbenchAdapter);
+
+        ProductCmptWorkbenchAdapter cmptAdapter = (ProductCmptWorkbenchAdapter)adapter;
+
+        ImageDescriptor standardImageDescriptor = cmptAdapter.getImageDescriptor(standardProductCmpt1.getIpsSrcFile());
+        assertThat(cmptAdapter.getImageDescriptor(standardProductCmpt2.getIpsSrcFile()),
+                is(sameInstance(standardImageDescriptor)));
+
+        ImageDescriptor templatedImageDescriptor = cmptAdapter
+                .getImageDescriptor(templatedProductCmpt1.getIpsSrcFile());
+        assertThat(templatedImageDescriptor, is(not(sameInstance(standardImageDescriptor))));
+        assertThat(cmptAdapter.getImageDescriptor(templatedProductCmpt2.getIpsSrcFile()),
+                is(sameInstance(templatedImageDescriptor)));
     }
 
 }

@@ -1,47 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<maven-javadoc-plugin-version>2.10.1</maven-javadoc-plugin-version>
-		<maven-source-plugin-version>2.4</maven-source-plugin-version>
-		<maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
-		<maven-surefire-plugin>2.18.1</maven-surefire-plugin>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- JUnit, Findbugs and Checkstyle already run in tycho build -->
-		<surefire.skip>true</surefire.skip>
-		<findbugs.skip>true</findbugs.skip>
-		<checkstyle.skip>true</checkstyle.skip>
-	</properties>
-	
-	<parent>
-		<groupId>org.faktorips</groupId>
-		<artifactId>faktorips-nexus</artifactId>
-		<version>1.0.0</version>
-		<relativePath></relativePath>
-	</parent>
+    <properties>
+        <maven-javadoc-plugin-version>2.10.1</maven-javadoc-plugin-version>
+        <maven-source-plugin-version>2.4</maven-source-plugin-version>
+        <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
+        <maven-surefire-plugin>2.18.1</maven-surefire-plugin>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- JUnit, Findbugs and Checkstyle already run in tycho build -->
+        <surefire.skip>true</surefire.skip>
+        <findbugs.skip>true</findbugs.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+    </properties>
 
-	<groupId>org.faktorips</groupId>
-	<artifactId>faktorips-nexus-base</artifactId>
-	<version>3.21.8-SNAPSHOT</version>
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-nexus</artifactId>
+        <version>1.0.0</version>
+        <relativePath></relativePath>
+    </parent>
 
-	<name>Faktor-IPS Library for Maven</name>
-	<url>http://www.faktorzehn.org</url>
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-nexus-base</artifactId>
+    <version>3.21.8-SNAPSHOT</version>
 
-	<scm>
-		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
-		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
-	</scm>
+    <name>Faktor-IPS Library for Maven</name>
+    <url>http://www.faktorzehn.org</url>
 
-	<packaging>pom</packaging>
+    <scm>
+        <url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
 
-	<modules>
-		<module>../../org.faktorips.runtime/client</module>
-		<module>../../org.faktorips.runtime/nexus</module>
-		<module>../../org.faktorips.valuetypes/nexus</module>
-		<module>../../org.faktorips.valuetypes.joda/nexus</module>
-	</modules>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>../../org.faktorips.runtime/client</module>
+        <module>../../org.faktorips.runtime/nexus</module>
+        <module>../../org.faktorips.valuetypes/nexus</module>
+        <module>../../org.faktorips.valuetypes.joda/nexus</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <!-- Older FindBugs versions can't be configured by current maven... -->
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>3.0.5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
