@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -65,5 +68,15 @@ public class ProductCmptLinkWorkbenchAdapterTest extends AbstractIpsPluginTest {
 
         assertNotNull(imageDescriptor);
         assertTrue(imageDescriptor instanceof DecorationOverlayIcon);
+    }
+
+    @Test
+    public void testProductCmptIconDescIsReused() {
+        ImageDescriptor imageDescriptor1 = adapter.getImageDescriptor(link);
+        IProductCmptLink link2 = generation.newLink("ProdCmpt");
+        link2.setTarget("ProdCmpt");
+        ImageDescriptor imageDescriptor2 = adapter.getImageDescriptor(link2);
+
+        assertThat(imageDescriptor2, is(sameInstance(imageDescriptor1)));
     }
 }

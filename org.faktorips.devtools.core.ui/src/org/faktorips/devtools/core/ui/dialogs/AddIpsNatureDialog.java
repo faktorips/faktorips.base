@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
@@ -151,8 +152,9 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         runtimeIdText.setText(runtimeIdPrefix);
     }
 
+    @SuppressWarnings("deprecation")
     private void createProjectTypeGroup(UIToolkit kit, Composite parent) {
-        RadioButtonGroup group = kit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
+        RadioButtonGroup<?> group = kit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
                 Messages.AddIpsNatureDialog_ProjectType);
 
         modelProjectButton = group.addRadiobutton(Messages.AddIpsNatureDialog_modelProject);
@@ -244,10 +246,10 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         String message = Messages.AddIpsNatureDialog_dialogMessage;
         int newValidationStatus = IMessageProvider.NONE;
 
-        String basePackageName = basePackageText.getText();
         String sourceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_SOURCE, true); //$NON-NLS-1$
-        String complianceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true); //$NON-NLS-1$
-        if (!JavaConventions.validatePackageName(basePackageName, sourceLevel, complianceLevel).isOK()) {
+        String complianceLevel = javaProject == null ? "1.4" //$NON-NLS-1$
+                : javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        if (!JavaConventions.validatePackageName(basePackageText.getText(), sourceLevel, complianceLevel).isOK()) {
             newValidationStatus = IMessageProvider.ERROR;
             message = Messages.AddIpsNatureDialog_basePackageNameNotValid;
         } else {
@@ -282,8 +284,8 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
         setTitle(Messages.AddIpsNatureDialog_dialogTitle);
-        dlgTitleImage = IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("wizards/AddIpsNatureWizard.png").createImage(); //$NON-NLS-1$
+        ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
+        dlgTitleImage = imageHandling.getImage(imageHandling.createImageDescriptor("wizards/AddIpsNatureWizard.png")); //$NON-NLS-1$
         setTitleImage(dlgTitleImage);
         setMessage(Messages.AddIpsNatureDialog_dialogMessage);
         parent.addDisposeListener(new DisposeListener() {

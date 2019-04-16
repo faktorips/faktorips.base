@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 
 /**
  * TODO Support Disabled Icons
@@ -96,8 +97,10 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
                 ImageDescriptor productCmptImageDescriptor = getProductCmptImageDescriptor(type);
                 String templateName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
                 if (StringUtils.isNotBlank(templateName)) {
-                    return IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(
-                            productCmptImageDescriptor.createImage(), PRODUCT_TEMPLATE_OVERLAY, IDecoration.TOP_LEFT);
+                    ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
+                    return imageHandling.getSharedOverlayImageDescriptor(
+                            imageHandling.getImage(productCmptImageDescriptor), PRODUCT_TEMPLATE_OVERLAY,
+                            IDecoration.TOP_LEFT);
                 }
                 return productCmptImageDescriptor;
             }
