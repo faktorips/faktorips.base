@@ -41,6 +41,7 @@ public class ContentPageUtil {
         return createObjectContentPageElement(ipsObject, context);
     }
 
+    // CSOFF: CyclomaticComplexityCheck
     private static ICompositePageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
             DocumentationContext context) throws CoreException {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
@@ -50,6 +51,9 @@ public class ContentPageUtil {
             return new ProductCmptTypeContentPageElement((IProductCmptType)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+            return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, context);
+        }
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_TEMPLATE) {
             return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.ENUM_TYPE) {
@@ -74,5 +78,6 @@ public class ContentPageUtil {
         // TODO Businessfunction && ORMEXT???
         return new IpsObjectContentPageElement(ipsSrcFile, context);
     }
+    // CSON: CyclomaticComplexityCheck
 
 }
