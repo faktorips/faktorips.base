@@ -54,6 +54,11 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     }
 
     @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, IConfiguredDefault.class);
+    }
+
+    @Override
     public PropertyValueType getPropertyValueType() {
         return PropertyValueType.CONFIGURED_DEFAULT;
     }

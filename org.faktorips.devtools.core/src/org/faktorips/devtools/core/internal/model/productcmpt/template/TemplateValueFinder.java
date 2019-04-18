@@ -22,12 +22,13 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
  * belong to a product component (or a template) based on a parent-template, no value is found. If
  * none of the parent-templates defines a value, no value is found.
  */
-public class TemplateValueFinder<V extends ITemplatedValue, C extends ITemplatedValueContainer> extends
-        TemplateHierarchyVisitor<C> {
+public class TemplateValueFinder<V extends ITemplatedValue, C extends ITemplatedValueContainer>
+        extends TemplateHierarchyVisitor<C> {
 
     private final V originalValue;
     private final Class<V> valueClass;
     private V resultingValue;
+    private boolean knownInTemplate;
     private final ITemplatedValueIdentifier valueIdentifier;
 
     public TemplateValueFinder(V originalPropertyValue, Class<V> valueClass, ITemplatedValueIdentifier valueIdentifier,
@@ -49,13 +50,20 @@ public class TemplateValueFinder<V extends ITemplatedValue, C extends ITemplated
         if (currentValue == null || isInherited(currentValue)) {
             return true;
         } else if (isDefined(currentValue)) {
-            this.resultingValue = currentValue;
+            resultingValue = currentValue;
+            knownInTemplate = true;
+        } else if (isUndefined(currentValue)) {
+            knownInTemplate = true;
         }
         return false;
     }
 
     private boolean isDefined(V value) {
         return value.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
+
+    private boolean isUndefined(V value) {
+        return value.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED;
     }
 
     private boolean isInherited(V value) {
@@ -66,11 +74,26 @@ public class TemplateValueFinder<V extends ITemplatedValue, C extends ITemplated
         return resultingValue;
     }
 
+    /**
+     * Returns whether any template in the visited hierarchy has a value (even if it is
+     * {@link TemplateValueStatus#UNDEFINED}) for the property.
+     */
+    public boolean isKnownInTemplate() {
+        return knownInTemplate;
+    }
+
     public static <U extends ITemplatedValue> U findTemplateValue(U originalValue, Class<U> valueClass) {
         TemplateValueFinder<U, ITemplatedValueContainer> finder = new TemplateValueFinder<U, ITemplatedValueContainer>(
                 originalValue, valueClass, originalValue.getIdentifier(), originalValue.getIpsProject());
         finder.start(originalValue.getTemplatedValueContainer());
         return finder.getTemplateValue();
+    }
+
+    public static <U extends ITemplatedValue> boolean hasTemplateForValue(U originalValue, Class<U> valueClass) {
+        TemplateValueFinder<U, ITemplatedValueContainer> finder = new TemplateValueFinder<U, ITemplatedValueContainer>(
+                originalValue, valueClass, originalValue.getIdentifier(), originalValue.getIpsProject());
+        finder.start(originalValue.getTemplatedValueContainer());
+        return finder.isKnownInTemplate();
     }
 
 }

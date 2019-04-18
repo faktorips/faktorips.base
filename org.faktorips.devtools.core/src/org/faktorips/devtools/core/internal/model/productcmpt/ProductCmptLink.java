@@ -520,6 +520,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return TemplateValueFinder.findTemplateValue(this, IProductCmptLink.class);
     }
 
+    @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, IProductCmptLink.class);
+    }
+
     /**
      * {@inheritDoc}
      * <p>

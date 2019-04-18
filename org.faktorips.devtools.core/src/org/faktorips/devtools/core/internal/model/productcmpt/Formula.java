@@ -276,6 +276,11 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, IFormula.class);
+    }
+
+    @Override
     public boolean isPartOfTemplateHierarchy() {
         return (getTemplatedValueContainer().isUsingTemplate() && findTemplateProperty(getIpsProject()) != null)
                 || getTemplatedValueContainer().isProductTemplate();

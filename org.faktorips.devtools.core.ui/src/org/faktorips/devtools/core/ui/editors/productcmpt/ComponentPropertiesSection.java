@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * Section to display and edit the product attributes
@@ -245,6 +246,9 @@ public class ComponentPropertiesSection extends IpsSection {
 
             @Override
             protected void propertyChanged(String oldValue, String newValue) {
+                if (!ObjectUtil.equals(oldValue, newValue)) {
+                    editor.refreshIncludingStructuralChanges();
+                }
                 editor.checkForInconsistenciesToModel();
             }
         });

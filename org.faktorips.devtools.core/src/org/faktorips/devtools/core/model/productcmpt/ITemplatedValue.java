@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.functional.BiConsumer;
 
 /**
@@ -75,6 +76,19 @@ public interface ITemplatedValue extends IIpsObjectPart {
      *         property.
      */
     public ITemplatedValue findTemplateProperty(IIpsProject ipsProject);
+
+    /**
+     * Returns <code>true</code> if somewhere in the template hierarchy (parent or grand*-parent
+     * template) there is a template that knows about this property (because it configures a
+     * {@link IProductCmptType} that includes this property).
+     * 
+     * If the corresponding container uses no template or the templates are only configuring
+     * parent-product-types that don't include the property, <code>false</code> is returned.
+     * 
+     * @return <code>true</code> if the corresponding container uses a template that could define a
+     *         value for this property.
+     */
+    public boolean hasTemplateForProperty(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this property is part of a template hierarchy, by either acting

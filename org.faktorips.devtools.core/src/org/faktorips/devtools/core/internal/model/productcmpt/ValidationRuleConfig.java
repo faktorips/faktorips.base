@@ -191,6 +191,11 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     }
 
     @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, IValidationRuleConfig.class);
+    }
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         list.add(templateValueSettings.validate(this, ipsProject));

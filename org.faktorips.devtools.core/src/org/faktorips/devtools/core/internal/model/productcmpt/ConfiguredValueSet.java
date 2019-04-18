@@ -64,6 +64,11 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, IConfiguredValueSet.class);
+    }
+
+    @Override
     public PropertyValueType getPropertyValueType() {
         return PropertyValueType.CONFIGURED_VALUESET;
     }

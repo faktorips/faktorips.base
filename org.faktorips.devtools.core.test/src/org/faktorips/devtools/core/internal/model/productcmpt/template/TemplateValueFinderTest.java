@@ -64,6 +64,7 @@ public class TemplateValueFinderTest {
 
         assertTrue(continueVisiting);
         assertThat(finder.getTemplateValue(), is(nullValue()));
+        assertThat(finder.isKnownInTemplate(), is(false));
     }
 
     @Test
@@ -74,6 +75,7 @@ public class TemplateValueFinderTest {
 
         assertTrue(continueVisiting);
         assertThat(finder.getTemplateValue(), is(nullValue()));
+        assertThat(finder.isKnownInTemplate(), is(false));
     }
 
     @Test
@@ -86,6 +88,8 @@ public class TemplateValueFinderTest {
 
         assertTrue(continueVisiting);
         assertThat(finder.getTemplateValue(), is(nullValue()));
+        // because it is only known when it is found after continuing with the parent
+        assertThat(finder.isKnownInTemplate(), is(false));
     }
 
     @Test
@@ -98,6 +102,7 @@ public class TemplateValueFinderTest {
 
         assertFalse(continueVisiting);
         assertThat(finder.getTemplateValue(), is(parentValue));
+        assertThat(finder.isKnownInTemplate(), is(true));
     }
 
     @Test
@@ -110,6 +115,7 @@ public class TemplateValueFinderTest {
 
         assertFalse(continueVisiting);
         assertThat(finder.getTemplateValue(), is(nullValue()));
+        assertThat(finder.isKnownInTemplate(), is(true));
     }
 
 }

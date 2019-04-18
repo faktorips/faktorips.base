@@ -274,4 +274,10 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     public ITableContentUsage findTemplateProperty(IIpsProject ipsProject) {
         return TemplateValueFinder.findTemplateValue(this, ITableContentUsage.class);
     }
+
+    @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, ITableContentUsage.class);
+    }
+
 }

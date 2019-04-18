@@ -74,7 +74,7 @@ abstract class AbstractSimplePropertyValue extends BaseIpsObjectPart implements 
 
     @Override
     public boolean isPartOfTemplateHierarchy() {
-        return (getTemplatedValueContainer().isUsingTemplate() && findTemplateProperty(getIpsProject()) != null)
+        return (getTemplatedValueContainer().isUsingTemplate() && hasTemplateForProperty(getIpsProject()))
                 || getTemplatedValueContainer().isProductTemplate();
     }
 

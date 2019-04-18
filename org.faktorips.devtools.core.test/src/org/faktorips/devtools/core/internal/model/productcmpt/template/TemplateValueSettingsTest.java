@@ -117,6 +117,16 @@ public class TemplateValueSettingsTest {
     }
 
     @Test
+    public void testTemplateValueSettings_notDefinedInTemplate() {
+        IAttributeValue templateValue = mock(IAttributeValue.class);
+        when(attrValue.findTemplateProperty(ipsProject)).thenReturn(templateValue);
+
+        handler = new TemplateValueSettings(attrValue);
+
+        assertThat(handler.getStatus(), is(TemplateValueStatus.INHERITED));
+    }
+
+    @Test
     public void testInitialize_definedTemplateValue() {
         when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
         handler = new TemplateValueSettings(attrValue);

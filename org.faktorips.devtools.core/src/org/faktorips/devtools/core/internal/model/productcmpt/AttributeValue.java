@@ -201,6 +201,11 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
+    public boolean hasTemplateForProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.hasTemplateForValue(this, IAttributeValue.class);
+    }
+
+    @Override
     public TemplateValueStatus getTemplateValueStatus() {
         return templateValueSettings.getStatus();
     }
@@ -275,8 +280,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     private void attrIsHiddenMismatch(IProductCmptTypeAttribute attr, MessageList list) {
         HiddenAttributeMismatchEntry attributeEntry = new HiddenAttributeMismatchEntry(this, attr);
         if (attributeEntry.isMismatch()) {
-            String text = NLS.bind(
-                    Messages.AttributeValue_HiddenAttributeMismatch,
+            String text = NLS.bind(Messages.AttributeValue_HiddenAttributeMismatch,
                     new String[] { attr.getDefaultValue(), attributeEntry.getPropertyName(),
                             attributeEntry.getCurrentAttributeValue() });
             list.add(new Message(MSGCODE_HIDDEN_ATTRIBUTE, text, Message.ERROR));
