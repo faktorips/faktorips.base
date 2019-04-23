@@ -204,13 +204,16 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertThat(productAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject), is(policyAssociation));
         assertThat(templateLink.findAssociation(ipsProject), is(productAssociation));
 
-        // validation should not report an error for template according to FIPS-4670
         policyAssociation.setMinCardinality(1);
         policyAssociation.setMaxCardinality(1);
         templateLink.setMinCardinality(0);
-        templateLink.setMaxCardinality(1);
+        templateLink.setMaxCardinality(2);
         MessageList ml = templateLink.validate(ipsProject);
+        // validation should not report an error for template with lower minimum according to
+        // FIPS-4670
         assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        // but still validate maximum according to FIPS-6184
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
 
     @Test

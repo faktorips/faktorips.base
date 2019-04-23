@@ -236,12 +236,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     protected void validateCardinalityForMatchingAssociation(MessageList list,
             IIpsProject ipsProject,
             IProductCmptTypeAssociation associationObj) {
-        if (!getProductCmptLinkContainer().isProductTemplate()) {
-            IPolicyCmptTypeAssociation polAssociation = associationObj
-                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
-            if (polAssociation != null) {
-                validateCardinality(list, polAssociation);
-            }
+        IPolicyCmptTypeAssociation polAssociation = associationObj.findMatchingPolicyCmptTypeAssociation(ipsProject);
+        if (polAssociation != null) {
+            validateCardinality(list, polAssociation);
         }
     }
 
@@ -276,7 +273,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 }
             } else {
                 validateTotalMax(list, associationObj);
-                validateTotalMin(list, associationObj);
+                if (!getProductCmptLinkContainer().isProductTemplate()) {
+                    validateTotalMin(list, associationObj);
+                }
             }
         }
     }
