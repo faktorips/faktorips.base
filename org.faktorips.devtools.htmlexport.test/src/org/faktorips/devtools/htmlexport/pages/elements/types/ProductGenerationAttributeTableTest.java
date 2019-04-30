@@ -13,8 +13,10 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.GregorianCalendar;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -55,7 +57,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
     }
 
     @Test
-    public void testAddTablStuctureeUsages() throws Exception {
+    public void testAddTableStuctureUsages() throws Exception {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "productType");
         ITableStructureUsage tableStructureUsage1 = productCmptType.newTableStructureUsage();
         tableStructureUsage1.setRoleName("tableStructureUsage1");
@@ -96,7 +98,52 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
                 productCmpt, context);
 
         assertXPathExists(productGenerationAttributeTable, "//td/descendant::span");
-        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + formulaProductCmptGen.getFormulaName() + "']");
+        assertXPathExists(productGenerationAttributeTable,
+                "//td[. = '" + formulaProductCmptGen.getFormulaName() + "']");
+    }
 
+    @Test
+    public void testAddValidationRules() throws Exception {
+        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "policyType", "productType");
+        IValidationRule staticRule = policyCmptType.newRule();
+        staticRule.setConfigurableByProductComponent(true);
+        staticRule.setChangingOverTime(false);
+        staticRule.setName("Stat");
+        IValidationRule dynamicRule = policyCmptType.newRule();
+        dynamicRule.setConfigurableByProductComponent(true);
+        dynamicRule.setChangingOverTime(true);
+        dynamicRule.setName("Dyn");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        productCmpt.newPropertyValues(staticRule);
+
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
+        generation.newPropertyValues(dynamicRule);
+
+        ProductGenerationAttributeTable productGenerationAttributeTable = new ProductGenerationAttributeTable(
+                productCmpt, context);
+
+        assertXPathExists(productGenerationAttributeTable, "//td/descendant::span");
+        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + dynamicRule.getName() + "']");
+    }
+
+    @Test
+    public void testAddValidationRules_NoGeneration() throws Exception {
+        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "policyType", "productType");
+        IValidationRule staticRule = policyCmptType.newRule();
+        staticRule.setConfigurableByProductComponent(true);
+        staticRule.setChangingOverTime(false);
+        staticRule.setName("Stat");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmptType.setChangingOverTime(false);
+
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        productCmpt.newPropertyValues(staticRule);
+
+        ProductGenerationAttributeTable productGenerationAttributeTable = new ProductGenerationAttributeTable(
+                productCmpt, context);
+
+        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + staticRule.getName() + "']");
     }
 }

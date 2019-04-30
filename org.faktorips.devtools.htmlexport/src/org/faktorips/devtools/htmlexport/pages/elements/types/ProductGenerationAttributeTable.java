@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -30,15 +31,19 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfigContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
@@ -76,11 +81,53 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      * 
      */
-    public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context) throws CoreException {
+    public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context)
+            throws CoreException {
         super(context);
         this.productCmpt = productCmpt;
         this.productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());
         this.attributes = productCmptType.findAllAttributes(productCmpt.getIpsProject());
+    }
+
+    @Override
+    protected List<String> getHeadline() {
+        return getHeadlineWithCategory(
+                getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_attributes));
+    }
+
+    private List<String> getHeadlineWithCategory(String productGenerationAttributeTableGenerationFrom) {
+        List<String> headline = new ArrayList<String>();
+
+        headline.add(productGenerationAttributeTableGenerationFrom);
+        if (productCmpt.allowGenerations()) {
+            addHeadlineForProductCmptWithGeneration(headline);
+        } else {
+            addHeadlineForProductCmptWithoutGeneration(headline);
+        }
+        return headline;
+    }
+
+    private void addHeadlineForProductCmptWithGeneration(List<String> headline) {
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            headline.add(getContext().getSimpleDateFormat()
+                    .format(productCmpt.getProductCmptGeneration(i).getValidFrom().getTime()));
+        }
+    }
+
+    private void addHeadlineForProductCmptWithoutGeneration(List<String> headline) {
+        headline.add(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_values));
+    }
+
+    private IPolicyCmptType getPolicyCmptType() {
+        IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(getContext().getIpsProject());
+        return policyCmptType;
+    }
+
+    private void addSubHeadline(String category) {
+        IPageElement[] pageElements = new PageElementUtils(getContext())
+                .createTextPageElements(getHeadlineWithCategory(category), null, TextType.WITHOUT_TYPE);
+
+        addSubElement(new TableRowPageElement(pageElements, getContext()).addStyles(Style.TABLE_HEADLINE));
     }
 
     @Override
@@ -96,62 +143,33 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         addAssociations();
 
         addValidationRules();
-
     }
 
-    private void addValidationRules() {
-        IPolicyCmptType policyCmptType = getPolicyCmptType();
-
-        if (policyCmptType == null) {
-            return;
-        }
-
-        List<IValidationRule> validationRules;
-        validationRules = policyCmptType.findAllValidationRules(getContext().getIpsProject());
-
-        List<IValidationRule> productConfigurableValidationRules = new ArrayList<IValidationRule>();
-
-        for (IValidationRule validationRule : validationRules) {
-            if (validationRule.isConfigurableByProductComponent()) {
-                productConfigurableValidationRules.add(validationRule);
-            }
-        }
-
-        if (productConfigurableValidationRules.isEmpty()) {
-            return;
-        }
-
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRules));
-
-        for (IValidationRule validationRule : productConfigurableValidationRules) {
-            addValidationRulesRow(validationRule);
-        }
-
+    private <C, P extends IChangingOverTimeProperty> TableRowPageElement addRow(P property,
+            CellCreator<C, P> cellCreator) {
+        return createRow(property, getContext().getLabel(property), cellCreator);
     }
 
-    private void addValidationRulesRow(IValidationRule validationRule) {
+    private <C, P extends IChangingOverTimeProperty> TableRowPageElement createRow(P property,
+            String label,
+            CellCreator<C, P> cellCreator) {
         IPageElement[] cells = initCellsSize();
-
-        cells[0] = new TextPageElement(getContext().getLabel(validationRule), getContext());
-
+        cells[0] = createFirstCell(property, label);
         if (productCmpt.allowGenerations()) {
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-
-                IValidationRuleConfig validationRuleConfig = productCmptGeneration
-                        .getValidationRuleConfig(validationRule.getName());
-
-                cells[i + 1] = new TextPageElement(
-                        validationRuleConfig != null && validationRuleConfig.isActive() ? getContext().getMessage(
-                                HtmlExportMessages.ProductGenerationAttributeTable_validationRulesActive)
-                                : getContext().getMessage(
-                                        HtmlExportMessages.ProductGenerationAttributeTable_validationRulesInactive),
-                                        TextType.BLOCK, getContext());
-                cells[i + 1].addStyles(Style.CENTER);
-
+                @SuppressWarnings("unchecked")
+                C container = (C)(property.isChangingOverTime() ? productCmpt.getProductCmptGeneration(i)
+                        : productCmpt);
+                cells[i + 1] = cellCreator.createCell(container, property);
             }
+        } else {
+            @SuppressWarnings("unchecked")
+            C container = (C)productCmpt;
+            cells[1] = cellCreator.createCell(container, property);
         }
-        addSubElement(new TableRowPageElement(cells, getContext()));
+        TableRowPageElement pageElement = new TableRowPageElement(cells, getContext());
+        addSubElement(pageElement);
+        return pageElement;
     }
 
     private IPageElement[] initCellsSize() {
@@ -159,6 +177,86 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return new IPageElement[productCmpt.getNumOfGenerations() + 1];
         }
         return new IPageElement[TWO_COLUMNS];
+    }
+
+    private IPageElement createFirstCell(IChangingOverTimeProperty property, String label) {
+        if (property.isChangingOverTime() || !productCmpt.allowGenerations()) {
+            return new TextPageElement(label, getContext());
+        } else {
+            return new WrapperPageElement(WrapperType.NONE, getContext()).addPageElements(
+                    new TextPageElement(label, getContext()), new TextPageElement(WHITE_SPACE, getContext()),
+                    new TextPageElement(
+                            getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeable),
+                            Collections.singleton(Style.SMALL), getContext()));
+        }
+    }
+
+    private void addAttributes() {
+        if (attributes.size() == 0) {
+            return;
+        }
+
+        for (IAttribute attribute : attributes) {
+            addAttributeRow(attribute);
+        }
+    }
+
+    private void addAttributeRow(IAttribute attribute) {
+        addRow((IProductCmptTypeAttribute)attribute,
+                new CellCreator<IPropertyValueContainer, IProductCmptTypeAttribute>() {
+
+                    @Override
+                    public IPageElement createCell(IPropertyValueContainer container,
+                            IProductCmptTypeAttribute attribute) {
+                        return createProductAttributeCell(container, attribute);
+                    }
+                });
+    }
+
+    private IPageElement createProductAttributeCell(IPropertyValueContainer container,
+            IProductCmptTypeAttribute attribute) {
+        String attributeName = attribute.getName();
+        IAttributeValue attributeValue = container instanceof IProductCmpt
+                ? ((IProductCmpt)container).getAttributeValue(attributeName)
+                : ((IProductCmptGeneration)container).getAttributeValue(attributeName);
+        String value = getValueOfAttribute(attributeValue, attribute);
+        return new TextPageElement(value, getContext());
+    }
+
+    private String getValueOfAttribute(IAttributeValue attributeValue, IAttribute attribute) {
+        String value = getContext().getDatatypeFormatter().formatValue(
+                productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
+                attributeValue == null ? null : attributeValue.getPropertyValue());
+        return value;
+    }
+
+    private void addFormulas() {
+        List<IProductCmptTypeMethod> formulaSignatures = productCmptType.getFormulaSignatures();
+
+        if (formulaSignatures.size() == 0) {
+            return;
+        }
+
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_formulas));
+
+        for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
+            addFormulaRow(formulaSignature);
+        }
+    }
+
+    private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
+        addRow(formulaSignature, new CellCreator<IPropertyValueContainer, IProductCmptTypeMethod>() {
+
+            @Override
+            public IPageElement createCell(IPropertyValueContainer container, IProductCmptTypeMethod property) {
+                return createFormulaCell(container, property);
+            }
+        });
+    }
+
+    private IPageElement createFormulaCell(IPropertyValueContainer container, IProductCmptTypeMethod property) {
+        IFormula formula = container.getPropertyValue(property, IFormula.class);
+        return new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(), getContext());
     }
 
     private void addPolicyCmptTypeAttibutes() {
@@ -184,7 +282,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 continue;
             }
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)attribute;
-            if (policyCmptTypeAttribute.getProductCmptPropertyType() == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE
+            if (policyCmptTypeAttribute
+                    .getProductCmptPropertyType() == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE
                     && policyCmptTypeAttribute.isProductRelevant()) {
                 policyCmptTypeAttributes.add(policyCmptTypeAttribute);
             }
@@ -194,78 +293,56 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_defaultsAndValueSets));
+        addSubHeadline(
+                getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_defaultsAndValueSets));
 
         for (IPolicyCmptTypeAttribute policyCmptTypeAttribute : policyCmptTypeAttributes) {
-            addPolicyCmptTypeAttibutesRow(policyCmptTypeAttribute);
+            addPolicyCmptTypeAttributesRow(policyCmptTypeAttribute);
         }
-
     }
 
-    private IPolicyCmptType getPolicyCmptType() {
-        IPolicyCmptType policyCmptType = null;
-        policyCmptType = productCmptType.findPolicyCmptType(getContext().getIpsProject());
-        return policyCmptType;
+    private void addPolicyCmptTypeAttributesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+        addRow(policyCmptTypeAttribute, new CellCreator<IPropertyValueContainer, IPolicyCmptTypeAttribute>() {
+
+            @Override
+            public IPageElement createCell(IPropertyValueContainer container,
+                    IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+                return createPolicyCmptTypeAttributeCell(container, policyCmptTypeAttribute);
+            }
+
+        });
     }
 
-    private void addPolicyCmptTypeAttibutesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-        IPageElement[] cells = initCellsSize();
-
-        cells[0] = new TextPageElement(getContext().getLabel(policyCmptTypeAttribute), getContext());
-
-        if (productCmpt.allowGenerations()) {
-            // TODO FIPS-5085 static attributes in product?
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-
-                IConfiguredValueSet configuredValueSet = productCmptGeneration
-                        .getConfiguredValueSet(policyCmptTypeAttribute.getName());
-                IConfiguredDefault configuredDefault = productCmptGeneration
-                        .getConfiguredDefault(policyCmptTypeAttribute.getName());
-
-                if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
-                    cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
-                    continue;
-                }
-                if (configuredDefault == null || configuredDefault.getValue() == null) {
-                    cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
-                    continue;
-                }
-
-                IValueSet valueSet = configuredValueSet.getValueSet();
-                String defaultValue = configuredDefault.getValue();
-
-                cells[i + 1] = createValueSetCell(valueSet, defaultValue);
-
-            }
-        } else {
-            // TODO FIPS-5085 refactor duplicate code
-            IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(policyCmptTypeAttribute,
-                    IConfiguredValueSet.class);
-            IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(policyCmptTypeAttribute,
-                    IConfiguredDefault.class);
-
-            if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
-                cells[1] = new TextPageElement(NOT_AVAILABLE, getContext());
-            } else {
-                IValueSet valueSet = configuredValueSet.getValueSet();
-                String defaultValue = configuredDefault.getValue();
-
-                cells[1] = createValueSetCell(valueSet, defaultValue);
-            }
+    private IPageElement createPolicyCmptTypeAttributeCell(IPropertyValueContainer container,
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+        IConfiguredValueSet configuredValueSet = container.getPropertyValue(policyCmptTypeAttribute,
+                IConfiguredValueSet.class);
+        if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
+            return new TextPageElement(NOT_AVAILABLE, getContext());
         }
-        addSubElement(new TableRowPageElement(cells, getContext()));
+
+        IConfiguredDefault configuredDefault = container.getPropertyValue(policyCmptTypeAttribute,
+                IConfiguredDefault.class);
+        if (configuredDefault == null || configuredDefault.getValue() == null) {
+            return new TextPageElement(NOT_AVAILABLE, getContext());
+        }
+
+        IValueSet valueSet = configuredValueSet.getValueSet();
+        String defaultValue = configuredDefault.getValue();
+
+        return createValueSetCell(valueSet, defaultValue);
     }
 
     private WrapperPageElement createValueSetCell(IValueSet valueSet, String defaultValue) {
         WrapperPageElement pageElement = new WrapperPageElement(WrapperType.BLOCK, getContext());
 
-        pageElement.addPageElements(new TextPageElement(getContext().getMessage(
-                "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
-                + COLON_SEPARATOR
-                + getContext().getDatatypeFormatter().formatValue(
-                        valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue), TextType.BLOCK,
-                        getContext()));
+        pageElement.addPageElements(
+                new TextPageElement(
+                        getContext().getMessage("ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
+                                + COLON_SEPARATOR
+                                + getContext().getDatatypeFormatter().formatValue(
+                                        valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue),
+                        TextType.BLOCK, getContext()));
 
         if (valueSet.isEnum()) {
             pageElement.addPageElements(createEnumValueSetCell((IEnumValueSet)valueSet));
@@ -293,8 +370,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private TextPageElement createUnrestrictedEnumValueCell() {
-        TextPageElement textPageElement = new TextPageElement(getContext().getMessage(
-                "ProductGenerationAttributeTable_valueSetUnrestricted"), TextType.BLOCK, getContext()); //$NON-NLS-1$
+        TextPageElement textPageElement = new TextPageElement(
+                getContext().getMessage("ProductGenerationAttributeTable_valueSetUnrestricted"), TextType.BLOCK, //$NON-NLS-1$
+                getContext());
         return textPageElement;
     }
 
@@ -305,24 +383,15 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             if (builder.length() > 0) {
                 builder.append(COMMA_SEPARATOR);
             }
-            builder.append(getContext().getDatatypeFormatter().formatValue(
-                    enumValueSet.findValueDatatype(getContext().getIpsProject()), enumValue));
+            builder.append(getContext().getDatatypeFormatter()
+                    .formatValue(enumValueSet.findValueDatatype(getContext().getIpsProject()), enumValue));
 
         }
-        TextPageElement textPageElement = new TextPageElement(getContext().getMessage(
-                "ProductGenerationAttributeTable_valueSet") //$NON-NLS-1$
-                + COLON_SEPARATOR + builder.toString(), getContext());
+        TextPageElement textPageElement = new TextPageElement(
+                getContext().getMessage("ProductGenerationAttributeTable_valueSet") //$NON-NLS-1$
+                        + COLON_SEPARATOR + builder.toString(),
+                getContext());
         return textPageElement;
-    }
-
-    private void addAttributes() {
-        if (attributes.size() == 0) {
-            return;
-        }
-
-        for (IAttribute attribute : attributes) {
-            addAttributeRow(attribute);
-        }
     }
 
     private void addTableStructureUsages() {
@@ -339,64 +408,31 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
     }
 
-    private void addFormulas() {
-        List<IProductCmptTypeMethod> formulaSignatures = productCmptType.getFormulaSignatures();
-
-        if (formulaSignatures.size() == 0) {
-            return;
-        }
-
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_formulas));
-
-        for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
-            addFormulaRow(formulaSignature);
-        }
-    }
-
-    private void addSubHeadline(String category) {
-        IPageElement[] pageElements = new PageElementUtils(getContext()).createTextPageElements(
-                getHeadlineWithCategory(category), null, TextType.WITHOUT_TYPE);
-
-        addSubElement(new TableRowPageElement(pageElements, getContext()).addStyles(Style.TABLE_HEADLINE));
-    }
-
     private void addTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
-        IPageElement[] cells;
-        if (tableStructureUsage.isChangingOverTime()) {
-            cells = createChangeableTableStructureUsageRow(tableStructureUsage);
-        } else {
-            cells = createNotChangeableTableStructureUsageRow(tableStructureUsage);
-        }
-        addSubElement(new TableRowPageElement(cells, getContext()));
+        final String roleName = tableStructureUsage.getRoleName();
+        createRow(tableStructureUsage, roleName, new CellCreator<IPropertyValueContainer, ITableStructureUsage>() {
+
+            @Override
+            public IPageElement createCell(IPropertyValueContainer container, ITableStructureUsage property) {
+                return createTableStructureUsageCell(roleName, container);
+            }
+        });
     }
 
-    private IPageElement[] createNotChangeableTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
-        IPageElement[] cells = initCellsSize();
-        String roleName = tableStructureUsage.getRoleName();
-        addFirstCellWithNotChangeable(cells, roleName);
-
-        ITableContentUsage usage = productCmpt.getTableContentUsage(roleName);
+    private IPageElement createTableStructureUsageCell(final String roleName, IPropertyValueContainer container) {
+        ITableContentUsage usage = container instanceof IProductCmpt
+                ? ((IProductCmpt)container).getTableContentUsage(roleName)
+                : ((IProductCmptGeneration)container).getTableContentUsage(roleName);
         if (usage == null) {
-            setTableContentUnknown(cells);
-            return cells;
+            return new TextPageElement(NOT_AVAILABLE, getContext());
         }
 
         ITableContents tableContent = findTableContents(usage);
-
         if (tableContent == null) {
-            setTableContentUnknown(cells);
-            return cells;
+            return new TextPageElement(NOT_AVAILABLE, getContext());
         }
 
-        IPageElement linkPageElement = createTableContentLinkPageElement(tableContent);
-        if (productCmpt.allowGenerations()) {
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                cells[i + 1] = linkPageElement;
-            }
-        } else {
-            cells[1] = linkPageElement;
-        }
-        return cells;
+        return createTableContentLinkPageElement(tableContent);
     }
 
     private ITableContents findTableContents(ITableContentUsage usage) {
@@ -415,85 +451,6 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 getContext().getLabel(tableContent), true);
     }
 
-    private void setTableContentUnknown(IPageElement[] cells) {
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
-        }
-    }
-
-    private IPageElement[] createChangeableTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
-        IPageElement[] cells = initCellsSize();
-
-        String roleName = tableStructureUsage.getRoleName();
-        cells[0] = new TextPageElement(roleName, getContext());
-
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-
-            ITableContentUsage usage = productCmptGeneration.getTableContentUsage(roleName);
-
-            if (usage == null) {
-                cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
-                continue;
-            }
-
-            ITableContents tableContent = findTableContents(usage);
-
-            if (tableContent == null) {
-                cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
-                continue;
-            }
-            IPageElement linkPageElement = createTableContentLinkPageElement(tableContent);
-
-            cells[i + 1] = linkPageElement;
-
-        }
-        return cells;
-    }
-
-    private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
-        IPageElement[] cells;
-        if (formulaSignature.isChangingOverTime()) {
-            cells = createChangeableFormulaRow(formulaSignature);
-        } else {
-            cells = createNotChangeableFormulaRow(formulaSignature);
-        }
-        addSubElement(new TableRowPageElement(cells, getContext()));
-    }
-
-    private IPageElement[] createChangeableFormulaRow(IProductCmptTypeMethod formulaSignature) {
-        IPageElement[] cells = initCellsSize();
-
-        String labelValue = getContext().getLabel(formulaSignature);
-
-        cells[0] = new TextPageElement(labelValue, getContext());
-
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-
-            IFormula formula = productCmptGeneration.getFormula(formulaSignature.getFormulaName());
-            cells[i + 1] = new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(), getContext());
-
-        }
-        return cells;
-    }
-
-    private IPageElement[] createNotChangeableFormulaRow(IProductCmptTypeMethod formulaSignature) {
-        IPageElement[] cells = initCellsSize();
-        addFirstCellWithNotChangeable(cells, getContext().getLabel(formulaSignature));
-
-        IFormula formula = productCmpt.getFormula(formulaSignature.getFormulaName());
-        if (productCmpt.allowGenerations()) {
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                cells[i + 1] = new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(),
-                        getContext());
-            }
-        } else {
-            cells[1] = new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(), getContext());
-        }
-        return cells;
-    }
-
     private void addAssociations() {
         List<IAssociation> notDerivedUnionAssociations = new ArrayList<IAssociation>();
 
@@ -508,52 +465,32 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents));
+        addSubHeadline(
+                getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents));
 
         for (IAssociation association : notDerivedUnionAssociations) {
-            IPageElement[] cells = initCellsSize();
-            cells[0] = new PageElementUtils(getContext()).createIpsElementRepresentation(getContext(), association,
-                    getContext().getLabel(association), true);
-            if (productCmpt.allowGenerations()) {
-                for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                    IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+            IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
+            final String associationName = association.getName();
+            TableRowPageElement pageElement = addRow(productAssociation,
+                    new CellCreator<IProductCmptLinkContainer, IProductCmptTypeAssociation>() {
 
-                    if (productCmptGeneration.getLinks().length == 0) {
-                        cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
-                        continue;
-                    }
-
-                    cells[i + 1] = createAssociatedProductCmpts(productCmptGeneration, association);
-                }
-            } else {
-                cells[1] = createStaticAssociatedProductCmpts(association);
-            }
-            TableRowPageElement pageElement = new TableRowPageElement(cells, getContext());
-
-            pageElement.setId(association.getName());
-
-            addSubElement(pageElement);
+                        @Override
+                        public IPageElement createCell(IProductCmptLinkContainer container,
+                                IProductCmptTypeAssociation property) {
+                            return createAssociationCell(associationName, container);
+                        }
+                    });
+            pageElement.setId(associationName);
         }
-
     }
 
-    private IPageElement createAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
-            IAssociation association) {
+    private IPageElement createAssociationCell(final String associationName, IProductCmptLinkContainer container) {
         AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK, getContext());
-
-        List<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
-        if (productCmptGeneration != null) {
-            links = productCmptGeneration.getLinksAsList(association.getName());
-        } else {
-            links = productCmpt.getLinksAsList(association.getName());
-        }
-
+        List<IProductCmptLink> links = container.getLinksAsList(associationName);
         addProductCmptLinksToPageElements(cellContent, links);
-
         if (cellContent.isEmpty()) {
             cellContent.addPageElements(new TextPageElement(NOT_AVAILABLE, getContext()));
         }
-
         return cellContent;
     }
 
@@ -563,15 +500,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             try {
                 cellContent.addPageElements(createProductCmptLink(productCmptLink));
             } catch (CoreException e) {
-                getContext().addStatus(
-                        new IpsStatus(IStatus.ERROR,
-                                "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
+                getContext().addStatus(new IpsStatus(IStatus.ERROR,
+                        "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
             }
         }
-    }
-
-    private IPageElement createStaticAssociatedProductCmpts(IAssociation association) {
-        return createAssociatedProductCmpts(null, association);
     }
 
     private IPageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreException {
@@ -586,8 +518,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         IPageElement cardinalities = new TextPageElement(
                 productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
-                + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
-                + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
+                        + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
+                        + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", //$NON-NLS-1$
+                cardinalityStyles, getContext());
 
         return new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(targetLink, cardinalities);
     }
@@ -608,98 +541,57 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         return cardinality == Integer.MAX_VALUE ? "*" : Integer.toString(cardinality); //$NON-NLS-1$
     }
 
-    /**
-     * adds the row of an attribute with the value of all generations
-     * 
-     */
-    private void addAttributeRow(IAttribute attribute) {
-        IPageElement[] cells;
+    private void addValidationRules() {
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
 
-        if (((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
-            cells = createChangeableAttributeRow(attribute);
-        } else {
-            cells = createNotChangeableAttributeRow(attribute);
+        if (policyCmptType == null) {
+            return;
         }
-        addSubElement(new TableRowPageElement(cells, getContext()));
-    }
 
-    private IPageElement[] createNotChangeableAttributeRow(IAttribute attribute) {
-        IPageElement[] cells = initCellsSize();
-        String label = getContext().getLabel(attribute);
-
-        addFirstCellWithNotChangeable(cells, label);
-
-        IAttributeValue attributeValue = productCmpt.getAttributeValue(attribute.getName());
-        String value = getValueOfAttribute(attributeValue, attribute);
-
-        if (productCmpt.allowGenerations()) {
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                cells[i + 1] = new TextPageElement(value, getContext());
+        List<IValidationRule> validationRules = policyCmptType.findAllValidationRules(getContext().getIpsProject());
+        List<IValidationRule> productConfigurableValidationRules = new ArrayList<IValidationRule>();
+        for (IValidationRule validationRule : validationRules) {
+            if (validationRule.isConfigurableByProductComponent()) {
+                productConfigurableValidationRules.add(validationRule);
             }
-        } else {
-            cells[1] = new TextPageElement(value, getContext());
         }
-        return cells;
-    }
 
-    private void addFirstCellWithNotChangeable(IPageElement[] cells, String label) {
-        cells[0] = new WrapperPageElement(WrapperType.NONE, getContext()).addPageElements(
-                new TextPageElement(label, getContext()),
-                new TextPageElement(WHITE_SPACE, getContext()),
-                new TextPageElement(getContext().getMessage(
-                        HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), Collections
-                        .singleton(Style.SMALL), getContext()));
-    }
-
-    private IPageElement[] createChangeableAttributeRow(IAttribute attribute) {
-        IPageElement[] cells = initCellsSize();
-        cells[0] = new TextPageElement(getContext().getLabel(attribute), getContext());
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-            IAttributeValue attributeValue = productCmptGeneration.getAttributeValue(attribute.getName());
-
-            String value = getValueOfAttribute(attributeValue, attribute);
-            cells[i + 1] = new TextPageElement(value, getContext());
+        if (productConfigurableValidationRules.isEmpty()) {
+            return;
         }
-        return cells;
-    }
 
-    private String getValueOfAttribute(IAttributeValue attributeValue, IAttribute attribute) {
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRules));
 
-        String value;
-        value = getContext().getDatatypeFormatter().formatValue(
-                productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
-                attributeValue == null ? null : attributeValue.getPropertyValue());
-        return value;
-    }
-
-    @Override
-    protected List<String> getHeadline() {
-        return getHeadlineWithCategory(getContext().getMessage(
-                HtmlExportMessages.ProductGenerationAttributeTable_attributes));
-    }
-
-    private List<String> getHeadlineWithCategory(String productGenerationAttributeTableGenerationFrom) {
-        List<String> headline = new ArrayList<String>();
-
-        headline.add(productGenerationAttributeTableGenerationFrom);
-        if (productCmpt.allowGenerations()) {
-            addHeadlineForProductCmptWithGeneration(headline);
-        } else {
-            addHeadlineForProductCmptWithoutGeneration(headline);
+        for (IValidationRule validationRule : productConfigurableValidationRules) {
+            addValidationRulesRow(validationRule);
         }
-        return headline;
+
     }
 
-    private void addHeadlineForProductCmptWithGeneration(List<String> headline) {
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            headline.add(getContext().getSimpleDateFormat().format(
-                    productCmpt.getProductCmptGeneration(i).getValidFrom().getTime()));
-        }
+    private void addValidationRulesRow(IValidationRule validationRule) {
+        addRow(validationRule, new CellCreator<IValidationRuleConfigContainer, IValidationRule>() {
+
+            @Override
+            public IPageElement createCell(IValidationRuleConfigContainer validationRuleConfigContainer,
+                    IValidationRule validationRule) {
+                return createValidationRuleCell(validationRuleConfigContainer, validationRule);
+            }
+        });
     }
 
-    private void addHeadlineForProductCmptWithoutGeneration(List<String> headline) {
-        headline.add(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_values));
+    private IPageElement createValidationRuleCell(IValidationRuleConfigContainer validationRuleConfigContainer,
+            IValidationRule validationRule) {
+        IValidationRuleConfig validationRuleConfig = validationRuleConfigContainer
+                .getValidationRuleConfig(validationRule.getName());
+        TextPageElement textPageElement = new TextPageElement(
+                validationRuleConfig != null && validationRuleConfig.isActive()
+                        ? getContext()
+                                .getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRulesActive)
+                        : getContext()
+                                .getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRulesInactive),
+                TextType.BLOCK, getContext());
+        textPageElement.addStyles(Style.CENTER);
+        return textPageElement;
     }
 
     @Override
@@ -710,6 +602,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     @Override
     protected void createId() {
         setId(productCmpt.getName() + "_ProductGenerationAttributeTable"); //$NON-NLS-1$
+    }
+
+    private static interface CellCreator<C, P extends IChangingOverTimeProperty> {
+        public IPageElement createCell(C container, P property);
     }
 
 }
