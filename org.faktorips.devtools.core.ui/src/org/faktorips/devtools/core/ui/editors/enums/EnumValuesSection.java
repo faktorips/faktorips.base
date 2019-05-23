@@ -278,6 +278,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
         searchBar.setEnabled(true);
+        enableActions(changeable);
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {
@@ -458,6 +459,19 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
             renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
             resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, enumType);
+        }
+    }
+
+    private void enableActions(boolean enabled) {
+        newEnumValueAction.setEnabled(enabled);
+        deleteEnumValueAction.setEnabled(enabled);
+        moveEnumValueUpAction.setEnabled(enabled);
+        moveEnumValueDownAction.setEnabled(enabled);
+
+        if (enumTypeEditing) {
+            lockAndSyncLiteralNameAction.setEnabled(enabled);
+            renameLiteralNameRefactoringAction.setEnabled(enabled);
+            resetLiteralNamesAction.setEnabled(enabled);
         }
     }
 
