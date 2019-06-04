@@ -120,7 +120,7 @@
             type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-            defaultValue="true"
+            defaultValue="false"
             description="%generatePublishedInterfacesDescription"
             disableValue="true"
             label="%generatePublishedInterfacesLabel"
@@ -160,7 +160,7 @@
             type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-            defaultValue="joda"
+            defaultValue="java8"
             description="%localDateDatatypeHelperVariantDescription"
             disableValue="joda"
             label="%localDateDatatypeHelperVariantLabel"

@@ -174,7 +174,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean associationsInFormulas = false;
     private boolean enableMarkerEnums = true;
     private boolean businessFunctionsForValidationRules = false;
-    private boolean changingOverTimeDefault = true;
+    private boolean changingOverTimeDefault = false;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
 

@@ -498,15 +498,15 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testIsChangingOverTimeDefaultEnabled_default() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
-        assertTrue(props.isChangingOverTimeDefaultEnabled());
+        assertFalse(props.isChangingOverTimeDefaultEnabled());
     }
 
     @Test
     public void testIsChangingOverTimeDefaultEnabled() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setChangingOverTimeDefault(false);
+        props.setChangingOverTimeDefault(true);
 
-        assertFalse(props.isChangingOverTimeDefaultEnabled());
+        assertTrue(props.isChangingOverTimeDefaultEnabled());
     }
 
     @Test

@@ -43,6 +43,10 @@ public class IpsProjectBuilder {
 
     private IProjectDescription description;
 
+    // for backwards compatibility of existing tests, the default differs from the one in regular
+    // projects
+    private boolean changingOverTimeDefault = true;
+
     /**
      * Following methods can be overridden by subclasses of {@link AbstractIpsPluginTest}:
      * <ul>
@@ -96,6 +100,11 @@ public class IpsProjectBuilder {
         return this;
     }
 
+    public IpsProjectBuilder changingOverTimeDefault(boolean changingOverTime) {
+        changingOverTimeDefault = changingOverTime;
+        return this;
+    }
+
     public IIpsProject build() throws CoreException {
         return newIpsProject();
     }
@@ -115,6 +124,7 @@ public class IpsProjectBuilder {
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
         IIpsProjectProperties properties = ipsProject.getProperties();
 
+        properties.setChangingOverTimeDefault(changingOverTimeDefault);
         setProductCmptNamingStrategy(ipsProject, properties);
         addSupportedLanguages(properties);
         addPredefinedDatatypes(properties);
@@ -126,7 +136,7 @@ public class IpsProjectBuilder {
 
     private void setProductCmptNamingStrategy(IIpsProject ipsProject, IIpsProjectProperties properties) {
         IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategyFactory()
-        .newProductCmptNamingStrategy(ipsProject);
+                .newProductCmptNamingStrategy(ipsProject);
         properties.setProductCmptNamingStrategy(productCmptNamingStrategy);
     }
 
@@ -144,8 +154,8 @@ public class IpsProjectBuilder {
         // Add predefined datatypes
         if (predefinedDatatypes.size() > 0) {
             String[] projectDatatypes = properties.getPredefinedDatatypesUsed();
-            String[] newProjectDatatypes = Arrays.copyOf(projectDatatypes, projectDatatypes.length
-                    + predefinedDatatypes.size());
+            String[] newProjectDatatypes = Arrays.copyOf(projectDatatypes,
+                    projectDatatypes.length + predefinedDatatypes.size());
             for (int i = 0, j = projectDatatypes.length; i < predefinedDatatypes.size(); i++, j++) {
                 newProjectDatatypes[j] = predefinedDatatypes.get(i);
             }
