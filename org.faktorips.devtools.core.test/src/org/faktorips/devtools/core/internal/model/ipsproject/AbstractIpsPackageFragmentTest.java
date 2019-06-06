@@ -10,18 +10,31 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractIpsPackageFragmentTest {
@@ -42,7 +55,7 @@ public class AbstractIpsPackageFragmentTest {
     }
 
     @Test
-    public void testGetSubPackageName_defaultPackage() throws Exception {
+    public void testGetSubPackageName_DefaultPackage() throws Exception {
         when(abstractIpsPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
 
         String subPackageName = abstractIpsPackageFragment.getSubPackageName(MY_SUB_PACKAGE);
@@ -51,7 +64,7 @@ public class AbstractIpsPackageFragmentTest {
     }
 
     @Test
-    public void testGetSubPackageName_notmalPackage() throws Exception {
+    public void testGetSubPackageName_NormalPackage() throws Exception {
         when(abstractIpsPackageFragment.getName()).thenReturn(MY_PACKAGE);
 
         String subPackageName = abstractIpsPackageFragment.getSubPackageName(MY_SUB_PACKAGE);
@@ -60,7 +73,7 @@ public class AbstractIpsPackageFragmentTest {
     }
 
     @Test
-    public void testGetSubPackage_defaultPackage() throws Exception {
+    public void testGetSubPackage_DefaultPackage() throws Exception {
         when(abstractIpsPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
         IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
         when(ipsPackageFragmentRoot.getIpsPackageFragment(MY_SUB_PACKAGE)).thenReturn(subPackage);
@@ -71,7 +84,7 @@ public class AbstractIpsPackageFragmentTest {
     }
 
     @Test
-    public void testGetSubPackage_normalPackage() throws Exception {
+    public void testGetSubPackage_NormalPackage() throws Exception {
         when(abstractIpsPackageFragment.getName()).thenReturn(MY_PACKAGE);
         IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
         when(ipsPackageFragmentRoot.getIpsPackageFragment(MY_PACKAGE + IIpsPackageFragment.SEPARATOR + MY_SUB_PACKAGE))
@@ -80,6 +93,60 @@ public class AbstractIpsPackageFragmentTest {
         IIpsPackageFragment resultPackage = abstractIpsPackageFragment.getSubPackage(MY_SUB_PACKAGE);
 
         assertEquals(subPackage, resultPackage);
+    }
+
+    @Test
+    public void testGetParentIpsPackageFragment_DefaultPackage() {
+        when(abstractIpsPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
+
+        IIpsPackageFragment parentIpsPackageFragment = abstractIpsPackageFragment.getParentIpsPackageFragment();
+
+        assertThat(parentIpsPackageFragment, is(nullValue()));
+    }
+
+    @Test
+    public void testGetParentIpsPackageFragment_FirstLevelPackage() {
+        when(abstractIpsPackageFragment.getName()).thenReturn("first");
+        IIpsPackageFragment defaultPackage = mock(IIpsPackageFragment.class);
+        when(ipsPackageFragmentRoot.getDefaultIpsPackageFragment()).thenReturn(defaultPackage);
+
+        IIpsPackageFragment parentIpsPackageFragment = abstractIpsPackageFragment.getParentIpsPackageFragment();
+
+        assertThat(parentIpsPackageFragment, is(defaultPackage));
+    }
+
+    @Test
+    public void testGetParentIpsPackageFragment_SecondLevelPackage() {
+        when(ipsPackageFragmentRoot.getIpsPackageFragment(anyString())).then(new Answer<IIpsPackageFragment>() {
+
+            @Override
+            public IIpsPackageFragment answer(InvocationOnMock invocation) throws Throwable {
+                return new IpsPackageFragment(ipsPackageFragmentRoot, (String)invocation.getArguments()[0]);
+            }
+        });
+        abstractIpsPackageFragment = new IpsPackageFragment(ipsPackageFragmentRoot, "first.second");
+
+        IIpsPackageFragment parentIpsPackageFragment = abstractIpsPackageFragment.getParentIpsPackageFragment();
+
+        assertThat(parentIpsPackageFragment.getParent(), is((IIpsElement)ipsPackageFragmentRoot));
+        assertThat(parentIpsPackageFragment.getName(), is("first"));
+    }
+
+    @Test
+    public void testGetParentIpsPackageFragment_SecondLevelPackage_SameType() throws CoreException {
+        IIpsProjectNamingConventions namingConventions = mock(IIpsProjectNamingConventions.class);
+        when(namingConventions.validateIpsPackageName(anyString())).thenReturn(new MessageList());
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(ipsProject.getNamingConventions()).thenReturn(namingConventions);
+        ipsPackageFragmentRoot = new LibraryIpsPackageFragmentRoot(ipsProject, mock(IIpsStorage.class));
+        abstractIpsPackageFragment = new LibraryIpsPackageFragment(
+                (LibraryIpsPackageFragmentRoot)ipsPackageFragmentRoot, "first.second");
+
+        IIpsPackageFragment parentIpsPackageFragment = abstractIpsPackageFragment.getParentIpsPackageFragment();
+
+        assertThat(parentIpsPackageFragment.getParent(), is((IIpsElement)ipsPackageFragmentRoot));
+        assertThat(parentIpsPackageFragment.getName(), is("first"));
+        assertThat(parentIpsPackageFragment, is(instanceOf(LibraryIpsPackageFragment.class)));
     }
 
 }

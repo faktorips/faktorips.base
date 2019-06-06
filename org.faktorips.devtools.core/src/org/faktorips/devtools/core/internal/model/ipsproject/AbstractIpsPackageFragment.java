@@ -65,7 +65,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
             }
         } else {
             String parentPath = getName().substring(0, lastIndex);
-            return new IpsPackageFragment(getParent(), parentPath);
+            return getRoot().getIpsPackageFragment(parentPath);
         }
     }
 
