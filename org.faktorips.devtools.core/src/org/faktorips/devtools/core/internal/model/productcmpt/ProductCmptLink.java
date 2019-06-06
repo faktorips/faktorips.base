@@ -603,7 +603,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     public boolean isConfiguringPolicyAssociation() {
         try {
             IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
-            return productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
+            return productAsssociation != null
+                    && productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

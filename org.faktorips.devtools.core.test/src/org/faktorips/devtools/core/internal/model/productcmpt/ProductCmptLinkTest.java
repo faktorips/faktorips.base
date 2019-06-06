@@ -765,7 +765,20 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         IProductCmptLink nonConfiguringLink = gen.newLink("CoverageType");
 
         assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
+    }
 
+    @Test
+    public void testIsConfiguringPolicyAssociation_ProductCmptTypeNotFound() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
+        IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        IProductCmpt cmpt = newProductCmpt(type, "NonConfiguringComponent");
+        IProductCmptGeneration gen = cmpt.getProductCmptGeneration(0);
+        IProductCmptLink nonConfiguringLink = gen.newLink("CoverageType");
+        cmpt.setProductCmptType("NonExistant");
+
+        assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
     }
 
 }
