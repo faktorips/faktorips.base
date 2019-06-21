@@ -524,7 +524,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
         }
         Object[] replacements = new Object[] { e.currentToken.next.toString(),
-                new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
+                Integer.valueOf(e.currentToken.next.beginLine), Integer.valueOf(e.currentToken.next.beginColumn), expected };
         return newCompilationResultImpl(Message.newError(SYNTAX_ERROR,
                 LOCALIZED_STRINGS.getString(SYNTAX_ERROR, getLocale(), replacements)));
     }

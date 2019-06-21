@@ -136,8 +136,8 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                 IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(j);
                 if (cell == null) {
                     Object[] objects = new Object[3];
-                    objects[0] = new Integer(i);
-                    objects[1] = new Integer(j);
+                    objects[0] = Integer.valueOf(i);
+                    objects[1] = Integer.valueOf(j);
                     objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                     String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$

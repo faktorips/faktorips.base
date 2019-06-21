@@ -269,10 +269,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         for (Object name : msgList) {
             Message msg = (Message)name;
             if (msg.getSeverity() == Message.ERROR) {
-                msgTexts.put(msg.getText(), new Integer(IMarker.SEVERITY_ERROR));
+                msgTexts.put(msg.getText(), Integer.valueOf(IMarker.SEVERITY_ERROR));
             }
             if (msg.getSeverity() == Message.WARNING) {
-                msgTexts.put(msg.getText(), new Integer(IMarker.SEVERITY_WARNING));
+                msgTexts.put(msg.getText(), Integer.valueOf(IMarker.SEVERITY_WARNING));
             }
         }
         for (IMarker marker : markers) {
@@ -1096,11 +1096,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         verify(manifestFile, times(3)).createMarker(IpsPlugin.PROBLEM_MARKER);
 
         verify(marker2222).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
-                new Object[] { "2222", new Integer(IMarker.SEVERITY_ERROR) });
+                new Object[] { "2222", Integer.valueOf(IMarker.SEVERITY_ERROR) });
         verify(marker3333).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
-                new Object[] { "3333", new Integer(IMarker.SEVERITY_ERROR) });
+                new Object[] { "3333", Integer.valueOf(IMarker.SEVERITY_ERROR) });
         verify(marker4444).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
-                new Object[] { "4444", new Integer(IMarker.SEVERITY_ERROR) });
+                new Object[] { "4444", Integer.valueOf(IMarker.SEVERITY_ERROR) });
     }
 
     @Test
@@ -1134,11 +1134,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         verify(propertiesFile, atLeast(3)).createMarker(IpsPlugin.PROBLEM_MARKER);
 
         verify(marker1111).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
-                new Object[] { "1111", new Integer(IMarker.SEVERITY_ERROR) });
+                new Object[] { "1111", Integer.valueOf(IMarker.SEVERITY_ERROR) });
         verify(marker5555).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
-                new Object[] { "5555", new Integer(IMarker.SEVERITY_ERROR) });
+                new Object[] { "5555", Integer.valueOf(IMarker.SEVERITY_ERROR) });
         verify(markerNoManifestMf).setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
                 new Object[] { NLS.bind(Messages.IpsBuilder_missingManifestMf, IpsBundleManifest.MANIFEST_NAME),
-                        new Integer(IMarker.SEVERITY_ERROR) });
+                        Integer.valueOf(IMarker.SEVERITY_ERROR) });
     }
 }

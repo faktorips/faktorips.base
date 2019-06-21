@@ -286,7 +286,7 @@ public class TestCaseTypeSection extends IpsSection {
          * Returns the key identifier for the given object
          */
         private Integer getKeyFor(IIpsObjectPart object) {
-            return new Integer(System.identityHashCode(object));
+            return Integer.valueOf(System.identityHashCode(object));
         }
 
         /**
@@ -304,7 +304,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public void putAttributeIdx(ITestAttribute attribute, int idx) {
-            attributeIdx.put(getKeyFor(attribute), new Integer(idx));
+            attributeIdx.put(getKeyFor(attribute), Integer.valueOf(idx));
             sectionObjects.put(getKeyFor(attribute), attribute);
         }
 
@@ -2032,7 +2032,7 @@ public class TestCaseTypeSection extends IpsSection {
         List<ITestAttribute> newAttributeIdx = new ArrayList<ITestAttribute>(selectedAttributes.size());
         if (attrTable != null) {
             for (int movedAttributesIndexe : movedAttributesIndexes) {
-                ITestAttribute movedAttribute = objectCache.getAttributeByIndex(new Integer(movedAttributesIndexe));
+                ITestAttribute movedAttribute = objectCache.getAttributeByIndex(Integer.valueOf(movedAttributesIndexe));
                 if (movedAttribute != null) {
                     newAttributeIdx.add(movedAttribute);
                 }

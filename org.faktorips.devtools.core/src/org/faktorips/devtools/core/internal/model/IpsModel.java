@@ -595,9 +595,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public void stopBroadcastingChangesMadeByCurrentThread() {
         Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
         if (level == null) {
-            level = new Integer(1);
+            level = Integer.valueOf(1);
         } else {
-            level = new Integer(level.intValue() + 1);
+            level = Integer.valueOf(level.intValue() + 1);
         }
         listenerNoticicationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
@@ -617,7 +617,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public void resumeBroadcastingChangesMadeByCurrentThread() {
         Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
         if (level != null && level.intValue() > 0) {
-            level = new Integer(level.intValue() - 1);
+            level = Integer.valueOf(level.intValue() - 1);
         }
         listenerNoticicationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {

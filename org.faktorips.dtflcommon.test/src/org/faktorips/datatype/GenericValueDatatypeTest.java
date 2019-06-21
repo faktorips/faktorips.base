@@ -106,7 +106,7 @@ public class GenericValueDatatypeTest {
 
         datatype = new DefaultGenericValueDatatype(TestValueClass.class);
         datatype.setValueOfMethodName("getInteger"); //$NON-NLS-1$
-        assertEquals(new Integer(42), datatype.getValue("42")); //$NON-NLS-1$
+        assertEquals(Integer.valueOf(42), datatype.getValue("42")); //$NON-NLS-1$
         assertNull(datatype.getValue(null));
     }
 
@@ -198,8 +198,8 @@ public class GenericValueDatatypeTest {
     public void shouldCompareValuesOfEqualClasses() {
         datatype = spy(new DefaultGenericValueDatatype());
 
-        doReturn(new Integer(5)).when(datatype).getValue("5");
-        doReturn(new Integer(0)).when(datatype).getValue("0");
+        doReturn(Integer.valueOf(5)).when(datatype).getValue("5");
+        doReturn(Integer.valueOf(0)).when(datatype).getValue("0");
         doReturn(true).when(datatype).supportsCompare();
         int compare = datatype.compare("5", "0");
         assertEquals(1, compare);
@@ -211,8 +211,8 @@ public class GenericValueDatatypeTest {
     public void shouldNotCompareValuesOfDifferentClasses() {
         datatype = spy(new DefaultGenericValueDatatype());
 
-        doReturn(new Integer(5)).when(datatype).getValue("5");
-        doReturn(new Double(0)).when(datatype).getValue("0");
+        doReturn(Integer.valueOf(5)).when(datatype).getValue("5");
+        doReturn(Double.valueOf(0)).when(datatype).getValue("0");
         doReturn(true).when(datatype).supportsCompare();
         datatype.compare("5", "0");
     }

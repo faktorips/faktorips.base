@@ -116,7 +116,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         int maxCardinality = association.getMaxCardinality();
         if (maxCardinality < relations.size()) {
             String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-            Object[] params = { new Integer(relations.size()), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
+            Object[] params = { Integer.valueOf(relations.size()), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
             String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
             ObjectProperty prop1 = new ObjectProperty(this, null);
             ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
@@ -139,7 +139,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             MessageList messageList,
             int minCardinality) {
         String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-        Object[] params = { new Integer(relations.size()), associationLabel, new Integer(minCardinality) };
+        Object[] params = { Integer.valueOf(relations.size()), associationLabel, Integer.valueOf(minCardinality) };
         String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
         ObjectProperty prop1 = new ObjectProperty(this, null);
         ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);

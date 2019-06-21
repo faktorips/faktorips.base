@@ -74,10 +74,10 @@ public class DecimalTest {
     @Test
     public void testValueOfInteger() {
         Decimal expected = Decimal.valueOf("42");
-        assertEquals(expected, Decimal.valueOf(new Integer(42)));
+        assertEquals(expected, Decimal.valueOf(Integer.valueOf(42)));
 
         expected = Decimal.valueOf("-42");
-        assertEquals(expected, Decimal.valueOf(new Integer(-42)));
+        assertEquals(expected, Decimal.valueOf(Integer.valueOf(-42)));
 
         assertTrue(Decimal.valueOf((Integer)null).isNull());
     }
@@ -176,10 +176,10 @@ public class DecimalTest {
     @Test
     public void testAdd_Integer() {
         Decimal d1 = Decimal.valueOf("1.340");
-        assertEquals(Decimal.valueOf("3.340"), d1.add(new Integer(2)));
+        assertEquals(Decimal.valueOf("3.340"), d1.add(Integer.valueOf(2)));
 
         assertTrue(d1.add((Integer)null).isNull());
-        assertTrue(Decimal.NULL.add(new Integer(2)).isNull());
+        assertTrue(Decimal.NULL.add(Integer.valueOf(2)).isNull());
     }
 
     @Test
@@ -225,10 +225,10 @@ public class DecimalTest {
     @Test
     public void testMultiply_Integer() {
         Decimal d1 = Decimal.valueOf("1.1");
-        assertEquals(Decimal.valueOf("2.2"), d1.multiply(new Integer(2)));
+        assertEquals(Decimal.valueOf("2.2"), d1.multiply(Integer.valueOf(2)));
 
         assertTrue(d1.multiply((Integer)null).isNull());
-        assertTrue(Decimal.NULL.multiply(new Integer(2)).isNull());
+        assertTrue(Decimal.NULL.multiply(Integer.valueOf(2)).isNull());
     }
 
     @Test

@@ -40,8 +40,8 @@ public class BooleanValueConverter extends AbstractValueConverter {
                     messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(dataValue,
                             externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName()));
                 } else {
-                    messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(dataValue,
-                            dataValue));
+                    messageList.add(
+                            ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(dataValue, dataValue));
                 }
                 return dataValue;
             }
@@ -53,7 +53,7 @@ public class BooleanValueConverter extends AbstractValueConverter {
         if (ipsValue == null) {
             return null;
         }
-        return new Boolean(ipsValue);
+        return Boolean.valueOf(ipsValue);
     }
 
     @Override

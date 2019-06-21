@@ -55,7 +55,7 @@ public class DoubleValueConverter extends AbstractValueConverter {
             return null;
         }
         if (ipsValue.length() == 0) {
-            return new Double(0);
+            return Double.valueOf(0);
         }
         try {
             return Double.valueOf(ipsValue);

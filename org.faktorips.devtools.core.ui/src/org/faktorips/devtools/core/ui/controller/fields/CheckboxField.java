@@ -34,7 +34,7 @@ public class CheckboxField extends DefaultEditField<Boolean> {
 
     @Override
     public Boolean parseContent() {
-        return new Boolean(checkbox.isChecked());
+        return checkbox.isChecked();
     }
 
     @Override

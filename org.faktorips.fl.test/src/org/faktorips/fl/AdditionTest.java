@@ -50,25 +50,25 @@ public class AdditionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntInt() throws Exception {
-        execAndTestSuccessfull("7 + 3", new Integer(10), Datatype.INTEGER);
+        execAndTestSuccessfull("7 + 3", Integer.valueOf(10), Datatype.INTEGER);
     }
 
     @Test
     public void testIntInteger() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("7 + WHOLENUMBER(3)", new Integer(10), Datatype.INTEGER);
+        execAndTestSuccessfull("7 + WHOLENUMBER(3)", Integer.valueOf(10), Datatype.INTEGER);
     }
 
     @Test
     public void testIntegerInt() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("WHOLENUMBER(3) + 7", new Integer(10), Datatype.INTEGER);
+        execAndTestSuccessfull("WHOLENUMBER(3) + 7", Integer.valueOf(10), Datatype.INTEGER);
     }
 
     @Test
     public void testIntegerInteger() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("WHOLENUMBER(7) + WHOLENUMBER(3)", new Integer(10), Datatype.INTEGER);
+        execAndTestSuccessfull("WHOLENUMBER(7) + WHOLENUMBER(3)", Integer.valueOf(10), Datatype.INTEGER);
     }
 
     @Test

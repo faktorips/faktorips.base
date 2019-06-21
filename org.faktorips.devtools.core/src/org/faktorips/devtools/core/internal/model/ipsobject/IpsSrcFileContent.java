@@ -328,7 +328,7 @@ public class IpsSrcFileContent {
                     if (modStampsAfterSave == null) {
                         modStampsAfterSave = new ArrayList<Long>(1);
                     }
-                    modStampsAfterSave.add(new Long(modificationStamp));
+                    modStampsAfterSave.add(Long.valueOf(modificationStamp));
                     markAsUnmodified();
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                         System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
@@ -356,7 +356,7 @@ public class IpsSrcFileContent {
         if (modStampsAfterSave == null) {
             return false;
         }
-        boolean rc = modStampsAfterSave.remove(new Long(modStamp));
+        boolean rc = modStampsAfterSave.remove(Long.valueOf(modStamp));
         if (modStampsAfterSave.size() == 0) {
             modStampsAfterSave = null;
         }

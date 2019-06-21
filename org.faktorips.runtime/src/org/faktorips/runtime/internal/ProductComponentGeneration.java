@@ -248,7 +248,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         String maxStr = relationElement.getAttribute("maxCardinality");
         Integer maxCardinality = null;
         if ("*".equals(maxStr) || "n".equals(maxStr.toLowerCase())) {
-            maxCardinality = new Integer(Integer.MAX_VALUE);
+            maxCardinality = Integer.valueOf(Integer.MAX_VALUE);
         } else {
             maxCardinality = Integer.valueOf(maxStr);
         }

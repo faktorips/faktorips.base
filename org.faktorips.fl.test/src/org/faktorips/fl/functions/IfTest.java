@@ -33,8 +33,8 @@ public class IfTest extends FunctionAbstractTest {
         registerFunction(new BooleanFct("TRUEOBJ", Boolean.TRUE));
         registerFunction(new BooleanFct("FALSEOBJ", Boolean.FALSE));
         execAndTestSuccessfull("IF(1=1; 2.1; 3.2)", Decimal.valueOf("2.1"), Datatype.DECIMAL);
-        execAndTestSuccessfull("IF(TRUEOBJ(); 2; 3)", new Integer(2), Datatype.INTEGER);
-        execAndTestSuccessfull("IF(FALSEOBJ(); 2; 3)", new Integer(3), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(TRUEOBJ(); 2; 3)", Integer.valueOf(2), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(FALSEOBJ(); 2; 3)", Integer.valueOf(3), Datatype.INTEGER);
     }
 
     @Test
@@ -62,14 +62,14 @@ public class IfTest extends FunctionAbstractTest {
 
     @Test
     public void testInt() throws Exception {
-        execAndTestSuccessfull("IF(1=1; 2; 3)", new Integer(2), Datatype.INTEGER);
-        execAndTestSuccessfull("IF(1=2; 2; 3)", new Integer(3), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; 2; 3)", Integer.valueOf(2), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=2; 2; 3)", Integer.valueOf(3), Datatype.INTEGER);
     }
 
     @Test
     public void testInteger() throws Exception {
-        execAndTestSuccessfull("IF(1=1; 2; 3)", new Integer(2), Datatype.INTEGER);
-        execAndTestSuccessfull("IF(1=2; 2; 3)", new Integer(3), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; 2; 3)", Integer.valueOf(2), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=2; 2; 3)", Integer.valueOf(3), Datatype.INTEGER);
     }
 
     @Test
@@ -86,10 +86,10 @@ public class IfTest extends FunctionAbstractTest {
 
     @Test
     public void testCombinations() throws Exception {
-        execAndTestSuccessfull("IF(1=1; 2; 3) + 1", new Integer(3), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; 2; 3) + 1", Integer.valueOf(3), Datatype.INTEGER);
         execAndTestSuccessfull("IF(1=1; 2.1 + 1; 3) + 2", Decimal.valueOf("5.1"), Datatype.DECIMAL);
-        execAndTestSuccessfull("IF(1=1; 2; 3) + 10 + IF(1=2; 2; 3) ", new Integer(15), Datatype.INTEGER);
-        execAndTestSuccessfull("IF(1=1; IF(1=2; 2; 30); 3) + 1", new Integer(31), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; 2; 3) + 10 + IF(1=2; 2; 3) ", Integer.valueOf(15), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; IF(1=2; 2; 30); 3) + 1", Integer.valueOf(31), Datatype.INTEGER);
     }
 
 }

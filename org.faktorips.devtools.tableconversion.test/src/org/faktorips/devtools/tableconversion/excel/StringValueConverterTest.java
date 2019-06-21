@@ -32,7 +32,7 @@ public class StringValueConverterTest {
         assertTrue(Datatype.STRING.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Long(Long.MAX_VALUE), ml);
+        value = converter.getIpsValue(Long.valueOf(Long.MAX_VALUE), ml);
         assertTrue(Datatype.STRING.isParsable(value));
         assertTrue(ml.isEmpty());
     }

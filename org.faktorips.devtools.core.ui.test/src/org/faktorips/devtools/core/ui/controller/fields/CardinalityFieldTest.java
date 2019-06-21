@@ -43,12 +43,12 @@ public class CardinalityFieldTest {
         field.setText("1");
         assertEquals("1", field.getText());
         assertTrue(field.isTextContentParsable());
-        assertEquals(new Integer(1), field.getValue());
+        assertEquals(Integer.valueOf(1), field.getValue());
 
         field.setText("*");
         assertEquals("*", field.getText());
         assertTrue(field.isTextContentParsable());
-        assertEquals(new Integer(Integer.MAX_VALUE), field.getValue());
+        assertEquals(Integer.valueOf(Integer.MAX_VALUE), field.getValue());
 
         field.setText("a");
         assertEquals("a", field.getText());
@@ -61,15 +61,15 @@ public class CardinalityFieldTest {
         Text text = new Text(shell, SWT.NONE);
         CardinalityField field = new CardinalityField(text);
 
-        field.setValue(new Integer(1));
+        field.setValue(Integer.valueOf(1));
         assertEquals("1", field.getText());
         assertTrue(field.isTextContentParsable());
-        assertEquals(new Integer(1), field.getValue());
+        assertEquals(Integer.valueOf(1), field.getValue());
 
-        field.setValue(new Integer(Integer.MAX_VALUE));
+        field.setValue(Integer.valueOf(Integer.MAX_VALUE));
         assertEquals("*", field.getText());
         assertTrue(field.isTextContentParsable());
-        assertEquals(new Integer(Integer.MAX_VALUE), field.getValue());
+        assertEquals(Integer.valueOf(Integer.MAX_VALUE), field.getValue());
     }
 
 }

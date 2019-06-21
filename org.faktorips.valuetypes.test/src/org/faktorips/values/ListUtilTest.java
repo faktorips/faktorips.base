@@ -25,9 +25,9 @@ public class ListUtilTest {
     @Before
     public void setUp() {
         objectList = new ArrayList<Object>();
-        objectList.add(new Integer(3));
-        objectList.add(new Integer(5));
-        objectList.add(new Integer(8));
+        objectList.add(Integer.valueOf(3));
+        objectList.add(Integer.valueOf(5));
+        objectList.add(Integer.valueOf(8));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ListUtilTest {
 
     @Test
     public void testConvert_differentElementTypes() {
-        objectList.add(new Long(15));
+        objectList.add(Long.valueOf(15));
 
         List<? extends Number> numberList = ListUtil.convert(objectList, Number.class);
 
@@ -54,7 +54,7 @@ public class ListUtilTest {
 
     @Test(expected = ClassCastException.class)
     public void testConvert_classCastException() {
-        objectList.add(new Long(15));
+        objectList.add(Long.valueOf(15));
         ListUtil.convert(objectList, Integer.class);
     }
 

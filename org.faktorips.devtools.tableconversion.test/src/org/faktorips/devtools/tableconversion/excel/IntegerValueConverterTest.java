@@ -29,15 +29,15 @@ public class IntegerValueConverterTest {
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         IntegerValueConverter converter = new IntegerValueConverter();
-        String value = converter.getIpsValue(new Integer(1234), ml);
+        String value = converter.getIpsValue(Integer.valueOf(1234), ml);
         assertTrue(Datatype.INTEGER.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Integer(Integer.MAX_VALUE), ml);
+        value = converter.getIpsValue(Integer.valueOf(Integer.MAX_VALUE), ml);
         assertTrue(Datatype.INTEGER.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Integer(Integer.MIN_VALUE), ml);
+        value = converter.getIpsValue(Integer.valueOf(Integer.MIN_VALUE), ml);
         assertTrue(Datatype.INTEGER.isParsable(value));
         assertTrue(ml.isEmpty());
 
@@ -46,9 +46,9 @@ public class IntegerValueConverterTest {
         assertEquals("0", value);
 
         ml.clear();
-        value = converter.getIpsValue(new Double(Double.MAX_VALUE), ml);
+        value = converter.getIpsValue(Double.valueOf(Double.MAX_VALUE), ml);
         assertFalse(ml.isEmpty());
-        assertEquals(new Double(Double.MAX_VALUE).toString(), value);
+        assertEquals(Double.valueOf(Double.MAX_VALUE).toString(), value);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class IntegerValueConverterTest {
         assertFalse(Datatype.INTEGER.isParsable(INVALID));
 
         Object value = converter.getExternalDataValue(VALID, ml);
-        assertEquals(new Integer(1234), value);
+        assertEquals(Integer.valueOf(1234), value);
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(null, ml);

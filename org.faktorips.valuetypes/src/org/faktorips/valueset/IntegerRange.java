@@ -100,7 +100,7 @@ public class IntegerRange extends DefaultRange<Integer> {
      * @param step the step increment of this range.
      */
     public static IntegerRange valueOf(Integer lower, Integer upper, int step) {
-        return valueOf(lower, upper, new Integer(step), false);
+        return valueOf(lower, upper, Integer.valueOf(step), false);
     }
 
     @Override

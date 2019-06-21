@@ -20,7 +20,7 @@ public class WholeNumberTest extends FunctionAbstractTest {
     @Test
     public void test() throws Exception {
         registerFunction(new WholeNumber("WHOLENUMBER", ""));
-        execAndTestSuccessfull("WHOLENUMBER(3.24)", new Integer(3), Datatype.INTEGER);
-        execAndTestSuccessfull("WHOLENUMBER(-3.24)", new Integer(-3), Datatype.INTEGER);
+        execAndTestSuccessfull("WHOLENUMBER(3.24)", Integer.valueOf(3), Datatype.INTEGER);
+        execAndTestSuccessfull("WHOLENUMBER(-3.24)", Integer.valueOf(-3), Datatype.INTEGER);
     }
 }

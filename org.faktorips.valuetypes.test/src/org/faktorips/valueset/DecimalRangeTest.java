@@ -41,22 +41,22 @@ public class DecimalRangeTest {
 
     @Test
     public void testConstructorWithStep() {
-        DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
+        DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
                 Decimal.valueOf(10, 0));
         DecimalRange.valueOf(Decimal.valueOf(135, 2), Decimal.valueOf(108, 1), Decimal.valueOf(135, 2));
 
         try {
             // step doesn't fit to range
-            DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
-                    Decimal.valueOf(new Integer(12)));
+            DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
+                    Decimal.valueOf(Integer.valueOf(12)));
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
 
         try {
-            DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
-                    Decimal.valueOf(new Integer(0)));
+            DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
+                    Decimal.valueOf(Integer.valueOf(0)));
             fail("Expect to fail since a step size of zero is not allowed.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
@@ -65,18 +65,18 @@ public class DecimalRangeTest {
 
     @Test
     public void testContains() {
-        DecimalRange range = new DecimalRange(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)));
-        assertTrue(range.contains(Decimal.valueOf(new Integer(30))));
-        assertFalse(range.contains(Decimal.valueOf(new Integer(120))));
-        assertFalse(range.contains(Decimal.valueOf(new Integer(5))));
+        DecimalRange range = new DecimalRange(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)));
+        assertTrue(range.contains(Decimal.valueOf(Integer.valueOf(30))));
+        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(120))));
+        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(5))));
 
-        range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)), Decimal.NULL);
-        assertTrue(range.contains(Decimal.valueOf(new Integer(30))));
-        assertFalse(range.contains(Decimal.valueOf(new Integer(120))));
-        assertFalse(range.contains(Decimal.valueOf(new Integer(5))));
+        range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)), Decimal.NULL);
+        assertTrue(range.contains(Decimal.valueOf(Integer.valueOf(30))));
+        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(120))));
+        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(5))));
 
-        range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
-                Decimal.valueOf(new Integer(10)));
+        range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
+                Decimal.valueOf(Integer.valueOf(10)));
 
         assertTrue(range.contains(Decimal.valueOf(30, 0)));
         assertFalse(range.contains(Decimal.valueOf(35, 0)));
@@ -84,7 +84,7 @@ public class DecimalRangeTest {
 
     @Test
     public void testGetValues() {
-        DecimalRange range = new DecimalRange(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)));
+        DecimalRange range = new DecimalRange(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)));
         try {
             range.getValues(false);
             fail();
@@ -92,7 +92,7 @@ public class DecimalRangeTest {
             // Expected exception.
         }
 
-        range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)), Decimal.NULL);
+        range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)), Decimal.NULL);
         try {
             range.getValues(false);
             fail();
@@ -100,7 +100,7 @@ public class DecimalRangeTest {
             // Expected exception.
         }
 
-        range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), null, Decimal.valueOf(new Integer(10)));
+        range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), null, Decimal.valueOf(Integer.valueOf(10)));
 
         try {
             range.getValues(false);
@@ -109,8 +109,8 @@ public class DecimalRangeTest {
             // Expected exception.
         }
 
-        range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
-                Decimal.valueOf(new Integer(10)));
+        range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
+                Decimal.valueOf(Integer.valueOf(10)));
 
         Set<Decimal> values = range.getValues(false);
         assertEquals(10, values.size());
@@ -119,8 +119,8 @@ public class DecimalRangeTest {
         assertTrue(values.contains(Decimal.valueOf(70, 0)));
         assertTrue(values.contains(Decimal.valueOf(10, 0)));
 
-        range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
-                Decimal.valueOf(new Integer(10)), true);
+        range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
+                Decimal.valueOf(Integer.valueOf(10)), true);
         values = range.getValues(false);
         assertEquals(11, values.size());
 
@@ -132,8 +132,8 @@ public class DecimalRangeTest {
 
     @Test
     public void testSerializable() throws Exception {
-        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
-                Decimal.valueOf(new Integer(10)), true);
+        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
+                Decimal.valueOf(Integer.valueOf(10)), true);
         TestUtil.testSerializable(range);
     }
 

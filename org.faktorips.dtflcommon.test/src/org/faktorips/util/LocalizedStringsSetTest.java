@@ -33,7 +33,7 @@ public class LocalizedStringsSetTest {
     public void testGetLocalizedStringStringLocaleObjectArray() {
         GregorianCalendar calendar = new GregorianCalendar(2004, 11, 20);
         Date date = calendar.getTime();
-        Double x = new Double(9.34);
+        Double x = Double.valueOf(9.34);
         Object[] replacements = new Object[] { date, x };
 
         assertEquals("Date=12/20/04, x=9.34", set.getString("replacements", Locale.ENGLISH, replacements)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -42,8 +42,8 @@ public class LocalizedStringsSetTest {
 
     @Test
     public void testGetLocalizedStringStringLocaleObject() {
-        assertEquals("The answer is 42", set.getString("singleReplacement", Locale.ENGLISH, new Integer(42))); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("Die Antwort ist 42", set.getString("singleReplacement", Locale.GERMAN, new Integer(42))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("The answer is 42", set.getString("singleReplacement", Locale.ENGLISH, Integer.valueOf(42))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("Die Antwort ist 42", set.getString("singleReplacement", Locale.GERMAN, Integer.valueOf(42))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test

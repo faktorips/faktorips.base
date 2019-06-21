@@ -24,7 +24,7 @@ public abstract class AbstractCardinalityField extends DefaultEditField<Integer>
     public Integer parseContent() {
         String text = getText();
         if ("*".equals(text)) { //$NON-NLS-1$
-            return new Integer(Integer.MAX_VALUE);
+            return Integer.valueOf(Integer.MAX_VALUE);
         } else {
             return Integer.valueOf(text);
         }

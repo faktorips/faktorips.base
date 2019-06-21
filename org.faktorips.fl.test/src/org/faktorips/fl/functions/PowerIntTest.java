@@ -18,10 +18,10 @@ public class PowerIntTest extends FunctionAbstractTest {
     @Test
     public void testCompile() throws Exception {
         registerFunction(new PowerInt("POWER", ""));
-        execAndTestSuccessfull("POWER(2; 3)", new Integer(8), Datatype.INTEGER);
-        execAndTestSuccessfull("POWER(4; 2)", new Integer(16), Datatype.INTEGER);
-        execAndTestSuccessfull("POWER(4; 0)", new Integer(1), Datatype.INTEGER);
-        execAndTestSuccessfull("POWER(0; 2)", new Integer(0), Datatype.INTEGER);
+        execAndTestSuccessfull("POWER(2; 3)", Integer.valueOf(8), Datatype.INTEGER);
+        execAndTestSuccessfull("POWER(4; 2)", Integer.valueOf(16), Datatype.INTEGER);
+        execAndTestSuccessfull("POWER(4; 0)", Integer.valueOf(1), Datatype.INTEGER);
+        execAndTestSuccessfull("POWER(0; 2)", Integer.valueOf(0), Datatype.INTEGER);
     }
 
 }

@@ -116,9 +116,9 @@ public class EnumExportPage extends IpsObjectExportPage {
             boolean includeLiteralName = enumValueContainer instanceof IEnumType;
             if (enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName) > MAX_EXCEL_COLUMNS) {
                 Object[] objects = new Object[3];
-                objects[0] = new Integer(enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName));
+                objects[0] = Integer.valueOf(enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName));
                 objects[1] = enumType;
-                objects[2] = new Short(MAX_EXCEL_COLUMNS);
+                objects[2] = Short.valueOf(MAX_EXCEL_COLUMNS);
                 String text = NLS.bind(Messages.EnumExportPage_msgEnumHasTooManyColumns, objects);
                 setErrorMessage(text);
             }

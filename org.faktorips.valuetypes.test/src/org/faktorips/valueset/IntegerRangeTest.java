@@ -33,22 +33,22 @@ public class IntegerRangeTest {
         IntegerRange range = new IntegerRange(5, 10);
         assertEquals(6, range.size());
 
-        range = new IntegerRange(null, new Integer(10));
+        range = new IntegerRange(null, Integer.valueOf(10));
         assertEquals(Integer.MAX_VALUE, range.size());
 
-        range = new IntegerRange(new Integer(10), null);
+        range = new IntegerRange(Integer.valueOf(10), null);
         assertEquals(Integer.MAX_VALUE, range.size());
 
         range = new IntegerRange(null, null);
         assertEquals(Integer.MAX_VALUE, range.size());
 
-        range = IntegerRange.valueOf(new Integer(0), new Integer(100), 10);
+        range = IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), 10);
         assertEquals(11, range.size());
 
-        range = IntegerRange.valueOf(null, new Integer(100), 10);
+        range = IntegerRange.valueOf(null, Integer.valueOf(100), 10);
         assertEquals(Integer.MAX_VALUE, range.size());
 
-        range = IntegerRange.valueOf(new Integer(10), null, 10);
+        range = IntegerRange.valueOf(Integer.valueOf(10), null, 10);
         assertEquals(Integer.MAX_VALUE, range.size());
 
     }
@@ -59,19 +59,19 @@ public class IntegerRangeTest {
         assertEquals(new IntegerRange(null, null), IntegerRange.valueOf("", ""));
         assertEquals(new IntegerRange(null, null), IntegerRange.valueOf((String)null, (String)null));
 
-        IntegerRange.valueOf(new Integer(0), new Integer(100), new Integer(0), false);
+        IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), Integer.valueOf(0), false);
         fail("Expect to fail since zero step size is not allowed.");
     }
 
     @Test
     public void testContains() {
-        IntegerRange range = IntegerRange.valueOf(null, new Integer(100), 10);
+        IntegerRange range = IntegerRange.valueOf(null, Integer.valueOf(100), 10);
         assertTrue(range.contains(30));
         assertTrue(range.contains(100));
         assertFalse(range.contains(110));
         assertFalse(range.contains(35));
 
-        range = IntegerRange.valueOf(new Integer(10), null, 10);
+        range = IntegerRange.valueOf(Integer.valueOf(10), null, 10);
         assertTrue(range.contains(30));
         assertTrue(range.contains(10));
         assertFalse(range.contains(-10));
@@ -86,17 +86,17 @@ public class IntegerRangeTest {
         IntegerRange range = IntegerRange.valueOf(0, 100, 20);
         Set<Integer> values = range.getValues(false);
         assertEquals(6, range.size());
-        assertTrue(values.contains(new Integer(0)));
-        assertTrue(values.contains(new Integer(20)));
-        assertTrue(values.contains(new Integer(40)));
-        assertTrue(values.contains(new Integer(60)));
-        assertTrue(values.contains(new Integer(80)));
-        assertTrue(values.contains(new Integer(100)));
+        assertTrue(values.contains(Integer.valueOf(0)));
+        assertTrue(values.contains(Integer.valueOf(20)));
+        assertTrue(values.contains(Integer.valueOf(40)));
+        assertTrue(values.contains(Integer.valueOf(60)));
+        assertTrue(values.contains(Integer.valueOf(80)));
+        assertTrue(values.contains(Integer.valueOf(100)));
 
-        assertFalse(values.contains(new Integer(-10)));
-        assertFalse(values.contains(new Integer(50)));
-        assertFalse(values.contains(new Integer(110)));
-        assertFalse(values.contains(new Integer(120)));
+        assertFalse(values.contains(Integer.valueOf(-10)));
+        assertFalse(values.contains(Integer.valueOf(50)));
+        assertFalse(values.contains(Integer.valueOf(110)));
+        assertFalse(values.contains(Integer.valueOf(120)));
 
         range = IntegerRange.valueOf(0, 100, 20, true);
         values = range.getValues(false);

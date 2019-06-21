@@ -117,7 +117,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         String maxStr = element.getAttribute("maxCardinality");
         Integer maxCardinality = null;
         if ("*".equals(maxStr) || "n".equals(maxStr.toLowerCase())) {
-            maxCardinality = new Integer(Integer.MAX_VALUE);
+            maxCardinality = Integer.valueOf(Integer.MAX_VALUE);
         } else {
             maxCardinality = Integer.valueOf(maxStr);
         }
@@ -168,7 +168,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         sb.append('(');
         sb.append(cardinality.getLowerBound());
         sb.append("..");
-        sb.append(new Integer(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality
+        sb.append(Integer.valueOf(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality
                 .getUpperBound());
         sb.append(", default:");
         sb.append(cardinality.getDefaultCardinality());

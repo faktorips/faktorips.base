@@ -135,7 +135,7 @@ public abstract class NewTypePage extends IpsObjectPage {
      *            <code>false</code> it won't be checked.
      */
     public void setAbstract(boolean value) {
-        getAbstractField().setValue(new Boolean(value));
+        getAbstractField().setValue(value);
     }
 
     /**

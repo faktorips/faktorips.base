@@ -67,7 +67,7 @@ public class NewProductCmptTypePage extends NewTypePage {
             IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
             if (StringUtils.isEmpty(selectedPcType.getProductCmptType())) {
                 policyCmptTypeField.setValue(selectedPcType.getQualifiedName());
-                getAbstractField().setValue(new Boolean(selectedPcType.isAbstract()));
+                getAbstractField().setValue(selectedPcType.isAbstract());
             }
         }
     }

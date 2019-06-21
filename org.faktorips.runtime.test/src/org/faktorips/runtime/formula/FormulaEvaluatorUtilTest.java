@@ -405,7 +405,7 @@ public class FormulaEvaluatorUtilTest {
     public void testFunctionWithListAsArgumentHelperEmptyList() {
         FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
         List<Integer> emptyList = new ArrayList<Integer>();
-        assertEquals(new Integer(0), helper.getResult(emptyList));
+        assertEquals(Integer.valueOf(0), helper.getResult(emptyList));
     }
 
     @Test
@@ -453,7 +453,7 @@ public class FormulaEvaluatorUtilTest {
     public void testFunctionWithEmptyListAsArgumentHelperMax() {
         FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
         List<Integer> emptyList = new ArrayList<Integer>();
-        assertEquals(new Integer(0), helper.getResult(emptyList));
+        assertEquals(Integer.valueOf(0), helper.getResult(emptyList));
     }
 
     @Test

@@ -49,7 +49,7 @@ public class BooleanValueConverterTest {
 
         value = converter.getIpsValue("3", ml);
         assertFalse(ml.isEmpty());
-        assertEquals(value, new Integer(3).toString());
+        assertEquals(value, Integer.valueOf(3).toString());
 
         ml.clear();
 
@@ -57,13 +57,13 @@ public class BooleanValueConverterTest {
         assertTrue(Datatype.BOOLEAN.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Integer(0), ml);
+        value = converter.getIpsValue(Integer.valueOf(0), ml);
         assertTrue(Datatype.BOOLEAN.isParsable(value));
         assertTrue(ml.isEmpty());
 
         value = converter.getIpsValue(3, ml);
         assertFalse(ml.isEmpty());
-        assertEquals(value, new Integer(3).toString());
+        assertEquals(value, Integer.valueOf(3).toString());
 
         ml.clear();
 

@@ -25,7 +25,7 @@ public enum TestParameterType {
     TestParameterType(String id, String name, int index) {
         this.id = id;
         this.name = name;
-        this.index = new Integer(index);
+        this.index = Integer.valueOf(index);
     }
 
     public Integer getIndex() {

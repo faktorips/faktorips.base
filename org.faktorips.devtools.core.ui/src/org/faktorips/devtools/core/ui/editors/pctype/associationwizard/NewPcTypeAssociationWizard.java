@@ -144,10 +144,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     private void initSuppressedEventsForPages() {
-        suppressedEventForPages.put(associationTargetPage, new Integer(1));
-        suppressedEventForPages.put(propertyPage, new Integer(1));
-        suppressedEventForPages.put(inverseAssociationPropertyPage, new Integer(2));
-        suppressedEventForPages.put(confProdCmptTypePropertyPage, new Integer(2));
+        suppressedEventForPages.put(associationTargetPage, Integer.valueOf(1));
+        suppressedEventForPages.put(propertyPage, Integer.valueOf(1));
+        suppressedEventForPages.put(inverseAssociationPropertyPage, Integer.valueOf(2));
+        suppressedEventForPages.put(confProdCmptTypePropertyPage, Integer.valueOf(2));
     }
 
     private boolean isSuppressedEventFor(IWizardPage page, boolean decreaseEvents) {
@@ -161,7 +161,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         if (decreaseEvents) {
             int i = current.intValue() - 1;
-            suppressedEventForPages.put(page, new Integer(i));
+            suppressedEventForPages.put(page, Integer.valueOf(i));
         }
 
         return true;
