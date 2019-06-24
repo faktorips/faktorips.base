@@ -10,9 +10,11 @@
 
 package org.faktorips.valueset;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.values.Decimal;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A range implementation where the upper and lower bounds are of the type {@link Decimal}.
@@ -97,6 +99,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
     }
 
     @Override
+    @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT", justification = "Only exceptions are of interest, the return value is not needed")
     protected boolean checkIfValueCompliesToStepIncrement(Decimal value, Decimal bound) {
         Decimal step = getStep();
         Decimal zero = Decimal.valueOf(0, step.scale());
@@ -108,7 +111,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
         try {
             // throws an ArithmeticException if rounding is necessary. If the value is contained in
             // the range no rounding is necessary since this division must return an integer value
-            diff.divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY);
+            diff.divide(getStep(), 0, RoundingMode.UNNECESSARY);
         } catch (ArithmeticException e) {
             return false;
         }
@@ -118,7 +121,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         Decimal size = getUpperBound().subtract(getLowerBound()).abs()
-                .divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY).add(Decimal.valueOf(1));
+                .divide(getStep(), 0, RoundingMode.UNNECESSARY).add(Decimal.valueOf(1));
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
                     "The number of values contained within this range is to huge to be supported by this operation.");

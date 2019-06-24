@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.util;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -172,7 +172,7 @@ public class Histogram<V, E> {
         return Maps.transformEntries(map, new EntryTransformer<V, Integer, Decimal>() {
             @Override
             public Decimal transformEntry(V value, Integer elementCount) {
-                return Decimal.valueOf(elementCount).divide(totalCount, SCALE, BigDecimal.ROUND_HALF_UP);
+                return Decimal.valueOf(elementCount).divide(totalCount, SCALE, RoundingMode.HALF_UP);
             }
         });
     }

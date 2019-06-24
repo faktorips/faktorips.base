@@ -10,6 +10,7 @@ Export-Package: org.faktorips.annotation,
  org.faktorips.valueset
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.xml.bind,
+Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
+ javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.bind.annotation.adapters

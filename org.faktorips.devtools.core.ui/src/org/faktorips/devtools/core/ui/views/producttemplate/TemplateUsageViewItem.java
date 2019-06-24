@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -94,7 +95,7 @@ public class TemplateUsageViewItem {
         SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
         Integer definedDist = Optional.ofNullable(definedAbsoluteDistribution.get(value)).orElse(0);
         BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100))
-                .divide(new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
+                .divide(new BigDecimal(pmo.getCount()), 1, RoundingMode.HALF_UP);
         return distributionPercent;
     }
 
