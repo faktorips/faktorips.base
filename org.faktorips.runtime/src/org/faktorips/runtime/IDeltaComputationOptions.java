@@ -102,13 +102,15 @@ public interface IDeltaComputationOptions {
      * <p>
      * This method returns <code>true</code> if a delta should be created for added or removed
      * subtrees. If this method returns <code>false</code> a delta is only created for the root of
-     * an added or removed subtree.
+     * an added or removed subtree. For non-composition associations, this property is ignored
+     * because such associated objects are never processed recursively.
      * <p>
      * The creation of delta elements for subtree nodes is based on reflection and may cause a
      * performance issue if used in massive delta computation with many added or removed subtrees.
      * 
      * @return <code>true</code> if a delta should be created for every element of an added or
      *         removed subtree.
+     * 
      * @since 3.15
      */
     public boolean isCreateSubtreeDelta();
