@@ -65,207 +65,211 @@ import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
 import org.faktorips.runtime.internal.Range
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+import org.faktorips.runtime.IProductComponentLinkSource
 
 @SuppressFBWarnings
 class ClassNames {
 
-    def static IpsPropertyChangeSupport(AbstractGeneratorModelNode it) { addImport(typeof(IpsPropertyChangeSupport)) }
+	def static IpsPropertyChangeSupport(AbstractGeneratorModelNode it) { addImport(typeof(IpsPropertyChangeSupport)) }
 
-    def static IModelObject(AbstractGeneratorModelNode it) { addImport(typeof(IModelObject)) }
+	def static IModelObject(AbstractGeneratorModelNode it) { addImport(typeof(IModelObject)) }
 
-    def static IModelObjectDelta(AbstractGeneratorModelNode it) { addImport(typeof(IModelObjectDelta)) }
+	def static IModelObjectDelta(AbstractGeneratorModelNode it) { addImport(typeof(IModelObjectDelta)) }
 
-    def static IModelObjectVisitor(AbstractGeneratorModelNode it) { addImport(typeof(IModelObjectVisitor)) }
+	def static IModelObjectVisitor(AbstractGeneratorModelNode it) { addImport(typeof(IModelObjectVisitor)) }
 
-    def static IDeltaComputationOptions(AbstractGeneratorModelNode it) { addImport(typeof(IDeltaComputationOptions)) }
+	def static IDeltaComputationOptions(AbstractGeneratorModelNode it) { addImport(typeof(IDeltaComputationOptions)) }
 
-    def static ModelObjectDelta(AbstractGeneratorModelNode it) { addImport(typeof(ModelObjectDelta)) }
+	def static ModelObjectDelta(AbstractGeneratorModelNode it) { addImport(typeof(ModelObjectDelta)) }
 
-    def static ObjectProperty(AbstractGeneratorModelNode it) { addImport(typeof(ObjectProperty)) }
+	def static ObjectProperty(AbstractGeneratorModelNode it) { addImport(typeof(ObjectProperty)) }
 
-    def static Message(AbstractGeneratorModelNode it) { addImport(typeof(Message)) }
+	def static Message(AbstractGeneratorModelNode it) { addImport(typeof(Message)) }
 
-    def static MessageList(AbstractGeneratorModelNode it) { addImport(typeof(MessageList)) }
+	def static MessageList(AbstractGeneratorModelNode it) { addImport(typeof(MessageList)) }
 
-    def static ListUtil(AbstractGeneratorModelNode it) { addImport(typeof(ListUtil)) }
+	def static ListUtil(AbstractGeneratorModelNode it) { addImport(typeof(ListUtil)) }
 
-    def static MsgReplacementParameter(AbstractGeneratorModelNode it) { addImport(typeof(MsgReplacementParameter)) }
+	def static MsgReplacementParameter(AbstractGeneratorModelNode it) { addImport(typeof(MsgReplacementParameter)) }
 
-    def static IConfigurableModelObject(AbstractGeneratorModelNode it) { addImport(typeof(IConfigurableModelObject)) }
+	def static IConfigurableModelObject(AbstractGeneratorModelNode it) { addImport(typeof(IConfigurableModelObject)) }
 
-    def static AbstractModelObject(AbstractGeneratorModelNode it) { addImport(typeof(AbstractModelObject)) }
+	def static AbstractModelObject(AbstractGeneratorModelNode it) { addImport(typeof(AbstractModelObject)) }
 
-    def static ProductConfiguration(AbstractGeneratorModelNode it) { addImport(typeof(ProductConfiguration)) }
+	def static ProductConfiguration(AbstractGeneratorModelNode it) { addImport(typeof(ProductConfiguration)) }
 
-    def static ProductConfigurationXmlAdapter(AbstractGeneratorModelNode it) {
-        addImport(typeof(ProductConfigurationXmlAdapter))
-    }
+	def static ProductConfigurationXmlAdapter(AbstractGeneratorModelNode it) {
+		addImport(typeof(ProductConfigurationXmlAdapter))
+	}
 
-    def static XmlJavaTypeAdapter(AbstractGeneratorModelNode it) { addImport(typeof(XmlJavaTypeAdapter)) }
+	def static XmlJavaTypeAdapter(AbstractGeneratorModelNode it) { addImport(typeof(XmlJavaTypeAdapter)) }
 
-    def static XmlAttribute(AbstractGeneratorModelNode it) { addImport(typeof(XmlAttribute)) }
+	def static XmlAttribute(AbstractGeneratorModelNode it) { addImport(typeof(XmlAttribute)) }
 
-    def static IValidationContext(AbstractGeneratorModelNode it) { addImport(typeof(IValidationContext)) }
+	def static IValidationContext(AbstractGeneratorModelNode it) { addImport(typeof(IValidationContext)) }
 
-    def static INotificationSupport(AbstractGeneratorModelNode it) { addImport(typeof(INotificationSupport)) }
+	def static INotificationSupport(AbstractGeneratorModelNode it) { addImport(typeof(INotificationSupport)) }
 
-    def static PropertyChangeEvent(AbstractGeneratorModelNode it) { addImport(typeof(PropertyChangeEvent)) }
+	def static PropertyChangeEvent(AbstractGeneratorModelNode it) { addImport(typeof(PropertyChangeEvent)) }
 
-    def static PropertyChangeListener(AbstractGeneratorModelNode it) { addImport(typeof(PropertyChangeListener)) }
+	def static PropertyChangeListener(AbstractGeneratorModelNode it) { addImport(typeof(PropertyChangeListener)) }
 
-    def static AssociationChangedEvent(AbstractGeneratorModelNode it) { addImport(typeof(AssociationChangedEvent)) }
+	def static AssociationChangedEvent(AbstractGeneratorModelNode it) { addImport(typeof(AssociationChangedEvent)) }
 
-    // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
-    def static Collection_(AbstractGeneratorModelNode it, String genericType) {
-        addImport("java.util.Collection") + "<" + genericType + ">"
-    }
+	// Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
+	def static Collection_(AbstractGeneratorModelNode it, String genericType) {
+		addImport("java.util.Collection") + "<" + genericType + ">"
+	}
 
-    // List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
-    def static List_(AbstractGeneratorModelNode it, String genericType) {
-        addImport("java.util.List") + "<" + genericType + ">"
-    }
+	// List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
+	def static List_(AbstractGeneratorModelNode it, String genericType) {
+		addImport("java.util.List") + "<" + genericType + ">"
+	}
 
-    // ArrayList.name does return java.util.ArrayList. Thats why we have to use the string reference in addImport
-    def static ArrayList(AbstractGeneratorModelNode it, String genericType) {
-        addImport("java.util.ArrayList") + "<" + genericType + ">"
-    }
+	// ArrayList.name does return java.util.ArrayList. Thats why we have to use the string reference in addImport
+	def static ArrayList(AbstractGeneratorModelNode it, String genericType) {
+		addImport("java.util.ArrayList") + "<" + genericType + ">"
+	}
 
-    def static Arrays(AbstractGeneratorModelNode it) { addImport(typeof(Arrays)) }
+	def static Arrays(AbstractGeneratorModelNode it) { addImport(typeof(Arrays)) }
 
-    def static Map(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
-        addImport(typeof(Map)) + "<" + genericKey + ", " + genericValue + ">"
-    }
+	def static Map(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
+		addImport(typeof(Map)) + "<" + genericKey + ", " + genericValue + ">"
+	}
 
-    def static HashMap(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
-        addImport(typeof(HashMap)) + "<" + genericKey + ", " + genericValue + ">"
-    }
+	def static HashMap(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
+		addImport(typeof(HashMap)) + "<" + genericKey + ", " + genericValue + ">"
+	}
 
-    def static LinkedHashMap(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
-        addImport(typeof(LinkedHashMap)) + "<" + genericKey + ", " + genericValue + ">"
-    }
+	def static LinkedHashMap(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
+		addImport(typeof(LinkedHashMap)) + "<" + genericKey + ", " + genericValue + ">"
+	}
 
-    def static Iterator(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(Iterator)) + "<" + genericType + ">"
-    }
+	def static Iterator(AbstractGeneratorModelNode it, String genericType) {
+		addImport(typeof(Iterator)) + "<" + genericType + ">"
+	}
 
-    def static Collections(AbstractGeneratorModelNode it) { addImport(typeof(Collections)) }
+	def static Collections(AbstractGeneratorModelNode it) { addImport(typeof(Collections)) }
 
-    def static Calendar(AbstractGeneratorModelNode it) { addImport(typeof(Calendar)) }
+	def static Calendar(AbstractGeneratorModelNode it) { addImport(typeof(Calendar)) }
 
-    def static Element(AbstractGeneratorModelNode it) { addImport(typeof(Element)) }
+	def static Element(AbstractGeneratorModelNode it) { addImport(typeof(Element)) }
 
-    def static IProductComponent(AbstractGeneratorModelNode it) { addImport(typeof(IProductComponent)) }
+	def static IProductComponent(AbstractGeneratorModelNode it) { addImport(typeof(IProductComponent)) }
 
-    def static IProductComponentGeneration(AbstractGeneratorModelNode it) {
-        addImport(typeof(IProductComponentGeneration))
-    }
+	def static IProductComponentGeneration(AbstractGeneratorModelNode it) {
+		addImport(typeof(IProductComponentGeneration))
+	}
 
-    def static ProductComponentLink(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(ProductComponentLink)) + "<" + genericType + ">"
-    }
+	def static ProductComponentLink(AbstractGeneratorModelNode it, String genericType) {
+		addImport(typeof(ProductComponentLink)) + "<" + genericType + ">"
+	}
 
-    def static IProductComponentLink(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(IProductComponentLink)) + "<" + genericType + ">"
-    }
+	def static IProductComponentLink(AbstractGeneratorModelNode it, String genericType) {
+		addImport(typeof(IProductComponentLink)) + "<" + genericType + ">"
+	}
 
-    def static CardinalityRange(AbstractGeneratorModelNode it) { addImport(typeof(CardinalityRange)) }
+	def static IProductComponentLinkSource(AbstractGeneratorModelNode it) {
+		addImport(typeof(IProductComponentLinkSource))
+	}
 
-    def static IRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(IRuntimeRepository)) }
+	def static CardinalityRange(AbstractGeneratorModelNode it) { addImport(typeof(CardinalityRange)) }
 
-    def static InMemoryRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(InMemoryRuntimeRepository)) }
+	def static IRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(IRuntimeRepository)) }
 
-    def static DateTime(AbstractGeneratorModelNode it) { addImport(typeof(DateTime)) }
+	def static InMemoryRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(InMemoryRuntimeRepository)) }
 
-    def static TimeZone(AbstractGeneratorModelNode it) { addImport(typeof(TimeZone)) }
+	def static DateTime(AbstractGeneratorModelNode it) { addImport(typeof(DateTime)) }
 
-    def static IXmlPersistenceSupport(AbstractGeneratorModelNode it) { addImport(typeof(IXmlPersistenceSupport)) }
+	def static TimeZone(AbstractGeneratorModelNode it) { addImport(typeof(TimeZone)) }
 
-    def static ValueToXmlHelper(AbstractGeneratorModelNode it) { addImport(typeof(ValueToXmlHelper)) }
+	def static IXmlPersistenceSupport(AbstractGeneratorModelNode it) { addImport(typeof(IXmlPersistenceSupport)) }
 
-    def static MultiValueXmlHelper(AbstractGeneratorModelNode it) { addImport(typeof(MultiValueXmlHelper)) }
+	def static ValueToXmlHelper(AbstractGeneratorModelNode it) { addImport(typeof(ValueToXmlHelper)) }
 
-    def static ValueSet(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(ValueSet)) + "<" + genericType + ">"
-    }
+	def static MultiValueXmlHelper(AbstractGeneratorModelNode it) { addImport(typeof(MultiValueXmlHelper)) }
 
-    def static UnrestrictedValueSet(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(UnrestrictedValueSet)) + "<" + genericType + ">"
-    }
+	def static ValueSet(AbstractGeneratorModelNode it, String genericType) {
+		addImport(typeof(ValueSet)) + "<" + genericType + ">"
+	}
 
-    def static OrderedValueSet(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(OrderedValueSet)) + "<" + genericType + ">"
-    }
+	def static UnrestrictedValueSet(AbstractGeneratorModelNode it, String genericType) {
+		addImport(typeof(UnrestrictedValueSet)) + "<" + genericType + ">"
+	}
 
-    def static qnameRange(AbstractGeneratorModelNode it, String genericType) {
-        "org.faktorips.valueset.Range<" + genericType + ">"
-    }
+	def static OrderedValueSet(AbstractGeneratorModelNode it, String genericType) {
+		addImport(typeof(OrderedValueSet)) + "<" + genericType + ">"
+	}
 
-    def static EnumValues(AbstractGeneratorModelNode it) {
-        addImport(typeof(EnumValues))
-    }
+	def static qnameRange(AbstractGeneratorModelNode it, String genericType) {
+		"org.faktorips.valueset.Range<" + genericType + ">"
+	}
 
-    def static Range(AbstractGeneratorModelNode it) {
-        addImport(typeof(Range))	}
+	def static EnumValues(AbstractGeneratorModelNode it) {
+		addImport(typeof(EnumValues))
+	}
 
-    def static IntegerRange(AbstractGeneratorModelNode it) { addImport(typeof(IntegerRange)) }
+	def static Range(AbstractGeneratorModelNode it) { addImport(typeof(Range)) }
 
-    def static Locale(AbstractGeneratorModelNode it) { addImport(typeof(Locale)) }
+	def static IntegerRange(AbstractGeneratorModelNode it) { addImport(typeof(IntegerRange)) }
 
-    def static LocalizedString(AbstractGeneratorModelNode it) { addImport(typeof(LocalizedString)) }
+	def static Locale(AbstractGeneratorModelNode it) { addImport(typeof(Locale)) }
 
-    def static InternationalString(AbstractGeneratorModelNode it) { addImport(typeof(InternationalString)) }
+	def static LocalizedString(AbstractGeneratorModelNode it) { addImport(typeof(LocalizedString)) }
 
-    def static Long(AbstractGeneratorModelNode it){
-         addImport("java.lang.Long")    }
+	def static InternationalString(AbstractGeneratorModelNode it) { addImport(typeof(InternationalString)) }
 
-    def static DefaultInternationalString(AbstractGeneratorModelNode it) {
-        addImport(typeof(DefaultInternationalString))
-    }
+	def static Long(AbstractGeneratorModelNode it) { addImport("java.lang.Long") }
 
-    def static Table_(AbstractGeneratorModelNode it, String genericType) {
-        addImport(Table.name) + "<" + genericType + ">"
-    }
+	def static DefaultInternationalString(AbstractGeneratorModelNode it) {
+		addImport(typeof(DefaultInternationalString))
+	}
 
-    def static MessagesHelper(AbstractGeneratorModelNode it) { addImport(typeof(MessagesHelper)) }
+	def static Table_(AbstractGeneratorModelNode it, String genericType) {
+		addImport(Table.name) + "<" + genericType + ">"
+	}
 
-    // EXECPTIONS
-    def static NoSuchElementException(AbstractGeneratorModelNode it) { addImport(typeof(NoSuchElementException)) }
+	def static MessagesHelper(AbstractGeneratorModelNode it) { addImport(typeof(MessagesHelper)) }
 
-    def static IllegalRepositoryModificationException(AbstractGeneratorModelNode it) {
-        addImport(typeof(IllegalRepositoryModificationException))
-    }
+	// EXECPTIONS
+	def static NoSuchElementException(AbstractGeneratorModelNode it) { addImport(typeof(NoSuchElementException)) }
 
-    def static IUnresolvedReference(AbstractGeneratorModelNode it) { addImport(typeof(IUnresolvedReference)) }
+	def static IllegalRepositoryModificationException(AbstractGeneratorModelNode it) {
+		addImport(typeof(IllegalRepositoryModificationException))
+	}
 
-    def static DefaultUnresolvedReference(AbstractGeneratorModelNode it) {
-        addImport(typeof(DefaultUnresolvedReference))
-    }
+	def static IUnresolvedReference(AbstractGeneratorModelNode it) { addImport(typeof(IUnresolvedReference)) }
 
-    def static FormulaExecutionException(AbstractGeneratorModelNode it) { addImport(typeof(FormulaExecutionException)) }
+	def static DefaultUnresolvedReference(AbstractGeneratorModelNode it) {
+		addImport(typeof(DefaultUnresolvedReference))
+	}
 
-    def static RuntimeException(AbstractGeneratorModelNode it) { addImport(typeof(RuntimeException)) }
+	def static FormulaExecutionException(AbstractGeneratorModelNode it) { addImport(typeof(FormulaExecutionException)) }
 
-    def static IllegalArgumentException(AbstractGeneratorModelNode it) { addImport(typeof(IllegalArgumentException)) }
+	def static RuntimeException(AbstractGeneratorModelNode it) { addImport(typeof(RuntimeException)) }
 
-    def static IllegalStateException(AbstractGeneratorModelNode it) { addImport(typeof(IllegalStateException)) }
+	def static IllegalArgumentException(AbstractGeneratorModelNode it) { addImport(typeof(IllegalArgumentException)) }
 
-    def static ObjectUtil(AbstractGeneratorModelNode it) { addImport(typeof(ObjectUtil)) }
+	def static IllegalStateException(AbstractGeneratorModelNode it) { addImport(typeof(IllegalStateException)) }
 
-    def static IObjectReferenceStore(AbstractGeneratorModelNode it) { addImport(typeof(IObjectReferenceStore)) }
+	def static ObjectUtil(AbstractGeneratorModelNode it) { addImport(typeof(ObjectUtil)) }
 
-    def static XmlCallback(AbstractGeneratorModelNode it) { addImport(typeof(XmlCallback)) }
+	def static IObjectReferenceStore(AbstractGeneratorModelNode it) { addImport(typeof(IObjectReferenceStore)) }
 
-    def static BuilderUtil(AbstractGeneratorModelNode it) { addImport("org.faktorips.runtime.builder.BuilderUtil") }
+	def static XmlCallback(AbstractGeneratorModelNode it) { addImport(typeof(XmlCallback)) }
 
-    def static Method(AbstractGeneratorModelNode it) { addImport("java.lang.reflect.Method") }
+	def static BuilderUtil(AbstractGeneratorModelNode it) { addImport("org.faktorips.runtime.builder.BuilderUtil") }
 
-    def static Constructor(AbstractGeneratorModelNode it) { addImport("java.lang.reflect.Constructor") }
+	def static Method(AbstractGeneratorModelNode it) { addImport("java.lang.reflect.Method") }
 
-    def static InvocationTargetException(AbstractGeneratorModelNode it) {
-        addImport("java.lang.reflect.InvocationTargetException")
-    }
+	def static Constructor(AbstractGeneratorModelNode it) { addImport("java.lang.reflect.Constructor") }
 
-    def static InstantiationException(AbstractGeneratorModelNode it) { addImport("java.lang.InstantiationException") }
+	def static InvocationTargetException(AbstractGeneratorModelNode it) {
+		addImport("java.lang.reflect.InvocationTargetException")
+	}
 
-    def static GregorianCalendar(AbstractGeneratorModelNode it) { addImport("java.util.GregorianCalendar") }
+	def static InstantiationException(AbstractGeneratorModelNode it) { addImport("java.lang.InstantiationException") }
+
+	def static GregorianCalendar(AbstractGeneratorModelNode it) { addImport("java.util.GregorianCalendar") }
+
 }

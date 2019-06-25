@@ -224,7 +224,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target);
                 «ELSE»
                     «checkRepositoryModifyable»
-                    this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
+                    this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»((«IProductComponentLinkSource»)this, target, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
@@ -245,7 +245,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target, cardinality);
                 «ELSE»
                     «ProductCommonsTmpl.checkRepositoryModifyable(it)»
-                    this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
+                    this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»((«IProductComponentLinkSource»)this, target, cardinality, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
@@ -265,7 +265,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target);
                 «ELSE»
                     «ProductCommonsTmpl.checkRepositoryModifyable(it)»
-                    «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
+                    «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»((«IProductComponentLinkSource»)this, target, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
