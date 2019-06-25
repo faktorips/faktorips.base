@@ -151,15 +151,7 @@ class ProductAssociationTmpl {
                             «IF constrain»
                                 return («targetInterfaceName»)super.«methodNameGetSingle»(index);
                             «ELSE»
-                                «Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
-                                try {
-                                    for (int i = 0; i < index; i++) {
-                                        it.next();
-                                    }
-                                    return it.next().«getTarget»;
-                                } catch («NoSuchElementException» e) {
-                                    throw new IndexOutOfBoundsException(e.getLocalizedMessage());
-                                }
+                               return «ProductComponentLinks».getTarget(index, «fieldName»);
                             «ENDIF»
                         }
             «ENDIF»
