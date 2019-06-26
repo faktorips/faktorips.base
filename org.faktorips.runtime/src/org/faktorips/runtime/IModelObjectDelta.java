@@ -12,6 +12,8 @@ package org.faktorips.runtime;
 
 import java.util.List;
 
+import org.faktorips.runtime.model.type.AssociationKind;
+
 /**
  * A model object delta represents the delta between two model objects. The two model objects must
  * be instances of the same model class. One typical use case is that the two (technical) objects
@@ -202,10 +204,18 @@ public interface IModelObjectDelta {
     public boolean isChildChanged();
 
     /**
-     * The name of the association to that the object has been added / has been removed from or is
-     * moved in.
+     * The name of the association in which the object has been added, removed or changed. The
+     * association name is always <code>null</code> for the root of the delta.
      */
     public String getAssociation();
+
+    /**
+     * Returns the kind of association if this delta has any incoming association, that means it is
+     * part of a composite or the object is associated from another object.
+     * 
+     * @return the {@link AssociationKind} or <code>null</code> if this is the root
+     */
+    public AssociationKind getAssociationKind();
 
     /**
      * Returns the properties that have a different a value in the model object and the reference

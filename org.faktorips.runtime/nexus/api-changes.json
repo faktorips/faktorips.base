@@ -24,7 +24,7 @@
           "new": "method <T> T org.faktorips.runtime.internal.AbstractRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
           "justification": "FIPS-6032"
         },
-		{
+        {
           "code": "java.method.removed",
           "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T extends java.lang.Comparable<? super T>>>::contains(java.lang.Object) @ org.faktorips.runtime.CardinalityRange",
           "justification": "FIPS-5811"
@@ -41,10 +41,45 @@
           "new": "parameter boolean org.faktorips.valueset.ValueSet<T>::contains(===T===)",
           "justification": "FIPS-5811"
         },
-		{
+        {
           "code": "java.method.removed",
           "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T extends java.lang.Comparable<? super T>>>::contains(java.lang.Object) @ org.faktorips.valueset.IntegerRange",
           "justification": "FIPS-5811"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.faktorips.runtime.IDeltaComputationOptions::ignoreAssociations()",
+          "justification": "FIPS-5998: Delta for Associations"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.faktorips.runtime.model.type.AssociationKind org.faktorips.runtime.IModelObjectDelta::getAssociationKind()",
+          "justification": "FIPS-5998: Delta for Associations"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method void org.faktorips.runtime.internal.ModelObjectDelta::createAssociatedChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta, java.util.List<? extends org.faktorips.runtime.IModelObject>, java.util.List<? extends org.faktorips.runtime.IModelObject>, java.lang.String, org.faktorips.runtime.IDeltaComputationOptions)",
+          "justification": "FIPS-5998: Delta for Associations"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method void org.faktorips.runtime.internal.ModelObjectDelta::createAssociatedChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta, org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.IDeltaComputationOptions)",
+          "justification": "FIPS-5998: Delta for Associations"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newAddDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
+          "justification": "FIPS-5998: Delta for Associations"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newDifferentObjectAtPositionChangedDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind)",
+          "justification": "FIPS-5998: Delta for Associations"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newRemoveDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
+          "justification": "FIPS-5998: Delta for Associations"
         }
       ]
     }

@@ -262,7 +262,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInDeltaComputation() {
-        return isMasterToDetail() && !isDerived() && !isConstrain();
+        return (isMasterToDetail() || isAssociation()) && !isDerived() && !isConstrain();
     }
 
     public boolean isConsiderInEffectiveFromHasChanged() {

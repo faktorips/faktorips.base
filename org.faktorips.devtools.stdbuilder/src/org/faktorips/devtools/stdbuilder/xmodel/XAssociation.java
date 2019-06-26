@@ -110,6 +110,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().getAssociationType().isMasterToDetail();
     }
 
+    public boolean isAssociation() {
+        return getAssociation().getAssociationType().isAssoziation();
+    }
+
     /**
      * Returns <code>true</code> if this association is a strict subset of the given derived union.
      * Returns <code>false</code> if this association is an indirect subset or subset of second

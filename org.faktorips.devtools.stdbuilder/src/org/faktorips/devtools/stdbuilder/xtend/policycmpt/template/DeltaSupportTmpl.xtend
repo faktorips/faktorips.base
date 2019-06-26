@@ -30,7 +30,12 @@ def package static computeDeltaMethod (XPolicyCmptClass it) '''
         «IF !attributesForDeltaComputation.isEmpty || !associationsForDeltaComputation.isEmpty»
             «implClassName» «localVarNameDeltaSupportOtherObject» = («implClassName»)otherObject;
             «FOR attribute : attributesForDeltaComputation» «deltaCheckForAttribute(it, localVarNameDeltaSupportOtherObject, attribute)» «ENDFOR»
-            «FOR association : associationsForDeltaComputation» «deltaCheckForRelatedClasses(it, association)» «ENDFOR»
+            «FOR association : associationsForDeltaComputation.filter[isMasterToDetail]» «deltaCheckForRelatedClasses(it, association)» «ENDFOR»
+            «IF !associationsForDeltaComputation.filter[isAssociation].isEmpty»
+                if (!options.ignoreAssociations()) {
+                    «FOR association : associationsForDeltaComputation.filter[isAssociation]» «deltaCheckForRelatedClasses(it, association)» «ENDFOR»
+                }
+            «ENDIF»
         «ENDIF»
         return delta;
     }
@@ -44,7 +49,7 @@ def private static deltaCheckForAttribute(XPolicyCmptClass policyClass, String l
 
 def private static deltaCheckForRelatedClasses(XPolicyCmptClass policyClass ,XPolicyAssociation it) '''
     «IF considerInDeltaComputation»
-        ModelObjectDelta.createChildDeltas(delta, «fieldName», other«policyClass.implClassName».«fieldName», "«fieldName»", options);
+        ModelObjectDelta.create«IF isAssociation»Associated«ENDIF»ChildDeltas(delta, «fieldName», other«policyClass.implClassName».«fieldName», «constantNamePropertyName», options);
     «ENDIF»
 '''
 

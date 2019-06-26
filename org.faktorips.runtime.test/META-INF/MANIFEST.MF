@@ -13,7 +13,7 @@ Import-Package: org.faktorips.runtime.internal,
  org.junit.rules;version="4.8.1",
  org.junit.runner;version="4.5.0",
  org.mockito,
- org.mockito.stubbing,
  org.mockito.runners,
- org.mockito.verification
- 
+ org.mockito.stubbing,
+ org.mockito.verification,
+ org.objenesis;version="1.4.0"

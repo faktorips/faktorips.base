@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime;
 
+import org.faktorips.runtime.model.type.AssociationKind;
+
 /**
  * Callback interface for the delta computation.
  * 
@@ -72,7 +74,7 @@ public interface IDeltaComputationOptions {
      * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are
      * computed. p1: removed p2: added
      */
-    public ComputationMethod getMethod(String association);
+    ComputationMethod getMethod(String association);
 
     /**
      * Returns <code>true</code> if the two objects represent the same conceptual object, otherwise
@@ -84,7 +86,7 @@ public interface IDeltaComputationOptions {
      * ignore the version numbers. If the objects are coverages you might consider them the same, if
      * they are of the same coverage type, e.g. both are accidental damages coverages.
      */
-    public boolean isSame(IModelObject object1, IModelObject object2);
+    boolean isSame(IModelObject object1, IModelObject object2);
 
     /**
      * Returns <code>true</code> if the given property should be ignored in the delta computation.
@@ -94,7 +96,7 @@ public interface IDeltaComputationOptions {
      * @param clazz The class the property belongs to.
      * @param property The name of the property.
      */
-    public boolean ignore(Class<?> clazz, String property);
+    boolean ignore(Class<?> clazz, String property);
 
     /**
      * Controls whether delta objects for added or removed subtree elements should be created
@@ -113,7 +115,7 @@ public interface IDeltaComputationOptions {
      * 
      * @since 3.15
      */
-    public boolean isCreateSubtreeDelta();
+    boolean isCreateSubtreeDelta();
 
     /**
      * Compares two values for equality by the given model class and property, where either one or
@@ -126,5 +128,16 @@ public interface IDeltaComputationOptions {
      * @return <code>true</code> if the values are the same
      */
     boolean areValuesEqual(Class<?> clazz, String property, Object value1, Object value2);
+
+    /**
+     * Controls whether {@link AssociationKind#Association associations} should be ignored when
+     * computing deltas. If set to <code>true</code>, only {@link AssociationKind#Composition
+     * parent-to-child relations} will be included.
+     * 
+     * @return whether {@link AssociationKind#Association associations} should be ignored.
+     * 
+     * @since 19.12
+     */
+    boolean ignoreAssociations();
 
 }

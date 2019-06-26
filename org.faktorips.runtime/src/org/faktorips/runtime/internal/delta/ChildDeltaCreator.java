@@ -18,17 +18,21 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.internal.ModelObjectDelta;
+import org.faktorips.runtime.model.type.AssociationKind;
 
 /**
  * Internal utility class to create {@link ModelObjectDelta} for associations.
  * <p>
- * Note that this is an internal utility class whose API may not stable and thus should not be
+ * Note that this is an internal utility class whose API may not be stable and thus should not be
  * called by client code directly.
  */
 public class ChildDeltaCreator {
 
     private final String association;
+
     private final IDeltaComputationOptions options;
+
+    private final AssociationKind kind;
 
     /**
      * Instantiates the creator for the given association name, kind and
@@ -37,10 +41,29 @@ public class ChildDeltaCreator {
      * @param association The name of the association, will be provided to the created delta
      * @param options The {@link IDeltaComputationOptions} that configures some behavior of delta
      *            computation
+     * @deprecated since 19.12. Use
+     *             {@link ChildDeltaCreator#ChildDeltaCreator(String, AssociationKind, IDeltaComputationOptions)}
+     *             instead.
      */
+    @Deprecated
     public ChildDeltaCreator(String association, IDeltaComputationOptions options) {
+        this(association, AssociationKind.Composition, options);
+    }
+
+    /**
+     * Instantiates the creator for the given association name, kind and
+     * {@link IDeltaComputationOptions}.
+     * 
+     * @param association The name of the association, will be provided to the created delta
+     * @param kind The kind of the association, needed to decide whether to follow an association
+     *            recursively or not
+     * @param options The {@link IDeltaComputationOptions} that configures some behavior of delta
+     *            computation
+     */
+    public ChildDeltaCreator(String association, AssociationKind kind, IDeltaComputationOptions options) {
         this.association = association;
-        this.options = options;
+        this.kind = kind;
+        this.options = AssociationKind.Association == kind ? withoutSubtrees(options) : options;
     }
 
     /**
@@ -100,17 +123,21 @@ public class ChildDeltaCreator {
                 if (hasObject(refObjects, i)) {
                     IModelObject refObject = refObjects.get(i);
                     if (options.isSame(original, refObject)) {
-                        delta.addChildDelta(((IDeltaSupport)original).computeDelta(refObject, options));
+                        if (kind == AssociationKind.Composition) {
+                            IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refObject, options);
+                            updateAssociationInfo(childDelta);
+                            delta.addChildDelta(childDelta);
+                        }
                     } else {
                         delta.addChildDelta(ModelObjectDelta.newDifferentObjectAtPositionChangedDelta(original,
-                                refObject, association));
+                                refObject, association, kind));
                     }
                 } else {
-                    delta.addChildDelta(ModelObjectDelta.newRemoveDelta(original, association, options));
+                    delta.addChildDelta(ModelObjectDelta.newRemoveDelta(original, association, kind, options));
                 }
             } else {
                 if (hasObject(refObjects, i)) {
-                    delta.addChildDelta(ModelObjectDelta.newAddDelta(refObjects.get(i), association, options));
+                    delta.addChildDelta(ModelObjectDelta.newAddDelta(refObjects.get(i), association, kind, options));
                 } else {
                     throw new RuntimeException(
                             "Error in delta computation. Both objects null in assocation " + association);
@@ -130,6 +157,7 @@ public class ChildDeltaCreator {
         int size = originals.size();
         for (int i = 0; i < size; i++) {
             IModelObjectDelta childDelta = createRemoveMoveOrChangeDelta(originals.get(i), i, refObjects);
+            updateAssociationInfo(childDelta);
             delta.addChildDelta(childDelta);
             if (childDelta.isRemoved()) {
                 removeCounter++;
@@ -149,9 +177,14 @@ public class ChildDeltaCreator {
                 }
             }
             if (!exists) {
-                delta.addChildDelta(ModelObjectDelta.newAddDelta(refObjects.get(i), association, options));
+                delta.addChildDelta(ModelObjectDelta.newAddDelta(refObjects.get(i), association, kind, options));
             }
         }
+    }
+
+    private void updateAssociationInfo(IModelObjectDelta childDelta) {
+        ((ModelObjectDelta)childDelta).setAssociation(association);
+        ((ModelObjectDelta)childDelta).setAssociationKind(kind);
     }
 
     private final IModelObjectDelta createRemoveMoveOrChangeDelta(IModelObject original,
@@ -160,21 +193,74 @@ public class ChildDeltaCreator {
 
         int refSize = refObjects.size();
         if (position < refSize && options.isSame(original, refObjects.get(position))) {
-            IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refObjects.get(position), options);
-            return childDelta;
+            IModelObject refObject = refObjects.get(position);
+            if (kind == AssociationKind.Composition) {
+                return ((IDeltaSupport)original).computeDelta(refObject, options);
+            } else {
+                return ModelObjectDelta.newEmptyDelta(original, refObject);
+            }
         }
         // check for moved object
         for (int i = 0; i < refSize; i++) {
             if (i != position) {
-                IModelObject refModelObject = refObjects.get(i);
-                if (options.isSame(original, refModelObject)) {
-                    IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refModelObject, options);
-                    ((ModelObjectDelta)childDelta).markMoved();
-                    return childDelta;
+                IModelObject refObject = refObjects.get(i);
+                if (options.isSame(original, refObject)) {
+                    if (kind == AssociationKind.Composition) {
+                        IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refObject, options);
+                        ((ModelObjectDelta)childDelta).markMoved();
+                        return childDelta;
+                    } else {
+                        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(original, refObject);
+                        delta.markMoved();
+                        return delta;
+                    }
                 }
             }
         }
-        return ModelObjectDelta.newRemoveDelta(original, association, options);
+        return ModelObjectDelta.newRemoveDelta(original, association, kind, options);
+    }
+
+    private static IDeltaComputationOptions withoutSubtrees(final IDeltaComputationOptions options) {
+        return new DeltaComputationOptionsWithoutSubtrees(options);
+    }
+
+    private static final class DeltaComputationOptionsWithoutSubtrees implements IDeltaComputationOptions {
+
+        private final IDeltaComputationOptions options;
+
+        private DeltaComputationOptionsWithoutSubtrees(IDeltaComputationOptions options) {
+            this.options = options;
+        }
+
+        @Override
+        public boolean isSame(IModelObject object1, IModelObject object2) {
+            return options.isSame(object1, object2);
+        }
+
+        @Override
+        public boolean isCreateSubtreeDelta() {
+            return false;
+        }
+
+        @Override
+        public boolean ignore(Class<?> clazz, String property) {
+            return options.ignore(clazz, property);
+        }
+
+        @Override
+        public ComputationMethod getMethod(String association) {
+            return options.getMethod(association);
+        }
+
+        @Override
+        public boolean areValuesEqual(Class<?> clazz, String property, Object value1, Object value2) {
+            return options.areValuesEqual(clazz, property, value1, value2);
+        }
+
+        @Override
+        public boolean ignoreAssociations() {
+            return options.ignoreAssociations();
+        }
     }
 
 }

@@ -26,6 +26,7 @@ import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
 import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.internal.delta.ChildDeltaCreator;
+import org.faktorips.runtime.model.type.AssociationKind;
 
 /**
  * IModelObjectDelta implementation.
@@ -39,10 +40,11 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     private final IModelObject original;
     private final IModelObject referenceObject;
-    private Class<?> modelClass;
+    private final Class<?> modelClass;
     private int kind;
     private int kindOfChange;
     private String association;
+    private AssociationKind associationKind;
     private SortedSet<String> changedProperties = null;
 
     private final List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
@@ -51,13 +53,18 @@ public class ModelObjectDelta implements IModelObjectDelta {
      * @throws NullPointerException if modelObject and referenceModelObject are both
      *             <code>null</code>.
      */
-    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int kind, String association) {
-        this(original, referenceModelObject, kind, 0);
-        this.association = association;
+    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int kind, String association,
+            AssociationKind associationKind) {
+        this(original, referenceModelObject, kind, 0, association, associationKind);
     }
 
     private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int deltaKind,
             int kindOfChange) {
+        this(original, referenceModelObject, deltaKind, kindOfChange, null, null);
+    }
+
+    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int deltaKind, int kindOfChange,
+            String association, AssociationKind associationKind) {
         this.original = original;
         referenceObject = referenceModelObject;
         if (original != null) {
@@ -67,6 +74,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
         kind = deltaKind;
         this.kindOfChange = kindOfChange;
+        this.association = association;
+        this.associationKind = associationKind;
     }
 
     public static final ModelObjectDelta newDelta(IModelObject object,
@@ -74,7 +83,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
             IDeltaComputationOptions options) {
         if (object != null && refObject != null) {
             if (!object.getClass().equals(refObject.getClass())) {
-                return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED);
+                return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED, null, null);
             }
         }
 
@@ -106,7 +115,17 @@ public class ModelObjectDelta implements IModelObjectDelta {
             IModelObject refObject,
             String association,
             IDeltaComputationOptions options) {
-        new ChildDeltaCreator(association, options).createChildDeltas(delta, original, refObject);
+        new ChildDeltaCreator(association, AssociationKind.Composition, options).createChildDeltas(delta, original,
+                refObject);
+    }
+
+    public static final void createAssociatedChildDeltas(ModelObjectDelta delta,
+            IModelObject original,
+            IModelObject refObject,
+            String association,
+            IDeltaComputationOptions options) {
+        new ChildDeltaCreator(association, AssociationKind.Association, options).createChildDeltas(delta, original,
+                refObject);
     }
 
     public static final void createChildDeltas(ModelObjectDelta delta,
@@ -114,21 +133,59 @@ public class ModelObjectDelta implements IModelObjectDelta {
             List<? extends IModelObject> refObjects,
             String association,
             IDeltaComputationOptions options) {
-        new ChildDeltaCreator(association, options).createChildDeltas(delta, originals, refObjects);
+        new ChildDeltaCreator(association, AssociationKind.Composition, options).createChildDeltas(delta, originals,
+                refObjects);
+    }
+
+    public static final void createAssociatedChildDeltas(ModelObjectDelta delta,
+            List<? extends IModelObject> originals,
+            List<? extends IModelObject> refObjects,
+            String association,
+            IDeltaComputationOptions options) {
+        new ChildDeltaCreator(association, AssociationKind.Association, options).createChildDeltas(delta, originals,
+                refObjects);
+    }
+
+    /**
+     * @deprecated since 19.12. Use
+     *             {@link #newAddDelta(IModelObject, String, AssociationKind, IDeltaComputationOptions)}
+     *             instead.
+     */
+    @Deprecated
+    public static final ModelObjectDelta newAddDelta(IModelObject addedObject,
+            String association,
+            IDeltaComputationOptions options) {
+        return newAddDelta(addedObject, association, AssociationKind.Composition, options);
     }
 
     public static final ModelObjectDelta newAddDelta(IModelObject addedObject,
             String association,
+            AssociationKind associationKind,
             IDeltaComputationOptions options) {
-        ModelObjectDelta addDelta = new ModelObjectDelta(null, addedObject, IModelObjectDelta.ADDED, association);
+        ModelObjectDelta addDelta = new ModelObjectDelta(null, addedObject, IModelObjectDelta.ADDED, association,
+                associationKind);
         createSubtreeDeltaIfNeeded(addedObject, addDelta, options);
         return addDelta;
     }
 
+    /**
+     * @deprecated since 19.12. Use
+     *             {@link #newRemoveDelta(IModelObject, String, AssociationKind, IDeltaComputationOptions)}
+     *             instead.
+     */
+    @Deprecated
     public static final ModelObjectDelta newRemoveDelta(IModelObject removedObject,
             String association,
             IDeltaComputationOptions options) {
-        ModelObjectDelta delta = new ModelObjectDelta(removedObject, null, IModelObjectDelta.REMOVED, association);
+        return newRemoveDelta(removedObject, association, AssociationKind.Composition, options);
+    }
+
+    public static final ModelObjectDelta newRemoveDelta(IModelObject removedObject,
+            String association,
+            AssociationKind associationKind,
+            IDeltaComputationOptions options) {
+        ModelObjectDelta delta = new ModelObjectDelta(removedObject, null, IModelObjectDelta.REMOVED, association,
+                associationKind);
         createSubtreeDeltaIfNeeded(removedObject, delta, options);
         return delta;
     }
@@ -175,10 +232,24 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
     }
 
+    /**
+     * @deprecated since 19.12. Use
+     *             {@link #newDifferentObjectAtPositionChangedDelta(IModelObject, IModelObject, String, AssociationKind)}
+     *             instead.
+     */
+    @Deprecated
     public static final ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original,
             IModelObject refObject,
             String association) {
-        return new ModelObjectDelta(original, refObject, IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION, association);
+        return newDifferentObjectAtPositionChangedDelta(original, refObject, association, AssociationKind.Composition);
+    }
+
+    public static final ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original,
+            IModelObject refObject,
+            String association,
+            AssociationKind associationKind) {
+        return new ModelObjectDelta(original, refObject, IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION, association,
+                associationKind);
     }
 
     public static final ModelObjectDelta newChangeDelta(IModelObject original,
@@ -230,6 +301,19 @@ public class ModelObjectDelta implements IModelObjectDelta {
     @Override
     public String getAssociation() {
         return association;
+    }
+
+    public void setAssociation(String association) {
+        this.association = association;
+    }
+
+    @Override
+    public AssociationKind getAssociationKind() {
+        return associationKind;
+    }
+
+    public void setAssociationKind(AssociationKind associationKind) {
+        this.associationKind = associationKind;
     }
 
     public void checkPropertyChange(String property, Object value1, Object value2, IDeltaComputationOptions options) {

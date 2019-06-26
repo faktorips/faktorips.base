@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org> Copyright (c) Faktor Zehn AG.
+ * <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -36,6 +37,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.Test;
 
 /**
@@ -153,7 +155,7 @@ public class ModelObjectDeltaTest {
 
     @Test
     public void testNewAddDelta() {
-        ModelObjectDelta delta = ModelObjectDelta.newAddDelta(objectB, "childs", OPTIONS);
+        ModelObjectDelta delta = ModelObjectDelta.newAddDelta(objectB, "childs", AssociationKind.Composition, OPTIONS);
         assertFalse(delta.isEmpty());
         assertFalse(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -167,7 +169,8 @@ public class ModelObjectDeltaTest {
 
     @Test
     public void testNewRemoveDelta() {
-        ModelObjectDelta delta = ModelObjectDelta.newRemoveDelta(objectA, "childs", OPTIONS);
+        ModelObjectDelta delta = ModelObjectDelta.newRemoveDelta(objectA, "childs", AssociationKind.Composition,
+                OPTIONS);
         assertFalse(delta.isEmpty());
         assertFalse(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -237,7 +240,8 @@ public class ModelObjectDeltaTest {
     @Test
     public void testAddChildDelta_AddDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-        ModelObjectDelta childDelta = ModelObjectDelta.newAddDelta(objectB, "childs", OPTIONS);
+        ModelObjectDelta childDelta = ModelObjectDelta.newAddDelta(objectB, "childs", AssociationKind.Composition,
+                OPTIONS);
         delta.addChildDelta(childDelta);
         assertTrue(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -250,7 +254,8 @@ public class ModelObjectDeltaTest {
     @Test
     public void testAddChildDelta_RemoveDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-        ModelObjectDelta childDelta = ModelObjectDelta.newRemoveDelta(objectA, "childs", OPTIONS);
+        ModelObjectDelta childDelta = ModelObjectDelta.newRemoveDelta(objectA, "childs", AssociationKind.Composition,
+                OPTIONS);
         delta.addChildDelta(childDelta);
         assertTrue(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -258,185 +263,6 @@ public class ModelObjectDeltaTest {
         assertFalse(delta.isChildChanged());
         assertEquals(1, delta.getChildDeltas().size());
         assertSame(childDelta, delta.getChildDeltas().get(0));
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByObject_ObjectUnchanged() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        MyModelObject objectA1 = new MyModelObject("A");
-        ModelObjectDelta.createChildDeltas(delta, objectA, objectA1, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(0, childDeltas.size());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByObject_Added() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        ModelObjectDelta.createChildDeltas(delta, null, objectB, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(1, childDeltas.size());
-        assertTrue(childDeltas.get(0).isAdded());
-        assertEquals(objectB, childDeltas.get(0).getReferenceObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByObject_Removed() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        ModelObjectDelta.createChildDeltas(delta, objectA, null, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(1, childDeltas.size());
-        assertTrue(childDeltas.get(0).isRemoved());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByObject_RemovedAdded() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        ModelObjectDelta.createChildDeltas(delta, objectA, objectB, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(2, childDeltas.size());
-        assertTrue(childDeltas.get(0).isRemoved());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-        assertTrue(childDeltas.get(1).isAdded());
-        assertEquals(objectB, childDeltas.get(1).getReferenceObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByObject_ObjectHasChanged() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        MyModelObject objectA1 = new MyModelObject("A");
-        objectA1.setProperty(42);
-        ModelObjectDelta.createChildDeltas(delta, objectA, objectA1, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(1, childDeltas.size());
-        assertTrue(childDeltas.get(0).isChanged());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-        assertEquals(objectA1, childDeltas.get(0).getReferenceObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByPositionAdded() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_POSITION);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        ModelObjectDelta.createChildDeltas(delta, null, objectB, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(1, childDeltas.size());
-        assertTrue(childDeltas.get(0).isAdded());
-        assertEquals(objectB, childDeltas.get(0).getReferenceObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByPosition_Removed() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_POSITION);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        ModelObjectDelta.createChildDeltas(delta, objectA, null, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(1, childDeltas.size());
-        assertTrue(childDeltas.get(0).isRemoved());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_to1Association_ComputationByPosition_RemovedAdded() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_POSITION);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        ModelObjectDelta.createChildDeltas(delta, objectA, objectB, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(1, childDeltas.size());
-        assertEquals(IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION, childDeltas.get(0).getKind());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-        assertEquals(objectB, childDeltas.get(0).getReferenceObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_toManyAssociation_ComputationByObject_Added() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        List<MyModelObject> newChilds = new ArrayList<MyModelObject>();
-        newChilds.add(objectA);
-        newChilds.add(objectB);
-        ModelObjectDelta.createChildDeltas(delta, new ArrayList<IModelObject>(), newChilds, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(2, childDeltas.size());
-        assertTrue(childDeltas.get(0).isAdded());
-        assertEquals(objectA, childDeltas.get(0).getReferenceObject());
-        assertTrue(childDeltas.get(1).isAdded());
-        assertEquals(objectB, childDeltas.get(1).getReferenceObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_toManyAssociation_ComputationByObject_Removed() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        List<MyModelObject> removedChilds = new ArrayList<MyModelObject>();
-        removedChilds.add(objectA);
-        removedChilds.add(objectB);
-        ModelObjectDelta.createChildDeltas(delta, removedChilds, new ArrayList<IModelObject>(), "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(2, childDeltas.size());
-        assertTrue(childDeltas.get(0).isRemoved());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-        assertTrue(childDeltas.get(1).isRemoved());
-        assertEquals(objectB, childDeltas.get(1).getOriginalObject());
-    }
-
-    @Test
-    public void testCreateChildDeltas_toManyAssociation_ComputationByObject_Moved() {
-        IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
-        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-
-        // note: objectsA and B are used as parent and child objects (not realistic but of no harm
-        // for this test)
-        List<MyModelObject> childs = new ArrayList<MyModelObject>();
-        childs.add(objectA);
-        childs.add(objectB);
-        List<MyModelObject> differentOrder = new ArrayList<MyModelObject>();
-        differentOrder.add(objectB);
-        differentOrder.add(objectA);
-        ModelObjectDelta.createChildDeltas(delta, childs, differentOrder, "childs", options);
-        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
-        assertEquals(2, childDeltas.size());
-        assertTrue(childDeltas.get(0).isMoved());
-        assertEquals(objectA, childDeltas.get(0).getOriginalObject());
-        assertEquals(objectA, childDeltas.get(0).getReferenceObject());
-        assertTrue(childDeltas.get(1).isMoved());
-        assertEquals(objectB, childDeltas.get(1).getOriginalObject());
-        assertEquals(objectB, childDeltas.get(1).getReferenceObject());
     }
 
     @Test
@@ -641,6 +467,11 @@ public class ModelObjectDeltaTest {
 
         @Override
         public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
+            return false;
+        }
+
+        @Override
+        public boolean ignoreAssociations() {
             return false;
         }
 
