@@ -25,8 +25,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gef;bundle-version="3.4.0",
  org.eclipse.core.filesystem;bundle-version="1.2.0",
  com.google.guava;bundle-version="18.0.0",
- opencsv;bundle-version="2.3.0",
- findbugsAnnotations;bundle-version="2.0.3";resolution:=optional
+ opencsv;bundle-version="2.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
@@ -95,6 +94,6 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.tableconversion
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
+Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
  org.apache.commons.collections;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]"
