@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS German language pack
 Bundle-SymbolicName: org.faktorips.nls.devtools.core.nl1;singleton:=true
 Bundle-Version: 19.7.0.qualifier
-Bundle-Vendor: Faktor Zehn AG
+Bundle-Vendor: Faktor Zehn GmbH
 Fragment-Host: org.faktorips.devtools.core
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

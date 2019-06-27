@@ -132,7 +132,7 @@ This example registers multiple value converter classes (for boolean and date an
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         Copyright (c) Faktor Zehn AG. &gt;http://www.faktorzehn.org&lt;
+         Copyright (c) Faktor Zehn GmbH. &gt;http://www.faktorzehn.org&lt;
 
 This source code is available under the terms of the AGPL Affero General Public License version 3. 
 

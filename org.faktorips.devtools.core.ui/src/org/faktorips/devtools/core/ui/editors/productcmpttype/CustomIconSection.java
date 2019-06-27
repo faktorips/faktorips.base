@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -61,8 +61,6 @@ import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdap
  * Note: This class can be easily extended for use with all ITypes (especially
  * {@link IPolicyCmptType}. The Methods in {@link IProductCmptType} as
  * {@link IProductCmptType#getInstancesIcon()} etc. then have to be pulled up to {@link IType}.
- * 
- * @author Stefan Widmaier, Faktor Zehn AG
  */
 public class CustomIconSection extends IpsSection {
 
@@ -124,14 +122,13 @@ public class CustomIconSection extends IpsSection {
         getBindingContext().bindContent(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
 
         // Update Icon on path-change
-        getBindingContext().add(
-                new ControlPropertyBinding(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES,
-                        String.class) {
-                    @Override
-                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                        refreshIcon();
-                    }
-                });
+        getBindingContext().add(new ControlPropertyBinding(iconPathText, type,
+                IProductCmptType.PROPERTY_ICON_FOR_INSTANCES, String.class) {
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                refreshIcon();
+            }
+        });
 
         getBindingContext().updateUI();
     }
@@ -150,8 +147,8 @@ public class CustomIconSection extends IpsSection {
         }
         ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getImageHandling()
                 .getWorkbenchAdapterFor(ProductCmpt.class);
-        iconPreview.setImage(IpsUIPlugin.getImageHandling().getImage(
-                adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+        iconPreview.setImage(IpsUIPlugin.getImageHandling()
+                .getImage(adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
     }
 
     public void setType(IType newType) {
@@ -163,8 +160,8 @@ public class CustomIconSection extends IpsSection {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-            ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(),
-                    new WorkbenchLabelProvider(), new WorkbenchContentProvider());
+            ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(), new WorkbenchLabelProvider(),
+                    new WorkbenchContentProvider());
 
             dialog.setValidator(new FileValidator());
             dialog.setAllowMultiple(false);
@@ -247,8 +244,8 @@ public class CustomIconSection extends IpsSection {
          */
         private boolean isIpsSrcFolder(IFolder folder) {
             IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(folder.getProject());
-            IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(folder.getProjectRelativePath()
-                    .toOSString());
+            IIpsPackageFragmentRoot root = ipsProject
+                    .getIpsPackageFragmentRoot(folder.getProjectRelativePath().toOSString());
             if (root != null && root.exists()) {
                 return true;
             } else {

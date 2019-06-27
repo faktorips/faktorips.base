@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -36,8 +36,6 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
  * Dialog that allows the user to edit the properties of an {@link IProductCmptCategory}.
  * 
  * @since 3.6
- * 
- * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class CategoryEditDialog extends IpsPartEditDialog2 {
 
@@ -145,8 +143,8 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createBottomExtensionPropertyControls(Composite page) {
-        extensionFactory
-                .createControls(page, getToolkit(), getCategory(), IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extensionFactory.createControls(page, getToolkit(), getCategory(),
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
     }
 
     private void setInitialFocus() {

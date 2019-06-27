@@ -91,5 +91,5 @@ Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.workbenchadapters
 Bundle-Localization: plugin
 Bundle-ClassPath: .
-Bundle-Vendor: Faktor Zehn AG
+Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

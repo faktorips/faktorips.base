@@ -5,5 +5,5 @@ Bundle-SymbolicName: org.faktorips.nls.devtools.stdbuilder.nl1;singleton:=true
 Bundle-Version: 19.7.0.qualifier
 Fragment-Host: org.faktorips.devtools.stdbuilder;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Faktor Zehn AG
+Bundle-Vendor: Faktor Zehn GmbH
 Bundle-ClassPath: .

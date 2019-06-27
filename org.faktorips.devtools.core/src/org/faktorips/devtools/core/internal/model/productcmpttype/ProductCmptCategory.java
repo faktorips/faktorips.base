@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -39,8 +39,6 @@ import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IProductCmptProperty}.
- * 
- * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
 
@@ -160,7 +158,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             @Override
             protected boolean visit(IProductCmptType currentType) {
                 try {
-                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false, getIpsProject())) {
+                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false,
+                            getIpsProject())) {
                         /*
                          * First, check whether the property has been overwritten by a subtype - in
                          * this case we do not add the property to the category.
@@ -382,10 +381,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ProductCmptPropertyType.VALIDATION_RULE,
                 ipsProject);
         duplicateFinder.start(getProductCmptType());
-        duplicateFinder
-                .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
-                        Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
-                        PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
+        duplicateFinder.addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
+                PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
     private void validateDuplicateDefaultsForTableStructureUsages(MessageList list, IIpsProject ipsProject) {
@@ -455,15 +453,14 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         if (contextType == null) {
             return false;
         }
-
-        return getIpsModel().executeModificationsWithSingleEvent(
-                new SingleEventModification<Boolean>(contextType.getIpsSrcFile()) {
+        // CSOFF: LineLength
+        return getIpsModel()
+                .executeModificationsWithSingleEvent(new SingleEventModification<Boolean>(contextType.getIpsSrcFile()) {
                     private boolean result = true;
 
                     @Override
                     protected boolean execute() throws CoreException {
                         contextType.changeCategoryAndDeferPolicyChange(property, name);
-
                         List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false,
                                 contextType.getIpsProject());
                         int propertyIndex = properties.indexOf(property);
@@ -482,6 +479,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                         return result;
                     }
                 });
+        // CSON: LineLength
     }
 
     private void insertProductCmptProperty(int propertyIndex,
@@ -529,14 +527,14 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
-        defaultForFormulaSignatureDefinitions = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS));
-        defaultForPolicyCmptTypeAttributes = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES));
-        defaultForProductCmptTypeAttributes = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES));
-        defaultForTableStructureUsages = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES));
+        defaultForFormulaSignatureDefinitions = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS));
+        defaultForPolicyCmptTypeAttributes = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES));
+        defaultForProductCmptTypeAttributes = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES));
+        defaultForTableStructureUsages = Boolean
+                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES));
         defaultForValidationRules = Boolean.parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES));
         position = Position.getValueById(element.getAttribute(PROPERTY_POSITION));
 

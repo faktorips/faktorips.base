@@ -3,14 +3,14 @@
       id="org.faktorips.license"
       label="License for Faktor-IPS"
       version="19.7.0.qualifier"
-      provider-name="Faktor Zehn AG">
+      provider-name="Faktor Zehn GmbH">
 
    <description url="http://faktorzehn.org">
       Feature for the Faktor-IPS License
    </description>
 
    <copyright url="http://faktorzehn.org">
-      Copyright (c) Faktor Zehn AG. &lt;http://www.faktorzehn.org&gt;
+      Copyright (c) Faktor Zehn GmbH. &lt;http://www.faktorzehn.org&gt;
 
 This source code is available under the terms of the AGPL Affero General Public License version 3. 
 
@@ -24,10 +24,10 @@ compatible with AGPL Version 3 may use Faktor-IPS under the
 terms of the compatible license. Please see agpl-3.0.txt in the 
 Faktor-IPS bundles for more details. However, if this licensing 
 is incompatible with your use of Faktor-IPS, alternative 
-license terms are available from Faktor Zehn AG.
+license terms are available from Faktor Zehn GmbH.
 
 The following additional permissions and restrictions are 
-stated by Faktor Zehn AG in accordance with section 7 of the AGPL: 
+stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL: 
 
 If you modify the Program or any covered work, by linking or 
 combining it with libraries of the namespace org.eclipse.* and 
@@ -61,9 +61,9 @@ kompatibel sind, unter Anwendung dieser kompatiblen Lizenz
 genutzt werden. Bitte beachten sie die Datei agpl-3.0.txt in
 den Faktor-IPS Bundles für weitere Details. Falls Sie Faktor
 -IPS in anderer Weise nutzen wollen, können Sie alternative
-Lizenzbedingungen mit der Faktor Zehn AG vereinbaren.
+Lizenzbedingungen mit der Faktor Zehn GmbH vereinbaren.
   
-Auf Basis der Ziff. 7 der AGPL ergänzt die Faktor Zehn AG die
+Auf Basis der Ziff. 7 der AGPL ergänzt die Faktor Zehn GmbH die
 Lizenzbedingungen der AGPL durch die folgenden Zusätzlichen
 Genehmigungen und Zusätzlichen Einschränkungen. 
   

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -51,11 +51,10 @@ import org.faktorips.values.LocalizedString;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann, Faktor Zehn AG
- * 
  * @see IAttributeValue
  */
-public class AttributeValueEditComposite extends EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
+public class AttributeValueEditComposite
+        extends EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
 
     public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -77,8 +76,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     private void createValueEditField(List<EditField<?>> editFields) {
-        ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
-                getPropertyValue().getIpsProject());
+        ValueDatatype datatype = getProperty() == null ? null
+                : getProperty().findDatatype(getPropertyValue().getIpsProject());
         createEditField(datatype, editFields);
     }
 
@@ -128,8 +127,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     private EditField<?> createInternationalStringField() {
-        final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(
-                getPropertyValue().getIpsProject());
+        final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport()
+                .getLocalizationLocaleOrDefault(getPropertyValue().getIpsProject());
         MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
                 localizationLocale);
         InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
@@ -176,7 +175,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     return internationalString;
                 }
             }
-            throw new IllegalArgumentException("The object provided to the InternationalStringDialog is not supported."); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    "The object provided to the InternationalStringDialog is not supported."); //$NON-NLS-1$
         }
     }
 
@@ -231,8 +231,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
         public LocalizedString getLocalizedStringValue() {
             IValue<?> value = getSingleValue(getIpsObjectPartContainer());
-            return value == null || value.getContent() == null ? null : ((IInternationalString)value.getContent())
-                    .get(locale);
+            return value == null || value.getContent() == null ? null
+                    : ((IInternationalString)value.getContent()).get(locale);
         }
 
         public void setLocalizedStringValue(LocalizedString newValue) {

@@ -2,7 +2,7 @@ Faktor IPS is available under a dual licensing scheme whereby use of Faktor IPS 
 so as to be compatible with AGPL Version 3 – or in respect of a faktorips-runtime or faktorips-valuetype 
 component with LGPL version 3 - may use Faktor IPS under the terms of the compatible license. Please see 
 agpl-3.0.txt and lgpl-3.0.txt in the Faktor IPS package for more details. However, if this licensing is 
-incompatible with your use of Faktor IPS, alternative license terms are available from Faktor Zehn AG.                    
+incompatible with your use of Faktor IPS, alternative license terms are available from Faktor Zehn GmbH.                    
 
 In case you use Faktor IPS under the aforementioned terms, the following additional permission are stated: If 
 you modify the Program (in respect to the defintion of the AGPL or LGPL), or any covered work, by linking or 

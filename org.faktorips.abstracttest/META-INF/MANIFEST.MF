@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Abstract Tests for Faktor-IPS
 Bundle-SymbolicName: org.faktorips.abstracttest
 Bundle-Version: 19.7.0.qualifier
-Bundle-Vendor: Faktor Zehn AG
+Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.devtools.core,
  org.faktorips.fl,
  org.eclipse.jdt.core;bundle-version="3.4.0",

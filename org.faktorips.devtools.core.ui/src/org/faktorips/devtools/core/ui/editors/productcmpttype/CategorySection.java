@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -54,8 +54,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * {@link IProductCmptProperty}. This can also be achieved via drag and drop.
  * 
  * @since 3.6
- * 
- * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see IProductCmptCategory
  * @see IProductCmptProperty
@@ -119,14 +117,13 @@ public class CategorySection extends IpsSection {
 
         viewerButtonComposite = new CategoryComposite(category, contextType, this, client, toolkit);
 
-        getBindingContext().add(
-                new ControlPropertyBinding(getSectionControl(), category, IProductCmptCategory.PROPERTY_NAME,
-                        String.class) {
-                    @Override
-                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                        updateSectionTitle();
-                    }
-                });
+        getBindingContext().add(new ControlPropertyBinding(getSectionControl(), category,
+                IProductCmptCategory.PROPERTY_NAME, String.class) {
+            @Override
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                updateSectionTitle();
+            }
+        });
         SectionEditField sectionEditField = new SectionEditField(getSectionControl());
         getBindingContext().bindProblemMarker(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
         getBindingContext().bindProblemMarker(sectionEditField, category,
@@ -180,10 +177,10 @@ public class CategorySection extends IpsSection {
     }
 
     private void updateToolBarEnabledStates() {
-        moveUpAction.setEnabled(isContextTypeEditable() && !contextType.isFirstCategory(category)
-                && contextType.isDefining(category));
-        moveDownAction.setEnabled(isContextTypeEditable() && !contextType.isLastCategory(category)
-                && contextType.isDefining(category));
+        moveUpAction.setEnabled(
+                isContextTypeEditable() && !contextType.isFirstCategory(category) && contextType.isDefining(category));
+        moveDownAction.setEnabled(
+                isContextTypeEditable() && !contextType.isLastCategory(category) && contextType.isDefining(category));
         moveLeftAction.setEnabled(isContextTypeEditable() && contextType.isDefining(category));
         moveRightAction.setEnabled(isContextTypeEditable() && contextType.isDefining(category));
 

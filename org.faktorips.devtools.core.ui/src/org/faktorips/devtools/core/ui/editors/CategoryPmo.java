@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,8 +30,6 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
  * implicit assignments to default categories.
  * 
  * @since 3.6
- * 
- * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see IProductCmptCategory
  */

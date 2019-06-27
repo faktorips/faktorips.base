@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -35,39 +35,37 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann, Faktor Zehn AG
- * 
  * @see IProductCmptProperty
  * @see ProductCmptPropertyType
  */
 public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, IDescribedElement {
 
-    public final static String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = "defaultForTableStructureUsages"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = "defaultForTableStructureUsages"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = "defaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = "defaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
 
-    public final static String PROPERTY_POSITION = "position"; //$NON-NLS-1$
+    public static final String PROPERTY_POSITION = "position"; //$NON-NLS-1$
 
-    public final static String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no name has been specified for this
      * {@link IProductCmptCategory}.
      */
-    public final static String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
+    public static final String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name given to this {@link IProductCmptCategory}
      * is already used for another {@link IProductCmptCategory} in the scope of the product
      * component type's supertype hierarchy.
      */
-    public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
+    public static final String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
             + "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
 
     /**
@@ -75,7 +73,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for formula signature definitions.
      */
-    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "DuplicateDefaultsForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
@@ -83,7 +81,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for configurable validation rules.
      */
-    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "DuplicateDefaultsForValidationRules"; //$NON-NLS-1$
 
     /**
@@ -91,7 +89,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for table structure usages.
      */
-    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "DuplicateDefaultsForTableStructureUsages"; //$NON-NLS-1$
 
     /**
@@ -99,7 +97,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for product relevant policy component type attributes.
      */
-    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
@@ -107,7 +105,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for product component type attributes.
      */
-    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**

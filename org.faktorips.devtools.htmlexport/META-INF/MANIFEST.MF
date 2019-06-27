@@ -22,6 +22,6 @@ Export-Package: org.faktorips.devtools.htmlexport,org.faktorips.devtoo
  vtools.htmlexport.pages.standard,org.faktorips.devtools.htmlexport.st
  andard,org.faktorips.devtools.htmlexport.standard.pages,org.faktorips
  .devtools.htmlexport.wizards
-Bundle-Vendor: Faktor Zehn AG
+Bundle-Vendor: Faktor Zehn GmbH
 Bundle-ClassPath: .
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

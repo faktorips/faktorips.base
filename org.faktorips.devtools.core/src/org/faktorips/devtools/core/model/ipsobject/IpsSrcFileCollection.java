@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,9 +25,6 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 /**
  * Collection of {@link IIpsSrcFile}s - able to answer some questions about single items only useful
  * in relation with all other items of this collection.
- * 
- * @author Cornelius Dirmeier, Faktor Zehn AG
- * @author Thorsten Günther, Faktor Zehn AG
  */
 public class IpsSrcFileCollection {
 

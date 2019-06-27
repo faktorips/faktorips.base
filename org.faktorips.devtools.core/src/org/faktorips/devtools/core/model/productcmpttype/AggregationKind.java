@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,27 +20,27 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
  */
 public class AggregationKind extends DefaultEnumValue {
 
-    public final static AggregationKind NONE;
+    public static final AggregationKind NONE;
 
-    public final static AggregationKind SHARED;
+    public static final AggregationKind SHARED;
 
-    public final static AggregationKind COMPOSITE;
+    public static final AggregationKind COMPOSITE;
 
-    private final static DefaultEnumType enumType;
+    private static final DefaultEnumType enumType;
 
-    public final static DefaultEnumType getEnumType() {
+    public static final DefaultEnumType getEnumType() {
         return enumType;
     }
 
-    public final static AggregationKind getKind(String id) {
+    public static final AggregationKind getKind(String id) {
         return (AggregationKind)enumType.getEnumValue(id);
     }
 
     static {
         enumType = new DefaultEnumType("AggregationKind", AggregationKind.class); //$NON-NLS-1$
-        NONE = new AggregationKind(enumType, "none", "None"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        SHARED = new AggregationKind(enumType, "shared", "Shared"); //$NON-NLS-1$ //$NON-NLS-2$ 
-        COMPOSITE = new AggregationKind(enumType, "composite", "Composite"); //$NON-NLS-1$ //$NON-NLS-2$ 
+        NONE = new AggregationKind(enumType, "none", "None"); //$NON-NLS-1$ //$NON-NLS-2$
+        SHARED = new AggregationKind(enumType, "shared", "Shared"); //$NON-NLS-1$ //$NON-NLS-2$
+        COMPOSITE = new AggregationKind(enumType, "composite", "Composite"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private AggregationKind(DefaultEnumType type, String id, String name) {

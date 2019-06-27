@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,8 +28,6 @@ import java.util.Map.Entry;
  * want to use this helper only inside one test case, call the {@link #reset()} method in a
  * {@code finally} block. Also consider that it is not possible to run tests parallel when using
  * this helper!
- * 
- * @author Daniel Schwering, Faktor Zehn AG
  */
 public class SingletonMockHelper {
 
@@ -69,20 +67,18 @@ public class SingletonMockHelper {
         for (Field field : fields) {
             if (field.getType().isAssignableFrom(clazz) && Modifier.isStatic(field.getModifiers())) {
                 if (singletonField != null) {
-                    throw new IllegalArgumentException(
-                            String.format(
-                                    "The class %s has more than one field of it's type, so the field to be set for the singleton pattern could not be determined.",
-                                    clazz.getName()));
+                    throw new IllegalArgumentException(String.format(
+                            "The class %s has more than one field of it's type, so the field to be set for the singleton pattern could not be determined.",
+                            clazz.getName()));
                 } else {
                     singletonField = field;
                 }
             }
         }
         if (singletonField == null) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The class %s has no field of it's type, so the field to be set for the singleton pattern could not be determined.",
-                            clazz.getName()));
+            throw new IllegalArgumentException(String.format(
+                    "The class %s has no field of it's type, so the field to be set for the singleton pattern could not be determined.",
+                    clazz.getName()));
         }
         try {
             singletonField.setAccessible(true);
@@ -93,12 +89,14 @@ public class SingletonMockHelper {
             }
             singletonField.setAccessible(false);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(String.format("Could not set the field %s on class %s.",
-                    singletonField.getName(), clazz.getName()), e);
+            throw new IllegalArgumentException(
+                    String.format("Could not set the field %s on class %s.", singletonField.getName(), clazz.getName()),
+                    e);
         } catch (SecurityException e) {
-            throw new IllegalArgumentException(String.format(
-                    "Could not change accessibility for the field %s on class %s.", singletonField.getName(),
-                    clazz.getName()), e);
+            throw new IllegalArgumentException(
+                    String.format("Could not change accessibility for the field %s on class %s.",
+                            singletonField.getName(), clazz.getName()),
+                    e);
         }
     }
 
@@ -116,9 +114,10 @@ public class SingletonMockHelper {
                 throw new IllegalArgumentException(String.format("Could not set the field %s on class %s.",
                         singletonField.getName(), singletonField.getClass().getName()), e);
             } catch (SecurityException e) {
-                throw new IllegalArgumentException(String.format(
-                        "Could not change accessibility for the field %s on class %s.", singletonField.getName(),
-                        singletonField.getClass().getName()), e);
+                throw new IllegalArgumentException(
+                        String.format("Could not change accessibility for the field %s on class %s.",
+                                singletonField.getName(), singletonField.getClass().getName()),
+                        e);
             }
         }
         singletonMap.clear();

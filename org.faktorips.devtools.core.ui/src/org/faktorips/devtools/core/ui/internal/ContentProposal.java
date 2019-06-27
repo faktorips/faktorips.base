@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,8 +18,6 @@ import org.eclipse.jface.fieldassist.IContentProposal;
  * implementation in 3.6 and we use 3.5
  * 
  * FIXME in Eclipse 3.6: use org.eclipse.jface.fieldassist.ContentProposal
- * 
- * @author Daniel Schwering, Faktor Zehn AG
  */
 public class ContentProposal implements IContentProposal {
 

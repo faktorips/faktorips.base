@@ -4,7 +4,7 @@ Bundle-Name: User Interface for Standard Builder
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.ui;singleton:=true
 Bundle-Version: 19.7.0.qualifier
 Bundle-Activator: org.faktorips.devtools.stdbuilder.ui.StdBuilderUIPlugin
-Bundle-Vendor: Faktor Zehn AG
+Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.devtools.core;bundle-version="0.0.0",
  org.faktorips.devtools.stdbuilder;bundle-version="0.0.0",
  org.faktorips.devtools.core.ui;bundle-version="0.0.0",

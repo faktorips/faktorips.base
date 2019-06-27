@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -74,13 +74,11 @@ import org.faktorips.devtools.core.util.TemplatedValueUtil;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann, Faktor Zehn AG
- * 
  * @see IPropertyValue
  * @see EditField
  */
-public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
-        Composite {
+public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue>
+        extends Composite {
 
     private final P property;
 
@@ -306,8 +304,8 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             final ControlDecoration controlDecoration,
             int pixelsToLeftUponControlFocus) {
         if (pixelsToLeftUponControlFocus > 0) {
-            editField.getControl().addFocusListener(
-                    new MoveDecorationFocusListener(controlDecoration, pixelsToLeftUponControlFocus));
+            editField.getControl()
+                    .addFocusListener(new MoveDecorationFocusListener(controlDecoration, pixelsToLeftUponControlFocus));
         }
     }
 
@@ -423,13 +421,13 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         }
 
         private String getOpenTemplateText(final IPropertyValue templateValue) {
-            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
-                    .getPropertyValueContainer().getProductCmpt().getName());
+            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate,
+                    templateValue.getPropertyValueContainer().getProductCmpt().getName());
         }
 
         private String getOpenTemplatePropertyUsageText(final ITemplatedValue templateValue) {
-            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
-                    .getTemplatedValueContainer().getProductCmpt().getName());
+            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage,
+                    templateValue.getTemplatedValueContainer().getProductCmpt().getName());
         }
 
     }

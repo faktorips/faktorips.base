@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,8 +17,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * This Interface provides a simple possibility to retrieve the underling <code>IpsSrcFile</code> of
  * an object. It´s useful to build standardized ui features e.g. "open in editor" which needs an
  * <code>IpsSrcFile</code> as input.
- * 
- * @author Faktor Zehn AG
  */
 public interface IIpsSrcFileViewItem extends IIpsSrcFileWrapper {
 

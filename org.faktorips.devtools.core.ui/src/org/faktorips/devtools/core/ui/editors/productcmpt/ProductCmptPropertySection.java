@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -67,8 +67,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * (usually this is the subclass constructor's last statement).
  * 
  * @since 3.6
- * 
- * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see EditPropertyValueComposite
  * @see IPropertyValue
@@ -269,8 +267,8 @@ public abstract class ProductCmptPropertySection extends IpsSection {
         TABLE_CONTENT_USAGE() {
             @Override
             public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
-                Hyperlink hyperlink = toolkit.createHyperlink(parent, IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedCaption(propertyValue));
+                Hyperlink hyperlink = toolkit.createHyperlink(parent,
+                        IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue));
                 addOpenEditorHyperlinkListener(propertyValue, hyperlink);
                 return hyperlink;
             }

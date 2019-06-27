@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -52,10 +52,9 @@ import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompar
  * information to display differences in a way similar to the java source compare.
  * 
  * @see org.eclipse.compare.contentmergeviewer.IDocumentRange
- * @author Stefan Widmaier, Faktor Zehn AG
  */
-public abstract class AbstractCompareItem implements IStreamContentAccessor, IStructureComparator, ITypedElement,
-        IDocumentRange {
+public abstract class AbstractCompareItem
+        implements IStreamContentAccessor, IStructureComparator, ITypedElement, IDocumentRange {
 
     protected static final String COLON_BLANK = ": "; //$NON-NLS-1$
     protected static final String COLON = ":"; //$NON-NLS-1$

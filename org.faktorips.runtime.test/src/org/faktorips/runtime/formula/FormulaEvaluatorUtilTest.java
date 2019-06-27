@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -35,8 +35,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link FormulaEvaluatorUtil}.
- * 
- * @author Daniel Schwering, Faktor Zehn AG
  */
 public class FormulaEvaluatorUtilTest {
 
@@ -328,8 +326,8 @@ public class FormulaEvaluatorUtilTest {
         when(tree3.getProductComponent()).thenReturn(treePC3);
         when(treePC3.getId()).thenReturn("id3");
 
-        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(
-                Arrays.asList(tree, tree2, tree22, tree3), "id2");
+        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil
+                .getListModelObjectById(Arrays.asList(tree, tree2, tree22, tree3), "id2");
         assertFalse(modelObjectList.isEmpty());
         assertEquals(2, modelObjectList.size());
     }

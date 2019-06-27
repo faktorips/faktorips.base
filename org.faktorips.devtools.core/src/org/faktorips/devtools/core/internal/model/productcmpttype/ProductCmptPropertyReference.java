@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,8 +24,6 @@ import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IProductCmptPropertyReference}.
- * 
- * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
@@ -100,8 +98,8 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     @Override
     protected void initFromXml(Element element, String id) {
         referencedPartId = element.getAttribute(PROPERTY_REFERENCED_PART_ID);
-        referencedIpsObjectType = IpsObjectType.getTypeForName(element
-                .getAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE));
+        referencedIpsObjectType = IpsObjectType
+                .getTypeForName(element.getAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE));
 
         super.initFromXml(element, id);
     }

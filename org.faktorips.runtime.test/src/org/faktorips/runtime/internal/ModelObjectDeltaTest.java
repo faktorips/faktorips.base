@@ -1,22 +1,11 @@
 /*******************************************************************************
- * <<<<<<< HEAD Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
  * 
  * Please see LICENSE.txt for full license terms, including the additional permissions and
- * restrictions as well as the possibility of alternative license terms. ======= Copyright (c)
- * 2005-2012 Faktor Zehn AG und andere.
- * 
- * Alle Rechte vorbehalten.
- * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de >>>>>>>
- * 660c2b7... FIPS-2479 :: fix new delta for subtrees
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
