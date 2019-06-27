@@ -104,7 +104,7 @@ class ProductAttributeTmpl {
 
     def private static setter (XProductAttribute it) '''
             /**
-             * «localizedJDoc("METHOD_SETVALUE", name, description)»
+             * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
@@ -118,7 +118,7 @@ class ProductAttributeTmpl {
     def private static internalSetter (XProductAttribute it) '''
         «IF (!genInterface)»
             /**
-             * «localizedJDoc("METHOD_SETVALUE", name, description)»
+             * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
