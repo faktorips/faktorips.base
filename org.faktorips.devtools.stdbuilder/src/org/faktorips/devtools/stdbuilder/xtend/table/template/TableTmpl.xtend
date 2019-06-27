@@ -59,6 +59,8 @@ class TableTmpl {
         */
         public «method(name)»{
             super();
+            rows = new «ArrayList(tableRowName)»();
+            «init()»;
         }
 
         /**
