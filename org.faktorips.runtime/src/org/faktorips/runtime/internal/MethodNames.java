@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import org.faktorips.runtime.internal.delta.ChildDeltaCreator;
 
 /**
  * Gives access to the method names defined in the runtime that the generated code refers to, e.g.
@@ -165,11 +166,7 @@ public enum MethodNames {
     public static final String MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE = "checkPropertyChange";
 
     /**
-     * @see org.faktorips.runtime.internal.ModelObjectDelta#createChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta,
-     *      org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, String,
-     *      org.faktorips.runtime.IDeltaComputationOptions)
-     * @see org.faktorips.runtime.internal.ModelObjectDelta#createChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta,
-     *      java.util.List, java.util.List, String, org.faktorips.runtime.IDeltaComputationOptions)
+     * @see ChildDeltaCreator
      */
     public static final String MODELOBJECTDELTA_CREATE_CHILD_DELTAS = "createChildDeltas";
 

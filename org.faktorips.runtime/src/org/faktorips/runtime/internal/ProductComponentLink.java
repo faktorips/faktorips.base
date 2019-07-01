@@ -25,11 +25,9 @@ import org.w3c.dom.Element;
  * {@link CardinalityRange} class.
  * 
  * @see CardinalityRange
- * 
- * @author Daniel Hohenberger
  */
-public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject implements
-        IProductComponentLink<T>, IXmlPersistenceSupport {
+public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject
+        implements IProductComponentLink<T>, IXmlPersistenceSupport {
 
     private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
@@ -66,7 +64,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     }
 
     /**
-     * Creates a new link for the given product component generation. Target and cardinality must be
+     * Creates a new link for the given product component/generation. Target and cardinality must be
      * set by invoking <code>initFromXml</code>.
      */
     public ProductComponentLink(IProductComponentLinkSource source) {
@@ -74,7 +72,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     }
 
     /**
-     * Creates a new link to the given target for the given product component generation using the
+     * Creates a new link to the given target for the given product component/generation using the
      * cardinality (0,*).
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
@@ -85,8 +83,24 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     }
 
     /**
+     * Creates a new link to the given target and association name for the given product
+     * component/generation using the cardinality (0,*).
+     * 
+     * @throws NullPointerException if any of the parameters is {@code null}.
+     * 
+     */
+    public ProductComponentLink(IProductComponentLinkSource source, T target, String associationName) {
+        this(source, target);
+
+        if (associationName == null) {
+            throw new NullPointerException("The associationName for the ProductComponentLink may not be null.");
+        }
+        this.associationName = associationName;
+    }
+
+    /**
      * Creates a new link with the given cardinality to the given target for the given product
-     * component generation.
+     * component/generation.
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
@@ -103,6 +117,22 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
             throw new NullPointerException("The cardinality for the ProductComponentLink may not be null.");
         }
         this.cardinality = cardinality;
+    }
+
+    /**
+     * Creates a new link with the cardinality and association name to the given target for the
+     * given product component/generation.
+     * 
+     * @throws NullPointerException if any of the parameters is {@code null}.
+     */
+    public ProductComponentLink(IProductComponentLinkSource source, T target, CardinalityRange cardinality,
+            String associationName) {
+        this(source, target, cardinality);
+
+        if (associationName == null) {
+            throw new NullPointerException("The associationName for the ProductComponentLink may not be null.");
+        }
+        this.associationName = associationName;
     }
 
     @Override
@@ -135,8 +165,8 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         linkElement.setAttribute("targetRuntimeId", getTargetId());
         linkElement.setAttribute("minCardinality", Integer.toString(getCardinality().getLowerBound()));
         Integer upperBound = getCardinality().getUpperBound();
-        linkElement
-                .setAttribute("maxCardinality", upperBound == Integer.MAX_VALUE ? "*" : Integer.toString(upperBound));
+        linkElement.setAttribute("maxCardinality",
+                upperBound == Integer.MAX_VALUE ? "*" : Integer.toString(upperBound));
         linkElement.setAttribute("defaultCardinality", Integer.toString(getCardinality().getDefaultCardinality()));
         writeExtensionPropertiesToXml(linkElement);
         return linkElement;
@@ -168,8 +198,8 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         sb.append('(');
         sb.append(cardinality.getLowerBound());
         sb.append("..");
-        sb.append(Integer.valueOf(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality
-                .getUpperBound());
+        sb.append(
+                new Integer(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality.getUpperBound());
         sb.append(", default:");
         sb.append(cardinality.getDefaultCardinality());
         sb.append(')');

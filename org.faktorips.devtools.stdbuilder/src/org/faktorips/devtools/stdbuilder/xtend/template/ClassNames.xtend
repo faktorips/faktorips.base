@@ -65,6 +65,8 @@ import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
 import org.faktorips.runtime.internal.Range
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
+import org.faktorips.runtime.IProductComponentLinkSource
+import org.faktorips.runtime.util.ProductComponentLinks
 
 @SuppressFBWarnings
 class ClassNames {
@@ -168,6 +170,14 @@ class ClassNames {
         addImport(typeof(IProductComponentLink)) + "<" + genericType + ">"
     }
 
+    def static IProductComponentLinkSource(AbstractGeneratorModelNode it) {
+        addImport(typeof(IProductComponentLinkSource))
+    }
+
+    def static ProductComponentLinks(AbstractGeneratorModelNode it) {
+        addImport(typeof(ProductComponentLinks))
+    }
+
     def static CardinalityRange(AbstractGeneratorModelNode it) { addImport(typeof(CardinalityRange)) }
 
     def static IRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(IRuntimeRepository)) }
@@ -204,8 +214,7 @@ class ClassNames {
         addImport(typeof(EnumValues))
     }
 
-    def static Range(AbstractGeneratorModelNode it) {
-        addImport(typeof(Range))	}
+    def static Range(AbstractGeneratorModelNode it) { addImport(typeof(Range)) }
 
     def static IntegerRange(AbstractGeneratorModelNode it) { addImport(typeof(IntegerRange)) }
 
@@ -215,8 +224,7 @@ class ClassNames {
 
     def static InternationalString(AbstractGeneratorModelNode it) { addImport(typeof(InternationalString)) }
 
-    def static Long(AbstractGeneratorModelNode it){
-         addImport("java.lang.Long")    }
+    def static Long(AbstractGeneratorModelNode it) { addImport("java.lang.Long") }
 
     def static DefaultInternationalString(AbstractGeneratorModelNode it) {
         addImport(typeof(DefaultInternationalString))
@@ -268,4 +276,5 @@ class ClassNames {
     def static InstantiationException(AbstractGeneratorModelNode it) { addImport("java.lang.InstantiationException") }
 
     def static GregorianCalendar(AbstractGeneratorModelNode it) { addImport("java.util.GregorianCalendar") }
+
 }
