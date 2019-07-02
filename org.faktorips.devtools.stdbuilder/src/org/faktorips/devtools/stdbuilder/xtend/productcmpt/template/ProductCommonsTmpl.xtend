@@ -41,13 +41,12 @@ class ProductCommonsTmpl {
                     // no attributes to write
                 «ENDIF»
                 «FOR it : attributes» «writeAttributeToXmlMethodCall» «ENDFOR»
-
                 «FOR it : configuredAttributes» «writeAttributeToXmlMethodCall» «ENDFOR»
             }
-                «FOR it : attributes» «writeAttributeToXmlMethod» «ENDFOR»
 
-                «FOR it : configuredAttributes» «writeAttributeToXmlMethod» «ENDFOR»
+            «FOR it : attributes» «writeAttributeToXmlMethod» «ENDFOR»
 
+            «FOR it : configuredAttributes» «writeAttributeToXmlMethod» «ENDFOR»
 
             «IF  containsNotDerivedOrConstrainingAssociations»
                 /**

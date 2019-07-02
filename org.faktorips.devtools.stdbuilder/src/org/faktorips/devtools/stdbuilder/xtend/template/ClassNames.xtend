@@ -65,7 +65,6 @@ import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
 import org.faktorips.runtime.internal.Range
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-import org.faktorips.runtime.IProductComponentLinkSource
 import org.faktorips.runtime.util.ProductComponentLinks
 
 @SuppressFBWarnings
@@ -168,10 +167,6 @@ class ClassNames {
 
     def static IProductComponentLink(AbstractGeneratorModelNode it, String genericType) {
         addImport(typeof(IProductComponentLink)) + "<" + genericType + ">"
-    }
-
-    def static IProductComponentLinkSource(AbstractGeneratorModelNode it) {
-        addImport(typeof(IProductComponentLinkSource))
     }
 
     def static ProductComponentLinks(AbstractGeneratorModelNode it) {
