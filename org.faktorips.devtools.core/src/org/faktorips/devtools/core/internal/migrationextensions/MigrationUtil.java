@@ -39,7 +39,7 @@ public class MigrationUtil {
         IIpsArtefactBuilderSetConfigModel builderSetConfig = properties.getBuilderSetConfig();
         for (IIpsBuilderSetPropertyDef propertyDef : builderSetInfo.getPropertyDefinitions()) {
             String value = builderSetConfig.getPropertyValue(propertyDef.getName());
-            if (null == value) {
+            if (propertyDef.isAvailable(ipsProject) && null == value) {
                 // we use the disabled value here, because that value is used when the property is
                 // not set
                 value = propertyDef.getDisableValue(ipsProject);
