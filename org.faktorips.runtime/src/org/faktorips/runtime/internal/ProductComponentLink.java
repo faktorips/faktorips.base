@@ -147,7 +147,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         String maxStr = element.getAttribute("maxCardinality");
         Integer maxCardinality = null;
         if ("*".equals(maxStr) || "n".equals(maxStr.toLowerCase())) {
-            maxCardinality = new Integer(Integer.MAX_VALUE);
+            maxCardinality = Integer.valueOf(Integer.MAX_VALUE);
         } else {
             maxCardinality = Integer.valueOf(maxStr);
         }

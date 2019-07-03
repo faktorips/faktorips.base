@@ -31,15 +31,15 @@ public class LongValueConverterTest {
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         LongValueConverter converter = new LongValueConverter();
-        String value = converter.getIpsValue(new Long(1234), ml);
+        String value = converter.getIpsValue(Long.valueOf(1234), ml);
         assertTrue(Datatype.LONG.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Long(Long.MAX_VALUE), ml);
+        value = converter.getIpsValue(Long.valueOf(Long.MAX_VALUE), ml);
         assertTrue(Datatype.LONG.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Long(Long.MIN_VALUE), ml);
+        value = converter.getIpsValue(Long.valueOf(Long.MIN_VALUE), ml);
         assertTrue(Datatype.LONG.isParsable(value));
         assertTrue(ml.isEmpty());
 
@@ -48,9 +48,9 @@ public class LongValueConverterTest {
         assertEquals("0", value);
 
         ml.clear();
-        value = converter.getIpsValue(new Double(Double.MAX_VALUE), ml);
+        value = converter.getIpsValue(Double.valueOf(Double.MAX_VALUE), ml);
         assertFalse(ml.isEmpty());
-        assertEquals(new Double(Double.MAX_VALUE).toString(), value);
+        assertEquals(Double.valueOf(Double.MAX_VALUE).toString(), value);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class LongValueConverterTest {
         assertFalse(Datatype.LONG.isParsable(INVALID));
 
         Object value = converter.getExternalDataValue(VALID, ml);
-        assertEquals(new Long(1234), value);
+        assertEquals(Long.valueOf(1234), value);
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(null, ml);

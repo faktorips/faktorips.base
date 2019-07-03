@@ -25,12 +25,12 @@ import org.junit.Test;
 public class TestAbstractRangeTest {
     @Test
     public void testConstructor() {
-        IntegerRange range = new IntegerRange(null, new Integer(10));
+        IntegerRange range = new IntegerRange(null, Integer.valueOf(10));
         assertNull(range.getLowerBound());
-        assertEquals(new Integer(10), range.getUpperBound());
+        assertEquals(Integer.valueOf(10), range.getUpperBound());
 
-        range = new IntegerRange(new Integer(10), null);
-        assertEquals(new Integer(10), range.getLowerBound());
+        range = new IntegerRange(Integer.valueOf(10), null);
+        assertEquals(Integer.valueOf(10), range.getLowerBound());
         assertNull(range.getUpperBound());
 
         range = new IntegerRange(null, null);
@@ -41,27 +41,27 @@ public class TestAbstractRangeTest {
         assertNull(range.getLowerBound());
         assertNull(range.getUpperBound());
 
-        range = IntegerRange.valueOf(null, null, new Integer(10), true);
+        range = IntegerRange.valueOf(null, null, Integer.valueOf(10), true);
         assertNull(range.getLowerBound());
         assertNull(range.getUpperBound());
 
-        range = IntegerRange.valueOf(new Integer(0), null, 10);
-        assertEquals(new Integer(0), range.getLowerBound());
+        range = IntegerRange.valueOf(Integer.valueOf(0), null, 10);
+        assertEquals(Integer.valueOf(0), range.getLowerBound());
         assertNull(range.getUpperBound());
-        assertEquals(new Integer(10), range.getStep());
+        assertEquals(Integer.valueOf(10), range.getStep());
 
-        range = IntegerRange.valueOf(null, new Integer(100), 10);
+        range = IntegerRange.valueOf(null, Integer.valueOf(100), 10);
         assertNull(range.getLowerBound());
-        assertEquals(new Integer(100), range.getUpperBound());
-        assertEquals(new Integer(10), range.getStep());
+        assertEquals(Integer.valueOf(100), range.getUpperBound());
+        assertEquals(Integer.valueOf(10), range.getStep());
 
-        range = IntegerRange.valueOf(new Integer(0), new Integer(100), 10);
-        assertEquals(new Integer(0), range.getLowerBound());
-        assertEquals(new Integer(100), range.getUpperBound());
-        assertEquals(new Integer(10), range.getStep());
+        range = IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), 10);
+        assertEquals(Integer.valueOf(0), range.getLowerBound());
+        assertEquals(Integer.valueOf(100), range.getUpperBound());
+        assertEquals(Integer.valueOf(10), range.getStep());
 
         try {
-            IntegerRange.valueOf(new Integer(0), new Integer(100), 7);
+            IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), 7);
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
@@ -83,11 +83,11 @@ public class TestAbstractRangeTest {
         assertTrue(range.isEmpty());
 
         // range unbounded-5 should be empty
-        range = new IntegerRange(null, new Integer(5));
+        range = new IntegerRange(null, Integer.valueOf(5));
         assertFalse(range.isEmpty());
 
         // range 5-unbounded should be empty
-        range = new IntegerRange(new Integer(5), null);
+        range = new IntegerRange(Integer.valueOf(5), null);
         assertFalse(range.isEmpty());
     }
 
@@ -101,12 +101,12 @@ public class TestAbstractRangeTest {
         assertFalse(range.contains(4));
         assertFalse(range.contains(11));
 
-        range = new IntegerRange(null, new Integer(10));
+        range = new IntegerRange(null, Integer.valueOf(10));
         assertTrue(range.contains(-100));
         assertTrue(range.contains(10));
         assertFalse(range.contains(11));
 
-        range = new IntegerRange(new Integer(10), null);
+        range = new IntegerRange(Integer.valueOf(10), null);
         assertTrue(range.contains(100));
         assertTrue(range.contains(10));
         assertFalse(range.contains(9));
@@ -118,66 +118,66 @@ public class TestAbstractRangeTest {
         assertTrue(range1.equals(new IntegerRange(5, 10)));
         assertFalse(range1.equals(new IntegerRange(6, 10)));
         assertFalse(range1.equals(new IntegerRange(5, 11)));
-        assertFalse(range1.equals(new IntegerRange(null, new Integer(10))));
-        assertFalse(range1.equals(new IntegerRange(new Integer(5), null)));
+        assertFalse(range1.equals(new IntegerRange(null, Integer.valueOf(10))));
+        assertFalse(range1.equals(new IntegerRange(Integer.valueOf(5), null)));
         assertFalse(range1.equals(new IntegerRange(null, null)));
 
-        range1 = new IntegerRange(null, new Integer(10));
+        range1 = new IntegerRange(null, Integer.valueOf(10));
         assertFalse(range1.equals(new IntegerRange(5, 10)));
         assertFalse(range1.equals(new IntegerRange(6, 10)));
         assertFalse(range1.equals(new IntegerRange(5, 11)));
-        assertTrue(range1.equals(new IntegerRange(null, new Integer(10))));
-        assertFalse(range1.equals(new IntegerRange(new Integer(5), null)));
+        assertTrue(range1.equals(new IntegerRange(null, Integer.valueOf(10))));
+        assertFalse(range1.equals(new IntegerRange(Integer.valueOf(5), null)));
         assertFalse(range1.equals(new IntegerRange(null, null)));
 
-        range1 = new IntegerRange(new Integer(5), null);
+        range1 = new IntegerRange(Integer.valueOf(5), null);
         assertFalse(range1.equals(new IntegerRange(5, 10)));
         assertFalse(range1.equals(new IntegerRange(6, 10)));
         assertFalse(range1.equals(new IntegerRange(5, 11)));
-        assertFalse(range1.equals(new IntegerRange(null, new Integer(10))));
-        assertTrue(range1.equals(new IntegerRange(new Integer(5), null)));
+        assertFalse(range1.equals(new IntegerRange(null, Integer.valueOf(10))));
+        assertTrue(range1.equals(new IntegerRange(Integer.valueOf(5), null)));
         assertFalse(range1.equals(new IntegerRange(null, null)));
 
         range1 = new IntegerRange(null, null);
         assertFalse(range1.equals(new IntegerRange(5, 10)));
         assertFalse(range1.equals(new IntegerRange(6, 10)));
         assertFalse(range1.equals(new IntegerRange(5, 11)));
-        assertFalse(range1.equals(new IntegerRange(null, new Integer(10))));
-        assertFalse(range1.equals(new IntegerRange(new Integer(5), null)));
+        assertFalse(range1.equals(new IntegerRange(null, Integer.valueOf(10))));
+        assertFalse(range1.equals(new IntegerRange(Integer.valueOf(5), null)));
         assertTrue(range1.equals(new IntegerRange(null, null)));
 
-        range1 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
-        IntegerRange range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
+        range1 = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 5);
+        IntegerRange range2 = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 5);
         assertEquals(range1, range2);
 
-        range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 10);
+        range2 = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 10);
         assertFalse(range1.equals(range2));
     }
 
     @Test
     public void testHashCode() {
-        IntegerRange range1 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
-        IntegerRange range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
+        IntegerRange range1 = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 5);
+        IntegerRange range2 = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 5);
         assertEquals(range1.hashCode(), range2.hashCode());
 
-        range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 10);
+        range2 = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 10);
         assertFalse(range1.hashCode() == range2.hashCode());
     }
 
     @Test
     public void testIsDiscrete() {
-        IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
+        IntegerRange range = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), null, true);
         assertFalse(range.isDiscrete());
-        range = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
+        range = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), 5);
         assertTrue(range.isDiscrete());
     }
 
     @Test
     public void testContainsNull() {
-        IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, false);
+        IntegerRange range = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), null, false);
         assertFalse(range.containsNull());
 
-        range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
+        range = IntegerRange.valueOf(Integer.valueOf(10), Integer.valueOf(60), null, true);
         assertTrue(range.containsNull());
     }
 

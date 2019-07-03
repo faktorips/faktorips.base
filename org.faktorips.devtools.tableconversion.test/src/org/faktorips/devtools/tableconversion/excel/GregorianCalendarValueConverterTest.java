@@ -32,7 +32,7 @@ public class GregorianCalendarValueConverterTest {
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         GregorianCalendarValueConverter converter = new GregorianCalendarValueConverter();
-        String value = converter.getIpsValue(new Long(1234), ml);
+        String value = converter.getIpsValue(Long.valueOf(1234), ml);
         assertTrue(Datatype.GREGORIAN_CALENDAR.isParsable(value));
         assertTrue(ml.isEmpty());
 

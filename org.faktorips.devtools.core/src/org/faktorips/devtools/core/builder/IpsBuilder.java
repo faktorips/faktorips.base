@@ -683,7 +683,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     private void updateMarker(IMarker marker, String text, int severity) throws CoreException {
         marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
-                new Object[] { text, new Integer(severity) });
+                new Object[] { text, Integer.valueOf(severity) });
     }
 
     private int getMarkerSeverity(Message msg) {

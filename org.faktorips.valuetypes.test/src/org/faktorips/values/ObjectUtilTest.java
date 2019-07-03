@@ -59,7 +59,7 @@ public class ObjectUtilTest {
     public void testCheckInstanceOf() throws Exception {
         ObjectUtil.checkInstanceOf(12, Number.class);
         ObjectUtil.checkInstanceOf(12, Integer.class);
-        ObjectUtil.checkInstanceOf(new Long(12), Number.class);
+        ObjectUtil.checkInstanceOf(Long.valueOf(12), Number.class);
     }
 
 

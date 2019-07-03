@@ -41,7 +41,7 @@ public class DateValueConverterTest {
 
     @Test
     public void testGetIpsValue() {
-        String value = converter.getIpsValue(new Long(1234), ml);
+        String value = converter.getIpsValue(Long.valueOf(1234), ml);
         assertTrue(datatype.isParsable(value));
         assertTrue(ml.isEmpty());
 

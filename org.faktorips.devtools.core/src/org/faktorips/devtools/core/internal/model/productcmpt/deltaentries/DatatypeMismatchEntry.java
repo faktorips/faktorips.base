@@ -14,8 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -40,6 +38,8 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.util.functional.Consumer;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
@@ -116,7 +116,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
                 return mismatch.transform(new Function<DatatypeMismatch<?>, DatatypeMismatchEntry>() {
 
                     @Override
-                    public DatatypeMismatchEntry apply(@Nonnull DatatypeMismatch<?> mismatch) {
+                    public DatatypeMismatchEntry apply(@NonNull DatatypeMismatch<?> mismatch) {
                         return new DatatypeMismatchEntry(propertyValue, mismatch.getValues(), converter,
                                 mismatch.getValueConsumer());
                     }
@@ -194,7 +194,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
             List<IValue<?>> valueList = getPropertyValue().getValueHolder().getValueList();
             return Lists.transform(valueList, new Function<IValue<?>, String>() {
                 @Override
-                public String apply(@Nonnull IValue<?> input) {
+                public String apply(@NonNull IValue<?> input) {
                     // no usecase for converting international strings
                     return input.getContentAsString();
                 }

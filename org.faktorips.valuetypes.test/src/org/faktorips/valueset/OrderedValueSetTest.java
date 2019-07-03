@@ -30,14 +30,14 @@ public class OrderedValueSetTest {
     @Test
     public void testConstructor() {
         try {
-            new OrderedValueSet<Integer>(false, null, new Integer(1), new Integer(2), new Integer(3), new Integer(1));
+            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(1));
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
 
         try {
-            new OrderedValueSet<Integer>(false, null, new Integer(1), null, new Integer(2), new Integer(3), null);
+            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3), null);
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
@@ -46,19 +46,19 @@ public class OrderedValueSetTest {
 
     @Test
     public void testGetValues() {
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         assertEquals(Arrays.asList(values), Arrays.asList(valueSet.getValues(false).toArray()));
 
         Set<Integer> valuesAsSet = new HashSet<Integer>();
-        valuesAsSet.add(new Integer(1));
-        valuesAsSet.add(new Integer(2));
-        valuesAsSet.add(new Integer(3));
+        valuesAsSet.add(Integer.valueOf(1));
+        valuesAsSet.add(Integer.valueOf(2));
+        valuesAsSet.add(Integer.valueOf(3));
 
         valueSet = new OrderedValueSet<Integer>(valuesAsSet, false, null);
         assertEquals(Arrays.asList(valuesAsSet.toArray()), Arrays.asList(valueSet.getValues(false).toArray()));
 
-        values = new Integer[] { new Integer(1), new Integer(2), new Integer(3), null };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), null };
         valueSet = new OrderedValueSet<Integer>(true, null, values);
         assertEquals(Arrays.asList(values), Arrays.asList(valueSet.getValues(false).toArray()));
         List<Integer> expectedValues = new ArrayList<Integer>();
@@ -76,12 +76,12 @@ public class OrderedValueSetTest {
 
     @Test
     public void testContains() {
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3), null };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), null };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(true, null, values);
 
-        assertTrue(valueSet.contains(new Integer(2)));
+        assertTrue(valueSet.contains(Integer.valueOf(2)));
         assertTrue(valueSet.contains(null));
-        assertFalse(valueSet.contains(new Integer(5)));
+        assertFalse(valueSet.contains(Integer.valueOf(5)));
     }
 
     @Test
@@ -101,21 +101,21 @@ public class OrderedValueSetTest {
         valueSet = new OrderedValueSet<Object>(true, null, new Object[] { null });
         assertFalse(valueSet.isEmpty());
 
-        Object[] values = new Object[] { new Integer(1), new Integer(2), new Integer(3) };
+        Object[] values = new Object[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         valueSet = new OrderedValueSet<Object>(false, null, values);
         assertFalse(valueSet.isEmpty());
     }
 
     @Test
     public void testSize() {
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         assertEquals(3, valueSet.size());
     }
 
     @Test
     public void testSerializable() throws Exception {
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         TestUtil.testSerializable(valueSet);
     }
@@ -123,20 +123,20 @@ public class OrderedValueSetTest {
     @Test
     public void testEquals() {
 
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
 
-        values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet2 = new OrderedValueSet<Integer>(false, null, values);
 
         assertEquals(valueSet, valueSet2);
 
-        values = new Integer[] { new Integer(1), new Integer(2), new Integer(4) };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(4) };
         OrderedValueSet<Integer> valueSet3 = new OrderedValueSet<Integer>(false, null, values);
 
         assertFalse(valueSet.equals(valueSet3));
 
-        values = new Integer[] { new Integer(1), new Integer(2), null };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null };
         OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<Integer>(false, null, values);
 
         assertFalse(valueSet.equals(valueSet4));
@@ -144,20 +144,20 @@ public class OrderedValueSetTest {
 
     @Test
     public void testHashCode() {
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
 
-        values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet2 = new OrderedValueSet<Integer>(false, null, values);
 
         assertEquals(valueSet.hashCode(), valueSet2.hashCode());
 
-        values = new Integer[] { new Integer(1), new Integer(2), new Integer(4) };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(4) };
         OrderedValueSet<Integer> valueSet3 = new OrderedValueSet<Integer>(false, null, values);
 
         assertFalse(valueSet.hashCode() == valueSet3.hashCode());
 
-        values = new Integer[] { new Integer(1), new Integer(2), null };
+        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null };
         OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<Integer>(false, null, values);
 
         assertFalse(valueSet.hashCode() == valueSet4.hashCode());
@@ -165,7 +165,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testToString() {
-        Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         assertEquals("[1, 2, 3]", valueSet.toString());
     }

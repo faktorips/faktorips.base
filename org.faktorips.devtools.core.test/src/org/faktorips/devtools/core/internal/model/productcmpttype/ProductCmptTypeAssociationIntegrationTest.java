@@ -517,7 +517,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     @Test
     public void testSetMinCardinality() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
-                IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY, association, new Integer(42));
+                IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY, association, Integer.valueOf(42));
     }
 
     /**
@@ -528,7 +528,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     @Test
     public void testSetMaxCardinality() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
-                IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY, association, new Integer(42));
+                IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY, association, Integer.valueOf(42));
     }
 
     /**

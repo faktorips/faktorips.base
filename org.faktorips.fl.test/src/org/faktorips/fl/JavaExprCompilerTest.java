@@ -100,7 +100,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         getCompiler().setUnaryOperations(unaryOperations);
 
         // compiler should convert primitive int to Integer
-        execAndTestSuccessfull("+ 42", new Integer(42), Datatype.INTEGER);
+        execAndTestSuccessfull("+ 42", Integer.valueOf(42), Datatype.INTEGER);
     }
 
     @Test
@@ -194,7 +194,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile("1+-1");
         assertTrue(compile.successfull());
         assertEquals(SystemUtils.LINE_SEPARATOR + "Integer.valueOf(1 + -1)", compile.getCodeFragment().toString());
-        assertEquals(0, new Integer(1 + -1).intValue());
+        assertEquals(0, Integer.valueOf(1 + -1).intValue());
         assertTrue(getCompiler().compile("1>1").successfull());
         assertTrue(getCompiler().compile("1=1").successfull());
     }

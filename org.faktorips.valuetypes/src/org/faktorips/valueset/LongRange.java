@@ -23,7 +23,7 @@ public class LongRange extends DefaultRange<Long> {
     private static final long serialVersionUID = -785773839824461985L;
 
     public LongRange(Long lower, Long upper) {
-        super(lower, upper, new Long(1));
+        super(lower, upper, Long.valueOf(1));
     }
 
     private LongRange(Long lower, Long upper, Long step, boolean containsNull) {

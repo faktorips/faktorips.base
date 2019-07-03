@@ -75,10 +75,10 @@ public class DoubleRangeTest {
         assertTrue(values.contains(80.0));
         assertTrue(values.contains(100.0));
 
-        assertFalse(values.contains(new Integer(-10)));
-        assertFalse(values.contains(new Integer(50)));
-        assertFalse(values.contains(new Integer(110)));
-        assertFalse(values.contains(new Integer(120)));
+        assertFalse(values.contains(Integer.valueOf(-10)));
+        assertFalse(values.contains(Integer.valueOf(50)));
+        assertFalse(values.contains(Integer.valueOf(110)));
+        assertFalse(values.contains(Integer.valueOf(120)));
 
         range = DoubleRange.valueOf(0.0, 100.0, 20.0, true);
         values = range.getValues(false);

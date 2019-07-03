@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class UniqueResultStructureTest {
 
-    private final Integer resultValue = new Integer(123);
+    private final Integer resultValue = Integer.valueOf(123);
 
     @Test
     public void testCopy() {

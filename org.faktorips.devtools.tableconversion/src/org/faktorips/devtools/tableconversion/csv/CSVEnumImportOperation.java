@@ -162,8 +162,8 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
                     if (enumField == null) {
                         Object[] objects = new Object[3];
-                        objects[0] = new Integer(rowNumber);
-                        objects[1] = new Integer(j);
+                        objects[0] = Integer.valueOf(rowNumber);
+                        objects[1] = Integer.valueOf(j);
                         objects[2] = nullRepresentationString;
                         String msg = NLS
                                 .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$

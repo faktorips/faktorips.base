@@ -52,7 +52,7 @@ public class IntegerHelper extends AbstractDatatypeHelper {
             return valueOfExpression(trimmedValue);
         }
         // if value starts with a leading zero, we must generate Integer.valueOf("08") as
-        // new Integer(08) won't compile (try it out!)
+        // Integer.valueOf(08) won't compile (try it out!)
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Integer.class);
         fragment.append(".valueOf("); //$NON-NLS-1$

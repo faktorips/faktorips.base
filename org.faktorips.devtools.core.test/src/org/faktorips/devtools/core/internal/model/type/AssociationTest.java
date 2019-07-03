@@ -845,13 +845,13 @@ public class AssociationTest extends AbstractIpsPluginTest {
     @Test
     public void testSetMinCardinality() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_MIN_CARDINALITY, association,
-                new Integer(42));
+                Integer.valueOf(42));
     }
 
     @Test
     public void testSetMaxCardinality() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_MAX_CARDINALITY, association,
-                new Integer(42));
+                Integer.valueOf(42));
     }
 
     @Test

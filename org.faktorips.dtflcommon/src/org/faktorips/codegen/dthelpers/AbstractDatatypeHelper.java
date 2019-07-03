@@ -118,8 +118,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * Code sample
      * 
      * <pre>
-     * new DefaultEnumValueSet(new GeneratedGender[] { GeneratedGender.getGeneratedGender(new Integer(1)),
-     *         GeneratedGender.getGeneratedGender(new Integer(2)), GeneratedGender.getGeneratedGender(null) }, true,
+     * new DefaultEnumValueSet(new GeneratedGender[] { GeneratedGender.getGeneratedGender(Integer.valueOf(1)),
+     *         GeneratedGender.getGeneratedGender(Integer.valueOf(2)), GeneratedGender.getGeneratedGender(null) }, true,
      *         GeneratedGender.getGeneratedGender(null));
      * </pre>
      * 
@@ -129,8 +129,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      *  (IEnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
      *      true,
      *      GeneratedGender.getGeneratedGender(null),
-     *      GeneratedGender.getGeneratedGender(new Integer(1)),
-     *      GeneratedGender.getGeneratedGender(new Integer(2)));
+     *      GeneratedGender.getGeneratedGender(Integer.valueOf(1)),
+     *      GeneratedGender.getGeneratedGender(Integer.valueOf(2)));
      * </pre>
      */
     @Override

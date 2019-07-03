@@ -33,7 +33,7 @@ public class ValidationContextTest {
     public void testGetValue() {
         ValidationContext context = new ValidationContext();
         context.setValue("a", Money.euro(100));
-        context.setValue("b", new Integer(1));
+        context.setValue("b", Integer.valueOf(1));
         assertEquals(Money.euro(100), context.getValue("a"));
     }
 

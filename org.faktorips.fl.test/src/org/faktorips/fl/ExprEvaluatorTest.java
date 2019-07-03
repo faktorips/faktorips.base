@@ -32,12 +32,12 @@ public class ExprEvaluatorTest {
     public void testExecuteWithVariables() throws Exception {
         JavaExprCompiler compiler = new JavaExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        resolver.register("a", new JavaCodeFragment("new Integer(42)"), Datatype.INTEGER);
+        resolver.register("a", new JavaCodeFragment("Integer.valueOf(42)"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
         ExprEvaluator processor = new ExprEvaluator(compiler);
         Object o = processor.evaluate("a * 2");
 
-        assertEquals(new Integer(84), o);
+        assertEquals(Integer.valueOf(84), o);
     }
 
     @Test

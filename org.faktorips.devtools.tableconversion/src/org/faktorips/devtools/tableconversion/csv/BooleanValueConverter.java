@@ -22,7 +22,7 @@ public class BooleanValueConverter extends AbstractValueConverter {
         if (ipsValue == null) {
             return null;
         }
-        return new Boolean(ipsValue).toString();
+        return String.valueOf(ipsValue);
     }
 
     /**
@@ -33,9 +33,10 @@ public class BooleanValueConverter extends AbstractValueConverter {
         if (externalDataValue instanceof String) {
             return Boolean.valueOf((String)externalDataValue).toString();
         }
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                "" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
-                        .getName(), getSupportedDatatype().getQualifiedName()));
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, //$NON-NLS-1$
+                externalDataValue.getClass()
+                        .getName(),
+                getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

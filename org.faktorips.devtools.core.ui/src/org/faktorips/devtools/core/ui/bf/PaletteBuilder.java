@@ -117,11 +117,11 @@ public class PaletteBuilder {
         PaletteStack marqueeStack = new PaletteStack("Marquee Tools", "", null); //$NON-NLS-1$ //$NON-NLS-2$
         marqueeStack.add(new MarqueeToolEntry());
         MarqueeToolEntry marquee = new MarqueeToolEntry();
-        marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, new Integer(
+        marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, Integer.valueOf(
                 MarqueeSelectionTool.BEHAVIOR_CONNECTIONS_TOUCHED));
         marqueeStack.add(marquee);
         marquee = new MarqueeToolEntry();
-        marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, new Integer(
+        marquee.setToolProperty(MarqueeSelectionTool.PROPERTY_MARQUEE_BEHAVIOR, Integer.valueOf(
                 MarqueeSelectionTool.BEHAVIOR_CONNECTIONS_TOUCHED | MarqueeSelectionTool.BEHAVIOR_NODES_CONTAINED));
         marqueeStack.add(marquee);
         marqueeStack.setUserModificationPermission(PaletteEntry.PERMISSION_NO_MODIFICATION);

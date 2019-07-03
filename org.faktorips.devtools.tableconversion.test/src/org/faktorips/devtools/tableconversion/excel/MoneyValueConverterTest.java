@@ -42,9 +42,9 @@ public class MoneyValueConverterTest {
         assertEquals("0", value);
 
         ml.clear();
-        value = converter.getIpsValue(new Double(Double.MAX_VALUE), ml);
+        value = converter.getIpsValue(Double.valueOf(Double.MAX_VALUE), ml);
         assertFalse(ml.isEmpty());
-        assertEquals(new Double(Double.MAX_VALUE).toString(), value);
+        assertEquals(Double.valueOf(Double.MAX_VALUE).toString(), value);
     }
 
     @Test

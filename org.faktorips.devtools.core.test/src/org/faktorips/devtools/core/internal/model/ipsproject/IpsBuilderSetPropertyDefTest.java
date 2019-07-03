@@ -134,10 +134,10 @@ public class IpsBuilderSetPropertyDefTest {
 
         assertTrue(logger.getLogEntries().isEmpty());
         assertEquals("1", propertyDef.getDefaultValue(null));
-        assertEquals(new Integer(1), propertyDef.parseValue(propertyDef.getDefaultValue(null)));
+        assertEquals(Integer.valueOf(1), propertyDef.parseValue(propertyDef.getDefaultValue(null)));
 
         assertEquals("0", propertyDef.getDisableValue(null));
-        assertEquals(new Integer(0), propertyDef.parseValue(propertyDef.getDisableValue(null)));
+        assertEquals(Integer.valueOf(0), propertyDef.parseValue(propertyDef.getDisableValue(null)));
 
         assertNotNull(propertyDef.validateValue(null, "hallo"));
         assertNull(propertyDef.validateValue(null, "1"));

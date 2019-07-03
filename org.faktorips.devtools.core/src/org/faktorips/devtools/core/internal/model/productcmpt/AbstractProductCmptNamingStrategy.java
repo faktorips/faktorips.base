@@ -105,9 +105,9 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
                     "The dot (.) is prohibited in names, as it is used to separate name and package information in qualified names."); //$NON-NLS-1$
         }
         if (replacement == null) {
-            specialCharReplacements.remove(new Character(specialChar));
+            specialCharReplacements.remove(Character.valueOf(specialChar));
         } else {
-            specialCharReplacements.put(new Character(specialChar), replacement);
+            specialCharReplacements.put(Character.valueOf(specialChar), replacement);
         }
     }
 
@@ -117,7 +117,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
      * given char.
      */
     public String getReplacement(char c) {
-        return specialCharReplacements.get(new Character(c));
+        return specialCharReplacements.get(Character.valueOf(c));
     }
 
     /**
@@ -220,7 +220,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     }
 
     private boolean isSpecialChar(char c) {
-        return specialCharReplacements.containsKey(new Character(c));
+        return specialCharReplacements.containsKey(Character.valueOf(c));
     }
 
     @Override

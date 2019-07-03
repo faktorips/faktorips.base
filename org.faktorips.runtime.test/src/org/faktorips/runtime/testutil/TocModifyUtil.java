@@ -61,7 +61,7 @@ public class TocModifyUtil {
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
-            transformerFactory.setAttribute("indent-number", new Integer(4));
+            transformerFactory.setAttribute("indent-number", Integer.valueOf(4));
         } catch (IllegalArgumentException e) {
             // no problem, we're using a older version
         }

@@ -62,7 +62,7 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
 
                 if (!ccg.canConvert(argDatatype, expectedArgType)) {
                     String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { expectedArgType,
-                            new Integer(i), argDatatype });
+                            Integer.valueOf(i), argDatatype });
                     Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
                     return new CompilationResultImpl(msg);
                 }

@@ -294,7 +294,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * the given index was not skipped).
      */
     public boolean removeSkippedColumnIndex(int columnIndex) {
-        return skippedColumns.remove(new Integer(columnIndex));
+        return skippedColumns.remove(Integer.valueOf(columnIndex));
     }
 
     /**

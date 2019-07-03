@@ -21,7 +21,7 @@ public class IntegerToLongCg extends AbstractSingleConversionCg {
 
     @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-        // new Long(new Integer(1).intValue())
+        // Long.valueOf(Integer.valueOf(1).intValue())
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Long.class);
         fragment.append(".valueOf("); //$NON-NLS-1$

@@ -69,7 +69,7 @@ public class LongValueConverter extends AbstractValueConverter {
             return null;
         }
         if (ipsValue.length() == 0) {
-            return new Long(0);
+            return Long.valueOf(0);
         }
         try {
             return Long.valueOf(ipsValue);

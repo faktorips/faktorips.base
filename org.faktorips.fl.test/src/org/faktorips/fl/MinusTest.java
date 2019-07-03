@@ -34,7 +34,7 @@ public class MinusTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testInteger() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("- WHOLENUMBER(42.2)", new Integer(-42), Datatype.INTEGER);
+        execAndTestSuccessfull("- WHOLENUMBER(42.2)", Integer.valueOf(-42), Datatype.INTEGER);
     }
 
     @Test

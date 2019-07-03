@@ -20,21 +20,21 @@ public class ObjectPropertyTest {
 
     @Test
     public void testHashCode() {
-        ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
-        ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");
+        ObjectProperty op1 = new ObjectProperty(Integer.valueOf(1), "toString");
+        ObjectProperty op2 = new ObjectProperty(Integer.valueOf(1), "toString");
         assertEquals(op1.hashCode(), op2.hashCode());
 
-        ObjectProperty op3 = new ObjectProperty(new Integer(2), "toString");
+        ObjectProperty op3 = new ObjectProperty(Integer.valueOf(2), "toString");
         assertFalse(op1.hashCode() == op3.hashCode());
     }
 
     @Test
     public void testEqualsObject() {
-        ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
-        ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");
+        ObjectProperty op1 = new ObjectProperty(Integer.valueOf(1), "toString");
+        ObjectProperty op2 = new ObjectProperty(Integer.valueOf(1), "toString");
         assertEquals(op1, op2);
 
-        ObjectProperty op3 = new ObjectProperty(new Integer(2), "toString");
+        ObjectProperty op3 = new ObjectProperty(Integer.valueOf(2), "toString");
         assertTrue(!op1.equals(op3));
     }
 

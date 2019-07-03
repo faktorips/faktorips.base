@@ -17,16 +17,16 @@ public class MinMaxDoubleTest extends FunctionAbstractTest {
     @Test
     public void testCompile() throws Exception {
         registerFunction(new MinMaxDouble("MAX", "", true));
-        execAndTestSuccessfull("MAX(a; b)", new Double(4.4), new String[] { "a", "b" }, new Datatype[] {
-            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { new Double(4.4), new Double(3.5) }, Datatype.DOUBLE);
-        execAndTestSuccessfull("MAX(a; b)", new Double(4.4), new String[] { "a", "b" }, new Datatype[] {
-            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { new Double(3.5), new Double(4.4) }, Datatype.DOUBLE);
+        execAndTestSuccessfull("MAX(a; b)", Double.valueOf(4.4), new String[] { "a", "b" }, new Datatype[] {
+            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { Double.valueOf(4.4), Double.valueOf(3.5) }, Datatype.DOUBLE);
+        execAndTestSuccessfull("MAX(a; b)", Double.valueOf(4.4), new String[] { "a", "b" }, new Datatype[] {
+            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { Double.valueOf(3.5), Double.valueOf(4.4) }, Datatype.DOUBLE);
 
         registerFunction(new MinMaxDouble("MIN", "", false));
-        execAndTestSuccessfull("MIN(a; b)", new Double(3.5), new String[] { "a", "b" }, new Datatype[] {
-            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { new Double(4.4), new Double(3.5) }, Datatype.DOUBLE);
-        execAndTestSuccessfull("MIN(a; b)", new Double(3.5), new String[] { "a", "b" }, new Datatype[] {
-            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { new Double(3.5), new Double(4.4) }, Datatype.DOUBLE);
+        execAndTestSuccessfull("MIN(a; b)", Double.valueOf(3.5), new String[] { "a", "b" }, new Datatype[] {
+            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { Double.valueOf(4.4), Double.valueOf(3.5) }, Datatype.DOUBLE);
+        execAndTestSuccessfull("MIN(a; b)", Double.valueOf(3.5), new String[] { "a", "b" }, new Datatype[] {
+            Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { Double.valueOf(3.5), Double.valueOf(4.4) }, Datatype.DOUBLE);
 
     }
 

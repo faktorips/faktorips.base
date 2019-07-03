@@ -34,7 +34,7 @@ public class ArgumentCheckTest {
     @Test
     public void testIsInstanceOf() {
         ArgumentCheck.isInstanceOf("123", String.class);
-        ArgumentCheck.isInstanceOf(new Double(1234), Number.class);
+        ArgumentCheck.isInstanceOf(Double.valueOf(1234), Number.class);
         try {
             ArgumentCheck.isInstanceOf(this, String.class);
             fail();

@@ -33,10 +33,10 @@ public class LongRangeTest {
         LongRange range = new LongRange(5L, 10L);
         assertEquals(6, range.size());
 
-        range = new LongRange(null, new Long(10));
+        range = new LongRange(null, Long.valueOf(10));
         assertEquals(Integer.MAX_VALUE, range.size());
 
-        range = new LongRange(new Long(10), null);
+        range = new LongRange(Long.valueOf(10), null);
         assertEquals(Integer.MAX_VALUE, range.size());
 
         range = new LongRange(null, null);
@@ -57,14 +57,14 @@ public class LongRangeTest {
     public void testGetValues() {
         LongRange range = LongRange.valueOf(100L, 1100L, 200L);
         Set<Long> values = range.getValues(false);
-        assertTrue(values.contains(new Long(100)));
-        assertTrue(values.contains(new Long(300)));
-        assertTrue(values.contains(new Long(500)));
-        assertTrue(values.contains(new Long(1100)));
+        assertTrue(values.contains(Long.valueOf(100)));
+        assertTrue(values.contains(Long.valueOf(300)));
+        assertTrue(values.contains(Long.valueOf(500)));
+        assertTrue(values.contains(Long.valueOf(1100)));
 
-        assertFalse(values.contains(new Long(200)));
-        assertFalse(values.contains(new Long(1200)));
-        assertFalse(values.contains(new Long(0)));
+        assertFalse(values.contains(Long.valueOf(200)));
+        assertFalse(values.contains(Long.valueOf(1200)));
+        assertFalse(values.contains(Long.valueOf(0)));
 
         range = LongRange.valueOf(100L, 1100L, 200L, true);
         values = range.getValues(false);
@@ -78,9 +78,9 @@ public class LongRangeTest {
         assertEquals(new LongRange(null, null), LongRange.valueOf(null, null));
 
         LongRange range = LongRange.valueOf(10L, 100L, 10L);
-        assertEquals(new Long(10), range.getLowerBound());
-        assertEquals(new Long(100), range.getUpperBound());
-        assertEquals(new Long(10), range.getStep());
+        assertEquals(Long.valueOf(10), range.getLowerBound());
+        assertEquals(Long.valueOf(100), range.getUpperBound());
+        assertEquals(Long.valueOf(10), range.getStep());
 
         try {
             LongRange.valueOf(10L, 101L, 10L);
@@ -89,31 +89,31 @@ public class LongRangeTest {
             // Expected exception.
         }
 
-        range = LongRange.valueOf(new Long(10), new Long(100), new Long(10));
-        assertEquals(new Long(10), range.getLowerBound());
-        assertEquals(new Long(100), range.getUpperBound());
-        assertEquals(new Long(10), range.getStep());
+        range = LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10));
+        assertEquals(Long.valueOf(10), range.getLowerBound());
+        assertEquals(Long.valueOf(100), range.getUpperBound());
+        assertEquals(Long.valueOf(10), range.getStep());
         assertFalse(range.containsNull());
 
         try {
-            LongRange.valueOf(new Long(10), new Long(101), new Long(10));
+            LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(10));
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
 
-        range = LongRange.valueOf(new Long(10), new Long(100), new Long(10), true);
+        range = LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10), true);
         assertTrue(range.containsNull());
 
         try {
-            LongRange.valueOf(new Long(10), new Long(101), new Long(10), true);
+            LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(10), true);
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
 
         try {
-            LongRange.valueOf(new Long(10), new Long(101), new Long(0), true);
+            LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(0), true);
             fail("Expect to since zero step size is not allowed.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
@@ -122,7 +122,7 @@ public class LongRangeTest {
 
     @Test
     public void testSerializable() throws Exception {
-        TestUtil.testSerializable(LongRange.valueOf(new Long(10), new Long(100), new Long(10)));
+        TestUtil.testSerializable(LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10)));
     }
 
 }

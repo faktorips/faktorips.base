@@ -50,25 +50,25 @@ public class SubtractionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntInt() throws Exception {
-        execAndTestSuccessfull("10 - 3", new Integer(7), Datatype.INTEGER);
+        execAndTestSuccessfull("10 - 3", Integer.valueOf(7), Datatype.INTEGER);
     }
 
     @Test
     public void testIntInteger() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("10 - WHOLENUMBER(3)", new Integer(7), Datatype.INTEGER);
+        execAndTestSuccessfull("10 - WHOLENUMBER(3)", Integer.valueOf(7), Datatype.INTEGER);
     }
 
     @Test
     public void testIntegerInt() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("WHOLENUMBER(10) - 3", new Integer(7), Datatype.INTEGER);
+        execAndTestSuccessfull("WHOLENUMBER(10) - 3", Integer.valueOf(7), Datatype.INTEGER);
     }
 
     @Test
     public void testIntegerInteger() throws Exception {
         getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
-        execAndTestSuccessfull("WHOLENUMBER(10) - WHOLENUMBER(3)", new Integer(7), Datatype.INTEGER);
+        execAndTestSuccessfull("WHOLENUMBER(10) - WHOLENUMBER(3)", Integer.valueOf(7), Datatype.INTEGER);
     }
 
     @Test

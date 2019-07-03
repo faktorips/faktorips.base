@@ -29,21 +29,21 @@ public class DoubleValueConverterTest {
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         DoubleValueConverter converter = new DoubleValueConverter();
-        String value = converter.getIpsValue(new Double(1234), ml);
+        String value = converter.getIpsValue(Double.valueOf(1234), ml);
         assertTrue(Datatype.DOUBLE.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Double(Double.MAX_VALUE), ml);
+        value = converter.getIpsValue(Double.valueOf(Double.MAX_VALUE), ml);
         assertTrue(Datatype.DOUBLE.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Double(Double.MIN_VALUE), ml);
+        value = converter.getIpsValue(Double.valueOf(Double.MIN_VALUE), ml);
         assertTrue(Datatype.DOUBLE.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Integer(0), ml);
+        value = converter.getIpsValue(Integer.valueOf(0), ml);
         assertFalse(ml.isEmpty());
-        assertEquals(new Integer(0).toString(), value);
+        assertEquals(Integer.valueOf(0).toString(), value);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class DoubleValueConverterTest {
         assertFalse(Datatype.DOUBLE.isParsable(INVALID));
 
         Object value = converter.getExternalDataValue(VALID, ml);
-        assertEquals(new Double(1234), value);
+        assertEquals(Double.valueOf(1234), value);
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(null, ml);
