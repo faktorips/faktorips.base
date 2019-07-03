@@ -102,8 +102,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertTrue(file.exists());
 
         /*
-         * this checks if the merge.xml has been found since it will try to merge the content because the
-         * java file exists already
+         * this checks if the merge.xml has been found since it will try to merge the content
+         * because the java file exists already
          */
         spyBuilder.setMergeEnabled(true);
         reset(spyBuilder);
@@ -513,11 +513,91 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertThat(javaFileContents, not(containsString("@Baz")));
     }
 
+    @Test
+    public void testLinebreaks_NewFile_Windows() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\n" +
+                        " * @generated\n" +
+                        " */\n" +
+                        "public class TestPolicy {\n" +
+                        "\n" +
+                        "    /**\n" +
+                        "     * @generated\n" +
+                        "     */\n" +
+                        "    public void foo(){\n" +
+                        "    }\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+
+        builder.setLineSeparatorPreference("\r\n");
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+        builder.build(ipsSrcFile);
+
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+        assertThat(javaFileContents, containsString("public void foo() {\r\n"));
+        assertThat(javaFileContents, not(containsString("public void foo() {\n")));
+        assertThat(javaFileContents, containsString("public class TestPolicy {\r\n"));
+        assertThat(javaFileContents, not(containsString("public class TestPolicy {\n")));
+    }
+
+    @Test
+    public void testLinebreaks_NewFile_Linux() throws CoreException {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() throws CoreException {
+                //@formatter:off
+                return "/**\r\n" +
+                        " * @generated\r\n" +
+                        " */\r\n" +
+                        "public class TestPolicy {\r\n" +
+                        "\r\n" +
+                        "    /**\r\n" +
+                        "     * @generated\r\n" +
+                        "     */\r\n" +
+                        "    public void foo(){\r\n" +
+                        "    }\r\n" +
+                        "}";
+                //@formatter:on
+            }
+        };
+
+        builder.setLineSeparatorPreference("\n");
+        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.setMergeEnabled(true);
+        builder.build(ipsSrcFile);
+
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+        assertThat(javaFileContents, containsString("public void foo() {\n"));
+        assertThat(javaFileContents, not(containsString("public void foo() {\r\n")));
+        assertThat(javaFileContents, containsString("public class TestPolicy {\n"));
+        assertThat(javaFileContents, not(containsString("public class TestPolicy {\r\n")));
+    }
+
     public static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
         private final IIpsSrcFile ipsSrcFile;
 
         private final boolean buildingPublishedSourceFile;
+
+        private String lineSeparator = "\n";
 
         public StubJavaSourceFileBuilder(IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
             this(mock(DefaultBuilderSet.class), null, ipsSrcFile, buildingPublishedSourceFile);
@@ -554,6 +634,15 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         @Override
         protected boolean generatesInterface() {
             return false;
+        }
+
+        @Override
+        protected String getLineSeparatorPreference() {
+            return lineSeparator;
+        }
+
+        public void setLineSeparatorPreference(String lineSeparator) {
+            this.lineSeparator = lineSeparator;
         }
 
     }

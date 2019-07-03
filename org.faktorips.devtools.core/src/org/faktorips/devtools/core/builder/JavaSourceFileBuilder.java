@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -71,6 +72,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * An implementation of <code>IIpsArtefactBuilder</code> that generates a java source file for a
@@ -717,7 +719,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
 
         content = removeUnusedImports(content);
-        content = format(content);
+        content = format(content, newFileCreated);
 
         /*
          * If merging is not activated and the old content of the file is equal compared to the new
@@ -826,7 +828,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return new IpsRemoveImportsOperation().removeUnusedImports(content);
     }
 
-    private String format(String content) {
+    /**
+     * Returns the preferred line separator, as defined in the eclipse settings. If the preference
+     * is not set, the system line separator will be returned.
+     */
+    protected String getLineSeparatorPreference() {
+        Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
+                .node(getIpsProject().getName());
+        return preferences.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR,
+                StringUtil.getSystemLineSeparator());
+    }
+
+    private String format(String content, boolean newFileCreated) {
         if (content == null) {
             return content;
         }
@@ -837,17 +850,30 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         } else {
             formatter = ToolFactory.createCodeFormatter(null);
         }
+
+        Document doc = new Document(content);
+
+        String separator = null;
+        if (newFileCreated) {
+            separator = getLineSeparatorPreference();
+        } else {
+            separator = doc.getDefaultLineDelimiter();
+            if (separator == null) {
+                separator = getLineSeparatorPreference();
+            }
+        }
+
         /*
          * With parameter null the CodeFormatter is configured with the preferences that are
          * currently set.
          */
         TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT | CodeFormatter.F_INCLUDE_COMMENTS, content,
-                0, content.length(), 0, StringUtil.getSystemLineSeparator());
+                0, content.length(), 0, separator);
 
         if (edit == null) {
             return content;
         }
-        Document doc = new Document(content);
+
         try {
             edit.apply(doc);
         } catch (MalformedTreeException e) {
