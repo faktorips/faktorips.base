@@ -24,7 +24,7 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.util.function
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
+Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
  javax.xml.bind;resolution:=optional,
  javax.xml.bind.annotation;resolution:=optional,
  javax.xml.bind.annotation.adapters;resolution:=optional,
