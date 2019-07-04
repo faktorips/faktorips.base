@@ -198,9 +198,6 @@ def private static  getterForProductAttributes(XPolicyCmptClass currentClass, XP
     «IF generateInterfaceGetter»
          /**
          * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, descriptionForJDoc)»
-         «IF descriptionForJDoc.length > 0»
-         * «descriptionForJDoc»
-         «ENDIF»
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          * @generated
          */
