@@ -453,7 +453,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         if (contextType == null) {
             return false;
         }
-        // CSOFF: LineLength
+        // CSOFF: AnonInnerLength
         return getIpsModel()
                 .executeModificationsWithSingleEvent(new SingleEventModification<Boolean>(contextType.getIpsSrcFile()) {
                     private boolean result = true;
@@ -479,7 +479,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                         return result;
                     }
                 });
-        // CSON: LineLength
+        // CSON: AnonInnerLength
     }
 
     private void insertProductCmptProperty(int propertyIndex,
