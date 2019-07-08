@@ -46,11 +46,10 @@ public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {
 
         String repoExpression = "customRepo";
 
-        assertEquals(".getEnumValue(PaymentMode.class, getValue())", fragment.getSourcecode());
+        assertEquals(".getExistingEnumValue(PaymentMode.class, getValue())", fragment.getSourcecode());
         String newInstanceFromExpression = repoExpression + fragment.getSourcecode();
-        assertEquals(newInstanceFromExpression,
-                DatatypeHelperUtil.getNewInstanceFromExpression(datatypeHelper, "getValue()", repoExpression)
-                .getSourcecode());
+        assertEquals(newInstanceFromExpression, DatatypeHelperUtil
+                .getNewInstanceFromExpression(datatypeHelper, "getValue()", repoExpression).getSourcecode());
     }
 
     @Test

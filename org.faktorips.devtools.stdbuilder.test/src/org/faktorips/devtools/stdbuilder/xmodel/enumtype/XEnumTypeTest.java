@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -103,7 +102,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
         System.out.println(codeFragement.getSourcecode());
 
         assertEquals(
-                "this.getRepository().getEnumValue(TestEnumType.class, IpsStringUtils.isEmpty(\"1\") ? null : Integer.valueOf(\"1\"))",
+                "this.getRepository().getExistingEnumValue(TestEnumType.class, IpsStringUtils.isEmpty(\"1\") ? null : Integer.valueOf(\"1\"))",
                 codeFragement.getSourcecode());
     }
 
@@ -124,8 +123,8 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     public void testGetCallGetValueByIdentifierCodeFragment_inextensible() {
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 
-        assertEquals(ENUM_TYPE_NAME + ".getValueById(" + newInstanceFromExpressionForInteger("1") + ")", xenumType
-                .getCallGetValueByIdentifierCodeFragment("1", new JavaCodeFragment(REPO)).getSourcecode());
+        assertEquals(ENUM_TYPE_NAME + ".getValueById(" + newInstanceFromExpressionForInteger("1") + ")",
+                xenumType.getCallGetValueByIdentifierCodeFragment("1", new JavaCodeFragment(REPO)).getSourcecode());
     }
 
     @Test
@@ -133,9 +132,10 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
         enumType.setExtensible(true);
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 
-        assertEquals(REPO + ".getEnumValue(" + ENUM_TYPE_NAME + ".class, " + newInstanceFromExpressionForInteger("1")
-                + ")", xenumType.getCallGetValueByIdentifierCodeFragment("1", new JavaCodeFragment(REPO))
-                .getSourcecode());
+        assertEquals(
+                REPO + ".getExistingEnumValue(" + ENUM_TYPE_NAME + ".class, " + newInstanceFromExpressionForInteger("1")
+                        + ")",
+                xenumType.getCallGetValueByIdentifierCodeFragment("1", new JavaCodeFragment(REPO)).getSourcecode());
     }
 
     @Test
