@@ -505,7 +505,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             if (templateLink != null) {
                 String text = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate,
                         templateLink.getProductCmptLinkContainer().getProductCmpt().getName());
-                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateLink, text);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<IProductCmptLink>(templateLink, text);
                 manager.add(openTemplateAction);
             }
         }

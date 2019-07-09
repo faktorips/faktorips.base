@@ -395,7 +395,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
             if (templateValue != null) {
                 String text = getOpenTemplateText(templateValue);
-                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<IPropertyValue>(templateValue, text);
                 manager.add(openTemplateAction);
             }
 

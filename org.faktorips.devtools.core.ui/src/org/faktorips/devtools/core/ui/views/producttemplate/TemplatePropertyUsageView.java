@@ -186,8 +186,8 @@ public class TemplatePropertyUsageView {
         site.getActionBars().getToolBarManager().add(retargetAction);
 
         // clear action
-        Action clearAction = new Action(Messages.TemplatePropertyUsageView_ClearActionTooltip, IpsUIPlugin
-                .getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+        Action clearAction = new Action(Messages.TemplatePropertyUsageView_ClearActionTooltip,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setTemplatedValue(null);
@@ -261,10 +261,10 @@ public class TemplatePropertyUsageView {
 
         @Override
         public void doubleClick(DoubleClickEvent event) {
-            Optional<IIpsObjectPartContainer> selectedElement = TypedSelection.singleElement(
-                    IIpsObjectPartContainer.class, event.getSelection());
+            Optional<IIpsObjectPartContainer> selectedElement = TypedSelection
+                    .singleElement(IIpsObjectPartContainer.class, event.getSelection());
             if (selectedElement.isPresent()) {
-                new SimpleOpenIpsObjectPartAction(selectedElement.get(), "").run(); //$NON-NLS-1$
+                new SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer>(selectedElement.get(), "").run(); //$NON-NLS-1$
             }
 
         }

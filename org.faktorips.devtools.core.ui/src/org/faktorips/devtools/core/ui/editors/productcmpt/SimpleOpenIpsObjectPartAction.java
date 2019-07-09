@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -16,22 +18,84 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.util.functional.Function;
+import org.faktorips.util.functional.Supplier;
 
-public class SimpleOpenIpsObjectPartAction extends OpenEditorAction {
+/**
+ * Opens an editor for an {@link IIpsObjectPartContainer}.
+ */
+public class SimpleOpenIpsObjectPartAction<T extends IIpsObjectPartContainer> extends OpenEditorAction {
 
-    public SimpleOpenIpsObjectPartAction(IIpsObjectPartContainer part, String caption) {
-        super(new SimpleSelectionProvider(part));
-        setImageDescriptor(IpsUIPlugin.getImageHandling().getImageDescriptor(part.getIpsObject()));
-        setText(caption);
-        setToolTipText(caption);
+    private Supplier<T> partSupplier;
+    private Function<T, String> captionGenerator;
+
+    /**
+     * Creates a {@link SimpleOpenIpsObjectPartAction} that opens the given part and uses the given
+     * caption as {@link #getText() text} and {@link #getToolTipText() tooltip text}.
+     */
+    public SimpleOpenIpsObjectPartAction(final T part, final String caption) {
+        this(new Supplier<T>() {
+
+            @Override
+            public T get() {
+                return part;
+            }
+        }, new Function<T, String>() {
+
+            @Override
+            public String apply(T t) {
+                return caption;
+            }
+        });
     }
 
-    private static class SimpleSelectionProvider implements ISelectionProvider {
+    /**
+     * Creates a {@link SimpleOpenIpsObjectPartAction} that opens the part supplied by the given
+     * supplier when {@link #run() run} and uses the caption created from the part by the given
+     * function as {@link #getText() text} and {@link #getToolTipText() tooltip text}.
+     */
+    public SimpleOpenIpsObjectPartAction(Supplier<T> partSupplier, Function<T, String> captionGenerator) {
+        super(new SuppliedSelectionProvider<T>(partSupplier));
+        this.partSupplier = partSupplier;
+        this.captionGenerator = captionGenerator;
+    }
 
-        private IIpsObjectPartContainer part;
+    @Override
+    public String getText() {
+        T part = partSupplier.get();
+        if (part != null) {
+            return captionGenerator.apply(part);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
 
-        public SimpleSelectionProvider(IIpsObjectPartContainer part) {
-            this.part = part;
+    @Override
+    public String getToolTipText() {
+        return getText();
+    }
+
+    @Override
+    public ImageDescriptor getImageDescriptor() {
+        T part = partSupplier.get();
+        if (part != null) {
+            return IpsUIPlugin.getImageHandling().getImageDescriptor(part.getIpsObject());
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return super.isEnabled() && partSupplier.get() != null;
+    }
+
+    private static class SuppliedSelectionProvider<T extends IIpsObjectPartContainer> implements ISelectionProvider {
+
+        private Supplier<T> partSupplier;
+
+        public SuppliedSelectionProvider(Supplier<T> partSupplier) {
+            this.partSupplier = partSupplier;
         }
 
         @Override
@@ -41,7 +105,7 @@ public class SimpleOpenIpsObjectPartAction extends OpenEditorAction {
 
         @Override
         public ISelection getSelection() {
-            return new StructuredSelection(part);
+            return new StructuredSelection(partSupplier.get());
         }
 
         @Override

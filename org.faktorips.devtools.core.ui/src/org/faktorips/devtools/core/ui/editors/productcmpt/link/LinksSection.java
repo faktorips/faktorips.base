@@ -124,7 +124,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
      * @param parent The composite whicht is the ui-parent for this section.
      * @param toolkit The ui-toolkit to support drawing.
      */
-    public LinksSection(ProductCmptEditor editor, IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
+    public LinksSection(ProductCmptEditor editor, IProductCmptGeneration generation, Composite parent,
+            UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH, toolkit);
         this.editor = editor;
         ArgumentCheck.notNull(generation);
@@ -164,8 +165,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         relationRootPanel.setLayout(new GridLayout(1, true));
         relationRootPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        toolkit.createLabel(relationRootPanel, Messages.PropertiesPage_noRelationsDefined).setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true));
+        toolkit.createLabel(relationRootPanel, Messages.PropertiesPage_noRelationsDefined)
+                .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
     private void createLinkTree(UIToolkit toolkit, Composite relationRootPanel, LinksContentProvider contentProvider) {
@@ -253,7 +254,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             final IProductCmptLink templateLink = firstLink.findTemplateProperty(firstLink.getIpsProject());
             if (templateLink != null) {
                 String text = getOpenTemplateText(templateLink);
-                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateLink, text);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<IProductCmptLink>(templateLink, text);
                 manager.add(openTemplateAction);
                 manager.add(new ShowTemplatePropertyUsageViewAction(templateLink,
                         Messages.CardinalityPanel_MenuItem_showUsage));
@@ -265,8 +266,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private String getOpenTemplateText(final IProductCmptLink templateLink) {
-        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateLink
-                .getTemplatedValueContainer().getProductCmpt().getName());
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate,
+                templateLink.getTemplatedValueContainer().getProductCmpt().getName());
     }
 
     private void registerSelectionChangedListener() {
@@ -281,8 +282,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(DoubleClickEvent event) {
-                TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, event
-                        .getSelection());
+                TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class,
+                        event.getSelection());
                 if (typedSelection.isValid()) {
                     IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(typedSelection.getFirstElement(),
                             IProductCmptLink.class);
@@ -296,8 +297,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     private void addDragAndDropSupport() {
         dropListener = new LinkSectionDropListener(this, generation);
-        treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
-                TextTransfer.getInstance() }, dropListener);
+        treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
+                new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() }, dropListener);
         MoveLinkDragListener dragListener = dropListener.new MoveLinkDragListener(treeViewer);
         treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, dragListener);
     }

@@ -18,6 +18,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -57,6 +58,9 @@ import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
+import org.faktorips.util.functional.BooleanSupplier;
+import org.faktorips.util.functional.Function;
+import org.faktorips.util.functional.Supplier;
 
 /**
  * Page to display a generation's properties or product component properties in case that product
@@ -94,8 +98,13 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private LinksSection linksSection;
 
+    private ActionContributionItem openTemplateActionItem;
+
+    private ActionContributionItem filterInheritedValuesActionItem;
+
     public GenerationPropertiesPage(ProductCmptEditor editor) {
-        super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
+        super(editor, PAGE_ID, ""); // Title will be updated based on selected //$NON-NLS-1$
+                                    // generation
     }
 
     @Override
@@ -173,8 +182,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private Composite createColumnComposite(SashForm parent) {
-        Composite columnComposite = createGridComposite(toolkit, parent, 1, true, GridData.FILL_BOTH
-                | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+        Composite columnComposite = createGridComposite(toolkit, parent, 1, true,
+                GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
         return columnComposite;
     }
 
@@ -235,8 +244,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             List<IPropertyValue> propertyValues) {
         List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
         Composite parent = category.isAtLeftPosition() ? left : right;
-        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit, getEditor()
-                .getVisibilityController());
+        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit,
+                getEditor().getVisibilityController());
         sections.add(section);
     }
 
@@ -271,10 +280,15 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         if (getProductCmpt().allowGenerations()) {
             createGotoPreviousNextGenerationAction(toolbarManager);
         }
-        if (getProductCmpt().isUsingTemplate()) {
-            createOpenTemplateAction(toolbarManager);
-            createFilterInheritedValuesAction(toolbarManager);
-        }
+        BooleanSupplier isUsingTemplate = new BooleanSupplier() {
+
+            @Override
+            public boolean getAsBoolean() {
+                return getProductCmpt().isUsingTemplate();
+            }
+        };
+        createOpenTemplateAction(toolbarManager, isUsingTemplate);
+        createFilterInheritedValuesAction(toolbarManager, isUsingTemplate);
         createOpenModelDescriptionAction(toolbarManager);
         getManagedForm().getForm().updateToolBar();
     }
@@ -304,19 +318,32 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         };
     }
 
-    private void createOpenTemplateAction(IToolBarManager toolbarManager) {
-        IProductCmpt template = getProductCmpt().findTemplate(getProductCmpt().getIpsProject());
-        if (template != null) {
-            String caption = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, template.getName());
-            toolbarManager.add(new SimpleOpenIpsObjectPartAction(template, caption));
-        }
+    private void createOpenTemplateAction(IToolBarManager toolbarManager, BooleanSupplier isUsingTemplate) {
+        SimpleOpenIpsObjectPartAction<IProductCmpt> openTemplateAction = new SimpleOpenIpsObjectPartAction<IProductCmpt>(
+                new Supplier<IProductCmpt>() {
+
+                    @Override
+                    public IProductCmpt get() {
+                        return getProductCmpt().findTemplate(getProductCmpt().getIpsProject());
+                    }
+                }, new Function<IProductCmpt, String>() {
+
+                    @Override
+                    public String apply(IProductCmpt template) {
+                        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, template.getName());
+                    }
+                });
+        openTemplateActionItem = new DynamicallyVisibleActionContributionItem(openTemplateAction, isUsingTemplate);
+        toolbarManager.add(openTemplateActionItem);
     }
 
-    private void createFilterInheritedValuesAction(IToolBarManager toolbarManager) {
-        FilterInheritedValuesAction action = new FilterInheritedValuesAction(getEditor().getVisibilityController(),
-                new InheritedValueVisibilityFilter());
-        action.initCheckedState();
-        toolbarManager.add(action);
+    private void createFilterInheritedValuesAction(IToolBarManager toolbarManager, BooleanSupplier isUsingTemplate) {
+        FilterInheritedValuesAction filterInheritedValuesAction = new FilterInheritedValuesAction(
+                getEditor().getVisibilityController(), new InheritedValueVisibilityFilter());
+        filterInheritedValuesAction.initCheckedState();
+        filterInheritedValuesActionItem = new DynamicallyVisibleActionContributionItem(filterInheritedValuesAction,
+                isUsingTemplate);
+        toolbarManager.add(filterInheritedValuesActionItem);
     }
 
     private void createOpenModelDescriptionAction(IToolBarManager toolbarManager) {
@@ -355,8 +382,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             updateStack();
             createPageContent();
             updateGenerationName();
-            getManagedForm().getForm().getToolBarManager().removeAll();
-            createToolbar();
+            updateToolbar();
             updateTabFolderName(getPartControl());
             resetDataChangeableState();
             refresh();
@@ -365,6 +391,12 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             gotoPreviousGenerationAction.update();
             gotoNextGenerationAction.update();
         }
+    }
+
+    private void updateToolbar() {
+        openTemplateActionItem.update();
+        filterInheritedValuesActionItem.update();
+        getManagedForm().getForm().getToolBarManager().update(true);
     }
 
     IMessage getNotLatestGenerationMessage() {
@@ -376,8 +408,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private boolean isNewestGeneration() {
-        IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                                                                                                    .getNumOfGenerations() - 1];
+        IIpsObjectGeneration newestGeneration = getProductCmpt()
+                .getGenerationsOrderedByValidDate()[getProductCmpt().getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }
@@ -614,7 +646,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         }
 
         public void initCheckedState() {
-            setChecked(preferences.getBoolean(PREF_ID));
+            super.setChecked(preferences.getBoolean(PREF_ID));
         }
 
         @Override
