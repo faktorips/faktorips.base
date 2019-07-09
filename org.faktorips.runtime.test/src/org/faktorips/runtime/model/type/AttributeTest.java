@@ -1,5 +1,8 @@
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -74,6 +77,18 @@ public class AttributeTest {
         assertFalse(subConstant.isProductRelevant());
         assertTrue(subAttr1.isProductRelevant());
         assertFalse(subAttr2.isProductRelevant());
+    }
+
+    @Test
+    public void testIsOverriding() throws Exception {
+        assertFalse(attr1.isOverriding());
+        assertTrue(subAttr1.isOverriding());
+    }
+
+    @Test
+    public void testGetSuperAttribute() throws Exception {
+        assertThat(attr1.getSuperAttribute(), is(nullValue()));
+        assertThat(subAttr1.getSuperAttribute(), is(attr1));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")

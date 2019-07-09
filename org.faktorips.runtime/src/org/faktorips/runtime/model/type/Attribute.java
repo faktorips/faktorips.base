@@ -109,6 +109,28 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
         return ValueSetType.valueOf(getValueSetKind().name());
     }
 
+    /**
+     * Returns <code>true</code> if this attribute overrides another attribute. That means a
+     * supertype declares an attribute with the same name.
+     * 
+     * @return <code>true</code> if this attribute overrides another, <code>false</code> if not
+     * @see #getSuperAttribute()
+     */
+    public boolean isOverriding() {
+        return getType().isSuperTypePresent() && getType().getSuperType().isAttributePresent(getName());
+    }
+
+    /**
+     * Returns the attribute that is overridden by this attribute if this attribute overrides
+     * another one. Otherwise returns <code>null</code>.
+     * 
+     * @return The attribute that is overridden by this attribute.
+     * @see #isOverriding()
+     */
+    public Attribute getSuperAttribute() {
+        return isOverriding() ? getType().getSuperType().getAttribute(getName()) : null;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());

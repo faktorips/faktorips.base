@@ -2,11 +2,12 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -320,6 +321,21 @@ public class PolicyAssociationTest {
         association1To10.removeTargetObjects(source, target);
     }
 
+    @Test
+    public void testIsOverriding() throws Exception {
+        PolicyCmptType subSource = IpsModel.getPolicyCmptType(SubSource.class);
+        assertFalse(subSource.getAssociation("SubAsso").isOverriding());
+        assertTrue(subSource.getAssociation("targets1toN").isOverriding());
+    }
+
+    @Test
+    public void testGetSuperAssociation() throws Exception {
+        PolicyCmptType subSource = IpsModel.getPolicyCmptType(SubSource.class);
+        assertThat(subSource.getAssociation("SubAsso").getSuperAssociation(), is(nullValue()));
+        assertSame(subSource.getAssociation("targets1toN").getSuperAssociation(),
+                policyCmptType.getAssociation("targets1toN"));
+    }
+
     @IpsPolicyCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "targets1toN" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
@@ -366,7 +382,43 @@ public class PolicyAssociationTest {
         public void removeTargets1toN(Target objectToRemove) {
             targets1toN.remove(objectToRemove);
         }
+    }
 
+    @IpsPolicyCmptType(name = "MySource")
+    @IpsAssociations({ "SubAsso", "targets1toN", "asso", "asso2" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
+    private static class SubSource extends Source {
+
+        private Target target;
+        private final List<Target> targets1toN = new ArrayList<PolicyAssociationTest.Target>();
+
+        @IpsAssociation(name = "SubAsso", pluralName = "subAassos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        public Target getSubAsso() {
+            return target;
+        }
+
+        @IpsAssociationAdder(association = "SubAsso")
+        public void setSubAsso(Target objectToAdd) {
+            target = objectToAdd;
+        }
+
+        @Override
+        @IpsAssociation(name = "targets1toN", pluralName = "targets", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
+        public List<Target> getTargets1toN() {
+            return targets1toN;
+        }
+
+        @Override
+        @IpsAssociationAdder(association = "targets1toN")
+        public void addTargets1toN(Target objectToAdd) {
+            targets1toN.add(objectToAdd);
+        }
+
+        @Override
+        @IpsAssociationRemover(association = "targets1toN")
+        public void removeTargets1toN(Target objectToRemove) {
+            targets1toN.remove(objectToRemove);
+        }
     }
 
     @IpsPolicyCmptType(name = "MyTarget")

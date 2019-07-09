@@ -2,13 +2,13 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +24,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -41,15 +42,11 @@ import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ProductAssociationTest {
 
-    @Mock
     private IRuntimeRepository repository;
 
     private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
@@ -58,6 +55,11 @@ public class ProductAssociationTest {
     private final ProductAssociation association = productCmptType.getAssociation("asso");
     private final ProductAssociation association2 = productCmptType.getAssociation("asso2");
     private final ProductAssociation association3 = productCmptType.getAssociation("asso3");
+
+    @Before
+    public void setUpRepository() {
+        repository = new InMemoryRuntimeRepository();
+    }
 
     @Test
     public void testGetTarget() {
@@ -98,8 +100,6 @@ public class ProductAssociationTest {
         productGen.target = new Target();
         productGen2.target = new Target();
         productGen2.target2 = new Target();
-
-        when(repository.getLatestProductComponentGeneration(source)).thenReturn(productGen);
 
         assertThat(association.getTargetObjects(source, null).size(), is(1));
         assertThat(association.getTargetObjects(source, null), hasItem(source.target));
@@ -213,19 +213,33 @@ public class ProductAssociationTest {
         association4.getLinks(source, effectiveDate);
     }
 
+    @Test
+    public void testIsOverriding() throws Exception {
+        ProductCmptType subSource = IpsModel.getProductCmptType(SubSource.class);
+        assertFalse(subSource.getAssociation("SubAsso").isOverriding());
+        assertTrue(subSource.getAssociation("asso3").isOverriding());
+    }
+
+    @Test
+    public void testGetSuperAssociation() throws Exception {
+        ProductCmptType subSource = IpsModel.getProductCmptType(SubSource.class);
+        assertThat(subSource.getAssociation("SubAsso").getSuperAssociation(), is(nullValue()));
+        assertSame(subSource.getAssociation("asso3").getSuperAssociation(), productCmptType.getAssociation("asso3"));
+    }
+
     @IpsProductCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "asso3", "asso4" })
     @IpsChangingOverTime(ProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class Source extends ProductComponent {
 
-        public Source() {
-            super(repository, "id", "productKindId", "versionId");
-        }
-
         private Target target;
         private final ProductGen productGen = new ProductGen(this);
         private final ProductGen productGen2 = new ProductGen(this);
+
+        public Source() {
+            super(repository, "id", "productKindId", "versionId");
+        }
 
         @IpsAssociation(name = "asso", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
         @IpsDerivedUnion
@@ -279,6 +293,38 @@ public class ProductAssociationTest {
             return productGen;
         }
 
+    }
+
+    @IpsProductCmptType(name = "MySubSource")
+    @IpsAssociations({ "SubAsso", "asso3", "asso", "asso2", "asso4" })
+    @IpsChangingOverTime(ProductGen.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
+    private class SubSource extends Source {
+
+        private Target target;
+
+        @IpsAssociation(name = "SubAsso", pluralName = "SubAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsDerivedUnion
+        public Target getSubAsso() {
+            return target;
+        }
+
+        @IpsAssociationLinks(association = "SubAsso")
+        public IProductComponentLink<Target> getLinkForSubAsso() {
+            return new ProductComponentLink<Target>(this, target);
+        }
+
+        @Override
+        @IpsAssociation(name = "asso3", pluralName = "asso3s", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        public Target getAsso3() {
+            return super.getAsso3();
+        }
+
+        @Override
+        @IpsAssociationLinks(association = "asso3")
+        public IProductComponentLink<Target> getLinkForAsso3() {
+            return super.getLinkForAsso3();
+        }
     }
 
     private class ProductGen extends ProductComponentGeneration {

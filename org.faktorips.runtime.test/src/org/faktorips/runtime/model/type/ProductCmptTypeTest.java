@@ -3,8 +3,10 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -27,7 +29,6 @@ import org.junit.Test;
 public class ProductCmptTypeTest {
 
     private final ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
-
     private final ProductCmptType superProductModel = IpsModel.getProductCmptType(SuperProduct.class);
 
     @Test
@@ -66,10 +67,11 @@ public class ProductCmptTypeTest {
 
     @Test
     public void testGetDeclaredAttributes() {
-        assertThat(productCmptType.getDeclaredAttributes().size(), is(3));
+        assertThat(productCmptType.getDeclaredAttributes().size(), is(4));
         assertThat(productCmptType.getDeclaredAttributes().get(0).getName(), is("attr"));
-        assertThat(productCmptType.getDeclaredAttributes().get(1).getName(), is("BigAttr"));
-        assertThat(productCmptType.getDeclaredAttributes().get(2).getName(), is("attr_changing"));
+        assertThat(productCmptType.getAttributes().get(1).getName(), is("overwrittenAttr"));
+        assertThat(productCmptType.getDeclaredAttributes().get(2).getName(), is("BigAttr"));
+        assertThat(productCmptType.getDeclaredAttributes().get(3).getName(), is("attr_changing"));
     }
 
     @Test
@@ -82,11 +84,12 @@ public class ProductCmptTypeTest {
 
     @Test
     public void testGetAttributes() {
-        assertThat(productCmptType.getAttributes().size(), is(4));
+        assertThat(productCmptType.getAttributes().size(), is(5));
         assertThat(productCmptType.getAttributes().get(0).getName(), is("attr"));
-        assertThat(productCmptType.getAttributes().get(1).getName(), is("BigAttr"));
-        assertThat(productCmptType.getAttributes().get(2).getName(), is("attr_changing"));
-        assertThat(productCmptType.getAttributes().get(3).getName(), is("supAttr"));
+        assertThat(productCmptType.getAttributes().get(1).getName(), is("overwrittenAttr"));
+        assertThat(productCmptType.getAttributes().get(2).getName(), is("BigAttr"));
+        assertThat(productCmptType.getAttributes().get(3).getName(), is("attr_changing"));
+        assertThat(productCmptType.getAttributes().get(4).getName(), is("supAttr"));
     }
 
     @Test
@@ -172,10 +175,22 @@ public class ProductCmptTypeTest {
         assertSame(superAssoInSuper, superAssoInSuperLowerCase);
     }
 
+    @Test
+    public void testIsAttributePresent() {
+        assertTrue(productCmptType.isAttributePresent("supAttr"));
+        assertFalse(productCmptType.isAttributeDeclared("supAttr"));
+
+        assertTrue(productCmptType.isAttributePresent("overwrittenAttr"));
+        assertTrue(productCmptType.isAttributeDeclared("overwrittenAttr"));
+
+        assertTrue(productCmptType.isAttributePresent("BigAttr"));
+        assertTrue(productCmptType.isAttributeDeclared("BigAttr"));
+    }
+
     @IpsProductCmptType(name = "MyProduct")
     @IpsConfigures(Policy.class)
     @IpsChangingOverTime(ProductGen.class)
-    @IpsAttributes({ "attr", "BigAttr", "attr_changing" })
+    @IpsAttributes({ "attr", "overwrittenAttr", "BigAttr", "attr_changing" })
     @IpsAssociations({ "asso", "asso_changing" })
     private static abstract class Product extends SuperProduct {
 
@@ -188,6 +203,10 @@ public class ProductCmptTypeTest {
 
         @IpsAttributeSetter("attr")
         public abstract void setAttr(String attr);
+
+        @Override
+        @IpsAttribute(name = "overwrittenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public abstract String getOverwrittenAttr();
 
         @IpsAttribute(name = "BigAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public abstract String getBigAttr();
@@ -215,7 +234,7 @@ public class ProductCmptTypeTest {
     }
 
     @IpsProductCmptType(name = "MySuperProduct")
-    @IpsAttributes({ "supAttr" })
+    @IpsAttributes({ "supAttr", "overwrittenAttr" })
     @IpsAssociations({ "SupAsso" })
     private static abstract class SuperProduct extends ProductComponent {
 
@@ -223,6 +242,9 @@ public class ProductCmptTypeTest {
         public int getSup() {
             return 1;
         }
+
+        @IpsAttribute(name = "overwrittenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public abstract String getOverwrittenAttr();
 
         @IpsAssociation(name = "SupAsso", pluralName = "SupAssos", max = 5, min = 1, targetClass = SuperProduct.class, kind = AssociationKind.Association)
         public abstract SuperProduct getSupAsso();

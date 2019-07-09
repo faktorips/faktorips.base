@@ -256,6 +256,28 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
         }
     }
 
+    /**
+     * Returns <code>true</code> if this association overrides another association. That means a
+     * supertype declares an association with the same name.
+     * 
+     * @return <code>true</code> if this association overrides another, <code>false</code> if not
+     * @see #getSuperAssociation()
+     */
+    public boolean isOverriding() {
+        return getType().isSuperTypePresent() && getType().getSuperType().isAssociationPresent(getName());
+    }
+
+    /**
+     * Returns the association that is overridden by this association if this association overrides
+     * another one. Otherwise returns <code>null</code>.
+     * 
+     * @return The association that is overridden by this attribute.
+     * @see #isOverriding()
+     */
+    public Association getSuperAssociation() {
+        return isOverriding() ? getType().getSuperType().getAssociation(getName()) : null;
+    }
+
     protected Method getGetterMethod() {
         return getter;
     }

@@ -177,12 +177,16 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns a list containing all associations declared in this type. Associations defined in the
      * type's super types are not returned.
+     * 
+     * @return the list of associations declared in this type
      */
     @Override
     public abstract List<? extends Association> getDeclaredAssociations();
 
     /**
      * Returns the type's associations including those defined in it's super types.
+     * 
+     * @return the list of all associations declared in this type or in any super type
      */
     @Override
     public abstract List<? extends Association> getAssociations();
@@ -192,7 +196,12 @@ public abstract class Type extends ModelElement implements IModelType {
      * defined in the type's super types are not considered. The name could either be the singular
      * or the plural name.
      * 
-     * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
+     * @param name the name of the association
+     * @return the association if it was found in this type
+     * 
+     * @throws IllegalArgumentException if no association with the given <code>name</code> exists
+     * 
+     * @see #isAssociationDeclared(String)
      */
     @Override
     public abstract Association getDeclaredAssociation(String name);
@@ -200,12 +209,36 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns whether the association with the given <code>name</code> is declared in this type.
      * Associations defined in the type's super types are not considered.
+     * 
+     * @param name the name of the association
+     * @return <code>true</code> if the association is declared in this type, <code>false</code> if
+     *         not
+     * 
+     * @see #isAssociationPresent(String)
      */
-    protected abstract boolean hasDeclaredAssociation(String name);
+    public abstract boolean isAssociationDeclared(String name);
+
+    /**
+     * Returns whether the association with the given <code>name</code> is declared in this type or
+     * in any supertype.
+     * 
+     * @param name the name of the association
+     * @return <code>true</code> if the association is declared in this type or in any supertype,
+     *         <code>false</code> if not
+     * 
+     * @see #isAssociationDeclared(String)
+     */
+    public boolean isAssociationPresent(String name) {
+        AssociationFinder finder = new AssociationFinder(name);
+        finder.visitHierarchy(this);
+        return finder.association != null;
+    }
 
     /**
      * Returns a list containing all attributes declared in this model type. Attributes defined in
      * the type's super types are not returned.
+     * 
+     * @return the list of attributes declared in this type
      */
     @Override
     public abstract List<? extends Attribute> getDeclaredAttributes();
@@ -213,12 +246,32 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns whether the attribute with the given <code>name</code> is declared in this type.
      * Attributes defined in the type's super types are not considered.
+     * 
+     * @param name the name of the attribute
+     * @return <code>true</code> if the attribute is declared in this type, <code>false</code> if
+     *         not
      */
-    protected abstract boolean hasDeclaredAttribute(String name);
+    public abstract boolean isAttributeDeclared(String name);
+
+    /**
+     * Returns whether the attribute with the given <code>name</code> is declared in this type or in
+     * any supertype.
+     * 
+     * @param name the name of the attribute
+     * @return <code>true</code> if the attribute is declared in this type or in any supertype,
+     *         <code>false</code> if not
+     */
+    public boolean isAttributePresent(String name) {
+        AttributeFinder finder = new AttributeFinder(name);
+        finder.visitHierarchy(this);
+        return finder.attribute != null;
+    }
 
     /**
      * Returns a list containing the type's attributes including those defined in the type's super
      * types.
+     * 
+     * @return the list of all attributes declared in this type or in any supertype
      */
     @Override
     public abstract List<? extends Attribute> getAttributes();
@@ -227,10 +280,24 @@ public abstract class Type extends ModelElement implements IModelType {
      * Returns the attribute with the given <code>name</code> declared in this type. Attributes
      * defined in the type's super types are not returned.
      * 
-     * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
+     * @param name the name of the attribute
+     * @return the attribute if it was found in this type
+     * 
+     * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists
+     * 
+     * @see #isAttributeDeclared(String)
      */
     @Override
     public abstract Attribute getDeclaredAttribute(String name);
+
+    /**
+     * Returns whether this type has a super type.
+     * 
+     * @return <code>true</code> if this type has a supertype, <code>false</code> if not
+     */
+    public boolean isSuperTypePresent() {
+        return getSuperType() != null;
+    }
 
     /**
      * Returns this type's super type or <code>null</code> if it has none.
@@ -289,7 +356,7 @@ public abstract class Type extends ModelElement implements IModelType {
 
         @Override
         public boolean visitType(Type type) {
-            boolean hasDeclaredAttribute = type.hasDeclaredAttribute(attrName);
+            boolean hasDeclaredAttribute = type.isAttributeDeclared(attrName);
             if (hasDeclaredAttribute) {
                 attribute = type.getDeclaredAttribute(attrName);
             }
@@ -334,7 +401,7 @@ public abstract class Type extends ModelElement implements IModelType {
 
         @Override
         public boolean visitType(Type type) {
-            boolean hasDeclaredAssociation = type.hasDeclaredAssociation(associationName);
+            boolean hasDeclaredAssociation = type.isAssociationDeclared(associationName);
             if (hasDeclaredAssociation) {
                 association = type.getDeclaredAssociation(associationName);
             }

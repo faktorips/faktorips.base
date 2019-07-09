@@ -3,9 +3,11 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -27,7 +29,6 @@ import org.junit.Test;
 public class PolicyCmptTypeTest {
 
     private final PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(Policy.class);
-
     private final PolicyCmptType superPolicyCmptType = IpsModel.getPolicyCmptType(SuperPolicy.class);
 
     @Test
@@ -60,8 +61,8 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetDeclaredAttributes() {
-        assertThat(policyCmptType.getDeclaredAttributes().size(), is(3));
-        assertThat(policyCmptType.getDeclaredAttributes().get(1).getName(), is("const"));
+        assertThat(policyCmptType.getDeclaredAttributes().size(), is(4));
+        assertThat(policyCmptType.getDeclaredAttributes().get(2).getName(), is("const"));
     }
 
     @Test
@@ -73,7 +74,7 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetAttributes() {
-        assertThat(policyCmptType.getAttributes().size(), is(4));
+        assertThat(policyCmptType.getAttributes().size(), is(5));
         assertThat(policyCmptType.getAttributes().get(0).getName(), is("attr"));
     }
 
@@ -86,11 +87,13 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetDeclaredAssociations() {
-        assertThat(policyCmptType.getDeclaredAssociations().size(), is(2));
+        assertThat(policyCmptType.getDeclaredAssociations().size(), is(3));
         assertThat(policyCmptType.getDeclaredAssociations().get(0).getName(), is("asso"));
         assertNotNull(policyCmptType.getDeclaredAssociation("asso"));
         assertThat(policyCmptType.getDeclaredAssociations().get(1).getName(), is("Asso2"));
         assertNotNull(policyCmptType.getDeclaredAssociation("asso2"));
+        assertThat(policyCmptType.getDeclaredAssociations().get(2).getName(), is("overwrittenAsso"));
+        assertNotNull(policyCmptType.getDeclaredAssociation("overwrittenAsso"));
     }
 
     @Test
@@ -155,17 +158,42 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetAssociations() {
-        assertThat(policyCmptType.getAssociations().size(), is(3));
+        assertThat(policyCmptType.getAssociations().size(), is(4));
         assertThat(policyCmptType.getAssociations().get(0).getName(), is("asso"));
         assertThat(policyCmptType.getAssociations().get(1).getName(), is("Asso2"));
-        assertThat(policyCmptType.getAssociations().get(2).getName(), is("supAsso"));
+        assertThat(policyCmptType.getAssociations().get(2).getName(), is("overwrittenAsso"));
+        assertThat(policyCmptType.getAssociations().get(3).getName(), is("supAsso"));
         assertNotNull(policyCmptType.getAssociation("supAsso"));
+    }
+
+    @Test
+    public void testIsAttributePresent() {
+        assertTrue(policyCmptType.isAttributePresent("supAttr"));
+        assertFalse(policyCmptType.isAttributeDeclared("supAttr"));
+
+        assertTrue(policyCmptType.isAttributePresent("overwrittenAttr"));
+        assertTrue(policyCmptType.isAttributeDeclared("overwrittenAttr"));
+
+        assertTrue(policyCmptType.isAttributePresent("CapitalAttr"));
+        assertTrue(policyCmptType.isAttributeDeclared("CapitalAttr"));
+    }
+
+    @Test
+    public void testIsAssociationPresent() {
+        assertTrue(policyCmptType.isAssociationPresent("supAsso"));
+        assertFalse(policyCmptType.isAssociationDeclared("supAsso"));
+
+        assertTrue(policyCmptType.isAssociationPresent("overwrittenAsso"));
+        assertTrue(policyCmptType.isAssociationDeclared("overwrittenAsso"));
+
+        assertTrue(policyCmptType.isAssociationPresent("Asso2"));
+        assertTrue(policyCmptType.isAssociationDeclared("Asso2"));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsConfiguredBy(Product.class)
-    @IpsAttributes({ "attr", "const", "CapitalAttr" })
-    @IpsAssociations({ "asso", "Asso2" })
+    @IpsAttributes({ "attr", "overwrittenAttr", "const", "CapitalAttr" })
+    @IpsAssociations({ "asso", "Asso2", "overwrittenAsso" })
     private static abstract class Policy extends SuperPolicy {
 
         @IpsAttribute(name = "const", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -174,29 +202,43 @@ public class PolicyCmptTypeTest {
         @IpsAttribute(name = "attr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
         public abstract String getAttr();
 
-        @IpsAttribute(name = "CapitalAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
-        public abstract String getCapitalAttr();
-
         @IpsAttributeSetter("attr")
         public abstract void setAttr(String attr);
 
+        @Override
+        @IpsAttribute(name = "overwrittenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+        public abstract String getOverwrittenAttr();
+
+        @IpsAttribute(name = "CapitalAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public abstract String getCapitalAttr();
+
         @IpsAssociation(name = "asso", max = 0, min = 0, targetClass = Policy.class, kind = AssociationKind.Composition)
-        public abstract Policy getPartPolicy();
+        public abstract Policy getAsso();
 
         @IpsAssociation(name = "Asso2", pluralName = "Asso2s", max = 5, min = 0, targetClass = Policy.class, kind = AssociationKind.Composition)
-        public abstract List<Policy> getTargets();
+        public abstract List<Policy> getAsso2();
+
+        @Override
+        @IpsAssociation(name = "overwrittenAsso", pluralName = "overwrittenAssos", max = 0, min = 0, targetClass = SuperPolicy.class, kind = AssociationKind.Composition)
+        public abstract SuperPolicy getOverwrittenAsso();
     }
 
     @IpsPolicyCmptType(name = "MySuperPolicy")
-    @IpsAttributes({ "supAttr" })
-    @IpsAssociations({ "supAsso" })
+    @IpsAttributes({ "supAttr", "overwrittenAttr" })
+    @IpsAssociations({ "supAsso", "overwrittenAsso" })
     private static abstract class SuperPolicy extends AbstractModelObject {
 
         @IpsAttribute(name = "supAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public static final int supAttr = 5;
 
+        @IpsAttribute(name = "overwrittenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+        public abstract String getOverwrittenAttr();
+
         @IpsAssociation(name = "supAsso", pluralName = "supAssos", max = 0, min = 0, targetClass = SuperPolicy.class, kind = AssociationKind.Composition)
-        public abstract SuperPolicy getPartSuperPolicy();
+        public abstract SuperPolicy getSupAsso();
+
+        @IpsAssociation(name = "overwrittenAsso", pluralName = "overwrittenAssos", max = 0, min = 0, targetClass = SuperPolicy.class, kind = AssociationKind.Composition)
+        public abstract SuperPolicy getOverwrittenAsso();
     }
 
     @IpsProductCmptType(name = "MyProduct")

@@ -234,8 +234,8 @@ public class ProductCmptType extends Type {
     }
 
     @Override
-    protected boolean hasDeclaredAttribute(String name) {
-        return attributes.containsKey(name);
+    public boolean isAttributeDeclared(String name) {
+        return attributes.containsKey(IpsStringUtils.toLowerFirstChar(name));
     }
 
     @Override
@@ -258,8 +258,8 @@ public class ProductCmptType extends Type {
     }
 
     @Override
-    protected boolean hasDeclaredAssociation(String name) {
-        return associations.containsKey(name);
+    public boolean isAssociationDeclared(String name) {
+        return associations.containsKey(IpsStringUtils.toLowerFirstChar(name));
     }
 
     @Override
