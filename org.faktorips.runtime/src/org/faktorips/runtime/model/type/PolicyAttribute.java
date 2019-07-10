@@ -48,6 +48,11 @@ public abstract class PolicyAttribute extends Attribute {
         return getType();
     }
 
+    @Override
+    public PolicyAttribute getSuperAttribute() {
+        return (PolicyAttribute)super.getSuperAttribute();
+    }
+
     /**
      * Returns the value of the given model object's attribute identified by this model type
      * attribute.
@@ -127,6 +132,8 @@ public abstract class PolicyAttribute extends Attribute {
      * @throws UnsupportedOperationException if invoked on a
      *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      */
-    public abstract ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context);
+    public abstract ValueSet<?> getValueSet(IProductComponent source,
+            Calendar effectiveDate,
+            IValidationContext context);
 
 }

@@ -148,10 +148,14 @@ public class ProductAssociation extends Association {
     private <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinksFromObject(
             Object prodCmptOrGeneration) {
         if (getLinksMethod == null) {
-            throw new IllegalArgumentException(String.format(
-                    "The association %s on %s does not allow retrieving links%s.", getName(), prodCmptOrGeneration,
-                    isDerivedUnion() ? " because it is a derived union"
-                            : ("; make sure a method annotated with @" + IpsAssociationLinks.class + " exists")));
+            if (isOverriding()) {
+                return getSuperAssociation().getLinksFromObject(prodCmptOrGeneration);
+            } else {
+                throw new IllegalArgumentException(String.format(
+                        "The association %s on %s does not allow retrieving links%s.", getName(), prodCmptOrGeneration,
+                        isDerivedUnion() ? " because it is a derived union"
+                                : ("; make sure a method annotated with @" + IpsAssociationLinks.class + " exists")));
+            }
         }
         if (isToOneAssociation()) {
             IProductComponentLink<T> link = (IProductComponentLink<T>)invokeMethod(getLinksMethod,
@@ -164,5 +168,10 @@ public class ProductAssociation extends Association {
         } else {
             return (Collection<IProductComponentLink<T>>)invokeMethod(getLinksMethod, prodCmptOrGeneration);
         }
+    }
+
+    @Override
+    public ProductAssociation getSuperAssociation() {
+        return (ProductAssociation)super.getSuperAssociation();
     }
 }

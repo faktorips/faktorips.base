@@ -247,16 +247,27 @@ public class PolicyAssociation extends Association {
             }
         } else {
             if (removeMethod == null) {
-                throw new IllegalArgumentException(String.format(
-                        "The association %s on source object %s does not allow removing target objects%s.", getName(),
-                        source, isDerivedUnion() ? " because it is a derived union"
-                                : ("; make sure a method annotated with @" + IpsAssociationRemover.class + " exists")));
+                if (isOverriding()) {
+                    return getSuperAssociation().removeTargetObjects(source, targetsToRemove);
+                } else {
+                    throw new IllegalArgumentException(String.format(
+                            "The association %s on source object %s does not allow removing target objects%s.",
+                            getName(), source,
+                            isDerivedUnion() ? " because it is a derived union"
+                                    : ("; make sure a method annotated with @"
+                                            + IpsAssociationRemover.class.getSimpleName() + " exists")));
+                }
             }
             for (IModelObject targetToRemove : targetsToRemove) {
                 invokeMethod(removeMethod, source, targetToRemove);
             }
         }
         return source;
+    }
+
+    @Override
+    public PolicyAssociation getSuperAssociation() {
+        return (PolicyAssociation)super.getSuperAssociation();
     }
 
     /**

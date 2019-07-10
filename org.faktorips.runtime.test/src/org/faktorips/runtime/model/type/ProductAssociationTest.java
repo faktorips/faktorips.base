@@ -54,7 +54,7 @@ public class ProductAssociationTest {
     private final ProductCmptType productCmptType = IpsModel.getProductCmptType(Source.class);
     private final ProductAssociation association = productCmptType.getAssociation("asso");
     private final ProductAssociation association2 = productCmptType.getAssociation("asso2");
-    private final ProductAssociation association3 = productCmptType.getAssociation("asso3");
+    private final ProductAssociation overriddenAsso = productCmptType.getAssociation("overriddenAsso");
 
     @Before
     public void setUpRepository() {
@@ -115,6 +115,25 @@ public class ProductAssociationTest {
                 hasItem(productGen2.target));
         assertThat(association2.getTargetObjects(source, new GregorianCalendar(1999, 2, 2)),
                 hasItem(productGen2.target2));
+
+        assertThat(overriddenAsso.getTargetObjects(source, null).size(), is(1));
+        assertThat(overriddenAsso.getTargetObjects(source, null), hasItem(source.target));
+    }
+
+    @Test
+    public void testGetTargetObjects_Overridden() {
+        SubSource source = new SubSource();
+        source.target = new SubTarget();
+
+        ProductAssociation inheritedAssociation = IpsModel.getProductCmptType(source).getAssociation("asso");
+
+        assertThat(inheritedAssociation.getTargetObjects(source, null).size(), is(1));
+        assertThat(inheritedAssociation.getTargetObjects(source, null), hasItem(source.target));
+
+        ProductAssociation overriddenAssociation = IpsModel.getProductCmptType(source).getAssociation("overriddenAsso");
+
+        assertThat(overriddenAssociation.getTargetObjects(source, null).size(), is(1));
+        assertThat(overriddenAssociation.getTargetObjects(source, null), hasItem(source.target));
     }
 
     @Test
@@ -181,7 +200,7 @@ public class ProductAssociationTest {
         Source source = new Source();
         source.target = new Target("id2");
 
-        Collection<IProductComponentLink<Target>> links = association3.getLinks(source, null);
+        Collection<IProductComponentLink<Target>> links = overriddenAsso.getLinks(source, null);
         assertTrue(links.isEmpty());
     }
 
@@ -214,26 +233,37 @@ public class ProductAssociationTest {
     }
 
     @Test
+    public void testGetLinks_Overridden() {
+        SubSource source = new SubSource();
+        source.subAssoTarget = new Target("id2");
+
+        Collection<IProductComponentLink<Target>> links = IpsModel.getProductCmptType(source)
+                .getAssociation("overriddenAsso").getLinks(source, null);
+        assertTrue(links.isEmpty());
+    }
+
+    @Test
     public void testIsOverriding() throws Exception {
         ProductCmptType subSource = IpsModel.getProductCmptType(SubSource.class);
         assertFalse(subSource.getAssociation("SubAsso").isOverriding());
-        assertTrue(subSource.getAssociation("asso3").isOverriding());
+        assertTrue(subSource.getAssociation("overriddenAsso").isOverriding());
     }
 
     @Test
     public void testGetSuperAssociation() throws Exception {
         ProductCmptType subSource = IpsModel.getProductCmptType(SubSource.class);
         assertThat(subSource.getAssociation("SubAsso").getSuperAssociation(), is(nullValue()));
-        assertSame(subSource.getAssociation("asso3").getSuperAssociation(), productCmptType.getAssociation("asso3"));
+        assertSame(subSource.getAssociation("overriddenAsso").getSuperAssociation(),
+                productCmptType.getAssociation("overriddenAsso"));
     }
 
     @IpsProductCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "asso3", "asso4" })
+    @IpsAssociations({ "asso", "asso2", "overriddenAsso", "asso4" })
     @IpsChangingOverTime(ProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class Source extends ProductComponent {
 
-        private Target target;
+        Target target;
         private final ProductGen productGen = new ProductGen(this);
         private final ProductGen productGen2 = new ProductGen(this);
 
@@ -253,13 +283,13 @@ public class ProductAssociationTest {
             return new ProductComponentLink<Target>(this, target);
         }
 
-        @IpsAssociation(name = "asso3", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
-        public Target getAsso3() {
+        @IpsAssociation(name = "overriddenAsso", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        public Target getOverriddenAsso() {
             return target;
         }
 
-        @IpsAssociationLinks(association = "asso3")
-        public IProductComponentLink<Target> getLinkForAsso3() {
+        @IpsAssociationLinks(association = "overriddenAsso")
+        public IProductComponentLink<Target> getLinkForOverriddenAsso() {
             return null;
         }
 
@@ -296,34 +326,28 @@ public class ProductAssociationTest {
     }
 
     @IpsProductCmptType(name = "MySubSource")
-    @IpsAssociations({ "SubAsso", "asso3", "asso", "asso2", "asso4" })
+    @IpsAssociations({ "SubAsso", "overriddenAsso", "asso", "asso2", "asso4" })
     @IpsChangingOverTime(ProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class SubSource extends Source {
 
-        private Target target;
+        private Target subAssoTarget;
 
         @IpsAssociation(name = "SubAsso", pluralName = "SubAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
         @IpsDerivedUnion
         public Target getSubAsso() {
-            return target;
+            return subAssoTarget;
         }
 
         @IpsAssociationLinks(association = "SubAsso")
         public IProductComponentLink<Target> getLinkForSubAsso() {
-            return new ProductComponentLink<Target>(this, target);
+            return new ProductComponentLink<Target>(this, subAssoTarget);
         }
 
         @Override
-        @IpsAssociation(name = "asso3", pluralName = "asso3s", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
-        public Target getAsso3() {
-            return super.getAsso3();
-        }
-
-        @Override
-        @IpsAssociationLinks(association = "asso3")
-        public IProductComponentLink<Target> getLinkForAsso3() {
-            return super.getLinkForAsso3();
+        @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        public Target getOverriddenAsso() {
+            return super.getOverriddenAsso();
         }
     }
 
@@ -384,6 +408,10 @@ public class ProductAssociationTest {
         public boolean isChangingOverTime() {
             return false;
         }
+    }
+
+    @IpsProductCmptType(name = "MySubTarget")
+    private class SubTarget extends Target {
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")

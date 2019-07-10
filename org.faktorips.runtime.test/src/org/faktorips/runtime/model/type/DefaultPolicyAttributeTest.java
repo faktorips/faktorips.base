@@ -3,7 +3,6 @@ package org.faktorips.runtime.model.type;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,10 +12,11 @@ import java.util.Locale;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ValidationContext;
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.IpsModel;
@@ -37,28 +37,23 @@ import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class DefaultPolicyAttributeTest {
 
-    @Mock
-    private IRuntimeRepository repository;
+    private final InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
 
-    private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
+    private final GregorianCalendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
     @Test
     public void testGetValue() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
         PolicyAttribute constant = modelType.getAttribute("const");
         PolicyAttribute attr1 = modelType.getAttribute("attr1");
-        PolicyAttribute attr2 = modelType.getAttribute("attr2");
+        PolicyAttribute attr2 = modelType.getAttribute("overriddenAttr");
         PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
         PolicyAttribute subConstant = subModelType.getAttribute("const");
         PolicyAttribute subAttr1 = subModelType.getAttribute("attr1");
-        PolicyAttribute subAttr2 = subModelType.getAttribute("attr2");
+        PolicyAttribute subAttr2 = subModelType.getAttribute("overriddenAttr");
         Policy modelObject = new Policy();
 
         modelObject.attr1 = 123;
@@ -94,14 +89,38 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testSetValue_Overwritten() {
+    public void testSetValue_OnSubclass() {
         PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
-        PolicyAttribute subAttr2 = subModelType.getAttribute("attr2");
+        PolicyAttribute subAttr1 = subModelType.getAttribute("attr1");
         SubPolicy subPolicy = new SubPolicy();
+        assertEquals(42, subPolicy.getAttr1());
+
+        subAttr1.setValue(subPolicy, 43);
+
+        assertEquals(43, subPolicy.getAttr1());
+    }
+
+    @Test
+    public void testSetValue_Overridden_WithoutSetter() {
+        PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
+        PolicyAttribute overriddenAttr = subModelType.getAttribute("getterOverriddenAttr");
+
+        SubPolicy subPolicy = new SubPolicy();
+        overriddenAttr.setValue(subPolicy, true);
+
+        assertTrue(subPolicy.isGetterOverriddenAttr());
+    }
+
+    @Test
+    public void testSetValue_Overridden_SetterOverridden() {
+        PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
+        PolicyAttribute subAttr2 = subModelType.getAttribute("overriddenAttr");
+        SubPolicy subPolicy = new SubPolicy();
+        assertEquals(new Date(0), subPolicy.overriddenAttr);
 
         subAttr2.setValue(subPolicy, new Date(1));
 
-        assertEquals(new Date(1), subPolicy.attr2);
+        assertEquals(new Date(1), subPolicy.overriddenAttr);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -148,7 +167,9 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_changingOverTime() {
         Produkt source = new Produkt();
-        when(repository.getLatestProductComponentGeneration(source)).thenReturn(new ProduktGen());
+        ProduktGen produktGen = new ProduktGen(source);
+        repository.putProductCmptGeneration(produktGen);
+
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -161,8 +182,10 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_changingOverTimeWithCalendar() {
         Produkt source = new Produkt();
-        ProduktGen gen = new ProduktGen();
-        when(repository.getProductComponentGeneration("id", effectiveDate)).thenReturn(gen);
+        ProduktGen gen = new ProduktGen(source);
+        gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
+        repository.putProductCmptGeneration(gen);
+
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -186,9 +209,9 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_modelObjectChangingOverTime() {
         ProduktGen gen = new ProduktGen();
+        repository.putProductCmptGeneration(gen);
         ConfVertrag vertrag = new ConfVertrag();
         vertrag.effectiveFrom = Calendar.getInstance();
-        when(repository.getProductComponentGeneration("id", vertrag.effectiveFrom)).thenReturn(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -201,8 +224,6 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_modelObjectChangingOverTime_noEffectiveDate() {
         ConfVertrag vertrag = new ConfVertrag();
-        when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent()))
-                .thenReturn(new ProduktGen());
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -250,7 +271,9 @@ public class DefaultPolicyAttributeTest {
     public void testGetDefaultValue_changingOverTimeWithCalendar() {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen();
-        when(repository.getProductComponentGeneration("id", effectiveDate)).thenReturn(gen);
+        gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
+        repository.putProductCmptGeneration(gen);
+
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -262,8 +285,8 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetDefaultValue_changingOverTime() {
         Produkt source = new Produkt();
-        ProduktGen gen = new ProduktGen();
-        when(repository.getLatestProductComponentGeneration(source)).thenReturn(gen);
+        ProduktGen gen = new ProduktGen(source);
+        repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -282,10 +305,14 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetDefaultValue_modelObject() {
+        GregorianCalendar effectiveFrom = new GregorianCalendar();
+
         ProduktGen gen = new ProduktGen();
+        gen.setValidFrom(DateTime.createDateOnly(effectiveFrom));
+        repository.putProductCmptGeneration(gen);
+
         ConfVertrag vertrag = new ConfVertrag();
-        vertrag.effectiveFrom = Calendar.getInstance();
-        when(repository.getProductComponentGeneration("id", vertrag.effectiveFrom)).thenReturn(gen);
+        vertrag.effectiveFrom = effectiveFrom;
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -297,8 +324,8 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetDefaultValue_modelObject_noEffectiveFrom() {
         ProduktGen gen = new ProduktGen();
+        repository.putProductCmptGeneration(gen);
         ConfVertrag vertrag = new ConfVertrag();
-        when(repository.getLatestProductComponentGeneration(vertrag.getProductComponent())).thenReturn(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -482,13 +509,16 @@ public class DefaultPolicyAttributeTest {
         public boolean isChangingOverTime() {
             return true;
         }
-
     }
 
     private class ProduktGen extends ProductComponentGeneration {
 
         public ProduktGen() {
-            super(new Produkt());
+            this(new Produkt());
+        }
+
+        public ProduktGen(Produkt produkt) {
+            super(produkt);
         }
 
         @IpsDefaultValue("attrChangingOverTime")
@@ -503,7 +533,6 @@ public class DefaultPolicyAttributeTest {
         public ValueSet<String> getSetOfAllowedValuesForAttrChangingOverTime(IValidationContext context) {
             return new OrderedValueSet<String>(false, null, "foo", "bar");
         }
-
     }
 
     @IpsPolicyCmptType(name = "VertragABC")
@@ -537,7 +566,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
-    @IpsAttributes({ "const", "attr1", "attr2" })
+    @IpsAttributes({ "const", "attr1", "overriddenAttr", "getterOverriddenAttr" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Policy implements IModelObject {
 
@@ -545,6 +574,7 @@ public class DefaultPolicyAttributeTest {
         public final String CONSTANT = "const";
 
         private int attr1;
+        private boolean getterOverriddenAttr;
 
         @IpsAttribute(name = "attr1", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
         @IpsConfiguredAttribute(changingOverTime = true)
@@ -557,9 +587,19 @@ public class DefaultPolicyAttributeTest {
             attr1 = i;
         }
 
-        @IpsAttribute(name = "attr2", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.Range)
-        public Date getAttr2() {
+        @IpsAttribute(name = "overriddenAttr", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.Range)
+        public Date getOverriddenAttr() {
             return null;
+        }
+
+        @IpsAttribute(name = "getterOverriddenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public boolean isGetterOverriddenAttr() {
+            return getterOverriddenAttr;
+        }
+
+        @IpsAttributeSetter("getterOverriddenAttr")
+        public void setGetterOverriddenAttr(boolean getterOverriddenAttr) {
+            this.getterOverriddenAttr = getterOverriddenAttr;
         }
 
         @Override
@@ -569,25 +609,31 @@ public class DefaultPolicyAttributeTest {
     }
 
     @IpsPolicyCmptType(name = "MySubPolicy")
-    @IpsAttributes({ "const", "attr1", "attr2" })
+    @IpsAttributes({ "const", "attr1", "overriddenAttr", "getterOverriddenAttr" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class SubPolicy extends Policy {
 
-        private Date attr2 = new Date(0);
+        private Date overriddenAttr = new Date(0);
 
         public SubPolicy() {
             setAttr1(42);
         }
 
         @Override
-        @IpsAttribute(name = "attr2", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
-        public Date getAttr2() {
-            return attr2;
+        @IpsAttribute(name = "overriddenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+        public Date getOverriddenAttr() {
+            return overriddenAttr;
         }
 
-        @IpsAttributeSetter("attr2")
-        public void setAttr2(Date d) {
-            attr2 = d;
+        @IpsAttributeSetter("overriddenAttr")
+        public void setOverriddenAttr(Date d) {
+            overriddenAttr = d;
+        }
+
+        @Override
+        @IpsAttribute(name = "getterOverriddenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public boolean isGetterOverriddenAttr() {
+            return super.isGetterOverriddenAttr();
         }
     }
 

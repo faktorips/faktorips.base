@@ -32,6 +32,8 @@ import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
+import org.faktorips.values.ListUtil;
+import org.faktorips.values.ObjectUtil;
 import org.junit.Test;
 
 public class PolicyAssociationTest {
@@ -131,7 +133,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddTargetObjects_to1_association() {
+    public void testAddTargetObjects_To1_Association() {
         Source source = new Source();
         Target target = new Target();
 
@@ -140,7 +142,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddTargetObjects_to1_replaceAssociatedObject() {
+    public void testAddTargetObjects_To1_ReplaceAssociatedObject() {
         Source source = new Source();
         Target target = new Target();
         Target target2 = new Target();
@@ -152,7 +154,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddTargetObjects_toN_Composition() {
+    public void testAddTargetObjects_ToN_Composition() {
         Source source = new Source();
         Target target = new Target();
         Target target2 = new Target();
@@ -184,7 +186,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddTargetObjects_toN_doNothingIfEmptyVarArg() {
+    public void testAddTargetObjects_ToN_DoNothingIfEmptyVarArg() {
         Source source = new Source();
 
         association1ToN.addTargetObjects(source);
@@ -192,7 +194,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testAddTargetObjects_toN_doNothingIfEmptyList() {
+    public void testAddTargetObjects_ToN_DoNothingIfEmptyList() {
         Source source = new Source();
 
         association1ToN.addTargetObjects(source, new ArrayList<IModelObject>());
@@ -217,7 +219,19 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testRemoveTargetObjects_to1_association() {
+    public void testAddTargetObjects_ToN_Overridden() {
+        SubSource subSource = new SubSource();
+        SubTarget subTarget = new SubTarget();
+        assertEquals(0, subSource.getTargets1toN().size());
+
+        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource).getAssociation("targets1toN");
+        overridingAssociation.addTargetObjects(subSource, subTarget);
+
+        assertEquals(1, subSource.getTargets1toN().size());
+    }
+
+    @Test
+    public void testRemoveTargetObjects_To1_Association() {
         Source source = new Source();
         Target target = new Target();
         source.setTarget(target);
@@ -227,7 +241,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testRemoveTargetObjects_to1_doNothingIfDifferentObject() {
+    public void testRemoveTargetObjects_To1_DoNothingIfDifferentObject() {
         Source source = new Source();
         Target target = new Target();
         Target target2 = new Target();
@@ -238,7 +252,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testRemoveTargetObjects_toN_composition() {
+    public void testRemoveTargetObjects_ToN_Composition() {
         Source source = new Source();
         Target target = new Target();
         source.addTargets1toN(target);
@@ -251,7 +265,20 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testRemoveTargetObjects_toN_doNothingIfNotPresent() {
+    public void testRemoveTargetObjects_ToN_Overridden() {
+        SubSource subSource = new SubSource();
+        SubTarget subTarget = new SubTarget();
+        subSource.addTargets1toN(subTarget);
+        assertEquals(1, subSource.getTargets1toN().size());
+
+        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource).getAssociation("targets1toN");
+        overridingAssociation.removeTargetObjects(subSource, subTarget);
+
+        assertEquals(0, subSource.getTargets1toN().size());
+    }
+
+    @Test
+    public void testRemoveTargetObjects_ToN_DoNothingIfNotPresent() {
         Source source = new Source();
         Target target = new Target();
         source.addTargets1toN(target);
@@ -262,7 +289,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testRemoveTargetObjects_toN_doNothingIfEmptyVarArg() {
+    public void testRemoveTargetObjects_ToN_DoNothingIfEmptyVarArg() {
         Source source = new Source();
         Target target = new Target();
         source.addTargets1toN(target);
@@ -272,7 +299,7 @@ public class PolicyAssociationTest {
     }
 
     @Test
-    public void testRemoveTargetObjects_toN_doNothingIfEmptyList() {
+    public void testRemoveTargetObjects_ToN_DoNothingIfEmptyList() {
         Source source = new Source();
         Target target = new Target();
         source.addTargets1toN(target);
@@ -369,7 +396,7 @@ public class PolicyAssociationTest {
         }
 
         @IpsAssociation(name = "targets1toN", pluralName = "targets", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
-        public List<Target> getTargets1toN() {
+        public List<? extends Target> getTargets1toN() {
             return targets1toN;
         }
 
@@ -390,7 +417,6 @@ public class PolicyAssociationTest {
     private static class SubSource extends Source {
 
         private Target target;
-        private final List<Target> targets1toN = new ArrayList<PolicyAssociationTest.Target>();
 
         @IpsAssociation(name = "SubAsso", pluralName = "subAassos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
         public Target getSubAsso() {
@@ -404,25 +430,29 @@ public class PolicyAssociationTest {
 
         @Override
         @IpsAssociation(name = "targets1toN", pluralName = "targets", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
-        public List<Target> getTargets1toN() {
-            return targets1toN;
+        public List<? extends SubTarget> getTargets1toN() {
+            return ListUtil.convert(super.getTargets1toN(), SubTarget.class);
         }
 
         @Override
         @IpsAssociationAdder(association = "targets1toN")
         public void addTargets1toN(Target objectToAdd) {
-            targets1toN.add(objectToAdd);
-        }
-
-        @Override
-        @IpsAssociationRemover(association = "targets1toN")
-        public void removeTargets1toN(Target objectToRemove) {
-            targets1toN.remove(objectToRemove);
+            ObjectUtil.checkInstanceOf(objectToAdd, SubTarget.class);
+            super.addTargets1toN(objectToAdd);
         }
     }
 
     @IpsPolicyCmptType(name = "MyTarget")
     private static class Target implements IModelObject {
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return null;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "MySubTarget")
+    private static class SubTarget extends Target {
 
         @Override
         public MessageList validate(IValidationContext context) {

@@ -36,29 +36,12 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     private Method defaultValueMethod;
     private Map<Type, Method> valueSetMethods = new HashMap<Type, Method>(2);
 
-    public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter, boolean changingOverTime) {
-        super(policyCmptType, getter.getAnnotation(IpsAttribute.class), getter
-                .getAnnotation(IpsExtensionProperties.class), getter.getReturnType(), changingOverTime);
+    public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
+            boolean changingOverTime) {
+        super(policyCmptType, getter.getAnnotation(IpsAttribute.class),
+                getter.getAnnotation(IpsExtensionProperties.class), getter.getReturnType(), changingOverTime);
         this.getter = getter;
-        this.setter = initSetter(policyCmptType, setter);
-    }
-
-    private Method initSetter(PolicyCmptType policyCmptType, Method initialSetter) {
-        Method result = initialSetter;
-        if (initialSetter == null) {
-            // maybe only the getter is overridden and we can get the setter from a super class
-            PolicyCmptType superType = policyCmptType.getSuperType();
-            if (superType != null) {
-                try {
-                    DefaultPolicyAttribute attribute = (DefaultPolicyAttribute)superType.getAttribute(getName());
-                    result = attribute.setter;
-                } catch (IllegalArgumentException e) {
-                    // there really is no setter
-                    result = null;
-                }
-            }
-        }
-        return result;
+        this.setter = setter;
     }
 
     @Override
@@ -74,10 +57,15 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     @Override
     public void setValue(IModelObject modelObject, Object value) {
         if (setter == null) {
-            throw new IllegalArgumentException(String.format("There is no setter for attribute %s in type %s.",
-                    getName(), getType().getName()));
+            if (isOverriding()) {
+                getSuperAttribute().setValue(modelObject, value);
+            } else {
+                throw new IllegalArgumentException(String.format("There is no setter for attribute %s in type %s.",
+                        getName(), getType().getName()));
+            }
+        } else {
+            invokeMethod(setter, modelObject, value);
         }
-        invokeMethod(setter, modelObject, value);
     }
 
     @Override
@@ -90,7 +78,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         if (!isProductRelevant()) {
             throw new IllegalStateException(
                     "Trying to find default value method in product class, but policy attribute " + getType().getName()
-                    + '.' + getName() + " is not configurable.");
+                            + '.' + getName() + " is not configurable.");
         }
         return invokeMethod(getDefaultValueMethod(getType().getProductCmptType()),
                 getRelevantProductObject(source, effectiveDate));
@@ -154,8 +142,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
             Type type) {
         Method method = type.searchDeclaredMethod(annotationClass, filter);
         if (method == null) {
-            throw new IllegalStateException("No method found for retrieving the " + methodDescription
-                    + " of attribute: " + getName());
+            throw new IllegalStateException(
+                    "No method found for retrieving the " + methodDescription + " of attribute: " + getName());
         }
         return method;
     }
