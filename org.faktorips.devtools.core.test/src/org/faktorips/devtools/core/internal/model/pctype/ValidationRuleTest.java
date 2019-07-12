@@ -149,9 +149,48 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml_ChangingOverTimeDefaultsToTrue() {
+    public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfConfigured() {
         Document doc = getTestDocument();
         doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertTrue(validationRule.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitFromXml_ChangingOverTimeDefaultsToFalseIfNotConfiguredAndNoProductType() {
+        policyCmptType.setProductCmptType("");
+        Document doc = getTestDocument();
+        doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
+        doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertFalse(validationRule.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitFromXml_ChangingOverTimeDefaultsToFalseIfNotConfiguredAndProductTypeNotChanging()
+            throws CoreException {
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
+        productCmptType.setChangingOverTime(false);
+        policyCmptType.setProductCmptType("Prod");
+        Document doc = getTestDocument();
+        doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
+        doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertFalse(validationRule.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfNotConfiguredAndProductTypeChanging()
+            throws CoreException {
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
+        productCmptType.setChangingOverTime(true);
+        policyCmptType.setProductCmptType("Prod");
+        Document doc = getTestDocument();
+        doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
+        doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
         validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.initFromXml(doc.getDocumentElement());
         assertTrue(validationRule.isChangingOverTime());

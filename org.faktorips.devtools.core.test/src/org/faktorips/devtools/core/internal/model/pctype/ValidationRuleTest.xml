@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Test data for AttributeImplTest.java -->
-<ValidationRuleDef id="42" name="checkAge"
+<!-- Test data for ValidationRuleTest.java -->
+<ValidationRuleDef id="42" name="checkAge" configurableByProductComponent="true"
 	appliedInAllBusinessFunctions="false" messageSeverity="warning"
 	messageCode="ageMissing" changingOverTime="true">
 	<BusinessFunction name="NewOffer" />

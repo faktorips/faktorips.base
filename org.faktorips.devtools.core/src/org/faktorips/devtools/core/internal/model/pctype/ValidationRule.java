@@ -379,7 +379,16 @@ public class ValidationRule extends TypePart implements IValidationRule {
         configurableByProductComponent = Boolean
                 .parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
         String changingOverTimeValue = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
-        changingOverTime = StringUtils.isBlank(changingOverTimeValue) || Boolean.parseBoolean(changingOverTimeValue);
+        if (StringUtils.isBlank(changingOverTimeValue)) {
+            if (configurableByProductComponent) {
+                // if changingOverTime is not set, the product was written before 3.22 and true was
+                // the implicit value.
+                changingOverTime = true;
+            }
+            // else the default has been set by initDefaultChangingOverTime()
+        } else {
+            changingOverTime = Boolean.parseBoolean(changingOverTimeValue);
+        }
         if (element.hasAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)) {
             activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
         } else {
