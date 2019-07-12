@@ -46,7 +46,7 @@ class TableUsagesTmpl{
             if («fieldName» == null) {
                 return null;
             }
-            return «castFromTo("ITable", tableClassName)»getRepository().getTable(«fieldName»);
+            return «castFromTo("ITable<?>", tableClassName)»getRepository().getTable(«fieldName»);
         }
     '''
 

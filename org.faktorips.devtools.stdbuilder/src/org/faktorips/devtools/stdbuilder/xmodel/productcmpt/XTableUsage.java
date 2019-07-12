@@ -51,7 +51,7 @@ public class XTableUsage extends AbstractGeneratorModelNode {
 
     public String getTableClassName() {
         if (getTableStructureUsage().getTableStructures().length > 1) {
-            return addImport(ITable.class);
+            return addImport(ITable.class) + "<?>";
         } else {
             String tableStructureName = getTableStructureUsage().getTableStructures()[0];
             ITableStructure tableStructure;
