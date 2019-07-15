@@ -165,13 +165,13 @@ public abstract class ModelElement implements IModelElement {
         } catch (IllegalAccessException e) {
             throw createGetterError(source, method, arguments, e);
         } catch (InvocationTargetException e) {
-            throw createGetterError(source, method, arguments, e);
+            throw createGetterError(source, method, arguments, e.getCause());
         } catch (SecurityException e) {
             throw createGetterError(source, method, arguments, e);
         }
     }
 
-    private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Exception e) {
+    private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Throwable e) {
         return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
                 method.getName(), IpsStringUtils.join(args, ", "), source), e);
     }
@@ -191,8 +191,8 @@ public abstract class ModelElement implements IModelElement {
     }
 
     private IllegalArgumentException createFieldError(Object source, Field field, Exception e) {
-        return new IllegalArgumentException(String.format("Could not get value of %s on source object %s.",
-                field.getName(), source), e);
+        return new IllegalArgumentException(
+                String.format("Could not get value of %s on source object %s.", field.getName(), source), e);
     }
 
     /**

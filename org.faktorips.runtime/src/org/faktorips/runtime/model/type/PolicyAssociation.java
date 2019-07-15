@@ -143,17 +143,25 @@ public class PolicyAssociation extends Association {
      * @since 3.22
      */
     public <S extends IModelObject> S addTargetObjects(S source, Collection<IModelObject> targets) {
-        if (addMethod == null) {
-            throw new IllegalArgumentException(String.format(
-                    "The association %s on source object %s does not allow %s target objects%s.", getName(), source,
-                    isToOneAssociation() ? "setting" : "adding", isDerivedUnion() ? " because it is a derived union"
-                            : ("; make sure a method annotated with @" + IpsAssociationAdder.class + " exists")));
-        }
         if (isToOneAssociation() && targets.size() > 1) {
             throw new IllegalArgumentException(String.format(
                     "The association %s on source object %s allows a maxmimum of one target object but %s were provided.",
                     getName(), source, targets.size()));
+        } else {
+            if (addMethod == null) {
+                if (isOverriding()) {
+                    return getSuperAssociation().addTargetObjects(source, targets);
+                } else {
+                    throw new IllegalArgumentException(
+                            String.format("The association %s on source object %s does not allow %s target objects%s.",
+                                    getName(), source, isToOneAssociation() ? "setting" : "adding",
+                                    isDerivedUnion() ? " because it is a derived union"
+                                            : ("; make sure a method annotated with @"
+                                                    + IpsAssociationAdder.class.getSimpleName() + " exists")));
+                }
+            }
         }
+
         for (IModelObject target : targets) {
             invokeMethod(addMethod, source, target);
         }

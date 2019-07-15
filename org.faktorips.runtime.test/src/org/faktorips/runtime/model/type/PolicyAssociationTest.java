@@ -230,6 +230,38 @@ public class PolicyAssociationTest {
         assertEquals(1, subSource.getTargets1toN().size());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddTargetObjects_ToN_Overridden_WrongType() {
+        SubSource subSource = new SubSource();
+        Target wrongTarget = new Target();
+
+        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource).getAssociation("targets1toN");
+        overridingAssociation.addTargetObjects(subSource, wrongTarget);
+    }
+
+    @Test
+    public void testAddTargetObjects_ToN_Overridden_WithListenerSupport() {
+        SubSource subSource = new SubSource();
+        SubTarget subTarget = new SubTarget();
+        assertEquals(0, subSource.getMoreTargets1toN().size());
+
+        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource)
+                .getAssociation("moreTargets1toN");
+        overridingAssociation.addTargetObjects(subSource, subTarget);
+
+        assertEquals(1, subSource.getMoreTargets1toN().size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddTargetObjects_ToN_Overridden_WrongType_WithListenerSupport() {
+        SubSource subSource = new SubSource();
+        Target wrongTarget = new Target();
+
+        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource)
+                .getAssociation("moreTargets1toN");
+        overridingAssociation.addTargetObjects(subSource, wrongTarget);
+    }
+
     @Test
     public void testRemoveTargetObjects_To1_Association() {
         Source source = new Source();
@@ -364,12 +396,13 @@ public class PolicyAssociationTest {
     }
 
     @IpsPolicyCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "targets1toN" })
+    @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Source implements IModelObject {
 
         private Target target;
         private final List<Target> targets1toN = new ArrayList<PolicyAssociationTest.Target>();
+        private final List<Target> moreTargets1toN = new ArrayList<PolicyAssociationTest.Target>();
 
         @Override
         public MessageList validate(IValidationContext context) {
@@ -409,6 +442,26 @@ public class PolicyAssociationTest {
         public void removeTargets1toN(Target objectToRemove) {
             targets1toN.remove(objectToRemove);
         }
+
+        @IpsAssociation(name = "moreTargets1toN", pluralName = "moreTargets1toN", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
+        public List<? extends Target> getMoreTargets1toN() {
+            return moreTargets1toN;
+        }
+
+        @IpsAssociationAdder(association = "moreTargets1toN")
+        public void addMoreTargets1toN(Target objectToAdd) {
+            addMoreTargets1toNInternal(objectToAdd);
+        }
+
+        // is generated if change listeners should be generated
+        public void addMoreTargets1toNInternal(Target objectToAdd) {
+            moreTargets1toN.add(objectToAdd);
+        }
+
+        @IpsAssociationRemover(association = "moreTargets1toN")
+        public void removeMoreTargets1toN(Target objectToRemove) {
+            moreTargets1toN.remove(objectToRemove);
+        }
     }
 
     @IpsPolicyCmptType(name = "MySource")
@@ -439,6 +492,12 @@ public class PolicyAssociationTest {
         public void addTargets1toN(Target objectToAdd) {
             ObjectUtil.checkInstanceOf(objectToAdd, SubTarget.class);
             super.addTargets1toN(objectToAdd);
+        }
+
+        @Override
+        public void addMoreTargets1toNInternal(Target objectToAdd) {
+            ObjectUtil.checkInstanceOf(objectToAdd, SubTarget.class);
+            super.addMoreTargets1toNInternal(objectToAdd);
         }
     }
 
