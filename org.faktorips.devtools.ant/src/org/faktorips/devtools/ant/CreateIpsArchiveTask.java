@@ -22,11 +22,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * This is an ant task that can only be used with the eclipse ant runner with an eclipse
- * installation that contains the faktor ips plugin. It create an IPS-Archive file for the specified
+ * This is an Ant task that can only be used with the Eclipse Ant runner with an Eclipse
+ * installation that contains the Faktor-IPS plugin. It create an IPS-Archive file for the specified
  * parameters.
- * 
- * @author Peter Erzberger
  */
 public class CreateIpsArchiveTask extends AbstractIpsTask {
 
@@ -41,10 +39,8 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     }
 
     /**
-     * Starts the CreateIpsArchiveOperation configured with the parameters provided to this ant
-     * task.
-     * 
-     * {@inheritDoc}
+     * Starts the {@link CreateIpsArchiveOperation} configured with the parameters provided to this
+     * Ant task.
      */
     @Override
     public void executeInternal() throws Exception {
@@ -84,22 +80,22 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     }
 
     /**
-     * The file handle to the file that contains the ips archive.
+     * The file handle to the file that contains the IPS archive.
      */
     public File getArchiveFile() {
         return archiveFile;
     }
 
     /**
-     * Sets the file handle to the ips archive file.
+     * Sets the file handle to the IPS archive file.
      */
     public void setArchiveFile(File archiveFile) {
         this.archiveFile = archiveFile;
     }
 
     /**
-     * Adds a representation for an ips package fragment root. This repesentation contains the name
-     * of an ips package fragment root of the ips project specified by the ips project name property
+     * Adds a representation for an IPS package fragment root. This representation contains the name
+     * of an IPS package fragment root of the IPS project specified by the IPS project name property
      * of this task.
      */
     public void addFragmentRoot(IIpsPackageFragmentRoot fragmentRoot) {
@@ -107,66 +103,64 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     }
 
     /**
-     * Returns if the java binaries should be included into the ips archive.
+     * Returns whether the Java binaries should be included into the IPS archive.
      */
     public boolean isInclJavaBinaries() {
         return inclJavaBinaries;
     }
 
     /**
-     * Sets if the java binaries should be included into the ips archive.
+     * Sets whether the java binaries should be included into the IPS archive.
      */
     public void setInclJavaBinaries(boolean inclJavaBinaries) {
         this.inclJavaBinaries = inclJavaBinaries;
     }
 
     /**
-     * Returns if the java source files should be included into the ips archive.
+     * Returns whether the Java source files should be included into the IPS archive.
      */
     public boolean isInclJavaSources() {
         return inclJavaSources;
     }
 
     /**
-     * Sets if the java source files should be included into the ips archive.
+     * Sets whether the Java source files should be included into the IPS archive.
      */
     public void setInclJavaSources(boolean inclJavaSources) {
         this.inclJavaSources = inclJavaSources;
     }
 
     /**
-     * Returns the ips project name for which the ips archive will be created.
+     * Returns the IPS project name for which the IPS archive will be created.
      */
     public String getIpsProjectName() {
         return ipsProjectName;
     }
 
     /**
-     * Sets the ips project name for which the ips archive will be created.
+     * Sets the IPS project name for which the IPS archive will be created.
      */
     public void setIpsProjectName(String ipsProjectName) {
         this.ipsProjectName = ipsProjectName;
     }
 
     /**
-     * This inner class is used as a data structure by means of which mutliple ips package fragment
-     * roots of the ips project can be specified.
-     * 
-     * @author Peter Erzberger
+     * This inner class is used as a data structure by means of which mutliple IPS package fragment
+     * roots of the IPS project can be specified.
      */
     public static class IpsPackageFragmentRoot {
 
         private String name;
 
         /**
-         * Returns the name of the ips package fragment root relative to the ips project.
+         * Returns the name of the IPS package fragment root relative to the IPS project.
          */
         public String getName() {
             return name;
         }
 
         /**
-         * Sets the name of the ips package fragment root relative to the ips project.
+         * Sets the name of the IPS package fragment root relative to the IPS project.
          */
         public void setName(String name) {
             this.name = name;

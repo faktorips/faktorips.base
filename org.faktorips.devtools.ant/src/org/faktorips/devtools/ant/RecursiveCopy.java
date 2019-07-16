@@ -22,10 +22,10 @@ import java.io.OutputStream;
 public class RecursiveCopy {
 
     /**
-     * Do a recursive Directory-Copy
+     * Do a recursive directory copy
      * 
-     * @param fromDir Source Directory as String
-     * @param toDir Target Directory as String
+     * @param fromDir source directory
+     * @param toDir target directory
      * @throws IOException
      */
     public void copyDir(String fromDir, String toDir) throws IOException {
@@ -55,10 +55,10 @@ public class RecursiveCopy {
     }
 
     /**
-     * Copy a single File
+     * Copy a single {@link File}
      * 
-     * @param from - Path to the Sourcefile as String
-     * @param to - Path to the Targetfile as String
+     * @param from path to the source file
+     * @param to path to the target file
      */
     public void copyFile(String from, String to) throws IOException {
         mkdirs(to);
@@ -84,19 +84,19 @@ public class RecursiveCopy {
     }
 
     /**
-     * Create a Directory. Supports creating multiple Directories at once. Example:
+     * Create a directory. Supports creating multiple directories at once. Example:
      * mkdir("/path/to/a/new/dir") will create all subdirs
      * 
-     * @param dir - Directory-Name as String
+     * @param dir directory name
      */
     private void mkdir(String dir) {
         new File(dir).mkdirs();
     }
 
     /**
-     * Create multiple directories recursive
+     * Create multiple directories recursively
      * 
-     * @param file - new Path as String
+     * @param file new path
      */
     private void mkdirs(String file) {
         file = file.replace('/', File.separatorChar);

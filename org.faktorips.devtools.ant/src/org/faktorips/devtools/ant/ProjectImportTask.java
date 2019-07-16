@@ -25,10 +25,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
- * Implements a custom Ant-Task, which imports a given Directory to a running Eclipse Workspace as
- * Project.
- * 
- * @author Marcel Senf <marcel.senf@faktorzehn.de>
+ * Implements a custom Ant task, which imports a given directory to a running Eclipse workspace as
+ * project.
  */
 public class ProjectImportTask extends AbstractIpsTask {
 
@@ -47,7 +45,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Sets the ANT-Attribute which describes the location of the Eclipseproject to import.
+     * Sets the Ant attribute which describes the location of the Eclipse project to import.
      * 
      * @param dir Path to the Project as String
      */
@@ -56,7 +54,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Returns the Path of the Eclipseproject to import as String
+     * Returns the path of the Eclipse project to import as String
      * 
      * @return Path as String
      */
@@ -73,7 +71,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Assembles the Path to the .project File
+     * Assembles the path to the .project file
      * 
      * @return File
      */
@@ -83,7 +81,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Executes the Ant-Task {@inheritDoc}
+     * Executes the Ant task.
      */
     @Override
     public void executeInternal() throws Exception {
@@ -134,14 +132,13 @@ public class ProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Does some Security-Checks on provided Directory-Attribute
+     * Does some security checks on the provided directory attribute
      * 
-     * @author Marcel Senf <marcel.senf@faktorzehn.de>
      * @throws BuildException
      */
-    private void checkDir() throws BuildException {
+    private void checkDir() {
 
-        if (this.getDir() == null || this.getDir().equals("")) {
+        if (this.getDir() == null || "".equals(this.getDir())) {
             throw new BuildException("Please provide the 'dir' attribute.");
         }
 

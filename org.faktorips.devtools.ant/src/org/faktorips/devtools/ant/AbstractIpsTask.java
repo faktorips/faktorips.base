@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 
 /**
- * Base class for all Faktor-IPS ant tasks.
+ * Base class for all Faktor-IPS Ant tasks.
  * 
  * @author Peter Erzberger
  */
@@ -31,7 +31,7 @@ public abstract class AbstractIpsTask extends Task {
     }
 
     /**
-     * Excecutes the Ant-Task
+     * Excecutes the Ant task
      * 
      * {@inheritDoc}
      */
@@ -71,7 +71,7 @@ public abstract class AbstractIpsTask extends Task {
     /**
      * The execution logic of the task needs to be implemented within this method
      * 
-     * @throws Exception checked exceptions can just be delegated within this methods
+     * @throws Exception checked exceptions can just be delegated within this method
      */
     protected abstract void executeInternal() throws Exception;
 

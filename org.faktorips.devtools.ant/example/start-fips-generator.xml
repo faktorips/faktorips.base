@@ -1,65 +1,91 @@
 <project name="startFipsGenerator" default="start">
-	
-	<!-- declaring the Faktor-IPS ant task definitions -->
-	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImportTask"/>
-	<taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullBuildTask"/>
-	<taskdef name="faktorips.CreateIpsArchive" classname="org.faktorips.devtools.ant.CreateIpsArchiveTask"/>
-	
-	<target name="start">
-		
-		<!-- 
-			<faktorips.import/>
-			
-			@Desciption:
-			importing a Faktor-IPS project into the workspace. A relative path can also be used. 
-		
-			@param dir the directory of the project that should be imported into the workspace
-			-->
-			<faktorips.import dir="F:\projekte\ips\kqvprojekte\Produkt.Base.Enums"/>
-		
-		<!-- 
-				<faktorips.fullBuild/>
-				
-				@Description
-				starts the full build of the workspace. Alteratively single projects of the workspace can be built by specifying them with the nested tag
-				'eclipseProject'.	
-				
-				Nested tag:
-				<eclipseProject/>
-				
-				@param name the name of the ips project that is to built
-		-->
-		<!--
-			<faktorips.fullBuild>
-				<eclipseProject name="org.faktorips.integrationtest"/>
-			</faktorips.fullBuild>
-		-->	
-		<faktorips.fullBuild/>
 
-		<!-- 					
-				 <faktorips.CreateIpsArchive/>
-				 
-				 @Description
-				 Creates an ips archive for an ips project. The content of the archive can be filtered by defining the ips package fragment roots of the
-				 ips project that are supposed to be included in the archive. This is done by means of the nested tag 'fragmentRoot'
-				 	
-				 @param ipsProjectName the name of the ips project that will be packed into the archive
-				 @param archiveFile the name of the archiveFile that will be created by this task. The path can also be relative.
-				 @param inclJavaSources specifies if the java sources of the ips project should be included into the archive.
-				 @param inclJavaBinaries specifies if the compiled binaries of the ips project should be included into the archive.
-				 
-				 Nested tag:
-				 <fragmentRoot/>
-				 
-				 @param name the name of the ips package fragment root relative to the ips project
-		-->
-		<!--
-		<faktorips.CreateIpsArchive ipsProjectName="Produkt.Base.Modell" archiveFile="c:\temp\integrationtest.jar">
-					<fragmentRoot name="model"/>
-		</faktorips.CreateIpsArchive>
-		-->
-		<faktorips.CreateIpsArchive inclJavaSources="true" inclJavaBinaries="true" ipsProjectName="org.faktorips.integrationtest" 
-			archiveFile="c:\temp\integrationtest.jar">
-		</faktorips.CreateIpsArchive>
-	</target>
+    <!-- declaring the Faktor-IPS ant task definitions -->
+    <taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImportTask" />
+    <taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullBuildTask" />
+    <taskdef name="faktorips.CreateIpsArchive" classname="org.faktorips.devtools.ant.CreateIpsArchiveTask" />
+    <taskdef name="faktorips.exportHtml" classname="org.faktorips.devtools.ant.ExportHtmlTask" />
+
+    <target name="start">
+
+        <!-- 
+            <faktorips.import/>
+            
+            @Desciption:
+            importing a Faktor-IPS project into the workspace. A relative path can also be used. 
+        
+            @param dir the directory of the project that should be imported into the workspace
+            -->
+        <faktorips.import dir="c:\faktorips.integrationtest\org.faktorips.integrationtest.java5" />
+
+        <!-- 
+                <faktorips.fullBuild/>
+                
+                @Description
+                starts the full build of the workspace. Alteratively single projects of the workspace can be built by specifying them with the nested tag
+                'eclipseProject'.    
+                
+                Nested tag:
+                <eclipseProject/>
+                
+                @param name the name of the ips project that is to built
+        -->
+        <!--
+            <faktorips.fullBuild>
+                <eclipseProject name="org.faktorips.integrationtest"/>
+            </faktorips.fullBuild>
+        -->
+        <faktorips.fullBuild />
+
+        <!--                     
+                 <faktorips.CreateIpsArchive/>
+                 
+                 @Description
+                 Creates an ips archive for an ips project. The content of the archive can be filtered by defining the ips package fragment roots of the
+                 ips project that are supposed to be included in the archive. This is done by means of the nested tag 'fragmentRoot'
+                     
+                 @param ipsProjectName the name of the ips project that will be packed into the archive
+                 @param archiveFile the name of the archiveFile that will be created by this task. The path can also be relative.
+                 @param inclJavaSources specifies if the java sources of the ips project should be included into the archive.
+                 @param inclJavaBinaries specifies if the compiled binaries of the ips project should be included into the archive.
+                 
+                 Nested tag:
+                 <fragmentRoot/>
+                 
+                 @param name the name of the ips package fragment root relative to the ips project
+        -->
+        <!--
+        <faktorips.CreateIpsArchive ipsProjectName="Produkt.Base.Modell" archiveFile="c:\temp\integrationtest.jar">
+                    <fragmentRoot name="model"/>
+        </faktorips.CreateIpsArchive>
+        -->
+        <faktorips.CreateIpsArchive inclJavaSources="true"
+                                    inclJavaBinaries="true"
+                                    ipsProjectName="org.faktorips.integrationtest.java5"
+                                    archiveFile="c:\temp\integrationtest.jar" />
+
+        <!--                     
+            <faktorips.exportHtml/>
+            @Description
+             Creates documentation for an ips project and export it as html.
+                             
+            @param ipsProjectName the name of the ips project which will be documented and exported as html.
+            @param destination folder path where exported file will be stored.
+            @param showValidationErrors specifies if validation error has to be shown in the generated html document.
+            @param showInheritedObjectPartsInTable specifies if the inherited object has to be shown in the generated html document.
+            @param locale specifies the language in which html file would be generated.
+            @param ipsObjectTypes specifies which IpsObjectTypes are to be exported. Default is "ALL", but "MODEL" or "PRODUCT" can be used to export 
+                                   only model types or product types, and a comma separated list of those and/or individual IpsObjectTypes can be used 
+                                   to include or exclude (with prefixed '!') types for example by setting ipsObjectTypes="MODEL,!TestCaseType,ProductCmpt".
+                                   Individual IpsObjectTypes can also be specified as parameter, shown in the previous example. Following are the valid values 
+                                   for Faktor-IPS standard "EnumContent, EnumType, BusinessFunction, PolicyCmptType, ProductCmptType2, TableStructure, 
+                                   ProductCmpt, ProductTemplate, TableContents, TestCaseType, TestCase". Further values can be obtained from add-ons.
+        -->
+        <faktorips.exportHtml ipsProjectName="org.faktorips.integrationtest.java5"
+                              showValidationErrors="true"
+                              showInheritedObjectPartsInTable="true"
+                              locale="de"
+                              destination="C:\faktorips.integrationtest\target\html\org.faktorips.integrationtest.java5"
+                              ipsObjectTypes="ALL" />
+    </target>
 </project>

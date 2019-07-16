@@ -33,15 +33,12 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Implements a custom Ant-Task, which triggers a full build on the current Workspace. Alternatively
- * one or more <b>EclipseProject</b> nested tags can be specified to indicate for which projects a
- * full build should be executed. The <b>EclipseProject</b> tag has a <b>name</b> attribute where
- * the name of the eclipse project within the workspace can be specified. If the specified project
- * doesn't exist in the workspace the EclipseProject entry will be ignored during build and a
- * information will be logged to system out.
- * 
- * @author Marcel Senf <marcel.senf@faktorzehn.de>
- * @author Peter Erzberger <peter.erzberger@faktorzehn.de>
+ * Implements a custom Ant task, which triggers a full build on the current workspace. Alternatively
+ * one or more {@code EclipseProject} nested tags can be specified to indicate for which projects a
+ * full build should be executed. The {@code EclipseProject} tag has a {@code name} attribute where
+ * the name of the Eclipse project within the workspace can be specified. If the specified project
+ * doesn't exist in the workspace the {@code EclipseProject} entry will be ignored during build and
+ * a information will be logged to system out.
  */
 public class FullBuildTask extends AbstractIpsTask {
 
@@ -56,7 +53,7 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     /**
-     * Excecutes the Ant-Task {@inheritDoc}
+     * Excecutes the Ant task.
      */
     @Override
     public void executeInternal() throws Exception {
@@ -99,7 +96,8 @@ public class FullBuildTask extends AbstractIpsTask {
             if (result.getException() instanceof RuntimeException) {
                 throw (RuntimeException)result.getException();
             }
-            throw new RuntimeException("Error while building Faktor-IPS: " + result.getMessage(), result.getException());
+            throw new RuntimeException("Error while building Faktor-IPS: " + result.getMessage(),
+                    result.getException());
         }
     }
 
@@ -149,7 +147,8 @@ public class FullBuildTask extends AbstractIpsTask {
                 if (severity != null && severity.intValue() == IMarker.SEVERITY_ERROR) {
                     projectsWithErrors.add(project);
                 }
-                logProblem(project, severity.intValue(), marker.getAttribute(IMarker.MESSAGE, "Problem has no message"));
+                logProblem(project, severity.intValue(),
+                        marker.getAttribute(IMarker.MESSAGE, "Problem has no message"));
             }
         }
 
