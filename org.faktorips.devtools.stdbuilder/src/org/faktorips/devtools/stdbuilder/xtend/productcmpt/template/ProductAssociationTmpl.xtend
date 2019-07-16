@@ -88,7 +88,7 @@ class ProductAssociationTmpl {
             «IF genInterface»;«ELSE»
                         {
                             «IF constrain»
-                                return («targetInterfaceName»)super.«methodNameGetter»();
+                                return «castFromTo(superAssociationWithSameName.targetInterfaceName, targetInterfaceName)»super.«methodNameGetter»();
                             «ELSE»
                                 return «fieldName» != null ? «fieldName».«getTarget» : null;
                             «ENDIF»
@@ -128,7 +128,7 @@ class ProductAssociationTmpl {
                «IF genInterface»;«ELSE»
                            {
                             «IF constrain»
-                                return («targetClassGenerationName»)super.«methodNameGetter»(effectiveDate);
+                                return «castFromTo(superAssociationWithSameName.targetClassGenerationName, targetClassGenerationName)»super.«methodNameGetter»(effectiveDate);
                             «ELSE»
                                 return «fieldName» != null ? «fieldName».«getTarget».«methodNameGetTargetGeneration»(effectiveDate) : null;
                             «ENDIF»
@@ -149,7 +149,7 @@ class ProductAssociationTmpl {
             «IF genInterface»;«ELSE»
                         {
                             «IF constrain»
-                                return («targetInterfaceName»)super.«methodNameGetSingle»(index);
+                                return «castFromTo(superAssociationWithSameName.targetInterfaceName, targetInterfaceName)»super.«methodNameGetSingle»(index);
                             «ELSE»
                                return «ProductComponentLinks».getTarget(index, «fieldName»);
                             «ENDIF»

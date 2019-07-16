@@ -97,7 +97,7 @@ public class XProductAssociation extends XAssociation {
         return prefix + (isOneToMany() ? "_MANY" : "_ONE");
     }
 
-    protected XProductAssociation getSuperAssociationWithSameName() {
+    public XProductAssociation getSuperAssociationWithSameName() {
         IProductCmptTypeAssociation superAssociationWithSameName = (IProductCmptTypeAssociation)getAssociation()
                 .findSuperAssociationWithSameName(getIpsProject());
         if (superAssociationWithSameName != null) {
