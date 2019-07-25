@@ -15,7 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates the name of all associations in the right order
+ * Lists the names of all associations in the right order
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

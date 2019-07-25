@@ -15,11 +15,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Lists the names of all attributes in the right order
+ * Lists the names of all rules in their configured order.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface IpsAttributes {
+public @interface IpsValidationRules {
 
     String[] value();
 
