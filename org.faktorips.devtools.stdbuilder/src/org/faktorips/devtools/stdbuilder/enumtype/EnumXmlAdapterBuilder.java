@@ -196,7 +196,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *      if (id == null) {
      *          return null;
      *      }
-     *      return repository.getEnumValue(AnEnum.class, id);
+     *      return repository.getExistingEnumValue(AnEnum.class, id);
      *  }
      * </pre>
      */
@@ -208,12 +208,14 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append("return null;"); //$NON-NLS-1$
         body.appendCloseBracket();
         body.append("return "); //$NON-NLS-1$
-        body.append("repository.getEnumValue("); //$NON-NLS-1$
+        body.append("repository.getExistingEnumValue("); //$NON-NLS-1$
         body.appendClassName(getEnumModelNode().getQualifiedClassName());
         body.append(".class, "); //$NON-NLS-1$
         body.append("id);"); //$NON-NLS-1$
 
-        builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"));
+        String throwsJavadoc = "throws IllegalArgumentException "
+                + getLocalizedText("METHOD_UNMARSHAL_JAVADOC_ILLEGALARGUMENTEXCEPTION");
+        builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"), new String[] { throwsJavadoc });
         appendOverrideAnnotation(builder, false);
         builder.method(Modifier.PUBLIC, getEnumModelNode().getQualifiedClassName(), "unmarshal", //$NON-NLS-1$
                 new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$
