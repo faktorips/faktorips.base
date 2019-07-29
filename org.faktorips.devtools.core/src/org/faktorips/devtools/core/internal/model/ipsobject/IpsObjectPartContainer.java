@@ -652,7 +652,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
-        if (isHistoricPartContainer()) {
+        if (isNotInIpsRoot()) {
             return new MessageList();
         }
         MessageList result = beforeValidateThis();
@@ -805,15 +805,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Returns true if this <code>IpsObjectPartContainer</code> is part of an
-     * <code>IIpsSrcFile</code> that is marked as historic. If no srcfile can be found, false is
-     * returned.
+     * <code>IIpsSrcFile</code> that is marked as historic. If no {@link IIpsSrcFile} can be found,
+     * false is returned.
      * 
-     * @return True only if the parent srcfile is historic, false otherwise.
+     * @return True only if the corresponding {@link IIpsSrcFile} is located in an existing IPS
+     *         Root, false otherwise.
      */
-    private boolean isHistoricPartContainer() {
+    private boolean isNotInIpsRoot() {
         IIpsElement container = this;
         while (container != null) {
-            if (container instanceof IIpsSrcFile && ((IIpsSrcFile)container).isHistoric()) {
+            if (container instanceof IIpsSrcFile && !((IIpsSrcFile)container).isContainedInIpsRoot()) {
                 return true;
             }
             container = container.getParent();
