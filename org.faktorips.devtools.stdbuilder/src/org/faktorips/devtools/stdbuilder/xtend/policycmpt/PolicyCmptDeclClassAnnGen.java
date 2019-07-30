@@ -9,14 +9,18 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 
+import java.util.Set;
+
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XValidationRule;
 import org.faktorips.devtools.stdbuilder.xtend.AbstractTypeDeclClassAnnGen;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
+import org.faktorips.runtime.model.annotation.IpsValidationRules;
 
 public class PolicyCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
 
@@ -25,7 +29,7 @@ public class PolicyCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
 
         JavaCodeFragment annotation = super.createAnnotation(modelNode);
         annotation.append(createAnnConfiguredBy((XPolicyCmptClass)modelNode));
-
+        annotation.append(createAnnValidationRules((XPolicyCmptClass)modelNode));
         return annotation;
     }
 
@@ -55,6 +59,12 @@ public class PolicyCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
             codeFragmentBuilder.annotationLn(IpsConfiguredBy.class, policy.getProductCmptClassName() + ".class");
         }
         return codeFragmentBuilder.getFragment();
+    }
+
+    protected JavaCodeFragment createAnnValidationRules(XPolicyCmptClass type) {
+        Set<XValidationRule> validationRules = type.getValidationRules();
+        Class<?> annotationClass = IpsValidationRules.class;
+        return createAnnotationWithNodes(annotationClass, validationRules);
     }
 
 }

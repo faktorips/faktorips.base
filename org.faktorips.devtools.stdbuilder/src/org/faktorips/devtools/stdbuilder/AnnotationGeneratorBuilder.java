@@ -28,6 +28,7 @@ import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptAssociatio
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptDeclClassAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.TableUsageAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.validationrule.ValidationRuleAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
 
@@ -65,7 +66,9 @@ public class AnnotationGeneratorBuilder {
                 // table usage
                 new TableUsageAnnGenFactory(),
                 // enums
-                new EnumAnnGenFactory() };
+                new EnumAnnGenFactory(),
+                // validation rule
+                new ValidationRuleAnnGenFactory() };
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {

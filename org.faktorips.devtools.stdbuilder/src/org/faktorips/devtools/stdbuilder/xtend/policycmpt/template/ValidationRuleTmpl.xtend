@@ -51,6 +51,7 @@ def private static execRuleMethod (XValidationRule it) '''
      * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
      * @restrainedmodifiable
      */
+    «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_VALIDATION_RULE)»
     protected boolean «method(methodNameExecRule, MessageList, "ml", IValidationContext, "context")» {
         «IF specificBusinessFunctions»
               if (

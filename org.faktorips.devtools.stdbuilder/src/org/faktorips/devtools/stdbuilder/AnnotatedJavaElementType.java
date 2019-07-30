@@ -91,6 +91,11 @@ public enum AnnotatedJavaElementType {
     POLICY_CMPT_DECL_CLASS,
 
     /**
+     * Represents the declaration of validation rule execution methods.
+     */
+    POLICY_CMPT_VALIDATION_RULE,
+
+    /**
      * Represents the published interface only, and <em>never</em> the implementation class. Thus it
      * is never used unless published interfaces are being generated.
      */
