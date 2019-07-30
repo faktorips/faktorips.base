@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -716,7 +715,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
         T result = getEnumValue(clazz, id);
         if (result == null) {
-            throw new NoSuchElementException("No enum value of type " + clazz.getName() + "found for " + id);
+            throw new IllegalArgumentException("No enum value of type " + clazz.getName() + " found for " + id);
         }
         return result;
     }

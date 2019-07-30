@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -442,13 +441,13 @@ public class AbstractRuntimeRepositoryTest {
         assertNull(mainRepository.getEnumValue(null, null));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetExistingEnumValueFromLookup_NoLookupService() {
         Lookup lookup = new Lookup();
         baseRepository.getExistingEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetExistingEnumValueFromLookup_Missing() {
         Lookup lookup = new Lookup();
         baseRepository.addEnumValueLookupService(lookup);

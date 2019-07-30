@@ -12,7 +12,6 @@ package org.faktorips.runtime;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -158,7 +157,7 @@ public interface IRuntimeRepository {
      * @param id The enum value's identification
      * @return the enumeration value
      * 
-     * @throws NoSuchElementException if no corresponding value was found
+     * @throws IllegalArgumentException if the given id has no corresponding enum value
      * 
      * @see #getEnumValue(Class, Object)
      */
