@@ -94,8 +94,8 @@ public interface IIpsSrcFile extends IIpsElement {
     /**
      * Returns <code>true</code> if this file is contained in an existing
      * {@link IIpsPackageFragmentRoot} of the project. Returns <code>false</code> if this file is
-     * either not part of any project (for example {@link #isHistoric()}) or if it correspondents to
-     * an resource that is in an non-ips folder.
+     * either not part of any project (for example {@link #isHistoric()}) or if it corresponds to an
+     * resource that is in an non-IPS folder.
      * 
      * @return <code>true</code> if this file is contained in an existing
      *         {@link IIpsPackageFragmentRoot}, otherwise <code>false</code>

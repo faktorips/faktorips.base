@@ -79,10 +79,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- * 
- * @author Jan Ortmann
- */
 public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private static final String ANY_ID = "anyId";
@@ -462,10 +458,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
-    /**
-     * Test method for IpsObjectPartContainer#validate(). Tests whether the validation is performed
-     * on <code>IpsObjectPartContainer</code>s contained in historic <code>IIpsSrcFile</code>s.
-     */
     @Test
     public void testValidate() throws CoreException {
         // create srcfile with contents
@@ -476,19 +468,59 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         generation.newLink("");
 
         // validate
-        MessageList messages = product.getIpsSrcFile().getIpsObject().validate(ipsProject);
+        MessageList messages = product.validate(ipsProject);
+
         assertNotNull(messages);
         assertFalse(messages.isEmpty());
         assertNotNull(messages.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
+    }
 
+    /**
+     * Test method for {@link IpsObjectPartContainer#validate(IIpsProject)}. Tests whether the
+     * validation is performed on {@link IpsObjectPartContainer} contained in a immutable
+     * {@link IIpsSrcFile}.
+     */
+    @Test
+    public void testValidate_NotValidateIpsSrcFileImmutable() throws CoreException {
+        // create srcfile with contents
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
+        IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
+        generation.newLink("");
         // save contents
         product.getIpsSrcFile().save(true, null);
 
-        // load data with immutable srcfile (historic srcfile) that should not be validated
+        // load data with immutable srcfile that should not be validated
         IFile file = product.getIpsSrcFile().getCorrespondingFile();
         IpsSrcFileImmutable srcFileImmutable = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct",
                 file.getContents());
+
         MessageList messagesImmutable = srcFileImmutable.getIpsObject().validate(ipsProject);
+
+        assertNotNull(messagesImmutable);
+        assertTrue(messagesImmutable.isEmpty());
+    }
+
+    /**
+     * Test method for {@link IpsObjectPartContainer#validate(IIpsProject)}. Tests whether the
+     * validation is performed on {@link IpsObjectPartContainer} contained in an off-root
+     * {@link IIpsSrcFile}.
+     */
+    @Test
+    public void testValidate_NotValidateIpsSrcFileOffRoot() throws CoreException {
+        // create srcfile with contents
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
+        IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
+        generation.newLink("");
+        // save contents
+        product.getIpsSrcFile().save(true, null);
+
+        // load data with off-root srcfile that should not be validated
+        IFile file = product.getIpsSrcFile().getCorrespondingFile();
+        IpsSrcFileOffRoot srcFile = new IpsSrcFileOffRoot(file);
+
+        MessageList messagesImmutable = srcFile.getIpsObject().validate(ipsProject);
         assertNotNull(messagesImmutable);
         assertTrue(messagesImmutable.isEmpty());
     }
@@ -506,6 +538,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         Message expectedMessage = validationMessageList
                 .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT);
+
+        assertNotNull(expectedMessage);
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
@@ -516,6 +550,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         Message expectedMessage = validationMessageList
                 .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT);
+
+        assertNotNull(expectedMessage);
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
@@ -541,6 +577,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         Message expectedMessage = validationMessageList
                 .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT);
+
+        assertNotNull(expectedMessage);
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
@@ -551,6 +589,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         Message expectedMessage = validationMessageList
                 .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT);
+
+        assertNotNull(expectedMessage);
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
