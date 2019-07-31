@@ -11,9 +11,11 @@
 package org.faktorips.runtime.model.type;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -24,6 +26,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.type.read.PolicyAssociationCollector;
 import org.faktorips.runtime.model.type.read.PolicyAttributeCollector;
 import org.faktorips.runtime.model.type.read.TypePartsReader;
+import org.faktorips.runtime.model.type.read.ValidationRuleCollector;
 
 /**
  * Corresponds to a design time {@code IPolicyCmptType}.
@@ -36,19 +39,25 @@ public class PolicyCmptType extends Type {
 
     private final LinkedHashMap<String, PolicyAssociation> associations;
 
+    private final LinkedHashMap<String, ValidationRule> validationRules;
+
     public PolicyCmptType(String name, AnnotatedDeclaration annotatedDeclararation) {
         super(name, annotatedDeclararation);
         PolicyAttributeCollector attributeCollector = new PolicyAttributeCollector();
         PolicyAssociationCollector associationCollector = new PolicyAssociationCollector();
-        initParts(annotatedDeclararation, attributeCollector, associationCollector);
+        ValidationRuleCollector validationRuleCollector = new ValidationRuleCollector();
+        initParts(annotatedDeclararation, attributeCollector, associationCollector, validationRuleCollector);
         attributes = attributeCollector.createParts(this);
         associations = associationCollector.createParts(this);
+        validationRules = validationRuleCollector.createParts(this);
     }
 
     private void initParts(AnnotatedDeclaration annotatedDeclararation,
             PolicyAttributeCollector attributeCollector,
-            PolicyAssociationCollector associationCollector) {
-        TypePartsReader typePartsReader = new TypePartsReader(attributeCollector, associationCollector);
+            PolicyAssociationCollector associationCollector,
+            ValidationRuleCollector validationRuleCollector) {
+        TypePartsReader typePartsReader = new TypePartsReader(attributeCollector, associationCollector,
+                validationRuleCollector);
         typePartsReader.init(annotatedDeclararation);
         typePartsReader.read(annotatedDeclararation);
     }
@@ -160,5 +169,138 @@ public class PolicyCmptType extends Type {
     @Override
     public boolean isAttributeDeclared(String name) {
         return attributes.containsKey(IpsStringUtils.toLowerFirstChar(name));
+    }
+
+    /**
+     * Returns the {@link ValidationRule} with the given <code>name</code> declared in this type.
+     * {@link ValidationRule ValidationRules} defined in the type's super types is not returned.
+     * 
+     * @param name the name of the {@link ValidationRule}
+     * @return {@link ValidationRule} with the given <code>name</code> if it was found in this type
+     * 
+     * @throws IllegalArgumentException if no {@link ValidationRule} with the given
+     *             <code>name</code> exists
+     */
+    public ValidationRule getDeclaredValidationRule(String name) {
+        ValidationRule rule = validationRules.get(IpsStringUtils.toLowerFirstChar(name));
+        if (rule == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got the validation rule " + name);
+        }
+        return rule;
+    }
+
+    /**
+     * Returns the declared {@link ValidationRule} at the given <code>index</code>.
+     * 
+     * @param index the position at which the {@link ValidationRule} is expected in the list of
+     *            declared {@link ValidationRule ValidationRules}
+     * @return the declared {@link ValidationRule} at the given <code>index</code>
+     * @throws IndexOutOfBoundsException if no {@link ValidationRule} exists for the given
+     *             <code>index</code>
+     */
+    public ValidationRule getDeclaredValidationRule(int index) {
+        return getDeclaredValidationRules().get(index);
+    }
+
+    /**
+     * Returns a list containing all {@link ValidationRule ValidationRules} declared in this model
+     * type. {@link ValidationRule ValidationRules} defined in the type's super types are not
+     * returned.
+     * 
+     * @return the list of {@link ValidationRule ValidationRules} declared in this type
+     */
+    public List<ValidationRule> getDeclaredValidationRules() {
+        return new ArrayList<ValidationRule>(validationRules.values());
+    }
+
+    /**
+     * Returns the {@link ValidationRule} with the given <code>name</code> declared in this type or
+     * one of its super types.
+     * 
+     * @param name the name of the {@link ValidationRule}
+     * @return {@link ValidationRule} with the given <code>name</code> declared in this type or one
+     *         of its super types
+     * @throws IllegalArgumentException if no {@link ValidationRule} with the given
+     *             <code>name</code> exists
+     */
+    public ValidationRule getValidationRule(String name) {
+        return validationRuleFinder(name);
+    }
+
+    /**
+     * Returns a list containing all the {@link ValidationRule ValidationRules} including those
+     * defined in the super types.
+     * 
+     * @return the list of all {@link ValidationRule ValidationRules} declared in this type and in
+     *         its super types
+     */
+    public List<ValidationRule> getValidationRules() {
+        RuleCollector ruleCollector = new RuleCollector();
+        ruleCollector.visitHierarchy(this);
+        return ruleCollector.getResult();
+    }
+
+    /**
+     * Returns whether the {@link ValidationRule} with the given <code>name</code> is declared in
+     * this type. {@link ValidationRule ValidationRules} defined in the type's super types are not
+     * considered.
+     * 
+     * @param name the name of the {@link ValidationRule}
+     * @return <code>true</code> if the {@link ValidationRule} is declared in this type,
+     *         <code>false</code> if not
+     */
+    public boolean isValidationRuleDeclared(String name) {
+        return validationRules.containsKey(IpsStringUtils.toLowerFirstChar(name));
+    }
+
+    private ValidationRule validationRuleFinder(String name) {
+        ValidationRuleFinder finder = new ValidationRuleFinder(name);
+        finder.visitHierarchy(this);
+        if (finder.validationRule == null) {
+            throw new IllegalArgumentException(
+                    "The type " + this + " (or one of its supertypes) hasn't got the validation rule \"" + name + "\"");
+        }
+        return finder.validationRule;
+    }
+
+    static class ValidationRuleFinder extends TypeHierarchyVisitor {
+
+        private String validationRuleName;
+        private ValidationRule validationRule = null;
+
+        public ValidationRuleFinder(String validationRuleName) {
+            this.validationRuleName = IpsStringUtils.toLowerFirstChar(validationRuleName);
+        }
+
+        @Override
+        public boolean visitType(Type type) {
+            boolean isValidationRuleDeclared = ((PolicyCmptType)type).isValidationRuleDeclared(validationRuleName);
+            if (isValidationRuleDeclared) {
+                validationRule = ((PolicyCmptType)type).getDeclaredValidationRule(validationRuleName);
+            }
+            return !isValidationRuleDeclared;
+        }
+
+    }
+
+    static class RuleCollector extends TypeHierarchyVisitor {
+        private final List<ValidationRule> result = new ArrayList<ValidationRule>();
+        private final Set<String> validationRulesNames = new HashSet<String>();
+
+        @Override
+        public boolean visitType(Type type) {
+            for (ValidationRule declaredValidationRule : ((PolicyCmptType)type).getDeclaredValidationRules()) {
+                if (!validationRulesNames.contains(declaredValidationRule.getName())) {
+                    validationRulesNames.add(declaredValidationRule.getName());
+                    result.add(declaredValidationRule);
+                }
+            }
+            return true;
+        }
+
+        public List<ValidationRule> getResult() {
+            return result;
+        }
+
     }
 }

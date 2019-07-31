@@ -12,6 +12,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -24,6 +27,8 @@ import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.annotation.IpsValidationRule;
+import org.faktorips.runtime.model.annotation.IpsValidationRules;
 import org.junit.Test;
 
 public class PolicyCmptTypeTest {
@@ -190,11 +195,39 @@ public class PolicyCmptTypeTest {
         assertTrue(policyCmptType.isAssociationDeclared("Asso2"));
     }
 
+    @Test
+    public void testGetDeclaredValidationRules() {
+        assertThat(policyCmptType.getDeclaredValidationRules().size(), is(2));
+        assertThat(policyCmptType.getDeclaredValidationRules().get(1).getName(), is("anotherRule"));
+    }
+
+    @Test
+    public void testGetDeclaredValidationRule() {
+        assertNotNull(policyCmptType.getDeclaredValidationRule("someRule"));
+        assertEquals(Policy.MSG_CODE_RULE, policyCmptType.getDeclaredValidationRule("someRule").getMsgCode());
+        assertEquals(Severity.ERROR, policyCmptType.getDeclaredValidationRule("someRule").getSeverity());
+    }
+
+    @Test
+    public void testGetValidationRules() {
+        assertThat(policyCmptType.getValidationRules().size(), is(3));
+        assertThat(policyCmptType.getValidationRules().get(2).getName(), is("superRule"));
+    }
+
+    @Test
+    public void testGetValidationRule() {
+        assertNotNull(policyCmptType.getValidationRule("superRule"));
+        assertEquals("superRule", policyCmptType.getValidationRule("superRule").getName());
+        assertEquals(SuperPolicy.MSG_CODE_SUPER_RULE, policyCmptType.getValidationRule("superRule").getMsgCode());
+    }
+
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsConfiguredBy(Product.class)
     @IpsAttributes({ "attr", "overwrittenAttr", "const", "CapitalAttr" })
     @IpsAssociations({ "asso", "Asso2", "overwrittenAsso" })
+    @IpsValidationRules({ "someRule", "anotherRule" })
     private static abstract class Policy extends SuperPolicy {
+        public final static String MSG_CODE_RULE = "dummy message code";
 
         @IpsAttribute(name = "const", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public static final int CONST = 2;
@@ -221,12 +254,20 @@ public class PolicyCmptTypeTest {
         @Override
         @IpsAssociation(name = "overwrittenAsso", pluralName = "overwrittenAssos", max = 0, min = 0, targetClass = SuperPolicy.class, kind = AssociationKind.Composition)
         public abstract SuperPolicy getOverwrittenAsso();
+
+        @IpsValidationRule(name = "someRule", msgCode = MSG_CODE_RULE, severity = Severity.ERROR)
+        public abstract boolean someRule(MessageList ml, IValidationContext context);
+
+        @IpsValidationRule(name = "anotherRule", msgCode = MSG_CODE_RULE, severity = Severity.ERROR)
+        public abstract boolean anotherRule(MessageList ml, IValidationContext context);
     }
 
     @IpsPolicyCmptType(name = "MySuperPolicy")
     @IpsAttributes({ "supAttr", "overwrittenAttr" })
     @IpsAssociations({ "supAsso", "overwrittenAsso" })
+    @IpsValidationRules({ "superRule" })
     private static abstract class SuperPolicy extends AbstractModelObject {
+        public final static String MSG_CODE_SUPER_RULE = "message code";
 
         @IpsAttribute(name = "supAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public static final int supAttr = 5;
@@ -239,6 +280,9 @@ public class PolicyCmptTypeTest {
 
         @IpsAssociation(name = "overwrittenAsso", pluralName = "overwrittenAssos", max = 0, min = 0, targetClass = SuperPolicy.class, kind = AssociationKind.Composition)
         public abstract SuperPolicy getOverwrittenAsso();
+
+        @IpsValidationRule(name = "superRule", msgCode = MSG_CODE_SUPER_RULE, severity = Severity.ERROR)
+        public abstract boolean superRule(MessageList ml, IValidationContext context);
     }
 
     @IpsProductCmptType(name = "MyProduct")
