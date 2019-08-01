@@ -60,13 +60,13 @@ public class TableUsageCollector extends TypePartCollector<TableUsage, TableUsag
                 AnnotatedDeclaration annotatedDeclaration,
                 AnnotatedElement annotatedElement) {
             descriptor.setAnnotatedElement((Method)annotatedElement);
-            descriptor.setChangingOverTime(IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration
-                    .getImplementationClass()));
+            descriptor.setChangingOverTime(
+                    IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration.getImplementationClass()));
         }
 
     }
 
-    static class TableUsageDescriptor extends PartDescriptor<TableUsage> {
+    protected static class TableUsageDescriptor extends PartDescriptor<TableUsage> {
 
         private boolean changingOverTime;
 

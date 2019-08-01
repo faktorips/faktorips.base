@@ -18,8 +18,8 @@ import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ProductAttribute;
 import org.faktorips.runtime.model.type.Type;
 
-public class ProductAttributeCollector extends
-        AttributeCollector<ProductAttribute, ProductAttributeCollector.ProductAttributeDescriptor> {
+public class ProductAttributeCollector
+        extends AttributeCollector<ProductAttribute, ProductAttributeCollector.ProductAttributeDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
@@ -40,14 +40,14 @@ public class ProductAttributeCollector extends
         public void process(ProductAttributeDescriptor descriptor,
                 AnnotatedDeclaration annotatedDeclaration,
                 AnnotatedElement annotatedElement) {
-            descriptor.setChangingOverTime(IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration
-                    .getImplementationClass()));
+            descriptor.setChangingOverTime(
+                    IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration.getImplementationClass()));
             descriptor.setAnnotatedElement(annotatedElement);
         }
 
     }
 
-    static class ProductAttributeDescriptor extends AbstractAttributeDescriptor<ProductAttribute> {
+    protected static class ProductAttributeDescriptor extends AbstractAttributeDescriptor<ProductAttribute> {
 
         private boolean changingOverTime;
 

@@ -20,8 +20,8 @@ import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.Type;
 
-public class PolicyAttributeCollector extends
-AttributeCollector<PolicyAttribute, PolicyAttributeCollector.PolicyAttributeDescriptor> {
+public class PolicyAttributeCollector
+        extends AttributeCollector<PolicyAttribute, PolicyAttributeCollector.PolicyAttributeDescriptor> {
 
     @SuppressWarnings("unchecked")
     // Compiler does not like generics and varargs
@@ -36,7 +36,7 @@ AttributeCollector<PolicyAttribute, PolicyAttributeCollector.PolicyAttributeDesc
         return new PolicyAttributeDescriptor();
     }
 
-    static class PolicyAttributeDescriptor extends AbstractAttributeDescriptor<PolicyAttribute> {
+    protected static class PolicyAttributeDescriptor extends AbstractAttributeDescriptor<PolicyAttribute> {
 
         @Override
         protected PolicyAttribute createValid(Type type) {
