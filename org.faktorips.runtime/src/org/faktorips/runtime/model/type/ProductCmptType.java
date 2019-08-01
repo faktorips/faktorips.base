@@ -49,7 +49,8 @@ public class ProductCmptType extends Type {
     public ProductCmptType(String name, AnnotatedDeclaration annotatedDeclaration) {
         super(name, annotatedDeclaration);
         generationDeclaration = isChangingOverTime()
-                ? AnnotatedDeclaration.from(annotatedDeclaration.get(IpsChangingOverTime.class).value()) : null;
+                ? AnnotatedDeclaration.from(annotatedDeclaration.get(IpsChangingOverTime.class).value())
+                : null;
 
         ProductAttributeCollector attributeCollector = new ProductAttributeCollector();
         ProductAssociationCollector associationCollector = new ProductAssociationCollector();
@@ -147,6 +148,16 @@ public class ProductCmptType extends Type {
         return new ArrayList<TableUsage>(tableUsages.values());
     }
 
+    /**
+     * Returns the {@link TableUsage} with the given {@code name} which is declared in this type.
+     * Any table usage defined in the super types will not be returned.
+     * 
+     * @param name The name of the {@link TableUsage}
+     * @return {@link TableUsage} declared in this type with the given name
+     * 
+     * @throws IllegalArgumentException if this type does not have a declared table usage with the
+     *             given name
+     */
     public TableUsage getDeclaredTableUsage(String name) {
         TableUsage tableUsage = tableUsages.get(name);
         if (tableUsage == null) {
@@ -159,7 +170,7 @@ public class ProductCmptType extends Type {
      * Returns whether the {@link TableUsage} for the specified <code>name</code> is declared in
      * this type.
      */
-    protected boolean hasDeclaredTableUsage(String name) {
+    public boolean hasDeclaredTableUsage(String name) {
         return tableUsages.containsKey(name);
     }
 
@@ -199,7 +210,8 @@ public class ProductCmptType extends Type {
     public ProductCmptType getSuperType() {
         Class<?> superclass = getJavaClass().getSuperclass();
         return IpsModel.isProductCmptType(superclass)
-                ? IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class)) : null;
+                ? IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class))
+                : null;
     }
 
     @Override
