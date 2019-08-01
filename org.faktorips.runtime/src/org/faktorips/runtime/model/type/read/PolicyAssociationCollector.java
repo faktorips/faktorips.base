@@ -33,7 +33,7 @@ public class PolicyAssociationCollector
         return new PolicyAssociationDescriptor();
     }
 
-    static class PolicyAssociationDescriptor extends AbstractAssociationDescriptor<PolicyAssociation> {
+    protected static class PolicyAssociationDescriptor extends AbstractAssociationDescriptor<PolicyAssociation> {
 
         private Method addMethod;
         private Method removeMethod;

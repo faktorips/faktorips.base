@@ -47,7 +47,7 @@ public class ProductAssociationCollector
 
     }
 
-    static class ProductAssociationDescriptor extends AbstractAssociationDescriptor<ProductAssociation> {
+    protected static class ProductAssociationDescriptor extends AbstractAssociationDescriptor<ProductAssociation> {
 
         private boolean changingOverTime;
         private Method getLinksMethod;
