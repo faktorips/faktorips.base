@@ -673,13 +673,13 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     @Override
-    public final <T> T getEnumValue(Class<T> clazz, Object value) {
-        if (value == null) {
+    public final <T> T getEnumValue(Class<T> clazz, Object id) {
+        if (id == null) {
             return null;
         }
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
         if (lookup != null) {
-            return lookup.getEnumValue(value);
+            return lookup.getEnumValue(id);
         }
         List<T> enumValues = getEnumValues(clazz);
         if (enumValues == null) {
@@ -690,7 +690,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             enumValueIdMethod.setAccessible(true);
             for (T enumValue : enumValues) {
                 Object idValue = enumValueIdMethod.invoke(enumValue, new Object[0]);
-                if (value.equals(idValue)) {
+                if (id.equals(idValue)) {
                     return enumValue;
                 }
             }
@@ -705,6 +705,19 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             throwUnableToCallMethodException(e);
         }
         return null;
+    }
+
+    @Override
+    public final <T> T getExistingEnumValue(Class<T> clazz, Object id) {
+        if (id == null) {
+            return null;
+        }
+
+        T result = getEnumValue(clazz, id);
+        if (result == null) {
+            throw new IllegalArgumentException("No enum value of type " + clazz.getName() + " found for " + id);
+        }
+        return result;
     }
 
     private void throwUnableToCallMethodException(Exception e) {
