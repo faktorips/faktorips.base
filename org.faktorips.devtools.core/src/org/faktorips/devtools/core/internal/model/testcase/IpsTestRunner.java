@@ -30,6 +30,7 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -112,8 +113,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     private static final IpsTestRunner IPS_TEST_RUNNER = new IpsTestRunner();
 
     static {
-        TRACE_IPS_TEST_RUNNER = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
+        TRACE_IPS_TEST_RUNNER = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")) //$NON-NLS-1$
+                .booleanValue();
     }
 
     private int port;
@@ -222,7 +223,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * Run the test with the given jobLaunch.
      */
-    private void run(String classpathRepositories, String testsuites, String mode, ILaunch launch) throws CoreException {
+    private void run(String classpathRepositories, String testsuites, String mode, ILaunch launch)
+            throws CoreException {
         trace("IpsTestRunner.run()"); //$NON-NLS-1$
 
         if (isRunningTestRunner()) {
@@ -318,7 +320,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         trace("Run VM Runner."); //$NON-NLS-1$
         testStartTime = System.currentTimeMillis();
-        vmRunner.run(vmConfig, this.launch, null);
+        vmRunner.run(vmConfig, this.launch, new NullProgressMonitor());
         manager.addLaunch(this.launch);
 
         trace("Connect."); //$NON-NLS-1$
@@ -458,8 +460,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     private boolean checkLaunchConfigurationSameAttributes(ILaunchConfiguration configuration,
             ILaunchConfigurationWorkingCopy wc) throws CoreException {
 
-        if (configuration
-                .getAttribute(ATTR_PACKAGEFRAGMENTROOT, "").equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) && //$NON-NLS-1$ //$NON-NLS-2$
+        if (configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "") //$NON-NLS-1$
+                .equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) && //$NON-NLS-1$
                 configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))) { //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         }
@@ -600,8 +602,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             if (!terminated) {
                 IpsPlugin.log(e);
                 notifyTestRunStarted(1, classpathRepositories, testsuites);
-                notifyTestErrorOccured(
-                        "", new String[] { Messages.IpsTestRunner_Error_CouldNotConnect + e.getLocalizedMessage() }); //$NON-NLS-1$
+                notifyTestErrorOccured("", //$NON-NLS-1$
+                        new String[] { Messages.IpsTestRunner_Error_CouldNotConnect + e.getLocalizedMessage() });
                 connected = false;
             } else {
                 // the test runner was terminated
@@ -985,8 +987,8 @@ public class IpsTestRunner implements IIpsTestRunner {
          */
         testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
         if (!StringUtils.isNumeric(testRunnerMaxHeapSize)) {
-            throw new CoreException(new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize,
-                    testRunnerMaxHeapSize)));
+            throw new CoreException(
+                    new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize, testRunnerMaxHeapSize)));
         }
 
         job = new TestRunnerJob(this, classpathRepository, testsuite, mode, launch);
