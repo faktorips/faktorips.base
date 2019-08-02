@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Neon 4.6)" sequenceNumber="8">
+<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Neon 4.6)" sequenceNumber="9">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.faktorzehn.thirdparty.libs.feature.group" version="0.0.0"/>
-<repository location="https://drone.faktorzehn.de/p2/thirdparty-1.1"/>
+<repository location="https://drone.faktorzehn.de/p2/thirdparty-1.2"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>
