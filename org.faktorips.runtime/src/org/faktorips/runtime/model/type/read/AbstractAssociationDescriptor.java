@@ -15,7 +15,7 @@ import org.faktorips.runtime.model.type.Association;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.Type;
 
-abstract class AbstractAssociationDescriptor<P extends Association> extends PartDescriptor<P> {
+public abstract class AbstractAssociationDescriptor<P extends Association> extends PartDescriptor<P> {
 
     private Method annotatedElement;
 

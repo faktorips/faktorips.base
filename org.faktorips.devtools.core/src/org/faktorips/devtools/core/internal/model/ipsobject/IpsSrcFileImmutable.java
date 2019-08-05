@@ -68,6 +68,12 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
         return true;
     }
 
+    @Override
+    public boolean isContainedInIpsRoot() {
+        // default implementation will also come to this result but this is faster
+        return false;
+    }
+
     /**
      * Returns null.
      */

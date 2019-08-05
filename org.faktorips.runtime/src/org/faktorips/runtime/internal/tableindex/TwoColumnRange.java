@@ -35,8 +35,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <p>
      * Infinite ranges can be defined by passing in <code>null</code> as upper and/or lower bound.
      * <ul>
-     * <li>
-     * <code>new TwoColumnRange(null, 100)</code> defines a range from negative infinity to 100.
+     * <li><code>new TwoColumnRange(null, 100)</code> defines a range from negative infinity to 100.
      * This range includes all values less than and equal to 100.</li>
      * <li>Calling <code>new TwoColumnRange(0, null)</code> in turn defines a range from 0 to
      * positive infinity. This range includes all values greater than and equal to 0.</li>
@@ -143,12 +142,9 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <p>
      * For example:
      * <ul>
-     * <li>
-     * [0..10] and [5..20] overlap</li>
-     * <li>
-     * [3..5] and [5..8] overlap, both contain 5.</li>
-     * <li>
-     * [3..5[ and [5..8] do not overlap, however, as [3..5[ does not include 5.</li>
+     * <li>[0..10] and [5..20] overlap</li>
+     * <li>[3..5] and [5..8] overlap, both contain 5.</li>
+     * <li>[3..5[ and [5..8] do not overlap, however, as [3..5[ does not include 5.</li>
      * </ul>
      * 
      * @param otherRange The other range that is tested to overlaps this range

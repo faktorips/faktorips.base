@@ -17,7 +17,7 @@ import org.faktorips.runtime.model.type.Attribute;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.Type;
 
-abstract class AbstractAttributeDescriptor<T extends Attribute> extends PartDescriptor<T> {
+public abstract class AbstractAttributeDescriptor<T extends Attribute> extends PartDescriptor<T> {
 
     private AnnotatedElement annotatedElement;
 

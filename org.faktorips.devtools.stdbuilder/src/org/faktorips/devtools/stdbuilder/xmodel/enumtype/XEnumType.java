@@ -307,7 +307,7 @@ public class XEnumType extends XClass {
             fragment.append(repositoryExp);
         }
         fragment.append('.');
-        fragment.append("getEnumValue("); //$NON-NLS-1$
+        fragment.append("getExistingEnumValue("); //$NON-NLS-1$
         fragment.appendClassName(getQualifiedClassName());
         fragment.append(".class, "); //$NON-NLS-1$
         String expression = valueOrExpression;
