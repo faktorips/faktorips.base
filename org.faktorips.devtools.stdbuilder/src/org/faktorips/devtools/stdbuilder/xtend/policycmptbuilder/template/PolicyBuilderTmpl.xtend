@@ -3,7 +3,6 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.policycmptbuilder.XPolicyBuilder
 
-
 import static extension org.faktorips.devtools.stdbuilder.xtend.builder.template.CommonBuilderNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
@@ -12,7 +11,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 class PolicyBuilderTmpl {
 
     def static String body(XPolicyBuilder it) '''
-
+        
         /**
         * «localizedJDoc("CLASS", policyName)»
         *
@@ -20,29 +19,29 @@ class PolicyBuilderTmpl {
         */
         public «isAbstract(it)» class «implClassName» «extendSuperclass» {
             «variableDeclaration»
-
+        
             «constructors»
-
+        
             «repositorySetter»
-
+        
             «FOR attribute : attributes» «attributeSetter(it, attribute)» «ENDFOR»
             «IF hasSupertype»
                 «FOR attribute: superAttributes» «superAttributeSetter(it, attribute)» «ENDFOR»
             «ENDIF»
-
+        
             «getPolicy»
             «IF !hasSupertype»
                 «getRuntimeRepository»
             «ENDIF»
-
+        
             «getPolicyClass»
-
+        
             «IF !abstract»
                 «from(it)»
             «ENDIF»
-
+        
             «associationClass»
-
+        
             «factoryClass»
         }
     '''
@@ -66,11 +65,11 @@ class PolicyBuilderTmpl {
             * @generated
             */
             private final «typeImplClassName» «field(variableName)»;
-
-            /**
-            *@generated
-            */
-            private «IRuntimeRepository» runtimeRepository;
+            
+                /**
+                *@generated
+                */
+                private «IRuntimeRepository» runtimeRepository;
         «ENDIF»
     '''
 
@@ -117,8 +116,9 @@ class PolicyBuilderTmpl {
             * @generated
             */
             «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
-            public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
-                «safeGetResult(builder)».«methodNameSetter»(«fieldName»);
+            «val parameterName = "new" + fieldName.toFirstUpper»
+            public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
+                «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
                 return this;
             }
         «ENDIF»
@@ -133,8 +133,9 @@ class PolicyBuilderTmpl {
             * @generated
             */
             @Override
-            public «builder.implClassName» «method(fieldName, javaClassName, fieldName)»{
-                «safeGetResult(builder)».«methodNameSetter»(«fieldName»);
+            «val parameterName = "new" + fieldName.toFirstUpper»
+            public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
+                «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
                 return this;
             }
         «ENDIF»
@@ -186,7 +187,7 @@ class PolicyBuilderTmpl {
         public static «implClassName» «from»(«policyPublishedInterfaceName» policy) {
             return new «implClassName»(«castToImplementation(typeImplClassName)»policy, null);
         }
-
+        
         /**
         * «localizedJDoc("METHOD_FROM_REPO", name, policyName)»
         *
