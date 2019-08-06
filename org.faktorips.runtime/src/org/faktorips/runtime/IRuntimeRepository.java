@@ -131,12 +131,12 @@ public interface IRuntimeRepository {
     public <T> List<T> getEnumValues(Class<T> clazz);
 
     /**
-     * Returns the enumeration value for the provided enumeration class and string representation of
-     * the value. If no value is found in the enumeration of the provided enumeration class
-     * {@code null} will be returned. If the provided class cannot be recognized as a Faktor-IPS
-     * enumeration or {@code id} is {@code null}, {@code null} will be returned. This method is only
-     * relevant for Faktor-IPS enumerations whose values are deferred to a content that is held by
-     * this repository.
+     * Returns the enumeration value for the provided enumeration class with the given id. If no
+     * value is found in the enumeration of the provided enumeration class {@code null} will be
+     * returned. If the provided class cannot be recognized as a Faktor-IPS enumeration or
+     * {@code id} is {@code null}, {@code null} will be returned. This method is only relevant for
+     * Faktor-IPS enumerations whose values are deferred to a content that is held by this
+     * repository.
      * 
      * @param clazz The enumeration class upon which the enumeration value is returned
      * @param id The enum value's identification
@@ -147,11 +147,11 @@ public interface IRuntimeRepository {
     public <T> T getEnumValue(Class<T> clazz, Object id);
 
     /**
-     * Returns the enumeration value for the provided enumeration class and string representation of
-     * the value. This method is only relevant for Faktor-IPS enumerations whose values are deferred
-     * to a content that is held by this repository. If {@code id} is {@code null}, {@code null}
-     * will be returned. Unlike {@link #getEnumValue(Class, Object)}, this method will throw an
-     * exception when no enum value matching the parameters is found in the repository.
+     * Returns the enumeration value for the provided enumeration class with the given id. This
+     * method is only relevant for Faktor-IPS enumerations whose values are deferred to a content
+     * that is held by this repository. If {@code id} is {@code null}, {@code null} will be
+     * returned. Unlike {@link #getEnumValue(Class, Object)}, this method will throw an exception
+     * when no enum value matching the parameters is found in the repository.
      * 
      * @param clazz The enumeration class upon which the enumeration value is returned
      * @param id The enum value's identification
