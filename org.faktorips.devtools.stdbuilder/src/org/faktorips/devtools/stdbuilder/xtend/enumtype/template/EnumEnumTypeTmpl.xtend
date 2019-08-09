@@ -35,6 +35,7 @@ class EnumEnumTypeTmpl {
             «constructors»
 
             «FOR attribute : allUniqueAttributesWithoutLiteralName» «methodGetValueBy(attribute)» «ENDFOR»
+            «FOR attribute : allUniqueAttributesWithoutLiteralName» «methodGetExistingValueBy(attribute)» «ENDFOR»
             «FOR attribute : allUniqueAttributesWithoutLiteralName» «methodIsValueBy(attribute)» «ENDFOR»
 
 
@@ -120,6 +121,39 @@ class EnumEnumTypeTmpl {
                     }
                 }
                 return null;
+            «ENDIF»
+        }
+    '''
+    
+     def private static methodGetExistingValueBy(XEnumType enumType, XEnumAttribute it) '''
+        /**
+        * «localizedJDoc("METHOD_GET_EXISTING_VALUE_BY_XXX", memberVarName)»
+        *
+        * @throws IllegalArgumentException «localizedJDoc("METHOD_GET_EXISTING_VALUE_BY_XXX_EXCEPTION")»
+        *
+        * @generated
+        */
+        public static final «enumType.name» «IF multilingual»«method(methodNameGetExistingValueBy, datatypeName, memberVarName, Locale, "locale")»«ELSE»«method(methodNameGetExistingValueBy, datatypeName, memberVarName)»«ENDIF»{
+            «IF identifier»
+                if(«enumType.varNameIdMap».containsKey(«memberVarName»)) {
+                    return «enumType.varNameIdMap».get(«memberVarName»);
+                } else {
+                    throw new IllegalArgumentException("No enum value with «memberVarName» " + «memberVarName»);
+                }
+            «ELSE»
+                for(«enumType.name» currentValue : values()){
+                    if(
+                    currentValue.
+                    «IF multilingual»
+                        «methodNameGetter»(locale).equals(«memberVarName»)
+                    «ELSE»
+                        «memberVarName» «equals(memberVarName,it)»
+                    «ENDIF»
+                    ){
+                        return currentValue;
+                    }
+                }
+                throw new IllegalArgumentException("No enum value with «memberVarName» " + «memberVarName»);
             «ENDIF»
         }
     '''

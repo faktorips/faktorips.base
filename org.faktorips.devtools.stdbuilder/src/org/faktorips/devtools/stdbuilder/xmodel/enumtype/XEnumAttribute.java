@@ -163,8 +163,8 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
         JavaCodeFragment newInstanceFromExpression;
         if (isExtensibleEnumDatatype(datatypeHelper)) {
             newInstanceFromExpression = ((EnumTypeDatatypeHelper)datatypeHelper)
-                    .getCallGetValueByIdentifierCodeFragment(paramName, new JavaCodeFragment(
-                            XEnumType.VAR_NAME_PRODUCT_REPOSITORY));
+                    .getCallGetValueByIdentifierCodeFragment(paramName,
+                            new JavaCodeFragment(XEnumType.VAR_NAME_PRODUCT_REPOSITORY));
         } else {
             newInstanceFromExpression = datatypeHelper.newInstanceFromExpression(paramName);
         }
@@ -193,6 +193,10 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
 
     public String getMethodNameGetValueBy() {
         return "getValueBy" + StringUtils.capitalize(getName());
+    }
+
+    public String getMethodNameGetExistingValueBy() {
+        return "getExistingValueBy" + StringUtils.capitalize(getName());
     }
 
     public String getMethodNameIsValueBy() {
