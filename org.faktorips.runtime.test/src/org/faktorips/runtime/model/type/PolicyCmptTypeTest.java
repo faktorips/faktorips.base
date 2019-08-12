@@ -1,14 +1,14 @@
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
@@ -25,6 +25,7 @@ import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
+import org.faktorips.runtime.model.annotation.IpsConfiguredValidationRule;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsValidationRule;
@@ -72,9 +73,9 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetDeclaredAttribute() {
-        assertNotNull(policyCmptType.getDeclaredAttribute("attr"));
-        assertEquals("CapitalAttr", policyCmptType.getDeclaredAttribute("CapitalAttr").getName());
-        assertEquals("CapitalAttr", policyCmptType.getDeclaredAttribute("capitalAttr").getName());
+        assertThat(policyCmptType.getDeclaredAttribute("attr"), is(notNullValue()));
+        assertThat(policyCmptType.getDeclaredAttribute("CapitalAttr").getName(), is("CapitalAttr"));
+        assertThat(policyCmptType.getDeclaredAttribute("capitalAttr").getName(), is("CapitalAttr"));
     }
 
     @Test
@@ -85,9 +86,9 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testGetAttribute() {
-        assertNotNull(policyCmptType.getAttribute("supAttr"));
-        assertEquals("CapitalAttr", policyCmptType.getAttribute("capitalAttr").getName());
-        assertEquals("CapitalAttr", policyCmptType.getAttribute("CapitalAttr").getName());
+        assertThat(policyCmptType.getAttribute("supAttr"), is(notNullValue()));
+        assertThat(policyCmptType.getAttribute("capitalAttr").getName(), is("CapitalAttr"));
+        assertThat(policyCmptType.getAttribute("CapitalAttr").getName(), is("CapitalAttr"));
     }
 
     @Test
@@ -112,7 +113,7 @@ public class PolicyCmptTypeTest {
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
         assertThat(association2.getName(), is("Asso2"));
         assertThat(association2.getNamePlural(), is("Asso2s"));
-        assertSame(association2, association2lowerCase);
+        assertThat(association2, is(association2lowerCase));
         assertThat(superAssoInSuper.getName(), is("supAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
     }
@@ -173,52 +174,107 @@ public class PolicyCmptTypeTest {
 
     @Test
     public void testIsAttributePresent() {
-        assertTrue(policyCmptType.isAttributePresent("supAttr"));
-        assertFalse(policyCmptType.isAttributeDeclared("supAttr"));
+        assertThat(policyCmptType.isAttributePresent("supAttr"), is(true));
+        assertThat(policyCmptType.isAttributeDeclared("supAttr"), is(false));
 
-        assertTrue(policyCmptType.isAttributePresent("overwrittenAttr"));
-        assertTrue(policyCmptType.isAttributeDeclared("overwrittenAttr"));
+        assertThat(policyCmptType.isAttributePresent("overwrittenAttr"), is(true));
+        assertThat(policyCmptType.isAttributeDeclared("overwrittenAttr"), is(true));
 
-        assertTrue(policyCmptType.isAttributePresent("CapitalAttr"));
-        assertTrue(policyCmptType.isAttributeDeclared("CapitalAttr"));
+        assertThat(policyCmptType.isAttributePresent("CapitalAttr"), is(true));
+        assertThat(policyCmptType.isAttributeDeclared("CapitalAttr"), is(true));
     }
 
     @Test
     public void testIsAssociationPresent() {
-        assertTrue(policyCmptType.isAssociationPresent("supAsso"));
-        assertFalse(policyCmptType.isAssociationDeclared("supAsso"));
+        assertThat(policyCmptType.isAssociationPresent("supAsso"), is(true));
+        assertThat(policyCmptType.isAssociationDeclared("supAsso"), is(false));
 
-        assertTrue(policyCmptType.isAssociationPresent("overwrittenAsso"));
-        assertTrue(policyCmptType.isAssociationDeclared("overwrittenAsso"));
+        assertThat(policyCmptType.isAssociationPresent("overwrittenAsso"), is(true));
+        assertThat(policyCmptType.isAssociationDeclared("overwrittenAsso"), is(true));
 
-        assertTrue(policyCmptType.isAssociationPresent("Asso2"));
-        assertTrue(policyCmptType.isAssociationDeclared("Asso2"));
+        assertThat(policyCmptType.isAssociationPresent("Asso2"), is(true));
+        assertThat(policyCmptType.isAssociationDeclared("Asso2"), is(true));
     }
 
     @Test
     public void testGetDeclaredValidationRules() {
-        assertThat(policyCmptType.getDeclaredValidationRules().size(), is(2));
-        assertThat(policyCmptType.getDeclaredValidationRules().get(1).getName(), is("anotherRule"));
+        List<ValidationRule> declaredValidationRules = policyCmptType.getDeclaredValidationRules();
+        assertThat(declaredValidationRules.size(), is(2));
+        assertThat(declaredValidationRules.get(0).getName(), is("someRule"));
+        assertThat(declaredValidationRules.get(1).getName(), is("anotherRule"));
+        assertThat(getAllNames(declaredValidationRules), not(hasItem("superRule")));
+    }
+
+    private List<String> getAllNames(List<ValidationRule> declaredValidationRules) {
+        ArrayList<String> names = new ArrayList<String>();
+        for (ValidationRule rule : declaredValidationRules) {
+            names.add(rule.getName());
+        }
+        return names;
     }
 
     @Test
     public void testGetDeclaredValidationRule() {
-        assertNotNull(policyCmptType.getDeclaredValidationRule("someRule"));
-        assertEquals(Policy.MSG_CODE_RULE, policyCmptType.getDeclaredValidationRule("someRule").getMsgCode());
-        assertEquals(Severity.ERROR, policyCmptType.getDeclaredValidationRule("someRule").getSeverity());
+        ValidationRule declaredValidationRule = policyCmptType.getDeclaredValidationRule("someRule");
+        assertThat(declaredValidationRule, is(notNullValue()));
+        assertThat(declaredValidationRule.getMsgCode(), is(Policy.MSG_CODE_RULE));
+        assertThat(declaredValidationRule.getSeverity(), is(Severity.ERROR));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetDeclaredValidationRule_RuleFromSuperClassNotPresent() {
+        policyCmptType.getDeclaredValidationRule("superRule");
     }
 
     @Test
     public void testGetValidationRules() {
-        assertThat(policyCmptType.getValidationRules().size(), is(3));
-        assertThat(policyCmptType.getValidationRules().get(2).getName(), is("superRule"));
+        List<ValidationRule> validationRules = policyCmptType.getValidationRules();
+        assertThat(validationRules.size(), is(3));
+        assertThat(validationRules.get(0).getName(), is("someRule"));
+        assertThat(validationRules.get(1).getName(), is("anotherRule"));
+        assertThat(validationRules.get(2).getName(), is("superRule"));
     }
 
     @Test
     public void testGetValidationRule() {
-        assertNotNull(policyCmptType.getValidationRule("superRule"));
-        assertEquals("superRule", policyCmptType.getValidationRule("superRule").getName());
-        assertEquals(SuperPolicy.MSG_CODE_SUPER_RULE, policyCmptType.getValidationRule("superRule").getMsgCode());
+        ValidationRule superValidationRule = policyCmptType.getValidationRule("superRule");
+        assertThat(superValidationRule, is(notNullValue()));
+        assertThat(superValidationRule.getName(), is("superRule"));
+        assertThat(superValidationRule.getMsgCode(), is(SuperPolicy.MSG_CODE_SUPER_RULE));
+
+        ValidationRule validationRule = policyCmptType.getValidationRule("anotherRule");
+        assertThat(validationRule, is(notNullValue()));
+        assertThat(validationRule.getName(), is("anotherRule"));
+        assertThat(validationRule.getMsgCode(), is(Policy.MSG_CODE_RULE));
+    }
+
+    @Test
+    public void testIsActivatedByDefault() {
+        assertThat(policyCmptType.getValidationRule("someRule").isActivatedByDefault(), is(true));
+        assertThat(policyCmptType.getValidationRule("anotherRule").isActivatedByDefault(), is(false));
+        assertThat(policyCmptType.getValidationRule("superRule").isActivatedByDefault(), is(false));
+    }
+
+    @Test
+    public void testIsChangingOverTime() {
+        assertThat(policyCmptType.getValidationRule("someRule").isChangingOverTime(), is(true));
+        assertThat(policyCmptType.getValidationRule("anotherRule").isChangingOverTime(), is(false));
+        assertThat(policyCmptType.getValidationRule("superRule").isChangingOverTime(), is(false));
+    }
+
+    @Test
+    public void testIsProductRelevant() {
+        assertThat(policyCmptType.getValidationRule("someRule").isProductRelevant(), is(true));
+        assertThat(policyCmptType.getValidationRule("anotherRule").isProductRelevant(), is(true));
+        assertThat(policyCmptType.getValidationRule("superRule").isProductRelevant(), is(false));
+    }
+
+    @Test
+    public void testToString() {
+        assertThat(policyCmptType.getValidationRule("someRule").toString(), is(
+                "@IpsValidationRule( name = 'someRule', msgCode = 'dummy message code', severity = 'ERROR')\n@IpsConfiguredValidationRule(changeOverTime = true, defaultActivated = true)"));
+        assertThat(policyCmptType.getValidationRule("superRule").toString(),
+                is("@IpsValidationRule( name = 'superRule', msgCode = 'message code', severity = 'ERROR')"));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
@@ -256,9 +312,11 @@ public class PolicyCmptTypeTest {
         public abstract SuperPolicy getOverwrittenAsso();
 
         @IpsValidationRule(name = "someRule", msgCode = MSG_CODE_RULE, severity = Severity.ERROR)
+        @IpsConfiguredValidationRule(changingOverTime = true, defaultActivated = true)
         public abstract boolean someRule(MessageList ml, IValidationContext context);
 
         @IpsValidationRule(name = "anotherRule", msgCode = MSG_CODE_RULE, severity = Severity.ERROR)
+        @IpsConfiguredValidationRule(changingOverTime = false, defaultActivated = false)
         public abstract boolean anotherRule(MessageList ml, IValidationContext context);
     }
 

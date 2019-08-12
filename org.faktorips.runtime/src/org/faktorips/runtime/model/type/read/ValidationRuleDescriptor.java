@@ -12,6 +12,7 @@ package org.faktorips.runtime.model.type.read;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
+import org.faktorips.runtime.model.annotation.IpsConfiguredValidationRule;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsValidationRule;
 import org.faktorips.runtime.model.type.ModelElement;
@@ -43,6 +44,7 @@ public class ValidationRuleDescriptor extends PartDescriptor<ValidationRule> {
     public ValidationRule create(ModelElement parentElement) {
         Type type = (Type)parentElement;
         return new ValidationRule(type, method.getAnnotation(IpsValidationRule.class),
+                method.getAnnotation(IpsConfiguredValidationRule.class),
                 method.getAnnotation(IpsExtensionProperties.class));
     }
 }
