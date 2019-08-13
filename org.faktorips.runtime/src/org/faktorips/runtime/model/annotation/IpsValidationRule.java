@@ -14,13 +14,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.faktorips.runtime.Severity;
+
 /**
- * Lists the names of all attributes in the right order
+ * Preserves design time information about a rule for runtime reference via ValidationRule.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface IpsAttributes {
+@Target({ ElementType.METHOD })
+public @interface IpsValidationRule {
 
-    String[] value();
+    String name();
+
+    String msgCode();
+
+    Severity severity();
 
 }

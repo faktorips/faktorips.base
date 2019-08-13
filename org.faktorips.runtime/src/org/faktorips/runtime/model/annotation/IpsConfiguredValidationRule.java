@@ -15,12 +15,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Lists the names of all attributes in the right order
+ * Preserves design time information about a rule that is configured by a product for runtime
+ * reference via ValidationRule.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface IpsAttributes {
+@Target(ElementType.METHOD)
+public @interface IpsConfiguredValidationRule {
 
-    String[] value();
+    boolean changingOverTime();
+
+    boolean defaultActivated();
 
 }
