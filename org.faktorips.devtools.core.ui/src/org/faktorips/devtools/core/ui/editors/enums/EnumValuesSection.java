@@ -334,20 +334,25 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
             List<IPartReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
             EnumValueTraversalStrategy previousTraversalStrategy = null;
-            for (int i = 0; i < enumContent.getEnumAttributeReferencesCount(); i++) {
+            for (int i = 0; i < enumAttributeReferences.size(); i++) {
                 IPartReference enumAttributeReference = enumAttributeReferences.get(i);
                 if (enumContent.isFixToModelRequired()) {
                     previousTraversalStrategy = addTableColumn(enumAttributeReference.getName(), null, false, false,
                             false, previousTraversalStrategy);
                 } else {
-                    IEnumAttribute currentEnumAttribute = referencedEnumType
-                            .getEnumAttributesIncludeSupertypeCopies(false).get(i);
-                    String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
-                    previousTraversalStrategy = addTableColumn(columnName,
-                            currentEnumAttribute.findDatatype(ipsProject),
-                            currentEnumAttribute.findIsUnique(ipsProject),
-                            currentEnumAttribute.isEnumLiteralNameAttribute(), currentEnumAttribute.isMultilingual(),
-                            previousTraversalStrategy);
+                    if (referencedEnumType == null) {
+                        previousTraversalStrategy = addTableColumn(Messages.EnumValuesSection_column + (i + 1), null,
+                                false, false, false, previousTraversalStrategy);
+                    } else {
+                        IEnumAttribute currentEnumAttribute = referencedEnumType
+                                .getEnumAttributesIncludeSupertypeCopies(false).get(i);
+                        previousTraversalStrategy = addTableColumn(
+                                IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute),
+                                currentEnumAttribute.findDatatype(ipsProject),
+                                currentEnumAttribute.findIsUnique(ipsProject),
+                                currentEnumAttribute.isEnumLiteralNameAttribute(),
+                                currentEnumAttribute.isMultilingual(), previousTraversalStrategy);
+                    }
                 }
             }
         } catch (CoreException e) {

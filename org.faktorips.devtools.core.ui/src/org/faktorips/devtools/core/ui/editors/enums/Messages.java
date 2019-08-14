@@ -39,5 +39,6 @@ public class Messages extends NLS {
     public static String EnumValuesSection_labelRenameLiteralName;
     public static String EnumValuesSection_labelResetLiteralNames;
     public static String EnumValuesSection_tooltipResetLiteralNames;
+    public static String EnumValuesSection_column;
 
 }
