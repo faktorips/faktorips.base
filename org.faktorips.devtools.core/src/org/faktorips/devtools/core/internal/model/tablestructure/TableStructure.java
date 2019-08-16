@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
 
 public class TableStructure extends IpsObject implements ITableStructure {
 
-    private TableStructureType type = TableStructureType.SINGLE_CONTENT;
+    private TableStructureType type = TableStructureType.MULTIPLE_CONTENTS;
 
     private List<IColumn> columns = new ArrayList<IColumn>(2);
 
