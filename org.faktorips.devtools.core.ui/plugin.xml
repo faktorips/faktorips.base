@@ -384,6 +384,12 @@
             id="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
             name="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name">
       </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.productcreate"
+            description="%org.faktorips.devtools.core.ui.command.CopyRuntimeId.description"
+            id="org.faktorips.devtools.core.ui.command.CopyRuntimeId"
+            name="%org.faktorips.devtools.core.ui.command.CopyRuntimeId.name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -2391,6 +2397,30 @@
                      </adapt>
                   </iterate>
                </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.CopyRuntimeIdHandler"
+            commandId="org.faktorips.devtools.core.ui.command.CopyRuntimeId">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt
+                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                     <not>
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
+                        </test>
+                     </not>
+                  </adapt>
+               </iterate>
+               <count
+                     value="*">
+               </count>
+            </with>
          </enabledWhen>
       </handler>
    </extension>

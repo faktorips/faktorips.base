@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction;
+import org.faktorips.devtools.core.ui.actions.CopyRuntimeIdAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
@@ -230,6 +231,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
         manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
         manager.add(InferTemplateHandler.createContributionItem(viewSite));
+        manager.add(new CopyRuntimeIdAction(treeViewer, viewSite.getShell()));
     }
 
     private void addProductTemplateActions(IMenuManager manager) {
@@ -381,8 +383,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
 
             try {
-                AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault().getMigrationOperation(
-                        ipsProject);
+                AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
+                        .getMigrationOperation(ipsProject);
                 MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(), selection);
                 migrateAction.setEnabled(!(migrationOperation.isEmpty()));
                 if (modelExplorer.isModelExplorer()) {
@@ -427,7 +429,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     protected void createImportExportEnumActions(IMenuManager manager, Object selected) {
         if ((modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE) && selected instanceof IEnumType)
-                || (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT) && selected instanceof IEnumContent)) {
+                || (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT)
+                        && selected instanceof IEnumContent)) {
             boolean show = true;
             if (selected instanceof IEnumType) {
                 /*
@@ -451,8 +454,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             MenuManager cleanUpMenu = new MenuManager(Messages.ModelExplorer_submenuCleanUp,
                     "org.faktorips.devtools.core.ui.views.modelexplorer.cleanup"); //$NON-NLS-1$
 
-            cleanUpMenu.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(), (IStructuredSelection)treeViewer
-                    .getSelection()));
+            cleanUpMenu.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(),
+                    (IStructuredSelection)treeViewer.getSelection()));
 
             cleanUpMenu.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
 

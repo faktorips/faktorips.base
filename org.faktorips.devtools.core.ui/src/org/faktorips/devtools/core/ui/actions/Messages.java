@@ -36,6 +36,8 @@ public class Messages extends NLS {
     public static String ExpandAllAction_Description;
     public static String CollapseAllAction_Description;
     public static String CopyTableAction_title;
+    public static String CopyRuntimeId_name;
+    public static String CopyRuntimeId_description;
 
     public static String DeleteRowAction_Label;
     public static String DeleteRowAction_Tooltip;
