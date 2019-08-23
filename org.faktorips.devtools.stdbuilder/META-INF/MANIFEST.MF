@@ -37,7 +37,7 @@ Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.xtend.policycmpt,
  org.faktorips.devtools.stdbuilder.xtend.productcmpt,
  org.faktorips.devtools.stdbuilder.xtend.template
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
  org.apache.commons.lang;version="[2.6,2.6]",
  org.eclipse.jdt.core.refactoring,
