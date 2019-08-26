@@ -77,7 +77,8 @@ public class MultiMap<K, V> implements Serializable {
      *            associated
      * @param values to be integrated in the Collection of the associated key
      */
-    public void put(K key, V... values) {
+    @SafeVarargs
+    public final void put(K key, V... values) {
         Collection<V> collection = getCollectionInternal(key);
         collection.addAll(Arrays.asList(values));
     }
