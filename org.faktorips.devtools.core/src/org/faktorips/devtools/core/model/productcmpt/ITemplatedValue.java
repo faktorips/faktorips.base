@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.Comparator;
+import java.util.function.BiConsumer;
 
 import com.google.common.base.Function;
 
@@ -18,7 +19,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.functional.BiConsumer;
 
 /**
  * An interface for product component properties ({@link IPropertyValue} or {@link IProductCmptLink}

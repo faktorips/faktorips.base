@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -61,7 +62,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.util.QNameUtil;
-import org.faktorips.util.functional.BiConsumer;
 
 /**
  * Dialog for changing the sort order of IIpsPackageFragments.
@@ -184,22 +184,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                     }
                 });
         tableViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
-                new SortOrderDropListener(tableViewer, new BiConsumer<IIpsElement, List<IIpsElement>>() {
-                    @Override
-                    public void accept(IIpsElement t, List<IIpsElement> u) {
-                        sortOrder.above(t, u);
-                    }
-                }, new BiConsumer<IIpsElement, List<IIpsElement>>() {
-                    @Override
-                    public void accept(IIpsElement t, List<IIpsElement> u) {
-                        sortOrder.below(t, u);
-                    }
-                }, new Runnable() {
-                    @Override
-                    public void run() {
-                        refresh();
-                    }
-                }));
+                new SortOrderDropListener(tableViewer, sortOrder::above, sortOrder::below, this::refresh));
     }
 
     @Override
@@ -226,8 +211,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Enables or disables the buttons {@link #up} and {@link #down} according to the
      * {@link #tableViewer}'s current selection.
      * <p>
-     * Both buttons are disabled if no element is selected or if the element represents a source folder
-     * or packageFragmentRoot respectively.
+     * Both buttons are disabled if no element is selected or if the element represents a source
+     * folder or packageFragmentRoot respectively.
      * <p>
      * For movable elements (PackageFragments/IpsSrcFiles) the button {@link #up} is disabled if the
      * fragment is the first in its category and cannot be moved further upwards, #down analogous.
@@ -439,9 +424,9 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         }
 
         /**
-         * Override the determineLocation method because we have only location after or location before when
-         * moving an element. When D&D is not in moving mode, we do not have location feedback. In that case
-         * we return the normal determined location instead.
+         * Override the determineLocation method because we have only location after or location
+         * before when moving an element. When D&D is not in moving mode, we do not have location
+         * feedback. In that case we return the normal determined location instead.
          */
         @Override
         protected int determineLocation(DropTargetEvent event) {
@@ -563,8 +548,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             } else {
                 Comparator<IIpsElement> childOrderComparator = packageFragment.getChildOrderComparator();
                 IIpsElement[] orderedElements = childOrderComparator instanceof DefinedOrderComparator
-                        ? ((DefinedOrderComparator)childOrderComparator).getElements()
-                        : new IIpsElement[0];
+                        ? ((DefinedOrderComparator)childOrderComparator).getElements() : new IIpsElement[0];
                 elements = addUnorderedChildren(orderedElements, packageFragment);
             }
             dirty = false;

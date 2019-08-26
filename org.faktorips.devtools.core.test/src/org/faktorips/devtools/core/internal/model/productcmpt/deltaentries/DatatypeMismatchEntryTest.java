@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
@@ -41,7 +42,6 @@ import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.util.functional.Consumer;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,13 +55,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     private final List<String> result = new LinkedList<String>();
     private List<DatatypeMismatchEntry> entries;
     private IConfiguredValueSet configuredValueSet;
-    private Consumer<List<String>> valueConsumer = new Consumer<List<String>>() {
-
-        @Override
-        public void accept(List<String> list) {
-            result.addAll(list);
-        }
-    };
+    private Consumer<List<String>> valueConsumer = result::addAll;
 
     @Override
     @Before

@@ -16,8 +16,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.function.BooleanSupplier;
+
 import org.eclipse.jface.action.IAction;
-import org.faktorips.util.functional.BooleanSupplier;
 import org.junit.Test;
 
 public class DynamicallyVisibleActionContributionItemTest {

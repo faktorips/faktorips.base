@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Comparator;
+import java.util.function.BiConsumer;
 
 import com.google.common.base.Function;
 
@@ -20,7 +21,6 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
-import org.faktorips.util.functional.BiConsumer;
 
 /**
  * Base class for all {@link IPropertyValue} subclasses except {@link Formula}. Methods with

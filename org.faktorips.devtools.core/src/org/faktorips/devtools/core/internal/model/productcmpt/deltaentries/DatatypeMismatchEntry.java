@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -37,7 +38,6 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.util.functional.Consumer;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 
@@ -83,13 +83,8 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
     }
 
     private List<String> convertedValues() {
-        List<String> converted = Lists.transform(oldValues, new Function<String, String>() {
-
-            @Override
-            public String apply(String input) {
-                return converter.convert(input, getPropertyValue().getIpsProject());
-            }
-        });
+        List<String> converted = Lists.transform(oldValues,
+                input -> converter.convert(input, getPropertyValue().getIpsProject()));
         return converted;
     }
 
@@ -113,14 +108,9 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
             final ValueConverter converter = ValueConverter.getByTargetType(datatype);
             if (converter != null) {
                 Optional<DatatypeMismatch<IPropertyValue>> mismatch = createMismatch(propertyValue);
-                return mismatch.transform(new Function<DatatypeMismatch<?>, DatatypeMismatchEntry>() {
-
-                    @Override
-                    public DatatypeMismatchEntry apply(@NonNull DatatypeMismatch<?> mismatch) {
-                        return new DatatypeMismatchEntry(propertyValue, mismatch.getValues(), converter,
-                                mismatch.getValueConsumer());
-                    }
-                });
+                Function<DatatypeMismatch<?>, DatatypeMismatchEntry> datatypeMismatchEntry = dataTypeMismatch -> new DatatypeMismatchEntry(
+                        propertyValue, dataTypeMismatch.getValues(), converter, dataTypeMismatch.getValueConsumer());
+                return mismatch.transform(datatypeMismatchEntry);
             }
         }
         return Optional.absent();
@@ -192,31 +182,19 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         @Override
         public List<String> getValues() {
             List<IValue<?>> valueList = getPropertyValue().getValueHolder().getValueList();
-            return Lists.transform(valueList, new Function<IValue<?>, String>() {
-                @Override
-                public String apply(@NonNull IValue<?> input) {
-                    // no usecase for converting international strings
-                    return input.getContentAsString();
-                }
+            return Lists.transform(valueList, (@NonNull IValue<?> input) -> {
+                // no usecase for converting international strings
+                return input.getContentAsString();
             });
         }
 
         @Override
         public Consumer<List<String>> getValueConsumer() {
-            return new Consumer<List<String>>() {
-                @Override
-                public void accept(List<String> t) {
-                    List<IValue<?>> newValueList = Lists.transform(t, new Function<String, IValue<?>>() {
-                        @Override
-                        public IValue<?> apply(String input) {
-                            return new StringValue(input);
-                        }
-                    });
-                    getPropertyValue().getValueHolder().setValueList(newValueList);
-                }
+            return t -> {
+                List<IValue<?>> newValueList = Lists.transform(t, input -> new StringValue(input));
+                getPropertyValue().getValueHolder().setValueList(newValueList);
             };
         }
-
     }
 
     private static class ConfiguredDefaultDatatypeMismatch extends DatatypeMismatch<IConfiguredDefault> {
@@ -232,12 +210,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
         @Override
         public Consumer<List<String>> getValueConsumer() {
-            return new Consumer<List<String>>() {
-                @Override
-                public void accept(List<String> t) {
-                    getPropertyValue().setValue(t.get(0));
-                }
-            };
+            return t -> getPropertyValue().setValue(t.get(0));
         }
 
     }
@@ -272,13 +245,10 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
         @Override
         public Consumer<List<String>> getValueConsumer() {
-            return new Consumer<List<String>>() {
-                @Override
-                public void accept(List<String> values) {
-                    int i = 0;
-                    for (String value : values) {
-                        getValueSet().setValue(i++, value);
-                    }
+            return values -> {
+                int i = 0;
+                for (String value : values) {
+                    getValueSet().setValue(i++, value);
                 }
             };
         }
@@ -301,13 +271,10 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
         @Override
         public Consumer<List<String>> getValueConsumer() {
-            return new Consumer<List<String>>() {
-                @Override
-                public void accept(List<String> t) {
-                    getValueSet().setUpperBound(t.get(1));
-                    getValueSet().setLowerBound(t.get(0));
-                    getValueSet().setStep(t.get(2));
-                }
+            return t -> {
+                getValueSet().setUpperBound(t.get(1));
+                getValueSet().setLowerBound(t.get(0));
+                getValueSet().setStep(t.get(2));
             };
         }
 

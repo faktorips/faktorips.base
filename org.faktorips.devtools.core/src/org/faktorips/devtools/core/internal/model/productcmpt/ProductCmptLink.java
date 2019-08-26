@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -41,14 +42,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.NullSafeComparableComparator;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmptLink {
 
@@ -567,24 +565,14 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public Function<IProductCmptLink, Object> getValueGetter() {
-        return new Function<IProductCmptLink, Object>() {
-
-            @SuppressFBWarnings
-            @Override
-            public Object apply(IProductCmptLink input) {
-                return input.getCardinality();
-            }
-        };
+        return IProductCmptLink::getCardinality;
     }
 
     @Override
     public BiConsumer<IProductCmptLink, Object> getValueSetter() {
-        return new BiConsumer<IProductCmptLink, Object>() {
-            @Override
-            public void accept(IProductCmptLink t, Object u) {
-                ArgumentCheck.isInstanceOf(u, Cardinality.class);
-                t.setCardinality((Cardinality)u);
-            }
+        return (productCmptLink, obj) -> {
+            ArgumentCheck.isInstanceOf(obj, Cardinality.class);
+            productCmptLink.setCardinality((Cardinality)obj);
         };
     }
 
