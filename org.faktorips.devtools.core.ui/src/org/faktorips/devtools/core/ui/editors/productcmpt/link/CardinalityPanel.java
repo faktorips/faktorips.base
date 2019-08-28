@@ -12,8 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import java.util.Collections;
 import java.util.List;
-
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -373,12 +372,12 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         }
 
         public boolean isMandatory() {
-            return Objects.equal(getMinCardinality(), 1) && Objects.equal(getMaxCardinality(), 1)
-                    && Objects.equal(getDefaultCardinality(), 1);
+            return Objects.equals(getMinCardinality(), 1) && Objects.equals(getMaxCardinality(), 1)
+                    && Objects.equals(getDefaultCardinality(), 1);
         }
 
         public boolean isOptional() {
-            return Objects.equal(getMinCardinality(), 0) && Objects.equal(getMaxCardinality(), 1);
+            return Objects.equals(getMinCardinality(), 0) && Objects.equals(getMaxCardinality(), 1);
         }
 
         public Integer getMinCardinality() {

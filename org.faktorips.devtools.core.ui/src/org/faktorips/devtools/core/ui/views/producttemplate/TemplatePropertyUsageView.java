@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;

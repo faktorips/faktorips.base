@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.SortedMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 
@@ -51,8 +51,9 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
             Histogram<Object, ITemplatedValue> histogram = pmo.getDefinedValuesHistogram();
             SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-            ImmutableList<TemplateUsageViewItem> elements = FluentIterable.from(definedAbsoluteDistribution.keySet())
-                    .transform(toViewItem(histogram)).toList();
+            ImmutableList<TemplateUsageViewItem> elements = definedAbsoluteDistribution.keySet().stream()
+                    .map(toViewItem(histogram))
+                    .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
             return getOrdering(elements).sortedCopy(elements).toArray();
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -114,17 +115,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     }
 
     private Function<Object, TemplateUsageViewItem> toViewItem(final Histogram<Object, ITemplatedValue> histogram) {
-        return new Function<Object, TemplateUsageViewItem>() {
-
-            @Override
-            public TemplateUsageViewItem apply(Object value) {
-                if (value == null) {
-                    return null;
-                }
-                return new TemplateUsageViewItem(value, pmo, histogram);
-            }
-        };
-
+        return value -> value == null ? null : new TemplateUsageViewItem(value, pmo, histogram);
     }
 
     /**
@@ -137,8 +128,8 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         if (propValueSelection.isValid()) {
             return propValueSelection.getElements();
         } else {
-            TypedSelection<TemplateUsageViewItem> viewItemSelection = TypedSelection.create(
-                    TemplateUsageViewItem.class, currentSelection);
+            TypedSelection<TemplateUsageViewItem> viewItemSelection = TypedSelection.create(TemplateUsageViewItem.class,
+                    currentSelection);
             if (viewItemSelection.isValid()) {
                 TemplateUsageViewItem element = viewItemSelection.getElement();
                 return element.getChildren();

@@ -11,9 +11,7 @@
 package org.faktorips.devtools.core.ui.binding;
 
 import java.lang.reflect.InvocationTargetException;
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
+import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -32,7 +30,7 @@ public class EnableBinding extends ControlPropertyBinding {
     private UIToolkit uiToolkit = new UIToolkit(null);
 
     public EnableBinding(Control control, Object object, String property, final Object expectedValue) {
-        this(control, object, property, Predicates.equalTo(expectedValue));
+        this(control, object, property, Predicate.isEqual(expectedValue));
     }
 
     public EnableBinding(Control control, Object object, String property, Predicate<Object> enabledFunction) {
@@ -59,7 +57,7 @@ public class EnableBinding extends ControlPropertyBinding {
     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
             Object value = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-            boolean enabled = value != null && enabledFunction.apply(value);
+            boolean enabled = value != null && enabledFunction.test(value);
             if (isDataChangeable() || !enabled) {
                 uiToolkit.setEnabled(getControl(), enabled);
             }

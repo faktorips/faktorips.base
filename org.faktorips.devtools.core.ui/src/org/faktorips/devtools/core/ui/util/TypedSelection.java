@@ -17,9 +17,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-
-import com.google.common.base.Optional;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
@@ -318,9 +317,9 @@ public class TypedSelection<T> {
     public static <T> Optional<T> singleElement(final Class<T> type, final ISelection selection) {
         TypedSelection<T> validator = create(type, selection);
         if (validator.isValid()) {
-            return Optional.fromNullable(validator.getFirstElement());
+            return Optional.ofNullable(validator.getFirstElement());
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static void failIfNotValid(final TypedSelection<?> validator) {

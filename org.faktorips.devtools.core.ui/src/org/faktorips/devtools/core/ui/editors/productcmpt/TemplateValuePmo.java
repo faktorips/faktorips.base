@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;

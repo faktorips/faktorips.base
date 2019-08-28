@@ -10,15 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Lists.transform;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Ordering;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -77,18 +73,9 @@ public class PropertyValueCollection {
         if (property == null) {
             return Collections.emptyList();
         }
-        return new ArrayList<IPropertyValue>(filter(
-                transform(property.getPropertyValueTypes(), new Function<PropertyValueType, IPropertyValue>() {
-
-                    @Override
-                    public IPropertyValue apply(PropertyValueType type) {
-                        if (type != null) {
-                            return getPropertyValue(property, type.getInterfaceClass());
-                        } else {
-                            return null;
-                        }
-                    }
-                }), Predicates.notNull()));
+        return property.getPropertyValueTypes().stream().filter(t -> t != null)
+                .map(type -> getPropertyValue(property, type.getInterfaceClass())).filter(value -> value != null)
+                .collect(Collectors.toList());
     }
 
     /**

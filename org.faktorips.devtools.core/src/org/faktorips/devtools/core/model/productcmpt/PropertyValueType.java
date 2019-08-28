@@ -13,8 +13,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;

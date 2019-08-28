@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -34,8 +32,6 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * A multi value holder used for multi value attributes.
@@ -119,24 +115,12 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
     @Override
     public List<IValue<?>> getValueList() {
-        return Lists.transform(getValue(), new Function<SingleValueHolder, IValue<?>>() {
-
-            @Override
-            public IValue<?> apply(@NonNull SingleValueHolder input) {
-                return input.getValue();
-            }
-        });
+        return getValue().stream().map(SingleValueHolder::getValue).collect(Collectors.toList());
     }
 
     @Override
     public void setValueList(List<IValue<?>> values) {
-        setValue(Lists.transform(values, new Function<IValue<?>, SingleValueHolder>() {
-
-            @Override
-            public SingleValueHolder apply(IValue<?> input) {
-                return new SingleValueHolder(getParent(), input);
-            }
-        }));
+        setValue(values.stream().map(input -> new SingleValueHolder(getParent(), input)).collect(Collectors.toList()));
     }
 
     @Override

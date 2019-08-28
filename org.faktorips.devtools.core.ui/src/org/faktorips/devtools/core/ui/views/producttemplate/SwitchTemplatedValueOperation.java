@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
 import org.eclipse.core.runtime.CoreException;

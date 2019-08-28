@@ -11,8 +11,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Comparator;
 import java.util.function.BiConsumer;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;

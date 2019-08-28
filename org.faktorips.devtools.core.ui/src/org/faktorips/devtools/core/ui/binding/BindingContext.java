@@ -23,8 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -244,9 +243,9 @@ public class BindingContext {
      * If you want to create a field that supports null and the null string representation, use
      * {@link #bindContent(TextButtonControl, Object, String, boolean) )}
      * 
-     * @return the edit field created to access the value in the text control.
+     * return the edit field created to access the value in the text control.
      * 
-     * @throws IllegalArgumentException if the property is not of type String.
+     * throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public EditField<String> bindContent(TextButtonControl control, Object object, String property) {
@@ -261,7 +260,10 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField<String> bindContent(TextButtonControl control, Object object, String property, boolean supportsNull) {
+    public EditField<String> bindContent(TextButtonControl control,
+            Object object,
+            String property,
+            boolean supportsNull) {
         checkPropertyType(object, property, String.class);
         TextButtonField field = new TextButtonField(control);
         field.setSupportsNullStringRepresentation(supportsNull);
@@ -307,7 +309,10 @@ public class BindingContext {
      * 
      * @see DefaultEnumValue
      */
-    public <E extends Enum<E>> EnumField<E> bindContent(Combo combo, Object object, String property, Class<E> enumType) {
+    public <E extends Enum<E>> EnumField<E> bindContent(Combo combo,
+            Object object,
+            String property,
+            Class<E> enumType) {
         checkPropertyType(object, property, Enum.class);
         EnumField<E> field = new EnumField<E>(combo, enumType);
         bindContent(field, object, property);
@@ -380,7 +385,7 @@ public class BindingContext {
         if (!expectedType.isAssignableFrom(property.getPropertyType())) {
             throw new IllegalArgumentException(
                     "Expected property " + property.getName() + " to be of type " + expectedType //$NON-NLS-1$ //$NON-NLS-2$
-                    + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
+                            + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
         }
     }
 
@@ -395,7 +400,7 @@ public class BindingContext {
 
         throw new IllegalArgumentException(
                 "Property " + property.getName() + " is of type " + property.getPropertyType() //$NON-NLS-1$ //$NON-NLS-2$
-                + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
+                        + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
     }
 
     /**
@@ -836,8 +841,8 @@ public class BindingContext {
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
-    protected class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener,
-    PropertyChangeListener {
+    protected class Listener
+            implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {

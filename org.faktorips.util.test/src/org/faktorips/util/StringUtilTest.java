@@ -11,7 +11,9 @@
 package org.faktorips.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
@@ -171,6 +173,19 @@ public class StringUtilTest {
         testString = "HausratVertrag2IJ";
         assertEquals("Hausrat_Vertrag2_IJ", StringUtil.camelCaseToUnderscore(testString, false));
         assertEquals("Hausrat_Vertrag2_I_J", StringUtil.camelCaseToUnderscore(testString, true));
+    }
+
+    @Test
+    public void testContainsWhitespace() {
+        assertTrue(StringUtil.containsWhitespace(" "));
+        assertTrue(StringUtil.containsWhitespace("foo bar"));
+        assertTrue(StringUtil.containsWhitespace("\t"));
+        assertTrue(StringUtil.containsWhitespace("\n"));
+        assertTrue(StringUtil.containsWhitespace("\u000B")); // line tab;
+        assertFalse(StringUtil.containsWhitespace("\u00A0")); // &nbsp;
+        assertFalse(StringUtil.containsWhitespace(""));
+        assertFalse(StringUtil.containsWhitespace("foobar"));
+        assertFalse(StringUtil.containsWhitespace(null));
     }
 
 }

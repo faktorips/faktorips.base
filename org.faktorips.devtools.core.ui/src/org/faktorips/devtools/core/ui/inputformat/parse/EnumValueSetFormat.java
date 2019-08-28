@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang.StringUtils;
@@ -60,12 +59,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         }
 
         final IInputFormat<String> inputFormat = getInputFormat();
-        List<String> formattedValues = Lists.transform(Arrays.asList(values), new Function<String, String>() {
-            @Override
-            public String apply(String value) {
-                return inputFormat.format(value);
-            }
-        });
+        List<String> formattedValues = Lists.transform(Arrays.asList(values), inputFormat::format);
 
         return StringUtils.join(formattedValues, EnumValueSet.ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE);
     }

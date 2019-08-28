@@ -11,8 +11,8 @@ package org.faktorips.devtools.core.util;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 /**
@@ -44,7 +44,9 @@ public class Tree<T> {
         return root == null;
     }
 
-    /** Returns the elements from all nodes in the tree. Returns an empty list if the tree is empty. */
+    /**
+     * Returns the elements from all nodes in the tree. Returns an empty list if the tree is empty.
+     */
     public List<T> getAllElements() {
         if (isEmpty()) {
             return Collections.emptyList();

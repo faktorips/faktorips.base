@@ -14,10 +14,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.BiConsumer;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
+import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -494,7 +493,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
         if (newStatus == TemplateValueStatus.DEFINED) {
             // safe the current cardinality from template
-            cardinality = Optional.fromNullable(findTemplateCardinality()).or(DEFAULT_CARDINALITY);
+            cardinality = Optional.ofNullable(findTemplateCardinality()).orElse(DEFAULT_CARDINALITY);
         } else if (newStatus == TemplateValueStatus.UNDEFINED) {
             cardinality = Cardinality.UNDEFINED;
         }

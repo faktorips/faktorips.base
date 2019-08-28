@@ -12,8 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 import java.util.Locale;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridLayout;

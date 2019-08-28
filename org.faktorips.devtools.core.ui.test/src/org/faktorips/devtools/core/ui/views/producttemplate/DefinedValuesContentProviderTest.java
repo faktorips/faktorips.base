@@ -15,7 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
+
 import com.google.common.collect.Lists;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -62,8 +63,8 @@ public class DefinedValuesContentProviderTest {
         when(valueB2.getPropertyValue()).thenReturn("B");
         when(valueC.getPropertyValue()).thenReturn("C");
 
-        histogram = new Histogram<Object, ITemplatedValue>(getValueFunction(), Lists.<ITemplatedValue> newArrayList(
-                valueB1, valueA1, valueB2, valueA2, valueC, valueA3));
+        histogram = new Histogram<Object, ITemplatedValue>(getValueFunction(),
+                Lists.<ITemplatedValue> newArrayList(valueB1, valueA1, valueB2, valueA2, valueC, valueA3));
         when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);
         when(pmo.getCount()).thenReturn(6);
@@ -74,12 +75,7 @@ public class DefinedValuesContentProviderTest {
     }
 
     private Function<ITemplatedValue, Object> getValueFunction() {
-        return new Function<ITemplatedValue, Object>() {
-            @Override
-            public Object apply(ITemplatedValue p) {
-                return ((IPropertyValue)p).getPropertyValue();
-            }
-        };
+        return templatedValue -> ((IPropertyValue)templatedValue).getPropertyValue();
     }
 
     @Test

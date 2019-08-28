@@ -11,8 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
@@ -63,8 +62,8 @@ public class ConfiguredDefaultEditComposite extends AbstractConfigElementEditCom
             datatype = Datatype.STRING;
         }
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
-                .getValueSet(), getPropertyValue().getIpsProject());
+        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype,
+                getPropertyValue().getValueSet(), getPropertyValue().getIpsProject());
         getBindingContext().bindContent(editField, getPropertyValue(), IConfiguredDefault.PROPERTY_VALUE);
         return editField;
     }

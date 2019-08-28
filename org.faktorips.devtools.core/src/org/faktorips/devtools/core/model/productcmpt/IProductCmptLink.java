@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -268,8 +268,8 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
         public LinkIdentifier(String association, String target) {
             super();
-            this.association = checkNotNull(association);
-            this.target = checkNotNull(target);
+            this.association = Objects.requireNonNull(association);
+            this.target = Objects.requireNonNull(target);
         }
 
         public LinkIdentifier(IProductCmptLink link) {

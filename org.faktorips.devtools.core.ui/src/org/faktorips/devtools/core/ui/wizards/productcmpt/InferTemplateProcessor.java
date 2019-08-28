@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -79,7 +78,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         this.propertyValueHistograms = propertyValueHistograms;
         this.productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
         this.generationLinkHistograms = ProductCmptLinkHistograms
-                .createFor(Lists.transform(productCmpts, LATEST_GENERATION));
+                .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
     }
 
     public InferTemplateProcessor(IProductCmptGeneration templateGeneration, List<IProductCmpt> productCmpts) {
@@ -88,7 +87,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         this.propertyValueHistograms = PropertyValueHistograms.createFor(productCmpts);
         this.productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
         this.generationLinkHistograms = ProductCmptLinkHistograms
-                .createFor(Lists.transform(productCmpts, LATEST_GENERATION));
+                .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
     }
 
     @Override

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -24,12 +24,8 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
  */
 public class TemplatedValueFormatter {
 
-    public static final Function<IProductCmptLink, String> PRODUCT_CMPT_LINK = new Function<IProductCmptLink, String>() {
-        @Override
-        public String apply(IProductCmptLink link) {
-            return link != null ? link.getCardinality().format() : StringUtils.EMPTY;
-        }
-    };
+    public static final Function<IProductCmptLink, String> PRODUCT_CMPT_LINK = link -> link != null
+            ? link.getCardinality().format() : StringUtils.EMPTY;
 
     // Utility class that should not be instantiated
     private TemplatedValueFormatter() {

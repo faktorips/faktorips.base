@@ -9,15 +9,14 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import org.eclipse.core.runtime.CoreException;
@@ -72,8 +71,9 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getDescription() {
-        return NLS.bind(Messages.DatatypeMismatchEntry_datatypeMissmatchDescription, Joiner.on(", ").join(oldValues), //$NON-NLS-1$
-                Joiner.on(", ").join(convertedValues())); //$NON-NLS-1$
+
+        return NLS.bind(Messages.DatatypeMismatchEntry_datatypeMissmatchDescription, String.join(", ", oldValues), //$NON-NLS-1$
+                String.join(", ", convertedValues())); //$NON-NLS-1$
     }
 
     @Override
@@ -93,13 +93,8 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
      * that has a datatype not matching the corresponding {@link IProductCmptProperty}'s datatype.
      */
     public static List<DatatypeMismatchEntry> forEachMismatch(List<? extends IPropertyValue> values) {
-        List<DatatypeMismatchEntry> result = new ArrayList<DatatypeMismatchEntry>();
-        for (IPropertyValue propertyValue : values) {
-            for (DatatypeMismatchEntry entry : createPossibleMismatch(propertyValue).asSet()) {
-                result.add(entry);
-            }
-        }
-        return result;
+        return values.stream().map(DatatypeMismatchEntry::createPossibleMismatch).filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList());
     }
 
     private static Optional<DatatypeMismatchEntry> createPossibleMismatch(final IPropertyValue propertyValue) {
@@ -110,10 +105,10 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
                 Optional<DatatypeMismatch<IPropertyValue>> mismatch = createMismatch(propertyValue);
                 Function<DatatypeMismatch<?>, DatatypeMismatchEntry> datatypeMismatchEntry = dataTypeMismatch -> new DatatypeMismatchEntry(
                         propertyValue, dataTypeMismatch.getValues(), converter, dataTypeMismatch.getValueConsumer());
-                return mismatch.transform(datatypeMismatchEntry);
+                return mismatch.map(datatypeMismatchEntry);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static boolean isConversionNeeded(IPropertyValue attributeValue) {
@@ -153,7 +148,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
                 return Optional.of((DatatypeMismatch<P>)new RangeValueSetDatatypeMismatch(configuredValueSet));
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private abstract static class DatatypeMismatch<P extends IPropertyValue> {

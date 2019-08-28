@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
@@ -193,12 +192,13 @@ public class InferTemplateProcessorTest {
         return propertyValues;
     }
 
-    private List<IPropertyValue> mockPropertyValues(IIpsSrcFile srcFile, Class<? extends IPropertyValue> propValueClass) {
+    private List<IPropertyValue> mockPropertyValues(IIpsSrcFile srcFile,
+            Class<? extends IPropertyValue> propValueClass) {
         List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
         for (int i = 0; i < 3; i++) {
             String name = propValueClass.getSimpleName() + i;
-            IPropertyValue propertyValue = mock(IPropertyValue.class, withSettings().extraInterfaces(propValueClass)
-                    .name(name));
+            IPropertyValue propertyValue = mock(IPropertyValue.class,
+                    withSettings().extraInterfaces(propValueClass).name(name));
             when(propertyValue.getPropertyName()).thenReturn(name);
             when(propertyValue.getIdentifier()).thenReturn(
                     new PropertyValueIdentifier(name, PropertyValueType.getTypeForValueClass(propValueClass)));
@@ -297,91 +297,76 @@ public class InferTemplateProcessorTest {
         verify(productCmpt2).setTemplate(TEMPLATE_NAME);
     }
 
+    @SuppressWarnings("unchecked")
     private Function<IPropertyValue, Object> getValueFunction(Class<? extends IPropertyValue> type) {
         if (type.equals(IAttributeValue.class)) {
-            return new Function<IPropertyValue, Object>() {
-
-                @SuppressWarnings("unchecked")
-                @Override
-                public Object apply(IPropertyValue propertyValue) {
-                    String propertyName = propertyValue.getPropertyName();
-                    // all first properties have the same value
-                    // all other properties have unique values
-                    if (propertyName.endsWith("0")) {
-                        return singleValue;
-                    } else {
-                        SingleValueHolder valueMock = mock(SingleValueHolder.class);
-                        when(valueMock.compareTo(any(IValueHolder.class))).thenReturn(1);
-                        return valueMock;
-                    }
+            return propertyValue -> {
+                String propertyName = propertyValue.getPropertyName();
+                // all first properties have the same value
+                // all other properties have unique values
+                if (propertyName.endsWith("0")) {
+                    return singleValue;
+                } else {
+                    SingleValueHolder valueMock = mock(SingleValueHolder.class);
+                    when(valueMock.compareTo(any(IValueHolder.class))).thenReturn(1);
+                    return valueMock;
                 }
             };
         } else if (type.equals(IConfiguredValueSet.class)) {
-            return new Function<IPropertyValue, Object>() {
-
-                @Override
-                public Object apply(IPropertyValue propertyValue) {
-                    String propertyName = propertyValue.getPropertyName();
-                    // all first properties have the same value
-                    // all other properties have unique values
-                    if (propertyName.endsWith("0")) {
-                        return valueSet;
-                    } else {
-                        IValueSet mockValueSet = mock(IValueSet.class);
-                        when(mockValueSet.compareTo(mockValueSet)).thenReturn(0);
-                        when(mockValueSet.compareTo(any(IValueSet.class))).thenReturn(-1);
-                        return mockValueSet;
-                    }
+            return propertyValue -> {
+                String propertyName = propertyValue.getPropertyName();
+                // all first properties have the same value
+                // all other properties have unique values
+                if (propertyName.endsWith("0")) {
+                    return valueSet;
+                } else {
+                    IValueSet mockValueSet = mock(IValueSet.class);
+                    when(mockValueSet.compareTo(mockValueSet)).thenReturn(0);
+                    when(mockValueSet.compareTo(any(IValueSet.class))).thenReturn(-1);
+                    return mockValueSet;
                 }
             };
-        } else if (type.equals(IConfiguredDefault.class)) {
-            return new Function<IPropertyValue, Object>() {
+        } else if (type.equals(IConfiguredDefault.class))
 
-                @Override
-                public Object apply(IPropertyValue propertyValue) {
-                    String propertyName = propertyValue.getPropertyName();
-                    // all first properties have the same value
-                    // all other properties have unique values
-                    if (propertyName.endsWith("0")) {
-                        return defaultValue;
-                    } else {
-                        return UUID.randomUUID().toString();
-                    }
+        {
+            return propertyValue -> {
+                String propertyName = propertyValue.getPropertyName();
+                // all first properties have the same value
+                // all other properties have unique values
+                if (propertyName.endsWith("0")) {
+                    return defaultValue;
+                } else {
+                    return UUID.randomUUID().toString();
                 }
             };
 
-        } else if (type.equals(IValidationRuleConfig.class)) {
-            return new Function<IPropertyValue, Object>() {
+        } else if (type.equals(IValidationRuleConfig.class))
 
-                @Override
-                public Object apply(IPropertyValue propertyValue) {
-                    String propertyName = propertyValue.getPropertyName();
-                    // all first properties have the same value
-                    // all other properties have unique values
-                    if (propertyName.endsWith("0")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+        {
+            return propertyValue -> {
+                String propertyName = propertyValue.getPropertyName();
+                // all first properties have the same value
+                // all other properties have unique values
+                if (propertyName.endsWith("0")) {
+                    return true;
+                } else {
+                    return false;
                 }
             };
 
-        } else {
-            return new Function<IPropertyValue, Object>() {
+        } else
 
-                @Override
-                public Object apply(IPropertyValue propertyValue) {
-                    String propertyName = propertyValue.getPropertyName();
-                    // all first properties have the same value
-                    // all other properties have unique values
-                    if (propertyName.endsWith("0")) {
-                        return propertyName + "Value";
-                    } else {
-                        return UUID.randomUUID().toString();
-                    }
+        {
+            return propertyValue -> {
+                String propertyName = propertyValue.getPropertyName();
+                // all first properties have the same value
+                // all other properties have unique values
+                if (propertyName.endsWith("0")) {
+                    return propertyName + "Value";
+                } else {
+                    return UUID.randomUUID().toString();
                 }
             };
-
         }
     }
 }

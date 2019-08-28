@@ -11,8 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
