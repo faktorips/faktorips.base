@@ -65,8 +65,9 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         getCompiler().setConversionCodeGenerator(ConversionCodeGenerator.getDefault());
         getCompiler().registerDefaults();
 
-        execAndTestSuccessfull("a - b + c", Decimal.valueOf(0.4), new String[] { "a", "b", "c" }, new Datatype[] {
-            Datatype.DOUBLE, Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { 0.2, 0.3, 0.5 }, Datatype.DECIMAL);
+        execAndTestSuccessfull("a - b + c", Decimal.valueOf(0.4), new String[] { "a", "b", "c" },
+                new Datatype[] { Datatype.DOUBLE, Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { 0.2, 0.3, 0.5 },
+                Datatype.DECIMAL);
     }
 
     @Test
@@ -223,8 +224,8 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         getCompiler().add(fctResolver1);
         getCompiler().add(fctResolver2);
 
-        CompilationResult<JavaCodeFragment> resultWithAmbiguousFunctionCall = getCompiler().compile(matchingFunctionName
-                + "(2.0)");
+        CompilationResult<JavaCodeFragment> resultWithAmbiguousFunctionCall = getCompiler()
+                .compile(matchingFunctionName + "(2.0)");
 
         MessageList messageList = resultWithAmbiguousFunctionCall.getMessages();
         assertTrue(messageList.containsErrorMsg());
@@ -235,8 +236,8 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     private FunctionResolver<JavaCodeFragment> createFunctionResolver(FlFunction<JavaCodeFragment>... functions) {
-        @SuppressWarnings("unchecked")
         FunctionResolver<JavaCodeFragment> newFctResolver = mock(FunctionResolver.class);
 
         when(newFctResolver.getFunctions()).thenReturn(functions);

@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
@@ -128,13 +125,8 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private boolean matchingLinkIsMissing(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
-        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()), new Predicate<IProductCmptLink>() {
-
-            @Override
-            public boolean apply(IProductCmptLink link) {
-                return link != null && ObjectUtils.equals(linkToFind.getTarget(), link.getTarget());
-            }
-        });
+        return !container.getLinksAsList(linkToFind.getAssociation()).stream()
+                .anyMatch(link -> link != null && ObjectUtils.equals(linkToFind.getTarget(), link.getTarget()));
     }
 
     protected IProductCmptLinkContainer getLinkContainer() {

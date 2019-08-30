@@ -12,8 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;

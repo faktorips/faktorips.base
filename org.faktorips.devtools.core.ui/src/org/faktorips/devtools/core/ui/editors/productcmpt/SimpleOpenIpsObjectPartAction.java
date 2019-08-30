@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -18,8 +21,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.util.functional.Function;
-import org.faktorips.util.functional.Supplier;
 
 /**
  * Opens an editor for an {@link IIpsObjectPartContainer}.
@@ -34,19 +35,7 @@ public class SimpleOpenIpsObjectPartAction<T extends IIpsObjectPartContainer> ex
      * caption as {@link #getText() text} and {@link #getToolTipText() tooltip text}.
      */
     public SimpleOpenIpsObjectPartAction(final T part, final String caption) {
-        this(new Supplier<T>() {
-
-            @Override
-            public T get() {
-                return part;
-            }
-        }, new Function<T, String>() {
-
-            @Override
-            public String apply(T t) {
-                return caption;
-            }
-        });
+        this(() -> part, t -> caption);
     }
 
     /**
@@ -68,6 +57,11 @@ public class SimpleOpenIpsObjectPartAction<T extends IIpsObjectPartContainer> ex
         } else {
             return StringUtils.EMPTY;
         }
+    }
+
+    /* used only for test */
+    void setPartSupplier(Supplier<T> partSupplier) {
+        this.partSupplier = partSupplier;
     }
 
     @Override

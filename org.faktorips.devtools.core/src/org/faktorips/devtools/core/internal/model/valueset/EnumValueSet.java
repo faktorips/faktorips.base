@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -30,6 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
@@ -344,12 +344,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         } else {
             final ValueDatatype type = findValueDatatype(getIpsProject());
 
-            List<String> formattedValues = Lists.transform(values, new Function<String, String>() {
-                @Override
-                public String apply(String value) {
-                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(type, value);
-                }
-            });
+            DatatypeFormatter datatypeFormatter = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter();
+            List<String> formattedValues = Lists.transform(values, value -> datatypeFormatter.formatValue(type, value));
+
             return ENUM_VALUESET_START + StringUtils.join(formattedValues, ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE)
                     + ENUM_VALUESET_END;
         }

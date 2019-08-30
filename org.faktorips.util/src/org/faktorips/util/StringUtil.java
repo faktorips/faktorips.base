@@ -317,4 +317,15 @@ public class StringUtil {
         return maxValue == Integer.MAX_VALUE ? "*" : String.valueOf(maxValue);
     }
 
+    /**
+     * Checks whether the {@link String} contains whitespace.
+     * 
+     * @param string {@link String} to be checked
+     * @return {@code true} if the {@code string} contains {@link Character#isWhitespace(char)
+     *         whitespace}, {@code false} if not
+     */
+    public static boolean containsWhitespace(String string) {
+        return string != null && string.codePoints().anyMatch(Character::isWhitespace);
+    }
+
 }

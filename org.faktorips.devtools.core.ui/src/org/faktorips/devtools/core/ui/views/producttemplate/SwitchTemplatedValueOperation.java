@@ -11,8 +11,9 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,7 +24,6 @@ import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.util.TemplatedValueUtil;
-import org.faktorips.util.functional.BiConsumer;
 
 /**
  * An operation to switch a templated value. The operation is triggered with a list of
@@ -42,7 +42,8 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
     private final Collection<? extends ITemplatedValue> definingValues;
 
     public SwitchTemplatedValueOperation(ITemplatedValue templateValue, Object newValue,
-            Collection<? extends ITemplatedValue> inheritingValues, Collection<? extends ITemplatedValue> definingValues) {
+            Collection<? extends ITemplatedValue> inheritingValues,
+            Collection<? extends ITemplatedValue> definingValues) {
         this.templateValue = templateValue;
         this.newValue = newValue;
         this.inheritingValues = inheritingValues;
@@ -71,11 +72,10 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
         monitor.done();
     }
 
+    @SuppressWarnings("unchecked")
     private void setNewValueInTemplate() {
-        @SuppressWarnings("unchecked")
-        BiConsumer<ITemplatedValue, Object> valueSetter = (BiConsumer<ITemplatedValue, Object>)getTemplateValue()
-                .getValueSetter();
-        valueSetter.accept(getTemplateValue(), getNewValue());
+        ((BiConsumer<ITemplatedValue, Object>)getTemplateValue().getValueSetter()).accept(getTemplateValue(),
+                getNewValue());
     }
 
     /**
@@ -104,7 +104,8 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
                 valueComparator = propertyValue.getValueComparator();
             } else {
                 Object otherValue = getActualValue(identifier, propertyValue.getTemplatedValueContainer());
-                if (!isMatchingPropertyValue(templatePropertyValue, valueComparator, value, propertyValue, otherValue)) {
+                if (!isMatchingPropertyValue(templatePropertyValue, valueComparator, value, propertyValue,
+                        otherValue)) {
                     return false;
                 }
             }
@@ -135,8 +136,8 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
     }
 
     private static ITemplatedValue getTemplateValue(ITemplatedValue someTemplatedValue) {
-        ITemplatedValue foundTemplateProperty = someTemplatedValue.findTemplateProperty(someTemplatedValue
-                .getIpsProject());
+        ITemplatedValue foundTemplateProperty = someTemplatedValue
+                .findTemplateProperty(someTemplatedValue.getIpsProject());
         if (foundTemplateProperty == null) {
             foundTemplateProperty = TemplatedValueUtil.findNextTemplateValue(someTemplatedValue);
         }

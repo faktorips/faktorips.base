@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Maps.EntryTransformer;
 import com.google.common.collect.Multimap;
@@ -66,6 +66,7 @@ public class Histogram<V, E> {
      * Creates a new histogram of the given elements. Equality of elements' values is determined
      * using the values' equals method.
      */
+    @SafeVarargs
     public Histogram(Function<E, V> elementToValueFunction, E... elements) {
         this(elementToValueFunction, new EqualToComparator<V>(), Arrays.asList(elements));
     }
@@ -82,6 +83,7 @@ public class Histogram<V, E> {
      * Creates a new histogram of the given elements. Equality of elements' values is determined
      * using the given comparator.
      */
+    @SafeVarargs
     public Histogram(Function<E, V> elementToValueFunction, Comparator<? super V> valueComparator, E... elements) {
         this(elementToValueFunction, valueComparator, Arrays.asList(elements));
     }
@@ -106,8 +108,8 @@ public class Histogram<V, E> {
      * how often the value occurs. The map is sorted so that values occurring more often come first.
      */
     public SortedMap<V, Integer> getAbsoluteDistribution() {
-        TreeMap<V, Integer> sortedDistribution = Maps.newTreeMap(new DistributionComparator<V>(valueToElements,
-                valueComparator));
+        TreeMap<V, Integer> sortedDistribution = Maps
+                .newTreeMap(new DistributionComparator<V>(valueToElements, valueComparator));
         sortedDistribution.putAll(transformToOccurenceCountMap(valueToElements));
         return Collections.unmodifiableSortedMap(sortedDistribution);
     }
@@ -251,7 +253,9 @@ public class Histogram<V, E> {
      * @return the {@link BestValue} for the given candidate value if its relative distribution is
      *         above the given threshold or {@code BestValue.missingValue()} if it is not
      */
-    protected BestValue<V> getBestValue(Decimal threshold, SortedMap<V, Decimal> relativeDistribution, V candidateValue) {
+    protected BestValue<V> getBestValue(Decimal threshold,
+            SortedMap<V, Decimal> relativeDistribution,
+            V candidateValue) {
         Decimal relDist = getRelativeDistribution(relativeDistribution, candidateValue);
         if (relDist.greaterThanOrEqual(threshold)) {
             return new BestValue<V>(candidateValue, relDist);
@@ -322,7 +326,7 @@ public class Histogram<V, E> {
      * <li>1 or -1 by comparing the objects' {@link System#identityHashCode(Object)} if they are not
      * the same instance according to their equals method</li>
      * </ul>
-     * */
+     */
     private static class SameInstanceComparator<U> implements Comparator<U>, Serializable {
 
         private static final long serialVersionUID = -5480214299260180838L;
@@ -344,7 +348,7 @@ public class Histogram<V, E> {
      * <li>1 or -1 by comparing the objects' {@link System#identityHashCode(Object)} if they are not
      * equal according to their equals method</li>
      * </ul>
-     * */
+     */
     private static class EqualToComparator<U> implements Comparator<U>, Serializable {
 
         private static final long serialVersionUID = -5480214299260180838L;

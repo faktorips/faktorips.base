@@ -19,11 +19,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Comparator;
 
-import com.google.common.base.Function;
-
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.util.functional.BiConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -89,48 +86,44 @@ public class PropertyValueTypeTest {
         IValueHolder<?> value = mock(IValueHolder.class);
         doReturn(value).when(attributeValue).getValueHolder();
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.ATTRIBUTE_VALUE.getValueGetter();
-        assertThat(valueFunction.apply(attributeValue), is((Object)value));
+        assertThat(PropertyValueType.ATTRIBUTE_VALUE.getValueGetter().apply(attributeValue), is((Object)value));
     }
 
     @Test
     public void testGetValueGetter_configuredDefault() throws Exception {
         when(configuredDefault.getValue()).thenReturn("10");
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.CONFIGURED_DEFAULT.getValueGetter();
-        assertThat(valueFunction.apply(configuredDefault), is((Object)"10"));
+        assertThat(PropertyValueType.CONFIGURED_DEFAULT.getValueGetter().apply(configuredDefault), is((Object)"10"));
     }
 
     @Test
     public void testGetValueGetter_configuredValueSet() throws Exception {
         when(configuredValueSet.getValueSet()).thenReturn(valueSet1);
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.CONFIGURED_VALUESET.getValueGetter();
-        assertThat(valueFunction.apply(configuredValueSet), is((Object)valueSet1));
+        assertThat(PropertyValueType.CONFIGURED_VALUESET.getValueGetter().apply(configuredValueSet),
+                is((Object)valueSet1));
     }
 
     @Test
     public void testGetValueGetter_tableContent() throws Exception {
         when(tableContentUsage.getTableContentName()).thenReturn(ANY_VALUE);
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.TABLE_CONTENT_USAGE.getValueGetter();
-        assertThat(valueFunction.apply(tableContentUsage), is((Object)ANY_VALUE));
+        assertThat(PropertyValueType.TABLE_CONTENT_USAGE.getValueGetter().apply(tableContentUsage),
+                is((Object)ANY_VALUE));
     }
 
     @Test
     public void testGetValueGetter_formula() throws Exception {
         when(formula.getExpression()).thenReturn(ANY_VALUE);
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.FORMULA.getValueGetter();
-        assertThat(valueFunction.apply(formula), is((Object)ANY_VALUE));
+        assertThat(PropertyValueType.FORMULA.getValueGetter().apply(formula), is((Object)ANY_VALUE));
     }
 
     @Test
     public void testGetValueGetter_ruleConfig() throws Exception {
         when(ruleConfig.isActive()).thenReturn(true);
 
-        Function<IPropertyValue, Object> valueFunction = PropertyValueType.VALIDATION_RULE_CONFIG.getValueGetter();
-        assertThat(valueFunction.apply(ruleConfig), is((Object)true));
+        assertThat(PropertyValueType.VALIDATION_RULE_CONFIG.getValueGetter().apply(ruleConfig), is((Object)true));
     }
 
     @Test
@@ -139,36 +132,31 @@ public class PropertyValueTypeTest {
         IValueHolder<?> copy = mock(IValueHolder.class);
         doReturn(copy).when(value).copy(attributeValue);
 
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.ATTRIBUTE_VALUE.getValueSetter();
-        valueConsumer.accept(attributeValue, value);
+        PropertyValueType.ATTRIBUTE_VALUE.getValueSetter().accept(attributeValue, value);
         verify(attributeValue).setValueHolder(copy);
     }
 
     @Test
     public void testGetValueSetter_TableContent() throws Exception {
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.TABLE_CONTENT_USAGE.getValueSetter();
-        valueConsumer.accept(tableContentUsage, ANY_VALUE);
+        PropertyValueType.TABLE_CONTENT_USAGE.getValueSetter().accept(tableContentUsage, ANY_VALUE);
         verify(tableContentUsage).setTableContentName(ANY_VALUE);
     }
 
     @Test
     public void testGetValueSetter_TableContent_null() throws Exception {
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.TABLE_CONTENT_USAGE.getValueSetter();
-        valueConsumer.accept(tableContentUsage, null);
+        PropertyValueType.TABLE_CONTENT_USAGE.getValueSetter().accept(tableContentUsage, null);
         verify(tableContentUsage).setTableContentName(null);
     }
 
     @Test
     public void testGetValueSetter_Formula() throws Exception {
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.FORMULA.getValueSetter();
-        valueConsumer.accept(formula, ANY_VALUE);
+        PropertyValueType.FORMULA.getValueSetter().accept(formula, ANY_VALUE);
         verify(formula).setExpression(ANY_VALUE);
     }
 
     @Test
     public void testGetValueSetter_Formula_null() throws Exception {
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.FORMULA.getValueSetter();
-        valueConsumer.accept(formula, null);
+        PropertyValueType.FORMULA.getValueSetter().accept(formula, null);
         verify(formula).setExpression(null);
     }
 
@@ -178,11 +166,10 @@ public class PropertyValueTypeTest {
         when(configuredDefault.getIpsModel()).thenReturn(ipsModel);
         when(ipsModel.getNextPartId(configuredDefault)).thenReturn(ANY_VALUE);
 
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.CONFIGURED_DEFAULT.getValueSetter();
-        valueConsumer.accept(configuredDefault, "10");
+        PropertyValueType.CONFIGURED_DEFAULT.getValueSetter().accept(configuredDefault, "10");
         verify(configuredDefault).setValue("10");
 
-        valueConsumer.accept(configuredDefault, null);
+        PropertyValueType.CONFIGURED_DEFAULT.getValueSetter().accept(configuredDefault, null);
         verify(configuredDefault).setValue(null);
     }
 
@@ -195,15 +182,13 @@ public class PropertyValueTypeTest {
         when(configuredValueSet.getIpsModel()).thenReturn(ipsModel);
         when(ipsModel.getNextPartId(configuredValueSet)).thenReturn(ANY_VALUE);
 
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.CONFIGURED_VALUESET.getValueSetter();
-        valueConsumer.accept(configuredValueSet, value);
+        PropertyValueType.CONFIGURED_VALUESET.getValueSetter().accept(configuredValueSet, value);
         verify(configuredValueSet).setValueSet(copy);
     }
 
     @Test
     public void testGetValueSetter_RuleConfig() throws Exception {
-        BiConsumer<IPropertyValue, Object> valueConsumer = PropertyValueType.VALIDATION_RULE_CONFIG.getValueSetter();
-        valueConsumer.accept(ruleConfig, true);
+        PropertyValueType.VALIDATION_RULE_CONFIG.getValueSetter().accept(ruleConfig, true);
         verify(ruleConfig).setActive(true);
     }
 

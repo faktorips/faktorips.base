@@ -24,9 +24,9 @@ import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
-import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
@@ -48,7 +48,7 @@ public class ParameterParserTest extends AbstractParserTest {
     private static final String MY_DESCRIPTION = "myDescription";
 
     @Mock
-    private IFormulaMethod formulaSignature;
+    private IProductCmptTypeMethod formulaSignature;
 
     @Mock
     private IParameter parameter;
@@ -89,8 +89,8 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_findParameter() throws Exception {
-        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER
-                .length()));
+        ParameterNode parameterNode = (ParameterNode)parameterParser
+                .parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER.length()));
 
         assertNotNull(parameterNode);
         assertEquals(parameter, parameterNode.getParameter());
@@ -109,8 +109,8 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testParse_noDatatype() throws Exception {
         when(parameter.findDatatype(getIpsProject())).thenReturn(null);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(new TextRegion(MY_PARAMETER, 0,
-                MY_PARAMETER.length()));
+        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser
+                .parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER.length()));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }

@@ -10,8 +10,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.Comparator;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;

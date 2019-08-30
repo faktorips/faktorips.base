@@ -47,7 +47,6 @@ public class SortedByDependency<T extends IIpsObject> {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     private MultiMap<T, T> getDependencyMap(Collection<T> objectsToFix) {
         MultiMap<T, T> dependencies = MultiMap.createWithLinkedSetAsValues();
         HashMap<QualifiedNameType, T> qNameToSrcFile = map(objectsToFix);

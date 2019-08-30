@@ -11,8 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -81,8 +80,8 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
     private ConfiguredValueSetField createValueSetField() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
-        valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
-                .formatValueSet(getPropertyValue().getValueSet()));
+        valueSetControl.setText(
+                IpsUIPlugin.getDefault().getDatatypeFormatter().formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
         ConfiguredValueSetField editField = new ConfiguredValueSetField(getPropertyValue(), valueSetControl);

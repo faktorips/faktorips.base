@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -43,8 +43,9 @@ public class PropertyValueFormatter {
 
         @Override
         public String apply(IConfiguredValueSet configuredValueSet) {
-            return configuredValueSet != null ? AnyValueSetFormat.newInstance(configuredValueSet).format(
-                    configuredValueSet.getValueSet()) : StringUtils.EMPTY;
+            return configuredValueSet != null
+                    ? AnyValueSetFormat.newInstance(configuredValueSet).format(configuredValueSet.getValueSet())
+                    : StringUtils.EMPTY;
         }
     };
 
@@ -118,8 +119,8 @@ public class PropertyValueFormatter {
         } else if (propertyValue.getPropertyValueType() == PropertyValueType.VALIDATION_RULE_CONFIG) {
             return VALIDATION_RULE_CONFIG.apply((IValidationRuleConfig)propertyValue);
         }
-        throw new IllegalStateException(PropertyValueFormatter.class.getName()
-                + ": Unknown property value type " + propertyValue.getPropertyValueType()); //$NON-NLS-1$
+        throw new IllegalStateException(PropertyValueFormatter.class.getName() + ": Unknown property value type " //$NON-NLS-1$
+                + propertyValue.getPropertyValueType());
     }
 
     private static String getValueOrNullPresentation(String value) {

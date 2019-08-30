@@ -10,9 +10,8 @@
 package org.faktorips.devtools.core.ui.wizards;
 
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IBaseLabelProvider;

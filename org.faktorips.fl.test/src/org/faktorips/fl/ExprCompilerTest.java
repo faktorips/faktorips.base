@@ -62,7 +62,8 @@ public class ExprCompilerTest {
         }
 
         @Override
-        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(String sourcecode, Datatype datatype) {
+        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(String sourcecode,
+                Datatype datatype) {
             return new DummyCompilationResultImpl(sourcecode, datatype);
         }
 
@@ -204,14 +205,14 @@ public class ExprCompilerTest {
     @Test
     public void testGetFunctions() {
         DefaultFunctionResolver<CodeFragment> r1 = new DefaultFunctionResolver<CodeFragment>();
-        FlFunction<CodeFragment> f1 = createFunction("IF1", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
-                AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
+        FlFunction<CodeFragment> f1 = createFunction("IF1",
+                new Datatype[] { Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
         r1.add(f1);
         DefaultFunctionResolver<CodeFragment> r2 = new DefaultFunctionResolver<CodeFragment>();
-        FlFunction<CodeFragment> f2 = createFunction("IF2", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
-                AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
-        FlFunction<CodeFragment> f3 = createFunction("IF3", new Datatype[] { Datatype.PRIMITIVE_BOOLEAN,
-                AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
+        FlFunction<CodeFragment> f2 = createFunction("IF2",
+                new Datatype[] { Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
+        FlFunction<CodeFragment> f3 = createFunction("IF3",
+                new Datatype[] { Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
         r2.add(f2);
         r2.add(f3);
         FlFunction<CodeFragment>[] functions = compiler.getFunctions();
@@ -288,8 +289,8 @@ public class ExprCompilerTest {
                     Locale locale) {
                 String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
                         identifier);
-                DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(Message.newError(
-                        ExprCompiler.UNDEFINED_IDENTIFIER, text));
+                DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(
+                        Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                 return compilationResult;
             }
         });
@@ -313,16 +314,17 @@ public class ExprCompilerTest {
     }
 
     private void registerAddIntInt() {
-        compiler.register(new AbstractBinaryOperation<CodeFragment>("+", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT) {
+        compiler.register(
+                new AbstractBinaryOperation<CodeFragment>("+", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT) {
 
-            @Override
-            public CompilationResult<CodeFragment> generate(CompilationResult<CodeFragment> lhs,
-                    CompilationResult<CodeFragment> rhs) {
-                lhs.getCodeFragment().append(" + "); //$NON-NLS-1$
-                ((AbstractCompilationResult<CodeFragment>)lhs).add(rhs);
-                return lhs;
-            }
-        });
+                    @Override
+                    public CompilationResult<CodeFragment> generate(CompilationResult<CodeFragment> lhs,
+                            CompilationResult<CodeFragment> rhs) {
+                        lhs.getCodeFragment().append(" + "); //$NON-NLS-1$
+                        ((AbstractCompilationResult<CodeFragment>)lhs).add(rhs);
+                        return lhs;
+                    }
+                });
     }
 
     /**
@@ -372,8 +374,8 @@ public class ExprCompilerTest {
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, rhsMsg.getCode());
     }
 
+    @SuppressWarnings("unchecked")
     private FunctionResolver<CodeFragment> createFunctionResolver(FlFunction<CodeFragment>... functions) {
-        @SuppressWarnings("unchecked")
         FunctionResolver<CodeFragment> newFctResolver = mock(FunctionResolver.class);
 
         when(newFctResolver.getFunctions()).thenReturn(functions);

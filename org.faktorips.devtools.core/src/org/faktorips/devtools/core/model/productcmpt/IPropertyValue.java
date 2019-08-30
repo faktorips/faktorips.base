@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -103,7 +103,7 @@ public interface IPropertyValue extends ITemplatedValue {
 
         public PropertyValueIdentifier(String propertyName, PropertyValueType type) {
             super();
-            this.propertyName = Preconditions.checkNotNull(propertyName);
+            this.propertyName = Objects.requireNonNull(propertyName);
             this.type = type;
         }
 

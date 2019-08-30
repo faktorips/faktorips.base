@@ -9,11 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.util;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItems;
 
-import com.google.common.base.Functions;
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class TreeTest {
         Tree<Integer> intTree = new Tree<Integer>(1);
         intTree.getRoot().addChild(2).addChild(3);
 
-        Tree<String> stringTree = intTree.transform(Functions.toStringFunction());
+        Tree<String> stringTree = intTree.transform(Objects::toString);
         assertThat(stringTree.getRoot().getElement(), is("1"));
         assertThat(stringTree.getRoot().getChildren().size(), is(1));
         assertThat(stringTree.getRoot().getChildren().get(0).getElement(), is("2"));

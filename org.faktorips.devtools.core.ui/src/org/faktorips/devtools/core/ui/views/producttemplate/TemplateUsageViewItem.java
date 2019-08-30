@@ -11,9 +11,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.SortedMap;
-
-import com.google.common.base.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
@@ -51,8 +50,8 @@ public class TemplateUsageViewItem {
         } else if (isDeletedValue()) {
             return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_deletedValueLabel, distribution);
         } else {
-            return NLS
-                    .bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, formattedValue, distribution);
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, formattedValue,
+                    distribution);
         }
     }
 
@@ -93,9 +92,9 @@ public class TemplateUsageViewItem {
 
     public BigDecimal getRelativeDistributionPercent() {
         SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-        Integer definedDist = Optional.fromNullable(definedAbsoluteDistribution.get(value)).or(0);
-        BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100)).divide(
-                new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
+        Integer definedDist = Optional.ofNullable(definedAbsoluteDistribution.get(value)).orElse(0);
+        BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100))
+                .divide(new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
         return distributionPercent;
     }
 

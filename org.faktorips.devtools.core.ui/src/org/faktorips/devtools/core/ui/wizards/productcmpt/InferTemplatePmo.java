@@ -9,13 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.type.CommonTypeFinder;
@@ -66,16 +62,12 @@ public class InferTemplatePmo extends NewProductCmptPMO {
     }
 
     private String getCommonProductCmptNamePrefix() {
-        Collection<String> versionIds = Collections2.transform(productCmptsToInferTemplate,
-                new Function<IProductCmpt, String>() {
+        String[] versionIds = productCmptsToInferTemplate.stream().map(cmpt -> {
+            assert cmpt != null;
+            return cmpt.getKindId().getName();
+        }).toArray(String[]::new);
 
-                    @Override
-                    public String apply(IProductCmpt cmpt) {
-                        assert cmpt != null;
-                        return cmpt.getKindId().getName();
-                    }
-                });
-        return StringUtils.getCommonPrefix(versionIds.toArray(new String[versionIds.size()]));
+        return StringUtils.getCommonPrefix(versionIds);
     }
 
 }

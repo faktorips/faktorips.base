@@ -20,8 +20,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
@@ -160,18 +160,8 @@ public class ProductCmptLinkHistogramsTest {
         final IProductCmptLinkContainer c3 = mockProductCmpt(NO_LINKS);
 
         Collection<IProductCmptLinkContainer> elements = Lists.newArrayList(c1, c2, c3);
-        Function<IProductCmptLinkContainer, Cardinality> elementToValueFunction = new Function<IProductCmptLinkContainer, Cardinality>() {
-
-            @Override
-            public Cardinality apply(IProductCmptLinkContainer c) {
-                if (c == c1 || c == c2) {
-                    return Cardinality.UNDEFINED;
-                }
-
-                return c111;
-
-            }
-        };
+        Function<IProductCmptLinkContainer, Cardinality> elementToValueFunction = c -> (c == c1 || c == c2)
+                ? Cardinality.UNDEFINED : c111;
         LinkContainerHistogram h = new LinkContainerHistogram(elementToValueFunction, elements);
 
         // Undefined cardinality occurs most often

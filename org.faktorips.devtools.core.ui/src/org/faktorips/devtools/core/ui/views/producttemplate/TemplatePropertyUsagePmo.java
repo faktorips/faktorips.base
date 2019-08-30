@@ -9,9 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
-import static com.google.common.base.Predicates.notNull;
-import static com.google.common.collect.Collections2.filter;
-
 import java.beans.PropertyChangeEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,12 +16,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -49,6 +46,12 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     public static final String PROPERTY_INHERITED_VALUES_LABEL_TEXT = "inheritedValuesLabelText"; //$NON-NLS-1$
     public static final String PROPERTY_DEFINED_VALUES_LABEL_TEXT = "definedValuesLabelText"; //$NON-NLS-1$
+
+    /**
+     * Predicate that matches a node that encloses an ITemplatedValueContainer that is a template.
+     */
+    private final Predicate<Node<ITemplatedValueContainer>> isTemplate = node -> node != null
+            && node.getElement().isProductTemplate();
 
     public TemplatePropertyUsagePmo() {
         super();
@@ -89,11 +92,11 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         int inheritedCount = getInheritingTemplatedValues().size();
         String inheritedPercent = getInheritPercent(inheritedCount).stripTrailingZeros().toPlainString();
         if (showValues()) {
-            return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_label, new Object[] { propertyName,
-                    formattedValue, inheritedCount, inheritedPercent });
+            return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_label,
+                    new Object[] { propertyName, formattedValue, inheritedCount, inheritedPercent });
         } else {
-            return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_labelWithoutValue, new Object[] {
-                    propertyName, inheritedCount, inheritedPercent });
+            return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_labelWithoutValue,
+                    new Object[] { propertyName, inheritedCount, inheritedPercent });
         }
     }
 
@@ -120,8 +123,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         if (count == 0) {
             return BigDecimal.ZERO;
         } else {
-            BigDecimal inheritedPercent = new BigDecimal(inheritedCount).multiply(new BigDecimal(100)).divide(
-                    new BigDecimal(count), 1, RoundingMode.HALF_UP);
+            BigDecimal inheritedPercent = new BigDecimal(inheritedCount).multiply(new BigDecimal(100))
+                    .divide(new BigDecimal(count), 1, RoundingMode.HALF_UP);
             return inheritedPercent;
         }
     }
@@ -151,7 +154,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     /** Returns the product components that inherit the value from the template. */
     public Collection<ITemplatedValue> getInheritingTemplatedValues() {
         if (hasData()) {
-            return filter(findTemplatedValuesBasedOnTemplate(), valueStatus(TemplateValueStatus.INHERITED));
+            return findTemplatedValuesBasedOnTemplate().stream().filter(valueStatus(TemplateValueStatus.INHERITED))
+                    .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
@@ -203,8 +207,9 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * {@code TemplateValueStatus.UNDEFINED}, namely product component links that were deleted.
      */
     protected Collection<ITemplatedValue> getDefiningTemplatedValues() {
-        return filter(findTemplatedValuesBasedOnTemplate(),
-                valueStatus(TemplateValueStatus.DEFINED, TemplateValueStatus.UNDEFINED));
+        return findTemplatedValuesBasedOnTemplate().stream()
+                .filter(valueStatus(TemplateValueStatus.DEFINED, TemplateValueStatus.UNDEFINED))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -217,18 +222,20 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * </ul>
      */
     private List<ITemplatedValue> findTemplatedValuesBasedOnTemplate() {
-        Tree<IIpsSrcFile> templateSrcFileHierarchy = getIpsProject().findTemplateHierarchy(
-                getTemplate().getProductCmpt());
+        Tree<IIpsSrcFile> templateSrcFileHierarchy = getIpsProject()
+                .findTemplateHierarchy(getTemplate().getProductCmpt());
         if (templateSrcFileHierarchy.isEmpty()) {
             return Collections.emptyList();
         }
-        Tree<ITemplatedValueContainer> templateHierarchy = templateSrcFileHierarchy.transform(srcFileToContainer());
+        Tree<ITemplatedValueContainer> templateHierarchy = templateSrcFileHierarchy
+                .transform(srcFile -> (ITemplatedValueContainer)nonNull(srcFile).getIpsObject());
         return findTemplatedValuesBasedOnTemplate(templateHierarchy.getRoot());
     }
 
     private List<ITemplatedValue> findTemplatedValuesBasedOnTemplate(Node<ITemplatedValueContainer> node) {
         List<ITemplatedValue> result = Lists.newArrayList();
-        result.addAll(filter(Lists.transform(getContainerNodes(node), nodeToTemplatedValue()), notNull()));
+        result.addAll(getContainerNodes(node).stream().map(n -> findTemplatedValue(nonNull(n).getElement()))
+                .filter(Objects::nonNull).collect(Collectors.toList()));
 
         List<Node<ITemplatedValueContainer>> templateNodes = getTemplateNodes(node);
         for (Node<ITemplatedValueContainer> templateNode : templateNodes) {
@@ -256,47 +263,17 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * "normal" product components or generations).
      */
     private List<Node<ITemplatedValueContainer>> getContainerNodes(Node<ITemplatedValueContainer> node) {
-        return FluentIterable.from(node.getChildren()).filter(Predicates.not(isTemplate())).toList();
+        return node.getChildren().stream().filter(isTemplate.negate()).collect(Collectors.toList());
     }
 
     /** Returns the children of the given node that hold product templates. */
     private List<Node<ITemplatedValueContainer>> getTemplateNodes(Node<ITemplatedValueContainer> node) {
-        return FluentIterable.from(node.getChildren()).filter(isTemplate()).toList();
+        return node.getChildren().stream().filter(isTemplate).collect(Collectors.toList());
     }
 
     /** Returns the identifier for the templated values used in this PMO. */
     private ITemplatedValueIdentifier getIdentifier() {
         return getTemplatedValue().getIdentifier();
-    }
-
-    /** Function to transform an IIpsSrcFile to the ITemplatedValueContainer enclosed in it. */
-    private Function<IIpsSrcFile, ITemplatedValueContainer> srcFileToContainer() {
-        return new Function<IIpsSrcFile, ITemplatedValueContainer>() {
-            @Override
-            public ITemplatedValueContainer apply(IIpsSrcFile srcFile) {
-                // FindBugs does not like Preconditions.checkState...
-                if (srcFile == null) {
-                    throw new IllegalStateException();
-                }
-                return (ITemplatedValueContainer)srcFile.getIpsObject();
-            }
-
-        };
-    }
-
-    /** Function to transform a node to the ITemplatedValue enclosed in it. */
-    private Function<Node<ITemplatedValueContainer>, ITemplatedValue> nodeToTemplatedValue() {
-        return new Function<Node<ITemplatedValueContainer>, ITemplatedValue>() {
-
-            @Override
-            public ITemplatedValue apply(Node<ITemplatedValueContainer> node) {
-                // FindBugs does not like Preconditions.checkState...
-                if (node == null) {
-                    throw new IllegalStateException();
-                }
-                return findTemplatedValue(node.getElement());
-            }
-        };
     }
 
     /** Returns the templated value from the given product component (or its generation). */
@@ -324,24 +301,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      */
     private Predicate<ITemplatedValue> valueStatus(final TemplateValueStatus... t) {
         final Set<TemplateValueStatus> states = Sets.newHashSet(t);
-        return new Predicate<ITemplatedValue>() {
-
-            @Override
-            public boolean apply(ITemplatedValue value) {
-                return value != null && states.contains(value.getTemplateValueStatus());
-            }
-
-        };
-    }
-
-    /** Predicate that matches a node that encloses an ITemplatedValueContainer that is a template. */
-    private Predicate<Node<ITemplatedValueContainer>> isTemplate() {
-        return new Predicate<Node<ITemplatedValueContainer>>() {
-            @Override
-            public boolean apply(Node<ITemplatedValueContainer> node) {
-                return node != null && node.getElement().isProductTemplate();
-            }
-        };
+        return value -> value != null && states.contains(value.getTemplateValueStatus());
     }
 
     /**
@@ -377,6 +337,18 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     protected void partHasChanged() {
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_INHERITED_VALUES_LABEL_TEXT, null, null));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_DEFINED_VALUES_LABEL_TEXT, null, null));
+    }
+
+    /**
+     * Does the same as {@link Objects#requireNonNull(Object)}, but throws an
+     * {@link IllegalStateException} instead of a {@link NullPointerException} to keep the behavior
+     * unchanged.
+     */
+    private static final <T> T nonNull(T t) {
+        if (t == null) {
+            throw new IllegalStateException();
+        }
+        return t;
     }
 
 }

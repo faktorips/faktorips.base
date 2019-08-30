@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -41,9 +41,11 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.util.Histogram;
 import org.faktorips.devtools.core.util.Histogram.BestValue;
-import org.faktorips.util.functional.BiConsumer;
 
 public class InferTemplateProcessor implements IWorkspaceRunnable {
+
+    private static final Function<IProductCmpt, IProductCmptGeneration> LATEST_GENERATION = productCmpt -> productCmpt == null
+            ? null : productCmpt.getLatestProductCmptGeneration();
 
     /**
      * Histograms for property values. The name of the property is the string key for the map of
@@ -75,8 +77,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         this.productCmpts = productCmpts;
         this.propertyValueHistograms = propertyValueHistograms;
         this.productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
-        this.generationLinkHistograms = ProductCmptLinkHistograms.createFor(Lists.transform(productCmpts,
-                latestGeneration()));
+        this.generationLinkHistograms = ProductCmptLinkHistograms
+                .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
     }
 
     public InferTemplateProcessor(IProductCmptGeneration templateGeneration, List<IProductCmpt> productCmpts) {
@@ -84,21 +86,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         this.productCmpts = productCmpts;
         this.propertyValueHistograms = PropertyValueHistograms.createFor(productCmpts);
         this.productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
-        this.generationLinkHistograms = ProductCmptLinkHistograms.createFor(Lists.transform(productCmpts,
-                latestGeneration()));
-    }
-
-    private Function<IProductCmpt, IProductCmptGeneration> latestGeneration() {
-        return new Function<IProductCmpt, IProductCmptGeneration>() {
-
-            @Override
-            public IProductCmptGeneration apply(IProductCmpt p) {
-                if (p == null) {
-                    return null;
-                }
-                return p.getLatestProductCmptGeneration();
-            }
-        };
+        this.generationLinkHistograms = ProductCmptLinkHistograms
+                .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
     }
 
     @Override
@@ -197,8 +186,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
      */
     private <P extends IPropertyValue> BestValue<Object> getBestValueFor(P propertyValue) {
         Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(propertyValue.getIdentifier());
-        BestValue<Object> bestValue = histogram.getBestValue(getIpsProjectProperties()
-                .getInferredTemplatePropertyValueThreshold());
+        BestValue<Object> bestValue = histogram
+                .getBestValue(getIpsProjectProperties().getInferredTemplatePropertyValueThreshold());
         return bestValue;
     }
 
@@ -229,8 +218,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     private void updateLinks(ProductCmptLinkHistograms histograms, IProductCmptLinkContainer templateContainer) {
         for (Entry<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>> e : histograms.getEntries()) {
             Histogram<Cardinality, IProductCmptLinkContainer> histogram = e.getValue();
-            BestValue<Cardinality> bestCardinality = histogram.getBestValue(getIpsProjectProperties()
-                    .getInferredTemplateLinkThreshold());
+            BestValue<Cardinality> bestCardinality = histogram
+                    .getBestValue(getIpsProjectProperties().getInferredTemplateLinkThreshold());
             if (bestCardinality.isPresent()) {
                 addTemplateLink(templateContainer, e.getKey(), bestCardinality.getValue());
                 updateLinkTemplateValueStates(e.getKey(), templateContainer.isChangingOverTimeContainer(),
@@ -275,7 +264,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
             boolean isLinkFromGeneration,
             Cardinality templateCardinality) {
         for (IProductCmpt productCmpt : productCmpts) {
-            IProductCmptLinkContainer container = isLinkFromGeneration ? latestGeneration().apply(productCmpt)
+            IProductCmptLinkContainer container = isLinkFromGeneration ? LATEST_GENERATION.apply(productCmpt)
                     : productCmpt;
             IProductCmptLink link = linkIdentifier.getValueFrom(container);
             if (link == null) {

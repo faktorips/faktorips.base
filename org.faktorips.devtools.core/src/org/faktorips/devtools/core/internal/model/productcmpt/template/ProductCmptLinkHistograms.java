@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -66,15 +66,12 @@ public class ProductCmptLinkHistograms {
      * A function to obtain a link's cardinality.
      */
     private Function<IProductCmptLinkContainer, Cardinality> getCardinality(final LinkIdentifier linkIdentifier) {
-        return new Function<IProductCmptLinkContainer, Cardinality>() {
-            @Override
-            public Cardinality apply(IProductCmptLinkContainer linkContainer) {
-                if (linkContainer == null) {
-                    return null;
-                } else {
-                    IProductCmptLink link = linkIdentifier.getValueFrom(linkContainer);
-                    return link == null ? Cardinality.UNDEFINED : link.getCardinality();
-                }
+        return linkContainer -> {
+            if (linkContainer == null) {
+                return null;
+            } else {
+                IProductCmptLink link = linkIdentifier.getValueFrom(linkContainer);
+                return link == null ? Cardinality.UNDEFINED : link.getCardinality();
             }
         };
     }

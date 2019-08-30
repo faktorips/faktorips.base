@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
@@ -34,8 +35,8 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     private final AbstractValueHolder<T> delegate;
 
     public DelegatingValueHolder(IAttributeValue parent, AbstractValueHolder<T> delegate) {
-        this.parent = Preconditions.checkNotNull(parent);
-        this.delegate = Preconditions.checkNotNull(delegate);
+        this.parent = Objects.requireNonNull(parent);
+        this.delegate = Objects.requireNonNull(delegate);
     }
 
     @Override
@@ -210,6 +211,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     public static <U> DelegatingValueHolder<U> of(IAttributeValue parent, IValueHolder<U> delegate) {
         Preconditions.checkArgument(delegate instanceof AbstractValueHolder,
                 "Can only delegate to AbstractValueHolder"); //$NON-NLS-1$
+
         return new DelegatingValueHolder<U>(parent, (AbstractValueHolder<U>)delegate);
     }
 

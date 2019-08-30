@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -58,9 +59,6 @@ import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
-import org.faktorips.util.functional.BooleanSupplier;
-import org.faktorips.util.functional.Function;
-import org.faktorips.util.functional.Supplier;
 
 /**
  * Page to display a generation's properties or product component properties in case that product
@@ -280,13 +278,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         if (getProductCmpt().allowGenerations()) {
             createGotoPreviousNextGenerationAction(toolbarManager);
         }
-        BooleanSupplier isUsingTemplate = new BooleanSupplier() {
-
-            @Override
-            public boolean getAsBoolean() {
-                return getProductCmpt().isUsingTemplate();
-            }
-        };
+        BooleanSupplier isUsingTemplate = () -> getProductCmpt().isUsingTemplate();
         createOpenTemplateAction(toolbarManager, isUsingTemplate);
         createFilterInheritedValuesAction(toolbarManager, isUsingTemplate);
         createOpenModelDescriptionAction(toolbarManager);
@@ -319,20 +311,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private void createOpenTemplateAction(IToolBarManager toolbarManager, BooleanSupplier isUsingTemplate) {
-        SimpleOpenIpsObjectPartAction<IProductCmpt> openTemplateAction = new SimpleOpenIpsObjectPartAction<IProductCmpt>(
-                new Supplier<IProductCmpt>() {
-
-                    @Override
-                    public IProductCmpt get() {
-                        return getProductCmpt().findTemplate(getProductCmpt().getIpsProject());
-                    }
-                }, new Function<IProductCmpt, String>() {
-
-                    @Override
-                    public String apply(IProductCmpt template) {
-                        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, template.getName());
-                    }
-                });
+        SimpleOpenIpsObjectPartAction<IProductCmpt> openTemplateAction = new SimpleOpenIpsObjectPartAction<>(
+                () -> getProductCmpt().findTemplate(getProductCmpt().getIpsProject()),
+                template -> NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, template.getName()));
         openTemplateActionItem = new DynamicallyVisibleActionContributionItem(openTemplateAction, isUsingTemplate);
         toolbarManager.add(openTemplateActionItem);
     }

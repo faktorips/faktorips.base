@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.faktorips.devtools.core.util.Histogram.BestValue;
@@ -42,12 +42,7 @@ public class HistogramTest {
         }
     }
 
-    private static final Function<Element, String> VALUE_FUNCTION = new Function<Element, String>() {
-        @Override
-        public String apply(Element s) {
-            return s.value;
-        }
-    };
+    private static final Function<Element, String> VALUE_FUNCTION = element -> element.value;
 
     private static final List<Element> EMPTY = Collections.emptyList();
 

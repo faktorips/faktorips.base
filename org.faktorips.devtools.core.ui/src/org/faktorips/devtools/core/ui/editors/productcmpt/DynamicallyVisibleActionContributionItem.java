@@ -9,9 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.function.BooleanSupplier;
+
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
-import org.faktorips.util.functional.BooleanSupplier;
 
 /**
  * An {@link ActionContributionItem} that can switch it's {@link #isVisible() visibility}.
