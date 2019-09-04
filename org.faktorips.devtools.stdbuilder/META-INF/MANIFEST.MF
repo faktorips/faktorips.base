@@ -38,10 +38,13 @@ Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.xtend.productcmpt,
  org.faktorips.devtools.stdbuilder.xtend.template
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
- org.apache.commons.lang;version="[2.6,2.6]",
- org.eclipse.jdt.core.refactoring,
- org.eclipse.jdt.internal.ui.preferences,
+Import-Package: com.google.common.base;version="18.0.0",
+ com.google.common.cache;version="18.0.0",
+ com.google.common.collect;version="18.0.0",
+ edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
  javax.xml.bind,
  javax.xml.bind.annotation,
- javax.xml.bind.annotation.adapters
+ javax.xml.bind.annotation.adapters,
+ org.apache.commons.lang;version="[2.6,2.6]",
+ org.eclipse.jdt.core.refactoring,
+ org.eclipse.jdt.internal.ui.preferences

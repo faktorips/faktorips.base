@@ -134,7 +134,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Map of options set by default from <code>JavaCore.getOptions()</code>
      */
-    protected Map<?, ?> javaCoreOptions = null;
+    protected Map<String, String> javaCoreOptions = null;
 
     /**
      * Map of nodes to node contents. Used for caching only.
@@ -219,19 +219,20 @@ public class ASTFacadeHelper extends FacadeHelper {
             return Diagnostic.OK_INSTANCE;
         } else {
             BasicDiagnostic diagnostic = new BasicDiagnostic(CodeGenPlugin.ID, 0,
-                    CodeGenPlugin.INSTANCE.getString("_UI_ParsingProblem_message"), contents == null ? null
-                            : new Object[] { new StringBuilder(contents) });
+                    CodeGenPlugin.INSTANCE.getString("_UI_ParsingProblem_message"),
+                    contents == null ? null : new Object[] { new StringBuilder(contents) });
 
             for (IProblem problem : compilationUnit.getProblems()) {
-                String message = problem.getMessage() != null ? CodeGenPlugin.INSTANCE.getString(
-                        "_UI_LineNumberAndText_message",
-                        new Object[] { problem.getSourceLineNumber(), problem.getMessage() }) : CodeGenPlugin.INSTANCE
-                        .getString("_UI_LineNumber_message", new Object[] { problem.getSourceLineNumber() });
+                String message = problem.getMessage() != null
+                        ? CodeGenPlugin.INSTANCE.getString("_UI_LineNumberAndText_message",
+                                new Object[] { problem.getSourceLineNumber(), problem.getMessage() })
+                        : CodeGenPlugin.INSTANCE.getString("_UI_LineNumber_message",
+                                new Object[] { problem.getSourceLineNumber() });
 
-                BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
-                        : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
-                        contents == null ? new Object[] { problem } : new Object[] { problem,
-                                new StringBuilder(contents) });
+                BasicDiagnostic childDiagnostic = new BasicDiagnostic(
+                        problem.isWarning() ? Diagnostic.WARNING : Diagnostic.ERROR, CodeGenPlugin.ID, 0,
+                        message.toString(), contents == null ? new Object[] { problem }
+                                : new Object[] { problem, new StringBuilder(contents) });
                 diagnostic.add(childDiagnostic);
             }
 
@@ -248,7 +249,7 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @return map of options
      * @see #getDefaultJavaCoreOptions()
      */
-    public Map<?, ?> getJavaCoreOptions() {
+    public Map<String, String> getJavaCoreOptions() {
         if (javaCoreOptions == null) {
             javaCoreOptions = getDefaultJavaCoreOptions();
         }
@@ -265,9 +266,10 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @see JavaCore#getOptions()
      * @see JControlModel#getLeadingTabReplacement()
      */
+    // unchecked for Luna, warning unnecessary for newer targets
     @SuppressWarnings("unchecked")
-    private Map<?, ?> getDefaultJavaCoreOptions() {
-        Map<Object, String> javaCoreOptions = JavaCore.getOptions();
+    private Map<String, String> getDefaultJavaCoreOptions() {
+        Map<String, String> javaCoreOptions = JavaCore.getOptions();
 
         // Set of options that we want to copy from the current definition or use defaults
         //
@@ -336,7 +338,7 @@ public class ASTFacadeHelper extends FacadeHelper {
         return javaCoreOptions;
     }
 
-    protected void useCurrentOption(Map<Object, String> options, String option) {
+    protected void useCurrentOption(Map<String, String> options, String option) {
         useCurrentOption(options, option, null);
     }
 
@@ -346,7 +348,7 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @param option
      * @param defaultValue
      */
-    protected void useCurrentOption(Map<Object, String> options, String option, String defaultValue) {
+    protected void useCurrentOption(Map<String, String> options, String option, String defaultValue) {
         String value = JavaCore.getOption(option);
         if (value != null) {
             options.put(option, value);
@@ -488,8 +490,8 @@ public class ASTFacadeHelper extends FacadeHelper {
         // create new field and replace it all by original contents
         {
             String contents = applyFormatRules(originalField.getContents());
-            FieldDeclaration fieldDeclaration = (FieldDeclaration)contextNode.getRewriter().createStringPlaceholder(
-                    contents, ASTNode.FIELD_DECLARATION);
+            FieldDeclaration fieldDeclaration = (FieldDeclaration)contextNode.getRewriter()
+                    .createStringPlaceholder(contents, ASTNode.FIELD_DECLARATION);
             newField = (ASTJField)convertToNode(fieldDeclaration.fragments().get(0));
             newField.trackAndReplace(fieldDeclaration, contents);
         }

@@ -30,7 +30,8 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
  * 
  * @author Peter Erzberger
  */
-public class TestConfigurationElement implements IConfigurationElement {
+public class TestConfigurationElement
+        implements IConfigurationElement, IConfigurationElementCompatibilityToNewerEclipseVersions {
 
     public static final IContributor CONTRIBUTOR = mock(IContributor.class);
 
@@ -147,6 +148,11 @@ public class TestConfigurationElement implements IConfigurationElement {
     @Override
     public String getValue(String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public int getHandleId() {
+        return 0;
     }
 
 }

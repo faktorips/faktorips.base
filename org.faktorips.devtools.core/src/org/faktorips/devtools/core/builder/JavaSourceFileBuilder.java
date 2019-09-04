@@ -971,8 +971,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         // CSON: IllegalCatch
     }
 
+    // unchecked for Luna, warning unnecessary for newer targets
     @SuppressWarnings("unchecked")
-    private void configureDefaults(Map<?, ?> javaCoreOptions, IIpsProject project) {
+    private void configureDefaults(Map<String, String> javaCoreOptions, IIpsProject project) {
         IJavaProject javaProject = project.getJavaProject();
         javaCoreOptions.putAll(javaProject.getOptions(true));
     }
