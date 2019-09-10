@@ -103,6 +103,24 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testNodeToString_PreserveSpace() throws TransformerException {
+        Document doc = newDocument();
+        doc.setXmlStandalone(true);
+
+        Element root = doc.createElement("root");
+        root.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
+        Element element = doc.createElement("el");
+        root.appendChild(element);
+        doc.appendChild(root);
+
+        String string = XmlUtil.nodeToString(root, "UTF-8");
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SystemUtils.LINE_SEPARATOR
+                + "<root xml:space=\"preserve\">" + SystemUtils.LINE_SEPARATOR + " <el/>" + SystemUtils.LINE_SEPARATOR
+                + "</root>" + SystemUtils.LINE_SEPARATOR;
+        assertEquals(expected, string);
+    }
+
+    @Test
     public void testGetFirstElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$

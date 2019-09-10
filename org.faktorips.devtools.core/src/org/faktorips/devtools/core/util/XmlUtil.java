@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -168,11 +169,58 @@ public class XmlUtil {
      * Transforms the given node to a String.
      */
     public static final String nodeToString(Node node, String encoding) throws TransformerException {
+        boolean preserveSpace = removePreserveSpace(node);
+
         StringWriter writer = new StringWriter();
         nodeToWriter(node, writer, encoding);
-        return writer.toString().replace("\r\r", "\r"); // workaround for //$NON-NLS-1$//$NON-NLS-2$
-                                                        // Windows bug producing \r\r\n in CDATA
-                                                        // sections
+        String xml = writer.toString();
+
+        if (preserveSpace) {
+            xml = addPreserveSpace(xml);
+        }
+        xml = noIndentationAroundCDATA(xml);
+        return removeDuplicateWindowsLineBreaks(xml);
+    }
+
+    /**
+     * Java 9+ respects {@code xml:space="preserve"} even when writing and ignores indentation
+     * settings. We remove the attribute before the transformation and add it to the String
+     * afterwards to prevent other tools from formatting the XML.
+     * 
+     * @return whether {@code xml:space="preserve"} was found on the node
+     */
+    private static boolean removePreserveSpace(Node node) {
+        NamedNodeMap attributes = node.getAttributes();
+        if (attributes != null && attributes.getNamedItem(XML_ATTRIBUTE_SPACE) != null) {
+            attributes.removeNamedItem(XML_ATTRIBUTE_SPACE);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @see XmlUtil#removePreserveSpace(Node)
+     */
+    private static String addPreserveSpace(String xml) {
+        return xml.replaceFirst("(?<=[^?!/])>", //$NON-NLS-1$
+                " " + XML_ATTRIBUTE_SPACE + "=\"" + XML_ATTRIBUTE_SPACE_VALUE + "\">"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
+     * Java 9+ adds indentation around CDATA. We remove it to avoid changes in XML files created
+     * with Java <=8.
+     */
+    private static String noIndentationAroundCDATA(String xml) {
+        return xml.replaceAll(">[\\n\\r\\s]+<!\\[CDATA", "><![CDATA") //$NON-NLS-1$//$NON-NLS-2$
+                .replaceAll("]]>[\\n\\r\\s]+</", "]]></"); //$NON-NLS-1$//$NON-NLS-2$
+    }
+
+    /**
+     * Workaround for Windows bug producing \r\r\n in CDATA sections.
+     */
+    private static String removeDuplicateWindowsLineBreaks(String xml) {
+        return xml.replace("\r\r", "\r"); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**
@@ -257,9 +305,8 @@ public class XmlUtil {
      */
     private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
-        Transformer transformer = getTransformer();
         Source src = new DOMSource(doc);
-        transformer = TransformerFactory.newInstance().newTransformer();
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
         // workaround to avoid linebreak after xml declaration
         transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ""); //$NON-NLS-1$
@@ -272,7 +319,7 @@ public class XmlUtil {
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
         if (indentWidth > 0) {
             // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$ //$NON-NLS-2$
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(indentWidth)); //$NON-NLS-1$
         }
         transformer.transform(src, res);
     }
