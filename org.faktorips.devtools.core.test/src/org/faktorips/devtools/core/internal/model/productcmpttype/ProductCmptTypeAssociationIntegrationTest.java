@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -677,6 +679,48 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         association = productType.newProductCmptTypeAssociation();
 
         assertTrue(association.isChangingOverTime());
+    }
+
+    @Test
+    public void testFIPS6441() throws CoreException {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "PolicyType");
+        IProductCmptType policyType = policy.findProductCmptType(ipsProject);
+
+        PolicyCmptType contract = newPolicyAndProductCmptType(ipsProject, "Contract", "ContractType");
+        IProductCmptType contractType = contract.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation assoc1 = (IPolicyCmptTypeAssociation)policy.newAssociation();
+        assoc1.setTargetRoleSingular("assoc1");
+        assoc1.setTargetRolePlural("assoc1s");
+        assoc1.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assoc1.setTarget(contract.getQualifiedName());
+
+        IPolicyCmptTypeAssociation assoc2 = (IPolicyCmptTypeAssociation)contract.newAssociation();
+        assoc2.setTargetRoleSingular("assoc2");
+        assoc2.setTargetRolePlural("assoc2s");
+        assoc2.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assoc2.setTarget(policy.getQualifiedName());
+
+        assoc1.setInverseAssociation(assoc2.getName());
+        assoc2.setInverseAssociation(assoc1.getName());
+
+        IAssociation assoc3 = contractType.newAssociation();
+        assoc3.setTargetRoleSingular("assoc3");
+        assoc3.setTargetRolePlural("assoc3s");
+        assoc3.setAssociationType(AssociationType.AGGREGATION);
+        assoc3.setTarget(policyType.getQualifiedName());
+
+        IAssociation assoc4 = contract.newAssociation();
+        assoc4.setTargetRoleSingular("assoc4");
+        assoc4.setTargetRolePlural("assoc4s");
+        assoc4.setAssociationType(AssociationType.ASSOCIATION);
+        assoc4.setTarget(policy.getQualifiedName());
+
+        for (IAssociation association : Arrays.asList(assoc1, assoc2, assoc3, assoc4)) {
+            // No NullPointerException should be thrown
+            MessageList messages = association.validate(association.getIpsProject());
+            assertNotNull(messages);
+        }
     }
 
 }

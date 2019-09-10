@@ -384,9 +384,14 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      */
     private boolean isRematchingAssociation(IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation,
             IIpsProject ipsProject) {
-        String rematchingAssociationName = matchingPolicyCmptTypeAssociation
-                .findMatchingProductCmptTypeAssociation(ipsProject).getName();
-        return getName().equals(rematchingAssociationName);
+        IProductCmptTypeAssociation rematchingAssociation = matchingPolicyCmptTypeAssociation
+                .findMatchingProductCmptTypeAssociation(ipsProject);
+
+        if (rematchingAssociation != null) {
+            return getName().equals(rematchingAssociation.getName());
+        } else {
+            return false;
+        }
     }
 
     private boolean isMatchingAssociationSourceAndNameNotEmpty() {
