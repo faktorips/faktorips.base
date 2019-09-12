@@ -185,7 +185,7 @@ public class ImportDeclaration {
      * specification.
      */
     private boolean classImportCoveredByPackageImport(String classImport, String packageImport) {
-        return packageImport.equals(StringUtil.getPackageName(classImport) + ".*"); //$NON-NLS-1$
+        return (StringUtil.getPackageName(classImport) + ".*").equals(packageImport); //$NON-NLS-1$
     }
 
     /**

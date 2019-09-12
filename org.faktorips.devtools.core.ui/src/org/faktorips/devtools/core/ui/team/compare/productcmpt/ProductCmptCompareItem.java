@@ -413,8 +413,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_type)
                 .append(COLON_BLANK);
         sb.append(QUOTE).append(product.getProductCmptType()).append(QUOTE).append(NEWLINE);
-        sb.append(TAB)
-                .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
+        sb.append(TAB).append(
+                org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
                 .append(COLON_BLANK);
         sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);
     }
@@ -581,6 +581,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             return link1.getAssociation().equals(link2.getAssociation()) && link1.getTarget().equals(link2.getTarget());
         }
         return super.isEqualIpsObjectPart(part1, part2);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // the super-implementation is good enough but Checkstyle complains when only hashCode is
+        // overwritten
+        return super.equals(obj);
     }
 
     @Override

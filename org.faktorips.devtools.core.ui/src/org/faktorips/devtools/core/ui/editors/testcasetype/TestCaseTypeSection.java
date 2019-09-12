@@ -2367,3 +2367,5 @@ public class TestCaseTypeSection extends IpsSection {
         refreshTreeAndDetails(getRootSectionObject(currSelectedDetailObject));
     }
 }
+// CSON: InnerTypeLastCheck
+// CSON: FileLengthCheck

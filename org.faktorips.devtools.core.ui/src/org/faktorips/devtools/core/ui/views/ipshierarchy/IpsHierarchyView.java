@@ -164,9 +164,8 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     private void initToolBar(IToolBarManager toolBarManager) {
 
         // refresh action
-        refreshAction = new Action(Messages.IpsHierarchy_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Refresh.gif")) //$NON-NLS-1$
-        {
+        refreshAction = new Action(Messages.IpsHierarchy_tooltipRefreshContents,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 showHierarchy(((ITypeHierarchy)treeViewer.getInput()).getType());
