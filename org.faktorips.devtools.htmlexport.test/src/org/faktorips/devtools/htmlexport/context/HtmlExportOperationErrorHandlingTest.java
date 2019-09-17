@@ -14,7 +14,9 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -53,8 +55,8 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
                 }
 
                 IpsSrcFile ipsSrcFile = new MockIpsSrcFile(
-                        ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment(), "MichGibtEsNicht."
-                                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+                        ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment(),
+                        "MichGibtEsNicht." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
 
                 documentedSourceFiles.add(ipsSrcFile);
 
@@ -74,11 +76,15 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
 
         context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        try {
-            operation.run(new NullProgressMonitor());
-            fail("sollte CoreRuntimeException werfen");
-        } catch (CoreRuntimeException e) {
-            // nix zu tun
-        }
+        Display.getDefault().syncExec(() -> {
+            try {
+                operation.run(new NullProgressMonitor());
+                fail("sollte CoreRuntimeException werfen");
+            } catch (CoreRuntimeException e1) {
+                // nix zu tun
+            } catch (CoreException e2) {
+                fail(e2.getMessage());
+            }
+        });
     }
 }
