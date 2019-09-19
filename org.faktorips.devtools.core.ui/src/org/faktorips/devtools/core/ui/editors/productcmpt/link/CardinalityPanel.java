@@ -231,7 +231,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     }
 
     private boolean calculateTemplateStatusVisibility() {
-        if (pmo.isEmpty()) {
+        if (pmo.isEmpty() || null == pmo.getTemplateLinkPmo()
+                || null == pmo.getTemplateLinkPmo().getTemplatedProperty()) {
             return false;
         } else {
             IProductCmptLink link = pmo.getTemplateLinkPmo().getTemplatedProperty();

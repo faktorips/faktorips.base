@@ -2160,6 +2160,9 @@
                     </adapt>
                   </or>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </activeWhen>
       </handler>
@@ -2177,6 +2180,9 @@
                         type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
                   </adapt>
                </iterate>
+               <count
+                     value="1">
+               </count>
             </with>
          </activeWhen>
       </handler>
