@@ -717,7 +717,9 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         assoc4.setTarget(policy.getQualifiedName());
 
         for (IAssociation association : Arrays.asList(assoc1, assoc2, assoc3, assoc4)) {
-            association.validate(association.getIpsProject());
+            // No NullPointerException should be thrown
+            MessageList messages = association.validate(association.getIpsProject());
+            assertNotNull(messages);
         }
     }
 
