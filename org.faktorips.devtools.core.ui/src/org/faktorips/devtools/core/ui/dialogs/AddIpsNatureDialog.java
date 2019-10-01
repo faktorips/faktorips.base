@@ -21,8 +21,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -288,25 +286,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         dlgTitleImage = imageHandling.getImage(imageHandling.createImageDescriptor("wizards/AddIpsNatureWizard.png")); //$NON-NLS-1$
         setTitleImage(dlgTitleImage);
         setMessage(Messages.AddIpsNatureDialog_dialogMessage);
-        parent.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                dlgTitleImage.dispose();
-            }
-        });
         return contents;
-    }
-
-    /**
-     * This implementation of this <code>Window</code> method disposes of the banner image when the
-     * dialog is closed.
-     */
-    @Override
-    public boolean close() {
-        if (dlgTitleImage != null) {
-            dlgTitleImage.dispose();
-        }
-        return super.close();
     }
 
     public String getSourceFolderName() {
