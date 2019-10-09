@@ -12,6 +12,8 @@ package org.faktorips.datatype;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
 
 import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.StringUtil;
@@ -73,8 +75,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         MessageList list = new MessageList();
         if (getAdaptedClass() == null) {
             String text = "The Java class represented by the datatype can't be found. (Classname: " //$NON-NLS-1$
-                    + getAdaptedClassName()
-                    + "). " //$NON-NLS-1$
+                    + getAdaptedClassName() + "). " //$NON-NLS-1$
                     + "Either the class is not on the classpath or the resource it is stored in is out of sync. See error log for more details."; //$NON-NLS-1$
             list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
             return list;
@@ -90,6 +91,12 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
             return list;
         }
+        if (valueOfMethod != null && !getAdaptedClass().isAssignableFrom(valueOfMethod.getReturnType())) {
+            String text = "The method " + valueOfMethod + " does not return a " //$NON-NLS-1$ //$NON-NLS-2$
+                    + getAdaptedClass().getSimpleName();
+            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
+            return list;
+        }
         checkNullObjectDefined(list);
         return list;
     }
@@ -102,6 +109,11 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             } catch (RuntimeException e) {
                 // CSON: Illegal Catch
                 String text = "The Java class hasn't got a method " + getIsParsableMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
+                list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
+            }
+            if (isParsableMethod != null && !(Boolean.class.isAssignableFrom(isParsableMethod.getReturnType())
+                    || Boolean.TYPE.isAssignableFrom(isParsableMethod.getReturnType()))) {
+                String text = "The method " + isParsableMethod + " does not return a boolean value type"; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
             }
         }
@@ -238,18 +250,12 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     protected Method getIsParsableMethod() {
-        if (isParsableMethod == null && isParsableMethodName != null) {
-            try {
-                isParsableMethod = getAdaptedClass().getMethod(isParsableMethodName, new Class[] { String.class });
-                if (isParsableMethod == null) {
-                    throw new NullPointerException();
-                }
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() //$NON-NLS-1$
-                        + ", Methodname: " + isParsableMethodName, e); //$NON-NLS-1$
-            }
+        if (isParsableMethodName != null && isParsableMethod == null) {
+            // @formatter:off
+            isParsableMethod = findMethodWithCharSequenceSubclassParameter(isParsableMethodName)
+                    .orElseThrow(() -> new RuntimeException("Can't get isParsable-method, Class: " + getAdaptedClass() //$NON-NLS-1$
+                            + ", Methodname: " + isParsableMethodName)); //$NON-NLS-1$
+            // @formatter:on
         }
         return isParsableMethod;
     }
@@ -270,19 +276,19 @@ public abstract class GenericValueDatatype implements ValueDatatype {
 
     protected Method getValueOfMethod() {
         if (valueOfMethodName != null && valueOfMethod == null) {
-            try {
-                valueOfMethod = getAdaptedClass().getMethod(valueOfMethodName, new Class[] { String.class });
-                if (valueOfMethod == null) {
-                    throw new NullPointerException();
-                }
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Can't get valueOfMethod(String), Class: " + getAdaptedClass() //$NON-NLS-1$
-                        + ", Methodname: " + valueOfMethodName); //$NON-NLS-1$
-            }
+            // @formatter:off
+            valueOfMethod = findMethodWithCharSequenceSubclassParameter(valueOfMethodName)
+                    .orElseThrow(() -> new RuntimeException("Can't get valueOf-method, Class: " + getAdaptedClass() //$NON-NLS-1$
+                            + ", Methodname: " + valueOfMethodName)); //$NON-NLS-1$
+            // @formatter:on
         }
         return valueOfMethod;
+    }
+
+    private Optional<Method> findMethodWithCharSequenceSubclassParameter(String methodname) {
+        return Arrays.stream(getAdaptedClass().getMethods()).filter(m -> methodname.equals(m.getName()))
+                .filter(m -> m.getParameterCount() == 1)
+                .filter(m -> CharSequence.class.isAssignableFrom(m.getParameterTypes()[0])).findFirst();
     }
 
     public String valueToString(Object value) {

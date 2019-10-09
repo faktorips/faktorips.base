@@ -10,6 +10,8 @@
 
 package org.faktorips.datatype;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,7 +93,61 @@ public class GenericValueDatatypeTest {
     @Test
     public void testGetIsParsableMethod() {
         assertNotNull(datatype.getIsParsableMethod());
+    }
+
+    @Test
+    public void testGetIsParsableMethod_UnknownMethod() {
         datatype.setIsParsableMethodName("unknownMethod"); //$NON-NLS-1$
+        try {
+            datatype.getIsParsableMethod();
+            fail();
+        } catch (RuntimeException e) {
+            // Expected exception
+        }
+    }
+
+    @Test
+    public void testGetIsParsableMethod_CharSequence() {
+        class ParsableCharSequenceDatatype {
+
+            @SuppressWarnings("unused")
+            public boolean isFoo(CharSequence chars) {
+                return true;
+            }
+        }
+        datatype = new DefaultGenericValueDatatype(ParsableCharSequenceDatatype.class);
+
+        datatype.setIsParsableMethodName("isFoo"); //$NON-NLS-1$
+        assertNotNull(datatype.getIsParsableMethod());
+    }
+
+    @Test
+    public void testGetIsParsableMethod_String() {
+        class ParsableStringDatatype {
+
+            @SuppressWarnings("unused")
+            public boolean isFoo(String string) {
+                return true;
+            }
+        }
+        datatype = new DefaultGenericValueDatatype(ParsableStringDatatype.class);
+
+        datatype.setIsParsableMethodName("isFoo"); //$NON-NLS-1$
+        assertNotNull(datatype.getIsParsableMethod());
+    }
+
+    @Test
+    public void testGetIsParsableMethod_NotStringOrCharSequence() {
+        class NotParsableDatatype {
+
+            @SuppressWarnings("unused")
+            public boolean isFoo(int i) {
+                return true;
+            }
+        }
+        datatype = new DefaultGenericValueDatatype(NotParsableDatatype.class);
+        datatype.setIsParsableMethodName("isFoo"); //$NON-NLS-1$
+
         try {
             datatype.getIsParsableMethod();
             fail();
@@ -114,13 +171,76 @@ public class GenericValueDatatypeTest {
     public void testGetValueOfMethod() {
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertNotNull(datatype.getValueOfMethod());
+    }
+
+    @Test
+    public void testGetValueOfMethod_UnknownMethod() {
         datatype.setValueOfMethodName("unknownMethod"); //$NON-NLS-1$
         try {
             datatype.getValueOfMethod();
-            fail();
+            fail("Should throw an exception because there is no method called \"unknownMethod\"");
         } catch (RuntimeException e) {
             // Expected exception
         }
+    }
+
+    @Test
+    public void testGetValueOfMethod_CharSequence() {
+        class ValueOfCharSequenceDatatype {
+
+            @SuppressWarnings("unused")
+            public ValueOfCharSequenceDatatype foo(CharSequence chars) {
+                return new ValueOfCharSequenceDatatype();
+            }
+        }
+        datatype = new DefaultGenericValueDatatype(ValueOfCharSequenceDatatype.class);
+
+        datatype.setValueOfMethodName("foo"); //$NON-NLS-1$
+        assertNotNull(datatype.getValueOfMethod());
+    }
+
+    @Test
+    public void testCheckReadyToUse_WrongReturnType() {
+        class IllegalDatatype {
+
+            @SuppressWarnings("unused")
+            public Integer valueOf(CharSequence chars) {
+                return -1;
+            }
+
+            @SuppressWarnings("unused")
+            public boolean isParsable(CharSequence chars) {
+                return true;
+            }
+        }
+        datatype = new DefaultGenericValueDatatype(IllegalDatatype.class);
+
+        MessageList readyToUse = datatype.checkReadyToUse();
+        assertThat(readyToUse.containsErrorMsg(), is(true));
+        assertThat(readyToUse.getFirstMessage(Message.ERROR).getCode(),
+                is(GenericValueDatatype.MSGCODE_GETVALUE_METHOD_NOT_FOUND));
+    }
+
+    @Test
+    public void testCheckReadyToUse_IsParsableMethodDoesNotReturnBoolean() {
+        class IllegalDatatype {
+
+            @SuppressWarnings("unused")
+            public IllegalDatatype valueOf(CharSequence chars) {
+                return new IllegalDatatype();
+            }
+
+            @SuppressWarnings("unused")
+            public String isParsable(CharSequence chars) {
+                return "true";
+            }
+        }
+        datatype = new DefaultGenericValueDatatype(IllegalDatatype.class);
+
+        MessageList readyToUse = datatype.checkReadyToUse();
+        assertThat(readyToUse.containsErrorMsg(), is(true));
+        assertThat(readyToUse.getFirstMessage(Message.ERROR).getCode(),
+                is(GenericValueDatatype.MSGCODE_ISPARSABLE_METHOD_NOT_FOUND));
     }
 
     @Test
