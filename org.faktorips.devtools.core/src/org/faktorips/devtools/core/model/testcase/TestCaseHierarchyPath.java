@@ -73,7 +73,7 @@ public class TestCaseHierarchyPath {
                 break;
             }
             // Check for same parameter and increment offset if necessary.
-            if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpc)) {
+            if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpc.getTestPolicyCmptTypeParameter())) {
                 offset++;
             }
         }

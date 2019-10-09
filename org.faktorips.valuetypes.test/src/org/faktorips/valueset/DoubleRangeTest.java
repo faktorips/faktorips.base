@@ -63,6 +63,7 @@ public class DoubleRangeTest {
         assertTrue(range.contains(null));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testGetValues() {
         DoubleRange range = DoubleRange.valueOf(0.0, 100.0, 20.0, false);

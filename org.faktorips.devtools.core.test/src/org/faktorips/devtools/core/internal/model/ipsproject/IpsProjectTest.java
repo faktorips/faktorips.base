@@ -580,8 +580,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testFindDatatype() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
-                Datatype.PRIMITIVE_INT.getQualifiedName() });
+        props.setPredefinedDatatypesUsed(
+                new String[] { Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName() });
         JavaClass2DatatypeAdaptor messageListDatatype = new JavaClass2DatatypeAdaptor("MessageList", "org.MessageList");
         props.addDefinedDatatype(messageListDatatype);
         ipsProject.setProperties(props);
@@ -650,8 +650,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findValueDatatype(null));
 
         IIpsProjectProperties props = ipsProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
-                Datatype.PRIMITIVE_INT.getQualifiedName() });
+        props.setPredefinedDatatypesUsed(
+                new String[] { Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName() });
         ipsProject.setProperties(props);
 
         assertEquals(Datatype.DECIMAL, ipsProject.findValueDatatype("Decimal"));
@@ -896,7 +896,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumType testEnumType = newEnumType(ipsProject, "TestEnumType");
         testEnumType.setAbstract(true);
         Datatype[] types = ipsProject.findDatatypes(false, false, false, null, false);
-        assertFalse(Arrays.asList(types).contains(testEnumType));
+        assertFalse(Arrays.asList(types).contains(new EnumTypeDatatypeAdapter(testEnumType, null)));
 
         testEnumType.setAbstract(false);
         types = ipsProject.findDatatypes(false, false, false, null, true);
@@ -1104,8 +1104,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public IProductCmptType createProductCmptType(IIpsPackageFragment packageFragment,
             IPolicyCmptType policyCmptType,
             String name) throws CoreException {
-        IProductCmptType productCmptType = (IProductCmptType)packageFragment.createIpsFile(
-                IpsObjectType.PRODUCT_CMPT_TYPE, name, true, null).getIpsObject();
+        IProductCmptType productCmptType = (IProductCmptType)packageFragment
+                .createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, name, true, null).getIpsObject();
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         return productCmptType;
@@ -1115,16 +1115,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindAllProductCmptSrcFiles() throws CoreException {
         // create the following types: Type0, Type1 and Type2
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
-        IPolicyCmptType policyCmptType0 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0",
-                true, null).getIpsObject();
+        IPolicyCmptType policyCmptType0 = (IPolicyCmptType)pack
+                .createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null).getIpsObject();
         policyCmptType0.setConfigurableByProductCmptType(true);
         createProductCmptType(pack, policyCmptType0, "ProductCmptType0");
 
         pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
-        IPolicyCmptType policyCmptType2 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2",
-                true, null).getIpsObject();
-        IProductCmptType productCmptType2 = (IProductCmptType)pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE,
-                "ProductCmptType2", true, null).getIpsObject();
+        IPolicyCmptType policyCmptType2 = (IPolicyCmptType)pack
+                .createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null).getIpsObject();
+        IProductCmptType productCmptType2 = (IProductCmptType)pack
+                .createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, "ProductCmptType2", true, null).getIpsObject();
         productCmptType2.setPolicyCmptType(policyCmptType2.getQualifiedName());
         policyCmptType2.setProductCmptType(productCmptType2.getQualifiedName());
 
@@ -1163,8 +1163,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject2 = newIpsProject("Project2");
 
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
-        IPolicyCmptType policyCmptType10 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE,
-                "Type10", true, null).getIpsObject();
+        IPolicyCmptType policyCmptType10 = (IPolicyCmptType)pack
+                .createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type10", true, null).getIpsObject();
         policyCmptType10.setConfigurableByProductCmptType(true);
         createProductCmptType(pack, policyCmptType10, "ProductCmptType10");
 
@@ -1349,15 +1349,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindIpsSrcFiles() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2
         IIpsPackageFragment pack = root.getIpsPackageFragment("");
-        IPolicyCmptType type0 = (IPolicyCmptType)pack
-                .createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null).getIpsObject();
+        IPolicyCmptType type0 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null)
+                .getIpsObject();
         IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);
         folderAB.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
         IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
         folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
 
-        IProductCmptType productCmptType0 = (IProductCmptType)pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE,
-                "ProductCmptType0", true, null).getIpsObject();
+        IProductCmptType productCmptType0 = (IProductCmptType)pack
+                .createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, "ProductCmptType0", true, null).getIpsObject();
         productCmptType0.setPolicyCmptType(type0.getQualifiedName());
         type0.setProductCmptType(productCmptType0.getQualifiedName());
         type0.setConfigurableByProductCmptType(true);
@@ -1512,8 +1512,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
         IClasspathEntry[] newEntries = new IClasspathEntry[2];
         newEntries[0] = JavaCore.newSourceEntry(classpathFolder.getFullPath());
-        newEntries[1] = JavaCore
-                .newSourceEntry(classpathFile.getFullPath(), new IPath[] {}, outputFolder.getFullPath());
+        newEntries[1] = JavaCore.newSourceEntry(classpathFile.getFullPath(), new IPath[] {},
+                outputFolder.getFullPath());
         IClasspathEntry[] result = new IClasspathEntry[cpEntries.length + newEntries.length];
         System.arraycopy(cpEntries, 0, result, 0, cpEntries.length);
         System.arraycopy(newEntries, 0, result, cpEntries.length, newEntries.length);
@@ -1564,8 +1564,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
 
         setMinRequiredVersion("0.0.3");
-        IpsPlugin.getDefault().setFeatureVersionManagers(
-                new IIpsFeatureVersionManager[] { new InvalidMigrationMockManager() });
+        IpsPlugin.getDefault()
+                .setFeatureVersionManagers(new IIpsFeatureVersionManager[] { new InvalidMigrationMockManager() });
         suppressLoggingDuringExecutionOfThisTestCase();
         ml = ipsProject.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
@@ -1713,8 +1713,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 Arrays.asList(projectBIpsObjectPath.getEntries()));
         projectBIpsObjectPathEntries.add(new IpsProjectRefEntry(projectBIpsObjectPath, ipsProject));
 
-        projectBIpsObjectPath.setEntries(projectBIpsObjectPathEntries
-                .toArray(new IIpsObjectPathEntry[projectBIpsObjectPathEntries.size()]));
+        projectBIpsObjectPath.setEntries(
+                projectBIpsObjectPathEntries.toArray(new IIpsObjectPathEntry[projectBIpsObjectPathEntries.size()]));
         projectBIpsObjectPath.setOutputDefinedPerSrcFolder(false);
         projectBIpsObjectPath.setBasePackageNameForDerivedJavaClasses("org.faktorzehn.de");
         projectBIpsObjectPath.setBasePackageNameForMergableJavaClasses("org.faktorzehn.de");
@@ -2023,7 +2023,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindTableContents() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "EnumTable");
-        ITableContents contents1 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
+        ITableContents contents1 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "PaymentMode");
         contents1.setTableStructure(structure.getQualifiedName());
         ITableContents contents2 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "Gender");
         contents2.setTableStructure(structure.getQualifiedName());

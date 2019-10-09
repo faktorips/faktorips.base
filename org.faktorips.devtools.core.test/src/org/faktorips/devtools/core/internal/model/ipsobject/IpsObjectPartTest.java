@@ -58,6 +58,7 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         assertEquals(productCmpt, subpart.getIpsObject());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() throws CoreException {
         assertFalse(part.equals(null));

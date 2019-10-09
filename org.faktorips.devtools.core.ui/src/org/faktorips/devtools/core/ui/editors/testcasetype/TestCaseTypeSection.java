@@ -2326,8 +2326,9 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * Creates a new ui controller for the given object.
      */
+    @SuppressWarnings("deprecation")
     private IpsObjectUIController createUIController(IIpsObjectPart part) {
-        IpsObjectUIController controller = new IpsObjectUIController(part) {
+        return new IpsObjectUIController(part) {
             @Override
             public void valueChanged(FieldValueChangedEvent e) {
                 try {
@@ -2337,7 +2338,6 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
         };
-        return controller;
     }
 
     /**

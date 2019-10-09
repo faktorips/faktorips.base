@@ -487,8 +487,8 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
          */
         public NodeContentsReplacer() {
             Map<ASTNode, String> allTrackedContentsMap = getAllTrackedContentsMap();
-            trackedNodePositionsMap = new HashMap<ITrackedNodePosition, String>(Math.max((int)(allTrackedContentsMap
-                    .keySet().size() / .75f) + 1, 16));
+            trackedNodePositionsMap = new HashMap<ITrackedNodePosition, String>(
+                    Math.max((int)(allTrackedContentsMap.keySet().size() / .75f) + 1, 16));
             for (ASTNode node : allTrackedContentsMap.keySet()) {
                 try {
                     ITrackedNodePosition trackedNodePosition = rewriter.track(node);
@@ -642,18 +642,15 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
                     // log the error, ignore the change and continue
                     if (ASTFacadeHelper.DEBUG) {
                         try {
-                            getFacadeHelper().logError(
-                                    "Unable to comment out <"
-                                            + doc.get().substring(nodePosition.getStartPosition(),
-                                                    nodePosition.getLength()) + "> in " + getName() + " : "
-                                            + e.toString()
-                                            + ". There should be no tracked changes to commented out nodes.");
+                            getFacadeHelper().logError("Unable to comment out <"
+                                    + doc.get().substring(nodePosition.getStartPosition(), nodePosition.getLength())
+                                    + "> in " + getName() + " : " + e.toString()
+                                    + ". There should be no tracked changes to commented out nodes.");
                         } catch (Exception innerException) {
-                            getFacadeHelper().logError(
-                                    "Unable to comment out node in " + getName() + " : " + e.toString()
-                                            + ". Unable to get contents of the node either : "
-                                            + innerException.toString()
-                                            + ". There should be no tracked changes to commented out nodes.");
+                            getFacadeHelper().logError("Unable to comment out node in " + getName() + " : "
+                                    + e.toString() + ". Unable to get contents of the node either : "
+                                    + innerException.toString()
+                                    + ". There should be no tracked changes to commented out nodes.");
                         }
                     }
                 }
@@ -688,7 +685,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
                 InsertEdit existingEdit = addedInsertEdits.get(lineBreakEdit.getOffset());
                 if (existingEdit != null) {
                     existingEdits.removeChild(existingEdit);
-                    addedInsertEdits.remove(existingEdit);
+                    addedInsertEdits.remove(existingEdit.getOffset());
                 }
                 existingEdits.addChild(lineBreakEdit);
                 textEditsToRevert.add(lineBreakEdit);
@@ -718,7 +715,8 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
          * @param lastLine
          * @throws BadLocationException
          */
-        protected void commentOutLines(TextEdit existingEdits, int firstLine, int lastLine) throws BadLocationException {
+        protected void commentOutLines(TextEdit existingEdits, int firstLine, int lastLine)
+                throws BadLocationException {
             for (int i = firstLine; i <= lastLine; i++) {
                 InsertEdit edit = new InsertEdit(doc.getLineOffset(i), LINE_COMMENT_STRING);
                 try {
@@ -785,8 +783,8 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
                     commentOutReplaceEdit((ReplaceEdit)causeEdit);
                 } else if (ASTFacadeHelper.DEBUG) {
                     // this should never happen
-                    getFacadeHelper().logError(
-                            "Unable to find ReplaceEdit for node in " + getName() + " : " + e.toString());
+                    getFacadeHelper()
+                            .logError("Unable to find ReplaceEdit for node in " + getName() + " : " + e.toString());
                 }
             } finally {
                 // make sure that dummy edit is not in the tree
@@ -1017,7 +1015,9 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
              * @param isCommentedOut
              * @return line break string
              */
-            protected String createLineBreakString(String lineDelimiter, int startOfLineOffset, boolean isCommentedOut) {
+            protected String createLineBreakString(String lineDelimiter,
+                    int startOfLineOffset,
+                    boolean isCommentedOut) {
                 String indent = getIndent(startOfLineOffset);
                 StringBuilder sb = new StringBuilder(indent.length() + 10);
                 sb.append(lineDelimiter);
@@ -1086,8 +1086,8 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
                                 if (isWhitespace(startOfLineOffset, commaPosition)) {
                                     return new InsertEdit(startOfLineOffset, LINE_COMMENT_STRING);
                                 } else {
-                                    return new InsertEdit(commaPosition, createLineBreakString(getDocument()
-                                            .getLineDelimiter(line), startOfLineOffset, true));
+                                    return new InsertEdit(commaPosition, createLineBreakString(
+                                            getDocument().getLineDelimiter(line), startOfLineOffset, true));
                                 }
                             }
                         }

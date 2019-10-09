@@ -512,6 +512,7 @@ public class MoneyTest {
 
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEqualsObject() {
         // different class
