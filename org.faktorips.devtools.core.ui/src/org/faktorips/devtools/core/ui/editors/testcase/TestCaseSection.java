@@ -2439,7 +2439,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         public String getActualValue() {
-            return failureDetails[4];
+            if (failureDetails.length >= 7) {
+                return failureDetails[6];
+            } else {
+                return failureDetails[4];
+            }
         }
 
         public String getAttributeName() {

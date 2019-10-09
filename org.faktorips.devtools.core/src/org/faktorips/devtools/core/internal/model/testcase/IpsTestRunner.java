@@ -682,7 +682,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         String failureDetailsLine = newLine.substring(SocketIpsTestRunner.TEST_FAILED.length());
         String qualifiedTest = failureDetailsLine.substring(0,
                 failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
-        List<String> failureTokens = new ArrayList<String>(5);
+        List<String> failureTokens = new ArrayList<String>(6);
         while (failureDetailsLine.length() > 0) {
             String token = ""; //$NON-NLS-1$
             int end = failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS);

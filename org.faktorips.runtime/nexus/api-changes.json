@@ -89,5 +89,21 @@
         }
       ]
     }
+  },
+  "19.12.1": {
+    "revapi": {
+      "ignore": [
+        {
+          "code": "java.method.added",
+          "new": "method java.lang.String org.faktorips.runtime.test.IpsTestFailure::getActualValueAsString()",
+          "justification": "FIPS-5985"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.runtime.model.IpsModel::isEnumType(java.lang.Class<?>)",
+          "justification": "FIPS-5985"
+        }
+      ]
+    }
   }
 }

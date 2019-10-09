@@ -240,21 +240,33 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     }
 
     private String testFailureToStr(IpsTestFailure failure) {
-        StringBuffer formatedFailure = new StringBuffer();
-        // format: qualifiedName|testObject|testedAttribute|expectedValue|actualValue
-        formatedFailure.append(failure.getTestCase().getQualifiedName());
-        formatedFailure.append(TEST_FAILED_DELIMITERS);
-        formatedFailure.append(failure.getTestObject() == null ? "<null>" : failure.getTestObject());
-        formatedFailure.append(TEST_FAILED_DELIMITERS);
-        formatedFailure.append(failure.getTestedAttribute() == null ? "<null>" : failure.getTestedAttribute());
-        formatedFailure.append(TEST_FAILED_DELIMITERS);
-        formatedFailure.append(failure.getExpectedValue() == null ? "<null>" : failure.getExpectedValue());
-        formatedFailure.append(TEST_FAILED_DELIMITERS);
-        formatedFailure.append(failure.getActualValue() == null ? "<null>" : failure.getActualValue());
-        formatedFailure.append(TEST_FAILED_DELIMITERS);
-        formatedFailure.append(failure.getMessage() == null ? "<null>" : failure.getMessage());
-        formatedFailure.append(TEST_FAILED_DELIMITERS);
-        return formatedFailure.toString();
+        StringBuffer formattedFailure = new StringBuffer();
+        // format:
+        // qualifiedName|testObject|testedAttribute|expectedValue|actualValue|message[|actualValueAsString]
+        formattedFailure.append(failure.getTestCase().getQualifiedName());
+        formattedFailure.append(TEST_FAILED_DELIMITERS);
+        formattedFailure.append(failure.getTestObject() == null ? "<null>" : failure.getTestObject());
+        formattedFailure.append(TEST_FAILED_DELIMITERS);
+        formattedFailure.append(failure.getTestedAttribute() == null ? "<null>" : failure.getTestedAttribute());
+        formattedFailure.append(TEST_FAILED_DELIMITERS);
+        formattedFailure.append(failure.getExpectedValue() == null ? "<null>" : failure.getExpectedValue());
+        formattedFailure.append(TEST_FAILED_DELIMITERS);
+        formattedFailure.append(failure.getActualValue() == null ? "<null>" : failure.getActualValue());
+        formattedFailure.append(TEST_FAILED_DELIMITERS);
+        formattedFailure.append(failure.getMessage() == null ? "<null>" : failure.getMessage());
+        formattedFailure.append(TEST_FAILED_DELIMITERS);
+
+        if (actualValueStringRepresentationDiffers(failure)) {
+            formattedFailure.append(failure.getActualValueAsString());
+            formattedFailure.append(TEST_FAILED_DELIMITERS);
+        }
+
+        return formattedFailure.toString();
+    }
+
+    private boolean actualValueStringRepresentationDiffers(IpsTestFailure failure) {
+        return failure.getActualValue() != null
+                && !failure.getActualValue().toString().equals(failure.getActualValueAsString());
     }
 
     /*

@@ -118,12 +118,11 @@ public enum IpsModel {
     }
 
     /**
-     * Returns whether the given class is a generated product type and could be given to
-     * {@link #getProductCmptType(Class)} as argument without getting an
+     * Returns whether the given class is a generated product type and can be given to
+     * {@link #getProductCmptType(Class)} as an argument without getting an
      * {@link IllegalArgumentException}.
      * 
-     * @param productModelClass The class that may be a the implementation or the published interface of
-     *            an {@link IProductComponent}.
+     * @param productModelClass the class to check
      * @return <code>true</code> if the given class is a product model class
      */
     public static boolean isProductCmptType(Class<?> productModelClass) {
@@ -134,7 +133,9 @@ public enum IpsModel {
      * @param productModelClass The generated class for a product component type, may be either an
      *            implementation class of a published interface.
      * @return the product model object for the given product model class
-     * @throws IllegalArgumentException if the given class is not properly annotated for a product model
+     * @throws IllegalArgumentException if the given class is not a valid model type
+     * 
+     * @see #isProductCmptType(Class)
      */
     public static ProductCmptType getProductCmptType(Class<? extends IProductComponent> productModelClass) {
         return get(PRODUCT_MODEL_CACHE, AnnotatedDeclaration.from(productModelClass));
@@ -150,12 +151,11 @@ public enum IpsModel {
     }
 
     /**
-     * Returns whether the given class is a generated policy component type and could be given to
-     * {@link #getPolicyCmptType(Class)} as argument without getting an
+     * Returns whether the given class is a generated policy type and can be given to
+     * {@link #getPolicyCmptType(Class)} as an argument without getting an
      * {@link IllegalArgumentException}.
      * 
-     * @param policyModelClass The class that may be a the implementation or the published interface of
-     *            an {@link IModelObject}.
+     * @param policyModelClass the class to check
      * @return <code>true</code> if the given class is a policy model class
      */
     public static boolean isPolicyCmptType(Class<?> policyModelClass) {
@@ -166,7 +166,9 @@ public enum IpsModel {
      * @param policyModelClass The generated class for a policy component type, may be either an
      *            implementation class of a published interface.
      * @return the policy model object for the given policy model class
-     * @throws IllegalArgumentException if the given class is not properly annotated for a policy model
+     * @throws IllegalArgumentException if the given class is not a valid model type
+     * 
+     * @see #isPolicyCmptType(Class)
      */
     public static PolicyCmptType getPolicyCmptType(Class<? extends IModelObject> policyModelClass) {
         return get(POLICY_MODEL_CACHE, AnnotatedDeclaration.from(policyModelClass));
@@ -174,8 +176,8 @@ public enum IpsModel {
 
     /**
      * @return the policy model object for the given model object
-     * @throws IllegalArgumentException if the class of the model object is not properly annotated for a
-     *             policy model
+     * @throws IllegalArgumentException if the class of the model object is not properly annotated
+     *             for a policy model
      */
     public static PolicyCmptType getPolicyCmptType(IModelObject modelObject) {
         return getPolicyCmptType(modelObject.getClass());
@@ -183,9 +185,10 @@ public enum IpsModel {
 
     /**
      * @return the model object for the given policy or product model class. This is either the
-     *         implementation or the published interface of a product component type or policy component
-     *         type.
-     * @throws IllegalArgumentException if the given class is not properly annotated for a model type
+     *         implementation or the published interface of a product component type or policy
+     *         component type.
+     * @throws IllegalArgumentException if the given class is not properly annotated for a model
+     *             type
      */
     public static Type getType(Class<?> modelObjectClass) {
         AnnotatedDeclaration annotatedModelType = AnnotatedDeclaration.from(modelObjectClass);
@@ -200,15 +203,32 @@ public enum IpsModel {
     }
 
     /**
-     * @param enumObjectClass a generated Faktor-IPS enum class.
-     * @return a {@link EnumType} describing the attributes of the given Faktor-IPS enum.
+     * Returns whether the given class is a generated enum type and can be given to
+     * {@link #getEnumType(Class)} as an argument without getting an
+     * {@link IllegalArgumentException}.
+     * 
+     * @param enumObjectClass the class to check
+     * @return <code>true</code> if the given class is an enum model class
+     */
+    public static boolean isEnumType(Class<?> enumObjectClass) {
+        return AnnotatedDeclaration.from(enumObjectClass).is(IpsEnumType.class);
+    }
+
+    /**
+     * @param enumObjectClass a generated Faktor-IPS enum class
+     * @return an {@link EnumType} describing the attributes of the given Faktor-IPS enum
+     * @throws IllegalArgumentException if the given class is not a valid model type
+     * 
+     * @see #isEnumType(Class)
      */
     public static EnumType getEnumType(Class<?> enumObjectClass) {
         return get(ENUM_MODEL_CACHE, enumObjectClass);
     }
 
     /**
-     * @return a {@link EnumType} describing the attributes of the given Faktor-IPS enum.
+     * @return an {@link EnumType} describing the attributes of the given Faktor-IPS enum.
+     * @throws IllegalArgumentException if the given object's class is not properly annotated for a
+     *             model type
      */
     public static EnumType getEnumType(Object enumInstance) {
         if (enumInstance instanceof Enum) {

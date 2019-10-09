@@ -10,6 +10,10 @@
 
 package org.faktorips.runtime.test;
 
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.enumtype.EnumAttribute;
+import org.faktorips.runtime.model.enumtype.EnumType;
+
 /**
  * 
  * @author Jan Ortmann
@@ -122,9 +126,34 @@ public class IpsTestFailure {
 
     /**
      * Returns the actual value found after executing the business logic.
+     * 
+     * @see #getActualValueAsString()
      */
     public Object getActualValue() {
         return actualValue;
+    }
+
+    /**
+     * Returns a string representing the actual value. This value should be used instead of
+     * {@code getActualValue().toString()} when serializing and deserializing, as {@code toString()}
+     * might return additional formatting. If the actual value is {@code null}, {@code "<null>"} is
+     * returned.
+     * 
+     * @see #getActualValue()
+     */
+    public String getActualValueAsString() {
+        if (actualValue == null) {
+            return "<null>";
+        }
+
+        if (IpsModel.isEnumType(actualValue.getClass())) {
+            EnumType enumType = IpsModel.getEnumType(actualValue);
+            EnumAttribute idAttribute = enumType.getIdAttribute();
+            Object value = idAttribute.getValue(actualValue);
+            return String.valueOf(value);
+        } else {
+            return String.valueOf(actualValue);
+        }
     }
 
     /**
