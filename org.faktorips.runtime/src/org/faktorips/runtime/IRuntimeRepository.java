@@ -169,7 +169,7 @@ public interface IRuntimeRepository {
      * 
      * @deprecated This method does only return valid enums if the id attribute of the enum is of
      *             type {@link String}. You should never use this method! Use
-     *             {@link #getEnumValue(Class, Object)} instead. This method may be returned in
+     *             {@link #getEnumValue(Class, Object)} instead. This method may be removed in
      *             future releases.
      */
     @Deprecated
