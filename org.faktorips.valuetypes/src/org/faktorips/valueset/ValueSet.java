@@ -26,7 +26,7 @@ public interface ValueSet<T> extends Serializable {
      * the another value is in the set is found that is equal to it. Two values are considered to be
      * equal according to the equals() method semantic.
      */
-    public boolean contains(Object value);
+    public boolean contains(T value);
 
     /**
      * Returns true if this set contains discrete values. Also an empty {@link ValueSet} is

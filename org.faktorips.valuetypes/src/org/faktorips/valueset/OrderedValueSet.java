@@ -30,7 +30,7 @@ public class OrderedValueSet<E> implements ValueSet<E> {
     private int hashCode;
 
     /**
-     * Creates a new instance of <code>OrderedEnumValueSet</code>.
+     * Creates a new instance of <code>OrderedValueSet</code>.
      * 
      * @param values the values of this set. If these values contain null or the null representation
      *            value the parameter containsNull must be set to true.
@@ -54,7 +54,7 @@ public class OrderedValueSet<E> implements ValueSet<E> {
     }
 
     /**
-     * Creates a new instance of DefaultEnumValueSet.
+     * Creates a new instance of <code>OrderedValueSet</code>.
      * 
      * @param values the values of this set. If these values contain null or the null representation
      *            value the parameter containsNull must be set to true. if <code>values</code> is
@@ -63,7 +63,7 @@ public class OrderedValueSet<E> implements ValueSet<E> {
      * @param containsNull indicates if the provided values contain null or the null representation
      *            value
      * @param nullValue the java null value or null representation value for the datatype of this
-     *            enumeration value set
+     *            value set
      * @throws IllegalArgumentException if the values Collection contains duplicate entries
      */
     public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue) {
@@ -125,10 +125,10 @@ public class OrderedValueSet<E> implements ValueSet<E> {
     public boolean equals(Object obj) {
         if (obj instanceof OrderedValueSet) {
             OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
-            return set.equals(other.set)
-                    && containsNull == other.containsNull
-                    && (containsNull ? ((null == nullValue && null == other.nullValue) || (nullValue
-                            .equals(other.nullValue))) : true);
+            return set.equals(other.set) && containsNull == other.containsNull
+                    && (containsNull
+                            ? ((null == nullValue && null == other.nullValue) || (nullValue.equals(other.nullValue)))
+                            : true);
         }
         return false;
     }
@@ -152,7 +152,7 @@ public class OrderedValueSet<E> implements ValueSet<E> {
         return buf.toString();
     }
 
-    public boolean contains(Object value) {
+    public boolean contains(E value) {
         return set.contains(value);
     }
 

@@ -15,24 +15,38 @@ import java.util.Set;
 /**
  * Special case of value set that represents an unrestricted value set. This is a value set that
  * does not restrict the values allowed by a datatype (Integer, String, etc.).
- * 
+ *
  * @author Jan Ortmann
  */
 public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     private static final long serialVersionUID = 1L;
 
-    private boolean containsNull = true;
+    private final boolean containsNull;
 
+    /**
+     * Constructs a new set, which acts as if it contains every possible value (including
+     * {@code null}).
+     */
     public UnrestrictedValueSet() {
-        super();
+        this(true);
     }
 
+    /**
+     * Constructs a new set, which acts as if it contains every possible value (potentially
+     * including {@code null}, depending on the given parameter).
+     *
+     * @param containsNull whether {@code null} is included in this set
+     */
     public UnrestrictedValueSet(boolean containsNull) {
         this.containsNull = containsNull;
     }
 
-    public boolean contains(Object value) {
+    /**
+     * Returns {@code true} if the given value is not {@code null}. The return value for
+     * {@code null} is dependent on the constructor.
+     */
+    public boolean contains(T value) {
         if (value == null) {
             return containsNull;
         } else {
@@ -79,7 +93,7 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof UnrestrictedValueSet && (this.containsNull() == ((UnrestrictedValueSet<?>)o)
-                .containsNull()));
+        return (o instanceof UnrestrictedValueSet
+                && (this.containsNull() == ((UnrestrictedValueSet<?>)o).containsNull()));
     }
 }

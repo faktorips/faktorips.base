@@ -298,16 +298,6 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws ClassCastException if the provided value is not of type <code>T</code>
-     */
-    @SuppressWarnings("unchecked")
-    public boolean contains(Object value) {
-        return contains((T)value);
-    }
-
-    /**
-     * {@inheritDoc}
      * <p>
      * In case of a ranges this method returns <code>true</code> if one of the following conditions
      * is <code>true</code>
