@@ -39,8 +39,8 @@ import org.w3c.dom.NodeList;
 /**
  * Table of contents to create the toc-file - used by {@link TocFileBuilder}
  * <p>
- * <em>The table of contents can be extended to read toc entries for new object types by implementing
- * and registering a {@link ITocEntryFactory}.</em>
+ * <em>The table of contents can be extended to read toc entries for new object types by
+ * implementing and registering a {@link ITocEntryFactory}.</em>
  * </p>
  * 
  * @author dirmeier
@@ -182,7 +182,8 @@ public class TableOfContent {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
         if (version.isNotEmptyVersion()) {
-            element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, version.asString());
+            element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT,
+                    version.getUnqualifiedVersion());
         }
         for (TocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
@@ -202,8 +203,8 @@ public class TableOfContent {
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element entryElement = (Element)nl.item(i);
-                addOrReplaceTocEntry(getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(
-                        entryElement));
+                addOrReplaceTocEntry(
+                        getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(entryElement));
             }
         }
         modified = false;

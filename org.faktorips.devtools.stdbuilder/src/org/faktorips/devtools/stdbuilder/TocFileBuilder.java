@@ -137,7 +137,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * The toc file builder has to remember the modifcation stamp for each toc before the build
+     * The toc file builder has to remember the modification stamp for each toc before the build
      * process starts.
      * 
      * {@inheritDoc}
