@@ -127,6 +127,8 @@ public class ProductCmptType extends Type {
      * 
      * @param name The name of the table usage
      * @return The {@link TableUsage} with the specified name
+     * 
+     * @throws IllegalArgumentException if there is no table usage with the specified name
      */
     public TableUsage getTableUsage(String name) {
         TableUsageFinder finder = new TableUsageFinder(name);
@@ -159,7 +161,7 @@ public class ProductCmptType extends Type {
      *             given name
      */
     public TableUsage getDeclaredTableUsage(String name) {
-        TableUsage tableUsage = tableUsages.get(name);
+        TableUsage tableUsage = tableUsages.get(IpsStringUtils.toLowerFirstChar(name));
         if (tableUsage == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared table usage " + name);
         }
@@ -171,7 +173,7 @@ public class ProductCmptType extends Type {
      * this type.
      */
     public boolean hasDeclaredTableUsage(String name) {
-        return tableUsages.containsKey(name);
+        return tableUsages.containsKey(IpsStringUtils.toLowerFirstChar(name));
     }
 
     /**
