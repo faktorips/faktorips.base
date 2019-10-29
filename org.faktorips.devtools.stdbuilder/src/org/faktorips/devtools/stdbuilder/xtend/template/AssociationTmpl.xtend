@@ -35,14 +35,26 @@ class AssociationTmpl {
                 * @generated
                 */
                 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
-                public «IF !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»;
+                «overrideAnnotationForPublishedMethodImplementation()»
+                public «IF sourceModelNode.abstract && !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»
+                «IF sourceModelNode.abstract || genInterface()»;«ELSE» {
+«««                 non-abstract classes may not contain an abstract method, so a dummy body has to be generated
+                        return «Collections()».emptyList();
+                    }
+                «ENDIF»
 
                 /**
                 * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
                 * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
                 * @generated
                 */
-                public «IF !genInterface()»abstract«ENDIF» int «method(methodNameGetNumOf)»;
+                «overrideAnnotationForPublishedMethodImplementation()»
+                public «IF sourceModelNode.abstract && !genInterface()»abstract«ENDIF» int «method(methodNameGetNumOf)»
+                «IF sourceModelNode.abstract || genInterface()»;«ELSE» {
+«««                 non-abstract classes may not contain an abstract method, so a dummy body has to be generated
+                        return 0;
+                    }
+                «ENDIF»
             «ELSE»
                 /**
                 * «localizedJDoc("METHOD_GET_ONE", name, descriptionForJDoc)»
@@ -50,6 +62,7 @@ class AssociationTmpl {
                 * @generated
                 */
                 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+                «overrideAnnotationForPublishedMethodImplementation()»
                 public «IF !genInterface()»abstract«ENDIF» «targetInterfaceName» «method(methodNameGetter)»;
             «ENDIF»
         «ENDIF»

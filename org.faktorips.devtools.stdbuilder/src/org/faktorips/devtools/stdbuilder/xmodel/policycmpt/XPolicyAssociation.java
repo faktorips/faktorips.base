@@ -53,7 +53,8 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     private Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociationsInternal(
-            Set<String> resultingNames, IType currentType) {
+            Set<String> resultingNames,
+            IType currentType) {
         LinkedHashSet<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
         try {
             if (isCompositionDetailToMaster()) {
@@ -200,9 +201,9 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns true if a <em>NORMAL</em> getter needs to be generated for this association. Maybe an
+     * Returns true if a <em>NORMAL</em> getter needs to be generated for this association. Maybe a
      * getter for the derived union is still generated, depending on the list of derived union
-     * associations get from {@link XPolicyCmptClass#getSubsettedDerivedUnions()} or
+     * associations got from {@link XPolicyCmptClass#getSubsettedDerivedUnions()} or
      * {@link XPolicyCmptClass#getDetailToMasterDerivedUnionAssociations()}.
      * <p>
      * In case of composition-to-master associations we need a getter (for covariant return type) if
