@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingTemplateLinkEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
@@ -152,7 +153,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testMissingTemplateLink_entryForDefinedLinks() throws CoreException {
+    public void testMissingTemplateLink_EntryForDefinedLinks() throws CoreException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
 
@@ -183,6 +184,35 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
         assertTrue(delta.isEmpty());
+    }
+
+    @Test
+    public void testRemovedTemplateLink_OnlyLinkWithoutAssociationEntryIfRemovedInModel() throws CoreException {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+
+        IProductCmpt template = newProductTemplate(productCmptType, "template");
+        IProductCmptLink templateLink = template.newLink(association);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        IProductCmptLink productLink = productCmpt.newLink(association);
+        productLink.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertTrue(delta.isEmpty());
+
+        association.delete();
+        productCmptType.getIpsSrcFile().save(true, null);
+        templateLink.delete();
+        template.getIpsSrcFile().save(true, null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertFalse(delta.isEmpty());
+
+        IDeltaEntry[] entries = delta.getEntries();
+        assertEquals(1, entries.length);
+        assertTrue(entries[0] instanceof LinkWithoutAssociationEntry);
     }
 
     @Test
