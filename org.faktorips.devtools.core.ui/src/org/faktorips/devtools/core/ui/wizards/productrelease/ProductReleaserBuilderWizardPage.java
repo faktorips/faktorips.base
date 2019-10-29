@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -52,19 +53,23 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 public class ProductReleaserBuilderWizardPage extends WizardPage {
 
     static final String SELECTED_PROJECT_SETTING = "selectedProject"; //$NON-NLS-1$
-
     static final String SELECTED_TARGET_SYSTEMS_SETTING = "selectedTargetSystems"; //$NON-NLS-1$
+
+    private static final String EXTENSION_ATTRIBUTE_VERSION_MUST_CHANGE = "versionMustChange"; //$NON-NLS-1$
+
+    private final ObservableProgressMessages observableProgressMessages;
 
     private IIpsProject ipsProject;
     private Label currentVersionLabel;
     private Text newVersionText;
 
     private boolean correctVersionFormat = false;
+    private boolean correctNewVersion = false;
     private CheckboxTableViewer targetSystemViewer;
     private ProductReleaseProcessor productReleaseProcessor;
     private Label versionFormatLabel;
     private Group selectTargetSystemGroup;
-    private final ObservableProgressMessages observableProgressMessages;
+    private boolean versionChangeRequired;
 
     protected ProductReleaserBuilderWizardPage(ObservableProgressMessages observableProgressMessages) {
         super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
@@ -133,15 +138,14 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         projectSelectComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
-                TypedSelection<IIpsProject> typedSelection = new TypedSelection<IIpsProject>(IIpsProject.class, event
-                        .getSelection());
+                TypedSelection<IIpsProject> typedSelection = new TypedSelection<IIpsProject>(IIpsProject.class,
+                        event.getSelection());
                 if (typedSelection.isValid()) {
                     IIpsProject selectedProject = typedSelection.getFirstElement();
                     updateIpsProject(selectedProject);
                 } else {
                     updateIpsProject(null);
                 }
-                updatePageComplete();
             }
         });
 
@@ -202,6 +206,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                 IpsPlugin.log(e);
             }
         }
+        versionChangeRequired = isVersionChangeRequired();
         updateVersion(oldVersion, ipsProject);
         updateTargetSystem(ipsProject);
         updateMessage();
@@ -254,8 +259,8 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
 
     private List<ITargetSystem> updateSelectedTargetSystem(List<ITargetSystem> availableTargetSystems) {
         List<ITargetSystem> selected = new ArrayList<ITargetSystem>();
-        String[] prevSelected = getDialogSettings().getArray(
-                SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
+        String[] prevSelected = getDialogSettings()
+                .getArray(SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
         if (prevSelected != null) {
             for (String name : prevSelected) {
                 for (ITargetSystem aTargetSystem : availableTargetSystems) {
@@ -285,11 +290,16 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                 setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat, DialogPage.ERROR);
                 return;
             }
+
             correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
             if (!correctVersionFormat) {
                 setMessage(NLS.bind(Messages.ReleaserBuilderWizardSelectionPage_error_illegalVersion, newVersion,
                         ipsProject.getVersionProvider().getVersionFormat()), DialogPage.ERROR);
-            } else if (newVersion.equals(ipsProject.getVersionProvider().getProjectVersion().asString())) {
+            }
+
+            correctNewVersion = !versionChangeRequired
+                    || !newVersion.equals(ipsProject.getVersionProvider().getProjectVersion().asString());
+            if (!correctNewVersion) {
                 setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.ERROR);
                 return;
             }
@@ -298,8 +308,22 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
 
     private void updatePageComplete() {
         boolean complete = ipsProject != null && correctVersionFormat && isCorrectReleaseProcessorSet()
-                && !newVersionText.getText().equals(ipsProject.getVersionProvider().getProjectVersion().asString());
+                && correctNewVersion;
         setPageComplete(complete);
+    }
+
+    private boolean isVersionChangeRequired() {
+        IConfigurationElement configuration = ProductReleaseProcessor.getReleaseExtensionElement(ipsProject);
+        if (configuration == null) {
+            return true;
+        }
+
+        String versionMustChange = configuration.getAttribute(EXTENSION_ATTRIBUTE_VERSION_MUST_CHANGE);
+        if (versionMustChange != null) {
+            return Boolean.valueOf(versionMustChange);
+        } else {
+            return true;
+        }
     }
 
     private boolean isCorrectReleaseProcessorSet() {

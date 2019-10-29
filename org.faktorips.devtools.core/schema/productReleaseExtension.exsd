@@ -85,6 +85,15 @@ This attribute is optional because it is only relevant if you are using the defa
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="versionMustChange" type="boolean">
+            <annotation>
+               <documentation>
+                  A flag to indicate whether the new version has to be different from the old one. Defaults to true if not set.
+
+This attribute is optional because it is only relevant if you are using the release extension to build snapshot versions.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
