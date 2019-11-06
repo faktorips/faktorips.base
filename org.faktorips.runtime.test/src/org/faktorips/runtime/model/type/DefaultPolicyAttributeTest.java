@@ -3,6 +3,7 @@ package org.faktorips.runtime.model.type;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -154,7 +155,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_productComponent() {
+    public void testGetValueSet_ProductComponent() {
         Produkt source = new Produkt();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -165,7 +166,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_changingOverTime() {
+    public void testGetValueSet_Product_ChangingOverTime() {
         Produkt source = new Produkt();
         ProduktGen produktGen = new ProduktGen(source);
         repository.putProductCmptGeneration(produktGen);
@@ -180,7 +181,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_changingOverTimeWithCalendar() {
+    public void testGetValueSet_Product_ChangingOverTimeWithCalendar() {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen(source);
         gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
@@ -196,7 +197,55 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_modelObject() {
+    public void testGetValueSet_Product_ChangingOverTime_Handwritten() {
+        Produkt source = new Produkt();
+        ProduktGen produktGen = new ProduktGen(source);
+        repository.putProductCmptGeneration(produktGen);
+
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithoutValidationContext");
+        ValueSet<?> valueSet = attribute.getValueSet(source, effectiveDate, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "lorem", "ipsum"), valueSet);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetValueSet_Product_ChangingOverTime_TooManyArgs() {
+        Produkt source = new Produkt();
+        ProduktGen produktGen = new ProduktGen(source);
+        repository.putProductCmptGeneration(produktGen);
+
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
+        attribute.getValueSet(source, effectiveDate, new ValidationContext());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_Handwritten() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithoutValidationContext");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "lorem", "ipsum"), valueSet);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetValueSet_ModelObject_TooManyArgs() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
+        attribute.getValueSet(policy, new ValidationContext());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject() {
         ConfVertrag vertrag = new ConfVertrag();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -207,7 +256,43 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_modelObjectChangingOverTime() {
+    public void testGetValueSet_ModelObject_UnrestrictedNotConfigured() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithNull");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+        assertTrue(valueSet.containsNull());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_UnrestrictedWithoutNull() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithoutNull");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+        assertFalse(valueSet.containsNull());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_UnrestrictedPrimitive() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("primitiveUnrestrictedAttr");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+        assertFalse(valueSet.containsNull());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_ChangingOverTime() {
         ProduktGen gen = new ProduktGen();
         repository.putProductCmptGeneration(gen);
         ConfVertrag vertrag = new ConfVertrag();
@@ -222,7 +307,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_modelObjectChangingOverTime_noEffectiveDate() {
+    public void testGetValueSet_ModelObject_ChangingOverTime_NoEffectiveDate() {
         ConfVertrag vertrag = new ConfVertrag();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -234,7 +319,28 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_notConfigured() {
+    public void testGetValueSet_ModelObject_NotChangingOverTime_Handwritten() {
+        ConfVertrag vertrag = new ConfVertrag();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithoutValidationContext");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertEquals(new OrderedValueSet<String>(false, null, "lorem", "ipsum"), valueSet);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetValueSet_ModelObject_NotChangingOverTime_TooManyArgs() {
+        ConfVertrag vertrag = new ConfVertrag();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
+        attribute.getValueSet(vertrag, new ValidationContext());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_NotConfigured() {
         Vertrag vertrag = new Vertrag();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
 
@@ -246,7 +352,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetValueSet_notConfiguredOnConfigurablePolicy() {
+    public void testGetValueSet_ModelObject_NotConfiguredOnConfigurablePolicy() {
         ConfVertrag vertrag = new ConfVertrag();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -267,8 +373,16 @@ public class DefaultPolicyAttributeTest {
         assertEquals("foobar", defaultValue);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testGetDefaultValue_NotProductRelevant() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+        attribute.getDefaultValue(new Produkt(), null);
+    }
+
     @Test
-    public void testGetDefaultValue_changingOverTimeWithCalendar() {
+    public void testGetDefaultValue_ChangingOverTimeWithCalendar() {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen();
         gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
@@ -283,7 +397,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetDefaultValue_changingOverTime() {
+    public void testGetDefaultValue_ChangingOverTime() {
         Produkt source = new Produkt();
         ProduktGen gen = new ProduktGen(source);
         repository.putProductCmptGeneration(gen);
@@ -296,7 +410,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testGetDefaultValue_notConfigured() {
+    public void testGetDefaultValue_NotConfigured() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
@@ -304,7 +418,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetDefaultValue_modelObject() {
+    public void testGetDefaultValue_ModelObject() {
         GregorianCalendar effectiveFrom = new GregorianCalendar();
 
         ProduktGen gen = new ProduktGen();
@@ -322,7 +436,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetDefaultValue_modelObject_noEffectiveFrom() {
+    public void testGetDefaultValue_ModelObject_NoEffectiveFrom() {
         ProduktGen gen = new ProduktGen();
         repository.putProductCmptGeneration(gen);
         ConfVertrag vertrag = new ConfVertrag();
@@ -343,7 +457,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testIsChangingOverTime_true() {
+    public void testIsChangingOverTime_True() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
 
@@ -351,7 +465,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testIsChangingOverTime_noAnnotation() {
+    public void testIsChangingOverTime_NoAnnotation() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(DummyVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
 
@@ -359,7 +473,7 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
-    public void testGetLabel_overwrittenAttribute() {
+    public void testGetLabel_OverwrittenAttribute() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
         PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
         PolicyAttribute attribute = modelType.getAttribute("attr1");
@@ -371,7 +485,8 @@ public class DefaultPolicyAttributeTest {
 
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
-    @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime" })
+    @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
+            "attrWithValueSetWithTooManyArgs" })
     private class ConfVertrag implements IConfigurableModelObject {
 
         private Produkt produkt;
@@ -379,6 +494,8 @@ public class DefaultPolicyAttributeTest {
         private String attr1;
         private String attr2;
         private String attrChangingOverTime;
+        private String attrWithValueSetWithoutValidationContext;
+        private String attrWithValueSetWithTooManyArgs;
         private Calendar effectiveFrom;
 
         public ConfVertrag() {
@@ -436,6 +553,38 @@ public class DefaultPolicyAttributeTest {
         @IpsAllowedValues("attrChangingOverTime")
         public ValueSet<String> getSetOfAllowedValuesForAttrChangingOverTime(IValidationContext context) {
             return new OrderedValueSet<String>(false, null, "foo", "bar");
+        }
+
+        @IpsAttribute(name = "attrWithValueSetWithoutValidationContext", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public String getAttrWithValueSetWithoutValidationContext() {
+            return attrWithValueSetWithoutValidationContext;
+        }
+
+        @IpsAttributeSetter("attrWithValueSetWithoutValidationContext")
+        public void setAttrWithValueSetWithoutValidationContext(String attrWithValueSetWithoutValidationContext) {
+            this.attrWithValueSetWithoutValidationContext = attrWithValueSetWithoutValidationContext;
+        }
+
+        @IpsAllowedValues("attrWithValueSetWithoutValidationContext")
+        public ValueSet<String> getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext() {
+            return produkt.getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext();
+        }
+
+        @IpsAttribute(name = "attrWithValueSetWithTooManyArgs", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public String getAttrWithValueSetWithTooManyArgs() {
+            return attrWithValueSetWithTooManyArgs;
+        }
+
+        @IpsAttributeSetter("attrWithValueSetWithTooManyArgs")
+        public void setAttrWithValueSetWithTooManyArgs(String attrWithValueSetWithTooManyArgs) {
+            this.attrWithValueSetWithTooManyArgs = attrWithValueSetWithTooManyArgs;
+        }
+
+        @SuppressWarnings("unused")
+        @IpsAllowedValues("attrWithValueSetWithTooManyArgs")
+        public ValueSet<String> getAllowedValuesForAttrWithValueSetWithTooManyArgs(IValidationContext context,
+                boolean includeNull) {
+            return produkt.getAllowedValuesForAttrWithValueSetWithTooManyArgs(context, includeNull);
         }
 
         @Override
@@ -498,6 +647,19 @@ public class DefaultPolicyAttributeTest {
         @IpsAllowedValues("attr1")
         public ValueSet<String> getSetOfAllowedValuesForAttr1(IValidationContext context) {
             return new UnrestrictedValueSet<String>();
+        }
+
+        @SuppressWarnings("unused")
+        @IpsAllowedValues("attrWithValueSetWithTooManyArgs")
+        public ValueSet<String> getAllowedValuesForAttrWithValueSetWithTooManyArgs(IValidationContext context,
+                boolean includeNull) {
+            fail("this message should never be called as it has too many args");
+            return null;
+        }
+
+        @IpsAllowedValues("attrWithValueSetWithoutValidationContext")
+        public ValueSet<String> getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext() {
+            return new OrderedValueSet<String>(false, null, "lorem", "ipsum");
         }
 
         @Override
@@ -566,7 +728,8 @@ public class DefaultPolicyAttributeTest {
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
-    @IpsAttributes({ "const", "attr1", "overriddenAttr", "getterOverriddenAttr" })
+    @IpsAttributes({ "const", "attr1", "primitiveUnrestrictedAttr", "attrWithNull", "attrWithoutNull", "overriddenAttr",
+            "attrWithValueSetWithoutValidationContext", "attrWithValueSetWithTooManyArgs", "getterOverriddenAttr" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Policy implements IModelObject {
 
@@ -574,6 +737,11 @@ public class DefaultPolicyAttributeTest {
         public final String CONSTANT = "const";
 
         private int attr1;
+        private int primitiveUnrestrictedAttr;
+        private Integer attrWithNull;
+        private Integer attrWithoutNull;
+        private String attrWithValueSetWithoutValidationContext;
+        private String attrWithValueSetWithTooManyArgs;
         private boolean getterOverriddenAttr;
 
         @IpsAttribute(name = "attr1", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
@@ -585,6 +753,75 @@ public class DefaultPolicyAttributeTest {
         @IpsAttributeSetter("attr1")
         public void setAttr1(int i) {
             attr1 = i;
+        }
+
+        @IpsAttribute(name = "primitiveUnrestrictedAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public int getPrimitiveUnrestrictedAttr() {
+            return primitiveUnrestrictedAttr;
+        }
+
+        @IpsAttributeSetter("primitiveUnrestrictedAttr")
+        public void setPrimitiveUnrestrictedAttr(int primitiveUnrestrictedAttr) {
+            this.primitiveUnrestrictedAttr = primitiveUnrestrictedAttr;
+        }
+
+        @IpsAttribute(name = "attrWithNull", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public Integer getAttrWithNull() {
+            return attrWithNull;
+        }
+
+        @IpsAttributeSetter("attrWithNull")
+        public void setAttrWithNull(Integer attrWithNull) {
+            this.attrWithNull = attrWithNull;
+        }
+
+        @IpsAttribute(name = "attrWithoutNull", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public Integer getAttrWithoutNull() {
+            return attrWithoutNull;
+        }
+
+        @IpsAttributeSetter("attrWithoutNull")
+        public void setAttrWithoutNull(Integer attrWithoutNull) {
+            this.attrWithoutNull = attrWithoutNull;
+        }
+
+        @IpsAllowedValues("attrWithoutNull")
+        public ValueSet<Integer> getSetOfAllowedValuesForAttrWithoutNull(
+                @SuppressWarnings("unused") IValidationContext context) {
+            return new UnrestrictedValueSet<Integer>(false);
+        }
+
+        @IpsAttribute(name = "attrWithValueSetWithoutValidationContext", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public String getAttrWithValueSetWithoutValidationContext() {
+            return attrWithValueSetWithoutValidationContext;
+        }
+
+        @IpsAttributeSetter("attrWithValueSetWithoutValidationContext")
+        public void setAttrWithValueSetWithoutValidationContext(String attrWithValueSetWithoutValidationContext) {
+            this.attrWithValueSetWithoutValidationContext = attrWithValueSetWithoutValidationContext;
+        }
+
+        @IpsAllowedValues("attrWithValueSetWithoutValidationContext")
+        public ValueSet<String> getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext() {
+            return new OrderedValueSet<String>(false, null, "lorem", "ipsum");
+        }
+
+        @IpsAttribute(name = "attrWithValueSetWithTooManyArgs", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public String getAttrWithValueSetWithTooManyArgs() {
+            return attrWithValueSetWithTooManyArgs;
+        }
+
+        @IpsAttributeSetter("attrWithValueSetWithTooManyArgs")
+        public void setAttrWithValueSetWithTooManyArgs(String attrWithValueSetWithTooManyArgs) {
+            this.attrWithValueSetWithTooManyArgs = attrWithValueSetWithTooManyArgs;
+        }
+
+        @SuppressWarnings("unused")
+        @IpsAllowedValues("attrWithValueSetWithTooManyArgs")
+        public ValueSet<String> getAllowedValuesForAttrWithValueSetWithTooManyArgs(IValidationContext context,
+                boolean includeNull) {
+            fail("this message should never be called as it has too many args");
+            return null;
         }
 
         @IpsAttribute(name = "overriddenAttr", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.Range)
