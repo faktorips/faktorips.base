@@ -15,11 +15,12 @@ import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 
 /**
- * Abstract base class for all primtive datatypes.
+ * Abstract base class for all primitive datatypes.
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHelper implements PrimitiveDatatypeHelper {
+public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHelper
+        implements PrimitiveDatatypeHelper {
 
     public AbstractPrimitiveDatatypeHelper() {
         super();
