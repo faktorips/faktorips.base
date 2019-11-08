@@ -264,7 +264,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
             if (attribute == null) {
                 return;
             }
-            if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())) {
+            if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())
+                    && attribute.getValueSet().isContainsNull() && !attribute.isProductRelevant()) {
                 String text = Messages.ValidationRule_msgValueSetRule;
                 msgList.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
                         IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
