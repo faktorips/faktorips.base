@@ -15,6 +15,7 @@ import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.valueset.ValueSet;
@@ -123,6 +124,22 @@ public abstract class PolicyAttribute extends Attribute {
      * attribute. Throws an {@link IllegalArgumentException} if the model object has no
      * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
      * class is not configured by a product class.
+     * <p>
+     * This method uses a default {@link IValidationContext}.
+     *
+     * @param modelObject a model object
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     */
+    public ValueSet<?> getValueSet(IModelObject modelObject) {
+        return getValueSet(modelObject, new ValidationContext());
+    }
+
+    /**
+     * Returns the value set of the given model object's attribute identified by this model type
+     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
+     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
+     * class is not configured by a product class.
      *
      * @param source the product component to read an attribute value set from. Must correspond to
      *            the {@link Type} this attribute belongs to.
@@ -135,5 +152,25 @@ public abstract class PolicyAttribute extends Attribute {
     public abstract ValueSet<?> getValueSet(IProductComponent source,
             Calendar effectiveDate,
             IValidationContext context);
+
+    /**
+     * Returns the value set of the given model object's attribute identified by this model type
+     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
+     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
+     * class is not configured by a product class.
+     * <p>
+     * This method uses a default {@link IValidationContext}.
+     *
+     * @param source the product component to read an attribute value set from. Must correspond to
+     *            the {@link Type} this attribute belongs to.
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the attribute's
+     *            configuration is not changing over time.
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     */
+    public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate) {
+        return getValueSet(source, effectiveDate, new ValidationContext());
+    }
 
 }

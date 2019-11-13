@@ -19,6 +19,8 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.NullObject;
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 /**
@@ -30,8 +32,8 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
     private final Field field;
 
     public ConstantPolicyAttribute(Type type, Field field, boolean changingOverTime) {
-        super(type, field.getAnnotation(IpsAttribute.class), field.getAnnotation(IpsExtensionProperties.class), field
-                .getType(), changingOverTime);
+        super(type, field.getAnnotation(IpsAttribute.class), field.getAnnotation(IpsExtensionProperties.class),
+                field.getType(), changingOverTime);
         this.field = field;
     }
 
@@ -67,7 +69,14 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
 
     @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
-        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+        Object value = getValue(modelObject);
+        if (value == null) {
+            return new OrderedValueSet<Object>(true, null);
+        } else if (value instanceof NullObject) {
+            return new OrderedValueSet<Object>(true, value);
+        } else {
+            return new OrderedValueSet<Object>(false, null, value);
+        }
     }
 
     @Override

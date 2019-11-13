@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.runtime.model.type;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.type.Type.AnnotatedElementMatcher;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 public class DefaultPolicyAttribute extends PolicyAttribute {
@@ -98,27 +98,49 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 return ann.value().equals(getName());
             }
         };
-        return findMethod(IpsDefaultValue.class, filter, "default value", type);
+
+        Method method = type.searchDeclaredMethod(IpsDefaultValue.class, filter);
+        if (method == null) {
+            throw new IllegalStateException(
+                    "No method found for retrieving the default value of attribute: " + getName());
+        }
+        return method;
     }
 
     @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
-        return (ValueSet<?>)invokeMethod(getValueSetMethod(getType()), modelObject, context);
+        Method valueSetMethod = getValueSetMethod(getType());
+        return getValueSet(valueSetMethod, modelObject, context);
     }
 
     @Override
     public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context) {
-        return (ValueSet<?>)invokeMethod(getValueSetMethod(getType().getProductCmptType()),
-                getRelevantProductObject(source, effectiveDate), context);
+        Method valueSetMethod = getValueSetMethod(getType().getProductCmptType());
+        Object productObject = getRelevantProductObject(source, effectiveDate);
+        return getValueSet(valueSetMethod, productObject, context);
+    }
+
+    private ValueSet<?> getValueSet(Method valueSetMethod, Object object, IValidationContext context) {
+        if (valueSetMethod == null) {
+            return new UnrestrictedValueSet<Object>(!getDatatype().isPrimitive());
+        } else if (valueSetMethod.getParameterTypes().length == 0) {
+            return (ValueSet<?>)invokeMethod(valueSetMethod, object);
+        } else if (valueSetMethod.getParameterTypes().length == 1) {
+            return (ValueSet<?>)invokeMethod(valueSetMethod, object, context);
+        } else {
+            throw new IllegalStateException("The method for retrieving the allowed values of attribute: " + getName()
+                    + " has too many aruments: " + valueSetMethod);
+        }
     }
 
     private Method getValueSetMethod(Type model) {
-        Method valueSetMethod = valueSetMethods.get(model);
-        if (valueSetMethod == null) {
-            valueSetMethod = findValueSetMethod(model);
+        if (valueSetMethods.containsKey(model)) {
+            return valueSetMethods.get(model);
+        } else {
+            Method valueSetMethod = findValueSetMethod(model);
             valueSetMethods.put(model, valueSetMethod);
+            return valueSetMethod;
         }
-        return valueSetMethod;
     }
 
     @Override
@@ -133,18 +155,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 return ann.value().equals(getName());
             }
         };
-        return findMethod(IpsAllowedValues.class, filter, "allowed values", type);
-    }
 
-    private <T extends Annotation> Method findMethod(Class<T> annotationClass,
-            AnnotatedElementMatcher<T> filter,
-            String methodDescription,
-            Type type) {
-        Method method = type.searchDeclaredMethod(annotationClass, filter);
-        if (method == null) {
-            throw new IllegalStateException(
-                    "No method found for retrieving the " + methodDescription + " of attribute: " + getName());
-        }
-        return method;
+        return type.searchDeclaredMethod(IpsAllowedValues.class, filter);
     }
 }

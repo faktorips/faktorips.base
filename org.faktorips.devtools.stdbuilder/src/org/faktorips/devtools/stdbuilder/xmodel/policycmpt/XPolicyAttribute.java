@@ -315,10 +315,14 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isGenerateGetAllowedValuesForAndGetDefaultValue() {
         if (isChangeable()) {
-            return !isValueSetUnrestricted() || isProductRelevant();
+            return isProductRelevant() || !isValueSetUnrestricted() || isNonPrimitiveUnrestictedValueSetWithoutNull();
         } else {
             return false;
         }
+    }
+
+    private boolean isNonPrimitiveUnrestictedValueSetWithoutNull() {
+        return isValueSetUnrestricted() && !isValueSetContainingNull() && !getDatatype().isPrimitive();
     }
 
     public boolean isOverrideGetAllowedValuesFor() {
@@ -337,7 +341,16 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateConstantForValueSet() {
-        return !isAbstractValueSet() && (isValueSetRange() || (isValueSetEnum() && !isDatatypeExtensibleEnum()));
+        return isConcreteOrNotProductRelevant() && (isValueSetRange() || isNonExtensibleEnumValueSet()
+                || isNonPrimitiveUnrestictedValueSetWithoutNull());
+    }
+
+    private boolean isConcreteOrNotProductRelevant() {
+        return !isAbstractValueSet() || !isProductRelevant();
+    }
+
+    private boolean isNonExtensibleEnumValueSet() {
+        return isValueSetEnum() && !isDatatypeExtensibleEnum();
     }
 
     public boolean isValueSetEnum() {
@@ -354,6 +367,10 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
         return getAttribute().getValueSet().getValueSetType() == valueSetType;
+    }
+
+    private boolean isValueSetContainingNull() {
+        return getAttribute().getValueSet().isContainsNull();
     }
 
     public boolean isAbstractValueSet() {
@@ -457,13 +474,11 @@ public class XPolicyAttribute extends XAttribute {
             name = StringUtil.camelCaseToUnderscore(name, false);
         }
         String constName = StringUtils.upperCase(name);
-        if (isValueSetEnum()) {
-            return "MAX_ALLOWED_VALUES_FOR_" + constName;
-        }
         if (isValueSetRange()) {
             return "MAX_ALLOWED_RANGE_FOR_" + constName;
+        } else {
+            return "MAX_ALLOWED_VALUES_FOR_" + constName;
         }
-        throw new RuntimeException("Can't handle value set " + getAttribute().getValueSet());
     }
 
     /**
@@ -486,7 +501,7 @@ public class XPolicyAttribute extends XAttribute {
         } else if (isValueSetEnum()) {
             String[] valueIds;
             boolean containsNull;
-            if ((getAttribute()).getValueSet().isEnum()) {
+            if (getAttribute().getValueSet().isEnum()) {
                 IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
                 valueIds = set.getValues();
                 containsNull = !getDatatype().isPrimitive() && set.isContainsNull();
@@ -499,10 +514,23 @@ public class XPolicyAttribute extends XAttribute {
             }
             result = getValuesetDatatypeHelper().newEnumValueSetInstance(valueIds, containsNull, true);
         } else {
-            throw new RuntimeException("Can't handle value set " + getAttribute().getValueSet());
+            result = getUnrestrictedValueSetCode();
         }
         addImport(result.getImportDeclaration());
         return result.getSourcecode();
+    }
+
+    private JavaCodeFragment getUnrestrictedValueSetCode() {
+        JavaCodeFragment result = new JavaCodeFragment();
+        result.append("new "); //$NON-NLS-1$
+        result.appendClassName(UnrestrictedValueSet.class);
+        result.append("<"); //$NON-NLS-1$
+        result.appendClassName(getJavaClassUsedForValueSet());
+        result.append(">"); //$NON-NLS-1$
+        result.append("("); //$NON-NLS-1$
+        result.append(getAttribute().getValueSet().isContainsNull());
+        result.appendln(")"); //$NON-NLS-1$
+        return result;
     }
 
     private JavaCodeFragment createCastExpression(String bound) {
