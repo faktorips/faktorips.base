@@ -18,16 +18,22 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.TypeAndTemplateSelectionComposite.LabelProvider;
 import org.junit.Test;
 
-public class TypeAndTemplateSelectionCompositeTest {
+public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest {
 
     private static final String TEST_DESCRIPTION = ("This is a test text");
+    private static final String OVERRIDE_DESCRIPTION = ("This is an override text");
     private LabelProvider labelProvider = new TypeAndTemplateSelectionComposite.LabelProvider();
 
     @Test
@@ -64,6 +70,40 @@ public class TypeAndTemplateSelectionCompositeTest {
         ProductCmptViewItem viewItem = new ProductCmptViewItem(ipsSrcFile);
 
         assertThat(labelProvider.getToolTipText(viewItem), is(nullValue()));
+    }
+
+    @Test
+    public void testGetLocalizedDescription_DescriptionFinder() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        DescriptionFinder df = new DescriptionFinder(project);
+
+        IDescription description = mock(IDescription.class);
+        when(description.getText()).thenReturn(TEST_DESCRIPTION);
+        when(productCmpt.getDescription(any(Locale.class))).thenReturn(description);
+
+        df.start(productCmpt);
+
+        assertThat(df.getLocalizedDescription(), is(TEST_DESCRIPTION));
+    }
+
+    @Test
+    public void testGetLocalizedDescription_DescriptionFinder_inherited() throws CoreException {
+        IIpsProject project = newIpsProject();
+        ProductCmptType productCmptParent = newProductCmptType(project, "ParentPdct");
+        ProductCmptType productCmptChild = newProductCmptType(productCmptParent, "ChildPdct");
+
+        productCmptParent.setDescriptionText(Locale.getDefault(), TEST_DESCRIPTION);
+
+        DescriptionFinder df = new DescriptionFinder(project);
+
+        df.start(productCmptParent);
+        assertThat(df.getLocalizedDescription(), is(TEST_DESCRIPTION));
+        df.start(productCmptChild);
+        assertThat(df.getLocalizedDescription(), is(TEST_DESCRIPTION));
+        productCmptChild.setDescriptionText(Locale.getDefault(), OVERRIDE_DESCRIPTION);
+        df.start(productCmptChild);
+        assertThat(df.getLocalizedDescription(), is(OVERRIDE_DESCRIPTION));
     }
 
 }

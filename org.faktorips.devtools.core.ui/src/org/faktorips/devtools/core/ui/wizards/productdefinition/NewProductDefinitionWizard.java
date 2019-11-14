@@ -38,6 +38,8 @@ import org.faktorips.util.message.MessageList;
 
 public abstract class NewProductDefinitionWizard extends ResizableWizard implements INewWizard {
 
+    private static final int DEFAULT_HEIGHT = 400;
+    private static final int DEFAULT_WIDTH = 600;
     private final NewProductDefinitionPMO pmo;
 
     /**
@@ -45,7 +47,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
      */
     public NewProductDefinitionWizard(NewProductDefinitionPMO pmo) {
         // to keep compatible API the dialogId is specified by overriding getDialogId()
-        super(null);
+        super(null, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.pmo = pmo;
 
         loadDialogSettings(getDialogSettings());
@@ -158,8 +160,8 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
         IpsUIPlugin.getDefault().setDefaultValidityDate(getPmo().getEffectiveDate());
 
         if (getPmo().isOpenEditor()) {
-            IIpsSrcFile srcFile = getPmo().getIpsPackage().getIpsSrcFile(
-                    getPmo().getIpsObjectType().getFileName(getPmo().getName()));
+            IIpsSrcFile srcFile = getPmo().getIpsPackage()
+                    .getIpsSrcFile(getPmo().getIpsObjectType().getFileName(getPmo().getName()));
             IpsUIPlugin.getDefault().openEditor(srcFile);
         }
 

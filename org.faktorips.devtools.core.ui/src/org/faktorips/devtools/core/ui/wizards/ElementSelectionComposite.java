@@ -22,24 +22,23 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.ui.StyledTextUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.binding.ViewerRefreshBinding;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
+import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.Messages;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFilter;
 
@@ -54,7 +53,7 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
     private final ResourceManager resourceManager;
     private TableViewer listViewer;
     private StructuredViewerField<E> listViewerField;
-    private Text description;
+    private StyledText description;
     private final PresentationModelObject pmo;
     private final String property;
     private BindingContext bindingContext;
@@ -133,7 +132,7 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         listViewer.getControl().setLayoutData(listLayoutData);
         listViewerField = new StructuredViewerField<E>(listViewer, elementClass);
 
-        description = toolkit.createMultilineText(this);
+        description = toolkit.createStyledMultilineText(this);
         description.setEditable(false);
         bindContent();
     }
@@ -170,7 +169,9 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         } else {
             String descriptionString = getDescription(element);
             if (StringUtils.isEmpty(descriptionString)) {
-                description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
+                StyledTextUtil.clear(description);
+                StyledTextUtil.appendStyled(description, Messages.TypeSelectionComposite_label_noDescriptionAvailable,
+                        SWT.ITALIC);
                 description.setEnabled(false);
             } else {
                 description.setText(descriptionString);
@@ -183,44 +184,11 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
     private String getDescription(E element) {
         DescriptionFinder descriptionFinder = new DescriptionFinder(element.getIpsProject());
         descriptionFinder.start(element);
-        return descriptionFinder.localizedDescription;
+        return descriptionFinder.getLocalizedDescription();
     }
 
     protected UIToolkit getToolkit() {
         return toolkit;
-    }
-
-    /**
-     * Searching for a description in the type hierarchy. If the description of the given type is
-     * empty this visitor searches for a not empty description in supertype.
-     */
-    private static class DescriptionFinder extends TypeHierarchyVisitor<IType> {
-
-        private String localizedDescription;
-
-        public DescriptionFinder(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        public void start(IDescribedElement element) {
-            if (element instanceof IType) {
-                IType type = (IType)element;
-                super.start(type);
-            } else {
-                setDescription(element);
-            }
-        }
-
-        @Override
-        protected boolean visit(IType currentType) {
-            setDescription(currentType);
-            return localizedDescription.isEmpty();
-        }
-
-        protected void setDescription(IDescribedElement currentType) {
-            localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(currentType);
-        }
-
     }
 
     public class FilterPMO extends PresentationModelObject {

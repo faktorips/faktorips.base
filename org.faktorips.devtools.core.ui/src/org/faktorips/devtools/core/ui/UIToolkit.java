@@ -29,6 +29,7 @@ import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -79,6 +80,7 @@ import org.faktorips.util.message.Message;
 public class UIToolkit {
 
     public static final int DEFAULT_WIDTH = 100;
+    private static final int DEFAULT_MULTILINE_HEIGHT = 60;
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
     private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$
     private static final String DATA_CHANGEABLE = "dataChangeable"; //$NON-NLS-1$
@@ -259,11 +261,11 @@ public class UIToolkit {
         Color color = null;
         if (formToolkit == null) {
             if (!changeable) {
-                color = control.getDisplay().getSystemColor(
-                        foreground ? FOREGROUND_COLOR_DISABLED : BACKGROUND_COLOR_DISABLED);
+                color = control.getDisplay()
+                        .getSystemColor(foreground ? FOREGROUND_COLOR_DISABLED : BACKGROUND_COLOR_DISABLED);
             } else {
-                color = control.getDisplay().getSystemColor(
-                        foreground ? FOREGROUND_COLOR_ENABLED : BACKGROUND_COLOR_ENABLED);
+                color = control.getDisplay()
+                        .getSystemColor(foreground ? FOREGROUND_COLOR_ENABLED : BACKGROUND_COLOR_ENABLED);
             }
         } else {
             color = getColorFromFormToolkit(changeable, foreground);
@@ -282,10 +284,8 @@ public class UIToolkit {
         String key = foreground ? READONLY_FOREGROUND_COLOR : READONLY_BACKGROUND_COLOR;
         Color color = formToolkit.getColors().getColor(key);
         if (color == null) {
-            return formToolkit.getColors().createColor(
-                    key,
-                    formToolkit.getColors().getSystemColor(
-                            (foreground ? FOREGROUND_COLOR_DISABLED : BACKGROUND_COLOR_DISABLED)));
+            return formToolkit.getColors().createColor(key, formToolkit.getColors()
+                    .getSystemColor((foreground ? FOREGROUND_COLOR_DISABLED : BACKGROUND_COLOR_DISABLED)));
             // color will be disposed by the FormColors#colorRegistry
         }
         return formToolkit.getColors().getColor(key);
@@ -313,8 +313,8 @@ public class UIToolkit {
      * Creates a new composite with a grid layout and no borders.
      */
     public Composite createGridComposite(Composite parent, int numColumns, boolean equalSize, boolean margin) {
-        Composite composite = createGridComposite(parent, numColumns, equalSize, margin, new GridData(
-                GridData.FILL_BOTH));
+        Composite composite = createGridComposite(parent, numColumns, equalSize, margin,
+                new GridData(GridData.FILL_BOTH));
         return composite;
     }
 
@@ -575,7 +575,24 @@ public class UIToolkit {
             newText = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
         }
         GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.heightHint = 60;
+        gridData.heightHint = DEFAULT_MULTILINE_HEIGHT;
+        gridData.widthHint = DEFAULT_WIDTH;
+        newText.setLayoutData(gridData);
+
+        return newText;
+    }
+
+    /**
+     * Does not have an implementation for use with {@link FormToolkit}!
+     * 
+     * @param parent Reference to the container widget.
+     * @return New instance with default setup.
+     */
+    public StyledText createStyledMultilineText(Composite parent) {
+        StyledText newText;
+        newText = new StyledText(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.heightHint = DEFAULT_MULTILINE_HEIGHT;
         gridData.widthHint = DEFAULT_WIDTH;
         newText.setLayoutData(gridData);
 
@@ -695,7 +712,8 @@ public class UIToolkit {
     /**
      * Creates a new package fragment reference control.
      */
-    public IpsPckFragmentRootRefControl createPdPackageFragmentRootRefControl(Composite parent, boolean onlySourceRoots) {
+    public IpsPckFragmentRootRefControl createPdPackageFragmentRootRefControl(Composite parent,
+            boolean onlySourceRoots) {
         return new IpsPckFragmentRootRefControl(parent, onlySourceRoots, this);
     }
 
@@ -897,7 +915,9 @@ public class UIToolkit {
         return newCombo;
     }
 
-    public Composite createCheckboxSetForBoolean(Composite parent, String trueRepresentation, String falseRepresentation) {
+    public Composite createCheckboxSetForBoolean(Composite parent,
+            String trueRepresentation,
+            String falseRepresentation) {
         Composite newComposite = createGridComposite(parent, 3, true, true);
         createCheckbox(newComposite, trueRepresentation);
         createCheckbox(newComposite, falseRepresentation);
@@ -935,8 +955,8 @@ public class UIToolkit {
         String[] values = new String[enumValueSet.size()];
         for (int i = 0; i < values.length; i++) {
             if (dataType != null) {
-                String formatedText = IpsUIPlugin.getDefault().getDatatypeFormatter()
-                        .formatValue(dataType, enumValueSet.getValue(i));
+                String formatedText = IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(dataType,
+                        enumValueSet.getValue(i));
                 values[i] = formatedText;
             } else {
                 values[i] = enumValueSet.getValue(i);
@@ -1001,8 +1021,8 @@ public class UIToolkit {
      *            label. For each option, a radio button is created
      */
     public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent, LinkedHashMap<T, String> options) {
-        Composite newComposite = createGridComposite(parent, options.size(), false, false, new GridData(SWT.LEAD,
-                SWT.TOP, false, false));
+        Composite newComposite = createGridComposite(parent, options.size(), false, false,
+                new GridData(SWT.LEAD, SWT.TOP, false, false));
         ((GridLayout)newComposite.getLayout()).horizontalSpacing = 20;
         return new RadioButtonGroup<T>(newComposite, options, this);
     }
@@ -1179,8 +1199,8 @@ public class UIToolkit {
         // ControlDecoration, otherwise the decoration would also appear when section is closed
         Composite section = getSectionClientArea(control.getParent());
         ControlDecoration controlDecoration = new ControlDecoration(control, SWT.TOP | SWT.LEFT, section);
-        FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+        FieldDecoration decoration = FieldDecorationRegistry.getDefault()
+                .getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
         controlDecoration.setImage(decoration.getImage());
         controlDecoration.setDescriptionText(decoration.getDescription());
         controlDecoration.setShowOnlyOnFocus(true);

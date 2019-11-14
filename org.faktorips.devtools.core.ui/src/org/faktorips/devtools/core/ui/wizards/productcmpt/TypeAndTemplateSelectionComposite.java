@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
@@ -41,11 +42,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
+import org.faktorips.devtools.core.ui.StyledTextUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.binding.ViewerRefreshBinding;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
+import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.Messages;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFilter;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
@@ -71,6 +75,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     private TypeSelectionFilter typeFilter;
     private Text templateSearchText;
     private TypeSelectionFilter templateFilter;
+    private StyledText compositeDescription;
 
     /**
      * Constructs a new type selection composite.
@@ -100,7 +105,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     }
 
     private void setLayoutAndLayoutData() {
-        GridLayout layout = new GridLayout(2, true);
+        GridLayout layout = new GridLayout(3, true);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         layout.horizontalSpacing = 10;
@@ -114,26 +119,32 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         title = toolkit.createLabel(this, StringUtils.EMPTY);
         title.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
+        // empty composites to fill layout next to title label
         toolkit.createGridComposite(this, 0, false, true);
-        Composite searchTypeComposite = toolkit.createLabelEditColumnComposite(this);
+        toolkit.createGridComposite(this, 0, false, true);
+
+        Composite typeBlockComposite = toolkit.createGridComposite(this, 1, false, false);
+        Composite searchTypeComposite = toolkit.createLabelEditColumnComposite(typeBlockComposite);
         typeSearchText = toolkit.createText(searchTypeComposite);
         toolkit.createLabel(searchTypeComposite, Messages.TypeSelectionComposite_msgLabel_Filter);
         typeSearchText.setMessage(Messages.TypeSelectionComposite_msg_Filter);
 
-        Composite searchTemplateComposite = toolkit.createLabelEditColumnComposite(this);
+        Composite templateBlockComposite = toolkit.createGridComposite(this, 1, false, false);
+        Composite searchTemplateComposite = toolkit.createLabelEditColumnComposite(templateBlockComposite);
         templateSearchText = toolkit.createText(searchTemplateComposite);
         toolkit.createLabel(searchTemplateComposite, Messages.TypeSelectionComposite_msgLabel_Filter);
         templateSearchText.setMessage(Messages.TypeSelectionComposite_msg_Filter);
 
         typeFilter = new TypeSelectionFilter();
-        typeListViewer = new TableViewer(this, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        typeListViewer = new TableViewer(typeBlockComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         setupViewer(typeListViewer, typeFilter);
         typeListViewer.setContentProvider(new ArrayContentProvider());
         ColumnViewerToolTipSupport.enableFor(typeListViewer, ToolTip.NO_RECREATE);
         typeListField = new StructuredViewerField<IIpsObject>(typeListViewer, IIpsObject.class);
 
         templateFilter = new TypeSelectionFilter();
-        templateTreeViewer = new TreeViewer(this, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        templateTreeViewer = new TreeViewer(templateBlockComposite,
+                SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         setupViewer(templateTreeViewer, templateFilter);
         templateTreeViewer.setContentProvider(new TreeContentProvider());
         templateTreeViewer.expandAll();
@@ -141,7 +152,56 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         templateListField = new StructuredViewerField<ProductCmptViewItem>(templateTreeViewer,
                 ProductCmptViewItem.class);
 
+        Composite descriptionLabelComposite = toolkit.createGridComposite(this, 1, false, false);
+        toolkit.createLabel(descriptionLabelComposite, Messages.TypeSelectionComposite_label_description);
+        compositeDescription = toolkit.createStyledMultilineText(descriptionLabelComposite);
+        compositeDescription.setEditable(false);
+
         bindContent();
+    }
+
+    private void updateDescription() {
+        IIpsObject typeValue = typeListField.getValue();
+        if (typeValue == null) {
+            compositeDescription.setText(StringUtils.EMPTY);
+            compositeDescription.setEnabled(false);
+            return;
+        }
+
+        StyledTextUtil.clear(compositeDescription);
+        compositeDescription.setEnabled(true);
+
+        appendNameAndDescription(typeValue);
+        IProductCmpt templateValue = templateListField.getValue().getProductCmpt();
+        if (templateValue == null) {
+            // no template selected
+            return;
+        }
+        StyledTextUtil.appendNewLine(compositeDescription);
+        appendNameAndDescription(templateValue);
+    }
+
+    /***
+     * Helper method to fill in type and template description
+     * 
+     * @param ipsObject The target object we want to describe
+     */
+    public void appendNameAndDescription(IIpsObject ipsObject) {
+        String typeName = ipsObject.getName();
+        StyledTextUtil.appendLineStyled(compositeDescription, typeName, SWT.BOLD);
+        String typeDescriptionString = getDescription(ipsObject);
+        if (StringUtils.isEmpty(typeDescriptionString)) {
+            StyledTextUtil.appendLineStyled(compositeDescription,
+                    Messages.TypeSelectionComposite_label_noDescriptionAvailable, SWT.ITALIC);
+        } else {
+            StyledTextUtil.appendLinePlain(compositeDescription, typeDescriptionString);
+        }
+    }
+
+    private String getDescription(IIpsObject object) {
+        DescriptionFinder descriptionFinder = new DescriptionFinder(object.getIpsProject());
+        descriptionFinder.start(object);
+        return descriptionFinder.getLocalizedDescription();
     }
 
     private void setupViewer(StructuredViewer viewer, TypeSelectionFilter filter) {
@@ -155,8 +215,8 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     }
 
     private void bindContent() {
-        bindingContext
-        .bindContent(typeSearchText, new FilterPMO(typeFilter, typeListViewer), FilterPMO.TEXT_FOR_FILTER);
+        bindingContext.bindContent(typeSearchText, new FilterPMO(typeFilter, typeListViewer),
+                FilterPMO.TEXT_FOR_FILTER);
         bindingContext.bindContent(typeListField, pmo, NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
 
         bindingContext.bindContent(templateSearchText, new FilterPMO(templateFilter, templateTreeViewer),
@@ -166,14 +226,30 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         typeListViewer.setInput(pmo.getSubtypes());
         templateTreeViewer.setInput(pmo.getTemplates());
 
-        bindingContext.add(ViewerRefreshBinding.refresh(typeListViewer, pmo,
-                NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
-        bindingContext.add(ViewerRefreshBinding.refresh(typeListViewer, pmo,
-                NewProductCmptPMO.PROPERTY_SELECTED_TEMPLATE));
+        bindingContext
+                .add(ViewerRefreshBinding.refresh(typeListViewer, pmo, NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
+        bindingContext
+                .add(ViewerRefreshBinding.refresh(typeListViewer, pmo, NewProductCmptPMO.PROPERTY_SELECTED_TEMPLATE));
         bindingContext.add(ViewerRefreshBinding.refreshAndExpand(templateTreeViewer, pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
         bindingContext.add(ViewerRefreshBinding.refreshAndExpand(templateTreeViewer, pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
+
+        bindingContext.add(new PropertyChangeBinding<ProductCmptViewItem>(compositeDescription, pmo,
+                NewProductCmptPMO.PROPERTY_SELECTED_TEMPLATE, ProductCmptViewItem.class) {
+            @Override
+            protected void propertyChanged(ProductCmptViewItem oldValue, ProductCmptViewItem newValue) {
+                updateDescription();
+            }
+        });
+
+        bindingContext.add(new PropertyChangeBinding<IProductCmptType>(compositeDescription, pmo,
+                NewProductCmptPMO.PROPERTY_SELECTED_TYPE, IProductCmptType.class) {
+            @Override
+            protected void propertyChanged(IProductCmptType oldValue, IProductCmptType newValue) {
+                updateDescription();
+            }
+        });
 
         bindingContext.updateUI();
     }
@@ -288,5 +364,100 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         }
 
     }
+
+    // /**
+    // * Convenience wrapper for {@link StyledText}. Allows to easily add formatted text blocks to a
+    // * widget. CAVEAT: This class has no authority over changes to the referenced widget from
+    // other
+    // * sources. TODO: Create wrapper class for {@link StyledText}
+    // *
+    // * @author NKammerer
+    // */
+    // static class StyledTextStringUtil {
+    // private StyledText textWidget;
+    //
+    // /**
+    // * @param targetWidget Is created outside and only passed as reference!
+    // */
+    // public StyledTextStringUtil(StyledText targetWidget) {
+    // textWidget = targetWidget;
+    // }
+    //
+    // /***
+    // * Helper method to fill in type and template description
+    // *
+    // * @param ipsObject The target object we want to describe
+    // */
+    // private void appendNameAndDescription(IIpsObject ipsObject) {
+    // String typeName = ipsObject.getName();
+    // appendLineStyled(typeName, SWT.BOLD);
+    // String typeDescriptionString = getDescription(ipsObject);
+    // if (StringUtils.isEmpty(typeDescriptionString)) {
+    // appendLineStyled(Messages.TypeSelectionComposite_label_noDescriptionAvailable, SWT.ITALIC);
+    // } else {
+    // appendLinePlain(typeDescriptionString);
+    // }
+    // }
+    //
+    // /**
+    // * Set the widget's content to empty.
+    // */
+    // public void clear() {
+    // textWidget.setText(StringUtils.EMPTY);
+    // }
+    //
+    // /**
+    // * Append text without formatting
+    // *
+    // * @param text The String to append.
+    // */
+    // public void appendPlain(String text) {
+    // textWidget.append(text);
+    // }
+    //
+    // /**
+    // * Appends newline characters, if it's not the beginning of the content.
+    // *
+    // * @param text Is added after the line break!
+    // */
+    // public void appendLinePlain(String text) {
+    // if (textWidget.getCharCount() > 0) {
+    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // }
+    // appendPlain(text);
+    // }
+    //
+    // public void appendNewLine() {
+    // appendLinePlain(StringUtils.EMPTY);
+    // }
+    //
+    // /**
+    // * Appends newline characters, if it's not the beginning of the content.
+    // *
+    // * @param text Is added with formatting after the line break!
+    // * @param fontStyle SWT formatting style to configure {@link StyleRange}
+    // */
+    // public void appendLineStyled(String text, int fontStyle) {
+    // if (textWidget.getCharCount() > 0) {
+    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // }
+    // appendStyled(text, fontStyle);
+    // }
+    //
+    // /**
+    // * Append text with custom formatting
+    // *
+    // * @param text A string to append
+    // * @param fontStyle SWT formatting style to configure {@link StyleRange}
+    // */
+    // public void appendStyled(String text, int fontStyle) {
+    // // get current index, set text, adjust style object and return style
+    // int currentStart = textWidget.getCharCount();
+    // textWidget.append(text);
+    //
+    // StyleRange style = new StyleRange(currentStart, text.length(), null, null, fontStyle);
+    // textWidget.setStyleRange(style);
+    // }
+    // }
 
 }
