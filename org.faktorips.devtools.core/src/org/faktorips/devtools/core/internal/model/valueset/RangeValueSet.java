@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -81,9 +82,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     /**
-     * Sets the lower bound. An empty string means that the range is unbouned.
-     * 
-     * @throws NullPointerException if lowerBound is <code>null</code>.
+     * Sets the lower bound. An empty string or {@code null} means that the range is unbounded.
      */
     @Override
     public void setLowerBound(String lowerBound) {
@@ -93,10 +92,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     /**
-     * Sets the step. An empty string means that no step exists and all possible values in the range
-     * are valid.
-     * 
-     * @throws NullPointerException if step is <code>null</code>.
+     * Sets the step. An empty string or {@code null} means that no step exists and all possible
+     * values in the range are valid.
      */
     @Override
     public void setStep(String step) {
@@ -106,9 +103,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     /**
-     * Sets the upper bound. An empty string means that the range is unbounded.
-     * 
-     * @throws NullPointerException if upperBound is <code>null</code>.
+     * Sets the upper bound. An empty string or {@code null} means that the range is unbounded.
      */
     @Override
     public void setUpperBound(String upperBound) {
@@ -208,7 +203,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             return false;
         }
 
-        return checkIsRangeSubset((IRangeValueSet)subset, (NumericDatatype)datatype);
+        if (subset.isEnum()) {
+            return checkIsRangeSubset((IEnumValueSet)subset, (NumericDatatype)datatype);
+        } else {
+            return checkIsRangeSubset((IRangeValueSet)subset, (NumericDatatype)datatype);
+        }
     }
 
     private boolean checkValidRanges(IValueSet subset, IIpsProject contextProject) {
@@ -216,7 +215,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             if (!isValid(contextProject)) {
                 return false;
             }
-            if (!(subset.isRange()) || !subset.isValid(contextProject)) {
+            if (!(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
                 return false;
             }
         } catch (CoreException e) {
@@ -261,6 +260,25 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
 
         return isSubrangeMatchStep(subRange, datatype);
+    }
+
+    private boolean checkIsRangeSubset(IEnumValueSet subRange, NumericDatatype datatype) {
+        if (!isContainsNull() && subRange.isContainsNull()) {
+            return false;
+        }
+        if (isAbstract()) {
+            return true;
+        }
+        if (subRange.isAbstract()) {
+            return false;
+        }
+
+        for (String value : subRange.getValues()) {
+            if (!checkValueInRange(value, datatype)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isMatchLowerBound(NumericDatatype datatype, String lower, String subLower) {

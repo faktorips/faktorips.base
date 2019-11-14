@@ -602,6 +602,90 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValueSet_EnumSet_BothBounds() {
+        RangeValueSet rangeSet = new RangeValueSet(intEl, "50");
+        rangeSet.setLowerBound("10");
+        rangeSet.setUpperBound("100");
+        rangeSet.setStep("10");
+        EnumValueSet enumSet1 = new EnumValueSet(intEl, "1000");
+        enumSet1.addValue("30");
+        enumSet1.addValue("80");
+        EnumValueSet enumSet2 = new EnumValueSet(intEl, "1001");
+        enumSet2.addValue("-20");
+
+        assertThat(rangeSet.containsValueSet(enumSet1), is(true));
+        assertThat(rangeSet.containsValueSet(enumSet2), is(false));
+    }
+
+    @Test
+    public void testContainsValueSet_EnumSet_LowerBound() {
+        RangeValueSet rangeSet = new RangeValueSet(intEl, "50");
+        rangeSet.setLowerBound("0");
+        rangeSet.setUpperBound("");
+        rangeSet.setStep("3");
+        EnumValueSet enumSet1 = new EnumValueSet(intEl, "1000");
+        enumSet1.addValue("33");
+        enumSet1.addValue("33333");
+        enumSet1.addValue("333333333");
+        EnumValueSet enumSet2 = new EnumValueSet(intEl, "1001");
+        enumSet2.addValue("-3");
+
+        assertThat(rangeSet.containsValueSet(enumSet1), is(true));
+        assertThat(rangeSet.containsValueSet(enumSet2), is(false));
+    }
+
+    @Test
+    public void testContainsValueSet_EnumSet_UpperBound() {
+        RangeValueSet rangeSet = new RangeValueSet(intEl, "50");
+        rangeSet.setLowerBound("");
+        rangeSet.setUpperBound("25");
+        EnumValueSet enumSet1 = new EnumValueSet(intEl, "1000");
+        enumSet1.addValue("0");
+        enumSet1.addValue("-34737");
+        EnumValueSet enumSet2 = new EnumValueSet(intEl, "1001");
+        enumSet2.addValue("20");
+        enumSet2.addValue("25");
+        enumSet2.addValue("30");
+
+        assertThat(rangeSet.containsValueSet(enumSet1), is(true));
+        assertThat(rangeSet.containsValueSet(enumSet2), is(false));
+    }
+
+    @Test
+    public void testContainsValueSet_EnumSet_Null() {
+        RangeValueSet rangeSetWithNull = new RangeValueSet(intEl, "50");
+        rangeSetWithNull.setContainsNull(true);
+        RangeValueSet rangeSetWithoutNull = new RangeValueSet(intEl, "51");
+        rangeSetWithoutNull.setContainsNull(false);
+        EnumValueSet enumSetWithNull = new EnumValueSet(intEl, "1000");
+        enumSetWithNull.setContainsNull(true);
+        EnumValueSet enumSetWithoutNull = new EnumValueSet(intEl, "1001");
+        enumSetWithoutNull.setContainsNull(false);
+
+        assertThat(rangeSetWithNull.containsValueSet(enumSetWithNull), is(true));
+        assertThat(rangeSetWithNull.containsValueSet(enumSetWithoutNull), is(true));
+        assertThat(rangeSetWithoutNull.containsValueSet(enumSetWithNull), is(false));
+        assertThat(rangeSetWithoutNull.containsValueSet(enumSetWithoutNull), is(true));
+    }
+
+    @Test
+    public void testContainsValueSet_EnumSet_Abstract() {
+        RangeValueSet abstractRangeSet = new RangeValueSet(intEl, "50");
+        abstractRangeSet.setAbstract(true);
+        RangeValueSet concreteRangeSet = new RangeValueSet(intEl, "51");
+        concreteRangeSet.setAbstract(false);
+        EnumValueSet abstractEnumSet = new EnumValueSet(intEl, "1000");
+        abstractEnumSet.setAbstract(true);
+        EnumValueSet concreteEnumSet = new EnumValueSet(intEl, "1001");
+        concreteEnumSet.setAbstract(false);
+
+        assertThat(abstractRangeSet.containsValueSet(abstractEnumSet), is(true));
+        assertThat(abstractRangeSet.containsValueSet(concreteEnumSet), is(true));
+        assertThat(concreteRangeSet.containsValueSet(abstractEnumSet), is(false));
+        assertThat(concreteRangeSet.containsValueSet(concreteEnumSet), is(true));
+    }
+
+    @Test
     public void testContainsValueSet_equalStepOtherBounds() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");
