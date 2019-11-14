@@ -9,364 +9,539 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus.DEFINED;
+import static org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus.INHERITED;
+import static org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus.UNDEFINED;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import com.google.common.collect.Lists;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.PropertyValueHistograms;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue.PropertyValueIdentifier;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.values.Decimal;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class InferTemplateProcessorTest {
+public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
 
-    private static final String TEMPLATE_NAME = "templateName";
+    private static final Cardinality CARDINALITY_OPTIONAL_DEFAULT_1 = new Cardinality(0, 1, 1);
+    private static final Cardinality CARDINALITY_OPTIONAL_DEFAULT_0 = new Cardinality(0, 1, 0);
+    private static final Cardinality CARDINALITY_MANDATORY = new Cardinality(1, 1, 1);
+    private static final String PRODUCT_TYPE_QNAME = "ProductType";
+    private static final String POLICY_TYPE_QNAME = "PolicyType";
+    private static final String PRODUCT_1_QNAME = "Product1";
+    private static final String PRODUCT_2_QNAME = "Product2";
+    private static final String PRODUCT_3_QNAME = "Product3";
+    private static final String TEMPLATE_QNAME = "Template";
+    private static final String TABLE_ROLE_1 = "TableUsage";
+    private static final String RULE_1_NAME = "Rule1";
+    private static final String RULE_2_NAME = "Rule2";
+    private static final String RULE_3_NAME = "Rule3";
+    private static final String PRODUCT_ASSOCIATION = "ProductAssociation";
+    private static final String GENERATION_ASSOCIATION = "GenerationAssociation";
 
-    @Mock
-    private IValueHolder<?> singleValue;
+    @Test
+    public void testRun_NullValueIsSetInTemplateTableContentUsage() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        ITableStructureUsage usage = type.newTableStructureUsage();
+        usage.setRoleName(TABLE_ROLE_1);
 
-    @Mock
-    private IValueHolder<?> singleValueCopy;
+        // Product with null table content usage
+        IProductCmpt product = newProductCmpt(type, PRODUCT_1_QNAME);
+        IProductCmptGeneration productGen = product.getLatestProductCmptGeneration();
+        ITableContentUsage productTableContentUsage = productGen.newTableContentUsage(usage);
+        productTableContentUsage.setStructureUsage(TABLE_ROLE_1);
+        productTableContentUsage.setTableContentName(null);
 
-    @Mock
-    private IValueSet valueSet;
+        // Template with some table content usage
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+        ITableContentUsage templateTableContentUsage = templateGeneration.newTableContentUsage(usage);
+        templateTableContentUsage.setStructureUsage(TABLE_ROLE_1);
+        templateTableContentUsage.setTableContentName("should be overwritten");
 
-    @Mock
-    private IValueSet valueSetCopy;
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Lists.newArrayList(product));
+        processor.run(new NullProgressMonitor());
 
-    private String defaultValue = "10";
-
-    @Mock
-    private PropertyValueHistograms histograms;
-
-    @Mock
-    private IProgressMonitor monitor;
-
-    @Mock
-    private IProductCmptGeneration templateGeneration;
-
-    @Mock
-    private IIpsSrcFile templateSrcFile;
-
-    @Mock
-    private IIpsSrcFile productSrcFile;
-
-    @Mock
-    private IIpsSrcFile productDirtySrcFile;
-
-    @Mock
-    private IProductCmpt templateProduct;
-
-    @Mock
-    private IProductCmpt productCmpt1;
-
-    @Mock
-    private IProductCmpt productCmpt2;
-
-    @Mock
-    private IProductCmptGeneration gen1;
-
-    @Mock
-    private IProductCmptGeneration gen2;
-
-    @Mock
-    IIpsProject ipsProject;
-
-    @Mock
-    IIpsProjectProperties ipsProjectProperties;
-
-    private List<IProductCmpt> productCmpts;
-
-    private InferTemplateProcessor inferTemplateProcessor;
-
-    private List<IPropertyValue> attributeValues;
-
-    private List<IPropertyValue> configuredDefaults;
-
-    private List<IPropertyValue> configuredValueSets;
-
-    private List<IPropertyValue> templateTableUsages;
-
-    private List<IPropertyValue> templateFormulas;
-
-    private List<IPropertyValue> ruleConfigs;
-
-    private List<IPropertyValue> propertyValues;
-
-    @Before
-    @SuppressWarnings("deprecation")
-    public void setUp() {
-
-        when(templateGeneration.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getProperties()).thenReturn(ipsProjectProperties);
-        when(ipsProjectProperties.getInferredTemplateLinkThreshold()).thenReturn(Decimal.valueOf(1));
-        when(ipsProjectProperties.getInferredTemplatePropertyValueThreshold()).thenReturn(Decimal.valueOf(8, 1));
-
-        when(productCmpt1.getLatestProductCmptGeneration()).thenReturn(gen1);
-        when(productCmpt2.getLatestProductCmptGeneration()).thenReturn(gen2);
-
-        productCmpts = Arrays.asList(productCmpt1, productCmpt2);
-        when(productCmpt1.getIpsSrcFile()).thenReturn(productSrcFile);
-        inferTemplateProcessor = new InferTemplateProcessor(templateGeneration, productCmpts, histograms);
-
-        when(templateGeneration.getProductCmpt()).thenReturn(templateProduct);
-        when(templateProduct.getQualifiedName()).thenReturn(TEMPLATE_NAME);
-
-        when(productCmpt2.getIpsSrcFile()).thenReturn(productDirtySrcFile);
-        when(productDirtySrcFile.isDirty()).thenReturn(true);
-        when(templateGeneration.getIpsSrcFile()).thenReturn(templateSrcFile);
-
-        attributeValues = mockPropertyValueInTemplates(IAttributeValue.class);
-        propertyValues = mockHistograms(IAttributeValue.class, attributeValues);
-
-        configuredDefaults = mockPropertyValueInTemplates(IConfiguredDefault.class);
-        propertyValues.addAll(mockHistograms(IConfiguredDefault.class, configuredDefaults));
-
-        configuredValueSets = mockPropertyValueInTemplates(IConfiguredValueSet.class);
-        setUpConfiguredValueSets();
-        propertyValues.addAll(mockHistograms(IConfiguredValueSet.class, configuredValueSets));
-
-        templateTableUsages = mockPropertyValueInTemplates(ITableContentUsage.class);
-        propertyValues.addAll(mockHistograms(ITableContentUsage.class, templateTableUsages));
-
-        templateFormulas = mockPropertyValueInTemplates(IFormula.class);
-        propertyValues.addAll(mockHistograms(IFormula.class, templateFormulas));
-
-        ruleConfigs = mockPropertyValueInTemplates(IValidationRuleConfig.class);
-        propertyValues.addAll(mockHistograms(IValidationRuleConfig.class, ruleConfigs));
-
-        doReturn(singleValueCopy).when(singleValue).copy(any(IAttributeValue.class));
+        assertThat(templateTableContentUsage.getTableContentName(), is((String)null));
     }
 
-    private void setUpConfiguredValueSets() {
-        IIpsModel ipsModel = mock(IIpsModel.class);
-        for (IPropertyValue propertyValue : configuredValueSets) {
-            when(ipsModel.getNextPartId(propertyValue)).thenReturn(UUID.randomUUID().toString());
-            when(propertyValue.getIpsModel()).thenReturn(ipsModel);
-            when(valueSet.copy(eq((IConfiguredValueSet)propertyValue), anyString())).thenReturn(valueSetCopy);
+    @Test
+    public void testRun_ValidationRuleConfigsAreSetInTemplate() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IPolicyCmptType policyType = newPolicyCmptType(project, POLICY_TYPE_QNAME);
+
+        type.setPolicyCmptType(POLICY_TYPE_QNAME);
+        policyType.setProductCmptType(PRODUCT_TYPE_QNAME);
+
+        IValidationRule rule1 = policyType.newRule();
+        IValidationRule rule2 = policyType.newRule();
+        IValidationRule rule3 = policyType.newRule();
+
+        rule1.setName(RULE_1_NAME);
+        rule2.setName(RULE_2_NAME);
+        rule3.setName(RULE_3_NAME);
+
+        // Products and template with rule configs
+        IProductCmpt product1 = newProductCmpt(type, PRODUCT_1_QNAME);
+        IProductCmpt product2 = newProductCmpt(type, PRODUCT_2_QNAME);
+        IProductCmpt product3 = newProductCmpt(type, PRODUCT_3_QNAME);
+        IProductCmptGeneration productGen1 = product1.getLatestProductCmptGeneration();
+        IProductCmptGeneration productGen2 = product2.getLatestProductCmptGeneration();
+        IProductCmptGeneration productGen3 = product3.getLatestProductCmptGeneration();
+
+        productGen1.newValidationRuleConfig(rule1).setActive(true);
+        productGen2.newValidationRuleConfig(rule1).setActive(true);
+        productGen3.newValidationRuleConfig(rule1).setActive(true);
+
+        productGen1.newValidationRuleConfig(rule2).setActive(false);
+        productGen2.newValidationRuleConfig(rule2).setActive(false);
+        productGen3.newValidationRuleConfig(rule2).setActive(false);
+
+        productGen1.newValidationRuleConfig(rule3).setActive(true);
+        productGen2.newValidationRuleConfig(rule3).setActive(false);
+        productGen3.newValidationRuleConfig(rule3).setActive(true);
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+        templateGeneration.newValidationRuleConfig(rule1);
+        templateGeneration.newValidationRuleConfig(rule2);
+        templateGeneration.newValidationRuleConfig(rule3);
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
+                Lists.newArrayList(product1, product2, product3));
+        processor.run(new NullProgressMonitor());
+
+        IValidationRuleConfig ruleConfig1 = templateGeneration.getValidationRuleConfig(RULE_1_NAME);
+        IValidationRuleConfig ruleConfig2 = templateGeneration.getValidationRuleConfig(RULE_2_NAME);
+        IValidationRuleConfig ruleConfig3 = templateGeneration.getValidationRuleConfig(RULE_3_NAME);
+
+        assertThat(ruleConfig1.getTemplateValueStatus(), is(DEFINED));
+        assertThat(ruleConfig1.isActive(), is(true));
+
+        assertThat(ruleConfig2.getTemplateValueStatus(), is(DEFINED));
+        assertThat(ruleConfig2.isActive(), is(false));
+
+        assertThat(ruleConfig3.getTemplateValueStatus(), is(UNDEFINED));
+    }
+
+    @Test
+    public void testRun_ValidationRuleConfigsAreInheritedInProducts() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IPolicyCmptType policyType = newPolicyCmptType(project, POLICY_TYPE_QNAME);
+
+        type.setPolicyCmptType(POLICY_TYPE_QNAME);
+        policyType.setProductCmptType(PRODUCT_TYPE_QNAME);
+
+        IValidationRule rule1 = policyType.newRule();
+        IValidationRule rule2 = policyType.newRule();
+        IValidationRule rule3 = policyType.newRule();
+
+        rule1.setName(RULE_1_NAME);
+        rule2.setName(RULE_2_NAME);
+        rule3.setName(RULE_3_NAME);
+
+        // Products and template with rule configs
+        IProductCmpt product1 = newProductCmpt(type, PRODUCT_1_QNAME);
+        IProductCmpt product2 = newProductCmpt(type, PRODUCT_2_QNAME);
+        IProductCmpt product3 = newProductCmpt(type, PRODUCT_3_QNAME);
+        IProductCmptGeneration gen1 = product1.getLatestProductCmptGeneration();
+        IProductCmptGeneration gen2 = product2.getLatestProductCmptGeneration();
+        IProductCmptGeneration gen3 = product3.getLatestProductCmptGeneration();
+
+        gen1.newValidationRuleConfig(rule1).setActive(true);
+        gen2.newValidationRuleConfig(rule1).setActive(true);
+        gen3.newValidationRuleConfig(rule1).setActive(true);
+
+        gen1.newValidationRuleConfig(rule2).setActive(false);
+        gen2.newValidationRuleConfig(rule2).setActive(false);
+        gen3.newValidationRuleConfig(rule2).setActive(false);
+
+        gen1.newValidationRuleConfig(rule3).setActive(true);
+        gen2.newValidationRuleConfig(rule3).setActive(false);
+        gen3.newValidationRuleConfig(rule3).setActive(true);
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+        templateGeneration.newValidationRuleConfig(rule1);
+        templateGeneration.newValidationRuleConfig(rule2);
+        templateGeneration.newValidationRuleConfig(rule3);
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
+                Lists.newArrayList(product1, product2, product3));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(gen1.getValidationRuleConfig(RULE_1_NAME).getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen1.getValidationRuleConfig(RULE_2_NAME).getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen1.getValidationRuleConfig(RULE_3_NAME).getTemplateValueStatus(), is(DEFINED));
+
+        assertThat(gen2.getValidationRuleConfig(RULE_1_NAME).getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen2.getValidationRuleConfig(RULE_2_NAME).getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen2.getValidationRuleConfig(RULE_3_NAME).getTemplateValueStatus(), is(DEFINED));
+
+        assertThat(gen3.getValidationRuleConfig(RULE_1_NAME).getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen3.getValidationRuleConfig(RULE_2_NAME).getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen3.getValidationRuleConfig(RULE_3_NAME).getTemplateValueStatus(), is(DEFINED));
+    }
+
+    @Test
+    public void testRun_ProductAndGenerationLinksAreInferred() throws CoreException {
+        IIpsProject project = newIpsProject();
+        setLinkThreshold(project, Decimal.valueOf(1));
+
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        association.setTarget(PRODUCT_TYPE_QNAME);
+        association.setTargetRoleSingular(PRODUCT_ASSOCIATION);
+        IProductCmptTypeAssociation genAssociation = type.newProductCmptTypeAssociation();
+        genAssociation.setTarget(PRODUCT_TYPE_QNAME);
+        genAssociation.setTargetRoleSingular(GENERATION_ASSOCIATION);
+        genAssociation.setChangingOverTime(true);
+
+        IProductCmpt product1 = newProductCmpt(type, PRODUCT_1_QNAME);
+        IProductCmptGeneration gen1 = product1.getLatestProductCmptGeneration();
+
+        IProductCmpt product2 = newProductCmpt(type, PRODUCT_2_QNAME);
+        IProductCmptGeneration gen2 = product2.getLatestProductCmptGeneration();
+
+        Cardinality cardinality = CARDINALITY_MANDATORY;
+
+        // Links on products and generations with same association, target and cardinality
+        IProductCmptLink product1Link = product1.newLink(PRODUCT_ASSOCIATION);
+        product1Link.setTarget(PRODUCT_3_QNAME);
+        product1Link.setCardinality(cardinality);
+        IProductCmptLink product2Link = product2.newLink(PRODUCT_ASSOCIATION);
+        product2Link.setTarget(PRODUCT_3_QNAME);
+        product2Link.setCardinality(cardinality);
+
+        IProductCmptLink gen1Link = gen1.newLink(GENERATION_ASSOCIATION);
+        gen1Link.setTarget(PRODUCT_3_QNAME);
+        gen1Link.setCardinality(cardinality);
+        IProductCmptLink gen2Link = gen2.newLink(GENERATION_ASSOCIATION);
+        gen2Link.setTarget(PRODUCT_3_QNAME);
+        gen2Link.setCardinality(cardinality);
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
+                Lists.newArrayList(product1, product2));
+        processor.run(new NullProgressMonitor());
+
+        // Assert that links are added in the template
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTarget(), is(PRODUCT_3_QNAME));
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getCardinality(), is(cardinality));
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTemplateValueStatus(), is(DEFINED));
+        assertThat(template.getLinksAsList(GENERATION_ASSOCIATION).size(), is(0));
+
+        assertThat(templateGeneration.getLinksAsList(GENERATION_ASSOCIATION).size(), is(1));
+        assertThat(templateGeneration.getLinksAsList(GENERATION_ASSOCIATION).get(0).getTarget(), is(PRODUCT_3_QNAME));
+        assertThat(templateGeneration.getLinksAsList(GENERATION_ASSOCIATION).get(0).getCardinality(), is(cardinality));
+        assertThat(templateGeneration.getLinksAsList(GENERATION_ASSOCIATION).get(0).getTemplateValueStatus(),
+                is(DEFINED));
+        assertThat(templateGeneration.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(0));
+
+        // Assert that links in the product components are INHERITED
+        assertThat(product1Link.getTemplateValueStatus(), is(INHERITED));
+        assertThat(product2Link.getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen1Link.getTemplateValueStatus(), is(INHERITED));
+        assertThat(gen2Link.getTemplateValueStatus(), is(INHERITED));
+    }
+
+    @Test
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForPopertyValues() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmptTypeAttribute[] attributes = new IProductCmptTypeAttribute[11];
+        for (int i = 1; i <= 10; i++) {
+            attributes[i] = type.newProductCmptTypeAttribute();
+            attributes[i].setName("a" + i);
+            attributes[i].setDatatype(Datatype.STRING.getQualifiedName());
+            attributes[i].setModifier(Modifier.PUBLISHED);
         }
-    }
 
-    private List<IPropertyValue> mockPropertyValueInTemplates(Class<? extends IPropertyValue> propValueClass) {
-        List<IPropertyValue> propertyValues = mockPropertyValues(templateSrcFile, propValueClass);
-        doReturn(propertyValues).when(templateGeneration).getPropertyValuesIncludingProductCmpt(propValueClass);
-        return propertyValues;
-    }
-
-    private List<IPropertyValue> mockPropertyValues(IIpsSrcFile srcFile,
-            Class<? extends IPropertyValue> propValueClass) {
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-        for (int i = 0; i < 3; i++) {
-            String name = propValueClass.getSimpleName() + i;
-            IPropertyValue propertyValue = mock(IPropertyValue.class,
-                    withSettings().extraInterfaces(propValueClass).name(name));
-            when(propertyValue.getPropertyName()).thenReturn(name);
-            when(propertyValue.getIdentifier()).thenReturn(
-                    new PropertyValueIdentifier(name, PropertyValueType.getTypeForValueClass(propValueClass)));
-            when(propertyValue.getIpsSrcFile()).thenReturn(srcFile);
-            propertyValues.add(propertyValue);
-        }
-        return propertyValues;
-    }
-
-    private List<IPropertyValue> mockHistograms(Class<? extends IPropertyValue> propValueClass,
-            List<IPropertyValue> templateValues) {
-        // values for first product
-        List<IPropertyValue> mockPropertyValues = mockPropertyValues(productSrcFile, propValueClass);
-        // values for second product
-        mockPropertyValues.addAll(mockPropertyValues(productDirtySrcFile, propValueClass));
-        for (IPropertyValue templateValue : templateValues) {
-            Function<IPropertyValue, Object> elementToValueFunction = getValueFunction(propValueClass);
-            Histogram<Object, IPropertyValue> histogram = new Histogram<Object, IPropertyValue>(elementToValueFunction,
-                    histrogramValues(mockPropertyValues, templateValue.getPropertyName()));
-            when(histograms.get(templateValue.getIdentifier())).thenReturn(histogram);
-        }
-        return mockPropertyValues;
-    }
-
-    private List<IPropertyValue> histrogramValues(List<IPropertyValue> mockPropertyValues, String propertyName) {
-        ArrayList<IPropertyValue> result = new ArrayList<IPropertyValue>();
-        for (IPropertyValue propertyValue : mockPropertyValues) {
-            if (propertyValue.getPropertyName().equals(propertyName)) {
-                result.add(propertyValue);
+        IProductCmpt[] products = new IProductCmpt[10];
+        for (int i = 0; i < 10; i++) {
+            products[i] = newProductCmpt(type, "Product" + i);
+            for (int j = 1; j <= 10; j++) {
+                IAttributeValue propertyValue = products[i].newPropertyValue(attributes[j], IAttributeValue.class);
+                propertyValue
+                        .setValueHolder(new SingleValueHolder(propertyValue, "v" + (j >= 10 - i ? j : j + "_" + i)));
             }
         }
-        return result;
+
+        for (int t = 1; t <= 10; t++) {
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setPropertyValueThreshold(project, threshold);
+
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            for (int j = 1; j <= 10; j++) {
+                // initialize empty values
+                template.newPropertyValues(attributes[j]);
+            }
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(products));
+            processor.run(new NullProgressMonitor());
+
+            for (int j = 1; j <= 10; j++) {
+                assertThat(
+                        "attribute a" + j + " has the same value for " + j
+                                + " products and should therefor be in the template for a threshold of " + threshold,
+                        template.getAttributeValue("a" + j).getTemplateValueStatus(),
+                        j >= t ? is(TemplateValueStatus.DEFINED) : is(TemplateValueStatus.UNDEFINED));
+            }
+        }
+
     }
 
     @Test
-    public void testInferTemplate_SrcFileSaved() throws Exception {
-        inferTemplateProcessor.run(monitor);
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalities() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmpt[] products = new IProductCmpt[10];
+        for (int i = 0; i < 10; i++) {
+            products[i] = newProductCmpt(type, "Product" + i);
+            for (int j = 1; j <= 10; j++) {
+                newLink(products[i], PRODUCT_ASSOCIATION + j, "a", new Cardinality(1, (j >= 10 - i ? 1 : i + 20), 1));
+            }
+        }
 
-        verify(templateSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
-        verify(productSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
-        verify(productDirtySrcFile, atLeastOnce()).isDirty();
-        verifyNoMoreInteractions(productDirtySrcFile);
-    }
+        for (int t = 1; t <= 10; t++) {
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setLinkThreshold(project, threshold);
 
-    @Test
-    public void testInferTemplate_TemplateValueUpdate() throws Exception {
-        inferTemplateProcessor.run(monitor);
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
 
-        verify((IAttributeValue)attributeValues.get(0)).setValueHolder(singleValueCopy);
-        verify(attributeValues.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(attributeValues.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(products));
+            processor.run(new NullProgressMonitor());
 
-        verify((IConfiguredDefault)configuredDefaults.get(0)).setValue(defaultValue);
-        verify(configuredDefaults.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(configuredDefaults.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-
-        verify((IConfiguredValueSet)configuredValueSets.get(0)).setValueSet(valueSetCopy);
-        verify(configuredValueSets.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(configuredValueSets.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-
-        verify((ITableContentUsage)templateTableUsages.get(0)).setTableContentName("ITableContentUsage0Value");
-        verify(templateTableUsages.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(templateTableUsages.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-
-        verify((IFormula)templateFormulas.get(0)).setExpression("IFormula0Value");
-        verify(templateFormulas.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(templateFormulas.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-
-        /*
-         * VRules are either activated or deactivated, there is no null-case.
-         */
-        verify((IValidationRuleConfig)ruleConfigs.get(0)).setActive(true);
-        verify((IValidationRuleConfig)ruleConfigs.get(1)).setActive(false);
-        verify((IValidationRuleConfig)ruleConfigs.get(2)).setActive(false);
-    }
-
-    @Test
-    public void testInferTemplate_InheritedUpdate() throws Exception {
-        inferTemplateProcessor.run(monitor);
-
-        for (IPropertyValue propertyValue : propertyValues) {
-            if (propertyValue.getPropertyName().endsWith("0") || propertyValue instanceof IValidationRuleConfig) {
-                verify(propertyValue).setTemplateValueStatus(TemplateValueStatus.INHERITED);
-            } else {
-                verify(propertyValue, atLeastOnce()).getPropertyName();
-                verifyNoMoreInteractions(propertyValue);
+            for (int j = 1; j <= 10; j++) {
+                assertThat(
+                        PRODUCT_ASSOCIATION + j + " has the same cardinality for " + j
+                                + " products and should therefor be in the template for a threshold of " + threshold,
+                        template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(j >= t ? 1 : 0));
             }
         }
     }
 
     @Test
-    public void testInferTemplate_UpdateProductCmpts() throws Exception {
-        inferTemplateProcessor.run(monitor);
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkTargets() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
 
-        verify(productCmpt1).setTemplate(TEMPLATE_NAME);
-        verify(productCmpt2).setTemplate(TEMPLATE_NAME);
-    }
+        for (int t = 1; t <= 10; t++) {
+            List<IProductCmpt> products = addProductsAndLinks(type, t);
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setLinkThreshold(project, threshold);
 
-    @SuppressWarnings("unchecked")
-    private Function<IPropertyValue, Object> getValueFunction(Class<? extends IPropertyValue> type) {
-        if (type.equals(IAttributeValue.class)) {
-            return propertyValue -> {
-                String propertyName = propertyValue.getPropertyName();
-                // all first properties have the same value
-                // all other properties have unique values
-                if (propertyName.endsWith("0")) {
-                    return singleValue;
-                } else {
-                    SingleValueHolder valueMock = mock(SingleValueHolder.class);
-                    when(valueMock.compareTo(any(IValueHolder.class))).thenReturn(1);
-                    return valueMock;
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, products);
+            processor.run(new NullProgressMonitor());
+
+            for (int j = 1; j <= 10; j++) {
+                if (j >= t) { // there should be at least t products with the same target
+                    if (t == 1) { // there is exactly one target that is referenced t+ times
+                        assertThat(PRODUCT_ASSOCIATION + j + " has the same target for " + j
+                                + " products and should therefor be in the template for a threshold of " + threshold,
+                                template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(11 - j));
+                    } else { // as the threshold is so low, all different targets are valid
+                        assertThat(PRODUCT_ASSOCIATION + j + " has the same target for " + j
+                                + " products and should therefor be in the template for a threshold of " + threshold,
+                                template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(1));
+                    }
+                } else { // no target reaches the threshold
+                    assertThat(PRODUCT_ASSOCIATION + j + " has the same target for " + j
+                            + " products and should therefor not be in the template for a threshold of " + threshold,
+                            template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(0));
                 }
-            };
-        } else if (type.equals(IConfiguredValueSet.class)) {
-            return propertyValue -> {
-                String propertyName = propertyValue.getPropertyName();
-                // all first properties have the same value
-                // all other properties have unique values
-                if (propertyName.endsWith("0")) {
-                    return valueSet;
-                } else {
-                    IValueSet mockValueSet = mock(IValueSet.class);
-                    when(mockValueSet.compareTo(mockValueSet)).thenReturn(0);
-                    when(mockValueSet.compareTo(any(IValueSet.class))).thenReturn(-1);
-                    return mockValueSet;
-                }
-            };
-        } else if (type.equals(IConfiguredDefault.class))
-
-        {
-            return propertyValue -> {
-                String propertyName = propertyValue.getPropertyName();
-                // all first properties have the same value
-                // all other properties have unique values
-                if (propertyName.endsWith("0")) {
-                    return defaultValue;
-                } else {
-                    return UUID.randomUUID().toString();
-                }
-            };
-
-        } else if (type.equals(IValidationRuleConfig.class))
-
-        {
-            return propertyValue -> {
-                String propertyName = propertyValue.getPropertyName();
-                // all first properties have the same value
-                // all other properties have unique values
-                if (propertyName.endsWith("0")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            };
-
-        } else
-
-        {
-            return propertyValue -> {
-                String propertyName = propertyValue.getPropertyName();
-                // all first properties have the same value
-                // all other properties have unique values
-                if (propertyName.endsWith("0")) {
-                    return propertyName + "Value";
-                } else {
-                    return UUID.randomUUID().toString();
-                }
-            };
+            }
         }
     }
+
+    @Test
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalitiesAndTargets() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
+        newLink(product1, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+        newLink(product1, PRODUCT_ASSOCIATION, "b", CARDINALITY_OPTIONAL_DEFAULT_0);
+        newLink(product1, PRODUCT_ASSOCIATION, "c", CARDINALITY_MANDATORY);
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        newLink(product2, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+        newLink(product2, PRODUCT_ASSOCIATION, "b", CARDINALITY_OPTIONAL_DEFAULT_0);
+        newLink(product2, PRODUCT_ASSOCIATION, "c", CARDINALITY_OPTIONAL_DEFAULT_1);
+        IProductCmpt product3 = newProductCmpt(type, "Product3");
+        newLink(product3, PRODUCT_ASSOCIATION, "a", CARDINALITY_OPTIONAL_DEFAULT_1);
+        newLink(product3, PRODUCT_ASSOCIATION, "b", CARDINALITY_MANDATORY);
+        newLink(product3, PRODUCT_ASSOCIATION, "c", CARDINALITY_OPTIONAL_DEFAULT_0);
+        IProductCmpt product4 = newProductCmpt(type, "Product4");
+        newLink(product4, PRODUCT_ASSOCIATION, "b", CARDINALITY_MANDATORY);
+
+        setLinkThreshold(project, Decimal.valueOf(5, 1));
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
+                Arrays.asList(product1, product2, product3, product4));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(2));
+        IProductCmptLink linkA = template.getLinksAsList(PRODUCT_ASSOCIATION).get(0);
+        assertThat(linkA.getTarget(), is("a"));
+        assertThat(linkA.getCardinality(), is(CARDINALITY_MANDATORY));
+        IProductCmptLink linkB = template.getLinksAsList(PRODUCT_ASSOCIATION).get(1);
+        assertThat(linkB.getTarget(), is("b"));
+        // this is the cardinality of the first 2 products in the list; the second 2 would qualify
+        // as well, but the "best" hit is the first
+        assertThat(linkB.getCardinality(), is(CARDINALITY_OPTIONAL_DEFAULT_0));
+    }
+
+    private IProductCmptLink newLink(IProductCmpt productCmpt,
+            String association,
+            String target,
+            Cardinality cardinality) {
+        IProductCmptLink link = productCmpt.newLink(association);
+        link.setTarget(target);
+        link.setCardinality(cardinality);
+        return link;
+    }
+
+    private List<IProductCmpt> addProductsAndLinks(IProductCmptType type, int t) throws CoreException {
+        List<IProductCmpt> products = new ArrayList<IProductCmpt>(10);
+        for (int i = 0; i < 10; i++) {
+            ProductCmpt prod = newProductCmpt(type, "Product" + t + '_' + i);
+            products.add(prod);
+            for (int j = 1; j <= 10; j++) {
+                String target = "a" + (j >= 10 - i ? j : j + "_" + i);
+                newLink(prod, PRODUCT_ASSOCIATION + j, target, CARDINALITY_MANDATORY);
+            }
+        }
+        return products;
+    }
+
+    @Test
+    public void testRun_LinkIsInferredAndTemplateValueStatesAreAdjusted() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        association.setTarget(PRODUCT_TYPE_QNAME);
+        association.setTargetRoleSingular(PRODUCT_ASSOCIATION);
+
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
+        IProductCmptLink link1 = newLink(product1, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        IProductCmptLink link2 = newLink(product2, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product3 = newProductCmpt(type, "Product3");
+        IProductCmptLink link3 = newLink(product3, PRODUCT_ASSOCIATION, "a", CARDINALITY_OPTIONAL_DEFAULT_1);
+
+        IProductCmpt product4 = newProductCmpt(type, "Product4");
+
+        setLinkThreshold(project, Decimal.valueOf(5, 1));
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
+                Arrays.asList(product1, product2, product3, product4));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        IProductCmptLink templateLink = template.getLinksAsList(PRODUCT_ASSOCIATION).get(0);
+        assertThat(templateLink.getTarget(), is("a"));
+        assertThat(templateLink.getCardinality(), is(CARDINALITY_MANDATORY));
+
+        assertThat(link1.getTemplateValueStatus(), is(INHERITED));
+        assertThat(link1.getTarget(), is("a"));
+        assertThat(link1.getCardinality(), is(CARDINALITY_MANDATORY));
+        assertThat(link2.getTemplateValueStatus(), is(INHERITED));
+        assertThat(link2.getTarget(), is("a"));
+        assertThat(link2.getCardinality(), is(CARDINALITY_MANDATORY));
+        assertThat(link3.getTemplateValueStatus(), is(DEFINED));
+        assertThat(link3.getTarget(), is("a"));
+        assertThat(link3.getCardinality(), is(CARDINALITY_OPTIONAL_DEFAULT_1));
+
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTemplateValueStatus(), is(UNDEFINED));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTarget(), is("a"));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getCardinality(), is(CARDINALITY_MANDATORY));
+    }
+
+    @Test
+    public void testRun_MissingLinksAreIgnoredForThresholdCalculation() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
+        newLink(product1, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        newLink(product2, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product3 = newProductCmpt(type, "Product3");
+        IProductCmpt product4 = newProductCmpt(type, "Product4");
+        IProductCmpt product5 = newProductCmpt(type, "Product5");
+
+        setLinkThreshold(project, Decimal.valueOf(4, 1));
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
+                Arrays.asList(product1, product2, product3, product4, product5));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        IProductCmptLink templateLink = template.getLinksAsList(PRODUCT_ASSOCIATION).get(0);
+        assertThat(templateLink.getTarget(), is("a"));
+        assertThat(templateLink.getCardinality(), is(CARDINALITY_MANDATORY));
+    }
+
+    private void setPropertyValueThreshold(IIpsProject project, Decimal threshold) throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setInferredTemplatePropertyValueThreshold(threshold);
+        project.setProperties(properties);
+    }
+
+    private void setLinkThreshold(IIpsProject project, Decimal threshold) throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setInferredTemplateLinkThreshold(threshold);
+        project.setProperties(properties);
+    }
+
 }
