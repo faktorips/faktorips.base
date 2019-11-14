@@ -314,10 +314,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateGetAllowedValuesForAndGetDefaultValue() {
-        if (isChangeable()) {
-            return isProductRelevant() || !isValueSetUnrestricted() || isNonPrimitiveUnrestictedValueSetWithoutNull();
-        } else {
+        if (isConstant()) {
             return false;
+        } else {
+            return (isProductRelevant() && isChangeable()) || !isValueSetUnrestricted()
+                    || isNonPrimitiveUnrestictedValueSetWithoutNull();
         }
     }
 

@@ -17,7 +17,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,8 +27,10 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -101,12 +102,11 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesFor() {
         xPolicyAttribute = spy(xPolicyAttribute);
-
+        doReturn(new UnrestrictedValueSet(attribute, "unrestrictedSet")).when(attribute).getValueSet();
         doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
 
         assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
-        verify(xPolicyAttribute, never()).isValueSetEnum();
     }
 
     @Test
@@ -211,7 +211,6 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
-
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
@@ -221,37 +220,61 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesAndGetDefaultValue_Derived() {
         xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(new RangeValueSet(attribute, "rangeSet")).when(attribute).getValueSet();
         doReturn(true).when(xPolicyAttribute).isDerived();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
 
-        assertEquals(false, generatedMethod);
-        verify(xPolicyAttribute, never()).isValueSetEnum();
-        verify(xPolicyAttribute, never()).isValueSetUnrestricted();
-        verify(xPolicyAttribute, never()).isProductRelevant();
-        verify(xPolicyAttribute, never()).isDatatypeExtensibleEnum();
+        assertTrue(generatedMethod);
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor() throws CoreException {
-        XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
+    public void testIsGenerateAllowedValuesAndGetDefaultValue_UnrestrictedNonChangeableProductRelevant() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(AttributeType.DERIVED_ON_THE_FLY).when(attribute).getAttributeType();
+        doReturn(new UnrestrictedValueSet(attribute, "set")).when(attribute).getValueSet();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
+
+        assertFalse(generatedMethod);
+    }
+
+    @Test
+    public void testIsOverrideGetAllowedValuesFor_NoOverride() {
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(false);
 
         assertFalse(xPolicyAttribute.isOverrideGetAllowedValuesFor());
+    }
 
+    @Test
+    public void testIsOverrideGetAllowedValuesFor_SuperConstant() throws CoreException {
+        XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
+        when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);
         when(attribute.findOverwrittenAttribute(any(IIpsProject.class))).thenReturn(superAttribute);
         when(attribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
         when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext))
                 .thenReturn(superXPolicyAttribute);
         when(superAttribute.getIpsProject()).thenReturn(ipsProject);
-        when(superAttribute.isChangeable()).thenReturn(false);
+        when(superAttribute.getAttributeType()).thenReturn(AttributeType.CONSTANT);
 
         assertFalse(xPolicyAttribute.isOverrideGetAllowedValuesFor());
+    }
 
-        when(superAttribute.isChangeable()).thenReturn(true);
-        when(superAttribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
+    @Test
+    public void testIsOverrideGetAllowedValuesFor_SuperOverride() throws CoreException {
+        XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
+        when(attribute.getName()).thenReturn("testAttribute");
+        when(attribute.isOverwrite()).thenReturn(true);
+        when(attribute.findOverwrittenAttribute(any(IIpsProject.class))).thenReturn(superAttribute);
+        when(attribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
+        when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext))
+                .thenReturn(superXPolicyAttribute);
+        when(superAttribute.getIpsProject()).thenReturn(ipsProject);
+        when(superAttribute.getAttributeType()).thenReturn(AttributeType.CHANGEABLE);
+        when(superAttribute.getValueSet()).thenReturn(new RangeValueSet(superAttribute, "abc123"));
         when(superAttribute.getName()).thenReturn("testAttribute");
 
         assertTrue(xPolicyAttribute.isOverrideGetAllowedValuesFor());
@@ -396,7 +419,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isOverwrite();
-
         XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(attribute, modelContext, modelService));
         doReturn(true).when(superXPolicyAttribute).isProductRelevant();
         doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
@@ -409,7 +431,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isOverwrite();
-
         XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(attribute, modelContext, modelService));
         doReturn(false).when(superXPolicyAttribute).isProductRelevant();
         doReturn(true).when(superXPolicyAttribute).isOverwrite();
@@ -448,7 +469,6 @@ public class XPolicyAttributeTest {
     public void testIsOverrideGetDefaultValue() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isOverwrite();
-
         XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(attribute, modelContext, modelService));
         doReturn(true).when(superXPolicyAttribute).isGenerateGetAllowedValuesForAndGetDefaultValue();
         doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
@@ -468,7 +488,6 @@ public class XPolicyAttributeTest {
     public void testIsOverrideGetDefaultValue_OverwrittenAttributeDoesNotGenerateGetAllowedValuesForAndGetDefaultValue() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isOverwrite();
-
         XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(attribute, modelContext, modelService));
         doReturn(false).when(superXPolicyAttribute).isGenerateGetAllowedValuesForAndGetDefaultValue();
         doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
@@ -480,7 +499,6 @@ public class XPolicyAttributeTest {
     public void testGetDefaultValueCode() {
         EnumTypeDatatypeAdapter adapter = mock(EnumTypeDatatypeAdapter.class);
         EnumType enumType = mock(EnumType.class);
-
         when(datatypeHelper.getDatatype()).thenReturn(adapter);
         when(adapter.getEnumType()).thenReturn(enumType);
         when(enumType.isExtensible()).thenReturn(true);
