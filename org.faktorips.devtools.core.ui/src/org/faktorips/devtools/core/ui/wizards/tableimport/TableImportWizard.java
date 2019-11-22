@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
-import org.faktorips.devtools.core.ui.wizards.enumimport.SelectFileAndImportMethodPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.tableconversion.ITableFormat;
