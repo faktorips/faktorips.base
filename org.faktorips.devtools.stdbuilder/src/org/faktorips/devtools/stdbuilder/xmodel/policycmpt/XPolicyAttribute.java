@@ -171,13 +171,8 @@ public class XPolicyAttribute extends XAttribute {
      */
     public String getValueSetJavaClassName() {
         if (isValueSetUnrestricted()) {
-            if (isProductRelevant()) {
-                String valueSetClass = addImport(ValueSet.class);
-                return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
-            } else {
-                String valueSetClass = addImport(UnrestrictedValueSet.class);
-                return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
-            }
+            String valueSetClass = addImport(ValueSet.class);
+            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetEnum()) {
             String valueSetClass = addImport(OrderedValueSet.class);
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";

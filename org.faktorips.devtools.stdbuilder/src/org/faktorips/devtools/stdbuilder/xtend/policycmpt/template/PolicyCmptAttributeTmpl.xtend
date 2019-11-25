@@ -140,14 +140,32 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
         «IF genInterface()»;«ELSE»
         {
             «IF productRelevant»
+              «IF overwritingValueSetWithMoreConcreteType»
+                return «castFromTo(overwrittenAttribute.valueSetJavaClassName,valueSetJavaClassName)» «getPropertyValueContainer(published)».«overwrittenAttribute.methodNameGetAllowedValuesFor»(context);
+              «ELSE»
                 return «getPropertyValueContainer(published)».«methodNameGetAllowedValuesFor»(context);
+              «ENDIF»
             «ELSE»
                 return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
             «ENDIF»
         }
         «ENDIF»
+        «IF overwritingValueSetWithMoreConcreteType»
+          /**
+           * «inheritDoc»
+           * @generated
+           */
+          @Override
+          public «valueSetJavaClassName» «method(overwrittenAttribute.methodNameGetAllowedValuesFor, IValidationContext(), "context")» {
+            return «methodNameGetAllowedValuesFor»(context);
+          }
+        «ENDIF»
     «ENDIF»
 '''
+
+protected def static boolean isOverwritingValueSetWithMoreConcreteType(XPolicyAttribute it) {
+  overwrite && overwrittenAttribute.generateGetAllowedValuesForAndGetDefaultValue && !overwrittenAttribute.methodNameGetAllowedValuesFor.equals(methodNameGetAllowedValuesFor) && !genInterface
+}
 
 def package static initConfigurableAttribute (XPolicyAttribute it) '''
     «IF generateInitWithProductData»
