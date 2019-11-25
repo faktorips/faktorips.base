@@ -118,16 +118,8 @@ public class SelectEnumPage extends SelectImportTargetPage {
         }
         try {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)getTargetForImport();
-            if (enumValueContainer == null) {
+            if (!validateEnumValueContainerExists(enumValueContainer)) {
                 setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
-                return;
-            }
-            if (!enumValueContainer.exists()) {
-                setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
-                return;
-            }
-            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.SelectEnumPage_msgEnumNotValid);
                 return;
             }
             if (enumValueContainer instanceof IEnumType) {
@@ -141,11 +133,20 @@ public class SelectEnumPage extends SelectImportTargetPage {
                 IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
                 if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
                     setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotValid);
+                    return;
                 }
+            }
+
+            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+                setMessage(Messages.SelectEnumPage_msgEnumNotValid, WARNING);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean validateEnumValueContainerExists(IEnumValueContainer enumValueContainer) {
+        return enumValueContainer != null && enumValueContainer.exists();
     }
 
     private void setEnum(IEnumValueContainer enumValueContainer) {
