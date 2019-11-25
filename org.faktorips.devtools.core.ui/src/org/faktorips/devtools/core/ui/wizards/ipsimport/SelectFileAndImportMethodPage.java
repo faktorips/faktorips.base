@@ -121,7 +121,8 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
             importIntoNewField.getCheckbox().setChecked(false);
             importExistingReplaceField.getCheckbox().setEnabled(true);
             importExistingAppendField.getCheckbox().setEnabled(true);
-            if (!importExistingAppendField.getCheckbox().isChecked() && !importIntoNewField.getCheckbox().isChecked()) {
+            if (!importExistingAppendField.getCheckbox().isChecked() && !importIntoNewField.getCheckbox().isChecked()
+                    && !importExistingReplaceField.getCheckbox().isChecked()) {
                 importExistingAppendField.getCheckbox().setChecked(true);
             }
         }
