@@ -7,12 +7,14 @@
 #     milestone and release candidate = false 
 #     final release = true
 # 3 : base directory of the plugins
+# 4 : version kind, a suffix for the verison like ms01, rc02 or rfinal
 #####################################################################
  
 set -e
 VERSION=$1
 IS_RELEASE=$2
 BASE_DIRECTORY=$3
+VERSION_KIND=$4
 
 if [ "$IS_RELEASE" = "true" ] 
 then
@@ -32,14 +34,22 @@ else
 	VERSION_SNAPSHOT=${VERSION}"-SNAPSHOT"
 fi
 
+if [[ -z "$VERSION_KIND" ]] || [[ $VERSION_KIND == "rfinal" ]]
+then
+  RELEASE_VERSION=${VERSION}
+else
+  RELEASE_VERSION=${VERSION}"."${VERSION_KIND}
+fi
+
+
 echo "##########################"
 echo "deployToMavenCentral"
 echo "##########################"
-echo REPO_ID:       $REPO_ID
-echo REPO_URL:      $REPO_URL
-echo VERSION:       $VERSION
-echo IS_RELEASE:    $IS_RELEASE
-echo BASE_DIR:      $BASE_DIRECTORY
+echo REPO_ID:         $REPO_ID
+echo REPO_URL:        $REPO_URL
+echo RELEASE_VERSION: $RELEASE_VERSION
+echo IS_RELEASE:      $IS_RELEASE
+echo BASE_DIR:        $BASE_DIRECTORY
 echo "********"
 
 TARGET_DIR="target"
@@ -98,11 +108,11 @@ echo $VALUETYPES_JODA_LIB_POM
 echo "########################"
 
 echo "upload Runtime"
-mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$RUNTIME_LIB_JAR -Dsources=$RUNTIME_LIB_SOURCE_JAR -Djavadoc=$RUNTIME_LIB_JAVADOC_JAR -Dversion=$VERSION -DpomFile=$RUNTIME_LIB_POM
+mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$RUNTIME_LIB_JAR -Dsources=$RUNTIME_LIB_SOURCE_JAR -Djavadoc=$RUNTIME_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$RUNTIME_LIB_POM
 echo "upload Runtime Client"
-mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$RUNTIME_CLIENT_LIB_JAR -Dsources=$RUNTIME_CLIENT_LIB_SOURCE_JAR -Djavadoc=$RUNTIME_CLIENT_LIB_JAVADOC_JAR -Dversion=$VERSION -DpomFile=$RUNTIME_CLIENT_LIB_POM
+mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$RUNTIME_CLIENT_LIB_JAR -Dsources=$RUNTIME_CLIENT_LIB_SOURCE_JAR -Djavadoc=$RUNTIME_CLIENT_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$RUNTIME_CLIENT_LIB_POM
 echo "upload Valuetypes"
-mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$VALUETYPES_LIB_JAR -Dsources=$VALUETYPES_LIB_SOURCE_JAR -Djavadoc=$VALUETYPES_LIB_JAVADOC_JAR -Dversion=$VERSION -DpomFile=$VALUETYPES_LIB_POM
+mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$VALUETYPES_LIB_JAR -Dsources=$VALUETYPES_LIB_SOURCE_JAR -Djavadoc=$VALUETYPES_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$VALUETYPES_LIB_POM
 echo "upload Valuetypes Joda"
-mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$VALUETYPES_JODA_LIB_JAR -Dsources=$VALUETYPES_JODA_LIB_SOURCE_JAR -Djavadoc=$VALUETYPES_JODA_LIB_JAVADOC_JAR -Dversion=$VERSION -DpomFile=$VALUETYPES_JODA_LIB_POM
+mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$VALUETYPES_JODA_LIB_JAR -Dsources=$VALUETYPES_JODA_LIB_SOURCE_JAR -Djavadoc=$VALUETYPES_JODA_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$VALUETYPES_JODA_LIB_POM
 

@@ -290,7 +290,7 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>${deploy.script.maven-central}</executable>
-									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${basedir}/..</commandlineArgs>
+									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${basedir}/.. ${version.kind}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
