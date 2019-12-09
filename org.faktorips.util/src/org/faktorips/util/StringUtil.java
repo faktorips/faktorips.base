@@ -207,20 +207,21 @@ public class StringUtil {
     }
 
     public static String toCamelCase(String text, boolean firstUp) {
-        if (text == null || text.equals("")) {
+        if (text == null || "".equals(text)) {
             return "";
         }
         String[] words = text.split(CAMEL_CASE_SEPERATORS);
         StringBuilder result = new StringBuilder();
+        boolean firstInWordUp = firstUp;
         for (String word : words) {
             char firstChar = word.charAt(0);
-            if (firstUp) {
+            if (firstInWordUp) {
                 firstChar = Character.toUpperCase(firstChar);
             } else {
                 firstChar = Character.toLowerCase(firstChar);
             }
             result.append(firstChar).append(word.substring(1).toLowerCase());
-            firstUp = true;
+            firstInWordUp = true;
         }
         return result.toString();
     }
@@ -257,7 +258,7 @@ public class StringUtil {
      * 
      */
     public static String camelCaseToUnderscore(String text, boolean splitUppercaseSequences) {
-        if (text == null || text.equals("")) {
+        if (text == null || "".equals(text)) {
             return "";
         }
         String regex;
@@ -315,6 +316,25 @@ public class StringUtil {
 
     private static String formatMax(int maxValue) {
         return maxValue == Integer.MAX_VALUE ? "*" : String.valueOf(maxValue);
+    }
+
+    /**
+     * Checks whether the {@link String} contains whitespace.
+     * 
+     * @param string {@link String} to be checked
+     * @return {@code true} if the {@code string} contains {@link Character#isWhitespace(char)
+     *         whitespace}, {@code false} if not
+     */
+    public static boolean containsWhitespace(String string) {
+        if (string != null) {
+            for (int i = 0; i < string.length(); i++) {
+                int codePoint = string.codePointAt(i);
+                if (Character.isWhitespace(codePoint)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

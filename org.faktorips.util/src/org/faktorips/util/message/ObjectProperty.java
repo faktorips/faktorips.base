@@ -21,6 +21,10 @@ public class ObjectProperty {
     private final int index;
     private int hashCode;
 
+    public ObjectProperty(Object object, String property) {
+        this(object, property, -1);
+    }
+
     /**
      * Creates a new ObjectProperty. If the property is a list or an array the index can specify the
      * position within the property. An index smaller than 0 indicates that it is not an indexed
@@ -36,10 +40,6 @@ public class ObjectProperty {
     private void createHashCode() {
         hashCode = (object == null ? 0 : object.hashCode()) + index;
         hashCode = property == null ? hashCode : hashCode + property.hashCode();
-    }
-
-    public ObjectProperty(Object object, String property) {
-        this(object, property, -1);
     }
 
     public Object getObject() {
@@ -62,10 +62,8 @@ public class ObjectProperty {
     public boolean equals(Object obj) {
         if (obj instanceof ObjectProperty) {
             ObjectProperty other = (ObjectProperty)obj;
-            return object.equals(other.object)
-                    && index == other.index
-                    && ((property == null && other.property == null) || (property != null && other.property != null && property
-                            .equals(other.property)));
+            return object.equals(other.object) && index == other.index && ((property == null && other.property == null)
+                    || (property != null && other.property != null && property.equals(other.property)));
         }
         return false;
     }

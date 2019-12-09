@@ -23,6 +23,10 @@ import org.faktorips.annotation.UtilityClass;
 @UtilityClass
 public class StreamUtil {
 
+    private StreamUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Copies the content of the provided InputStream into a ByteArrayInputStream and closes the
      * provided stream.
@@ -66,10 +70,6 @@ public class StreamUtil {
             is.close();
         }
         return buffer;
-    }
-
-    private StreamUtil() {
-        // Utility class not to be instantiated.
     }
 
 }
