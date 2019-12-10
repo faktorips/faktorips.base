@@ -12,42 +12,39 @@ package org.faktorips.devtools.core.internal.migrationextensions;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Marks classes generated for {@link IPolicyCmptType}, {@link IProductCmptType} and
- * {@link ITableStructure} as dirty to trigger the clean build.
+ * Marks classes generated for a select set of types as dirty to trigger the clean build.
  */
-public class Migration_19_7_0 extends DefaultMigration {
+public class MarkAsDirtyMigration extends DefaultMigration {
 
-    private static final Set<IpsObjectType> TYPES_TO_MIGRATE = ImmutableSet.of(IpsObjectType.POLICY_CMPT_TYPE,
-            IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.TABLE_STRUCTURE);
+    private final Set<IpsObjectType> typesToMigrate;
+    private String targetVersion;
+    private String description;
 
-    private Migration_19_7_0(IIpsProject projectToMigrate, String featureId) {
+    MarkAsDirtyMigration(IIpsProject projectToMigrate, String featureId, Set<IpsObjectType> typesToMigrate,
+            String targetVersion, String description) {
         super(projectToMigrate, featureId);
+        this.typesToMigrate = typesToMigrate;
+        this.targetVersion = targetVersion;
+        this.description = description;
     }
 
     @Override
     public String getTargetVersion() {
-        return "19.7.0"; //$NON-NLS-1$
+        return targetVersion;
     }
 
     @Override
     public String getDescription() {
-        return Messages.Migration_19_7_0;
+        return description;
     }
 
     @Override
@@ -59,16 +56,8 @@ public class Migration_19_7_0 extends DefaultMigration {
 
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        if (TYPES_TO_MIGRATE.contains(srcFile.getIpsObjectType())) {
+        if (typesToMigrate.contains(srcFile.getIpsObjectType())) {
             srcFile.markAsDirty();
-        }
-    }
-
-    public static class Factory implements IIpsProjectMigrationOperationFactory {
-        @Override
-        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
-                String featureId) {
-            return new Migration_19_7_0(ipsProject, featureId);
         }
     }
 }

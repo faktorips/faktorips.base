@@ -15,6 +15,8 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.enums.EnumContent;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
@@ -22,7 +24,7 @@ import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
-public class Migration_19_7_0Test extends AbstractIpsPluginTest {
+public class Migration_19_12_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private MarkAsDirtyMigration migration;
@@ -30,6 +32,8 @@ public class Migration_19_7_0Test extends AbstractIpsPluginTest {
     private TestCase testCase;
     private ProductCmptType productCmptType;
     private TableStructure tableStructure;
+    private EnumType enumType;
+    private EnumContent enumContent;
 
     private void setUpMigration() throws CoreException {
         ipsProject = newIpsProject();
@@ -37,9 +41,11 @@ public class Migration_19_7_0Test extends AbstractIpsPluginTest {
         policyCmptType.getIpsSrcFile().save(true, null);
         productCmptType = newProductCmptType(ipsProject, "TestProduct");
         tableStructure = newTableStructure(ipsProject, "TestStructure");
+        enumType = newEnumType(ipsProject, "TestEnum");
+        enumContent = newEnumContent(enumType, "TestEnumContent");
         testCase = newTestCase(ipsProject, "TestCase");
-        migration = (MarkAsDirtyMigration)new Migration_19_7_0_Factory().createIpsProjectMigrationOpertation(ipsProject,
-                "irrelevant");
+        migration = (MarkAsDirtyMigration)new Migration_19_12_0_Factory()
+                .createIpsProjectMigrationOpertation(ipsProject, "irrelevant");
     }
 
     @Test
@@ -48,13 +54,17 @@ public class Migration_19_7_0Test extends AbstractIpsPluginTest {
         assertFalse(policyCmptType.getIpsSrcFile().isDirty());
         assertFalse(productCmptType.getIpsSrcFile().isDirty());
         assertFalse(tableStructure.getIpsSrcFile().isDirty());
+        assertFalse(enumType.getIpsSrcFile().isDirty());
+        assertFalse(enumContent.getIpsSrcFile().isDirty());
         assertFalse(testCase.getIpsSrcFile().isDirty());
 
         migration.migrate(new NullProgressMonitor());
 
         assertTrue(policyCmptType.getIpsSrcFile().isDirty());
         assertTrue(productCmptType.getIpsSrcFile().isDirty());
-        assertTrue(tableStructure.getIpsSrcFile().isDirty());
+        assertFalse(tableStructure.getIpsSrcFile().isDirty());
+        assertTrue(enumType.getIpsSrcFile().isDirty());
+        assertFalse(enumContent.getIpsSrcFile().isDirty());
         assertFalse(testCase.getIpsSrcFile().isDirty());
     }
 
