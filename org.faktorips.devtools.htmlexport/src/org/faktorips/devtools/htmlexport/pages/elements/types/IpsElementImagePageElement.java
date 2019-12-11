@@ -10,8 +10,11 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -50,7 +53,10 @@ public class IpsElementImagePageElement extends ImagePageElement {
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
-        return IpsUIPlugin.getImageHandling().getImage(element, true).getImageData();
+        CompletableFuture<ImageData> futureImageData = new CompletableFuture<>();
+        Display.getDefault().syncExec(
+                () -> futureImageData.complete(IpsUIPlugin.getImageHandling().getImage(element, true).getImageData()));
+        return futureImageData.join();
     }
 
     private static String getIpsElementImageName(IIpsElement element) throws CoreException {
@@ -140,8 +146,8 @@ public class IpsElementImagePageElement extends ImagePageElement {
         }
 
         if (productCmptType.hasExistingSupertype(productCmptType.getIpsProject())) {
-            return getProductCmptImageNameByProductCmptType(productCmptType.findSuperProductCmptType(productCmptType
-                    .getIpsProject()));
+            return getProductCmptImageNameByProductCmptType(
+                    productCmptType.findSuperProductCmptType(productCmptType.getIpsProject()));
         }
 
         return IpsObjectType.PRODUCT_CMPT.getFileExtension();
