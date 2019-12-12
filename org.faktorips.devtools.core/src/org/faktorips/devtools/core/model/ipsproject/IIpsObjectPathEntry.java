@@ -64,6 +64,12 @@ public interface IIpsObjectPathEntry {
     public static final String MSGCODE_INVALID_ARCHVE = MSGCODE_PREFIX + "InvalidArchive"; //$NON-NLS-1$
 
     /**
+     * Warning message used to mark invalid cast attempts instead of leaving the path empty. See
+     * FIPS-6417
+     */
+    public static final String ERROR_CAST_EXCEPTION_PATH = "Operation failed: Cannot cast to IpsSourceFolderEntry"; //$NON-NLS-1$
+
+    /**
      * Type constant indicating a source folder entry.
      */
     public static final String TYPE_SRC_FOLDER = "src"; //$NON-NLS-1$

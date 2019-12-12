@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
@@ -490,7 +491,8 @@ public abstract class AbstractGeneratorModelNode {
      *            {@link AbstractGeneratorModelNode}) that will be created for each part
      */
     protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(
-            Collection<? extends IIpsObjectPart> parts, Class<T> nodeClass) {
+            Collection<? extends IIpsObjectPart> parts,
+            Class<T> nodeClass) {
         Set<T> nodes = new LinkedHashSet<T>();
         for (IIpsObjectPart part : parts) {
             nodes.add(getModelNode(part, nodeClass));
@@ -610,12 +612,19 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     private IIpsSrcFolderEntry getIpsSrcFolderEntry() {
-        return (IIpsSrcFolderEntry)getIpsObjectPartContainer().getIpsSrcFile().getIpsPackageFragment().getRoot()
+        IIpsObjectPathEntry entry = getIpsObjectPartContainer().getIpsSrcFile().getIpsPackageFragment().getRoot()
                 .getIpsObjectPathEntry();
+        if (entry instanceof IIpsSrcFolderEntry) {
+            return (IIpsSrcFolderEntry)entry;
+        }
+        return null;
     }
 
     public String getDocumentationResourceBundleBaseName() {
         IIpsSrcFolderEntry srcEntry = getIpsSrcFolderEntry();
+        if (srcEntry == null) {
+            return IIpsObjectPathEntry.ERROR_CAST_EXCEPTION_PATH;
+        }
         LabelAndDescriptionPropertiesBuilder lAdBuilder = getIpsProject().getIpsArtefactBuilderSet()
                 .getBuildersByClass(LabelAndDescriptionPropertiesBuilder.class).get(0);
         return lAdBuilder.getResourceBundleBaseName(srcEntry);

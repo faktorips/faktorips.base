@@ -19,6 +19,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -131,9 +132,12 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public String getValidateMessageBundleName() {
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPartContainer().getIpsSrcFile()
-                .getIpsPackageFragment().getRoot().getIpsObjectPathEntry();
-        return getContext().getValidationMessageBundleBaseName(entry);
+        IIpsObjectPathEntry entry = getIpsObjectPartContainer().getIpsSrcFile().getIpsPackageFragment().getRoot()
+                .getIpsObjectPathEntry();
+        if (entry instanceof IIpsSrcFolderEntry) {
+            return getContext().getValidationMessageBundleBaseName((IIpsSrcFolderEntry)entry);
+        }
+        return IIpsObjectPathEntry.ERROR_CAST_EXCEPTION_PATH;
     }
 
     public String getValidationMessageKey() {
