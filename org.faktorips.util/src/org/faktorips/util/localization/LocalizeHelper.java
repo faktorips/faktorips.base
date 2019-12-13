@@ -55,18 +55,17 @@ import org.apache.commons.lang.StringUtils;
  * 
  * @author Thorsten Guenther
  */
-@SuppressWarnings("all")
 public class LocalizeHelper {
 
     private File sourceRoot;
     private File targetRoot;
     private String targetLang;
-    private List modifiedFiles = new ArrayList();
+    private List<File> modifiedFiles = new ArrayList<File>();
 
     /**
      * Creates a new LocalizeHelper working on the given directories and with the given language.
      */
-    public LocalizeHelper(String sourceName, String targetName, String targetLang) {
+    private LocalizeHelper(String sourceName, String targetName, String targetLang) {
         sourceRoot = new File(sourceName);
         targetRoot = new File(targetName);
         this.targetLang = "_" + targetLang;
@@ -99,8 +98,8 @@ public class LocalizeHelper {
         System.out.println("<source-dir> " + sourceRoot);
         System.out.println("<target-dir> " + targetRoot);
         System.out.println("<target-lang> " + targetLang);
-        Hashtable sourceProperties = new Hashtable();
-        Hashtable targetProperties = new Hashtable();
+        Hashtable<String, File> sourceProperties = new Hashtable<String, File>();
+        Hashtable<String, File> targetProperties = new Hashtable<String, File>();
         findProperties(sourceRoot, sourceProperties, sourceRoot.getAbsolutePath().length(), "");
         findProperties(targetRoot, targetProperties, targetRoot.getAbsolutePath().length(), targetLang);
 
@@ -108,7 +107,7 @@ public class LocalizeHelper {
             sync(sourceProperties, targetProperties);
             if (modifiedFiles.size() > 0) {
                 System.out.println("Modified files:");
-                for (Iterator iter = modifiedFiles.iterator(); iter.hasNext();) {
+                for (Iterator<File> iter = modifiedFiles.iterator(); iter.hasNext();) {
                     System.out.print("  ");
                     System.out.println(iter.next());
                 }
@@ -132,7 +131,10 @@ public class LocalizeHelper {
      * @param langPostfix The language postfix used. Can be the empty string, but not
      *            <code>null</code>.
      */
-    private void findProperties(File dir, Map propertyFiles, int ignorePathPrefixLength, String langPostfix) {
+    private void findProperties(File dir,
+            Map<String, File> propertyFiles,
+            int ignorePathPrefixLength,
+            String langPostfix) {
         if (!dir.isDirectory()) {
             return;
         }
@@ -164,14 +166,14 @@ public class LocalizeHelper {
      * @param target Map of all found targets, for keys see sources.
      * @throws IOException If an error occurs during handling the properties files.
      */
-    private void sync(Hashtable source, Hashtable target) throws IOException {
-        Enumeration sourceNames = source.keys();
+    private void sync(Hashtable<String, File> source, Hashtable<String, File> target) throws IOException {
+        Enumeration<String> sourceNames = source.keys();
 
         while (sourceNames.hasMoreElements()) {
-            String name = (String)sourceNames.nextElement();
-            File targetFile = (File)target.get(name);
+            String name = sourceNames.nextElement();
+            File targetFile = target.get(name);
             if (targetFile == null) {
-                File sourceFile = (File)source.get(name);
+                File sourceFile = source.get(name);
                 String newName = targetRoot.getAbsolutePath() + name + targetLang + ".properties";
                 targetFile = new File(newName);
                 createFile(targetFile);
@@ -185,16 +187,16 @@ public class LocalizeHelper {
                 writer.close();
             } else {
                 SortedProperties sourceProps = new SortedProperties();
-                File srcFile = (File)source.get(name);
+                File srcFile = source.get(name);
                 sourceProps.load(new FileInputStream(srcFile));
 
                 SortedProperties targetProps = new SortedProperties();
                 targetProps.load(new FileInputStream(targetFile));
 
-                Set srcKeys = sourceProps.keySet();
+                Set<Object> srcKeys = sourceProps.keySet();
                 boolean modified = false;
 
-                for (Iterator iter = srcKeys.iterator(); iter.hasNext();) {
+                for (Iterator<Object> iter = srcKeys.iterator(); iter.hasNext();) {
                     String key = (String)iter.next();
                     if (targetProps.getProperty(key) == null) {
                         targetProps.setProperty(key, ">TRANSLATE_ME<" + sourceProps.getProperty(key));
@@ -203,8 +205,8 @@ public class LocalizeHelper {
                 }
 
                 // remove keys in target that don't exist in the source file
-                Set targetKeys = targetProps.keySet();
-                for (Iterator it = targetKeys.iterator(); it.hasNext();) {
+                Set<Object> targetKeys = targetProps.keySet();
+                for (Iterator<Object> it = targetKeys.iterator(); it.hasNext();) {
                     String key = (String)it.next();
                     if (sourceProps.get(key) == null) {
                         it.remove();
@@ -216,8 +218,8 @@ public class LocalizeHelper {
                     modifiedFiles.add(targetFile);
                     // store the target in same order as the source
                     SortedProperties newTargetProps = new SortedProperties();
-                    Set srcKeySet = sourceProps.keySet();
-                    for (Iterator iter = srcKeySet.iterator(); iter.hasNext();) {
+                    Set<Object> srcKeySet = sourceProps.keySet();
+                    for (Iterator<Object> iter = srcKeySet.iterator(); iter.hasNext();) {
                         String key = (String)iter.next();
                         String property = targetProps.getProperty(key);
                         newTargetProps.setProperty(key, property);
@@ -252,7 +254,7 @@ public class LocalizeHelper {
 
         private static final long serialVersionUID = 1L;
 
-        private LinkedHashMap content = new LinkedHashMap();
+        private LinkedHashMap<Object, Object> content = new LinkedHashMap<Object, Object>();
 
         @Override
         public String getProperty(String arg0) {
@@ -285,7 +287,7 @@ public class LocalizeHelper {
                 writeln(bw, "#" + comments);
             }
             writeln(bw, "#" + new Date().toString());
-            for (Iterator iter = content.keySet().iterator(); iter.hasNext();) {
+            for (Iterator<Object> iter = content.keySet().iterator(); iter.hasNext();) {
                 String key = (String)iter.next();
                 bw.write(key);
                 bw.write("=");
@@ -301,7 +303,7 @@ public class LocalizeHelper {
         }
 
         @Override
-        public Set keySet() {
+        public Set<Object> keySet() {
             return content.keySet();
         }
 
@@ -326,7 +328,7 @@ public class LocalizeHelper {
         }
 
         @Override
-        public Set entrySet() {
+        public Set<Map.Entry<Object, Object>> entrySet() {
             return content.entrySet();
         }
 
@@ -356,7 +358,7 @@ public class LocalizeHelper {
         }
 
         @Override
-        public synchronized void putAll(Map arg0) {
+        public synchronized void putAll(Map<? extends Object, ? extends Object> arg0) {
             content.putAll(arg0);
         }
 
@@ -376,7 +378,7 @@ public class LocalizeHelper {
         }
 
         @Override
-        public Collection values() {
+        public Collection<Object> values() {
             return content.values();
         }
 
@@ -391,12 +393,12 @@ public class LocalizeHelper {
         }
 
         @Override
-        public synchronized Enumeration keys() {
+        public synchronized Enumeration<Object> keys() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public synchronized Enumeration elements() {
+        public synchronized Enumeration<Object> elements() {
             throw new UnsupportedOperationException();
         }
 
@@ -416,7 +418,7 @@ public class LocalizeHelper {
         }
 
         @Override
-        public Enumeration propertyNames() {
+        public Enumeration<Object> propertyNames() {
             throw new UnsupportedOperationException();
         }
 
