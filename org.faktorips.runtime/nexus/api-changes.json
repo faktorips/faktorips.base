@@ -1,19 +1,25 @@
 {
-  "19.12.0": {
+  "all-versions": {
     "revapi": {
       "ignore": [
         {
           "code": "java.missing.oldClass",
           "old": "missing-class junit.framework.Test",
           "new": "missing-class junit.framework.Test",
-          "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter"
+          "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter and RevAPI is confused"
         },
         {
           "code": "java.missing.newClass",
           "old": "missing-class junit.framework.Test",
           "new": "missing-class junit.framework.Test",
           "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter"
-        },
+        }
+      ]
+    }
+  },
+  "19.12.0": {
+    "revapi": {
+      "ignore": [
         {
           "code": "java.method.addedToInterface",
           "new": "method <T> T org.faktorips.runtime.IRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
