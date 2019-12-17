@@ -1044,4 +1044,36 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         return enumValueSet;
     }
 
+    @Test
+    public void testMove() throws Exception {
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        IEnumValueSet valueSet = createEnumValueSet("1", "2", "3", "4", "5");
+
+        List<Integer> indices = Arrays.asList(1);
+        valueSet.move(indices, true);
+
+        String[] values = valueSet.getValues();
+        assertThat(values[0], is("2"));
+        assertThat(values[1], is("1"));
+        assertThat(values[2], is("3"));
+        assertThat(values[3], is("4"));
+        assertThat(values[4], is("5"));
+    }
+
+    @Test
+    public void testMove_Multiple() throws Exception {
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        IEnumValueSet valueSet = createEnumValueSet("1", "2", "3", "4", "5");
+
+        List<Integer> indices = Arrays.asList(1, 3, 4);
+        valueSet.move(indices, true);
+
+        String[] values = valueSet.getValues();
+        assertThat(values[0], is("2"));
+        assertThat(values[1], is("1"));
+        assertThat(values[2], is("4"));
+        assertThat(values[3], is("5"));
+        assertThat(values[4], is("3"));
+    }
+
 }

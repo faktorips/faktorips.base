@@ -101,14 +101,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public void move(List<Integer> indexes, boolean up) {
+    public void move(List<Integer> indices, boolean up) {
         ListElementMover<String> mover = new ListElementMover<String>(values);
-        int[] indexesArray = new int[indexes.size()];
-        int i = 0;
-        for (Integer index : indexes) {
-            indexesArray[i] = index;
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = indices.get(i);
         }
-        mover.move(indexesArray, up);
+        mover.move(indicesArray, up);
         refillValuesToIndexMap();
         objectHasChanged();
     }
