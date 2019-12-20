@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 public class DefaultUIController implements ValueChangeListener, UIController, FocusListener {
 
     /** list of mappings between edit fields and properties of model objects. */
-    protected List<FieldPropertyMapping> mappings = new ArrayList<FieldPropertyMapping>();
+    protected List<FieldPropertyMapping<?>> mappings = new ArrayList<>();
 
     /**
      * Adds an edit-field to this controller. The property with the given name has to be get- and
@@ -66,7 +66,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
                     + " does not have a property " + propertyName); //$NON-NLS-1$
         }
 
-        FieldPropertyMappingByPropertyDescriptor<T> mapping = new FieldPropertyMappingByPropertyDescriptor<T>(field,
+        FieldPropertyMappingByPropertyDescriptor<T> mapping = new FieldPropertyMappingByPropertyDescriptor<>(field,
                 object, property);
         addMapping(mapping);
 
@@ -88,7 +88,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
         return field;
     }
 
-    protected void addMapping(FieldPropertyMapping mapping) {
+    protected void addMapping(FieldPropertyMapping<?> mapping) {
         mappings.add(mapping);
         mapping.getField().addChangeListener(this);
         mapping.getField().getControl().addFocusListener(this);
@@ -97,8 +97,8 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
     @Override
     public void updateModel() {
         // defensive copy to avoid concurrent modification exceptions
-        List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
-        for (FieldPropertyMapping mapping : copy) {
+        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings);
+        for (FieldPropertyMapping<?> mapping : copy) {
             try {
                 mapping.setPropertyValue();
             } catch (Exception e) {
@@ -110,9 +110,9 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 
     @Override
     public void updateUI() {
-        List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings); // defensive
+        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings); // defensive
         // copy to avoid concurrent modification exceptions
-        for (FieldPropertyMapping mapping : copy) {
+        for (FieldPropertyMapping<?> mapping : copy) {
             try {
                 mapping.setControlValue();
             } catch (Exception e) {
@@ -124,9 +124,9 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings); // defensive
+        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings); // defensive
         // copy to avoid concurrent modification exceptions
-        for (FieldPropertyMapping mapping : copy) {
+        for (FieldPropertyMapping<?> mapping : copy) {
             if (e.field == mapping.getField()) {
                 try {
                     mapping.setPropertyValue();
@@ -145,9 +145,9 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
      * @param field The field to remove.
      */
     public void remove(EditField<?> field) {
-        ArrayList<FieldPropertyMapping> secureCopy = new ArrayList<FieldPropertyMapping>(mappings);
+        ArrayList<FieldPropertyMapping<?>> secureCopy = new ArrayList<>(mappings);
 
-        for (FieldPropertyMapping mapping : secureCopy) {
+        for (FieldPropertyMapping<?> mapping : secureCopy) {
             if (mapping.getField().equals(field)) {
                 mappings.remove(mapping);
                 field.removeChangeListener(this);
