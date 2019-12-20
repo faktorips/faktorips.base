@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.util.ArgumentCheck;
@@ -85,6 +86,22 @@ public class ListElementMover<T> implements IElementMover {
         T temp = list.get(index1);
         list.set(index1, list.get(index2));
         list.set(index2, temp);
+    }
+
+    public void moveToIndex(int[] selectedindices, int targetIndex, boolean insertBelow) {
+        if (targetIndex < 0 || targetIndex > list.size()) {
+            return;
+        }
+        List<T> buffer = new ArrayList<T>();
+        int delta = insertBelow ? 1 : 0;
+        for (int selectedInd : selectedindices) {
+            buffer.add(list.get(selectedInd));
+            if (selectedInd < targetIndex) {
+                delta--;
+            }
+        }
+        list.removeAll(buffer);
+        list.addAll(targetIndex + delta, buffer);
     }
 
 }

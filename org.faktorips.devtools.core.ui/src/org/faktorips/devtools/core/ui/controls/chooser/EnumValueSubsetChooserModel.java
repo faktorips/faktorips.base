@@ -86,9 +86,9 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
             return convertToListChooserValues(ValueListExtractor.extractValues((EnumDatatype)datatype,
                     sourceValueSet == null ? true : sourceValueSet.isContainsNull()));
         } else {
-            throw new IllegalArgumentException(
-                    NLS.bind(
-                            "Neither the value datatype {0} nor the value set {1} define an list of valid values (enum)", datatype, sourceValueSet)); //$NON-NLS-1$
+            throw new IllegalArgumentException(NLS.bind(
+                    "Neither the value datatype {0} nor the value set {1} define an list of valid values (enum)", //$NON-NLS-1$
+                    datatype, sourceValueSet));
         }
     }
 
@@ -135,8 +135,8 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         if (!getAllValues().contains(value)) {
             String text = NLS.bind(Messages.DefaultsAndRangesEditDialog_valueNotContainedInValueSet, value.getValue(),
                     getAllValues().toString());
-            messageList.add(new Message(
-                    "EnumValueSubsetChooserModel_ValueNotContainedInPredefinedValues", text, Message.ERROR)); //$NON-NLS-1$
+            messageList.add(new Message("EnumValueSubsetChooserModel_ValueNotContainedInPredefinedValues", text, //$NON-NLS-1$
+                    Message.ERROR));
         }
     }
 
@@ -148,6 +148,16 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
             indices.addAll(positions);
         }
         resultingEnumValueSet.move(indices, up);
+    }
+
+    @Override
+    protected void moveToPositionInternal(List<ListChooserValue> selectedValues, int targetIndex, boolean insertBelow) {
+        List<Integer> indices = new ArrayList<Integer>();
+        for (ListChooserValue value : selectedValues) {
+            List<Integer> positions = resultingEnumValueSet.getPositions(value.getValue());
+            indices.addAll(positions);
+        }
+        resultingEnumValueSet.move(indices, targetIndex, insertBelow);
     }
 
     private List<ListChooserValue> convertToValueList(List<String> stringList) {
@@ -167,5 +177,4 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         resultingEnumValueSet = newValueSet;
         fireValuesChangedEvents(oldValues);
     }
-
 }

@@ -81,6 +81,13 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
         updateMultiValueHolder();
     }
 
+    @Override
+    protected void moveToPositionInternal(List<ListChooserValue> selectedValues, int targetIndex, boolean insertBelow) {
+        ListElementMover<ListChooserValue> mover = new ListElementMover<ListChooserValue>(resultingValues);
+        mover.moveToIndex(getValueIndices(selectedValues), targetIndex, insertBelow);
+        updateMultiValueHolder();
+    }
+
     protected int[] getValueIndices(List<ListChooserValue> selectedValues) {
         int[] indices = new int[selectedValues.size()];
         for (int i = 0; i < selectedValues.size(); i++) {
@@ -109,5 +116,4 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
         resultingValues.addAll(values);
         updateMultiValueHolder();
     }
-
 }

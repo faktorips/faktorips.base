@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.controls.chooser;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -25,6 +24,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -140,12 +141,26 @@ public class SubsetChooserViewer {
                 moveSelectedValuesFromPreDefinedToResulting();
             }
         });
+
+        resultingValuesTableViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { SubsetChooserTransfer.getInstance() },
+                new SubsetChooserDragSourceAdapter(resultingValuesTableViewer, () -> model));
+
+        preDefinedValuesTableViewer.addDragSupport(DND.DROP_MOVE,
+                new Transfer[] { SubsetChooserTransfer.getInstance() },
+                new SubsetChooserDragSourceAdapter(preDefinedValuesTableViewer, () -> model));
+
+        resultingValuesTableViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { SubsetChooserTransfer.getInstance() },
+                new SubsetChooserDropListener(resultingValuesTableViewer));
+
+        preDefinedValuesTableViewer.addDropSupport(DND.DROP_MOVE,
+                new Transfer[] { SubsetChooserTransfer.getInstance() },
+                new SubsetChooserDropListener(preDefinedValuesTableViewer));
     }
 
     public void init(AbstractSubsetChooserModel model) {
         this.model = model;
-        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                model.getValueDatatype());
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(model.getValueDatatype());
         initTableColumns(preDefinedValuesTableViewer, ctrlFactory);
         initTableColumns(resultingValuesTableViewer, ctrlFactory);
 
@@ -209,13 +224,7 @@ public class SubsetChooserViewer {
     }
 
     private List<ListChooserValue> getSelectedValues(TableViewer tableViewer) {
-        IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
-        if (selection.isEmpty()) {
-            return new ArrayList<ListChooserValue>();
-        }
-        TypedSelection<ListChooserValue> typedSel = new TypedSelection<ListChooserValue>(ListChooserValue.class,
-                selection, selection.size());
-        return new ArrayList<ListChooserValue>(typedSel.getElements());
+        return TypedSelection.createAtLeast(ListChooserValue.class, tableViewer.getSelection(), 0).getElements();
     }
 
     protected IContentProvider createContentProvider(ListAccessor type) {
@@ -310,8 +319,8 @@ public class SubsetChooserViewer {
         public void update(ViewerCell cell) {
             ListChooserValue value = (ListChooserValue)cell.getElement();
             MessageList messages = model.validateValue(value);
-            cell.setImage(IpsUIPlugin.getImageHandling().getImage(
-                    IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false));
+            cell.setImage(IpsUIPlugin.getImageHandling()
+                    .getImage(IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false));
         }
 
         @Override

@@ -134,4 +134,14 @@ public interface IEnumValueSet extends IValueSet {
      */
     void move(List<Integer> indexes, boolean up);
 
+    /**
+     * Move all selected elements to a new index. The move does not maintain gaps in the selection.
+     * Moved items will be adjacent to one another.
+     * 
+     * @param indices The selected items' indices
+     * @param targetIndex New position for the moved elements
+     * @param insertBelow True if the selection is dropped on the lower edge of the target
+     */
+    void move(List<Integer> indices, int targetIndex, boolean insertBelow);
+
 }

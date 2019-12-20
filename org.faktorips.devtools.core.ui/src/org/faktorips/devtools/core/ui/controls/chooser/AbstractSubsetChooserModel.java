@@ -68,8 +68,8 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
     }
 
     protected void fireValuesChangedEvents(List<ListChooserValue> oldResultingValues) {
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldResultingValues,
-                getResultingValues()));
+        notifyListeners(
+                new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldResultingValues, getResultingValues()));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, null, null));
     }
 
@@ -110,6 +110,10 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
 
     protected abstract void moveInternal(List<ListChooserValue> selectedValues, boolean up);
 
+    protected abstract void moveToPositionInternal(List<ListChooserValue> selectedValues,
+            int targetIndex,
+            boolean insertBelow);
+
     public abstract MessageList validateValue(ListChooserValue value);
 
     protected void move(List<ListChooserValue> selectedValues, boolean up) {
@@ -131,6 +135,17 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
 
     public void moveDown(List<ListChooserValue> selectedValues) {
         move(selectedValues, false);
+    }
+
+    public int getIndexOfResultingValue(ListChooserValue value) {
+        List<ListChooserValue> allValues = getResultingValues();
+        return allValues.indexOf(value);
+    }
+
+    public void moveToPosition(List<ListChooserValue> selectedValues, int targetIndex, boolean insertBelow) {
+        List<ListChooserValue> oldValues = getResultingValues();
+        moveToPositionInternal(selectedValues, targetIndex, insertBelow);
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldValues, getResultingValues()));
     }
 
     @Override

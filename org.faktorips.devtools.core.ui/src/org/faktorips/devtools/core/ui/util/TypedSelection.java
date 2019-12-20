@@ -97,7 +97,7 @@ public class TypedSelection<T> {
     public TypedSelection(final Class<T> type, final ISelection selection, final int minElements,
             final int maxElements) {
         ArgumentCheck.notNull(type);
-        ArgumentCheck.isTrue(minElements > 0, "minElements must be positive: " + minElements); //$NON-NLS-1$
+        ArgumentCheck.isTrue(minElements >= 0, "minElements must not be negative: " + minElements); //$NON-NLS-1$
         ArgumentCheck.isTrue(minElements <= maxElements, "minElements <= maxElements: " + minElements + " <= " //$NON-NLS-1$ //$NON-NLS-2$
                 + maxElements);
 

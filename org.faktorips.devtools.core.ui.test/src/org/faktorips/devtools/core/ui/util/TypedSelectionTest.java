@@ -201,13 +201,13 @@ public class TypedSelectionTest {
     }
 
     /**
-     * Checks that the validator only accepts a positive minimum count.
+     * Checks that the validator only accepts count >= 0.
      */
     @Test
-    public void testPositiveMinimum() {
+    public void testMinimum() {
         boolean isThrown = false;
         try {
-            TypedSelection.create(String.class, new StructuredSelection(), 0);
+            TypedSelection.create(String.class, new StructuredSelection(), -1);
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
@@ -215,7 +215,7 @@ public class TypedSelectionTest {
 
         isThrown = false;
         try {
-            TypedSelection.create(String.class, new StructuredSelection(), 0, TypedSelection.INFINITY);
+            TypedSelection.create(String.class, new StructuredSelection(), -1, TypedSelection.INFINITY);
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }

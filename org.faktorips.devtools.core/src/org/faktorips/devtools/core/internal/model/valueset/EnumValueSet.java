@@ -113,6 +113,18 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
+    public void move(List<Integer> indices, int targetIndex, boolean insertBelow) {
+        ListElementMover<String> mover = new ListElementMover<String>(values);
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = indices.get(i);
+        }
+        mover.moveToIndex(indicesArray, targetIndex, insertBelow);
+        refillValuesToIndexMap();
+        objectHasChanged();
+    }
+
+    @Override
     public List<Integer> getPositions(String value) {
         List<Integer> positions = new ArrayList<Integer>();
         List<Integer> indexes = valuesToIndexMap.get(value);

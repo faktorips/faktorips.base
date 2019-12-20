@@ -293,6 +293,11 @@ public class DelegatingValueSet extends AtomicIpsObjectPart
     }
 
     @Override
+    public void move(List<Integer> indices, int targetIndex, boolean insertBelow) {
+        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+    }
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         AbstractValueSetValidator<?> validator = delegate.createValidator(getValueSetOwner(),
                 getValueSetOwner().findValueDatatype(ipsProject));
