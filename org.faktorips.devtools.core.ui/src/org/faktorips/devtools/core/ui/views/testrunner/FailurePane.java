@@ -123,6 +123,7 @@ public class FailurePane implements IMenuListener {
             try {
                 clipboard.setContents(new String[] { failureDetails }, new Transfer[] { plainTextTransfer });
             } catch (SWTError ignored) {
+                // ignore exception
             }
         }
     }

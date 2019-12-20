@@ -299,6 +299,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
                 }
                 return EMPTY_STRING + (char)ch;
             } catch (NumberFormatException e) {
+                // ignore exception
             }
         } else {
             String str = fgEntityLookup.get(symbol);

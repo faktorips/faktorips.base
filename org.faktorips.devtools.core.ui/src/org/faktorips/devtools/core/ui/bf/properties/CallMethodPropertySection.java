@@ -143,6 +143,7 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
     }
 
     protected void updateFromModel(ContentChangeEvent event) {
+        // used in subclasses
     }
 
     @Override

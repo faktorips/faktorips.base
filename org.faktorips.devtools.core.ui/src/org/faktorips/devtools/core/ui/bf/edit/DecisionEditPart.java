@@ -16,4 +16,5 @@ package org.faktorips.devtools.core.ui.bf.edit;
  * @author Peter Erzberger
  */
 public class DecisionEditPart extends AbstractDecisionEditPart {
+    // used in BusinessFunctionEditPartFactory
 }

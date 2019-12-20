@@ -11,5 +11,5 @@
 package org.faktorips.devtools.core.ui.bf.edit;
 
 public class CallMethodDecisionEditPart extends AbstractDecisionEditPart {
-
+    // used in BusinessFunctionEditPartFactory
 }

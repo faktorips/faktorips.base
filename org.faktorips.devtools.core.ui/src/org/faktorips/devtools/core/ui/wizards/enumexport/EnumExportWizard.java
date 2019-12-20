@@ -156,6 +156,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             saveDialogSettings();
 
         } catch (InterruptedException ignoredException) {
+            // ignore exception
         } catch (Exception e) {
             Throwable throwable = e;
             if (e instanceof InvocationTargetException) {

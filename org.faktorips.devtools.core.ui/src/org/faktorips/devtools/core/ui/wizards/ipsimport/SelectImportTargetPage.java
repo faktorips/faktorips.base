@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A wizard page where one can specify an IPS object as the target of an import.
@@ -163,7 +164,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      * Saves the dialog settings to be able to restore them on future instances of this wizard page.
      */
     public void saveWidgetValues() {
-
+        // nothing to do
     }
 
     @Override
@@ -184,8 +185,8 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
             setPageComplete(false);
             return;
         }
-        boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
-                && !"".equals(importTargetField.getText()); //$NON-NLS-1$
+        boolean complete = IpsStringUtils.isNotEmpty(projectField.getText())
+                && IpsStringUtils.isNotEmpty(importTargetField.getText());
         setPageComplete(complete);
     }
 

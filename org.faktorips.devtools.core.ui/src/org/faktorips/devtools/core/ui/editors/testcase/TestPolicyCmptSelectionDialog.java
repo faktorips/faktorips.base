@@ -173,6 +173,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
                     return;
                 }
             } catch (CoreException e) {
+                // ignore exception
             }
         }
         messageLabel.setText(NLS.bind(Messages.TestPolicyCmptSelectionDialog_Error_WrongType, filteredPolicyCmptType));
