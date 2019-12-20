@@ -11,8 +11,6 @@
 package org.faktorips.devtools.core.internal.model.bf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,24 +44,24 @@ import org.w3c.dom.Element;
 
 public class BusinessFunction extends BaseIpsObject implements IBusinessFunction {
 
-    private BFElementIpsObjectPartCollection simpleElements;
-    private BFElementIpsObjectPartCollection actions;
-    private BFElementIpsObjectPartCollection decisions;
-    private BFElementIpsObjectPartCollection parameters;
-    private BFElementIpsObjectPartCollection controlFlows;
+    private final BFElementIpsObjectPartCollection<IBFElement> simpleElements;
+    private final BFElementIpsObjectPartCollection<IActionBFE> actions;
+    private final BFElementIpsObjectPartCollection<IDecisionBFE> decisions;
+    private final BFElementIpsObjectPartCollection<IParameterBFE> parameters;
+    private final IpsObjectPartCollection<IControlFlow> controlFlows;
     private Dimension parameterRectangleSize = new Dimension(100, 100);
     private Point parameterRectangleLocation = new Point(10, 10);
 
     public BusinessFunction(IIpsSrcFile file) {
         super(file);
-        simpleElements = new BFElementIpsObjectPartCollection(this, BFElement.class, IBFElement.class,
+        simpleElements = new BFElementIpsObjectPartCollection<>(this, BFElement.class, IBFElement.class,
                 IBFElement.XML_TAG);
-        actions = new BFElementIpsObjectPartCollection(this, ActionBFE.class, IActionBFE.class, IActionBFE.XML_TAG);
-        decisions = new BFElementIpsObjectPartCollection(this, DecisionBFE.class, IDecisionBFE.class,
+        actions = new BFElementIpsObjectPartCollection<>(this, ActionBFE.class, IActionBFE.class, IActionBFE.XML_TAG);
+        decisions = new BFElementIpsObjectPartCollection<>(this, DecisionBFE.class, IDecisionBFE.class,
                 IDecisionBFE.XML_TAG);
-        parameters = new BFElementIpsObjectPartCollection(this, ParameterBFE.class, IParameterBFE.class,
+        parameters = new BFElementIpsObjectPartCollection<>(this, ParameterBFE.class, IParameterBFE.class,
                 IParameterBFE.XML_TAG);
-        controlFlows = new BFElementIpsObjectPartCollection(this, ControlFlow.class, IControlFlow.class,
+        controlFlows = new IpsObjectPartCollection<IControlFlow>(this, ControlFlow.class, IControlFlow.class,
                 IControlFlow.XML_TAG);
     }
 
@@ -145,7 +143,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
 
     @Override
     public IControlFlow newControlFlow() {
-        return (IControlFlow)controlFlows.newPart();
+        return controlFlows.newPart();
     }
 
     @Override
@@ -160,12 +158,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<IControlFlow> getControlFlows() {
-        IIpsObjectPart[] controlFlowParts = controlFlows.getParts();
-        ArrayList<IControlFlow> controlFlowList = new ArrayList<IControlFlow>(controlFlowParts.length);
-        controlFlowList.addAll((Collection)Arrays.asList(controlFlowParts));
-        return controlFlowList;
+        return new ArrayList<IControlFlow>(controlFlows.getBackingList());
     }
 
     @Override
@@ -225,17 +219,13 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElements() {
-        List<IBFElement> nodeList = new ArrayList<IBFElement>();
-        IIpsObjectPart[] bFParts = simpleElements.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = actions.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = decisions.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = parameters.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
+        int size = simpleElements.size() + actions.size() + decisions.size() + parameters.size();
+        List<IBFElement> nodeList = new ArrayList<IBFElement>(size);
+        nodeList.addAll(simpleElements.getBackingList());
+        nodeList.addAll(actions.getBackingList());
+        nodeList.addAll(decisions.getBackingList());
+        nodeList.addAll(parameters.getBackingList());
         return nodeList;
     }
 
@@ -518,36 +508,31 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElementsWithoutParameters() {
-        List<IBFElement> nodeList = new ArrayList<IBFElement>();
-        IIpsObjectPart[] bFParts = simpleElements.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = actions.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
-        bFParts = decisions.getParts();
-        nodeList.addAll((Collection)Arrays.asList(bFParts));
+        int size = simpleElements.size() + actions.size() + decisions.size();
+        List<IBFElement> nodeList = new ArrayList<IBFElement>(size);
+        nodeList.addAll(simpleElements.getBackingList());
+        nodeList.addAll(actions.getBackingList());
+        nodeList.addAll(decisions.getBackingList());
         return nodeList;
     }
 
-    private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection<BFElement> {
+    private static class BFElementIpsObjectPartCollection<T extends IBFElement> extends IpsObjectPartCollection<T> {
 
-        @SuppressWarnings("unchecked")
-        public BFElementIpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface,
-                String xmlTag) {
-
+        public BFElementIpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends T> partsClazz,
+                Class<T> publishedInterface, String xmlTag) {
             super(ipsObject, partsClazz, publishedInterface, xmlTag);
         }
 
         public IBFElement newBFElement(final Point location, final BFElementType type) {
-            IpsObjectPartInitializer<BFElement> initializer = new IpsObjectPartInitializer<BFElement>() {
-
+            IpsObjectPartInitializer<T> initializer = new IpsObjectPartInitializer<T>() {
                 @Override
-                public void initialize(BFElement part) {
-                    part.location = location;
-                    part.type = type;
+                public void initialize(T part) {
+                    ((BFElement)part).location = location;
+                    ((BFElement)part).type = type;
                 }
             };
+
             return newPart(initializer);
         }
 
