@@ -89,7 +89,7 @@ public class IpsObjectPartState {
         String typeName = typeAttr.getValue();
 
         try {
-            type = (Class<? extends IIpsObjectPart>)Class.forName(typeName);
+            type = Class.forName(typeName).asSubclass(IIpsObjectPart.class);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

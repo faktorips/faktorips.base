@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -113,8 +114,8 @@ public class ParameterMethodRefControl extends TextButtonControl {
 
     private class ParameterMethodCompletionProcessor extends AbstractCompletionProcessor {
         @Override
-        @SuppressWarnings("unchecked")
-        protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+        protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
+                throws Exception {
 
             String match = prefix.toLowerCase();
             for (IMethod method : getSelectableMethods()) {

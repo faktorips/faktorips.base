@@ -195,7 +195,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        RadioButtonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
+        RadioButtonGroup<?> group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
                 Messages.TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup);
         group.getComposite().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
