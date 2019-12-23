@@ -190,6 +190,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         return newName;
     }
 
+    @SuppressWarnings("deprecation")
     private void createTestCaseCopyTypeControls(Composite parent) {
         Composite root = toolkit.createComposite(parent);
         root.setLayout(new GridLayout(1, true));
@@ -442,8 +443,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 .getProductCmptNamingStrategy();
 
         for (ITestPolicyCmpt testPolicyCmpt : testObjects) {
-            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt
-                    .getIpsProject());
+            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt
+                    .findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
             if (parameter == null || !parameter.isRequiresProductCmpt()) {
                 cellEditors.add(null);
                 continue;
@@ -452,8 +453,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             if (productCmpt != null) {
                 // add only candidates with same kind id
                 String kindId = productCmptNamingStrategy.getKindId(productCmpt.getName());
-                IIpsSrcFile[] allowedProductCmpt = parameter
-                        .getAllowedProductCmpt(sourceTestCase.getIpsProject(), null);
+                IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(sourceTestCase.getIpsProject(),
+                        null);
 
                 List<String> content = new ArrayList<String>(allowedProductCmpt.length);
                 List<IIpsSrcFile> allowedProductCmptList = new ArrayList<IIpsSrcFile>(allowedProductCmpt.length);
@@ -615,8 +616,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == targetPackageRootField) {
             targetInput.setIpsPckFragmentRoot(targetPackageRootControl.getIpsPackageFragmentRoot());
-            targetInput.setIpsPackageFragment(targetPackageRootControl.getIpsPackageFragmentRoot()
-                    .getDefaultIpsPackageFragment());
+            targetInput.setIpsPackageFragment(
+                    targetPackageRootControl.getIpsPackageFragmentRoot().getDefaultIpsPackageFragment());
         } else if (e.field == checkboxFieldReplaceProductCmptManual) {
             tableViewer.getTable().setEnabled(false);
             needRecreateTarget = true;

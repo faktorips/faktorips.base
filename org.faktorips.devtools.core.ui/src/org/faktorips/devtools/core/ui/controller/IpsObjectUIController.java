@@ -92,7 +92,7 @@ public class IpsObjectUIController extends DefaultUIController {
      * @return the validation message list. Never returns <code>null</code>.
      */
     protected MessageList validatePartContainerAndUpdateUI() {
-        if (mappings.size() == 0) {
+        if (getMappings().size() == 0) {
             return new MessageList();
         }
         try {
@@ -101,7 +101,7 @@ public class IpsObjectUIController extends DefaultUIController {
                 validatee = partContainer.getIpsObject();
             }
             MessageList list = validatee.validate(partContainer.getIpsProject());
-            for (FieldPropertyMapping<?> mapping : mappings) {
+            for (FieldPropertyMapping<?> mapping : getMappings()) {
                 Control c = mapping.getField().getControl();
                 if (c == null || c.isDisposed()) {
                     continue;

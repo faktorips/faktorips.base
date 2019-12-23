@@ -56,8 +56,8 @@ public class EnumExportWizard extends IpsObjectExportWizard {
 
     public EnumExportWizard() {
         setWindowTitle(Messages.EnumExportWizard_title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/EnumExportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/EnumExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY_ENUM_EXPORT);
@@ -119,8 +119,8 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             if (exportFile.exists()) {
                 MessageDialog dialog = new MessageDialog(getContainer().getShell(),
                         Messages.EnumExportWizard_msgFileExistsTitle, (Image)null,
-                        Messages.EnumExportWizard_msgFileExists, MessageDialog.QUESTION, new String[] {
-                                IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
+                        Messages.EnumExportWizard_msgFileExists, MessageDialog.QUESTION,
+                        new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
 
                 if (dialog.open() != Window.OK) {
                     // User did not say "yes" to overwrite the file, so return to the wizard.
@@ -130,8 +130,8 @@ public class EnumExportWizard extends IpsObjectExportWizard {
 
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
                 @Override
-                protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                        InterruptedException {
+                protected void execute(IProgressMonitor monitor)
+                        throws CoreException, InvocationTargetException, InterruptedException {
                     MessageList messageList = new MessageList();
                     format.executeEnumExport(exportEnumContainer, new Path(exportFilename), nullRepresentation,
                             exportColumnHeaderRow, messageList);
@@ -157,12 +157,14 @@ public class EnumExportWizard extends IpsObjectExportWizard {
 
         } catch (InterruptedException ignoredException) {
             // ignore exception
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             Throwable throwable = e;
             if (e instanceof InvocationTargetException) {
-                throwable = ((InvocationTargetException)e).getCause();
+                throwable = e.getCause();
             }
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the export process.", throwable)); //$NON-NLS-1$
+            // CSON: IllegalCatch
         } finally {
             saveWidgetSettings();
         }

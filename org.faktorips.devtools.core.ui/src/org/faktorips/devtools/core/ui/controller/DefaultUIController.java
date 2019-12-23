@@ -36,7 +36,11 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 public class DefaultUIController implements ValueChangeListener, UIController, FocusListener {
 
     /** list of mappings between edit fields and properties of model objects. */
-    protected List<FieldPropertyMapping<?>> mappings = new ArrayList<>();
+    private List<FieldPropertyMapping<?>> mappings = new ArrayList<>();
+
+    protected List<FieldPropertyMapping<?>> getMappings() {
+        return mappings;
+    }
 
     /**
      * Adds an edit-field to this controller. The property with the given name has to be get- and
@@ -101,31 +105,35 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
         for (FieldPropertyMapping<?> mapping : copy) {
             try {
                 mapping.setPropertyValue();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
+                // CSON: IllegalCatch
             }
         }
     }
 
     @Override
     public void updateUI() {
-        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings); // defensive
-        // copy to avoid concurrent modification exceptions
+        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings);
+        // defensive copy to avoid concurrent modification exceptions
         for (FieldPropertyMapping<?> mapping : copy) {
             try {
                 mapping.setControlValue();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
+                // CSON: IllegalCatch
             }
         }
     }
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings); // defensive
-        // copy to avoid concurrent modification exceptions
+        List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<>(mappings);
+        // defensive copy to avoid concurrent modification exceptions
         for (FieldPropertyMapping<?> mapping : copy) {
             if (e.field == mapping.getField()) {
                 try {

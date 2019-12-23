@@ -43,7 +43,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class TableExportWizard extends IpsObjectExportWizard {
 
-    private static String DIALOG_SETTINGS_KEY = "TableExportWizard"; //$NON-NLS-1$
+    @SuppressWarnings("hiding")
+    private static final String DIALOG_SETTINGS_KEY = "TableExportWizard"; //$NON-NLS-1$
 
     /* The details-page of this wizard */
     private TableExportPage exportPage;
@@ -53,8 +54,8 @@ public class TableExportWizard extends IpsObjectExportWizard {
      */
     public TableExportWizard() {
         setWindowTitle(Messages.TableExport_title);
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/TableExportWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
@@ -101,8 +102,8 @@ public class TableExportWizard extends IpsObjectExportWizard {
             if (exportFile.exists()) {
                 MessageDialog dialog = new MessageDialog(getContainer().getShell(),
                         Messages.TableExportWizard_msgFileExistsTitle, (Image)null,
-                        Messages.TableExportWizard_msgFileExists, MessageDialog.QUESTION, new String[] {
-                                IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
+                        Messages.TableExportWizard_msgFileExists, MessageDialog.QUESTION,
+                        new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL }, 0);
 
                 if (dialog.open() != Window.OK) {
                     // user did not say "yes" to overwrite the file, so return to the wizard
@@ -112,8 +113,8 @@ public class TableExportWizard extends IpsObjectExportWizard {
 
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
                 @Override
-                protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                        InterruptedException {
+                protected void execute(IProgressMonitor monitor)
+                        throws CoreException, InvocationTargetException, InterruptedException {
                     MessageList messageList = new MessageList();
                     format.executeTableExport(exportContents, new Path(exportFilename), nullRepresentation,
                             exportColumnHeaderRow, messageList);
@@ -139,12 +140,14 @@ public class TableExportWizard extends IpsObjectExportWizard {
 
         } catch (InterruptedException ignoredException) {
             // ignore exception
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             Throwable throwable = e;
             if (e instanceof InvocationTargetException) {
-                throwable = ((InvocationTargetException)e).getCause();
+                throwable = e.getCause();
             }
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the export process.", throwable)); //$NON-NLS-1$
+            // CSON: IllegalCatch
         } finally {
             saveWidgetSettings();
         }
