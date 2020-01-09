@@ -12,7 +12,7 @@
     <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-03) (Linux) (Java11)"/>
     <booleanAttribute key="default" value="false"/>
     <booleanAttribute key="includeOptional" value="false"/>
-    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtestJava11"/>
+    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest.Java11"/>
     <mapAttribute key="org.eclipse.debug.core.environmentVariables">
         <mapEntry key="SWT_GTK3" value="0"/>
     </mapAttribute>
