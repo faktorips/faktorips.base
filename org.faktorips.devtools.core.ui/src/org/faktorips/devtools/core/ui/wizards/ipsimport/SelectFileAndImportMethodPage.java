@@ -123,7 +123,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
             importExistingAppendField.getCheckbox().setEnabled(true);
             if (!importExistingAppendField.getCheckbox().isChecked() && !importIntoNewField.getCheckbox().isChecked()
                     && !importExistingReplaceField.getCheckbox().isChecked()) {
-                importExistingAppendField.getCheckbox().setChecked(true);
+                importExistingReplaceField.getCheckbox().setChecked(true);
             }
         }
     }
@@ -146,7 +146,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
 
     /**
      * Validates the page and generates error messages if needed. Can be overridden in subclasses to
-     * add specific validation logic.s
+     * add specific validation logic.
      */
     protected void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
