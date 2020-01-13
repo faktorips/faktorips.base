@@ -43,10 +43,14 @@ public abstract class ProductClassBuilder<T extends XProductClass> extends Xtend
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
         if (ipsObject instanceof IPolicyCmptType) {
             IPolicyCmptType polCmptType = (IPolicyCmptType)ipsObject;
-            return polCmptType.isConfigurableByProductCmptType();
+            return isGeneratingArtifactsFor(polCmptType);
         } else {
             return false;
         }
+    }
+
+    protected boolean isGeneratingArtifactsFor(IPolicyCmptType polCmptType) {
+        return polCmptType.isConfigurableByProductCmptType();
     }
 
     @Override

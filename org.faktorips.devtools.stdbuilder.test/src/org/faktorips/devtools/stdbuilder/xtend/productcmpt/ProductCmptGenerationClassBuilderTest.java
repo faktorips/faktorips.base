@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptGenerationClassBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +35,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
 
     private ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder;
 
-    private IPolicyCmptType type;
+    private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private ProductCmpt productCmpt;
     private IProductCmptGeneration productCmptGen;
@@ -46,10 +45,10 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     public void setUp() throws Exception {
         super.setUp();
 
-        type = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
 
-        productCmptType = type.findProductCmptType(ipsProject);
-        type.getIpsSrcFile().save(true, null);
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        policyCmptType.getIpsSrcFile().save(true, null);
 
         productCmpt = newProductCmpt(productCmptType, "Product");
         productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
@@ -69,7 +68,8 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
 
     @Test
     public void testBuild_buildJavaFileIntoSrcFolder() throws CoreException {
-        // build should not throw an exception even if the reference to the type is missing
+        // build should not throw an exception even if the reference to the policyCmptType is
+        // missing
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
@@ -123,6 +123,22 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
         productCmptType.setChangingOverTime(true);
 
         assertTrue(productCmptGenerationClassBuilder.isBuilderFor(productCmptType.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testIsGeneratingArtifactsFor_trueIf_PolicyCmptType_ChangingOverTime() throws CoreException {
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        productCmptType.setChangingOverTime(true);
+
+        assertTrue(productCmptGenerationClassBuilder.isGeneratingArtifactsFor(policyCmptType.getIpsObject()));
+    }
+
+    @Test
+    public void testIsGeneratingArtifactsFor_falseIf_PolicyCmptType_NotChangingOverTime() throws CoreException {
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        productCmptType.setChangingOverTime(false);
+
+        assertFalse(productCmptGenerationClassBuilder.isGeneratingArtifactsFor(policyCmptType.getIpsObject()));
     }
 
     private IFile createProductCmptGenerationFileFromSrcFolder() {

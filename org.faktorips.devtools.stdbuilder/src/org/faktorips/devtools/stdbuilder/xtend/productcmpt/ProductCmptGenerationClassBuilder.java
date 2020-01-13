@@ -15,6 +15,7 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
@@ -49,6 +50,15 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
         }
         return false;
 
+    }
+
+    @Override
+    protected boolean isGeneratingArtifactsFor(IPolicyCmptType polCmptType) {
+        if (polCmptType.isConfigurableByProductCmptType()) {
+            IProductCmptType productCmptType = polCmptType.findProductCmptType(polCmptType.getIpsProject());
+            return productCmptType.isChangingOverTime();
+        }
+        return false;
     }
 
     /**
