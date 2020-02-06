@@ -418,7 +418,9 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                         if (list == null) {
                             list = new ArrayList<IEnumType>();
                         }
-                        list.add(currentEnumType);
+                        if (!list.contains(currentEnumType)) {
+                            list.add(currentEnumType);
+                        }
                         treeStructure.put(pack, list);
                         if (!(elements.contains(pack))) {
                             elements.add(pack);
