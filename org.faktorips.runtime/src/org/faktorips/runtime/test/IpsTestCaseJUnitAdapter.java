@@ -14,6 +14,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.values.ObjectUtil;
+
 import junit.framework.TestCase;
 
 /**
@@ -106,7 +108,11 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
     }
 
     private void appendFormatted(StringBuilder sb, String pattern, Object value) {
-        if (value != null) {
+        if (value == null) {
+            sb.append(MessageFormat.format(pattern, "<null>"));
+        } else if (ObjectUtil.isNullObject(value)) {
+            sb.append(MessageFormat.format(pattern, value.toString()));
+        } else {
             sb.append(MessageFormat.format(pattern, value));
         }
     }

@@ -22,7 +22,7 @@ public class ObjectUtil {
     }
 
     /**
-     * Returns <code>true</code> if this object is either <code>null</code> or a NullObject.
+     * Returns <code>true</code> if this object is either <code>null</code> or a {@link NullObject}.
      * 
      * @see NullObject
      */
@@ -30,7 +30,11 @@ public class ObjectUtil {
         return o == null || isNullObject(o);
     }
 
-    protected static boolean isNullObject(Object o) {
+    /**
+     * Returns whether the given object implements {@link NullObjectSupport} and
+     * {@link NullObjectSupport#isNull() is null}.
+     */
+    public static boolean isNullObject(Object o) {
         return o instanceof NullObject || (o instanceof NullObjectSupport && ((NullObjectSupport)o).isNull());
     }
 
