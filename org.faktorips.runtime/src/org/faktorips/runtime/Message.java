@@ -583,9 +583,9 @@ public class Message implements Serializable {
      */
     public static class Builder {
 
-        private final String text;
+        private String text;
 
-        private final Severity severity;
+        private Severity severity;
 
         private String code;
 
@@ -629,6 +629,28 @@ public class Message implements Serializable {
          */
         public Builder code(String code) {
             this.code = code;
+            return this;
+        }
+
+        /**
+         * Set the message's text which is human readable.
+         * 
+         * @param text The human readable text of this message
+         * @return This builder instance to directly add further properties
+         */
+        public Builder text(String text) {
+            this.text = text;
+            return this;
+        }
+
+        /**
+         * Set the message's severity, in exact {@link #ERROR}, {@link #WARNING} or {@link #INFO}.
+         * 
+         * @param severity Severity of the message: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+         * @return This builder instance to directly add further properties
+         */
+        public Builder severity(Severity severity) {
+            this.severity = severity;
             return this;
         }
 
