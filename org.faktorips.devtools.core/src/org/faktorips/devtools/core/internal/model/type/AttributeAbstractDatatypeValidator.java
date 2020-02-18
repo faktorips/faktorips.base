@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.productcmpttype;
+package org.faktorips.devtools.core.internal.model.type;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
@@ -39,16 +39,16 @@ public class AttributeAbstractDatatypeValidator {
     public void validateNotAbstractDatatype(MessageList list) {
         ValueDatatype datatype = attribute.findDatatype(ipsProject);
         if (datatype != null && datatype.isAbstract()) {
-            String text = NLS.bind(Messages.ProductCmptType_error_abstractDatatypeInAttribute, attribute.getName());
+            String text = NLS.bind(Messages.AttributeAbstractDatatypeValidator_msg, attribute.getName());
             ObjectProperty[] invalidObjects;
             if (!attribute.isOfType(getQualifiedNameType())) {
-                text += Messages.ProductCmptType_hint_abstractDatatypeInAttribute;
+                text += Messages.AttributeAbstractDatatypeValidator_hint;
                 invalidObjects = new ObjectProperty[] { getAbstractProperty() };
             } else {
                 invalidObjects = new ObjectProperty[] { getDatatypeProperty(), getAbstractProperty() };
             }
-            list.newError(IType.MSGCODE_ABSTRACT_MISSING, text, invalidObjects);
 
+            list.newError(IType.MSGCODE_ABSTRACT_MISSING, text, invalidObjects);
         }
     }
 

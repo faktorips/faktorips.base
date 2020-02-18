@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
-import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -31,7 +30,6 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AttributeProperty;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -280,32 +278,18 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
-        validateAbstractDatatype(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
         validateChangingOverTimeFlag(result);
     }
 
-    private void validateAbstractDatatype(MessageList result, IIpsProject ipsProject) {
-        if (!getType().isAbstract()) {
-            new AttributeAbstractDatatypeValidator(this, ipsProject).validateNotAbstractDatatype(result);
-        }
-    }
-
-    @Override
-    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
-        if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
-            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE, NLS.bind(
-                    Messages.ProductCmptTypeAttribute_error_incompatibleDatatypes, getName()), Message.ERROR, this,
-                    PROPERTY_DATATYPE));
-        }
-    }
-
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
         if (!getAllowedValueSetTypes(getIpsProject()).contains(getValueSet().getValueSetType())) {
-            result.add(Message.newError(MSGCODE_INVALID_VALUE_SET, NLS.bind(
-                    Messages.ProductCmptTypeAttribute_msg_invalidValueSet, getValueSet().getValueSetType().getName(),
-                    getPropertyName()), this, PROPERTY_VALUE_SET));
+            result.add(
+                    Message.newError(MSGCODE_INVALID_VALUE_SET,
+                            NLS.bind(Messages.ProductCmptTypeAttribute_msg_invalidValueSet,
+                                    getValueSet().getValueSetType().getName(), getPropertyName()),
+                            this, PROPERTY_VALUE_SET));
         }
     }
 

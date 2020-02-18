@@ -333,6 +333,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
+        datatypeControl.setAbstractAllowed(true);
         getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
@@ -700,8 +701,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             defaultValueField.getControl().setEnabled(enabled);
         }
         if (valueSetSpecificationControl != null) {
-            valueSetSpecificationControl.setEditMode(attribute.isProductRelevant()
-                    ? ValueSetControlEditMode.ALL_KIND_OF_SETS : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+            valueSetSpecificationControl
+                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }

@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +31,7 @@ import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -67,25 +71,47 @@ import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
+    private static final String ABSTRACT_PARENT_ENUM = "SuperEnumType";
+    private static final String CONCRETE_CHILD_ENUM = "EnumType";
+    private static final String ATTR1 = "attr1";
+
     private IIpsPackageFragment pack;
     private IIpsSrcFile sourceFile;
-    private PolicyCmptType policyCmptType;
     private IIpsProject ipsProject;
+
+    private PolicyCmptType policyCmptType;
+    private PolicyCmptType superPolicyCmptType;
+    private PolicyCmptType superSuperPolicyCmptType;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
+
         policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
         policyCmptType.setConfigurableByProductCmptType(false);
+        superPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperTestPolicy");
+        superPolicyCmptType.setConfigurableByProductCmptType(false);
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+        superSuperPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperSuperTestPolicy");
+        superSuperPolicyCmptType.setConfigurableByProductCmptType(false);
+        superPolicyCmptType.setSupertype(superSuperPolicyCmptType.getQualifiedName());
+
+        EnumType superEnum = newEnumType(ipsProject, ABSTRACT_PARENT_ENUM);
+        superEnum.setAbstract(true);
+        EnumType enumType = newEnumType(ipsProject, CONCRETE_CHILD_ENUM);
+        enumType.setSuperEnumType(CONCRETE_CHILD_ENUM);
+
         sourceFile = policyCmptType.getIpsSrcFile();
         pack = policyCmptType.getIpsPackageFragment();
     }
@@ -210,8 +236,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.setProductCmptType("Unkown");
         assertNull(policyCmptType.findProductCmptType(ipsProject));
 
-        IProductCmptType productCmptType = newProductCmptType(ipsProject, policyCmptType.getIpsPackageFragment()
-                .getName() + ".Product");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject,
+                policyCmptType.getIpsPackageFragment().getName() + ".Product");
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         assertSame(productCmptType, policyCmptType.findProductCmptType(ipsProject));
     }
@@ -568,8 +594,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         // no longer expected since we have introduced a DatatypeDependency
         IDependency[] dependencies = type.dependsOn();
         List<IDependency> nameTypeList = Arrays.asList(dependencies);
-        IDependency dependency = new DatatypeDependency(type.getQualifiedNameType(), enumType.getQualifiedNameType()
-                .getName());
+        IDependency dependency = new DatatypeDependency(type.getQualifiedNameType(),
+                enumType.getQualifiedNameType().getName());
         assertTrue(nameTypeList.contains(dependency));
         assertSingleDependencyDetail(type, dependency, aAttr, IAttribute.PROPERTY_DATATYPE);
     }
@@ -598,9 +624,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         ipsProject.setProperties(props);
         AggregateRootBuilderSet builderSet = new AggregateRootBuilderSet();
         builderSet.setIpsProject(ipsProject);
-        ((IpsModel)ipsProject.getIpsModel())
-                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                        builderSet) });
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
+                new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
 
         List<IDependency> dependsOn = Arrays.asList(a.dependsOn());
         IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(),
@@ -810,17 +835,17 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.setConfigurableByProductCmptType(true);
 
         MessageList ml = superPcType.validate(superPcType.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
+        assertNull(ml.getMessageByCode(
+                IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
 
         ml = policyCmptType.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
+        assertNull(ml.getMessageByCode(
+                IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
 
         superPcType.setConfigurableByProductCmptType(true);
         ml = policyCmptType.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
+        assertNull(ml.getMessageByCode(
+                IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
 
     @Test
@@ -1031,8 +1056,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertEquals(attribute.getDefaultValue(), overriddenAttribute.getDefaultValue());
         assertEquals(attribute.getValueSet().getValueSetType(), overriddenAttribute.getValueSet().getValueSetType());
         for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
-            assertEquals(attribute.getDescriptions().get(i).getText(), overriddenAttribute.getDescriptions().get(i)
-                    .getText());
+            assertEquals(attribute.getDescriptions().get(i).getText(),
+                    overriddenAttribute.getDescriptions().get(i).getText());
         }
         assertTrue(overriddenAttribute.isOverwrite());
     }
@@ -1076,6 +1101,82 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         // only the second to find
         assertEquals(1, findOverrideAttributeCandidates.size());
         assertEquals("NotOverride", findOverrideAttributeCandidates.get(0).getName());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_abstractSubtype() throws Exception {
+        IAttribute superAttr1 = superPolicyCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        policyCmptType.setAbstract(true);
+
+        MessageList list = new MessageList();
+        policyCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertThat(list, isEmpty());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_noErrors() throws Exception {
+        IAttribute superAttr1 = superPolicyCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        IAttribute attr1 = policyCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(CONCRETE_CHILD_ENUM);
+
+        MessageList list = new MessageList();
+        policyCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertThat(list, isEmpty());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_noErrors_MultiSubclass() throws Exception {
+        superSuperPolicyCmptType.newAttribute();
+        IAttribute superAttr1 = superSuperPolicyCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        IAttribute attr1 = superPolicyCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(CONCRETE_CHILD_ENUM);
+
+        MessageList list = new MessageList();
+        policyCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertThat(list, isEmpty());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_notOverwritten() throws Exception {
+        IAttribute superAttr1 = superPolicyCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        MessageList list = new MessageList();
+
+        policyCmptType.validateAbstractAttributes(list, ipsProject);
+
+        Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
+        assertThat(message, hasInvalidObject(new ObjectProperty(policyCmptType, IType.PROPERTY_ABSTRACT)));
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_overwrittenAbstractType() throws Exception {
+        IAttribute superAttr1 = superPolicyCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        IAttribute attr1 = policyCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(ABSTRACT_PARENT_ENUM);
+
+        MessageList list = policyCmptType.validate(ipsProject);
+
+        Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
+        assertThat(message, hasInvalidObject(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE)));
+        assertThat(message, hasInvalidObject(new ObjectProperty(policyCmptType, IType.PROPERTY_ABSTRACT)));
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

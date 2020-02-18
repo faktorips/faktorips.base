@@ -20,6 +20,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -167,8 +168,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
         super.validateThis(result, ipsProject);
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
-            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msg_InvalidAttributeName + name
-                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME,
+                    Messages.Attribute_msg_InvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
@@ -181,7 +182,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
                         PROPERTY_DEFAULT_VALUE));
             }
         }
+
         validateOverwritingAttribute(result, ipsProject);
+        validateAbstractDatatype(result, ipsProject);
     }
 
     private void validateOverwritingAttribute(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -189,8 +192,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
             IAttribute superAttr = findOverwrittenAttribute(ipsProject);
             if (superAttr == null) {
                 String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
-                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
-                        PROPERTY_OVERWRITES, PROPERTY_NAME }));
+                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this,
+                        new String[] { PROPERTY_OVERWRITES, PROPERTY_NAME }));
             } else {
                 validateAgainstOverwrittenAttribute(result, superAttr);
             }
@@ -223,7 +226,19 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return isChangingOverTime() != superAttr.isChangingOverTime();
     }
 
-    protected abstract void validateOverwrittenDatatype(IAttribute superAttr, MessageList result);
+    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
+        if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE,
+                    NLS.bind(Messages.Attribute_msg_Overwritten_type_incompatible, getName()), Message.ERROR, this,
+                    PROPERTY_DATATYPE));
+        }
+    }
+
+    protected void validateAbstractDatatype(MessageList result, IIpsProject ipsProject) {
+        if (!getType().isAbstract()) {
+            new AttributeAbstractDatatypeValidator(this, ipsProject).validateNotAbstractDatatype(result);
+        }
+    }
 
     private void validateNullIncompatible(MessageList list, IValueSet modelValueSet) {
         new ValueSetNullIncompatibleValidator(modelValueSet, getValueSet()).validateAndAppendMessages(list);
@@ -281,8 +296,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     private void addMessageDefaultValueNotInValueSet(String defaultValueToValidate, MessageList result) {
-        result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msg_DefaultNotInValueset,
-                defaultValueToValidate), Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
+        result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET,
+                NLS.bind(Messages.Attribute_msg_DefaultNotInValueset, defaultValueToValidate), Message.WARNING, this,
+                PROPERTY_DEFAULT_VALUE));
     }
 
 }

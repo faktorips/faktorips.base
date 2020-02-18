@@ -3068,7 +3068,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         MessageList list = new MessageList();
         productCmptType.validateAbstractAttributes(list, ipsProject);
 
-        Message message = list.getMessageByCode(IProductCmptType.MSGCODE_ABSTRACT_MISSING);
+        Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertNotNull(message);
         assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
                 message.getInvalidObjectProperties()[0]);
@@ -3086,7 +3086,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         MessageList list = productCmptType.validate(ipsProject);
 
-        Message message = list.getMessageByCode(IProductCmptType.MSGCODE_ABSTRACT_MISSING);
+        Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertNotNull(message);
         assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE), message.getInvalidObjectProperties()[0]);
         assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),

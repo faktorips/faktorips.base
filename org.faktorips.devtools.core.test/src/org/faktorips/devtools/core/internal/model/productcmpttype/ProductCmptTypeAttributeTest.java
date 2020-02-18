@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 
 import java.util.Arrays;
 import java.util.List;
@@ -497,29 +497,29 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setChangingOverTime(false);
 
         MessageList ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(true);
         productAttribute.setChangingOverTime(true);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(false);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(true);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -542,8 +542,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         ProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
@@ -551,13 +550,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype("Integer");
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         attribute.setDatatype(superAttr.getDatatype());
         ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test
@@ -571,14 +568,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype(SUPER_ENUM_TYPE);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         superAttr.setDatatype(ENUM_TYPE);
         attribute.setDatatype(SUPER_ENUM_TYPE);
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test
@@ -593,7 +588,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList list = productCmptType.validate(ipsProject);
 
-        Message message = list.getMessageByCode(IProductCmptType.MSGCODE_ABSTRACT_MISSING);
+        Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertNotNull(message);
         assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE), message.getInvalidObjectProperties()[0]);
         assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
