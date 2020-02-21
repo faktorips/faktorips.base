@@ -33,10 +33,12 @@ class PolicyCmptInterfaceTmpl {
                 «FOR it : associations» «constants» «ENDFOR»
                 «FOR it : validationRules» «constants» «ENDFOR»
 
-                «FOR it : attributes»
+                «FOR it : attributesIncludingAbstract»
                     «IF published»
                         «constantForPropertyName»
-                        «constantForValueSet»
+                        «IF !abstract»
+                          «constantForValueSet»
+                        «ENDIF»
                     «ENDIF»
                 «ENDFOR»
 
@@ -46,7 +48,7 @@ class PolicyCmptInterfaceTmpl {
                     «ENDIF»
                 «ENDFOR»
 
-                «FOR it : attributes»
+                «FOR it : attributesIncludingAbstract»
                     «IF published»
                         «allowedValuesMethod»
                         «getter»

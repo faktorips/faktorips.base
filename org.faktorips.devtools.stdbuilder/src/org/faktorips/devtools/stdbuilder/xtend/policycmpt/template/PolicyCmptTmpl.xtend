@@ -42,7 +42,7 @@ def static  String body (XPolicyCmptClass it) '''
             «FOR it : validationRules» «constants» «ENDFOR»
         «ENDIF»
 
-        «FOR it : attributes»
+        «FOR it : attributesIncludingAbstract»
             «IF !published || !generatePublishedInterfaces»
                 «PolicyCmptAttributeTmpl.constantForPropertyName(it)»
                 «PolicyCmptAttributeTmpl.constantForValueSet(it)»
@@ -83,16 +83,27 @@ def static  String body (XPolicyCmptClass it) '''
         «FOR it : associations» «PolicyCmptAssociationTmpl.field(it)» «ENDFOR»
 
         «constructors»
-
+        
+        «FOR it : attributesIncludingAbstract»
+            «IF generateAbstractMethods»
+                «abstractGetter»
+                «abstractSetter»
+            «ENDIF»
+        «ENDFOR»
+        
         «IF generateConvenienceGetters»
             «FOR attributes : productAttributes» «getterForProductAttributes(it, attributes)» «ENDFOR»
         «ENDIF»
+        
+        
 
-        «FOR it : attributes»
+        «FOR it : attributesIncludingAbstract»
             «allowedValuesMethod»
-            «getter»
-            «setter»
-            «setterInternal»
+            «IF !it.isAbstract»
+                «getter»
+                «setter»
+                «setterInternal»
+            «ENDIF»
         «ENDFOR»
 
         «FOR it : associations» «methods» «ENDFOR»

@@ -64,7 +64,7 @@ class ProductComponentTmpl {
             */
                 public «method(implClassName, IRuntimeRepository, "repository", "String", "id", "String", "kindId", "String", "versionId")» {
                     super(repository, id, kindId, versionId);
-                    «FOR it : attributesInclOverwritten» «setDefaultValue» «ENDFOR»
+                    «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»
                 }
 
                 «IF generateGenerationAccessMethods»
@@ -83,14 +83,14 @@ class ProductComponentTmpl {
                     }
                 «ENDIF»
 
-                «FOR it : attributesInclOverwritten»
-                    «IF generateAbstractGetter»
+                «FOR it : attributesIncludingNoContentGeneration»
+                    «IF generateAbstractMethods»
                         «abstractGetter»
                     «ENDIF»
                 «ENDFOR»
 
                 «FOR it : attributes» «getterSetter» «ENDFOR»
-                «FOR it : configuredAttributes» «getter» «ENDFOR»
+                «FOR it : configuredAttributesIncludingAbstract» «getter» «ENDFOR»
 
                 «FOR it : associations» «getterSetterAdder» «ENDFOR»
                 «FOR it : tables» «getterAndSetter» «ENDFOR»

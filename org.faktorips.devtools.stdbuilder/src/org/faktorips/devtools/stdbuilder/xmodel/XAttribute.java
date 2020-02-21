@@ -70,7 +70,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
 
     public String fieldPropertyNameSuffix() {
         return getGeneratorConfig().isGenerateSeparatedCamelCase()
-                ? StringUtil.camelCaseToUnderscore(getName()).toUpperCase() : getName().toUpperCase();
+                ? StringUtil.camelCaseToUnderscore(getName()).toUpperCase()
+                : getName().toUpperCase();
     }
 
     /**
@@ -210,5 +211,20 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
                 return "";
             }
         }
+    }
+
+    /**
+     * Checks whether the attribute is abstract or not. The attribute is abstract if its datatype is
+     * an abstract datatype.
+     */
+    public boolean isAbstract() {
+        return getDatatype().isAbstract();
+    }
+
+    /**
+     * Returns <code>true</code> if abstract getters should be generated for this attribute.
+     */
+    public boolean isGenerateAbstractMethods() {
+        return !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()) && isAbstract() && !isOverwrite();
     }
 }

@@ -15,6 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -83,30 +85,25 @@ public abstract class XProductClass extends XType {
      */
     public abstract boolean isChangeOverTimeClass();
 
+    /**
+     * Returns all declared attributes that are applicable for content generation
+     * 
+     * @implNote For a set of all declared attributes use
+     *           {@link #getAttributesIncludingNoContentGeneration()}.
+     * 
+     * @return a set of all attributes relevant for content generation
+     */
     @Override
     public Set<XProductAttribute> getAttributes() {
-        if (isCached(XProductAttribute.class)) {
-            return filterAttributes(getCachedObjects(XProductAttribute.class));
-        } else {
-            Set<XProductAttribute> nodesForParts = initNodesForParts(getAttributesInternal(isChangeOverTimeClass()),
-                    XProductAttribute.class);
-            putToCache(nodesForParts);
-            return filterAttributes(nodesForParts);
-        }
+        return filterAttributes(getAttributesIncludingNoContentGeneration());
     }
 
     protected Set<XProductAttribute> filterAttributes(Set<XProductAttribute> xAttributes) {
-        LinkedHashSet<XProductAttribute> result = new LinkedHashSet<XProductAttribute>(xAttributes);
-        for (Iterator<XProductAttribute> iterator = result.iterator(); iterator.hasNext();) {
-            XProductAttribute xProductAttribute = iterator.next();
-            if (!xProductAttribute.isGenerateContentCode()) {
-                iterator.remove();
-            }
-        }
-        return result;
+        return xAttributes.stream().filter(XProductAttribute::isGenerateContentCode)
+                .collect(Collectors.toCollection(LinkedHashSet<XProductAttribute>::new));
     }
 
-    public Set<XProductAttribute> getAttributesInclOverwritten() {
+    public Set<XProductAttribute> getAttributesIncludingNoContentGeneration() {
         if (isCached(XProductAttribute.class)) {
             return getCachedObjects(XProductAttribute.class);
         } else {
@@ -137,13 +134,20 @@ public abstract class XProductClass extends XType {
     }
 
     public Set<XPolicyAttribute> getConfiguredAttributes() {
+        return getConfiguredAttributes(a -> true);
+    }
+
+    public Set<XPolicyAttribute> getConfiguredAttributes(Predicate<XPolicyAttribute> filter) {
+        Set<XPolicyAttribute> attributes;
         if (isCached(XPolicyAttribute.class)) {
-            return getCachedObjects(XPolicyAttribute.class);
+            attributes = getCachedObjects(XPolicyAttribute.class);
         } else {
             Set<XPolicyAttribute> nodesForParts = getConfiguredAttributesInternal();
             putToCache(nodesForParts);
-            return nodesForParts;
+            attributes = nodesForParts;
         }
+        return attributes.stream().filter(filter)
+                .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
     }
 
     /**
@@ -158,14 +162,10 @@ public abstract class XProductClass extends XType {
             if (!policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
                 return resultingAttributes;
             }
-            Set<XPolicyAttribute> allAttributes = policyCmptClass.getAttributes();
-            for (XPolicyAttribute attr : allAttributes) {
-                if (attr.isProductRelevant()) {
-                    if (attr.isGenerateGetAllowedValuesForAndGetDefaultValue()) {
-                        resultingAttributes.add(attr);
-                    }
-                }
-            }
+            return policyCmptClass.getAttributes().stream()
+                    .filter(a -> a.isProductRelevant() && a.isGenerateGetAllowedValuesForAndGetDefaultValue())
+                    .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+
         }
         return resultingAttributes;
     }

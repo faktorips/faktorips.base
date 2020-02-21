@@ -104,14 +104,11 @@ public class XProductCmptClass extends XProductClass {
 
     @Override
     public Set<XPolicyAttribute> getConfiguredAttributes() {
-        Set<XPolicyAttribute> attributes = super.getConfiguredAttributes();
-        Set<XPolicyAttribute> nonChangingOverTimeAttributes = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : attributes) {
-            if (!attribute.isChangingOverTime()) {
-                nonChangingOverTimeAttributes.add(attribute);
-            }
-        }
-        return nonChangingOverTimeAttributes;
+        return getConfiguredAttributes(a -> !a.isChangingOverTime() && !a.isAbstract());
+    }
+
+    public Set<XPolicyAttribute> getConfiguredAttributesIncludingAbstract() {
+        return getConfiguredAttributes(a -> !a.isChangingOverTime());
     }
 
 }

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -217,8 +218,24 @@ public class XPolicyCmptClass extends XType {
         return getClassHierarchy(XPolicyCmptClass.class);
     }
 
+    /**
+     * Returns all declared attributes without abstract attributes
+     * 
+     * @implNote For a set of all declared attributes use {@link #getAttributesIncludingAbstract()}.
+     * 
+     * @return a set of all concrete attributes
+     */
     @Override
     public Set<XPolicyAttribute> getAttributes() {
+        return filterAbstractAttributes(getAllDeclaredAttributes());
+    }
+
+    protected Set<XPolicyAttribute> filterAbstractAttributes(Set<XPolicyAttribute> xAttributes) {
+        return xAttributes.stream().filter(a -> !a.isAbstract())
+                .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+    }
+
+    public Set<XPolicyAttribute> getAttributesIncludingAbstract() {
         return getAllDeclaredAttributes();
     }
 

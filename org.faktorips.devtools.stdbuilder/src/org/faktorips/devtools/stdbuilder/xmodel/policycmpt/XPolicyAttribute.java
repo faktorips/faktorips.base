@@ -100,7 +100,7 @@ public class XPolicyAttribute extends XAttribute {
             boolean getterIsDefinedHere = !isOverwrite() || generatingInterface
                     || !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
             boolean attributeIsOrOverridesDerivedOnTheFly = isDerivedOnTheFly() || isOverwritingDerivedOnTheFly();
-            return getterIsDefinedHere || attributeIsOrOverridesDerivedOnTheFly;
+            return getterIsDefinedHere || attributeIsOrOverridesDerivedOnTheFly || isOverwriteAbstract();
         }
     }
 
@@ -117,7 +117,8 @@ public class XPolicyAttribute extends XAttribute {
      * Returns true for all attributes except for derived, constant and overridden attributes.
      */
     public boolean isGenerateSetter() {
-        return !isDerived() && !isConstant() && (!isOverwrite() || isAttributeTypeChangedByOverwrite());
+        boolean noDuplicateOverwrite = !isOverwrite() || isAttributeTypeChangedByOverwrite() || isOverwriteAbstract();
+        return !isDerived() && !isConstant() && noDuplicateOverwrite;
     }
 
     /**
@@ -128,6 +129,10 @@ public class XPolicyAttribute extends XAttribute {
      */
     public boolean isGenerateSetterInternal() {
         return isGenerateSetter() && getGeneratorConfig().isGenerateChangeSupport();
+    }
+
+    public boolean isOverwriteAbstract() {
+        return isOverwrite() && getOverwrittenAttribute().isAbstract();
     }
 
     public boolean isDerived() {
@@ -164,18 +169,32 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns the java class name for value set. For example an
-     * <code>ValueSet&lt;Integer&gt;</code>
+     * Returns the java class name for value set. For example <code>ValueSet&lt;Integer&gt;</code>
      * 
      * @return The class name of the value set
      */
     public String getValueSetJavaClassName() {
+        return getValueSetJavaClassName(false);
+    }
+
+    /**
+     * Returns the java class name for value set with wildcard type. For example an
+     * <code>ValueSet&lt;? extends AbstractEnumType&gt;</code>
+     * 
+     * @return the class name of the value set
+     */
+    public String getValueSetJavaClassNameWithWildcard() {
+        return getValueSetJavaClassName(true);
+    }
+
+    private String getValueSetJavaClassName(boolean useWildcards) {
+        String wildcards = useWildcards ? "? extends " : "";
         if (isValueSetUnrestricted() || isValueSetDerived()) {
             String valueSetClass = addImport(ValueSet.class);
-            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+            return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetEnum()) {
             String valueSetClass = addImport(OrderedValueSet.class);
-            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+            return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetRange()) {
             // call this method to add import statement the type
             getValuesetDatatypeHelper().getJavaClassName();
@@ -342,7 +361,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     private boolean isConcreteOrNotProductRelevant() {
-        return !isAbstractValueSet() || !isProductRelevant();
+        return !isAbstract() && (!isAbstractValueSet() || !isProductRelevant());
     }
 
     private boolean isNonExtensibleEnumValueSet() {
@@ -395,8 +414,10 @@ public class XPolicyAttribute extends XAttribute {
      * method call. But not for constant attributes as they require a constant but not a variable.
      */
     public boolean isRequireMemberVariable() {
-        return (isChangeable() || isDerivedByExplicitMethodCall())
-                && (!isOverwrite() || isAttributeTypeChangedByOverwrite());
+        boolean hasExplicitValue = isChangeable() || isDerivedByExplicitMethodCall();
+        boolean cantUseMemberFromParent = !isOverwrite() || isAttributeTypeChangedByOverwrite();
+        boolean overwritesAbstractAttribute = isOverwrite() && getOverwrittenAttribute().isAbstract();
+        return hasExplicitValue && (cantUseMemberFromParent || overwritesAbstractAttribute);
     }
 
     protected boolean isDerivedByExplicitMethodCall() {

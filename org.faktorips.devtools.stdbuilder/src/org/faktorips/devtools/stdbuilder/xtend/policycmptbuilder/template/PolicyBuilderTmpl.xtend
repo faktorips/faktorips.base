@@ -24,7 +24,7 @@ class PolicyBuilderTmpl {
         
             «repositorySetter»
         
-            «FOR attribute : attributes» «attributeSetter(it, attribute)» «ENDFOR»
+            «FOR attribute : attributesIncludingAbstract» «attributeSetter(it, attribute)» «ENDFOR»
             «IF hasSupertype»
                 «FOR attribute: superAttributes» «superAttributeSetter(it, attribute)» «ENDFOR»
             «ENDIF»
@@ -117,7 +117,7 @@ class PolicyBuilderTmpl {
             */
             «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
             «val parameterName = "new" + fieldName.toFirstUpper»
-            public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
+            public «builder.implClassName» «IF overwrite && overwrittenAttribute.abstract»«method(fieldName, overwrittenAttribute.javaClassName, parameterName)»«ELSE»«method(fieldName, javaClassName, parameterName)»«ENDIF»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
                 return this;
             }
