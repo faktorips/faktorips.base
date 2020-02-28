@@ -236,6 +236,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             validateValueSetType(result);
         }
         validateChangingOverTimeFlag(result);
+        validateConstantNotAbstract(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -334,6 +335,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getDefaultValue() != null) {
             result.newError(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE,
                     Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType, this, PROPERTY_DEFAULT_VALUE);
+        }
+    }
+
+    private void validateConstantNotAbstract(MessageList result) {
+        if (AttributeType.CONSTANT == getAttributeType()) {
+            ValueDatatype datatype = findDatatype(getIpsProject());
+            if (datatype != null && datatype.isAbstract()) {
+                result.newError(MSGCODE_CONSTANT_CANT_BE_ABSTRACT,
+                        Messages.PolicyCmptTypeAttribute_msg_ConstantCantBeAbstract, this, PROPERTY_ATTRIBUTE_TYPE,
+                        PROPERTY_DATATYPE);
+            }
         }
     }
 

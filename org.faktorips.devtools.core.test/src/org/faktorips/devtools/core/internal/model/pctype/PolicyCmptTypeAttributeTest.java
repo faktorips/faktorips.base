@@ -647,4 +647,18 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         assertThat(messages, not(hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE)));
     }
+
+    @Test
+    public void testValidateAbstractConstant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+
+        attribute.setAttributeType(AttributeType.CONSTANT);
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+    }
 }
