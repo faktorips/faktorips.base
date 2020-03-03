@@ -41,30 +41,21 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
-     * parent therefore has to implement IValueDatatypeProvider. The value set contains
-     * <code>null</code> as default.
+     * value set contains <code>null</code> as default.
      * 
-     * @param parent The parent this valueset belongs to.
-     * @param partId The id this part is known by by the parent.
-     * 
-     * @throws IllegalArgumentException if the parent does not implement the interface
-     *             <code>IValueDatatypeProvider</code>.
+     * @param parent the parent this valueset belongs to
+     * @param partId the id this part is known by by the parent
      */
     public UnrestrictedValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
     /**
-     * Creates a new value set representing all values of the datatype provided by the parent. The
-     * parent therefore has to implement IValueDatatypeProvider.
+     * Creates a new value set representing all values of the datatype provided by the parent.
      * 
-     * @param parent The parent this valueset belongs to.
-     * @param partId The id this part is known by by the parent.
-     * @param containsNull This indicates whether this value set contains null.
-     * 
-     * @throws IllegalArgumentException if the parent does not implement the interface
-     *             <code>IValueDatatypeProvider</code>.
-     * 
+     * @param parent the parent this valueset belongs to
+     * @param partId the id this part is known by by the parent
+     * @param containsNull indicates whether this value set contains {@code null}
      */
     public UnrestrictedValueSet(IValueSetOwner parent, String partId, boolean containsNull) {
         super(ValueSetType.UNRESTRICTED, parent, partId);

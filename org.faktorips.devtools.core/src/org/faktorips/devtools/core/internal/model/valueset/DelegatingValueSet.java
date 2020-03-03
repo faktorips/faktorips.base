@@ -18,6 +18,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.valueset.IDerivedValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
@@ -36,7 +37,7 @@ import org.w3c.dom.Element;
  * Every writing call leads to an {@link IllegalStateException}
  */
 public class DelegatingValueSet extends AtomicIpsObjectPart
-        implements IEnumValueSet, IRangeValueSet, IUnrestrictedValueSet {
+        implements IEnumValueSet, IRangeValueSet, IUnrestrictedValueSet, IDerivedValueSet {
 
     private final ValueSet delegate;
 

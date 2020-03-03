@@ -14,9 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.internal.model.valueset.DerivedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -30,7 +32,7 @@ public enum ValueSetType {
      * Defines the value set type that does not restrict the values in the set. All values allowed
      * by the data type are allowed.
      */
-    UNRESTRICTED("allValues", Messages.ValueSetType__allValues) { //$NON-NLS-1$
+    UNRESTRICTED("allValues", Messages.ValueSetType__allValues, UnrestrictedValueSet.XML_TAG_UNRESTRICTED) { //$NON-NLS-1$
         @Override
         public IValueSet newValueSet(IValueSetOwner parent, String id) {
             return new UnrestrictedValueSet(parent, id);
@@ -40,7 +42,7 @@ public enum ValueSetType {
     /**
      * Defines the value set type enumeration.
      */
-    ENUM("enum", Messages.ValueSetType_enumeration) { //$NON-NLS-1$
+    ENUM("enum", Messages.ValueSetType_enumeration, EnumValueSet.XML_TAG_ENUM) { //$NON-NLS-1$
         @Override
         public IValueSet newValueSet(IValueSetOwner parent, String id) {
             return new EnumValueSet(parent, id);
@@ -50,10 +52,23 @@ public enum ValueSetType {
     /**
      * Defines the value set type range.
      */
-    RANGE("range", Messages.ValueSetType_range) { //$NON-NLS-1$
+    RANGE("range", Messages.ValueSetType_range, RangeValueSet.XML_TAG_RANGE) { //$NON-NLS-1$
         @Override
         public IValueSet newValueSet(IValueSetOwner parent, String id) {
             return new RangeValueSet(parent, id);
+        }
+    },
+
+    /**
+     * Defines the value set type derived. Values are not configured but determined at runtime by
+     * implementing the getValueSet method.
+     * 
+     * @since 20.6
+     */
+    DERIVED("derived", Messages.ValueSetType_derived, ValueToXmlHelper.XML_TAG_DERIVED) { //$NON-NLS-1$
+        @Override
+        public IValueSet newValueSet(IValueSetOwner parent, String id) {
+            return new DerivedValueSet(parent, id);
         }
     };
 
@@ -61,9 +76,12 @@ public enum ValueSetType {
 
     private final String name;
 
-    private ValueSetType(String id, String name) {
+    private final String xmlTag;
+
+    private ValueSetType(String id, String name, String xmlTag) {
         this.id = id;
         this.name = name;
+        this.xmlTag = xmlTag;
     }
 
     /**
@@ -85,14 +103,11 @@ public enum ValueSetType {
             return null;
         }
         String tagName = element.getNodeName();
-        if (tagName.equals(EnumValueSet.XML_TAG_ENUM)) {
-            return new EnumValueSet(parent, id);
-        } else if (tagName.equals(RangeValueSet.XML_TAG_RANGE)) {
-            return new RangeValueSet(parent, id);
-        } else if (tagName.equals(UnrestrictedValueSet.XML_TAG_UNRESTRICTED)) {
-            return new UnrestrictedValueSet(parent, id);
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(v -> v.xmlTag.equals(tagName))
+                .findFirst()
+                .map(v -> v.newValueSet(parent, id))
+                .orElse(null);
     }
 
     public static List<ValueSetType> getValueSetTypesAsList() {
@@ -118,6 +133,13 @@ public enum ValueSetType {
 
     public boolean isEnum() {
         return this == ValueSetType.ENUM;
+    }
+
+    /**
+     * @since 20.6
+     */
+    public boolean isDerived() {
+        return this == ValueSetType.DERIVED;
     }
 
     public String getId() {

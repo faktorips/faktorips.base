@@ -209,13 +209,13 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
         valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, bindingContext,
                 valueSetOwner.getIpsProject(), valueSetPmo.sourceSet);
-        valueSetEditControl.getComposite().setLayoutData(
-                new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
+        valueSetEditControl.getComposite()
+                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         return group;
     }
 
     private boolean isValueSetEditingAllowed(IValueSet valueSet) {
-        return !(valueSet.isAbstract() || valueSet.isUnrestricted());
+        return !(valueSet.isAbstract() || valueSet.isUnrestricted() || valueSet.isDerived());
     }
 
     /**
@@ -310,10 +310,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     private void createContainsNullCheckbox(UIToolkit toolkit, Composite parent) {
-        toolkit.createLabel(
-                parent,
-                NLS.bind(Messages.ValueSetSpecificationControl_containsNull, IpsPlugin.getDefault().getIpsPreferences()
-                        .getNullPresentation()));
+        toolkit.createLabel(parent, NLS.bind(Messages.ValueSetSpecificationControl_containsNull,
+                IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
         containsNullCheckbox = toolkit.createCheckbox(parent);
         containsNullField = new CheckboxField(containsNullCheckbox);
         bindingContext.bindContent(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
@@ -468,8 +466,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             if (valueSetOwner instanceof IConfigElement) {
                 IConfigElement configElement = (IConfigElement)valueSetOwner;
                 try {
-                    IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(configElement
-                            .getIpsProject());
+                    IPolicyCmptTypeAttribute attribute = configElement
+                            .findPcTypeAttribute(configElement.getIpsProject());
                     sourceSet = attribute.getValueSet();
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
@@ -479,7 +477,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public boolean isContainsNullEnabled() {
             boolean sourceSetAllowsNull = sourceSet == null || sourceSet.isContainsNull();
-            return sourceSetAllowsNull && (!getValueDatatype().isPrimitive() || getValueSet().isEnum());
+            return !getValueSet().isDerived() && sourceSetAllowsNull
+                    && (!getValueDatatype().isPrimitive() || getValueSet().isEnum());
         }
 
         public boolean isContainsNull() {

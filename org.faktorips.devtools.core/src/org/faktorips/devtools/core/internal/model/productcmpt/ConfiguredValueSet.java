@@ -145,16 +145,15 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
+        List<ValueSetType> types = new ArrayList<ValueSetType>();
         if (attribute == null) {
-            ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
             types.add(valueSet.getValueSetType());
-            return types;
+        } else if (attribute.getValueSet().isUnrestricted()) {
+            types.addAll(ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject)));
+        } else {
+            types.add(attribute.getValueSet().getValueSetType());
         }
-        if (attribute.getValueSet().isUnrestricted()) {
-            return ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject));
-        }
-        ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
-        types.add(attribute.getValueSet().getValueSetType());
+        types.removeIf(ValueSetType::isDerived);
         return types;
     }
 
