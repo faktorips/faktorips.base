@@ -61,7 +61,7 @@ def package static getter (XPolicyAttribute it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
-         * @generated
+         * «IF !genInterface()&&generateDefaultForOnTheFlyDerivedAttribute»@restrainedmodifiable«ELSE»@generated«ENDIF»
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)»
@@ -72,7 +72,9 @@ def package static getter (XPolicyAttribute it) '''
                 return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
             «ELSE»
                 «IF generateDefaultForOnTheFlyDerivedAttribute»
+                    // begin-user-code
                     return «defaultValueCode»;
+                    // end-user-code
                 «ELSEIF !generatePublishedInterfaces && overwrite»
                     return super.«methodNameGetter»();
                 «ELSE»
