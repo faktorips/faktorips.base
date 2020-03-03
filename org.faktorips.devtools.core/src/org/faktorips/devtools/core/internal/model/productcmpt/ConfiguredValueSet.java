@@ -154,6 +154,10 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             types.add(attribute.getValueSet().getValueSetType());
         }
         types.removeIf(ValueSetType::isDerived);
+        if (types.isEmpty()) {
+            // to allow invalid product configurations to be loaded without exceptions
+            types.add(ValueSetType.UNRESTRICTED);
+        }
         return types;
     }
 

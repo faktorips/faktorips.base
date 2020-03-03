@@ -68,11 +68,19 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      */
     public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentType"; //$NON-NLS-1$
+
     /**
      * Validation message code to indicate that the currently configured value set is not allowed
      * for this attribute.
      */
     public static final String MSGCODE_ILLEGAL_VALUESET_TYPE = IAttribute.MSGCODE_PREFIX + "IllegalValueSetType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a derived value set is not allowed for a product
+     * relevant attribute.
+     */
+    public static final String MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET = IAttribute.MSGCODE_PREFIX
+            + "ProductRelevantAttributeCanNotHaveDerivedValueSet"; //$NON-NLS-1$ ;
 
     /**
      * Returns the policy component type this attribute belongs to.
