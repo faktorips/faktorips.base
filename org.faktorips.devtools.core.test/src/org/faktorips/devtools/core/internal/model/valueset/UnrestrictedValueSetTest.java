@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.valueset.IDerivedValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.junit.Before;
@@ -190,7 +191,7 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_isNotParsableValue() throws Exception {
+    public void testContainsValue_NotParsableValue() throws Exception {
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
         IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(cValueSet, "1", false);
 
@@ -244,7 +245,7 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_enum() {
+    public void testContainsValueSet_Enum() {
         attr.setDatatype(MY_EXTENSIBLE_ENUM);
 
         IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(attr, "1", true);
@@ -254,7 +255,23 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_differentDatatypes() throws Exception {
+    public void testContainsValueSet_Derived_WithNull() {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(attr, "1", true);
+        IDerivedValueSet subSet = new DerivedValueSet(cValueSet, "1");
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_Derived_WithoutNull() {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(attr, "1", false);
+        IDerivedValueSet subSet = new DerivedValueSet(cValueSet, "1");
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_DifferentDatatypes() throws Exception {
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("attr");
         attr2.setDatatype(MY_EXTENSIBLE_ENUM);
@@ -266,7 +283,7 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_covariant() throws Exception {
+    public void testContainsValueSet_Covariant() throws Exception {
         attr.setDatatype(MY_SUPER_ENUM);
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("attr");

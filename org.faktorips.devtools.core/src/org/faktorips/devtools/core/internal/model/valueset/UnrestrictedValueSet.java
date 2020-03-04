@@ -110,11 +110,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             return false;
         }
 
-        if (!isContainsNull() && subset.isContainsNull()) {
-            return false;
-        }
-
-        return true;
+        return isContainsNull() || !subset.isContainsNull() || subset.isDerived();
     }
 
     @Override

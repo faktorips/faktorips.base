@@ -14,21 +14,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IDerivedValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.junit.Before;
@@ -43,10 +38,8 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
     private static final String MY_SUPER_ENUM = "MySuperEnum";
 
     private IPolicyCmptTypeAttribute attr;
-    private IConfiguredValueSet cValueSet;
 
     private IIpsProject ipsProject;
-    private IProductCmptGeneration generation;
 
     private IPolicyCmptType policyCmptType;
 
@@ -61,17 +54,10 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
         IIpsObjectPath ipsObjectPath = productIpsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject);
         productIpsProject.setIpsObjectPath(ipsObjectPath);
-        policyCmptType = newPolicyAndProductCmptType(ipsProject, "test.Base", "test.Product");
-        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        policyCmptType = newPolicyCmptType(ipsProject, "test.Base");
         attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.STRING.getQualifiedName());
-
-        IProductCmpt cmpt = newProductCmpt(productIpsProject, "test.Product");
-        cmpt.setProductCmptType(productCmptType.getQualifiedName());
-        generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
-
-        cValueSet = generation.newPropertyValue(attr, IConfiguredValueSet.class);
 
         EnumType enumType = newEnumType(ipsProject, MY_EXTENSIBLE_ENUM);
         enumType.setExtensible(true);
@@ -86,42 +72,71 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDerivedValueSet() {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
         assertTrue(derivedValueSet.isContainsNull());
     }
 
     @Test
     public void testCopy() throws Exception {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
 
-        IDerivedValueSet derivedValueSet2 = (IDerivedValueSet)derivedValueSet.copy(cValueSet, "2");
+        IDerivedValueSet derivedValueSet2 = (IDerivedValueSet)derivedValueSet.copy(attr, "2");
         assertTrue(derivedValueSet2.compareTo(derivedValueSet) == 0);
     }
 
     @Test
     public void testIsContainsNull() throws Exception {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
+
+        assertTrue(derivedValueSet.isContainsNull());
+    }
+
+    @Test
+    public void testIsContainsNull_Primitive() throws Exception {
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
+
+        assertFalse(derivedValueSet.isContainsNull());
+    }
+
+    @Test
+    public void testIsContainsNull_Overwritten_WithoutNull() throws Exception {
+        PolicyCmptType subPolicyCmptType = newPolicyCmptType(ipsProject, "test.Sub");
+        subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        IPolicyCmptTypeAttribute subAttr = subPolicyCmptType.newPolicyCmptTypeAttribute();
+        subAttr.setOverwrite(true);
+        subAttr.setName("attr");
+        subAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetCopy(new UnrestrictedValueSet(attr, "0", false));
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(subAttr, "1");
+
+        assertFalse(derivedValueSet.isContainsNull());
+    }
+
+    @Test
+    public void testIsContainsNull_Overwritten_WithNull() throws Exception {
+        PolicyCmptType subPolicyCmptType = newPolicyCmptType(ipsProject, "test.Sub");
+        subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        IPolicyCmptTypeAttribute subAttr = subPolicyCmptType.newPolicyCmptTypeAttribute();
+        subAttr.setOverwrite(true);
+        subAttr.setName("attr");
+        subAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetCopy(new UnrestrictedValueSet(attr, "0", true));
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(subAttr, "1");
+
         assertTrue(derivedValueSet.isContainsNull());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testSetContainsNull() throws Exception {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
         derivedValueSet.setContainsNull(false);
-    }
-
-    @Test
-    public void testIsContainsNullPrimitive() throws Exception {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
-
-        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-        assertFalse(derivedValueSet.isContainsNull());
     }
 
     @Test
     public void testContainsValue() throws Exception {
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
 
         assertTrue(derivedValueSet.containsValue("10EUR", ipsProject));
     }
@@ -129,7 +144,7 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testContainsValue_DatatypeIsNull() throws Exception {
         attr.setDatatype(null);
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
 
         assertFalse(derivedValueSet.containsValue("someValue", ipsProject));
     }
@@ -137,22 +152,22 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testContainsValue_isNotParsableValue() throws Exception {
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
 
         assertFalse(derivedValueSet.containsValue("notParsable", ipsProject));
     }
 
     @Test
     public void testContainsValue_ValueIsNull() throws CoreException {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
 
         assertTrue(derivedValueSet.containsValue(null, ipsProject));
     }
 
     @Test
     public void testContainsValueSet_EqualValueSets() {
-        IDerivedValueSet derivedValueSet = new DerivedValueSet(cValueSet, "1");
-        DerivedValueSet subSet = new DerivedValueSet(cValueSet, "1");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
+        DerivedValueSet subSet = new DerivedValueSet(attr, "1");
 
         assertTrue(derivedValueSet.containsValueSet(subSet));
     }
@@ -162,7 +177,7 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
         attr.setDatatype(MY_EXTENSIBLE_ENUM);
 
         IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
-        DerivedValueSet subSet = new DerivedValueSet(cValueSet, "1");
+        DerivedValueSet subSet = new DerivedValueSet(attr, "1");
 
         assertTrue(derivedValueSet.containsValueSet(subSet));
     }

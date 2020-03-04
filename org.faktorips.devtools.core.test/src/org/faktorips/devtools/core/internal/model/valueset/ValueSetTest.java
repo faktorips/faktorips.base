@@ -80,6 +80,53 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         set1.setContainsNull(false);
         set2.setContainsNull(true);
         assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // derived
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+    }
+
+    @Test
+    public void testIsDetailedSpecificationOf_Derived() {
+        IValueSet set1 = owner1.changeValueSetType(ValueSetType.DERIVED);
+
+        // unrestricted
+        IValueSet set2 = owner2.changeValueSetType(ValueSetType.UNRESTRICTED);
+        set2.setContainsNull(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setContainsNull(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // enum
+        set2 = owner2.changeValueSetType(ValueSetType.ENUM);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setContainsNull(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // range
+        set2 = owner2.changeValueSetType(ValueSetType.RANGE);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setContainsNull(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // derived
+        set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test
@@ -126,6 +173,16 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         range1.setUpperBound("10");
         range2.setContainsNull(false);
         assertTrue(range2.isDetailedSpecificationOf(range1));
+
+        // derived
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
+        set2.setAbstract(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test
@@ -173,6 +230,16 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         enum1.addValue("3");
         enum2.setContainsNull(false);
         assertTrue(enum2.isDetailedSpecificationOf(enum1));
+
+        // derived
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
+        set2.setAbstract(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test

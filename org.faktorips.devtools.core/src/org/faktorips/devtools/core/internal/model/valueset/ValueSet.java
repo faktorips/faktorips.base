@@ -174,7 +174,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
 
     @Override
     public boolean isDetailedSpecificationOf(IValueSet otherValueSet) {
-        if (otherValueSet.isUnrestricted()) {
+        if (otherValueSet.isUnrestricted() || otherValueSet.isDerived()) {
             return otherValueSet.containsValueSet(this);
         }
         if (!getValueSetType().equals(otherValueSet.getValueSetType())) {

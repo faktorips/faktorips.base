@@ -11,8 +11,10 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IDerivedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -80,6 +82,17 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
 
     @Override
     public boolean isContainsNull() {
+        if (getValueSetOwner() instanceof IPolicyCmptTypeAttribute) {
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)getValueSetOwner();
+            if (policyCmptTypeAttribute.isOverwrite()) {
+                try {
+                    return policyCmptTypeAttribute.findOverwrittenAttribute(getIpsProject()).getValueSet()
+                            .isContainsNull();
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+        }
         return !findValueDatatype(getIpsProject()).isPrimitive();
     }
 
