@@ -236,7 +236,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             validateValueSetType(result);
         }
         validateChangingOverTimeFlag(result);
-        validateConstantNotAbstract(result);
+        validateAbstractDatatype(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -338,13 +338,19 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    private void validateConstantNotAbstract(MessageList result) {
-        if (AttributeType.CONSTANT == getAttributeType()) {
-            ValueDatatype datatype = findDatatype(getIpsProject());
-            if (datatype != null && datatype.isAbstract()) {
+    private void validateAbstractDatatype(MessageList result) {
+        ValueDatatype datatype = findDatatype(getIpsProject());
+        if (datatype != null && datatype.isAbstract()) {
+            if (AttributeType.CONSTANT == getAttributeType()) {
                 result.newError(MSGCODE_CONSTANT_CANT_BE_ABSTRACT,
                         Messages.PolicyCmptTypeAttribute_msg_ConstantCantBeAbstract, this, PROPERTY_ATTRIBUTE_TYPE,
                         PROPERTY_DATATYPE);
+            }
+            if (isProductRelevant()) {
+                result.newError(MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT,
+                        NLS.bind(Messages.PolicyCmptTypeAttribute_msg_AbstractCantBeProductRelevant, getName(),
+                                datatype.getName()),
+                        this, PROPERTY_PRODUCT_RELEVANT, PROPERTY_DATATYPE);
             }
         }
     }

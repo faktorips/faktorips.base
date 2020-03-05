@@ -649,16 +649,58 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateAbstractConstant() throws Exception {
+    public void testValidate_AbstractNotConstant() throws Exception {
         EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
         abstractEnumType.setAbstract(true);
         attribute.setDatatype(abstractEnumType.getQualifiedName());
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
 
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+    }
+
+    @Test
+    public void testValidate_AbstractConstant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
         attribute.setAttributeType(AttributeType.CONSTANT);
-        ml = attribute.validate(ipsProject);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+    }
+
+    @Test
+    public void testValidate_AbstractProductRelevant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setProductRelevant(true);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+    }
+
+    @Test
+    public void testValidate_AbstractNotProductRelevant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+    }
+
+    @Test
+    public void testValidate_NonAbstractProductRelevant() throws Exception {
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setProductRelevant(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
     }
 }

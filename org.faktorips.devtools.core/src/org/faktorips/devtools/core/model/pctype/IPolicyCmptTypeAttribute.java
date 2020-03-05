@@ -81,6 +81,13 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public static final String MSGCODE_CONSTANT_CANT_BE_ABSTRACT = IAttribute.MSGCODE_PREFIX + "ConstantCantBeAbstract"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an abstract datatype attribute can't be product
+     * relevant.
+     */
+    public static final String MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT = IAttribute.MSGCODE_PREFIX
+            + "AbstractCantBeProductRelevant"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this attribute belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();
