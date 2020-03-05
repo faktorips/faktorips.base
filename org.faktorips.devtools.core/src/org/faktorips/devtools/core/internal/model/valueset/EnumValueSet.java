@@ -448,6 +448,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
     }
 
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
     protected Map<String, List<Integer>> getValuesToIndexMap() {
         return valuesToIndexMap;
     }

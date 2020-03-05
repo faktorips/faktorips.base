@@ -32,6 +32,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private static final String REGEX_STEP_SEPERATOR = "(\\s*/\\s*)"; //$NON-NLS-1$
     private static final String REGEX_BOUND_SEPERATOR = "(\\s*\\.\\.+\\s*)"; //$NON-NLS-1$
     private static final String REGEX_BRACKETS = "(^\\s*\\[?)|(\\]?\\s*$)"; //$NON-NLS-1$
+    private static final String REGEX_EMPTY_BRACKETS = "^\\s*\\[\\s*\\]\\s*$"; //$NON-NLS-1$
 
     public RangeValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
@@ -53,17 +54,19 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private String formatRangeValueSet(IValueSet value) {
         IRangeValueSet range = (IRangeValueSet)value;
-        String lowerBound = range.getLowerBound();
-        String upperBound = range.getUpperBound();
-        String step = range.getStep();
         StringBuffer sb = new StringBuffer();
         sb.append(RangeValueSet.RANGE_VALUESET_START);
-        sb.append((lowerBound == null ? UNLIMITED_BOUND : getInputFormat().format(lowerBound)));
-        sb.append(RangeValueSet.RANGE_VALUESET_POINTS);
-        sb.append((upperBound == null ? UNLIMITED_BOUND : getInputFormat().format(upperBound)));
-        if (step != null) {
-            sb.append(RangeValueSet.RANGE_STEP_SEPERATOR);
-            sb.append(getInputFormat().format(step));
+        if (!range.isEmpty()) {
+            String lowerBound = range.getLowerBound();
+            String upperBound = range.getUpperBound();
+            String step = range.getStep();
+            sb.append((lowerBound == null ? UNLIMITED_BOUND : getInputFormat().format(lowerBound)));
+            sb.append(RangeValueSet.RANGE_VALUESET_POINTS);
+            sb.append((upperBound == null ? UNLIMITED_BOUND : getInputFormat().format(upperBound)));
+            if (step != null) {
+                sb.append(RangeValueSet.RANGE_STEP_SEPERATOR);
+                sb.append(getInputFormat().format(step));
+            }
         }
         sb.append(RangeValueSet.RANGE_VALUESET_END);
         if (range.isContainsNull()) {
@@ -88,12 +91,15 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private String getNullPresentation() {
-        return NLS.bind(Messages.RangeValueSetFormat_includingNull, IpsPlugin.getDefault().getIpsPreferences()
-                .getNullPresentation());
+        return NLS.bind(Messages.RangeValueSetFormat_includingNull,
+                IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
     }
 
     private IValueSet parseValueSet(String stringToBeParsed, boolean containsNull) {
         String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, StringUtils.EMPTY);
+        if (StringUtils.isBlank(stringWithoutBrackets)) {
+            return RangeValueSet.empty(getValueSetOwner(), getNextPartId());
+        }
         String[] splitedBounds = stringWithoutBrackets.split(REGEX_BOUND_SEPERATOR, 2);
         if (splitedBounds.length == 2) {
             String lowerBound = parseValue(splitedBounds[0]);
@@ -147,7 +153,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private boolean isRange(String stringToBeParsed) {
-        return stringToBeParsed.matches(".*" + REGEX_BOUND_SEPERATOR + ".*"); //$NON-NLS-1$ //$NON-NLS-2$
+        return stringToBeParsed.matches("(.*" + REGEX_BOUND_SEPERATOR + ".*)|(" + REGEX_EMPTY_BRACKETS + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private IValueSet getUnlimitedRangeSet() {

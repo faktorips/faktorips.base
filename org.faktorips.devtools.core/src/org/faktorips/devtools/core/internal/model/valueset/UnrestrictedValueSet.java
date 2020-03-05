@@ -181,4 +181,9 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         }
     }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
 }

@@ -46,6 +46,8 @@ public interface IRangeValueSet extends IValueSet {
 
     public static final String PROPERTY_STEP = "step"; //$NON-NLS-1$
 
+    public static final String PROPERTY_EMPTY = "empty"; //$NON-NLS-1$
+
     public static final String RANGE_VALUESET_START = "["; //$NON-NLS-1$
 
     public static final String RANGE_VALUESET_END = "]"; //$NON-NLS-1$
@@ -57,7 +59,7 @@ public interface IRangeValueSet extends IValueSet {
     /**
      * Sets the lower bound. An empty string means that the range is unbounded.
      * 
-     * @throws NullPointerException If <tt>lowerBound</tt> is <code>null</code>.
+     * @throws NullPointerException if {@code lowerBound} is {@code null}
      */
     public void setLowerBound(String lowerBound);
 
@@ -65,14 +67,14 @@ public interface IRangeValueSet extends IValueSet {
      * Sets the step. An empty string means that no step exists and all possible values in the range
      * are valid.
      * 
-     * @throws NullPointerException If <tt>step</tt> is <code>null</code>.
+     * @throws NullPointerException if {@code step} is {@code null}
      */
     public void setStep(String step);
 
     /**
      * Sets the upper bound. An empty string means that the range is unbounded.
      * 
-     * @throws NullPointerException If <tt>upperBound</tt> is <code>null</code>.
+     * @throws NullPointerException if {@code upperBound} is {@code null}
      */
     public void setUpperBound(String upperBound);
 
@@ -90,5 +92,12 @@ public interface IRangeValueSet extends IValueSet {
      * Returns the step of the range.
      */
     public String getStep();
+
+    /**
+     * Sets the range to empty. Will reset all bounds and step if set to {@code true}.
+     * 
+     * @since 20.6
+     */
+    void setEmpty(boolean empty);
 
 }

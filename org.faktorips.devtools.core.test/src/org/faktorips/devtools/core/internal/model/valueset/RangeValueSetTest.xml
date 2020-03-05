@@ -7,13 +7,22 @@
 		<Range lowerBound="42" upperBound="trulala" step="4" containsNull="true"/>
 	</ValueSet>
 
-	<!-- new format since 1.0.0.rc2 -->
-	<ValueSet>
-		<Range containsNull="true">
-			<LowerBound isNull="false">1</LowerBound>
-			<UpperBound isNull="false">10</UpperBound>
-			<Step isNull="false">2</Step>
-		</Range>
-	</ValueSet>
+  <!-- new format since 1.0.0.rc2 -->
+  <ValueSet>
+    <Range containsNull="true">
+      <LowerBound isNull="false">1</LowerBound>
+      <UpperBound isNull="false">10</UpperBound>
+      <Step isNull="false">2</Step>
+    </Range>
+  </ValueSet>
+
+  <!-- empty range since 20.6 -->
+  <ValueSet>
+    <Range containsNull="false" empty="true">
+      <LowerBound isNull="true"></LowerBound>
+      <UpperBound isNull="true"></UpperBound>
+      <Step isNull="true"></Step>
+    </Range>
+  </ValueSet>
 	
 </TestCases>

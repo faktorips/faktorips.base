@@ -134,4 +134,9 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
         element.appendChild(tagElement);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
 }

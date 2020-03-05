@@ -37,8 +37,8 @@ import org.w3c.dom.Element;
  * A value set that describes a range with a lower and an upper bound, e.g. 100-200. Lower and upper
  * bound are part of the range. If lower bound or upper bound contain an empty string, the range is
  * unbounded. The range has an optional step attribute to define that only the values where
- * <code>((value-lower) mod step)== 0</code> holds true. E.g. 100-200 with step 10 defines the
- * values 100, 110, 120, ... 200.
+ * <code>((value-lower) mod step)== 0</code> holds true are included. E.g. 100-200 with step 10
+ * defines the values 100, 110, 120, ... 200.
  * 
  * @author Jan Ortmann
  */
@@ -54,6 +54,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * Flag that indicates whether this range contains <code>null</code> or not.
      */
     private boolean containsNull = false;
+
+    /**
+     * Flag that indicates whether this range is empty. An empty range contains no values.
+     * 
+     * @since 20.6
+     */
+    private boolean empty = false;
 
     /**
      * Creates an unbounded range with no step.
@@ -82,6 +89,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     /**
+     * Creates an empty range that allows no values.
+     */
+    public static RangeValueSet empty(IValueSetOwner parent, String partId) {
+        RangeValueSet emptyRangeValueSet = new RangeValueSet(parent, partId);
+        emptyRangeValueSet.empty = true;
+        emptyRangeValueSet.containsNull = false;
+        return emptyRangeValueSet;
+    }
+
+    /**
      * Sets the lower bound. An empty string or {@code null} means that the range is unbounded.
      */
     @Override
@@ -89,6 +106,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         String oldBound = this.lowerBound;
         this.lowerBound = lowerBound;
         valueChanged(oldBound, lowerBound);
+        if (lowerBound != null && !lowerBound.isEmpty()) {
+            setEmpty(false);
+        }
     }
 
     /**
@@ -110,6 +130,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         String oldBound = this.upperBound;
         this.upperBound = upperBound;
         valueChanged(oldBound, upperBound);
+        if (upperBound != null && !upperBound.isEmpty()) {
+            setEmpty(false);
+        }
     }
 
     /**
@@ -160,6 +183,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      */
     private boolean checkValueInRange(String value, ValueDatatype datatype) {
         try {
+            if (isEmpty()) {
+                return false;
+            }
             if (isNullValue(datatype, value)) {
                 return isContainsNull();
             }
@@ -237,6 +263,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * </ul>
      */
     private boolean checkIsRangeSubset(IRangeValueSet subRange, NumericDatatype datatype) {
+        if (subRange.isEmpty()) {
+            return true;
+        }
+        if (isEmpty()) {
+            return false;
+        }
         if (!isContainsNull() && subRange.isContainsNull()) {
             return false;
         }
@@ -399,12 +431,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     public String getCanonicalString() {
         StringBuffer sb = new StringBuffer();
         sb.append(RANGE_VALUESET_START);
-        sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));
-        sb.append(RANGE_VALUESET_POINTS);
-        sb.append((upperBound == null ? Messages.RangeValueSet_unlimited : upperBound));
-        if (step != null) {
-            sb.append(RANGE_STEP_SEPERATOR);
-            sb.append(step);
+        if (!isEmpty()) {
+            sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));
+            sb.append(RANGE_VALUESET_POINTS);
+            sb.append((upperBound == null ? Messages.RangeValueSet_unlimited : upperBound));
+            if (step != null) {
+                sb.append(RANGE_STEP_SEPERATOR);
+                sb.append(step);
+            }
         }
         sb.append(RANGE_VALUESET_END);
         if (isContainsNull()) {
@@ -433,12 +467,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 step = null;
             }
         } else {
-            // new format sind 1.0.0.rc2
+            // new format since 1.0.0.rc2
             lowerBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_LOWERBOUND));
             upperBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_UPPERBOUND));
             step = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_STEP));
         }
         containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
+        empty = Boolean.valueOf(el.getAttribute(PROPERTY_EMPTY)).booleanValue();
     }
 
     @Override
@@ -450,6 +485,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
         ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
         ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalize(PROPERTY_STEP));
+        tagElement.setAttribute(PROPERTY_EMPTY, Boolean.toString(isEmpty()));
         element.appendChild(tagElement);
     }
 
@@ -460,7 +496,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         retValue.upperBound = upperBound;
         retValue.step = step;
         retValue.containsNull = isContainsNull();
-
+        retValue.empty = empty;
         return retValue;
     }
 
@@ -471,6 +507,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         upperBound = set.upperBound;
         step = set.step;
         containsNull = set.isContainsNull();
+        empty = set.empty;
         objectHasChanged();
     }
 
@@ -484,5 +521,23 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         boolean old = this.isContainsNull();
         this.containsNull = containsNull;
         valueChanged(old, containsNull, PROPERTY_CONTAINS_NULL);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    @Override
+    public void setEmpty(boolean empty) {
+        boolean oldEmpty = this.empty;
+        this.empty = empty;
+        valueChanged(oldEmpty, empty);
+        if (empty) {
+            setContainsNull(false);
+            setLowerBound(null);
+            setUpperBound(null);
+            setStep(null);
+        }
     }
 }

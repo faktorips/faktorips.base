@@ -36,6 +36,8 @@ public class Messages extends NLS {
 
     public static String RangeEditControl_labelStep;
 
+    public static String RangeEditControl_labelEmptyRange;
+
     public static String IpsPckFragmentRefControl_titleBrowse;
 
     public static String EditTableControlUIBuilder_AddButtonLabel;

@@ -113,6 +113,11 @@ public class DelegatingValueSetTest {
     }
 
     @Test(expected = IllegalStateException.class)
+    public void testSetEmpty() throws Exception {
+        delegatingValueSet.setEmpty(true);
+    }
+
+    @Test(expected = IllegalStateException.class)
     public void testAddValue() throws Exception {
         delegatingValueSet.addValue("asd");
     }
@@ -208,7 +213,6 @@ public class DelegatingValueSetTest {
         when(delegate.isSameTypeOfValueSet(source)).thenReturn(true);
 
         assertThat(delegatingValueSet.isSameTypeOfValueSet(source), is(true));
-
     }
 
     @Test
@@ -216,7 +220,6 @@ public class DelegatingValueSetTest {
         when(delegate.isUnrestricted()).thenReturn(true);
 
         assertThat(delegatingValueSet.isUnrestricted(), is(true));
-
     }
 
     @Test
@@ -224,7 +227,6 @@ public class DelegatingValueSetTest {
         when(delegate.isEnum()).thenReturn(true);
 
         assertThat(delegatingValueSet.isEnum(), is(true));
-
     }
 
     @Test
@@ -232,7 +234,6 @@ public class DelegatingValueSetTest {
         when(delegate.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
 
         assertThat(delegatingValueSet.canBeUsedAsSupersetForAnotherEnumValueSet(), is(true));
-
     }
 
     @Test
@@ -240,7 +241,13 @@ public class DelegatingValueSetTest {
         when(delegate.isRange()).thenReturn(true);
 
         assertThat(delegatingValueSet.isRange(), is(true));
+    }
 
+    @Test
+    public void testIsEmpty() throws Exception {
+        when(delegate.isEmpty()).thenReturn(true);
+
+        assertThat(delegatingValueSet.isEmpty(), is(true));
     }
 
     @Test
@@ -248,7 +255,6 @@ public class DelegatingValueSetTest {
         when(delegate.isAbstractAndNotUnrestricted()).thenReturn(true);
 
         assertThat(delegatingValueSet.isAbstractAndNotUnrestricted(), is(true));
-
     }
 
     @Test
@@ -257,7 +263,6 @@ public class DelegatingValueSetTest {
         when(delegate.isContainingNull()).thenReturn(true);
 
         assertThat(delegatingValueSet.isContainsNull(), is(true));
-
     }
 
     @Test
@@ -265,7 +270,6 @@ public class DelegatingValueSetTest {
         when(delegate.containsValue(ANY_VALUE, ipsProject)).thenReturn(true);
 
         assertThat(delegatingValueSet.containsValue(ANY_VALUE, ipsProject), is(true));
-
     }
 
     @Test
@@ -273,7 +277,6 @@ public class DelegatingValueSetTest {
         when(delegate.containsValueSet(source)).thenReturn(true);
 
         assertThat(delegatingValueSet.containsValueSet(source), is(true));
-
     }
 
     @Test
@@ -289,7 +292,6 @@ public class DelegatingValueSetTest {
         when(delegate.isContainsNull()).thenReturn(true);
 
         assertThat(delegatingValueSet.isContainsNull(), is(true));
-
     }
 
     @Test
@@ -299,7 +301,6 @@ public class DelegatingValueSetTest {
         when(rangeDelegate.getLowerBound()).thenReturn(ANY_VALUE);
 
         assertThat(delegatingValueSet.getLowerBound(), is(ANY_VALUE));
-
     }
 
     @Test
@@ -309,7 +310,6 @@ public class DelegatingValueSetTest {
         when(rangeDelegate.getUpperBound()).thenReturn(ANY_VALUE);
 
         assertThat(delegatingValueSet.getUpperBound(), is(ANY_VALUE));
-
     }
 
     @Test
@@ -319,7 +319,6 @@ public class DelegatingValueSetTest {
         when(rangeDelegate.getStep()).thenReturn(ANY_VALUE);
 
         assertThat(delegatingValueSet.getStep(), is(ANY_VALUE));
-
     }
 
     @Test

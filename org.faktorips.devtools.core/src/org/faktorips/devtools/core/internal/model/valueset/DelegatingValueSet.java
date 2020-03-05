@@ -321,4 +321,14 @@ public class DelegatingValueSet extends AtomicIpsObjectPart
     public int compareTo(IValueSet o) {
         return delegate.compareTo(o);
     }
+
+    @Override
+    public boolean isEmpty() {
+        return delegate.isEmpty();
+    }
+
+    @Override
+    public void setEmpty(boolean empty) {
+        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+    }
 }

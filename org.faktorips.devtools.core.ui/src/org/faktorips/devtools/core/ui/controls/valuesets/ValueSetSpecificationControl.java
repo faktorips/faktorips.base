@@ -40,9 +40,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
@@ -272,17 +270,10 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetTypesCombo = toolkit.createCombo(parentArea);
         valueSetTypesCombo.setText(getValueSetType().getName());
         valueSetTypeField = new StringValueComboField(valueSetTypesCombo);
-        valueSetTypeField.addChangeListener(new ValueChangeListener() {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                String selectedText = e.field.getText();
-                ValueSetType newValueSetType = ValueSetType.getValueSetTypeByName(selectedText);
-                changeValueSetType(newValueSetType);
-            }
-
+        valueSetTypeField.addChangeListener(e -> {
+            String selectedText = e.field.getText();
+            ValueSetType newValueSetType = ValueSetType.getValueSetTypeByName(selectedText);
+            changeValueSetType(newValueSetType);
         });
 
         toolkit.setDataChangeable(valueSetTypesCombo, isDataChangeable());
@@ -297,15 +288,10 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         concreteValueSetCheckbox = toolkit.createCheckbox(parent);
         concreteValueSetField = new CheckboxField(concreteValueSetCheckbox);
         updateConcreteValueSetCheckbox();
-        concreteValueSetField.addChangeListener(new ValueChangeListener() {
-
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                boolean checked = ((Boolean)e.field.getValue());
-                getValueSet().setAbstract(!checked);
-                updateUI();
-            }
-
+        concreteValueSetField.addChangeListener(e -> {
+            boolean checked = ((Boolean)e.field.getValue());
+            getValueSet().setAbstract(!checked);
+            updateUI();
         });
     }
 

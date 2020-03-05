@@ -91,6 +91,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals("trulala", range.getUpperBound());
         assertEquals("4", range.getStep());
         assertTrue(range.isContainsNull());
+        assertFalse(range.isEmpty());
 
         // new format
         element = XmlUtil.getElement(root, 1);
@@ -100,7 +101,17 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals("10", range.getUpperBound());
         assertEquals("2", range.getStep());
         assertTrue(range.isContainsNull());
+        assertFalse(range.isEmpty());
 
+        // empty
+        element = XmlUtil.getElement(root, 2);
+        range = new RangeValueSet(cValueSet, "2");
+        range.initFromXml(element);
+        assertNull(range.getLowerBound());
+        assertNull(range.getUpperBound());
+        assertNull(range.getStep());
+        assertFalse(range.isContainsNull());
+        assertTrue(range.isEmpty());
     }
 
     @Test
@@ -117,6 +128,33 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals(range.getUpperBound(), r2.getUpperBound());
         assertEquals(range.getStep(), r2.getStep());
         assertEquals(range.isContainsNull(), r2.isContainsNull());
+        assertEquals(range.isEmpty(), r2.isEmpty());
+    }
+
+    @Test
+    public void testToXmlNull() {
+        IRangeValueSet range = new RangeValueSet(cValueSet, "1");
+        Element element = range.toXml(newDocument());
+        IRangeValueSet r2 = new RangeValueSet(cValueSet, "1");
+        r2.initFromXml(element);
+        assertEquals(range.getLowerBound(), r2.getLowerBound());
+        assertEquals(range.getUpperBound(), r2.getUpperBound());
+        assertEquals(range.getStep(), r2.getStep());
+        assertEquals(range.isContainsNull(), r2.isContainsNull());
+        assertEquals(range.isEmpty(), r2.isEmpty());
+    }
+
+    @Test
+    public void testToXmlEmpty() {
+        IRangeValueSet range = RangeValueSet.empty(cValueSet, "1");
+        Element element = range.toXml(newDocument());
+        IRangeValueSet r2 = new RangeValueSet(cValueSet, "1");
+        r2.initFromXml(element);
+        assertEquals(range.getLowerBound(), r2.getLowerBound());
+        assertEquals(range.getUpperBound(), r2.getUpperBound());
+        assertEquals(range.getStep(), r2.getStep());
+        assertEquals(range.isContainsNull(), r2.isContainsNull());
+        assertEquals(range.isEmpty(), r2.isEmpty());
     }
 
     @Test
@@ -150,7 +188,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_primitiveWithStepNull() throws Exception {
+    public void testContainsValue_PrimitiveWithStepNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         range.setLowerBound("1");
@@ -165,7 +203,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_nullLowerBounds() throws Exception {
+    public void testContainsValue_NullLowerBounds() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -176,7 +214,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_nullLowerBoundsWithStep() throws Exception {
+    public void testContainsValue_NullLowerBoundsWithStep() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -187,7 +225,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_nullUpperBounds() throws Exception {
+    public void testContainsValue_NullUpperBounds() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound("1");
@@ -198,7 +236,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_nullUpperBoundsWithStep() throws Exception {
+    public void testContainsValue_NullUpperBoundsWithStep() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound("1");
@@ -209,7 +247,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_nullLowerUpperBounds() throws Exception {
+    public void testContainsValue_NullLowerUpperBounds() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -220,7 +258,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_nullLowerUpperBoundsWithStep() throws Exception {
+    public void testContainsValue_NullLowerUpperBoundsWithStep() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound("1");
@@ -231,7 +269,15 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_nullRange() throws Exception {
+    public void testContainsValue_Empty() throws Exception {
+        RangeValueSet range = RangeValueSet.empty(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        assertFalse(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValueSet_NullRange() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -246,7 +292,52 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_lowerNull() throws Exception {
+    public void testContainsValueSet_EmptyRangeIsIncluded() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("10");
+        range.setStep("1");
+        RangeValueSet subRange = RangeValueSet.empty(intEl, "100");
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_EmptyRangeIncludesEmptyRange() throws Exception {
+        RangeValueSet range = RangeValueSet.empty(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        RangeValueSet subRange = RangeValueSet.empty(intEl, "100");
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_EmptyRangeDoesNotIncludeNullRange() throws Exception {
+        RangeValueSet range = RangeValueSet.empty(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound(null);
+        subRange.setUpperBound(null);
+        subRange.setStep("1");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_EmptyRangeDoesNotIncludeRange() throws Exception {
+        RangeValueSet range = RangeValueSet.empty(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("10");
+        subRange.setStep("5");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_LowerNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -261,7 +352,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_lowerNullSubNonNull() throws Exception {
+    public void testContainsValueSet_LowerNullSubNonNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -276,7 +367,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_subLowerNull() throws Exception {
+    public void testContainsValueSet_SubLowerNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -291,7 +382,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_subLowerNullOuterNull() throws Exception {
+    public void testContainsValueSet_SubLowerNullOuterNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -306,7 +397,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_upperNull() throws Exception {
+    public void testContainsValueSet_UpperNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound("1");
@@ -321,7 +412,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_upperNullSubNonNull() throws Exception {
+    public void testContainsValueSet_UpperNullSubNonNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound("0");
@@ -336,7 +427,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_subUpperBoundNull() throws Exception {
+    public void testContainsValueSet_SubUpperBoundNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound("0");
@@ -351,7 +442,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_subUpperNull() throws Exception {
+    public void testContainsValueSet_SubUpperNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -366,7 +457,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_subUpperNullOuterNull() throws Exception {
+    public void testContainsValueSet_SubUpperNullOuterNull() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "idXY");
         intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
         range.setLowerBound(null);
@@ -529,6 +620,11 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         list = range.validate(ipsProject);
         assertFalse(list.containsErrorMsg());
 
+        range.setEmpty(true);
+        list.clear();
+        list = range.validate(ipsProject);
+        assertTrue(list.isEmpty());
+
         Datatype[] vds = ipsProject.findDatatypes(true, false);
         ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
         vdlist.addAll(Arrays.asList(vds));
@@ -549,6 +645,13 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         RangeValueSet range = new RangeValueSet(intEl, "50");
 
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        assertFalse(range.isContainsNull());
+    }
+
+    @Test
+    public void testIsContainsNullEmpty() throws Exception {
+        RangeValueSet range = RangeValueSet.empty(intEl, "50");
+
         assertFalse(range.isContainsNull());
     }
 
@@ -575,7 +678,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_stepNull() {
+    public void testContainsValueSet_StepNull() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");
         range.setUpperBound("20");
@@ -828,12 +931,44 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertTrue(range2.compareTo(range1) > 0);
     }
 
+    @Test
+    public void testGetCanonicalString_Empty() {
+        IRangeValueSet rangeValueSet = RangeValueSet.empty(intEl, "p1");
+
+        assertThat(rangeValueSet.getCanonicalString(), is("[]"));
+    }
+
+    @Test
+    public void testGetCanonicalString_LowerBoundOnly() {
+        IRangeValueSet rangeValueSet = createRange("5", null, null);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("[5 ... *]"));
+    }
+
+    @Test
+    public void testGetCanonicalString_UpperBoundOnly() {
+        IRangeValueSet rangeValueSet = createRange(null, "100", null);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("[* ... 100]"));
+    }
+
+    @Test
+    public void testGetCanonicalString_Full() {
+        IRangeValueSet rangeValueSet = createRange("0", "100", "10");
+
+        assertThat(rangeValueSet.getCanonicalString(), is("[0 ... 100 / 10]"));
+    }
+
+    @Test
+    public void testGetCanonicalString_FullWithNull() {
+        IRangeValueSet rangeValueSet = createRange("0", "100", "10");
+        rangeValueSet.setContainsNull(true);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("[0 ... 100 / 10] (incl. <null>)"));
+    }
+
     private IRangeValueSet createRange(String lower, String upper, String step) {
-        RangeValueSet range = new RangeValueSet(intEl, "1234");
-        range.setLowerBound(lower);
-        range.setUpperBound(upper);
-        range.setStep(step);
-        return range;
+        return new RangeValueSet(intEl, "1234", lower, upper, step);
     }
 
 }

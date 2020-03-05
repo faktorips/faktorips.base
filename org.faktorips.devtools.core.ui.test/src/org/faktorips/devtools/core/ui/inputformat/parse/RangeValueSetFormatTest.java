@@ -14,8 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.junit.Before;
@@ -61,15 +64,15 @@ public class RangeValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
-    private final static String NULL_PRESENTATION = NLS.bind(Messages.RangeValueSetFormat_includingNull, IpsPlugin
-            .getDefault().getIpsPreferences().getNullPresentation());
+    private final static String NULL_PRESENTATION = NLS.bind(Messages.RangeValueSetFormat_includingNull,
+            IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 
     @Before
     public void setUp() throws Exception {
         rangeVSFormat = new RangeValueSetFormat(configValueSet, uiPlugin);
 
-        when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class))).thenReturn(
-                new DefaultInputFormat(null));
+        when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class)))
+                .thenReturn(new DefaultInputFormat(null));
         when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
         when(configValueSet.getValueSet()).thenReturn(range);
         when(configValueSet.getIpsModel()).thenReturn(ipsModel);
@@ -85,6 +88,15 @@ public class RangeValueSetFormatTest {
         assertEquals(result.getLowerBound(), "10");
         assertEquals(result.getUpperBound(), "100");
         assertEquals(result.getStep(), "2");
+    }
+
+    @Test
+    public void testParseInternal_RangeEmpty() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -219,5 +231,31 @@ public class RangeValueSetFormatTest {
         when(configValueSet.getValueSet()).thenReturn(valueSet);
 
         assertEquals("[1 ... 10 / 1]", rangeVSFormat.formatInternal(valueSet));
+    }
+
+    @Test
+    public void testFormatInternal_EmptyRange() {
+        IValueSet valueSet = RangeValueSet.empty(configValueSet, "partId");
+        when(configValueSet.getValueSet()).thenReturn(valueSet);
+
+        assertEquals("[]", rangeVSFormat.formatInternal(valueSet));
+    }
+
+    @Test
+    public void testIsResponsibleFor_EmptyRange() throws CoreException {
+        when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
+                .thenReturn(ValueSetType.getValueSetTypesAsList());
+        assertTrue(rangeVSFormat.isResponsibleFor("[]"));
+        assertTrue(rangeVSFormat.isResponsibleFor(" [ ]     "));
+        assertFalse(rangeVSFormat.isResponsibleFor(""));
+    }
+
+    @Test
+    public void testIsResponsibleFor_Range() throws CoreException {
+        when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
+                .thenReturn(ValueSetType.getValueSetTypesAsList());
+        assertTrue(rangeVSFormat.isResponsibleFor("[1 ... 10 / 1]"));
+        assertTrue(rangeVSFormat.isResponsibleFor(" [1 ... 10 / 1] " + NULL_PRESENTATION));
+        assertFalse(rangeVSFormat.isResponsibleFor("[1 - 10]"));
     }
 }
