@@ -332,12 +332,14 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         } else {
             return (isProductRelevant() && isChangeable()) || !isValueSetUnrestricted()
-                    || isNonPrimitiveUnrestictedValueSetWithoutNull();
+                    || isUnrestrictedButStillNeedsAllowedValues();
         }
     }
 
-    private boolean isNonPrimitiveUnrestictedValueSetWithoutNull() {
-        return isValueSetUnrestricted() && !isValueSetContainingNull() && !getDatatype().isPrimitive();
+    private boolean isUnrestrictedButStillNeedsAllowedValues() {
+        boolean doesNotContainNull = !isValueSetContainingNull() && !getDatatype().isPrimitive();
+        boolean overwritesDerivedValueSet = isOverwrite() && getOverwrittenAttribute().isValueSetDerived();
+        return isValueSetUnrestricted() && (doesNotContainNull || overwritesDerivedValueSet);
     }
 
     public boolean isOverrideGetAllowedValuesFor() {
@@ -357,7 +359,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isGenerateConstantForValueSet() {
         return isConcreteOrNotProductRelevant() && (isValueSetRange() || isNonExtensibleEnumValueSet()
-                || isNonPrimitiveUnrestictedValueSetWithoutNull());
+                || isUnrestrictedButStillNeedsAllowedValues());
     }
 
     private boolean isConcreteOrNotProductRelevant() {
