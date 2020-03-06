@@ -34,7 +34,8 @@ public class XProductCmptGenerationClass extends XProductClass {
     public XProductCmptGenerationClass(IProductCmptType productCmptType, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(productCmptType, modelContext, modelService);
-        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()),
+        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(
+                getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()),
                 getLanguageUsedInGeneratedSourceCode());
     }
 
@@ -49,8 +50,8 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     @Override
     public String getName() {
-        String implClassName = prodGenJavaClassNameProvider.getImplClassName(getIpsObjectPartContainer()
-                .getIpsSrcFile());
+        String implClassName = prodGenJavaClassNameProvider
+                .getImplClassName(getIpsObjectPartContainer().getIpsSrcFile());
         return QNameUtil.getUnqualifiedName(implClassName);
     }
 
@@ -59,7 +60,8 @@ public class XProductCmptGenerationClass extends XProductClass {
         return CHANGE_OVER_TIME;
     }
 
-    public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(boolean isGeneratePublishedInterface,
+    public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(
+            boolean isGeneratePublishedInterface,
             Locale locale) {
         return new ProductCmptGenJavaClassNameProvider(isGeneratePublishedInterface, locale);
     }
@@ -114,13 +116,11 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     @Override
     public Set<XPolicyAttribute> getConfiguredAttributes() {
-        Set<XPolicyAttribute> attributes = super.getConfiguredAttributes();
-        Set<XPolicyAttribute> changingOverTimeAttributes = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : attributes) {
-            if (attribute.isChangingOverTime()) {
-                changingOverTimeAttributes.add(attribute);
-            }
-        }
-        return changingOverTimeAttributes;
+        return getConfiguredAttributes(a -> a.isChangingOverTime() && !a.isAbstract());
     }
+
+    public Set<XPolicyAttribute> getConfiguredAttributesIncludingAbstract() {
+        return getConfiguredAttributes(a -> a.isChangingOverTime());
+    }
+
 }

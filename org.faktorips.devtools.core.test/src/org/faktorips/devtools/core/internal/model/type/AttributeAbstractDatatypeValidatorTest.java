@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.productcmpttype;
+package org.faktorips.devtools.core.internal.model.type;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

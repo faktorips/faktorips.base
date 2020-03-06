@@ -52,8 +52,8 @@ class DefaultAndAllowedValuesTmpl {
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT, genInterface)»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)»
-        public «javaClassName» «method(methodNameGetDefaultValue)»
-        «IF genInterface»;«ELSE»
+        public «IF isAbstract»abstract «ENDIF»«javaClassName» «method(methodNameGetDefaultValue)»
+        «IF genInterface || isAbstract»;«ELSE»
         {
             return «fieldNameDefaultValue»;
         }
@@ -68,8 +68,8 @@ class DefaultAndAllowedValuesTmpl {
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
-        public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext, "context")»
-        «IF genInterface»;«ELSE»
+        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext, "context")»
+        «IF genInterface || isAbstract»;«ELSE»
         {
             return «fieldNameValueSet»;
         }

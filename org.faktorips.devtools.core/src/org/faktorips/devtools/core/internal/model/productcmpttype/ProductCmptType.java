@@ -66,7 +66,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -610,7 +609,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForProductCmptTypeAttribute(list, ipsProject);
         validateDefaultCategoryForTableStructureUsages(list, ipsProject);
         validateDefaultCategoryForValidationRules(list, ipsProject);
-        validateAbstractAttributes(list, ipsProject);
     }
 
     private void validateSuperProductCmptTypeHasSameChangingOverTimeSetting(IProductCmptType superProductCmptType,
@@ -780,18 +778,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this);
-        }
-    }
-
-    void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) throws CoreException {
-        if (!isAbstract()) {
-            List<IAttribute> allAttributes = findAllAttributes(ipsProject);
-            for (IAttribute attribute : allAttributes) {
-                if (!attribute.isOfType(getQualifiedNameType())) {
-                    new AttributeAbstractDatatypeValidator(attribute, this, ipsProject)
-                            .validateNotAbstractDatatype(list);
-                }
-            }
         }
     }
 

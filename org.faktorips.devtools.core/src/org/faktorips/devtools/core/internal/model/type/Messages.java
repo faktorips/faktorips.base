@@ -57,6 +57,7 @@ public class Messages extends NLS {
     public static String Attribute_msgNothingToOverwrite;
     public static String Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
     public static String Attribute_msg_Overwritten_modifier_different;
+    public static String Attribute_msg_Overwritten_type_incompatible;
     public static String Attribute_msgOverwritten_ChangingOverTimeAttribute_different;
 
     public static String DuplicatePropertyNameValidator_msg;
@@ -70,6 +71,9 @@ public class Messages extends NLS {
     public static String DuplicatePropertyNameValidator_SingularMethod;
     public static String DuplicatePropertyNameValidator_PluralElement;
     public static String DuplicatePropertyNameValidator_SingularElement;
+
+    public static String AttributeAbstractDatatypeValidator_msg;
+    public static String AttributeAbstractDatatypeValidator_hint;
 
     public static String TypeMethod_duplicateSignature;
     public static String TypeMethod_incompatbileReturnType;

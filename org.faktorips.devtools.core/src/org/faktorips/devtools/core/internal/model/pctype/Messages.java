@@ -90,10 +90,12 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost;
     public static String PolicyCmptTypeAssociation_sharedAssociation_noAssociationHost;
 
+    public static String PolicyCmptTypeAttribute_msg_AbstractCantBeProductRelevant;
     public static String PolicyCmptTypeAttribute_msg_IllegalValueSetType;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;
+    public static String PolicyCmptTypeAttribute_msg_ConstantCantBeAbstract;
     public static String PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType;
     public static String PolicyCmptTypeAttribute_msg_ProductRelevantAttributeCanNotHaveDerivedValueSet;
     public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;

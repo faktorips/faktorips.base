@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -86,8 +89,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         method.setDatatype(Datatype.STRING.getQualifiedName());
 
         MessageList result = attribute.validate(ipsProject);
-        assertNotNull(result
-                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
+        assertNotNull(
+                result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
 
         method.setDatatype(attribute.getDatatype());
         result = attribute.validate(ipsProject);
@@ -494,8 +497,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setName("attributeName");
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -507,8 +510,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -521,8 +524,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -556,8 +559,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -571,8 +574,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -586,8 +589,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -601,8 +604,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -622,25 +625,100 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_OverwrittenAttributeHasDifferentDatatype() throws Exception {
+    public void testValidate_OverwrittenAttribute_MissingSupertype() throws Exception {
         attribute.setName("name");
         attribute.setDatatype("String");
         attribute.setOverwrite(true);
 
-        MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
+        MessageList messages = attribute.validate(ipsProject);
 
+        assertThat(messages, hasMessageCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+        assertThat(messages, not(hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE)));
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttribute_IncompatibleDatatype() throws Exception {
+        PolicyCmptType supertype = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "sup.SuperType");
+        pcType.setSupertype(supertype.getQualifiedName());
+        IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute("name");
+        superAttr.setDatatype("Boolean");
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setOverwrite(true);
+
+        MessageList messages = attribute.validate(ipsProject);
+
+        assertThat(messages, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttribute_CompatibleDatatype() throws Exception {
         PolicyCmptType supertype = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "sup.SuperType");
         pcType.setSupertype(supertype.getQualifiedName());
         IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute("name");
         superAttr.setDatatype("Integer");
+        attribute.setName("name");
+        attribute.setDatatype("Integer");
+        attribute.setOverwrite(true);
 
-        ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
+        MessageList messages = attribute.validate(ipsProject);
 
-        attribute.setDatatype(superAttr.getDatatype());
-        ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
+        assertThat(messages, not(hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE)));
     }
 
+    @Test
+    public void testValidate_AbstractNotConstant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+    }
+
+    @Test
+    public void testValidate_AbstractConstant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setAttributeType(AttributeType.CONSTANT);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+    }
+
+    @Test
+    public void testValidate_AbstractProductRelevant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setProductRelevant(true);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+    }
+
+    @Test
+    public void testValidate_AbstractNotProductRelevant() throws Exception {
+        EnumType abstractEnumType = newEnumType(ipsProject, "AbstractEnum");
+        abstractEnumType.setAbstract(true);
+        attribute.setDatatype(abstractEnumType.getQualifiedName());
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+    }
+
+    @Test
+    public void testValidate_NonAbstractProductRelevant() throws Exception {
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setProductRelevant(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+    }
 }

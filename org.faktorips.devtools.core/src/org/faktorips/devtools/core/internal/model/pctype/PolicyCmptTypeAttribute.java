@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.AttributeProperty;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -237,6 +236,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             validateValueSetType(result);
         }
         validateChangingOverTimeFlag(result);
+        validateAbstractDatatype(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -336,14 +336,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    @Override
-    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
-        if (!getDatatype().equals(superAttr.getDatatype())) {
-            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
-                    Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this, PROPERTY_DATATYPE));
-        }
-    }
-
     private boolean isDefaultValueForbidden(ValueDatatype valueDatatype) {
         return DatatypeUtil.isExtensibleEnumType(valueDatatype) && !isProductRelevant();
     }
@@ -352,6 +344,23 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getDefaultValue() != null) {
             result.newError(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE,
                     Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType, this, PROPERTY_DEFAULT_VALUE);
+        }
+    }
+
+    private void validateAbstractDatatype(MessageList result) {
+        ValueDatatype datatype = findDatatype(getIpsProject());
+        if (datatype != null && datatype.isAbstract()) {
+            if (AttributeType.CONSTANT == getAttributeType()) {
+                result.newError(MSGCODE_CONSTANT_CANT_BE_ABSTRACT,
+                        Messages.PolicyCmptTypeAttribute_msg_ConstantCantBeAbstract, this, PROPERTY_ATTRIBUTE_TYPE,
+                        PROPERTY_DATATYPE);
+            }
+            if (isProductRelevant()) {
+                result.newError(MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT,
+                        NLS.bind(Messages.PolicyCmptTypeAttribute_msg_AbstractCantBeProductRelevant, getName(),
+                                datatype.getName()),
+                        this, PROPERTY_PRODUCT_RELEVANT, PROPERTY_DATATYPE);
+            }
         }
     }
 

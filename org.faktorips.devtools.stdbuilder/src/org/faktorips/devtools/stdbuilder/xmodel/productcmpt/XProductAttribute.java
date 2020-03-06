@@ -164,18 +164,6 @@ public class XProductAttribute extends XAttribute {
         return (XProductAttribute)super.getOverwrittenAttribute();
     }
 
-    /**
-     * Checks whether the attribute is abstract or not. The attribute is abstract if its datatype is
-     * an abstract datatype.
-     */
-    public boolean isAbstract() {
-        return getDatatype().isAbstract();
-    }
-
-    public boolean isGenerateAbstractGetter() {
-        return !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()) && !isGenerateContentCode() && !isOverwrite();
-    }
-
     public boolean isGenerateInterfaceGetter() {
         return isGenerateContentCode() || !isOverwrite();
     }
@@ -183,10 +171,10 @@ public class XProductAttribute extends XAttribute {
     /**
      * The default value is set under following circumstances:
      * 
-     * <li>For abstract attributes we never call setDefaultValue</li> <li>If the default value is
-     * not <code>null</code> then call setDefaultValue</li> <li>If the attribute was configured in a
-     * super type we always call setDefaultValue. To get this we could check if it is not abstract
-     * and no content code is generated.</li>
+     * <li>For abstract attributes we never call setDefaultValue</li>
+     * <li>If the default value is not <code>null</code> then call setDefaultValue</li>
+     * <li>If the attribute was configured in a super type we always call setDefaultValue. To get
+     * this we could check if it is not abstract and no content code is generated.</li>
      * 
      */
     public boolean isCallSetDefaultValue() {
@@ -203,5 +191,4 @@ public class XProductAttribute extends XAttribute {
     protected boolean isGenerateContentCode() {
         return !isAbstract() && (!isOverwrite() || getOverwrittenAttribute().isAbstract());
     }
-
 }

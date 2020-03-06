@@ -55,6 +55,30 @@ def package static memberField (XPolicyAttribute it) '''
         private «javaClassName» «field(fieldName)» = «defaultValueCode»;
     «ENDIF»
 '''
+def package static abstractGetter(XPolicyAttribute it) '''
+    /**
+     * «inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE", name, descriptionForJDoc)»
+     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     * @generated
+     */
+     «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())»
+     «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overwrite)»
+    public abstract «javaClassName» «method(methodNameGetter)»;
+'''
+
+def package static abstractSetter(XPolicyAttribute it) '''
+    «IF isGenerateSetter()»
+        /**
+         * «inheritDocOrJavaDocIf(genInterface, "METHOD_SETVALUE", name, descriptionForJDoc)»
+         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         * @generated
+         */
+         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
+         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overwrite)»
+        public abstract void «method(methodNameSetter, javaClassName, "newValue")»;
+    «ENDIF»
+    
+'''
 
 def package static getter (XPolicyAttribute it) '''
     «IF isGenerateGetter(genInterface())»
@@ -95,19 +119,25 @@ def package static setter (XPolicyAttribute it) '''
     «IF generateSetter»
         /**
          * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
+         «IF overwriteAbstract»
+         *
+         * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_PARAM", javaClassName, addImport(ClassCastException))»
+         *
+         * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_THROWS", addImport(ClassCastException), javaClassName)»
+         «ENDIF»
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)»
-        public void «method(methodNameSetter, javaClassName, "newValue")»
+        public void «IF overwriteAbstract»«method(methodNameSetter, overwrittenAttribute.javaClassName, "newValue")»«ELSE»«method(methodNameSetter, javaClassName, "newValue")»«ENDIF»
         «IF genInterface()»;«ELSE»
         {
             «PropertyChangeSupportTmpl.storeOldValue(it)»
             «IF generateSetterInternal»
-                «methodNameSetterInternal»(newValue);
+                «methodNameSetterInternal»(«IF overwriteAbstract»(«javaClassName»)«ENDIF»newValue);
             «ELSE»
-                this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
+                this.«fieldName» = «IF overwriteAbstract»(«javaClassName»)«ENDIF»«getReferenceOrSafeCopyIfNecessary("newValue")»;
             «ENDIF»
             «PropertyChangeSupportTmpl.notify(it)»
         }
@@ -138,8 +168,8 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)»
-        public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
-        «IF genInterface()»;«ELSE»
+        public «IF isAbstract()»abstract «valueSetJavaClassNameWithWildcard»«ELSE»«valueSetJavaClassName»«ENDIF» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
+        «IF genInterface() || isAbstract()»;«ELSE»
         {
             «IF productRelevant»
               «IF overwritingValueSetWithMoreConcreteType»

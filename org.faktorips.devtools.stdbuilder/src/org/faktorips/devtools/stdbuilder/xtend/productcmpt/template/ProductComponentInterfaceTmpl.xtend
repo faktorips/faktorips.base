@@ -40,7 +40,7 @@ class ProductComponentInterfaceTmpl{
                  «ENDIF»
              «ENDFOR»
 
-             «FOR it : attributesInclOverwritten»
+             «FOR it : attributesIncludingNoContentGeneration»
 «««                  TODO the old code generator generated the getter always to the published interface
 «««                  !!! If you fix it you need to generate abstract getter for public-abstract attributes in ProductComponent
 «««                 «IF published »

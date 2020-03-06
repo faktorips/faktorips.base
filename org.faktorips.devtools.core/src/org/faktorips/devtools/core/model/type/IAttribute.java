@@ -98,6 +98,13 @@ public interface IAttribute extends IChangingOverTimeProperty {
             + "OverwrittenAttributeDifferentModifier"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an attribute overwrites another but has a different
+     * data type.
+     */
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeIncompatibleDatatype"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that an attribute overwrites another but change over time
      * configuration differs
      */

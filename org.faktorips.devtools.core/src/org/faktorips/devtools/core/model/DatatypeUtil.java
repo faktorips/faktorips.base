@@ -42,13 +42,13 @@ public class DatatypeUtil {
     }
 
     /**
-     * Returns <code>true</code> if the first datatype is covariant to the second one that means it
-     * is either the same type or it is a subtype of the second one.
+     * Returns <code>true</code> if the first data type is covariant to the second one, which means
+     * it is either the same type or it is a subtype of the second one.
      * 
-     * @param datatype1 The datatype that is checked to be covariant to the second one
-     * @param datatype2 The second datatype to check
+     * @param datatype1 The data type that is checked to be covariant to the second one
+     * @param datatype2 The second data type to check
      * 
-     * @return <code>true</code> if the first datatype is covariant to the second one
+     * @return <code>true</code> if the first data type is covariant to the second one
      */
     public static final boolean isCovariant(ValueDatatype datatype1, ValueDatatype datatype2) {
         if (datatype1 == null || datatype2 == null) {

@@ -526,6 +526,18 @@ public abstract class Type extends BaseIpsObject implements IType {
                 }
             }
         }
+
+        validateAbstractAttributes(list, ipsProject);
+    }
+
+    public void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (!isAbstract()) {
+            findAllAttributes(ipsProject).stream().filter(attribute -> !attribute.isOfType(getQualifiedNameType()))
+                    .forEach(attribute -> {
+                        new AttributeAbstractDatatypeValidator(attribute, this, ipsProject)
+                                .validateNotAbstractDatatype(list);
+                    });
+        }
     }
 
     protected abstract DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject);
