@@ -240,32 +240,41 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
-        if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
-            String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
-            result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this,
-                    PROPERTY_PRODUCT_RELEVANT));
-        }
-        if (isDerived() && isProductRelevant()) {
-            if (StringUtils.isEmpty(computationMethodSignature)) {
-                String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
-                        getName());
-                result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this,
-                        PROPERTY_COMPUTATION_METHOD_SIGNATURE));
-            } else {
-                IMethod computationMethod = findComputationMethod(ipsProject);
-                if (computationMethod == null) {
-                    String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
-                    result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this,
+        if (isProductRelevant()) {
+            if (!getPolicyCmptType().isConfigurableByProductCmptType()) {
+                String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
+                result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
+                        this, PROPERTY_PRODUCT_RELEVANT));
+            }
+            if (isDerived()) {
+                if (StringUtils.isEmpty(computationMethodSignature)) {
+                    String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
+                            getName());
+                    result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this,
                             PROPERTY_COMPUTATION_METHOD_SIGNATURE));
                 } else {
-                    ValueDatatype attributeDataype = findDatatype(ipsProject);
-                    if (attributeDataype != null
-                            && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
-                        String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
-                        result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text, Message.ERROR,
-                                this, new String[] { PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE }));
+                    IMethod computationMethod = findComputationMethod(ipsProject);
+                    if (computationMethod == null) {
+                        String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
+                        result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this,
+                                PROPERTY_COMPUTATION_METHOD_SIGNATURE));
+                    } else {
+                        ValueDatatype attributeDataype = findDatatype(ipsProject);
+                        if (attributeDataype != null
+                                && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
+                            String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
+                            result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text,
+                                    Message.ERROR, this,
+                                    new String[] { PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE }));
+                        }
                     }
                 }
+            }
+            if (getValueSet().isDerived()) {
+                String text = Messages.PolicyCmptTypeAttribute_msg_ProductRelevantAttributeCanNotHaveDerivedValueSet;
+                result.add(new Message(MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET, text,
+                        Message.ERROR, this,
+                        PROPERTY_PRODUCT_RELEVANT, PROPERTY_VALUE_SET));
             }
         }
     }

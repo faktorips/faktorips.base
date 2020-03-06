@@ -1242,6 +1242,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) {
         List<ValueSetType> types = new ArrayList<ValueSetType>();
+        types.add(ValueSetType.DERIVED);
         if (datatype == null) {
             types.add(ValueSetType.UNRESTRICTED);
             return types;

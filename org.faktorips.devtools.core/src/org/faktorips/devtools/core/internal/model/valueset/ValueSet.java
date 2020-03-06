@@ -18,18 +18,21 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A ValueSet is the specification of a set of values. It is asumed that all values in a ValueSet
- * are of the same datatype.
+ * A {@link ValueSet} is the specification of a set of values. It is assumed that all values in a
+ * {@link ValueSet} are of the same datatype.
  * <p>
  * Values in the set are represented by strings so that we don't have to deal with type conversion
- * when the datatype changes. E.g. If an attributes datatype is changed by the user from Decimal to
- * Money, lower bound and upper bound from a range value set become invalid (if they were valid
- * before) but the string values remain. The user can switch back the datatype to Decimal and the
- * range is valid again. This works also when the attribute's datatype is unknown.
+ * when the datatype changes. E.g. If an attributes datatype is changed by the user from
+ * {@link Decimal} to {@link Money}, lower bound and upper bound from a range value set become
+ * invalid (if they were valid before) but the string values remain. The user can switch the
+ * datatype back to {@link Decimal} and the range is valid again. This works also when the
+ * attribute's datatype is unknown.
  * 
  * @author Thorsten Guenther
  * @author Jan Ortmann
@@ -55,7 +58,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * Creates a new value set of the given type and with the given parent and id.
      * 
      * @param type The type for the new valueset.
-     * @param parent The parent this valueset belongs to. Must implement IValueDatatypeProvider.
+     * @param parent The parent this valueset belongs to. Must implement {@link IValueSetOwner}.
      * @param partId The id this valueset is known by the parent.
      */
     protected ValueSet(ValueSetType type, IValueSetOwner parent, String partId) {
@@ -171,7 +174,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
 
     @Override
     public boolean isDetailedSpecificationOf(IValueSet otherValueSet) {
-        if (otherValueSet.isUnrestricted()) {
+        if (otherValueSet.isUnrestricted() || otherValueSet.isDerived()) {
             return otherValueSet.containsValueSet(this);
         }
         if (!getValueSetType().equals(otherValueSet.getValueSetType())) {
@@ -190,12 +193,12 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
 
     @Override
     public boolean isUnrestricted() {
-        return getValueSetType() == ValueSetType.UNRESTRICTED;
+        return getValueSetType().isUnrestricted();
     }
 
     @Override
     public boolean isEnum() {
-        return getValueSetType() == ValueSetType.ENUM;
+        return getValueSetType().isEnum();
     }
 
     @Override
@@ -205,7 +208,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
 
     @Override
     public boolean isRange() {
-        return getValueSetType() == ValueSetType.RANGE;
+        return getValueSetType().isRange();
     }
 
     @Override
@@ -231,7 +234,11 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     }
 
     protected int compareDifferentValueSets(IValueSet o) {
-        if (isUnrestricted()) {
+        if (isDerived()) {
+            return -2;
+        } else if (o.isDerived()) {
+            return 2;
+        } else if (isUnrestricted()) {
             return -1;
         } else if (isEnum()) {
             if (o.isUnrestricted()) {

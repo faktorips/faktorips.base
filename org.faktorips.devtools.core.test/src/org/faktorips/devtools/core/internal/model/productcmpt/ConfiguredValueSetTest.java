@@ -123,6 +123,14 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
         assertEquals(1, types.size());
         assertTrue(types.contains(ValueSetType.RANGE));
+
+        // case 5: attribute is not product relevant because the value set is derived
+        // => there should not be a configuredValueSet, but if the model was changed and differences
+        // ignored, it might still exist
+        a1.setValueSetType(ValueSetType.DERIVED);
+        types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
+        assertEquals(1, types.size());
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
     }
 
     @Test
