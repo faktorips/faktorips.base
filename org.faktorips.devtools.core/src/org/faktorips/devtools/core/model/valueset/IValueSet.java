@@ -172,7 +172,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * an underlying data type.
      * 
      * Prefer this method over instance-of check. If this method returns <code>true</code> the
-     * object could safely be casted to {@link IUnrestrictedValueSet}. But if the object is an
+     * object could safely be cast to {@link IUnrestrictedValueSet}. But if the object is an
      * instance of {@link IUnrestrictedValueSet} it does not mean that it is really an unrestricted
      * value set e.g. in case of {@link DelegatingValueSet}
      */
@@ -182,7 +182,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * Returns <code>true</code> if the value set is a range, otherwise <code>false</code>.
      * 
      * Prefer this method over instance-of check. If this method returns <code>true</code> the
-     * object could safely be casted to {@link IRangeValueSet}. But if the object is an instance of
+     * object could safely be cast to {@link IRangeValueSet}. But if the object is an instance of
      * {@link IRangeValueSet} it does not mean that it is really a range e.g. in case of
      * {@link DelegatingValueSet}
      */
@@ -192,11 +192,25 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * Returns <code>true</code> if the value set is an enumeration, otherwise <code>false</code>.
      * 
      * Prefer this method over instance-of check. If this method returns <code>true</code> the
-     * object could safely be casted to {@link IEnumValueSet}. But if the object is an instance of
+     * object could safely be cast to {@link IEnumValueSet}. But if the object is an instance of
      * {@link IEnumValueSet} it does not mean that it is really an enum e.g. in case of
      * {@link DelegatingValueSet}
      */
     public boolean isEnum();
+
+    /**
+     * Returns <code>true</code> if the value set is derived, otherwise <code>false</code>.
+     * 
+     * Prefer this method over instance-of check. If this method returns <code>true</code> the
+     * object could safely be casted to {@link IDerivedValueSet}. But if the object is an instance
+     * of {@link IDerivedValueSet} it does not mean that it directly implements code to compute a
+     * value set, e.g. in case of {@link DelegatingValueSet}
+     * 
+     * @since 20.6
+     */
+    public default boolean isDerived() {
+        return getValueSetType().isDerived();
+    }
 
     /**
      * Returns <code>true</code> if this is a non-abstract enumeration value set. Non-abstract

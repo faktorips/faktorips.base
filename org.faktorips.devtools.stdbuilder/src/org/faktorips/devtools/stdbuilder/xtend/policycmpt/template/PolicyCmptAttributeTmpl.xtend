@@ -134,7 +134,7 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
-         * @generated
+         * «IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)»
@@ -147,6 +147,14 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
               «ELSE»
                 return «getPropertyValueContainer(published)».«methodNameGetAllowedValuesFor»(context);
               «ENDIF»
+            «ELSEIF isValueSetDerived»
+                // begin-user-code
+                «IF overwritingValueSetWithDerived»
+                  return super.«overwrittenAttribute.methodNameGetAllowedValuesFor»(context);
+                «ELSE»
+                  return «valuesetCode»;
+                «ENDIF»
+                // end-user-code
             «ELSE»
                 return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
             «ENDIF»
@@ -167,6 +175,10 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
 
 protected def static boolean isOverwritingValueSetWithMoreConcreteType(XPolicyAttribute it) {
   overwrite && overwrittenAttribute.generateGetAllowedValuesForAndGetDefaultValue && !overwrittenAttribute.methodNameGetAllowedValuesFor.equals(methodNameGetAllowedValuesFor) && !genInterface
+}
+
+protected def static boolean isOverwritingValueSetWithDerived(XPolicyAttribute it) {
+  isValueSetDerived && overwrite && overwrittenAttribute.generateGetAllowedValuesForAndGetDefaultValue && !genInterface
 }
 
 def package static initConfigurableAttribute (XPolicyAttribute it) '''

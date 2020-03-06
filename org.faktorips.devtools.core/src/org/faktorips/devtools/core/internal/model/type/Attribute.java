@@ -200,7 +200,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
     private void validateAgainstOverwrittenAttribute(MessageList result, IAttribute superAttr) {
         validateOverwrittenDatatype(superAttr, result);
         if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
-            String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
+            String text = NLS.bind(Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute,
+                    getParent().getName() + '.' + getName(),
+                    superAttr.getParent().getName() + '.' + superAttr.getName());
             String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
             result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
         }

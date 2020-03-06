@@ -170,7 +170,7 @@ public class XPolicyAttribute extends XAttribute {
      * @return The class name of the value set
      */
     public String getValueSetJavaClassName() {
-        if (isValueSetUnrestricted()) {
+        if (isValueSetUnrestricted() || isValueSetDerived()) {
             String valueSetClass = addImport(ValueSet.class);
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetEnum()) {
@@ -359,6 +359,10 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isValueSetUnrestricted() {
         return isValueSetOfType(ValueSetType.UNRESTRICTED);
+    }
+
+    public boolean isValueSetDerived() {
+        return isValueSetOfType(ValueSetType.DERIVED);
     }
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {

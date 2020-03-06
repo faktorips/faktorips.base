@@ -28,6 +28,9 @@ public class Messages extends NLS {
     public static String ValueSetType__allValues;
     public static String ValueSetType_range;
     public static String ValueSetType_enumeration;
+    public static String ValueSetType_derived;
     public static String ValueSetFormat_unrestricted;
+    public static String ValueSetFormat_derived;
+    public static String DerivedValueSet_MsgCantSetContainsNull;
 
 }

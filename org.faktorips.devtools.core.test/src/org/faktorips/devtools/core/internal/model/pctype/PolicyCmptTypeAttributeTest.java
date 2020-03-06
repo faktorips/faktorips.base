@@ -324,6 +324,24 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateProductRelevant_DerivedValueSet() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setValueSetType(ValueSetType.DERIVED);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(
+                        IPolicyCmptTypeAttribute.MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET));
+
+        attribute.setProductRelevant(true);
+
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(
+                        IPolicyCmptTypeAttribute.MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET));
+    }
+
+    @Test
     public void testValidateNothingToOverwrite() throws Exception {
         attribute.setName("name");
 

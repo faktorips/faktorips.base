@@ -210,17 +210,38 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValueSetTypes() {
+    public void testGetValueSetTypes_Standard() {
         List<ValueSetType> types = ipsProject.getValueSetTypes(Datatype.STRING);
-        assertEquals(2, types.size());
+        assertEquals(3, types.size());
+        assertTrue(types.contains(ValueSetType.DERIVED));
         assertTrue(types.contains(ValueSetType.UNRESTRICTED));
         assertTrue(types.contains(ValueSetType.ENUM));
+    }
 
-        types = ipsProject.getValueSetTypes(Datatype.INTEGER);
-        assertEquals(3, types.size());
+    @Test
+    public void testGetValueSetTypes_Numeric() {
+        List<ValueSetType> types = ipsProject.getValueSetTypes(Datatype.INTEGER);
+        assertEquals(4, types.size());
+        assertTrue(types.contains(ValueSetType.DERIVED));
         assertTrue(types.contains(ValueSetType.UNRESTRICTED));
         assertTrue(types.contains(ValueSetType.RANGE));
         assertTrue(types.contains(ValueSetType.ENUM));
+    }
+
+    @Test
+    public void testGetValueSetTypes_Array() {
+        List<ValueSetType> types = ipsProject.getValueSetTypes(new ArrayOfValueDatatype(Datatype.INTEGER, 2));
+        assertEquals(2, types.size());
+        assertTrue(types.contains(ValueSetType.DERIVED));
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+    }
+
+    @Test
+    public void testGetValueSetTypes_Null() {
+        List<ValueSetType> types = ipsProject.getValueSetTypes(null);
+        assertEquals(2, types.size());
+        assertTrue(types.contains(ValueSetType.DERIVED));
+        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
     }
 
     @Test
@@ -228,10 +249,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.ENUM));
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.RANGE));
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.UNRESTRICTED));
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.DERIVED));
 
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.ENUM));
         assertFalse(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.RANGE));
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.UNRESTRICTED));
+        assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.STRING, ValueSetType.DERIVED));
     }
 
     @Test
