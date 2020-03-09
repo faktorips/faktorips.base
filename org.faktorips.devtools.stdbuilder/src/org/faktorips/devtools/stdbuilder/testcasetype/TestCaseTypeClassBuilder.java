@@ -822,12 +822,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // init method
             javaDoc = getJavaDocCommentForOverriddenMethod();
             method = new JavaCodeFragmentBuilder();
+            method.javaDoc(javaDoc, ANNOTATION_GENERATED);
             method.annotationLn(Override.class);
-            method.method(Modifier.PUBLIC, "void", "initProperties",
+            method.methodBegin(Modifier.PUBLIC, "void", "initProperties",
                     new String[] { "pathFromAggregateRoot", "modelObject", "propMap" },
                     new String[] { String.class.getName(), IModelObject.class.getName(),
-                            Map.class.getName() + "<" + String.class.getName() + ", " + String.class.getName() + ">" },
-                    body, javaDoc, ANNOTATION_GENERATED);
+                            Map.class.getName() + "<" + String.class.getName() + ", " + String.class.getName() + ">" });
+            method.append(body);
+            method.methodEnd();
             builder.append(method.getFragment());
             builder.appendln("}");
         }
