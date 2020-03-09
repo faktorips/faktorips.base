@@ -10,6 +10,7 @@
 
 package org.faktorips.valueset;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,9 +34,21 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     private final T upperBound;
     private final T step;
     private final boolean containsNull;
+    private final boolean empty;
 
     /**
-     * Creates a new continuous AbstractRange instance that doesn't contain null.
+     * Creates a new empty {@link DefaultRange} instance that doesn't contain any values.
+     */
+    public DefaultRange() {
+        lowerBound = null;
+        upperBound = null;
+        step = null;
+        containsNull = false;
+        empty = true;
+    }
+
+    /**
+     * Creates a new continuous {@link DefaultRange} instance that doesn't contain null.
      * 
      * @param lower bound of the range
      * @param upper bound of the range
@@ -45,58 +58,65 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     /**
-     * Creates a new continuous AbstractRange instance. The third parameter defines if the range
-     * contains null or not. Null can mean the native java null or a null representation value
-     * specific to the datatype the range implementation is for.
+     * Creates a new continuous {@link DefaultRange} instance. The third parameter defines if the
+     * range contains null or not. Null can mean the native java {@code null} or a null
+     * representation value specific to the datatype the range implementation is for.
      */
     public DefaultRange(T lower, T upper, boolean containsNull) {
         this(lower, upper, null, containsNull);
     }
 
     /**
-     * Creates a new AbstractRange instance that doesn't contain null. The third parameter defines
-     * if the range contains null or not. Null can mean the native java null or a null
-     * representation value specific to the datatype the range implementation is for.
+     * Creates a new {@link DefaultRange} instance that doesn't contain null. The third parameter
+     * defines whether the range contains null or not. Null can mean the native java {@code null} or
+     * a null representation value specific to the datatype the range implementation is for.
      * 
      * @param lower bound of the range
      * @param upper bound of the range
      * @param step the unit that defines the discrete values that are allowed to be within this
-     *            range. The value can be null indicating that it is a continuous range. It has to
-     *            fulfill to the condition: the value of the expression <i>abs(upperBound -
+     *            range. The value can be {@code null} indicating that it is a continuous range. It
+     *            has to fulfill the condition: the value of the expression <i>abs(upperBound -
      *            lowerBound) / step</i> needs to be an integer
      * @throws IllegalArgumentException if the condition <i>abs(upperBound - lowerBound) / step</i>
-     *             is not met. The condition is not applied if one is or both of the bounds are null
+     *             is not met. The condition is not applied if one or both of the bounds are
+     *             {@code null}
      */
     public DefaultRange(T lower, T upper, T step) {
         this(lower, upper, step, false);
     }
 
     /**
-     * Creates a new AbstractRange instance that doesn't contain null.
+     * Creates a new {@link DefaultRange} instance that doesn't contain null.
      * 
      * @param lower bound of the range
      * @param upper bound of the range
      * @param step the unit that defines the discrete values that are allowed to be within this
-     *            range. The value can be null indicating that it is a continuous range. It has to
-     *            fulfill to the condition: the value of the expression <i>abs(upperBound -
+     *            range. The value can be {@code null} indicating that it is a continuous range. It
+     *            has to fulfill the condition: the value of the expression <i>abs(upperBound -
      *            lowerBound) / step</i> needs to be an integer
      * @throws IllegalArgumentException if the condition <i>abs(upperBound - lowerBound) / step</i>
-     *             is not met. The condition is not applied if one is or both of the bounds are null
+     *             is not met. The condition is not applied if one is or both of the bounds are
+     *             {@code null}
      */
     public DefaultRange(T lower, T upper, T step, boolean containsNull) {
         lowerBound = lower;
         upperBound = upper;
         this.step = step;
         this.containsNull = containsNull;
+        empty = false;
         checkIfStepFitsIntoBounds();
     }
 
     /**
      * A subclass must override this method if it supports incremental steps. This method calculates
-     * the number of values hold by this range according to the step size. When this method is
-     * called it is guaranteed that the lower and upper bound are not null.
+     * the number of values held by this range according to the step size. When this method is
+     * called from {@link #getValues(boolean)} or {@link #size()} it is guaranteed that the lower
+     * and upper bound are not {@code null}.
      * 
      * @return the number of values hold by this range
+     * 
+     * @throws RuntimeException if the number of values in this range is larger than
+     *             {@link Integer#MAX_VALUE}
      */
     protected int sizeForDiscreteValuesExcludingNull() {
         throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
@@ -106,10 +126,11 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * A subclass must override this method if it supports incremental steps. This method checks if
      * the provided value actually fits in the range taking the step size into account.
      * 
-     * @param value the value to check. The provided value is never null or the null representation
-     * @param bound one of the bound of this range. If the lower bound is not null it is provided
-     *            otherwise if the upper bound is not null it is provided. This method is not called
-     *            if both bounds are null
+     * @param value the value to check. The provided value is never {@code null} or the null
+     *            representation
+     * @param bound one of the bounds of this range. If the lower bound is not {@code null} it is
+     *            provided otherwise if the upper bound is not {@code null} it is provided. This
+     *            method is not called if both bounds are {@code null}.
      * @return true if the provided value fits into the range
      */
     protected boolean checkIfValueCompliesToStepIncrement(T value, T bound) {
@@ -129,7 +150,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     /**
      * A subclass must override this method if it supports incremental steps. This method returns
-     * null or the null representation value of the datatype of this range.
+     * {@code null} or the null representation value of the datatype of this range.
      */
     protected T getNullValue() {
         throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
@@ -137,7 +158,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     /**
      * This method needs to be called in factory methods that create a new instance of a subclass of
-     * this range if the range is instantiated with a step size different from null.
+     * this range if the range is instantiated with a step size different from {@code null}.
      */
     protected final void checkIfStepFitsIntoBounds() {
         if (isStepNull()) {
@@ -167,6 +188,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     public boolean isEmpty() {
+        if (empty) {
+            return true;
+        }
         if (isLowerBoundNull() || isUpperBoundNull()) {
             return false;
         }
@@ -180,21 +204,22 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     /**
      * {@inheritDoc}
      * 
-     * Subclasses that support discrete values need to override the
-     * sizeForDiscreteValuesExcludingNull() which is called by this method for discrete ranges. By
-     * default sizeForDiscreteValuesExcludingNull() throws a RuntimeException indicating that it
-     * needs to be overridden.
+     * Subclasses that support discrete values need to override
+     * {@link #sizeForDiscreteValuesExcludingNull()} which is called by this method for discrete
+     * ranges. By default {@link #sizeForDiscreteValuesExcludingNull()} throws a
+     * {@link RuntimeException} indicating that it needs to be overridden.
      * 
-     * @throws RuntimeException if the <code>isDiscrete()</code> method returns <code>true</code>
+     * @throws RuntimeException if the number of values in this range is larger than
+     *             {@link Integer#MAX_VALUE}
      */
     public int size() {
+        if (isEmpty()) {
+            return 0;
+        }
         if (isLowerBoundNull() || isUpperBoundNull()) {
             return Integer.MAX_VALUE;
         }
 
-        if (isEmpty()) {
-            return 0;
-        }
         if (getLowerBound().equals(getUpperBound())) {
             return 1;
         }
@@ -221,13 +246,15 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             return false;
         }
         Range<T> otherRange = (Range<T>)obj;
-        return equals(lowerBound, otherRange.getLowerBound()) && equals(upperBound, otherRange.getUpperBound())
-                && equals(step, otherRange.getStep());
+        return (isEmpty() && otherRange.isEmpty())
+                || (equals(lowerBound, otherRange.getLowerBound())
+                        && equals(upperBound, otherRange.getUpperBound())
+                        && equals(step, otherRange.getStep()));
     }
 
     /**
-     * Compares the two objects for equality considering the case that the parameters can be null.
-     * If both parameters are null this method returns true.
+     * Compares the two objects for equality considering the case that the parameters can be
+     * {@code null}. If both parameters are {@code null} this method returns {@code true}.
      */
     private static boolean equals(Object first, Object second) {
         if (first == second) {
@@ -241,12 +268,15 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     @Override
     public int hashCode() {
-
-        int result = 17;
-        result = result * 37 + lowerBound.hashCode();
-        result = result * 37 + upperBound.hashCode();
-        result = (step == null) ? result : result * 37 + step.hashCode();
-        return result;
+        if (isEmpty()) {
+            return 19;
+        } else {
+            int result = 17;
+            result = result * 37 + lowerBound.hashCode();
+            result = result * 37 + upperBound.hashCode();
+            result = (step == null) ? result : result * 37 + step.hashCode();
+            return result;
+        }
     }
 
     /**
@@ -255,7 +285,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      */
     @Override
     public String toString() {
-        return lowerBound + "-" + upperBound + (step != null && !(step instanceof NullObject) ? ", " + step : "");
+        return isEmpty() ? "[]"
+                : (lowerBound + "-" + upperBound + (step != null && !(step instanceof NullObject) ? ", " + step : ""));
     }
 
     private boolean isLowerBoundNull() {
@@ -304,12 +335,12 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * <ul>
      * <li>the range is empty</li>
      * <li>lower bound is equal to upper bound</li>
-     * <li>a step is specified (step is not <code>null</code>)</li>
+     * <li>a step is specified (step is not {@code null})</li>
      * </ul>
      * 
-     * Even if the datatype might be discrete in such way that the range is discrete in theory, this
-     * method only returns <code>true</code> if a step is defined. For example an
-     * {@link IntegerRange} is not discrete if the step is <code>null</code> even though a step of 1
+     * Even if the datatype might be discrete in such a way that the range is discrete in theory,
+     * this method only returns {@code true} if a step is explicitly defined. For example an
+     * {@link IntegerRange} is not discrete if the step is {@code null} even though a step of 1
      * could be assumed.
      */
     public boolean isDiscrete() {
@@ -327,6 +358,10 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
         if (size() == Integer.MAX_VALUE) {
             throw new IllegalStateException("This method cannot be called for unlimited ranges.");
+        }
+
+        if (isEmpty()) {
+            return Collections.emptySet();
         }
 
         int numberOfEntries = sizeForDiscreteValuesExcludingNull();

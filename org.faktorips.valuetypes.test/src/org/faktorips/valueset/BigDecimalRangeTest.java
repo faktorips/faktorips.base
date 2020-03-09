@@ -12,8 +12,8 @@ package org.faktorips.valueset;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class BigDecimalRangeTest {
 
     @Test
-    public void testBigDecimalOf() {
+    public void testValueOf() {
         BigDecimalRange range = BigDecimalRange.valueOf("1.25", "5.67");
         BigDecimal lower = range.getLowerBound();
         BigDecimal upper = range.getUpperBound();
@@ -32,81 +32,112 @@ public class BigDecimalRangeTest {
     }
 
     @Test
-    public void testBigDecimalOf_upperAndStepBoundsNull() {
+    public void testValueOf_UpperAndStepBoundsNull() {
         BigDecimalRange range = BigDecimalRange.valueOf("0", null, null, false);
 
         assertEquals(new BigDecimalRange(BigDecimal.valueOf(0), null), range);
     }
 
     @Test
-    public void testBigDecimalOf_lowerAndStepBoundsNull() {
+    public void testValueOf_LowerAndStepBoundsNull() {
         BigDecimalRange range = BigDecimalRange.valueOf(null, "0", null, false);
 
         assertEquals(new BigDecimalRange(null, BigDecimal.valueOf(0)), range);
     }
 
     @Test
-    public void testBigDecimalOf_lowerAndUpperBoundsNull() {
+    public void testValueOf_LowerAndUpperBoundsNull() {
         BigDecimalRange range = BigDecimalRange.valueOf(null, null, "0", true);
 
         assertEquals(BigDecimalRange.valueOf(null, null, BigDecimal.valueOf(0), true), range);
     }
 
     @Test
-    public void testBigDecimalOf_boundsEmpty() {
+    public void testValueOf_BoundsEmpty() {
         BigDecimalRange range = BigDecimalRange.valueOf("", "", "", false);
 
         assertEquals(new BigDecimalRange(null, null), range);
     }
 
     @Test
-    public void testConstructor() {
-        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(125, 2), BigDecimal.valueOf(567, 2));
-        BigDecimal lower = range.getLowerBound();
-        BigDecimal upper = range.getUpperBound();
-        assertEquals(BigDecimal.valueOf(125, 2), lower);
-        assertEquals(BigDecimal.valueOf(567, 2), upper);
+    public void testDefaultConstructor() {
+        BigDecimalRange range = new BigDecimalRange();
+
+        assertTrue(range.isEmpty());
+        assertTrue(range.isDiscrete());
+        assertFalse(range.containsNull());
+        assertNull(range.getLowerBound());
+        assertNull(range.getUpperBound());
+        assertNull(range.getStep());
     }
 
     @Test
-    public void testConstructorWithStep() {
-        BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
+    public void testConstructor() {
+        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(125, 2), BigDecimal.valueOf(567, 2));
+
+        assertEquals(BigDecimal.valueOf(125, 2), range.getLowerBound());
+        assertEquals(BigDecimal.valueOf(567, 2), range.getUpperBound());
+    }
+
+    @Test
+    public void testValueOf_WithStep() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)),
+                BigDecimal.valueOf(Integer.valueOf(100)),
                 BigDecimal.valueOf(10, 0));
-        BigDecimalRange.valueOf(BigDecimal.valueOf(135, 2), BigDecimal.valueOf(108, 1), BigDecimal.valueOf(135, 2));
 
-        try {
-            // step doesn't fit to range
-            BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
-                    BigDecimal.valueOf(Integer.valueOf(12)));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // ok exception expected
-        }
+        assertEquals(BigDecimal.valueOf(10), range.getLowerBound());
+        assertEquals(BigDecimal.valueOf(100), range.getUpperBound());
+        assertEquals(BigDecimal.valueOf(10), range.getStep());
+        assertFalse(range.containsNull());
+    }
 
-        try {
-            BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
-                    BigDecimal.valueOf(Integer.valueOf(0)));
-            fail("Expect to fail since a step size of zero is not allowed.");
-        } catch (IllegalArgumentException e) {
-            // ok exception expected
-        }
+    @Test
+    public void testValueOf_WithStep_Cents() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(135, 2), BigDecimal.valueOf(108, 1),
+                BigDecimal.valueOf(135, 2));
+
+        assertEquals(BigDecimal.valueOf(135, 2), range.getLowerBound());
+        assertEquals(BigDecimal.valueOf(108, 1), range.getUpperBound());
+        assertEquals(BigDecimal.valueOf(135, 2), range.getStep());
+        assertFalse(range.containsNull());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf_StepMismatch() {
+        BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
+                BigDecimal.valueOf(Integer.valueOf(12)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf_StepZero() {
+        BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
+                BigDecimal.valueOf(Integer.valueOf(0)));
     }
 
     @Test
     public void testContains() {
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(Integer.valueOf(10)),
                 BigDecimal.valueOf(Integer.valueOf(100)));
+
         assertTrue(range.contains(BigDecimal.valueOf(Integer.valueOf(30))));
         assertFalse(range.contains(BigDecimal.valueOf(Integer.valueOf(120))));
         assertFalse(range.contains(BigDecimal.valueOf(Integer.valueOf(5))));
+    }
 
-        range = BigDecimalRange
+    @Test
+    public void testContains_StepNull() {
+        BigDecimalRange range = BigDecimalRange
                 .valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)), null); // ?
+
         assertTrue(range.contains(BigDecimal.valueOf(Integer.valueOf(30))));
         assertFalse(range.contains(BigDecimal.valueOf(Integer.valueOf(120))));
         assertFalse(range.contains(BigDecimal.valueOf(Integer.valueOf(5))));
+    }
 
-        range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
+    @Test
+    public void testContains_Step() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)),
+                BigDecimal.valueOf(Integer.valueOf(100)),
                 BigDecimal.valueOf(Integer.valueOf(10)));
 
         assertTrue(range.contains(BigDecimal.valueOf(30, 0)));
@@ -121,56 +152,105 @@ public class BigDecimalRangeTest {
         assertTrue(range.contains(null));
     }
 
-    @Test
-    public void testGetValues() {
-
+    @Test(expected = IllegalStateException.class)
+    public void testGetValues_NoStep() {
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(Integer.valueOf(10)),
                 BigDecimal.valueOf(Integer.valueOf(100)));
-        try {
-            range.getValues(false);
-            fail();
-        } catch (IllegalStateException e) {
-            // ok exception expected
-        }
 
-        range = BigDecimalRange
-                .valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)), null);
-        try {
-            range.getValues(false);
-            fail();
-        } catch (IllegalStateException e) {
-            // ok exception expected
-        }
+        range.getValues(false);
+    }
 
-        range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), null, BigDecimal.valueOf(Integer.valueOf(10)));
+    @Test(expected = IllegalStateException.class)
+    public void testGetValues_NullStep() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)),
+                BigDecimal.valueOf(Integer.valueOf(100)), null);
 
-        try {
-            range.getValues(false);
-            fail();
-        } catch (IllegalStateException e) {
-            // ok exception expected
-        }
+        range.getValues(false);
+    }
 
-        range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
+    @Test(expected = IllegalStateException.class)
+    public void testGetValues_NoUpper() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), null,
+                BigDecimal.valueOf(Integer.valueOf(10)));
+
+        range.getValues(false);
+    }
+
+    @Test
+    public void testGetValues() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)),
+                BigDecimal.valueOf(Integer.valueOf(100)),
                 BigDecimal.valueOf(Integer.valueOf(10)));
 
         Set<BigDecimal> values = range.getValues(false);
-        assertEquals(10, values.size());
 
+        assertEquals(10, values.size());
         assertTrue(values.contains(BigDecimal.valueOf(100, 0)));
         assertTrue(values.contains(BigDecimal.valueOf(70, 0)));
         assertTrue(values.contains(BigDecimal.valueOf(10, 0)));
+    }
 
-        range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)), BigDecimal.valueOf(Integer.valueOf(100)),
+    @Test
+    public void testGetValues_WithNull() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(Integer.valueOf(10)),
+                BigDecimal.valueOf(Integer.valueOf(100)),
                 BigDecimal.valueOf(Integer.valueOf(10)), true);
-        values = range.getValues(false);
-        assertEquals(11, values.size());
 
+        Set<BigDecimal> values = range.getValues(false);
+
+        assertEquals(11, values.size());
         assertTrue(values.contains(BigDecimal.valueOf(100, 0)));
         assertTrue(values.contains(BigDecimal.valueOf(70, 0)));
         assertTrue(values.contains(BigDecimal.valueOf(10, 0)));
         assertTrue(values.contains(null));
+    }
 
+    @Test
+    public void testSize() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(5), BigDecimal.valueOf(10),
+                BigDecimal.valueOf(1));
+
+        assertEquals(6, range.size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSize_TooLarge() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(0), BigDecimal.valueOf(Integer.MAX_VALUE),
+                BigDecimal.valueOf(1, 2));
+
+        range.size();
+    }
+
+    @Test
+    public void testSize_NoLower() {
+        BigDecimalRange range = BigDecimalRange.valueOf(null, BigDecimal.valueOf(10),
+                BigDecimal.valueOf(1));
+
+        assertEquals(Integer.MAX_VALUE, range.size());
+    }
+
+    @Test
+    public void testSize_NoUpper() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(5), null,
+                BigDecimal.valueOf(1));
+
+        assertEquals(Integer.MAX_VALUE, range.size());
+    }
+
+    @Test
+    public void testSize_NoLimit() {
+        BigDecimalRange range = BigDecimalRange.valueOf(null, null,
+                BigDecimal.valueOf(1));
+
+        assertEquals(Integer.MAX_VALUE, range.size());
+    }
+
+    @Test
+    public void testSize_Step() {
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(0), BigDecimal.valueOf(100),
+                BigDecimal.valueOf(10));
+
+        assertEquals(11, range.size());
     }
 
     @Test

@@ -13,7 +13,7 @@ package org.faktorips.valueset;
 import java.math.BigInteger;
 
 /**
- * A Range class where upper and lower bounds are Longs.
+ * A {@link Range} class where upper and lower bounds are {@link Long Longs}.
  * 
  * @author Jan Ortmann
  * @author Daniel Hohenberger conversion to Java5
@@ -22,42 +22,50 @@ public class LongRange extends DefaultRange<Long> {
 
     private static final long serialVersionUID = -785773839824461985L;
 
-    public LongRange(Long lower, Long upper) {
-        super(lower, upper, Long.valueOf(1));
+    /**
+     * Creates a new empty {@link LongRange}.
+     */
+    public LongRange() {
+        super();
     }
 
-    private LongRange(Long lower, Long upper, Long step, boolean containsNull) {
-        super(lower, upper, step, containsNull);
+    public LongRange(Long lowerBound, Long upperBound) {
+        super(lowerBound, upperBound, Long.valueOf(1));
+    }
+
+    private LongRange(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
+        super(lowerBound, upperBound, step, containsNull);
     }
 
     /**
-     * Creates a LongRange based on the indicated Strings. The Strings are parsed with the
-     * Long.valueOf() method. An empty String is interpreted as <code>null</code>.
+     * Creates a {@link LongRange} based on the given strings. The strings are parsed with the
+     * {@link Long#valueOf(String)} method. An empty string is interpreted as {@code null}.
      */
-    public static LongRange valueOf(String lower, String upper) {
-        Long min = (lower == null || lower.isEmpty()) ? null : Long.valueOf(lower);
-        Long max = (upper == null || upper.isEmpty()) ? null : Long.valueOf(upper);
+    public static LongRange valueOf(String lowerBound, String upperBound) {
+        Long min = (lowerBound == null || lowerBound.isEmpty()) ? null : Long.valueOf(lowerBound);
+        Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
         return new LongRange(min, max);
     }
 
     /**
-     * Creates a LongRange based on the indicated Strings. The Strings are parsed with the
-     * Long.valueOf() method. An empty String is interpreted as <code>null</code>. If the parameter
-     * containsNull is true <code>null</code> is considered to be included within this range.
+     * Creates a {@link LongRange} based on the given strings. The strings are parsed with the
+     * {@link Long#valueOf(long)} method. An empty String is interpreted as {@code null}. If the
+     * parameter {@code containsNull} is {@code true}, {@code null} is considered to be included
+     * within this range.
      */
-    public static LongRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        Long min = (lower == null || lower.isEmpty()) ? null : Long.valueOf(lower);
-        Long max = (upper == null || upper.isEmpty()) ? null : Long.valueOf(upper);
+    public static LongRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
+        Long min = (lowerBound == null || lowerBound.isEmpty()) ? null : Long.valueOf(lowerBound);
+        Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
         Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
         return new LongRange(min, max, stepLong, containsNull);
     }
 
-    public static LongRange valueOf(Long lower, Long upper, Long step) {
-        return valueOf(lower, upper, step, false);
+    public static LongRange valueOf(Long lowerBound, Long upperBound, Long step) {
+        return valueOf(lowerBound, upperBound, step, false);
     }
 
-    public static LongRange valueOf(Long lower, Long upper, Long step, boolean containsNull) {
-        LongRange range = new LongRange(lower, upper, step, containsNull);
+    public static LongRange valueOf(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
+        LongRange range = new LongRange(lowerBound, upperBound, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
     }
@@ -65,7 +73,8 @@ public class LongRange extends DefaultRange<Long> {
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Long value, Long bound) {
         if (getStep().longValue() == 0L) {
-            throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
+            throw new IllegalArgumentException(
+                    "The step size cannot be zero. Use null to indicate a continuous range.");
         }
         BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
         BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(getStep().longValue()));
@@ -80,7 +89,7 @@ public class LongRange extends DefaultRange<Long> {
 
         if (returnValue.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-                    "The number of values contained within this range are to huge to be supported by this operation.");
+                    "The number of values contained within this range is to huge to be supported by this operation.");
         }
 
         return returnValue.intValue();
