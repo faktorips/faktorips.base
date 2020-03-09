@@ -117,8 +117,12 @@ class DefaultAndAllowedValuesTmpl {
                 «IF valueSetRange || (valueSetUnrestricted && rangeSupported)»
                     «Range» range = «ValueToXmlHelper».«getRangeFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (range != null) {
-                        «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range
+                        if (range.isEmpty()) {
+                          «fieldNameValueSet» = new «addImport(getValuesetDatatypeHelper.getRangeJavaClassName(false))»();
+                        } else {
+                          «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range
                                 .getUpper()", "range.getStep()", "range.containsNull()")»;
+                        }
                     }
                 «ENDIF»
             }
@@ -176,6 +180,7 @@ class DefaultAndAllowedValuesTmpl {
     def private static writeRange(String rangeVar, XPolicyAttribute it) '''
         Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_RANGE»);
         valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
+        valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_EMPTY», Boolean.toString(«fieldNameValueSet».«isEmpty»));
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getLowerBound()"), "valueSetValuesElement", XML_TAG_LOWER_BOUND)»;
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getUpperBound()"), "valueSetValuesElement", XML_TAG_UPPER_BOUND)»;
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getStep()"), "valueSetValuesElement", XML_TAG_STEP)»;

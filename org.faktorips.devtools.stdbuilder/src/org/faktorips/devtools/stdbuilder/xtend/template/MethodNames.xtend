@@ -167,7 +167,13 @@ class MethodNames {
     // Methods in ValueSet
     // ---------------------------------
 
-    def static containsNull()  {     "containsNull()"    }
+    def static containsNull()  {
+     "containsNull()"
+    }
+
+    def static isEmpty()  {
+     "isEmpty()"
+    }
 
     // ---------------------------------
     // Methods in EnumValueSet

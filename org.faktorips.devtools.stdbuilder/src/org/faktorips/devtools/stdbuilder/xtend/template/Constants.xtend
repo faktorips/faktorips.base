@@ -64,6 +64,10 @@ class Constants {
         addImport(org.faktorips.runtime.internal.ValueToXmlHelper.name) + ".XML_ATTRIBUTE_CONTAINS_NULL"
     }
 
+    def static XML_ATTRIBUTE_EMPTY(AbstractGeneratorModelNode it) {
+        addImport(org.faktorips.runtime.internal.ValueToXmlHelper.name) + ".XML_ATTRIBUTE_EMPTY"
+    }
+
     def static CONFIGURED_VALUE_SET_PREFIX(AbstractGeneratorModelNode it) {
         addImport(org.faktorips.runtime.internal.ValueToXmlHelper.name) + ".CONFIGURED_VALUE_SET_PREFIX"
     }
