@@ -62,6 +62,7 @@ public enum ValueToXmlHelper {
     public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_EMPTY = "empty"; //$NON-NLS-1$
 
     /**
      * Adds the value to the given xml element. Takes care of proper null handling. By value we mean
@@ -276,6 +277,10 @@ public enum ValueToXmlHelper {
         Element rangeEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_RANGE);
         if (rangeEl == null) {
             return null;
+        }
+        boolean empty = Boolean.valueOf(rangeEl.getAttribute(XML_ATTRIBUTE_EMPTY)).booleanValue();
+        if (empty) {
+            return new Range();
         }
         boolean containsNull = Boolean.valueOf(rangeEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
         String lowerBound = getValueFromElement(rangeEl, XML_TAG_LOWER_BOUND);

@@ -19,27 +19,43 @@ package org.faktorips.runtime.internal;
  */
 public class Range {
 
-    private String lower;
-    private String upper;
-    private String step;
-    private boolean containsNull;
+    private final String lower;
+    private final String upper;
+    private final String step;
+    private final boolean containsNull;
+    private final boolean empty;
 
     /**
      * Creates a new Range.
      */
     public Range(String lower, String upper, String step, boolean containsNull) {
-        super();
         this.lower = lower;
         this.upper = upper;
         this.step = step;
         this.containsNull = containsNull;
+        empty = false;
+    }
+
+    public Range() {
+        lower = null;
+        upper = null;
+        step = null;
+        containsNull = false;
+        empty = true;
     }
 
     /**
-     * @return Returns if this range contains null
+     * @return whether this range contains {@code null}
      */
     public boolean containsNull() {
         return containsNull;
+    }
+
+    /**
+     * @return whether this {@link Range} is empty;
+     */
+    public boolean isEmpty() {
+        return empty;
     }
 
     /**

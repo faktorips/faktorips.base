@@ -65,6 +65,15 @@
 	        <AllValues containsNull="false" />
 	    </ValueSet>
 	</ConfigElement>
+  <ConfigElement>
+    <ValueSet id="1" description="">
+        <Range containsNull="false" empty="true">
+          <LowerBound isNull="true"></LowerBound>
+          <UpperBound isNull="true"></UpperBound>
+          <Step isNull="true"></Step>
+        </Range>
+    </ValueSet>
+  </ConfigElement>
     <AttributeValue attribute="A" id="1">
         <Value isNull="false" valueType="SingleValue">
             <InternationalString defaultLocale="hy">
