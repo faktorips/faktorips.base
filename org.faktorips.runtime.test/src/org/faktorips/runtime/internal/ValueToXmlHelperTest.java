@@ -89,6 +89,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("200", range.getUpper());
         assertEquals("10", range.getStep());
         assertFalse(range.containsNull());
+        assertFalse(range.isEmpty());
 
         node = (Element)configElements.item(1);
         range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
@@ -97,6 +98,15 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         node = (Element)configElements.item(2);
         range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
         assertNull(range);
+
+        node = (Element)configElements.item(7);
+        range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
+        assertNotNull(range);
+        assertTrue(range.isEmpty());
+        assertFalse(range.containsNull());
+        assertNull(range.getLower());
+        assertNull(range.getUpper());
+        assertNull(range.getStep());
     }
 
     @Test
@@ -138,14 +148,14 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     public void testAddTableUsageToElement() {
         Element element = getTestDocument().getDocumentElement();
         NodeList childNodes = element.getChildNodes();
-        assertEquals(27, childNodes.getLength());
+        assertEquals(29, childNodes.getLength());
 
         ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(28, childNodes.getLength());
-        Node namedItem = childNodes.item(27).getAttributes().getNamedItem("structureUsage");
+        assertEquals(30, childNodes.getLength());
+        Node namedItem = childNodes.item(29).getAttributes().getNamedItem("structureUsage");
         assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(27).getFirstChild().getTextContent();
+        String nodeValue = childNodes.item(29).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
     }
 

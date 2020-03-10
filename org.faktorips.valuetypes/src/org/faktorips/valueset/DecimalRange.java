@@ -15,8 +15,7 @@ import java.math.BigDecimal;
 import org.faktorips.values.Decimal;
 
 /**
- * A range implementation where the upper and lower bounds are of the type
- * <code>org.faktorips.values.java5.Decimal</code>.
+ * A range implementation where the upper and lower bounds are of the type {@link Decimal}.
  * 
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
@@ -26,73 +25,84 @@ public class DecimalRange extends DefaultRange<Decimal> {
     private static final long serialVersionUID = 5007646029371664759L;
 
     /**
-     * Creates a new DecimalRange with the provided lower bound and upper bound.
+     * Creates a new empty {@link DecimalRange}.
+     */
+    public DecimalRange() {
+        super();
+    }
+
+    /**
+     * Creates a new {@link DecimalRange} with the provided lower and upper bound.
      */
     public DecimalRange(Decimal lowerBound, Decimal upperBound) {
         super(lowerBound, upperBound);
     }
 
     /**
-     * Creates a new DecimalRange with the provided lower bound upper bound and step.
+     * Creates a new {@link DecimalRange} with the provided lower bound, upper bound and step.
      */
     private DecimalRange(Decimal lowerBound, Decimal upperBound, Decimal step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
     }
 
     /**
-     * Creates and new DecimalRange with the provided lower and upper bounds.
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds.
      */
-    public static final DecimalRange valueOf(String lower, String upper) {
-        return new DecimalRange(Decimal.valueOf(lower), Decimal.valueOf(upper));
+    public static final DecimalRange valueOf(String lowerBound, String upperBound) {
+        return new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound));
     }
 
     /**
-     * Creates and new DecimalRange with the provided lower and upper bounds, the step increment and
-     * an indicator saying if the null value is contained.
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds, the step
+     * increment and an indicator saying if the {@link Decimal#NULL} value is contained.
      */
-    public static final DecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        return new DecimalRange(Decimal.valueOf(lower), Decimal.valueOf(upper), Decimal.valueOf(step), containsNull);
+    public static final DecimalRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
+        return new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound), Decimal.valueOf(step),
+                containsNull);
     }
 
     /**
-     * Creates and new DecimalRange with the provided lower, upper bounds and step.
+     * Creates and new {@link DecimalRange} with the provided lower, upper bounds and step.
      * 
-     * @param lower the lower bound of the range. The parameter being null indicates that the range
-     *            is open on this side
-     * @param upper the upper bound of the range. The parameter being null indicates that the range
-     *            is open on this side
-     * @param step the step increment of this range. The parameter being null indicates that the
-     *            range is continuous
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
      */
-    public static final DecimalRange valueOf(Decimal lower, Decimal upper, Decimal step) {
-        return valueOf(lower, upper, step, false);
+    public static final DecimalRange valueOf(Decimal lowerBound, Decimal upperBound, Decimal step) {
+        return valueOf(lowerBound, upperBound, step, false);
     }
 
     /**
-     * Creates and new DecimalRange with the provided lower, upper bounds and step.
+     * Creates and new {@link DecimalRange} with the provided lower, upper bounds and step.
      * 
-     * @param lower the lower bound of the range. The parameter being null indicates that the range
-     *            is open on this side
-     * @param upper the upper bound of the range. The parameter being null indicates that the range
-     *            is open on this side
-     * @param step the step increment of this range. The parameter being null indicates that the
-     *            range is continuous
-     * @param containsNull true indicates that the range contains null or the null representation
-     *            value of the datatype of this range
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull true indicates that the range contains the null representation value
+     *            {@link Decimal#NULL}
      */
-    public static final DecimalRange valueOf(Decimal lower, Decimal upper, Decimal step, boolean containsNull) {
-        DecimalRange range = new DecimalRange(lower, upper, step, containsNull);
+    public static final DecimalRange valueOf(Decimal lowerBound,
+            Decimal upperBound,
+            Decimal step,
+            boolean containsNull) {
+        DecimalRange range = new DecimalRange(lowerBound, upperBound, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
     }
 
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Decimal value, Decimal bound) {
-
         Decimal step = getStep();
         Decimal zero = Decimal.valueOf(0, step.scale());
         if (zero.equals(step)) {
-            throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
+            throw new IllegalArgumentException(
+                    "The step size cannot be zero. Use null to indicate a continuous range.");
         }
         Decimal diff = bound.subtract(value).abs();
         try {
@@ -107,8 +117,13 @@ public class DecimalRange extends DefaultRange<Decimal> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
-        return getUpperBound().subtract(getLowerBound()).abs().divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY)
-                .intValue() + 1;
+        Decimal size = getUpperBound().subtract(getLowerBound()).abs()
+                .divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY).add(Decimal.valueOf(1));
+        if (size.longValue() > Integer.MAX_VALUE) {
+            throw new RuntimeException(
+                    "The number of values contained within this range is to huge to be supported by this operation.");
+        }
+        return size.intValue();
     }
 
     @Override

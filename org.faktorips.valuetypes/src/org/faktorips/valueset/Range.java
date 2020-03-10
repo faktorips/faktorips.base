@@ -40,7 +40,8 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
     /**
      * {@inheritDoc}
      * 
-     * By convention a range is empty if the upper bound is less than the lower bound.
+     * By convention a range is empty if the upper bound is less than the lower bound, but since
+     * Faktor-IPS 20.6 it can also be marked explicitly as empty while having no bounds or step.
      */
     public boolean isEmpty();
 

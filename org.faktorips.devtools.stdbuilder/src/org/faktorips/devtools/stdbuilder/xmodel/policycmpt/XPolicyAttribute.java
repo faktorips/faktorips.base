@@ -516,11 +516,17 @@ public class XPolicyAttribute extends XAttribute {
         JavaCodeFragment result;
         if (isValueSetRange()) {
             IRangeValueSet range = (IRangeValueSet)getAttribute().getValueSet();
-            JavaCodeFragment containsNullFrag = new JavaCodeFragment();
-            containsNullFrag.append(range.isContainsNull());
-            result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
-                    createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
-                    containsNullFrag, true);
+            if (range.isEmpty()) {
+                result = new JavaCodeFragment("new ");
+                result.appendClassName(getValuesetDatatypeHelper().getRangeJavaClassName(true));
+                result.append("()");
+            } else {
+                JavaCodeFragment containsNullFrag = new JavaCodeFragment();
+                containsNullFrag.append(range.isContainsNull());
+                result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
+                        createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
+                        containsNullFrag, true);
+            }
         } else if (isValueSetEnum()) {
             String[] valueIds;
             boolean containsNull;
