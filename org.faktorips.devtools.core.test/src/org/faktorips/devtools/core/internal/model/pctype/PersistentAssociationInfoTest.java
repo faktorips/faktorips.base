@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
+import static org.faktorips.abstracttest.matcher.Matchers.hasSeverity;
+import static org.faktorips.abstracttest.matcher.Matchers.hasSize;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -124,13 +129,9 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     public void testValidateTargetSideNotTransient() throws CoreException {
         MessageList ml = null;
 
-        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        setupMasterToDetailComposition();
         IPersistentAssociationInfo sourcePersistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo targetPersistenceAssociatonInfo = targetPcAssociation.getPersistenceAssociatonInfo();
-
-        targetPersistenceAssociatonInfo.setFetchType(FetchType.EAGER);
-        targetPersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
 
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
@@ -169,6 +170,78 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         sourcePersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+    }
+
+    @Test
+    public void testValidateCascadeType_Merge() throws CoreException {
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeMerge(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE));
+    }
+
+    @Test
+    public void testValidateCascadeType_Persist() throws CoreException {
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypePersist(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
+    }
+
+    @Test
+    public void testValidateCascadeType_Refresh() throws CoreException {
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeRefresh(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
+    }
+
+    @Test
+    public void testValidateCascadeType_Remove() throws CoreException {
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeRemove(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
+    }
+
+    @Test
+    public void testValidateCascadeType_All() throws CoreException {
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeMerge(true);
+        targetInfo.setCascadeTypePersist(true);
+        targetInfo.setCascadeTypeRefresh(true);
+        targetInfo.setCascadeTypeRemove(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(messages, hasSize(1));
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
+        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
     }
 
     @Test
@@ -494,14 +567,16 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
         msgList = persistenceAssociatonInfo.validate(ipsProject);
         assertNull(msgList
-                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+                .getMessageByCode(
+                        IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
 
         // lazy not allowed in properties
 
         persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
         msgList = persistenceAssociatonInfo.validate(ipsProject);
         assertNotNull(msgList
-                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+                .getMessageByCode(
+                        IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
 
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
@@ -510,7 +585,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
         msgList = persistenceAssociatonInfo.validate(ipsProject);
         assertNull(msgList
-                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+                .getMessageByCode(
+                        IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
 
         // lazy allowed in properties
         properties = ipsProject.getProperties();
@@ -521,7 +597,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
         msgList = persistenceAssociatonInfo.validate(ipsProject);
         assertNull(msgList
-                .getMessageByCode(IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
+                .getMessageByCode(
+                        IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
     }
 
     @Test
@@ -747,5 +824,13 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertTrue(persistenceAssociatonInfo.isOrphanRemovalRequired());
+    }
+
+    private void setupMasterToDetailComposition() {
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+        targetInfo.setFetchType(FetchType.EAGER);
+        targetInfo.setJoinColumnName("JoinColumn");
     }
 }

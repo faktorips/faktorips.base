@@ -185,6 +185,12 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
     public static final String MSGCODE_MANUALLY_CODE_FIX_NECESSARY = MSGCODE_PREFIX + "ManuallyCodeFixNecessary"; //$NON-NLS-1$
 
     /**
+     * Validation message code indicates that a child to parent composition has a cascade type
+     * enabled, which is not allowed.
+     */
+    public static final String MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE = MSGCODE_PREFIX + "ChildToParentCascadeType"; //$NON-NLS-1$
+
+    /**
      * Returns the {@link IPolicyCmptTypeAssociation} this info object belongs to.
      */
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation();

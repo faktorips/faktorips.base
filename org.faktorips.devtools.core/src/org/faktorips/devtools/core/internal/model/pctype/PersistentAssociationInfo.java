@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -124,15 +127,18 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     public void initDefaultsCascadeTypes() throws CoreException {
         IPolicyCmptTypeAssociation invAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject());
-        RelationshipType relationShip = null;
+        RelationshipType relationship = null;
         if (invAssociation == null) {
-            relationShip = evalUnidirectionalRelationShipType();
+            relationship = evalUnidirectionalRelationShipType();
         } else {
-            relationShip = evalBidirectionalRelationShipType(invAssociation);
+            relationship = evalBidirectionalRelationShipType(invAssociation);
         }
-        if (getPolicyComponentTypeAssociation().isAssoziation() || relationShip == RelationshipType.MANY_TO_ONE) {
-            // no cascade type if association type is association or the relationShip type is
-            // many to one
+
+        boolean isAssociation = getPolicyComponentTypeAssociation().isAssoziation();
+        boolean isChildToParentComposition = getPolicyComponentTypeAssociation().isCompositionDetailToMaster();
+        boolean isManyToOne = relationship == RelationshipType.MANY_TO_ONE;
+
+        if (isAssociation || isChildToParentComposition || isManyToOne) {
             setAllCascadeTypes(false);
         } else {
             setAllCascadeTypes(true);
@@ -370,8 +376,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
      * <tr>
      * <td>one-to-many</td>
      * <td>detail-to-master</td>
-     * <td>
-     * <i>false (but not supported)</i></td>
+     * <td><i>false (but not supported)</i></td>
      * </tr>
      * <tr>
      * <td>one-to-many</td>
@@ -525,8 +530,9 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
         // joinColumnNullable default is true
         String strJoinColumnNullable = element.getAttribute(PROPERTY_JOIN_COLUMN_NULLABLE);
-        joinColumnNullable = strJoinColumnNullable == null || strJoinColumnNullable.length() == 0 ? true : Boolean
-                .valueOf(strJoinColumnNullable);
+        joinColumnNullable = strJoinColumnNullable == null || strJoinColumnNullable.length() == 0 ? true
+                : Boolean
+                        .valueOf(strJoinColumnNullable);
 
         orphanRemoval = Boolean.valueOf(element.getAttribute(PROPERTY_ORPHAN_REMOVAL));
 
@@ -540,7 +546,8 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.toString(ownerOfManyToManyAssociation));
+        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION,
+                Boolean.toString(ownerOfManyToManyAssociation));
         element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, sourceColumnName);
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, joinTableName);
@@ -574,6 +581,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         validateJoinColumn(msgList, inverseAssociation);
         validateJoinTable(msgList, inverseAssociation);
         validateLazyFetchOnSingleValuedAssociation(msgList, ipsProject, inverseAssociation);
+        validateCascadeType(msgList);
         super.validateThis(msgList, ipsProject);
     }
 
@@ -638,7 +646,8 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     private boolean isPersistentTypeEntity(IPolicyCmptTypeAssociation association) {
-        return association.getPolicyCmptType().getPersistenceTypeInfo().getPersistentType() == IPersistentTypeInfo.PersistentType.ENTITY;
+        return association.getPolicyCmptType().getPersistenceTypeInfo()
+                .getPersistentType() == IPersistentTypeInfo.PersistentType.ENTITY;
     }
 
     private void validateJoinTable(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {
@@ -749,11 +758,34 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
             emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustNotBeEmpty, propertyName);
         }
 
-        String invalidText = NLS.bind(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
+            String invalidText = NLS.bind(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
             msgList.add(new Message(msgCodeInValid, invalidText, Message.ERROR, this, property));
+        }
+    }
+
+    private void validateCascadeType(MessageList msgList) {
+        if (getPolicyComponentTypeAssociation().isCompositionDetailToMaster()) {
+            List<String> invalidProperties = new ArrayList<>();
+            if (cascadeTypeMerge) {
+                invalidProperties.add(PROPERTY_CASCADE_TYPE_MERGE);
+            }
+            if (cascadeTypePersist) {
+                invalidProperties.add(PROPERTY_CASCADE_TYPE_PERSIST);
+            }
+            if (cascadeTypeRemove) {
+                invalidProperties.add(PROPERTY_CASCADE_TYPE_REMOVE);
+            }
+            if (cascadeTypeRefresh) {
+                invalidProperties.add(PROPERTY_CASCADE_TYPE_REFRESH);
+            }
+            if (!invalidProperties.isEmpty()) {
+                msgList.add(new Message(MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE,
+                        Messages.PersistentAssociationInfo_msgChildToParentCascadeType, Message.ERROR,
+                        this, invalidProperties.toArray(new String[0])));
+            }
         }
     }
 

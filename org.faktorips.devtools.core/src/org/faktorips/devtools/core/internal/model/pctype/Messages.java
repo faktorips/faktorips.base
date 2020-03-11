@@ -38,6 +38,7 @@ public class Messages extends NLS {
     public static String PersistentAssociationInfo_msgTransientMismatch;
     public static String PersistentAssociationInfo_sourceColumnName;
     public static String PersistentAssociationInfo_tagetColumnName;
+    public static String PersistentAssociationInfo_msgChildToParentCascadeType;
 
     public static String PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength;
     public static String PersistentAttributeInfo_msgColumnNameMustBeEmpty;
