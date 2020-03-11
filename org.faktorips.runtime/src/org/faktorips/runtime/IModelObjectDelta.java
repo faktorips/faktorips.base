@@ -13,6 +13,7 @@ package org.faktorips.runtime;
 import java.util.List;
 
 import org.faktorips.runtime.model.type.AssociationKind;
+import org.faktorips.runtime.model.type.PolicyCmptType;
 
 /**
  * A model object delta represents the delta between two model objects. The two model objects must
@@ -218,14 +219,19 @@ public interface IModelObjectDelta {
     public AssociationKind getAssociationKind();
 
     /**
-     * Returns the properties that have a different a value in the model object and the reference
-     * model object. Returns an empty array if no such property exists.
+     * Returns the properties that have a different value in the model object and the reference
+     * model object. Returns an empty list if no such property exists.
+     * <p>
+     * The order of properties in the list corresponds to the {@link PolicyCmptType#getAttributes()
+     * order defined in the model type}. Properties not manually defined in the model type, such as
+     * the {@link IConfigurableModelObject#PROPERTY_PRODUCT_COMPONENT product component}, are placed
+     * before manually defined attributes.
      */
     public List<String> getChangedProperties();
 
     /**
      * Returns <code>true</code> if the model object contains a different value for the given
-     * property than then reference model object. Returns <code>false</code> otherwise. Returns
+     * property than the reference model object. Returns <code>false</code> otherwise. Returns
      * <code>false</code> if propertyName is <code>null</code>.
      */
     public boolean isPropertyChanged(String propertyName);
