@@ -210,6 +210,13 @@
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
+            file-extensions="ipstemplate"
+            id="productComponentTemplate"
+            name="Product Component Template"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
             file-extensions="ipstablestructure"
             id="tableStructure"
             name="Table Structure"
