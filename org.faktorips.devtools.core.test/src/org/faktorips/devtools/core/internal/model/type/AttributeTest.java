@@ -274,7 +274,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
             throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(false);
+        attribute.setValueSetConfiguredByProduct(false);
         attribute.setName("name");
         attribute.setOverwrite(true);
 
@@ -292,14 +292,14 @@ public class AttributeTest extends AbstractIpsPluginTest {
             throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setName("name");
         attribute.setOverwrite(true);
 
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
         policyCmptType.setSupertype(supertype.getQualifiedName());
         IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
-        superAttr.setProductRelevant(false);
+        superAttr.setValueSetConfiguredByProduct(false);
         superAttr.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
@@ -310,7 +310,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     public void testValidate_OverwrittenAttributeHasDifferentChangingOverTime_ForPolicyAttribute() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setOverwrite(true);
         attribute.setChangingOverTime(true);
         attribute.setName("name");
@@ -318,7 +318,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
         policyCmptType.setSupertype(supertype.getQualifiedName());
         IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
-        superAttr.setProductRelevant(true);
+        superAttr.setValueSetConfiguredByProduct(true);
         superAttr.setChangingOverTime(false);
         superAttr.setName("name");
 

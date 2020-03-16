@@ -114,7 +114,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     @Test
     public void testValueSetPmoIsContainsNullEnabled_EnumContainsNullAttribute() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setDatatype(Datatype.INTEGER.getName());
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3", null), "mockId"));
@@ -127,7 +127,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     @Test
     public void testValueSetPmoIsContainsNullEnabled_EnumDoesNotContainNullAttribute() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setDatatype(Datatype.INTEGER.getName());
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3"), "mockId"));

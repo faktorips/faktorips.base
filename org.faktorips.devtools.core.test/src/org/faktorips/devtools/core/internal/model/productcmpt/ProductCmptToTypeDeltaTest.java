@@ -165,7 +165,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
     public void testFindAndSetPredecessors() throws Exception {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute(ATTRIBUTE_NAME);
         policyCmptTypeAttribute.setDatatype(ValueDatatype.STRING.getName());
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
         productCmpt.fixAllDifferencesToModel(ipsProject);
         IProductCmptGeneration generation = productCmpt.getLatestProductCmptGeneration();
         generation.getPropertyValue(ATTRIBUTE_NAME, IConfiguredDefault.class).setValue(TEST_VALUE);

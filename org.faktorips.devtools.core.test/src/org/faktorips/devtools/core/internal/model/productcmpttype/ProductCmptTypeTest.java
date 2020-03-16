@@ -271,16 +271,13 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("PolicySuperAttribute");
-        policyCmptSupertypeAttr.setProductRelevant(true);
+        policyCmptSupertypeAttr.setValueSetConfiguredByProduct(true);
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("PolicyAttribute");
-        policyCmptTypeAttr.setProductRelevant(true);
-        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is
-        // not a product def
-        // property as it is
-        // not product
-        // relevant!
+        policyCmptTypeAttr.setValueSetConfiguredByProduct(true);
+        policyCmptType.newPolicyCmptTypeAttribute().setValueSetConfiguredByProduct(false);
+        // this attribute is not a product def property as it is not product relevant!
 
         // test property type = null
         Map<String, IProductCmptProperty> propertyMap = productCmptType.findProductCmptPropertyMap(ipsProject);
@@ -358,11 +355,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Create attributes
         IPolicyCmptTypeAttribute superAttribute = superPolicyType.newPolicyCmptTypeAttribute("test");
         superAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        superAttribute.setProductRelevant(true);
+        superAttribute.setValueSetConfiguredByProduct(true);
 
         IPolicyCmptTypeAttribute overriddingAttribute = policyType.newPolicyCmptTypeAttribute("test");
         overriddingAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        overriddingAttribute.setProductRelevant(false);
+        overriddingAttribute.setValueSetConfiguredByProduct(false);
         overriddingAttribute.setOverwrite(true);
 
         // Verify
@@ -407,21 +404,21 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Create attributes
         IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
         attributeA.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeA.setProductRelevant(true);
+        attributeA.setValueSetConfiguredByProduct(true);
 
         IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
         attributeB.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeB.setProductRelevant(false);
+        attributeB.setValueSetConfiguredByProduct(false);
         attributeB.setOverwrite(true);
 
         IPolicyCmptTypeAttribute attributeC = policyTypeC.newPolicyCmptTypeAttribute("test");
         attributeC.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeC.setProductRelevant(true);
+        attributeC.setValueSetConfiguredByProduct(true);
         attributeC.setOverwrite(true);
 
         IPolicyCmptTypeAttribute attributeD = policyTypeD.newPolicyCmptTypeAttribute("test");
         attributeD.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeD.setProductRelevant(false);
+        attributeD.setValueSetConfiguredByProduct(false);
         attributeD.setOverwrite(true);
 
         // Verify
@@ -455,11 +452,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Create attributes
         IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
         attributeA.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeA.setProductRelevant(false);
+        attributeA.setValueSetConfiguredByProduct(false);
 
         IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
         attributeB.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeB.setProductRelevant(true);
+        attributeB.setValueSetConfiguredByProduct(true);
         attributeB.setOverwrite(true);
 
         // Verify
@@ -504,21 +501,21 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Create attributes
         IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("test");
         attributeA.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeA.setProductRelevant(false);
+        attributeA.setValueSetConfiguredByProduct(false);
 
         IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("test");
         attributeB.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeB.setProductRelevant(true);
+        attributeB.setValueSetConfiguredByProduct(true);
         attributeB.setOverwrite(true);
 
         IPolicyCmptTypeAttribute attributeC = policyTypeC.newPolicyCmptTypeAttribute("test");
         attributeC.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeC.setProductRelevant(false);
+        attributeC.setValueSetConfiguredByProduct(false);
         attributeC.setOverwrite(true);
 
         IPolicyCmptTypeAttribute attributeD = policyTypeD.newPolicyCmptTypeAttribute("test");
         attributeD.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeD.setProductRelevant(true);
+        attributeD.setValueSetConfiguredByProduct(true);
         attributeD.setOverwrite(true);
 
         // Verify
@@ -552,11 +549,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Create attributes
         IPolicyCmptTypeAttribute attributeA = policyTypeA.newPolicyCmptTypeAttribute("attribute");
         attributeA.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeA.setProductRelevant(false);
+        attributeA.setValueSetConfiguredByProduct(false);
 
         IPolicyCmptTypeAttribute attributeB = policyTypeB.newPolicyCmptTypeAttribute("attribute");
         attributeB.setDatatype(Datatype.STRING.getQualifiedName());
-        attributeB.setProductRelevant(true);
+        attributeB.setValueSetConfiguredByProduct(true);
         attributeB.setOverwrite(true);
 
         // Create validation rule
@@ -610,11 +607,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
-        policyCmptSupertypeAttr.setProductRelevant(true);
+        policyCmptSupertypeAttr.setValueSetConfiguredByProduct(true);
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
-        policyCmptTypeAttr.setProductRelevant(true);
+        policyCmptTypeAttr.setValueSetConfiguredByProduct(true);
 
         assertEquals(typeAttribute, productCmptType.findProductCmptProperty(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, typeAttribute.getName(), ipsProject));
@@ -680,11 +677,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
-        policyCmptSupertypeAttr.setProductRelevant(true);
+        policyCmptSupertypeAttr.setValueSetConfiguredByProduct(true);
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
-        policyCmptTypeAttr.setProductRelevant(true);
+        policyCmptTypeAttr.setValueSetConfiguredByProduct(true);
 
         assertEquals(typeAttribute, productCmptType.findProductCmptProperty(typeAttribute.getName(), ipsProject));
         assertEquals(supertypeAttr, productCmptType.findProductCmptProperty(supertypeAttr.getName(), ipsProject));
@@ -702,14 +699,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(policyCmptSupertypeAttr,
                 productCmptType.findProductCmptProperty(policyCmptSupertypeAttr.getName(), ipsProject));
 
-        policyCmptTypeAttr.setProductRelevant(false);
+        policyCmptTypeAttr.setValueSetConfiguredByProduct(false);
         assertNull(productCmptType.findProductCmptProperty(policyCmptTypeAttr.getName(), ipsProject));
     }
 
     @Test
     public void testFindProductCmptProperty_ByReference() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
         IValidationRule validationRule = policyCmptType.newRule();
         validationRule.setName("validationRule");
         validationRule.setConfigurableByProductComponent(true);
@@ -749,7 +746,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testFindProductCmptProperty_ByReferencePolicyCmptTypeNotFound() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
 
         IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
                 "id1");
@@ -767,7 +764,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setName("policyAttribute");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
         setPartId(policyAttribute, "foo");
         IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
         productAttribute.setName("productAttribute");
@@ -1384,7 +1381,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType
                 .newPolicyCmptTypeAttribute("productRelevantAttribute");
         policyAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -2064,9 +2061,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testFindProductCmptPropertiesInOrder_ProductCmptTypeNotFoundFromPolicyCmptType() throws CoreException {
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute("a1");
-        a1.setProductRelevant(true);
+        a1.setValueSetConfiguredByProduct(true);
         IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute("a2");
-        a2.setProductRelevant(true);
+        a2.setValueSetConfiguredByProduct(true);
 
         policyCmptType.setProductCmptType("foo");
 
@@ -2079,7 +2076,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testFindProductCmptProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
 
         IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
         subtype.setConfigurationForPolicyCmptType(true);
@@ -2104,7 +2101,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     private IProductCmptProperty createPolicyAttributeProperty(IPolicyCmptType policyCmptType, String name) {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute(name);
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         return attribute;
     }
 

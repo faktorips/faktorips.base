@@ -286,9 +286,9 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         // attribute
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
-        attribute.setProductRelevant(false);
+        attribute.setValueSetConfiguredByProduct(false);
         assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
@@ -347,7 +347,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
         policyCmptType.newPolicyCmptTypeAttribute("noAttributeProperty");
         IPolicyCmptTypeAttribute attributeProperty = policyCmptType.newPolicyCmptTypeAttribute("attributeProeprty");
-        attributeProperty.setProductRelevant(true);
+        attributeProperty.setValueSetConfiguredByProduct(true);
         attributeProperty.setAttributeType(AttributeType.CHANGEABLE);
 
         IValidationRule noRuleProperty = policyCmptType.newRule();
@@ -1039,7 +1039,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("override");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setDefaultValue("defaultValue");
         attribute.setValueSetType(ValueSetType.ENUM);
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
@@ -1070,7 +1070,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         IPolicyCmptTypeAttribute attribute = superPcType.newPolicyCmptTypeAttribute();
         attribute.setName("ToOverride");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setDefaultValue("defaultValue");
         attribute.setValueSetType(ValueSetType.ENUM);
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
@@ -1082,7 +1082,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         IPolicyCmptTypeAttribute attribute2 = superPcType.newPolicyCmptTypeAttribute();
         attribute2.setName("NotOverride");
         attribute2.setDatatype(Datatype.STRING.getQualifiedName());
-        attribute2.setProductRelevant(true);
+        attribute2.setValueSetConfiguredByProduct(true);
         attribute2.setDefaultValue("defaultValue");
         attribute2.setValueSetType(ValueSetType.ENUM);
         attribute2.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);

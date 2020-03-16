@@ -59,15 +59,15 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
     public void testGetSearchableElements() {
 
         IPolicyCmptTypeAttribute zahlweiseAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        zahlweiseAttribute.setProductRelevant(true);
+        zahlweiseAttribute.setValueSetConfiguredByProduct(true);
         zahlweiseAttribute.setName("zahlweise");
 
         IPolicyCmptTypeAttribute personAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        personAttribute.setProductRelevant(true);
+        personAttribute.setValueSetConfiguredByProduct(true);
         personAttribute.setName("person");
 
         IPolicyCmptTypeAttribute vertragsnummernAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        vertragsnummernAttribute.setProductRelevant(false);
+        vertragsnummernAttribute.setValueSetConfiguredByProduct(false);
         vertragsnummernAttribute.setName("vertragsnummern");
 
         List<? extends IIpsElement> searchableElements = condition.getSearchableElements(productCmptType);

@@ -655,7 +655,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                                 protected boolean execute() throws CoreException {
                                     attribute.setDatatype(overwrittenAttribute.getDatatype());
                                     attribute.setModifier(overwrittenAttribute.getModifier());
-                                    attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                    attribute.setValueSetConfiguredByProduct(overwrittenAttribute.isProductRelevant());
                                     attribute.setAttributeType(overwrittenAttribute.getAttributeType());
                                     attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
                                     attribute.setCategory(overwrittenAttribute.getCategory());

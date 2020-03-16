@@ -31,6 +31,8 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public static final String PROPERTY_COMPUTATION_METHOD_SIGNATURE = "computationMethodSignature"; //$NON-NLS-1$
     public static final String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
     public static final String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
+    public static final String PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT = "valueSetConfiguredByProduct"; //$NON-NLS-1$
+    public static final String PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT = "relevanceConfiguredByProduct"; //$NON-NLS-1$
 
     public static final String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
@@ -151,19 +153,53 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public boolean isDerived();
 
     /**
-     * Returns true if this attribute is product relevant. If the attribute is product relevant, the
-     * set of allowed values and the default value can be defined in product components that are
-     * based on the associated product component type.
+     * Returns {@code true} if this attribute is product relevant. If the attribute is product
+     * relevant, the set of allowed values and the default value can be defined in product
+     * components that are based on the associated product component type.
+     * <p>
+     * How this configuration happens depends on {@link #isValueSetConfiguredByProduct()} and
+     * {@link #isRelevanceConfiguredByProduct()}.
      * 
      * @see IPolicyCmptType#getProductCmptType()
      */
     public boolean isProductRelevant();
 
     /**
-     * Sets if this attribute is product relevant or not.
-     * 
+     * Returns whether the {@linkplain IValueSet value set} can be configured explicitly in the
+     * product configuration.
      */
+    public boolean isValueSetConfiguredByProduct();
+
+    /**
+     * Returns whether the relevance of this attribute can be configured in the product
+     * configuration by implicitly modifying the allowed {@linkplain IValueSet value set} to
+     * in-/exclude {@code null} (optional/obligatory) or disallow all values (irrelevant,
+     * {@link IValueSet#isEmpty()}).
+     */
+    public boolean isRelevanceConfiguredByProduct();
+
+    /**
+     * Sets whether this attribute is product relevant or not.
+     * 
+     * @deprecated since 20.6 use {@link #setValueSetConfiguredByProduct(boolean)} and/or
+     *             {@link #setRelevanceConfiguredByProduct(boolean)} instead
+     */
+    @Deprecated
     public void setProductRelevant(boolean newValue);
+
+    /**
+     * Sets whether the {@linkplain IValueSet value set} can be configured explicitly in the product
+     * configuration.
+     */
+    public void setValueSetConfiguredByProduct(boolean valueSetConfiguredByProduct);
+
+    /**
+     * Sets whether the relevance of this attribute can be configured in the product configuration
+     * by implicitly modifying the allowed {@linkplain IValueSet value set} to in-/exclude
+     * {@code null} (optional/obligatory) or disallow all values (irrelevant,
+     * {@link IValueSet#isEmpty()}).
+     */
+    public void setRelevanceConfiguredByProduct(boolean relevanceConfiguredByProduct);
 
     /**
      * Returns the name of the method computing the value for this attribute. The attribute must be

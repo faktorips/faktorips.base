@@ -191,7 +191,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsPluginT
             policyCmptTypeAttribute.setDatatype(Datatype.MONEY.getQualifiedName());
             policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
             policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
-            policyCmptTypeAttribute.setProductRelevant(true);
+            policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
             return policyCmptTypeAttribute;
         }
 

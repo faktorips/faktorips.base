@@ -1,36 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
- Test data for AttributeImplTest.java
--->
+<!-- Test data for AttributeImplTest.java -->
 <testcases>
 
-	<Attribute id="42" name="premium" datatype="money" productRelevant="false" attributeType="computed" computationMethodSignature="computePremium">
-		<DefaultValue isNull="false"><![CDATA[42EUR]]></DefaultValue>
-		<ValueSet>
-			<Range upperBound="222" lowerBound="444"/>
-		</ValueSet>
-	</Attribute>
-	
-	<Attribute id="2" name="master" datatype="money" productRelevant="false" attributeType="computed" changingOverTime="false">
-		<DefaultValue isNull="true"/>
-		<ValueSet>
-			<Enum>
-			  <Value value="122"/>
-			  <Value value="2"/>
-			  <Value value="3"/>		  
-			</Enum>
-		</ValueSet>
-	</Attribute>
+    <Attribute id="42" name="premium" datatype="money" productRelevant="false" attributeType="computed"
+        computationMethodSignature="computePremium">
+        <DefaultValue isNull="false"><![CDATA[42EUR]]></DefaultValue>
+        <ValueSet>
+            <Range upperBound="222" lowerBound="444" />
+        </ValueSet>
+    </Attribute>
 
-	<Attribute id="99" name="slave" datatype="money" productRelevant="false" attributeType="computed" overwrite="true" changingOverTime="true">
-		<DefaultValue isNull="true"/>
-		<ValueSet>
-			<Enum>
-			  <Value value="122"/>
-			  <Value value="2"/>
-			  <Value value="3"/>		  
-			</Enum>
-		</ValueSet>
-	</Attribute>
+    <Attribute id="2" name="master" datatype="money" productRelevant="false" attributeType="computed"
+        changingOverTime="false">
+        <DefaultValue isNull="true" />
+        <ValueSet>
+            <Enum>
+                <Value value="122" />
+                <Value value="2" />
+                <Value value="3" />
+            </Enum>
+        </ValueSet>
+    </Attribute>
+
+    <Attribute id="99" name="slave" datatype="money" productRelevant="false" attributeType="computed"
+        overwrite="true" changingOverTime="true">
+        <DefaultValue isNull="true" />
+        <ValueSet>
+            <Enum>
+                <Value value="122" />
+                <Value value="2" />
+                <Value value="3" />
+            </Enum>
+        </ValueSet>
+    </Attribute>
+
+    <Attribute id="123" name="productrel" datatype="money" productRelevant="true" attributeType="computed"
+        computationMethodSignature="computePremium">
+        <DefaultValue isNull="true"></DefaultValue>
+        <ValueSet>
+            <AllValues containsNull="true" />
+        </ValueSet>
+    </Attribute>
+
+    <Attribute id="234" name="productvalues" datatype="money" valueSetConfiguredByProduct="true" relevanceConfiguredByProduct="false" attributeType="computed"
+        computationMethodSignature="computePremium">
+        <DefaultValue isNull="true"></DefaultValue>
+        <ValueSet>
+            <AllValues containsNull="true" />
+        </ValueSet>
+    </Attribute>
+
+    <Attribute id="345" name="productrelevance" datatype="money" valueSetConfiguredByProduct="false" relevanceConfiguredByProduct="true" attributeType="computed"
+        computationMethodSignature="computePremium">
+        <DefaultValue isNull="true"></DefaultValue>
+        <ValueSet>
+            <AllValues containsNull="true" />
+        </ValueSet>
+    </Attribute>
+
+    <Attribute id="456" name="productvaluesandrelevance" datatype="money" valueSetConfiguredByProduct="true" relevanceConfiguredByProduct="true" attributeType="computed"
+        computationMethodSignature="computePremium">
+        <DefaultValue isNull="true"></DefaultValue>
+        <ValueSet>
+            <AllValues containsNull="true" />
+        </ValueSet>
+    </Attribute>
 </testcases>

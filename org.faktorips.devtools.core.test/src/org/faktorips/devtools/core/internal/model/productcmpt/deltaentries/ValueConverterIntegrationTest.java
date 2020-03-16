@@ -72,7 +72,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute createPolicyAttribute() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyAttribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
         policyAttribute.setChangingOverTime(false);
         productCmpt.fixAllDifferencesToModel(ipsProject);
         return policyAttribute;

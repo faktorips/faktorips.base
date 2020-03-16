@@ -76,7 +76,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("polAttr");
         policyCmptTypeAttribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
         policyCmptTypeAttribute.setChangingOverTime(false);
         productCmpt.fixAllDifferencesToModel(ipsProject);
         configuredDefault = productCmpt.getPropertyValue(policyCmptTypeAttribute, IConfiguredDefault.class);

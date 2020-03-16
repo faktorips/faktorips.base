@@ -63,7 +63,7 @@ public class ConditionPMOPersistenceTest extends AbstractIpsPluginTest {
         policyAttribute = (IPolicyCmptTypeAttribute)policyCmptType.newAttribute();
         policyAttribute.setName("policyAttr");
         policyAttribute.setDatatype("String");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
 
         productCmptType = ipsProject.findProductCmptType("Product");
         productAttribute = (IProductCmptTypeAttribute)productCmptType.newAttribute();

@@ -83,7 +83,7 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
         newProductCmpt(ipsProject, "TestProductType");
 
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("testAttribute");
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
         policyCmptTypeAttribute.setChangingOverTime(false);
 
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);

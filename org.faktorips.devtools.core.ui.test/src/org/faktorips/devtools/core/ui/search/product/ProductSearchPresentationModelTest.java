@@ -58,7 +58,7 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType
                 .newPolicyCmptTypeAttribute("VertragsAttribut");
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
 
         assertEquals(1, model.getAvailableConditionTypes().size());
 

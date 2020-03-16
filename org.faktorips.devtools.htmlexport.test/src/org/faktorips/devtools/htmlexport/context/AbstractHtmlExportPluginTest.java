@@ -238,7 +238,7 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
         addAttribute(policyAttribute, name, datatype, modifier);
 
         policyAttribute.setAttributeType(attributeType);
-        policyAttribute.setProductRelevant(name.contains("l"));
+        policyAttribute.setValueSetConfiguredByProduct(name.contains("l"));
 
     }
 

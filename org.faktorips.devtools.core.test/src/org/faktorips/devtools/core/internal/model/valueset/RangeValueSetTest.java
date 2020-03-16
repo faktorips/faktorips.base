@@ -73,7 +73,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("test");
         attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attr2.setProductRelevant(true);
+        attr2.setValueSetConfiguredByProduct(true);
 
         intEl = generation.newPropertyValue(attr2, IConfiguredValueSet.class);
     }
@@ -578,7 +578,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attrX");
         attr.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        attr.setProductRelevant(true);
+        attr.setValueSetConfiguredByProduct(true);
         attr.setValueSetType(ValueSetType.RANGE);
 
         IConfiguredValueSet cValueSet1 = generation.newPropertyValue(attr, IConfiguredValueSet.class);

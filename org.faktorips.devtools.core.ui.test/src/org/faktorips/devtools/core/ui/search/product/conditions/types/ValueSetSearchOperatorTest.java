@@ -46,7 +46,7 @@ public class ValueSetSearchOperatorTest extends AbstractIpsPluginTest {
         PolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attribute");
         attribute.setDatatype(valueDatatype.getName());
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         operandProvider = new PolicyAttributeConditionOperandProvider(attribute);
 
         productCmpt = newProductCmpt(ipsProject, "Product");

@@ -501,7 +501,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertThat(product.validate(ipsProject), isEmpty());
 
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setName("test");
         assertThat(product.validate(ipsProject), hasMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
     }
@@ -614,7 +614,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
             throws CoreException {
         IProductCmptCategory category = productCmptType.newCategory("myCategory");
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
         policyAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyAttribute.setCategory(category.getName());
         productCmptType.setPolicyCmptType("PolType");
@@ -870,7 +870,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         PolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
         IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
         a1.setName("A1");
-        a1.setProductRelevant(true);
+        a1.setValueSetConfiguredByProduct(true);
 
         IProductCmptType productCmptType = testType.findProductCmptType(ipsProject);
         IProductCmpt product = newProductCmpt(productCmptType, "TestProduct");
@@ -879,7 +879,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
         a2.setName("A2");
-        a2.setProductRelevant(true);
+        a2.setValueSetConfiguredByProduct(true);
 
         IProductCmpt product2 = newProductCmpt(productCmptType, "TestProduct2");
         gen = product2.getProductCmptGeneration(0);
@@ -1076,7 +1076,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptType productCmptType = testType.findProductCmptType(ipsProject);
         IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
         a1.setName("A1");
-        a1.setProductRelevant(true);
+        a1.setValueSetConfiguredByProduct(true);
 
         IProductCmpt product = newProductCmpt(productCmptType, "TestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
@@ -1084,7 +1084,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
         a2.setName("A2");
-        a2.setProductRelevant(true);
+        a2.setValueSetConfiguredByProduct(true);
 
         IProductCmpt product2 = newProductCmpt(productCmptType, "TestProduct2");
         gen = product2.getProductCmptGeneration(0);
