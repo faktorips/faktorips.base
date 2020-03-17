@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
@@ -592,4 +593,13 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
         return propertiesInternal.getInferredTemplateLinkThreshold();
     }
 
+    @Override
+    public void setDuplicateProductComponentSeverity(Severity duplicateProductComponentSeverity) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public Severity getDuplicateProductComponentSeverity() {
+        return propertiesInternal.getDuplicateProductComponentSeverity();
+    }
 }
