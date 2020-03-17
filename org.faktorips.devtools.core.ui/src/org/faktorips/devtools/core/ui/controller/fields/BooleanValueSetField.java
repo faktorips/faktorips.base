@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
@@ -23,6 +21,7 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
+import org.faktorips.devtools.core.ui.util.SelectionListeners;
 
 public class BooleanValueSetField extends DefaultEditField<IValueSet> {
 
@@ -115,18 +114,8 @@ public class BooleanValueSetField extends DefaultEditField<IValueSet> {
 
     private void addListenerToCheckbox(Checkbox checkBox) {
         if (checkBox != null) {
-            checkBox.getButton().addSelectionListener(new SelectionListener() {
-
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    notifyChangeListeners(new FieldValueChangedEvent(BooleanValueSetField.this));
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // no default selection
-                }
-            });
+            checkBox.getButton().addSelectionListener(SelectionListeners
+                    .widgetSelected($ -> notifyChangeListeners(new FieldValueChangedEvent(BooleanValueSetField.this))));
         }
     }
 

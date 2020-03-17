@@ -164,36 +164,6 @@ public class Messages extends NLS {
 
     public static String PolicyCmptTypeAssociationsSection_newButton;
 
-    public static String AttributeEditDialog_attributeComputed;
-
-    public static String AttributeEditDialog_ConfigurationGroup;
-
-    public static String AttributeEditDialog_ConstantAttributesCantBeConfigured;
-
-    public static String AttributeEditDialog_createNewMethod;
-
-    public static String AttributeEditDialog_defaultValueConfigured;
-
-    public static String AttributeEditDialog_emptyString;
-
-    public static String AttributeEditDialog_generalGroup;
-
-    public static String AttributeEditDialog_Info;
-
-    public static String AttributeEditDialog_MethodDoesNotExist;
-
-    public static String AttributeEditDialog_methodLink;
-
-    public static String AttributeEditDialog_methodNote;
-
-    public static String AttributeEditDialog_overwritesNote;
-
-    public static String AttributeEditDialog_questionCreateMethod;
-
-    public static String AttributeEditDialog_TypeCantBeFound;
-
-    public static String AttributeEditDialog_changeOverTimeCheckbox;
-
     public static String PctEditor_title;
 
     public static String PersistentSection_labelIndexName;
@@ -262,6 +232,50 @@ public class Messages extends NLS {
 
     public static String PersistentTypeInfoSection_textSupertypeNotFound;
 
+    public static String AttributeEditDialog_attributeComputed;
+    public static String AttributeEditDialog_changeOverTimeCheckbox;
+    public static String AttributeEditDialog_ConfigurationGroup;
+    public static String AttributeEditDialog_ConstantAttributesCantBeConfigured;
+    public static String AttributeEditDialog_createNewMethod;
+    public static String AttributeEditDialog_emptyString;
+    public static String AttributeEditDialog_generalGroup;
+    public static String AttributeEditDialog_Info;
+    public static String AttributeEditDialog_labelActivateValidationRule;
+    public static String AttributeEditDialog_labelAttributeIsTransient;
+    public static String AttributeEditDialog_labelAttrType;
+    public static String AttributeEditDialog_labelCategory;
+    public static String AttributeEditDialog_labelColumnName;
+    public static String AttributeEditDialog_labelColumnScale;
+    public static String AttributeEditDialog_labelColumnSize;
+    public static String AttributeEditDialog_labelDatatype;
+    public static String AttributeEditDialog_labelDatatypeConverterClass;
+    public static String AttributeEditDialog_labelDefaultValue;
+    public static String AttributeEditDialog_labelIndexName;
+    public static String AttributeEditDialog_labelModifier;
+    public static String AttributeEditDialog_labelName;
+    public static String AttributeEditDialog_labelNullable;
+    public static String AttributeEditDialog_labelPersistence;
+    public static String AttributeEditDialog_labelPersistentProperties;
+    public static String AttributeEditDialog_labelPrecision;
+    public static String AttributeEditDialog_labelSqlColumnDefinition;
+    public static String AttributeEditDialog_labelTemporalType;
+    public static String AttributeEditDialog_labelUnique;
+    public static String AttributeEditDialog_MethodDoesNotExist;
+    public static String AttributeEditDialog_methodLink;
+    public static String AttributeEditDialog_methodNote;
+    public static String AttributeEditDialog_overwritesNote;
+    public static String AttributeEditDialog_propertiesTitle;
+    public static String AttributeEditDialog_questionCreateMethod;
+    public static String AttributeEditDialog_RelevanceConfiguredByProduct;
+    public static String AttributeEditDialog_ruleTitle;
+    public static String AttributeEditDialog_textNotSupportedByPersistenceProvider;
+    public static String AttributeEditDialog_title;
+    public static String AttributeEditDialog_tooltipActivateValidationRule;
+    public static String AttributeEditDialog_TypeCantBeFound;
+    public static String AttributeEditDialog_validationRuleTitle;
+    public static String AttributeEditDialog_ValueSetConfiguredByProduct;
+    public static String AttributeEditDialog_valuesetTitle;
+
     public static String AttributesSection_deleteMessage;
     public static String AttributesSection_deleteTitle;
     public static String BehaviourPage_title;
@@ -275,48 +289,6 @@ public class Messages extends NLS {
     public static String GeneralInfoSection_labelType;
     public static String GeneralInfoSection_linkSuperclass;
     public static String GeneralInfoSection_title;
-
-    public static String AttributeEditDialog_propertiesTitle;
-    public static String AttributeEditDialog_labelActivateValidationRule;
-    public static String AttributeEditDialog_labelAttributeIsTransient;
-
-    public static String AttributeEditDialog_labelAttrType;
-
-    public static String AttributeEditDialog_labelColumnName;
-    public static String AttributeEditDialog_labelColumnScale;
-
-    public static String AttributeEditDialog_labelColumnSize;
-
-    public static String AttributeEditDialog_labelDatatype;
-
-    public static String AttributeEditDialog_labelDatatypeConverterClass;
-    public static String AttributeEditDialog_labelDefaultValue;
-    public static String AttributeEditDialog_labelModifier;
-    public static String AttributeEditDialog_labelName;
-    public static String AttributeEditDialog_labelCategory;
-
-    public static String AttributeEditDialog_labelNullable;
-
-    public static String AttributeEditDialog_labelPersistence;
-
-    public static String AttributeEditDialog_labelPersistentProperties;
-
-    public static String AttributeEditDialog_labelPrecision;
-
-    public static String AttributeEditDialog_labelSqlColumnDefinition;
-    public static String AttributeEditDialog_labelIndexName;
-    public static String AttributeEditDialog_labelTemporalType;
-
-    public static String AttributeEditDialog_labelUnique;
-
-    public static String AttributeEditDialog_ruleTitle;
-    public static String AttributeEditDialog_textNotSupportedByPersistenceProvider;
-
-    public static String AttributeEditDialog_title;
-    public static String AttributeEditDialog_tooltipActivateValidationRule;
-    public static String AttributeEditDialog_validationRuleTitle;
-
-    public static String AttributeEditDialog_valuesetTitle;
 
     public static String RuleEditDialog_ActivatedByDefault_CheckboxLabel;
 
