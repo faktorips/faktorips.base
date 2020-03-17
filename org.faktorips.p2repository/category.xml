@@ -9,9 +9,20 @@
    <feature url="features/org.faktorips.feature.nls1_0.0.0.jar" id="org.faktorips.feature.nls1" version="0.0.0">
       <category name="faktor_ips"/>
    </feature>
+   <feature url="features/org.faktorips.groovy.feature_0.0.0.jar" id="org.faktorips.groovy.feature" version="0.0.0">
+      <category name="faktor_ips_addons"/>
+   </feature>
+   <feature id="org.faktorips.groovy.feature.nls1">
+      <category name="faktor_ips_addons"/>
+   </feature>
    <category-def name="faktor_ips" label="Faktor-IPS">
       <description>
          In this category you get the core features of Faktor-IPS
+      </description>
+   </category-def>
+   <category-def name="faktor_ips_addons" label="Faktor-IPS Addons">
+      <description>
+         Optional addons for Faktor-IPS
       </description>
    </category-def>
 </site>

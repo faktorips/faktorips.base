@@ -30,6 +30,7 @@
 		<module>../../org.faktorips.util.test</module>
 		<module>../../org.faktorips.valuetypes.test</module>
 		<module>../../org.faktorips.valuetypes.joda.test</module>
+		<module>../../org.faktorips.runtime.groovy.test</module>
 	</modules>
 
 	<build>
