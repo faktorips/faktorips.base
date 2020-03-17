@@ -16,6 +16,7 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.migrationextensions.messages"; //$NON-NLS-1$
     public static String Migration_19_12_0_description;
     public static String Migration_19_7_0_description;
+    public static String Migration_20_6_0_description;
     public static String Migration_3_7_0_description;
     public static String Migration_3_8_0_description;
     public static String Migration_3_9_0_description;
