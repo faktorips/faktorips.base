@@ -91,11 +91,9 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    </license>
 
    <requires>
-      <import plugin="org.junit"/>
       <import plugin="org.faktorips.runtime"/>
       <import plugin="org.faktorips.valuetypes"/>
       <import plugin="groovy-all"/>
-      <import plugin="javaee-api"/>
    </requires>
 
    <plugin
