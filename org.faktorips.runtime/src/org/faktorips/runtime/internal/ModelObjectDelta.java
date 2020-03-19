@@ -10,12 +10,16 @@
 
 package org.faktorips.runtime.internal;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -26,7 +30,9 @@ import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
 import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.internal.delta.ChildDeltaCreator;
+import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.AssociationKind;
+import org.faktorips.runtime.model.type.PolicyAttribute;
 
 /**
  * IModelObjectDelta implementation.
@@ -45,7 +51,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     private int kindOfChange;
     private String association;
     private AssociationKind associationKind;
-    private SortedSet<String> changedProperties = null;
+    private Set<String> changedProperties = null;
 
     private final List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
 
@@ -377,7 +383,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
      */
     public void markPropertyChanged(String property) {
         if (changedProperties == null) {
-            changedProperties = new TreeSet<String>();
+            changedProperties = new TreeSet<String>(new AttributePositionComparator(original));
         }
         changedProperties.add(property);
         kind |= CHANGED;
@@ -528,5 +534,39 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
     }
     // CSON: CyclomaticComplexity
+
+    private static class AttributePositionComparator implements Comparator<String>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+        private final Map<String, Integer> propertyPositions = new HashMap<String, Integer>();
+
+        private AttributePositionComparator(IModelObject object) {
+            if (IpsModel.isPolicyCmptType(object.getClass())) {
+                List<PolicyAttribute> attributes = IpsModel.getPolicyCmptType(object).getAttributes();
+                for (int i = 0; i < attributes.size(); i++) {
+                    propertyPositions.put(attributes.get(i).getName(), i);
+                }
+            }
+        }
+
+        @Override
+        public int compare(String o1, String o2) {
+            Integer index1 = propertyPositions.get(o1);
+            Integer index2 = propertyPositions.get(o2);
+
+            if (index1 != null && index2 != null) {
+                return index1.compareTo(index2);
+            }
+
+            int diff = o1.compareTo(o2);
+            if (index1 != null) {
+                return Math.abs(diff);
+            } else if (index2 != null) {
+                return -Math.abs(diff);
+            } else {
+                return diff;
+            }
+        }
+    }
 
 }
