@@ -507,6 +507,30 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_DuplicateKindIDVersionID_duplicateInDifferentPackage() throws Exception {
+        newProductCmpt(ipsProject, "somepkg.Duplicate 2020");
+        IProductCmpt product = newProductCmpt(productCmptType, "otherpkg.Duplicate 2020");
+
+        assertThat(product.validate(ipsProject), hasMessageCode(IProductCmpt.MSGCODE_DUPLICATE_KINDID_VERSIONID));
+    }
+
+    @Test
+    public void testValidate_DuplicateKindIDVersionID_uniqueVersionID() throws Exception {
+        newProductCmpt(ipsProject, "Duplicate 2020");
+        IProductCmpt product = newProductCmpt(productCmptType, "Duplicate 2021");
+
+        assertThat(product.validate(ipsProject), lacksMessageCode(IProductCmpt.MSGCODE_DUPLICATE_KINDID_VERSIONID));
+    }
+
+    @Test
+    public void testValidate_DuplicateKindIDVersionID_uniqueKindID() throws Exception {
+        newProductCmpt(ipsProject, "Duplicate 2020");
+        IProductCmpt product = newProductCmpt(productCmptType, "NoDuplicate 2020");
+
+        assertThat(product.validate(ipsProject), lacksMessageCode(IProductCmpt.MSGCODE_DUPLICATE_KINDID_VERSIONID));
+    }
+
+    @Test
     // Suppressed "unused" warning for improved readability
     @SuppressWarnings("unused")
     public void testFindPropertyValues() throws CoreException {

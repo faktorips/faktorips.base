@@ -55,9 +55,9 @@ import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
-import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
@@ -180,7 +180,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean changingOverTimeDefault = false;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
-    private Severity duplicateProductComponentSeverity = Severity.ERROR;
+    private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -669,7 +669,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 getInferredTemplatePropertyValueThreshold().toString()));
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY,
-                getDuplicateProductComponentSeverity().name()));
+                getDuplicateProductComponentSeverity().toString()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1040,7 +1040,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
             setInferredTemplatePropertyValueThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY)) {
-            setDuplicateProductComponentSeverity(Severity.valueOf(value));
+            setDuplicateProductComponentSeverity(DesignTimeSeverity.valueOf(value));
         }
     }
 
@@ -1799,12 +1799,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public Severity getDuplicateProductComponentSeverity() {
+    public DesignTimeSeverity getDuplicateProductComponentSeverity() {
         return duplicateProductComponentSeverity;
     }
 
     @Override
-    public void setDuplicateProductComponentSeverity(Severity duplicateProductComponentSeverity) {
+    public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
         this.duplicateProductComponentSeverity = duplicateProductComponentSeverity;
     }
 

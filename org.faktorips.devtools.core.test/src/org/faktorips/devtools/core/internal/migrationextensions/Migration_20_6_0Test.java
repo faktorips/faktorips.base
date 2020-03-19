@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.runtime.Severity;
+import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,7 +59,7 @@ public class Migration_20_6_0Test extends AbstractIpsPluginTest {
         migration.migrate(new NullProgressMonitor());
         IIpsProjectProperties properties = ipsProject.getProperties();
 
-        assertThat(properties.getDuplicateProductComponentSeverity(), is(Severity.WARNING));
+        assertThat(properties.getDuplicateProductComponentSeverity(), is(DesignTimeSeverity.WARNING));
     }
 
     @Test

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.runtime.Severity;
+import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
 
@@ -692,11 +692,11 @@ public interface IIpsProjectProperties {
      * Returns the severity for validation messages when two product components have the same kindId
      * and versionId.
      */
-    Severity getDuplicateProductComponentSeverity();
+    DesignTimeSeverity getDuplicateProductComponentSeverity();
 
     /**
      * @see #getDuplicateProductComponentSeverity()
      */
-    void setDuplicateProductComponentSeverity(Severity duplicateProductComponentSeverity);
+    void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity);
 
 }

@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.faktorips.runtime.Severity;
+import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.util.message.MessageList;
 
 public class Migration_20_6_0 extends MarkAsDirtyMigration {
@@ -44,7 +44,7 @@ public class Migration_20_6_0 extends MarkAsDirtyMigration {
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         IIpsProjectProperties properties = getIpsProject().getProperties();
-        properties.setDuplicateProductComponentSeverity(Severity.WARNING);
+        properties.setDuplicateProductComponentSeverity(DesignTimeSeverity.WARNING);
         getIpsProject().setProperties(properties);
         return super.migrate(monitor);
     }

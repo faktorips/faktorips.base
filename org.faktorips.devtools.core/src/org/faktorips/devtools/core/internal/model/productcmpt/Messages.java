@@ -110,5 +110,6 @@ public class Messages extends NLS {
     public static String AttributeValue_NotMultiLingual;
     public static String AttributeValue_MultiLingual;
     public static String ProductCmpt_Error_DifferencesToModel0;
+    public static String ProductCmpt_Error_IdsNotUnique;
 
 }
