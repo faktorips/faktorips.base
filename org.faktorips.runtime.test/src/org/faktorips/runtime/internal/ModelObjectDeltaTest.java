@@ -11,6 +11,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -19,8 +21,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +39,13 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.model.annotation.IpsAttribute;
+import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
+import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.type.AssociationKind;
+import org.faktorips.runtime.model.type.AttributeKind;
+import org.faktorips.runtime.model.type.ValueSetKind;
 import org.junit.Test;
 
 /**
@@ -199,16 +207,28 @@ public class ModelObjectDeltaTest {
         props = new ArrayList<String>();
         props.addAll(delta.getChangedProperties());
         assertEquals(2, props.size());
-        assertEquals("property", props.get(0));
-        assertEquals("property2", props.get(1));
+        assertEquals("property2", props.get(0));
+        assertEquals("property", props.get(1));
 
         delta.markPropertyChanged("property2");
         props = new ArrayList<String>();
         props.addAll(delta.getChangedProperties());
-        Collections.sort(props);
         assertEquals(2, props.size());
-        assertEquals("property", props.get(0));
-        assertEquals("property2", props.get(1));
+        assertEquals("property2", props.get(0));
+        assertEquals("property", props.get(1));
+    }
+
+    @Test
+    public void testGetChangedProperties() {
+        MyModelObject objectC = new MyModelObject("C");
+        objectC.setProperty(1);
+        objectC.setAdditionalProperty(2);
+
+        ModelObjectDelta delta = (ModelObjectDelta)objectA.computeDelta(objectC, OPTIONS);
+        delta.markPropertyChanged("unkownProperty");
+        List<String> properties = delta.getChangedProperties();
+
+        assertThat(properties, is(Arrays.asList("unkownProperty", "property", "additionalProperty")));
     }
 
     @Test
@@ -306,10 +326,13 @@ public class ModelObjectDeltaTest {
         assertFalse(delta.isPropertyChanged("property"));
     }
 
+    @IpsPolicyCmptType(name = "MyModelObject")
+    @IpsAttributes({ "property", "additionalProperty" })
     static class MyModelObject implements IModelObject, IDeltaSupport {
 
         private final String id;
         private int property;
+        private int additionalProperty;
 
         public MyModelObject() {
             id = null;
@@ -319,12 +342,24 @@ public class ModelObjectDeltaTest {
             this.id = id;
         }
 
+        @IpsAttribute(name = "property", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
         public int getProperty() {
             return property;
         }
 
+        @IpsAttributeSetter("property")
         public void setProperty(int property) {
             this.property = property;
+        }
+
+        @IpsAttribute(name = "additionalProperty", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public int getAdditionalProperty() {
+            return additionalProperty;
+        }
+
+        @IpsAttributeSetter("additionalProperty")
+        public void setAdditionalProperty(int additionalProperty) {
+            this.additionalProperty = additionalProperty;
         }
 
         @Override
@@ -342,6 +377,7 @@ public class ModelObjectDeltaTest {
             MyModelObject other = (MyModelObject)otherObject;
             ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(this, otherObject);
             delta.checkPropertyChange("property", property, other.property, options);
+            delta.checkPropertyChange("additionalProperty", additionalProperty, other.additionalProperty, options);
             return delta;
         }
     }
