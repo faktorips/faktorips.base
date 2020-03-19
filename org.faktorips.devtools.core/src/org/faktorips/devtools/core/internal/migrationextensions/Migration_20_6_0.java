@@ -10,9 +10,13 @@
 package org.faktorips.devtools.core.internal.migrationextensions;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
@@ -20,20 +24,16 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
 import org.faktorips.runtime.Severity;
 import org.faktorips.util.message.MessageList;
 
-public class Migration_20_6_0 extends AbstractIpsProjectMigrationOperation {
+public class Migration_20_6_0 extends MarkAsDirtyMigration {
+
+    private static final String VERSION = "20.6.0"; //$NON-NLS-1$
+    private static final Set<IpsObjectType> TYPES_TO_MIGRATE = ImmutableSet.of(IpsObjectType.POLICY_CMPT_TYPE,
+            IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.TABLE_CONTENTS, IpsObjectType.PRODUCT_CMPT,
+            IpsObjectType.PRODUCT_TEMPLATE, IpsObjectType.TEST_CASE_TYPE, IpsObjectType.TEST_CASE);
 
     public Migration_20_6_0(IIpsProject projectToMigrate, String featureId) {
-        super(projectToMigrate, featureId);
-    }
-
-    @Override
-    public String getTargetVersion() {
-        return "20.6.0"; //$NON-NLS-1$
-    }
-
-    @Override
-    public String getDescription() {
-        return Messages.Migration_20_6_0_description;
+        super(projectToMigrate, featureId, TYPES_TO_MIGRATE, VERSION,
+                Messages.Migration_20_6_0_description);
     }
 
     @Override
@@ -42,12 +42,11 @@ public class Migration_20_6_0 extends AbstractIpsProjectMigrationOperation {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor)
-            throws CoreException, InvocationTargetException, InterruptedException {
+    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         IIpsProjectProperties properties = getIpsProject().getProperties();
         properties.setDuplicateProductComponentSeverity(Severity.WARNING);
         getIpsProject().setProperties(properties);
-        return new MessageList();
+        return super.migrate(monitor);
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

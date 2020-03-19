@@ -485,7 +485,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
         ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
         ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalize(PROPERTY_STEP));
-        tagElement.setAttribute(PROPERTY_EMPTY, Boolean.toString(isEmpty()));
+        if (isEmpty()) {
+            tagElement.setAttribute(PROPERTY_EMPTY, Boolean.toString(isEmpty()));
+        }
         element.appendChild(tagElement);
     }
 
