@@ -56,7 +56,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         productType = policyType.findProductCmptType(ipsProject);
         attributeProperty = policyType.newPolicyCmptTypeAttribute();
         attributeProperty.setName("attribute");
-        attributeProperty.setProductRelevant(true);
+        attributeProperty.setValueSetConfiguredByProduct(true);
 
         attributeReference = new ProductCmptPropertyReference(productType, "id");
         attributeReference.setReferencedProperty(attributeProperty);
@@ -101,7 +101,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         productReference.setReferencedProperty(productAttribute);
 
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
         setPartId(policyAttribute, "foo");
         IProductCmptPropertyReference policyReference = new ProductCmptPropertyReference(productType, "b");
         policyReference.setReferencedProperty(policyAttribute);
@@ -159,7 +159,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     @Test
     public void testFindProductCmptProperty() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
-        policyAttribute.setProductRelevant(true);
+        policyAttribute.setValueSetConfiguredByProduct(true);
 
         IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productType, "id1");
         policyAttributeReference.setReferencedProperty(policyAttribute);

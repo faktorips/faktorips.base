@@ -143,7 +143,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         structureUsage.setRoleName("RateTable");
         IProductCmptTypeMethod signature = productCmptType.newFormulaSignature("calculation");
         IPolicyCmptTypeAttribute policyAttr = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
-        policyAttr.setProductRelevant(true);
+        policyAttr.setValueSetConfiguredByProduct(true);
 
         IAttributeValue value = generation.newAttributeValue();
         value.setAttribute("a1");
@@ -208,7 +208,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testNewPropertyValue_configElement() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("a1");
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setDefaultValue("10");
         attribute.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();

@@ -389,12 +389,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void createConfigGroupContent() {
         Composite area = getToolkit().createGridComposite(configGroup, 1, true, false);
         GridData gridData = (GridData)area.getLayoutData();
-        gridData.heightHint = 100;
+        gridData.heightHint = 120;
 
         if (attribute.isChangeable()) {
             Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(area);
 
-            createProductRelevantCheckbox(labelEditColumnComposite);
+            createValueSetConfiguredByProductCheckbox(labelEditColumnComposite);
+            createRelevanceConfiguredByProductCheckbox(labelEditColumnComposite);
             createChangingOverTimeCheckbox(labelEditColumnComposite);
 
             getToolkit().createFormLabel(labelEditColumnComposite, Messages.AttributeEditDialog_labelCategory);
@@ -451,23 +452,34 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         });
     }
 
-    private void createProductRelevantCheckbox(Composite parent) {
-        Checkbox checkbox = getToolkit().createCheckbox(parent, Messages.AttributeEditDialog_defaultValueConfigured);
+    private void createValueSetConfiguredByProductCheckbox(Composite parent) {
+        createConfiguredByProductCheckbox(parent, Messages.AttributeEditDialog_ValueSetConfiguredByProduct,
+                IPolicyCmptTypeAttribute.PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT);
+    }
+
+    private void createRelevanceConfiguredByProductCheckbox(Composite parent) {
+        createConfiguredByProductCheckbox(parent, Messages.AttributeEditDialog_RelevanceConfiguredByProduct,
+                IPolicyCmptTypeAttribute.PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT);
+    }
+
+    private void createConfiguredByProductCheckbox(Composite parent, String label, String property) {
+        Checkbox checkbox = createCheckbox(parent, label, property);
+        bindRefreshAllowedValueSetTypes(checkbox);
+    }
+
+    private Checkbox createCheckbox(Composite parent, String label, String property) {
+        Checkbox checkbox = getToolkit().createCheckbox(parent, label);
         GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
         checkboxLayoutData.horizontalSpan = 2;
         checkbox.setLayoutData(checkboxLayoutData);
-        getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
-        bindRefreshAllowedValueSetTypes(checkbox);
+        getBindingContext().bindContent(checkbox, attribute, property);
+        return checkbox;
     }
 
     private void createChangingOverTimeCheckbox(Composite parent) {
         String checkboxLabel = NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
                 .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
-        Checkbox checkbox = getToolkit().createCheckbox(parent, checkboxLabel);
-        GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-        checkboxLayoutData.horizontalSpan = 2;
-        checkbox.setLayoutData(checkboxLayoutData);
-        getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
+        Checkbox checkbox = createCheckbox(parent, checkboxLabel, IPolicyCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
         getBindingContext().bindEnabled(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, true);
     }
 
@@ -655,7 +667,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                                 protected boolean execute() throws CoreException {
                                     attribute.setDatatype(overwrittenAttribute.getDatatype());
                                     attribute.setModifier(overwrittenAttribute.getModifier());
-                                    attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                    attribute.setValueSetConfiguredByProduct(overwrittenAttribute.isProductRelevant());
                                     attribute.setAttributeType(overwrittenAttribute.getAttributeType());
                                     attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
                                     attribute.setCategory(overwrittenAttribute.getCategory());

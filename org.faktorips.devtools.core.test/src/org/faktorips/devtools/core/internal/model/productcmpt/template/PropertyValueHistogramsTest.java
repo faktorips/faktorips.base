@@ -83,7 +83,7 @@ public class PropertyValueHistogramsTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute("prodAttr");
         productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("polAttr");
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
         policyCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         tableStructureUsage = productCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("tab");
@@ -134,7 +134,7 @@ public class PropertyValueHistogramsTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute2.setDatatype(Datatype.STRING.getQualifiedName());
         productCmptTypeAttribute2.setChangingOverTime(true);
         policyCmptTypeAttribute2 = policyCmptType.newPolicyCmptTypeAttribute("polAttr2");
-        policyCmptTypeAttribute2.setProductRelevant(true);
+        policyCmptTypeAttribute2.setValueSetConfiguredByProduct(true);
         policyCmptTypeAttribute2.setDatatype(Datatype.STRING.getQualifiedName());
         policyCmptTypeAttribute2.setChangingOverTime(true);
         tableStructureUsage2 = productCmptType.newTableStructureUsage();

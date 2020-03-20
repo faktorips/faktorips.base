@@ -132,7 +132,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         otherAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         otherAttribute.setModifier(Modifier.PUBLISHED);
         otherAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        otherAttribute.setProductRelevant(true);
+        otherAttribute.setValueSetConfiguredByProduct(true);
 
         // Create the other product component type.
         IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProduct");
@@ -179,7 +179,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         superAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         superAttribute.setModifier(Modifier.PUBLISHED);
         superAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        superAttribute.setProductRelevant(true);
+        superAttribute.setValueSetConfiguredByProduct(true);
 
         // Create a test attribute for this new attribute.
         ITestAttribute superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();

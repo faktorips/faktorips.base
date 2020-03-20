@@ -225,7 +225,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute(name);
         policyCmptTypeAttribute.setDatatype(datatype.getQualifiedName());
         policyCmptTypeAttribute.setDefaultValue(defaultValue);
-        policyCmptTypeAttribute.setProductRelevant(true);
+        policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
         return policyCmptTypeAttribute;
     }
 

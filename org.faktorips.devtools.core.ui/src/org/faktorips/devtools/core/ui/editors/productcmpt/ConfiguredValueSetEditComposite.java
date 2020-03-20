@@ -49,14 +49,19 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        EditField<?> valueSetEditField;
-        if (isBooleanDatatype()) {
-            valueSetEditField = createValueSetEditFieldForBoolean();
-        } else {
-            valueSetEditField = createValueSetField();
+        if (getProperty().isRelevanceConfiguredByProduct()) {
+            editFields.add(createAttributeRelevanceEditField());
         }
-        editFields.add(valueSetEditField);
-        createTemplateStatusButton(valueSetEditField);
+        if (getProperty().isValueSetConfiguredByProduct()) {
+            EditField<?> valueSetEditField;
+            if (isBooleanDatatype()) {
+                valueSetEditField = createValueSetEditFieldForBoolean();
+            } else {
+                valueSetEditField = createValueSetField();
+            }
+            editFields.add(valueSetEditField);
+            createTemplateStatusButton(valueSetEditField);
+        }
         addOverlaysToEditFields(editFields);
     }
 
@@ -90,6 +95,20 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
         return editField;
     }
 
+    private EditField<?> createAttributeRelevanceEditField() {
+        createLabel(Messages.ConfigElementEditComposite_AttributeRelevance);
+        AttributeRelevanceControl attributeRelevanceControl = new AttributeRelevanceControl(this, getToolkit(),
+                getProperty());
+        ((GridData)attributeRelevanceControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
+
+        AttributeRelevanceEditField attributeRelevanceEditField = new AttributeRelevanceEditField(
+                attributeRelevanceControl);
+        getBindingContext().bindContent(attributeRelevanceEditField, new AttributeRelevanceAccessor(),
+                AttributeRelevanceAccessor.PROPERTY_RELEVANCE);
+        createTemplateStatusButton(attributeRelevanceEditField);
+        return attributeRelevanceEditField;
+    }
+
     private void addOverlaysToEditFields(List<EditField<?>> editFields) {
         for (EditField<?> editField : editFields) {
             addChangingOverTimeDecorationIfRequired(editField);
@@ -106,5 +125,25 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
     @Override
     protected Function<IConfiguredValueSet, String> getToolTipFormatter() {
         return PropertyValueFormatter.CONFIGURED_VALUESET;
+    }
+
+    /**
+     * Wraps the {@link AttributeRelevance} for the
+     * {@link ConfiguredValueSetEditComposite#getPropertyValue() property value} as a property named
+     * {@link #PROPERTY_RELEVANCE} for data binding.
+     */
+    public class AttributeRelevanceAccessor {
+
+        public static final String PROPERTY_RELEVANCE = "relevance"; //$NON-NLS-1$
+
+        public AttributeRelevance getRelevance() {
+            return AttributeRelevance.of(getPropertyValue().getValueSet());
+        }
+
+        public void setRelevance(AttributeRelevance attributeRelevance) {
+            attributeRelevance.set(getPropertyValue());
+            getBindingContext().updateUI();
+        }
+
     }
 }

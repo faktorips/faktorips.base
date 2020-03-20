@@ -1327,6 +1327,9 @@
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
             contentTypeId="org.faktorips.devtools.core.productComponent"/>
+      <contentTypeBinding
+            contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
+            contentTypeId="org.faktorips.devtools.core.productComponentTemplate"/>
       <viewer
             class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareViewerCreator"
             extensions="ipstablecontents,ipstablecontentsElement"

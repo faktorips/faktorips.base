@@ -32,6 +32,12 @@ public class Messages extends NLS {
 
     public static String AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage;
 
+    public static String AttributeRelevanceControl_Mandatory;
+
+    public static String AttributeRelevanceControl_Optional;
+
+    public static String AttributeRelevanceControl_Irrelevant;
+
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
     public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;
@@ -47,6 +53,8 @@ public class Messages extends NLS {
     public static String ConfigElementEditComposite_valueSet;
 
     public static String ConfigElementEditComposite_defaultValue;
+
+    public static String ConfigElementEditComposite_AttributeRelevance;
 
     public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_ConfirmBuildProject;
 

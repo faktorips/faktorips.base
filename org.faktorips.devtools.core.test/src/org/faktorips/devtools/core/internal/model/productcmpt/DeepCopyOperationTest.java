@@ -484,7 +484,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         newTableStructureUsage.addTableStructure(TABLE_STRUCTURE);
 
         salesNameAttribute = motorContract.newPolicyCmptTypeAttribute("salesName");
-        salesNameAttribute.setProductRelevant(true);
+        salesNameAttribute.setValueSetConfiguredByProduct(true);
     }
 
     private void createProducts() throws CoreException {

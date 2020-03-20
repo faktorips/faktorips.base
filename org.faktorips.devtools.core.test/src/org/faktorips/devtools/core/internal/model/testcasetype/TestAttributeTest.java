@@ -379,12 +379,12 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute attributeSub1 = sub1.newPolicyCmptTypeAttribute();
         attributeSub1.setName("attrSub1");
-        attributeSub1.setProductRelevant(true);
+        attributeSub1.setValueSetConfiguredByProduct(true);
         attributeSub1.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
 
         IPolicyCmptTypeAttribute attributeSub2 = sub2.newPolicyCmptTypeAttribute();
         attributeSub2.setName("attrSub2");
-        attributeSub2.setProductRelevant(true);
+        attributeSub2.setValueSetConfiguredByProduct(true);
         attributeSub2.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
 
         testAttribute.setName("test");

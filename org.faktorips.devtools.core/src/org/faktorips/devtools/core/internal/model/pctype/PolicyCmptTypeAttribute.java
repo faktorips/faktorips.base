@@ -54,7 +54,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     protected static final String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
-    private boolean productRelevant;
+    private boolean valueSetConfiguredByProduct;
+
+    private boolean relevanceConfiguredByProduct;
 
     private AttributeType attributeType = AttributeType.CHANGEABLE;
 
@@ -163,17 +165,49 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public boolean isProductRelevant() {
-        return productRelevant;
+        return isValueSetConfiguredByProduct() || isRelevanceConfiguredByProduct();
+    }
+
+    @Override
+    public boolean isValueSetConfiguredByProduct() {
+        return valueSetConfiguredByProduct;
+    }
+
+    @Override
+    public boolean isRelevanceConfiguredByProduct() {
+        return relevanceConfiguredByProduct;
     }
 
     @Override
     public void setProductRelevant(boolean newValue) {
-        boolean oldValue = productRelevant;
-        productRelevant = newValue;
-        if (oldValue != newValue && !newValue) {
+        setValueSetConfiguredByProduct(newValue);
+    }
+
+    private void updateProductRelevant(boolean oldProductRelevant) {
+        boolean productRelevant = isProductRelevant();
+        boolean noLongerProductRelevant = oldProductRelevant != productRelevant && !productRelevant;
+        if (noLongerProductRelevant) {
             computationMethodSignature = ""; //$NON-NLS-1$
         }
-        valueChanged(oldValue, newValue, PROPERTY_PRODUCT_RELEVANT);
+        valueChanged(oldProductRelevant, valueSetConfiguredByProduct, PROPERTY_PRODUCT_RELEVANT);
+    }
+
+    @Override
+    public void setValueSetConfiguredByProduct(boolean valueSetConfiguredByProduct) {
+        boolean oldProductRelevant = isProductRelevant();
+        boolean oldValue = this.valueSetConfiguredByProduct;
+        this.valueSetConfiguredByProduct = valueSetConfiguredByProduct;
+        valueChanged(oldValue, valueSetConfiguredByProduct, PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT);
+        updateProductRelevant(oldProductRelevant);
+    }
+
+    @Override
+    public void setRelevanceConfiguredByProduct(boolean relevanceConfiguredByProduct) {
+        boolean oldProductRelevant = isProductRelevant();
+        boolean oldValue = this.relevanceConfiguredByProduct;
+        this.relevanceConfiguredByProduct = relevanceConfiguredByProduct;
+        valueChanged(oldValue, relevanceConfiguredByProduct, PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT);
+        updateProductRelevant(oldProductRelevant);
     }
 
     @Override
@@ -244,7 +278,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             if (!getPolicyCmptType().isConfigurableByProductCmptType()) {
                 String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
                 result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
-                        this, PROPERTY_PRODUCT_RELEVANT));
+                        this, productRelevantProperties()));
             }
             if (isDerived()) {
                 if (StringUtils.isEmpty(computationMethodSignature)) {
@@ -264,8 +298,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                                 && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
                             String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
                             result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text,
-                                    Message.ERROR, this,
-                                    new String[] { PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE }));
+                                    Message.ERROR, this, PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
                         }
                     }
                 }
@@ -273,8 +306,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             if (getValueSet().isDerived()) {
                 String text = Messages.PolicyCmptTypeAttribute_msg_ProductRelevantAttributeCanNotHaveDerivedValueSet;
                 result.add(new Message(MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET, text,
-                        Message.ERROR, this,
-                        PROPERTY_PRODUCT_RELEVANT, PROPERTY_VALUE_SET));
+                        Message.ERROR, this, productRelevantProperties(PROPERTY_VALUE_SET)));
             }
         }
     }
@@ -359,9 +391,25 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 result.newError(MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT,
                         NLS.bind(Messages.PolicyCmptTypeAttribute_msg_AbstractCantBeProductRelevant, getName(),
                                 datatype.getName()),
-                        this, PROPERTY_PRODUCT_RELEVANT, PROPERTY_DATATYPE);
+                        this, productRelevantProperties(PROPERTY_DATATYPE));
             }
         }
+    }
+
+    private String[] productRelevantProperties(String... otherProperties) {
+        ArrayList<String> properties = new ArrayList<String>();
+        for (String property : otherProperties) {
+            properties.add(property);
+        }
+        properties.add(PROPERTY_PRODUCT_RELEVANT);
+        if (valueSetConfiguredByProduct) {
+            properties.add(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT);
+        }
+        if (relevanceConfiguredByProduct) {
+            properties.add(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT);
+        }
+
+        return properties.toArray(new String[0]);
     }
 
     @Override
@@ -372,7 +420,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+        boolean productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+        valueSetConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT))
+                .booleanValue() || productRelevant;
+        relevanceConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT))
+                .booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
     }
@@ -391,7 +443,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT, "" + valueSetConfiguredByProduct); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT, "" + relevanceConfiguredByProduct); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
@@ -491,7 +544,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public String getPropertyName() {
-        if (productRelevant) {
+        if (isProductRelevant()) {
             return name;
         }
         return ""; //$NON-NLS-1$

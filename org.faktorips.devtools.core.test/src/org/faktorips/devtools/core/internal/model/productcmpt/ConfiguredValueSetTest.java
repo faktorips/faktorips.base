@@ -100,7 +100,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("attribute");
         a1.setDatatype("Integer");
-        a1.setProductRelevant(true);
+        a1.setValueSetConfiguredByProduct(true);
         a1.setValueSetType(ValueSetType.UNRESTRICTED);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
         assertEquals(3, types.size());

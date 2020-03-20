@@ -402,7 +402,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     @Test
     public void testValueSetTypeMismatch() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setProductRelevant(true);
+        attr.setValueSetConfiguredByProduct(true);
         attr.setName("a1");
         attr.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet range = (IRangeValueSet)attr.getValueSet();
@@ -453,7 +453,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     @Test
     public void testValueSetTypeMismatch_UndefinedConfigElement() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
-        attr.setProductRelevant(true);
+        attr.setValueSetConfiguredByProduct(true);
         attr.setName("a1");
         ProductCmpt template = newProductTemplate(productCmptType, "testTemplate");
         template.fixAllDifferencesToModel(ipsProject);

@@ -175,7 +175,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         defCategory.setDefaultForPolicyCmptTypeAttributes(true);
 
         IPolicyCmptTypeAttribute attribute = policyType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
 
         assertTrue(StringUtils.isEmpty(attribute.getCategory()));
 
@@ -272,7 +272,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         productType.setSupertype(superProdcutType.getQualifiedName());
 
         IPolicyCmptTypeAttribute attribute = policyType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
+        attribute.setValueSetConfiguredByProduct(true);
 
         List<IProductCmptProperty> propertiesInCategory = defaultAttributeCategory.findProductCmptProperties(
                 productType, true, ipsProject);
@@ -794,7 +794,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testInsertProductCmptProperty_DoNotChangeCategoryStoredInPolicyProperty() throws CoreException {
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
-        policyProperty.setProductRelevant(true);
+        policyProperty.setValueSetConfiguredByProduct(true);
         policyProperty.setCategory("beforeCategory");
 
         category.insertProductCmptProperty(policyProperty, null, false);
@@ -819,7 +819,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptCategory category = superProductType.newCategory("testCategory");
 
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
-        policyProperty.setProductRelevant(true);
+        policyProperty.setValueSetConfiguredByProduct(true);
 
         category.insertProductCmptProperty(policyProperty, null, false);
 
@@ -936,7 +936,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
         property.setCategory(category.getName());
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
-        policyProperty.setProductRelevant(true);
+        policyProperty.setValueSetConfiguredByProduct(true);
         policyProperty.setCategory(category.getName());
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
@@ -969,7 +969,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
         property.setCategory(category.getName());
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
-        policyProperty.setProductRelevant(true);
+        policyProperty.setValueSetConfiguredByProduct(true);
         policyProperty.setCategory(category.getName());
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
@@ -1001,7 +1001,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
         property.setCategory(category.getName());
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
-        policyProperty.setProductRelevant(true);
+        policyProperty.setValueSetConfiguredByProduct(true);
         policyProperty.setCategory(category.getName());
 
         policyType.setProductCmptType("");
