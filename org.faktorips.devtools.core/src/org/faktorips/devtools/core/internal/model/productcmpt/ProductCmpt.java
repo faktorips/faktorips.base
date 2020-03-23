@@ -232,6 +232,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (!validateTypeHierarchy(list, ipsProject, type)) {
             return;
         }
+        validateUniqueVersionIdKindId(list, ipsProject);
         validateName(list, ipsProject);
         if (isProductTemplate()) {
             TemplateValidations.validateTemplateCycle(this, list, ipsProject);
@@ -241,6 +242,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
         ProductCmptValidations.validateTemplate(this, type, list, ipsProject);
+    }
+
+    private void validateUniqueVersionIdKindId(MessageList list, IIpsProject ipsProject) {
+        if (ipsProject.findProductCmptByUnqualifiedName(getName()).size() > 1) {
+            list.add(new Message(MSGCODE_DUPLICATE_KINDID_VERSIONID,
+                    NLS.bind(Messages.ProductCmpt_Error_IdsNotUnique, IpsPlugin.getDefault().getIpsPreferences()
+                            .getChangesOverTimeNamingConvention().getVersionConceptNameSingular()),
+                    ipsProject.getReadOnlyProperties().getDuplicateProductComponentSeverity().getIntRepresentation(),
+                    this));
+        }
     }
 
     private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {

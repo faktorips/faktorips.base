@@ -92,6 +92,8 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      */
     public static final String MSGCODE_DIFFERENCES_TO_MODEL = MSGCODE_PREFIX + "DifferencesToModel"; //$NON-NLS-1$
 
+    public static final String MSGCODE_DUPLICATE_KINDID_VERSIONID = MSGCODE_PREFIX + "IdsNotUnique"; //$NON-NLS-1$
+
     /**
      * Returns the product component's generation at the specified index.
      * 

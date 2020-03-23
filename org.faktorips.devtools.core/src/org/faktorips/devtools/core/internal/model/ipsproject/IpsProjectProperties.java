@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.util.ArgumentCheck;
@@ -115,6 +116,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD = "inferredTemplatePropertyValueThreshold"; //$NON-NLS-1$
 
+    private static final String SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY = "duplicateProductComponentSeverity"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -143,7 +146,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     private String version;
     /**
-     * The id of the release extension that is associatied with this project
+     * The id of the release extension that is associated with this project
      */
     private String releaseExtensionId;
 
@@ -177,6 +180,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean changingOverTimeDefault = false;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
+    private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -663,6 +667,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD,
                 getInferredTemplatePropertyValueThreshold().toString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY,
+                getDuplicateProductComponentSeverity().toString()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -749,7 +756,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         changesInTimeConventionIdForGeneratedCode = element.getAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
         changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)
-                ? IChangesOverTimeNamingConvention.VAA : changesInTimeConventionIdForGeneratedCode;
+                ? IChangesOverTimeNamingConvention.VAA
+                : changesInTimeConventionIdForGeneratedCode;
 
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         if (artefactEl != null) {
@@ -1031,6 +1039,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setInferredTemplateLinkThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
             setInferredTemplatePropertyValueThreshold(Decimal.valueOf(value));
+        } else if (name.equals(SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY)) {
+            setDuplicateProductComponentSeverity(DesignTimeSeverity.valueOf(value));
         }
     }
 
@@ -1417,6 +1427,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        This setting determines, which ratio is considered 'many'. The default value of 0.8 only considers values used in at least 80% of all selected product components.-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD + "\" value=\"0.8\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Severity for validation messages when two product components have the same kindId and versionId." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1782,6 +1796,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setInferredTemplatePropertyValueThreshold(Decimal inferredTemplatePropertyValueThreshold) {
         this.inferredTemplatePropertyValueThreshold = inferredTemplatePropertyValueThreshold;
+    }
+
+    @Override
+    public DesignTimeSeverity getDuplicateProductComponentSeverity() {
+        return duplicateProductComponentSeverity;
+    }
+
+    @Override
+    public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
+        this.duplicateProductComponentSeverity = duplicateProductComponentSeverity;
     }
 
 }

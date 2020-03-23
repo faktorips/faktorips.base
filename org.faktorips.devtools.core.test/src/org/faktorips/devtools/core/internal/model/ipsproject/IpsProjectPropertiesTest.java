@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -612,6 +613,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void readDuplicateProductComponentSeverityFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertEquals(DesignTimeSeverity.WARNING, props.getDuplicateProductComponentSeverity());
+    }
+
+    @Test
     public void ignoreIncompleteSettings() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
@@ -623,5 +630,4 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.initFromXml(ipsProject, docEl);
         return props;
     }
-
 }
