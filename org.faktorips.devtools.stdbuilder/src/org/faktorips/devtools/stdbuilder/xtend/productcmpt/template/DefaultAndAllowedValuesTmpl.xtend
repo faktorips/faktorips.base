@@ -5,6 +5,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 
 
 import static extension org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
@@ -37,9 +38,10 @@ class DefaultAndAllowedValuesTmpl {
         private «valueSetJavaClassName» «field(fieldNameValueSet)»;
     '''
 
-    def package static getter (XPolicyAttribute it) '''
+    def package static getterAndSetter (XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «getterDefaultValue»
+            «setterDefaultValue»
             «getterAllowedValues»
         «ENDIF»
     '''
@@ -56,6 +58,23 @@ class DefaultAndAllowedValuesTmpl {
         «IF genInterface || isAbstract»;«ELSE»
         {
             return «fieldNameDefaultValue»;
+        }
+        «ENDIF»
+    '''
+    
+    def private static setterDefaultValue (XPolicyAttribute it) '''
+        /**
+         * «inheritDocOrJavaDocIf(genInterface, "METHOD_SET_DEFAULTVALUE", name)»
+         * «getAnnotations(ELEMENT_JAVA_DOC)»
+         * @generated
+         */
+        «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT_SETTER, genInterface)»
+        «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)»
+        public «IF isAbstract»abstract «ENDIF»void «method(methodNameSetDefaultValue, javaClassName, fieldNameDefaultValue)»
+        «IF genInterface || isAbstract»;«ELSE»
+        {
+            «checkRepositoryModifyable»
+            this.«fieldNameDefaultValue» = «fieldNameDefaultValue»;
         }
         «ENDIF»
     '''

@@ -616,6 +616,10 @@ public class XPolicyAttribute extends XAttribute {
                 getDatatype());
     }
 
+    public String getMethodNameSetDefaultValue() {
+        return getJavaNamingConvention().getSetterMethodName("DefaultValue" + StringUtils.capitalize(getFieldName()));
+    }
+
     public String getMethodNameComputeAttribute() {
         return getAttribute().getComputationMethodSignature();
     }

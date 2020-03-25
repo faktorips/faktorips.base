@@ -52,7 +52,7 @@ class ProductComponentInterfaceTmpl{
 
              «FOR it : configuredAttributes»
                 «IF published»
-                    «getter»
+                    «getterAndSetter»
                 «ENDIF»
             «ENDFOR»
 

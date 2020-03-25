@@ -90,7 +90,7 @@ class ProductComponentTmpl {
                 «ENDFOR»
 
                 «FOR it : attributes» «getterSetter» «ENDFOR»
-                «FOR it : configuredAttributesIncludingAbstract» «getter» «ENDFOR»
+                «FOR it : configuredAttributesIncludingAbstract» «getterAndSetter» «ENDFOR»
 
                 «FOR it : associations» «getterSetterAdder» «ENDFOR»
                 «FOR it : tables» «getterAndSetter» «ENDFOR»
