@@ -43,6 +43,7 @@ class DefaultAndAllowedValuesTmpl {
             «getterDefaultValue»
             «setterDefaultValue»
             «getterAllowedValues»
+            «setterAllowedValues»
         «ENDIF»
     '''
 
@@ -91,6 +92,23 @@ class DefaultAndAllowedValuesTmpl {
         «IF genInterface || isAbstract»;«ELSE»
         {
             return «fieldNameValueSet»;
+        }
+        «ENDIF»
+    '''
+
+    def private static setterAllowedValues (XPolicyAttribute it) '''
+        /**
+         * «inheritDocOrJavaDocIf(genInterface, "METHOD_SET_VALUESET", name)»
+         * «getAnnotations(ELEMENT_JAVA_DOC)»
+         * @generated
+         */
+        «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES_SETTER, genInterface)»
+        «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideSetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
+        public «IF isAbstract»abstract «ENDIF»void «method(methodNameSetAllowedValuesFor, ValueSet(javaClassUsedForValueSet), fieldNameValueSet)»
+        «IF genInterface || isAbstract»;«ELSE»
+        {
+            «checkRepositoryModifyable»
+            this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),valueSetJavaClassName)»«fieldNameValueSet»;
         }
         «ENDIF»
     '''

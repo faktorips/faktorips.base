@@ -353,6 +353,15 @@ public class XPolicyAttribute extends XAttribute {
         return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
     }
 
+    public boolean isOverrideSetAllowedValuesFor() {
+        if (!isOverwrite()) {
+            return false;
+        }
+        boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
+                .isGenerateGetAllowedValuesForAndGetDefaultValue();
+        return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideSetAllowedValuesFor();
+    }
+
     public boolean isOverrideGetDefaultValue() {
         return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue();
     }
@@ -487,6 +496,10 @@ public class XPolicyAttribute extends XAttribute {
         return prefix + StringUtils.capitalize(getFieldName());
     }
 
+    public String getMethodNameSetAllowedValuesFor() {
+        return "setAllowedValuesFor" + StringUtils.capitalize(getFieldName());
+    }
+
     public String getFieldNameDefaultValue() {
         return "defaultValue" + StringUtils.capitalize(getFieldName());
     }
@@ -617,7 +630,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getMethodNameSetDefaultValue() {
-        return getJavaNamingConvention().getSetterMethodName("DefaultValue" + StringUtils.capitalize(getFieldName()));
+        return "setDefaultValue" + StringUtils.capitalize(getFieldName());
     }
 
     public String getMethodNameComputeAttribute() {
@@ -647,7 +660,7 @@ public class XPolicyAttribute extends XAttribute {
 
     /**
      * This method returns the qualified name of the java class name corresponding to the data type.
-     * There is no need to use this qualified name anywhere but we need to be exactyl compatible to
+     * There is no need to use this qualified name anywhere but we need to be exactly compatible to
      * old code generator.
      * <p>
      * TODO Remove this method an its call in DefaultAndAllowedValues#writeAttributeToXML
@@ -659,7 +672,7 @@ public class XPolicyAttribute extends XAttribute {
 
     /**
      * This method returns the qualified name of the java class name corresponding to the data type.
-     * There is no need to use this qualified name anywhere but we need to be exactyl compatible to
+     * There is no need to use this qualified name anywhere but we need to be exactly compatible to
      * old code generator.
      * <p>
      * TODO Remove this method an its call in DefaultAndAllowedValues#writeAttributeToXML
