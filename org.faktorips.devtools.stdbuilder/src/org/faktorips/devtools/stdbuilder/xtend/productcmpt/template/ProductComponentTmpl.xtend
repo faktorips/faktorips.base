@@ -92,7 +92,7 @@ class ProductComponentTmpl {
                 «FOR it : attributes» «getterSetter» «ENDFOR»
                 «FOR it : configuredAttributesIncludingAbstract» «getterAndSetter» «ENDFOR»
 
-                «FOR it : associations» «getterSetterAdder» «ENDFOR»
+                «FOR it : associations» «getterSetterAdderRemover» «ENDFOR»
                 «FOR it : tables» «getterAndSetter» «ENDFOR»
 
                 «FOR union : subsettedDerivedUnions» «methodsForDerivedUnion(union)» «ENDFOR»

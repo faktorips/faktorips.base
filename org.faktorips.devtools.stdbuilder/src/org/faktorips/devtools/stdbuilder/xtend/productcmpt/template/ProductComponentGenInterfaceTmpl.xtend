@@ -57,7 +57,7 @@ class ProductComponentGenInterfaceTmpl {
                     «ENDIF»
                 «ENDFOR»
 
-                «FOR it : associations» «getterSetterAdder» «ENDFOR»
+                «FOR it : associations» «getterSetterAdderRemover» «ENDFOR»
 
 
 

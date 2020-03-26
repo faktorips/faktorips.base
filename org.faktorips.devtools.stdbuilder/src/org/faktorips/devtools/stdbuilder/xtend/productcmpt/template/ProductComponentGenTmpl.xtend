@@ -81,7 +81,7 @@ class ProductComponentGenTmpl {
 
            «FOR it : configuredAttributes» «getterAndSetter» «ENDFOR»
 
-                «FOR it : associations» «getterSetterAdder» «ENDFOR»
+                «FOR it : associations» «getterSetterAdderRemover» «ENDFOR»
 
                 «FOR derivedUnions : subsettedDerivedUnions» «methodsForDerivedUnion(derivedUnions)» «ENDFOR»
 
