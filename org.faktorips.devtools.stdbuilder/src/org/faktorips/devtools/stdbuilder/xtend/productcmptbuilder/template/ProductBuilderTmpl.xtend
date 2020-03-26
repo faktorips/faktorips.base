@@ -1,5 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template
 
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder
 
@@ -23,10 +24,17 @@ class ProductBuilderTmpl{
             «variableDeclaration»
 
             «constructors»
-            «FOR attribute : attributes» «attributeSetter(attribute)»«ENDFOR»
+            «FOR attribute : attributes»«attributeSetter(attribute,false)»«ENDFOR»
 
             «IF hasSupertype»
-                «FOR attribute : superAttributes» «superAttributeSetter(attribute)» «ENDFOR»
+                ««« Generates setter for attributes of the supertypes that are not overwritten in order to override the return type
+                «FOR attribute : superAttributes»«attributeSetter(attribute,true)»«ENDFOR»
+            «ENDIF»
+            
+            «FOR configuredAttribute : configuredAttributes»«IF !configuredAttribute.overwrite»«defaultSetter(configuredAttribute,false)»«ENDIF»«ENDFOR»
+            
+            «IF hasSupertype»
+                «FOR configuredAttribute : supertype.configuredAttributes»«defaultSetter(configuredAttribute,true)»«ENDFOR»
             «ENDIF»
 
             «IF changingOverTime && !isAbstract»
@@ -123,13 +131,13 @@ def private static constructors (XProductBuilder it) '''
         }
 '''
 
-def private static attributeSetter(XProductBuilder builder, XProductAttribute it) '''
+def private static attributeSetter(XProductBuilder builder, XProductAttribute it, boolean overrideSuper) '''
     /**
     * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
     *
     * @generated
     */
-    «IF overwrite && !overwrittenAttribute.isAbstract» @Override «ENDIF»
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.isAbstract)» @Override «ENDIF»
     public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
         «IF changingOverTime»
             «builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
@@ -140,25 +148,24 @@ def private static attributeSetter(XProductBuilder builder, XProductAttribute it
     }
 '''
 
-
-//Generates setter for attributes of the supertypes that are not overwritten in order to override the return type
-
-def private static superAttributeSetter(XProductBuilder builder, XProductAttribute it) '''
+def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
     /**
-    * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+    * «localizedJDoc("METHOD_SET_DEFAULTVALUE", name, descriptionForJDoc)»
     *
     * @generated
     */
-    @Override
-    public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.isAbstract)» @Override «ENDIF»
+    public «builder.implClassName» «method(fieldName+"Default",javaClassName,fieldName)»{
         «IF changingOverTime»
-            «builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
+            «builder.prodGenFieldName».«methodNameSetDefaultValue»(«fieldName»);
         «ELSE»
-            «safeGetResult(builder)».«methodNameSetter»(«fieldName»);
+            «safeGetResult(builder)».«methodNameSetDefaultValue»(«fieldName»);
         «ENDIF»
         return this;
     }
 '''
+
+
 
 //        creates/gets generation builder
 //    - look for the valid generation to given date
