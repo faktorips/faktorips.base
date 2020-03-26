@@ -212,10 +212,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testGetValueSetTypes_Standard() {
         List<ValueSetType> types = ipsProject.getValueSetTypes(Datatype.STRING);
-        assertEquals(3, types.size());
+        assertEquals(4, types.size());
         assertTrue(types.contains(ValueSetType.DERIVED));
         assertTrue(types.contains(ValueSetType.UNRESTRICTED));
         assertTrue(types.contains(ValueSetType.ENUM));
+        assertTrue(types.contains(ValueSetType.STRINGLENGTH));
     }
 
     @Test

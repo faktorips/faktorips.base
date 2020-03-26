@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
 
 /**
- * A composite that consist of three textfields for lower bound, upper bound and step. if there is a
- * uicontroller supplied it is used to establish a mapping between the modell object and the control
- * which represents the object property.
+ * A composite that consists of three textfields for lower bound, upper bound and step. If there is
+ * a uicontroller supplied, it is used to establish a mapping between the model object and the
+ * control which represents the object property.
  */
 public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess, IValueSetEditControl {
 

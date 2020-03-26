@@ -90,6 +90,19 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertTrue(set2.isDetailedSpecificationOf(set1));
         set1.setContainsNull(false);
         assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // stringLength
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.STRINGLENGTH);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        set2.setContainsNull(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test
@@ -123,6 +136,13 @@ public class ValueSetTest extends AbstractIpsPluginTest {
 
         // derived
         set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // stringLength
+        set2 = owner2.changeValueSetType(ValueSetType.STRINGLENGTH);
         set2.setAbstract(true);
         assertTrue(set2.isDetailedSpecificationOf(set1));
         set2.setAbstract(false);
@@ -183,6 +203,11 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertFalse(set2.isDetailedSpecificationOf(set1));
         set1.setContainsNull(false);
         assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // stringLength
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.STRINGLENGTH);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test
@@ -240,6 +265,52 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertFalse(set2.isDetailedSpecificationOf(set1));
         set1.setContainsNull(false);
         assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // stringLength
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.STRINGLENGTH);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+    }
+
+    @Test
+    public void testIsDetailedSpecificationOf_StringLength() {
+        IValueSet set1 = owner1.changeValueSetType(ValueSetType.STRINGLENGTH);
+        set1.setAbstract(true);
+
+        // unrestricted
+        IValueSet set2 = owner2.changeValueSetType(ValueSetType.UNRESTRICTED);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // range
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.RANGE);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // enum
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.ENUM);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        set2.setContainsNull(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // derived
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // stringLength
+        set1.setContainsNull(true);
+        set2 = owner2.changeValueSetType(ValueSetType.STRINGLENGTH);
+        set2.setAbstract(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set2.setAbstract(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test
