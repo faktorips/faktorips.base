@@ -110,6 +110,36 @@ public abstract class PolicyAttribute extends Attribute {
     public abstract Object getDefaultValue(IProductComponent source, Calendar effectiveDate);
 
     /**
+     * Sets the product configured default value of the attribute identified by this model type
+     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
+     * setDefaultValue-method for this attribute. This also occurs if the corresponding policy class
+     * is not configured by a product class.
+     * 
+     * @param modelObject the configurable model object from which product component and (if
+     *            necessary) effective date can be retrieved
+     * @param defaultValue the new default value
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     */
+    public abstract void setDefaultValue(IConfigurableModelObject modelObject, Object defaultValue);
+
+    /**
+     * Sets the product configured default value of the attribute identified by this model type
+     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
+     * setDefaultValue-method for this attribute. This also occurs if the corresponding policy class
+     * is not configured by a product class.
+     * 
+     * @param source the product component to read the attribute default value from.
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the attribute's
+     *            configuration is not changing over time.
+     * @param defaultValue the new default value
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     */
+    public abstract void setDefaultValue(IProductComponent source, Calendar effectiveDate, Object defaultValue);
+
+    /**
      * Returns the value set of the given model object's attribute identified by this model type
      * attribute.
      * <p>
