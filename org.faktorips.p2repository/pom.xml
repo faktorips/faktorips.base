@@ -115,6 +115,13 @@
             </properties>
         </profile>
         <profile>
+            <id>appendVersionKindToMvnVersion</id>
+            <properties>
+                <deploy.release>true</deploy.release>
+                <snapshotQualifier>-${version.kind}</snapshotQualifier>
+            </properties>
+        </profile>
+        <profile>
             <id>deploy</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
