@@ -36,7 +36,7 @@ public class Messages extends NLS {
     public static String Range_msgLowerboundGreaterUpperbound;
     public static String Range_msgPropertyValueNotParsable;
 
-    public static String StringLength_msgIllegalInput;
+    public static String StringLength_msgNegativeValue;
     public static String StringLength_canonicalDesc;
     public static String StringLength_unlimitedLength;
 

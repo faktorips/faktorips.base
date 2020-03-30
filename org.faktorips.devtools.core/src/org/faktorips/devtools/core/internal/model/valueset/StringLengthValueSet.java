@@ -186,15 +186,14 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
     }
 
     @Override
-    protected AbstractValueSetValidator<?> createValidator(IValueSetOwner owner, ValueDatatype datatype) {
-        // TODO: Validator in FIPS-6777
-        return new AbstractValueSetValidator<ValueSet>(this, owner, datatype) {
-
-            @Override
-            public MessageList validate() {
-                return new MessageList();
-            }
-        };
+    protected StringLengthValueSetValidator createValidator(IValueSetOwner owner, ValueDatatype datatype) {
+        return new StringLengthValueSetValidator(this, owner, datatype);
     }
 
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+        StringLengthValueSetValidator validator = createValidator(getValueSetOwner(), findValueDatatype(ipsProject));
+        list.add(validator.validate());
+    }
 }

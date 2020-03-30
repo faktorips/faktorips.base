@@ -13,6 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.StringLengthValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -39,7 +40,7 @@ public class StringLengthEditControl extends ControlComposite implements IValueS
     private BindingContext uiController;
     private EditField<String> maxLengthField;
 
-    public StringLengthEditControl(Composite parent, UIToolkit toolkit, ValueDatatype valueDatatype,
+    public StringLengthEditControl(Composite parent, UIToolkit toolkit,
             IStringLengthValueSet valueSet, BindingContext uiController) {
         super(parent, SWT.NONE);
         this.valueSet = valueSet;
@@ -47,7 +48,7 @@ public class StringLengthEditControl extends ControlComposite implements IValueS
 
         setLayout();
         Composite workArea = createWorkArea(uiToolkit, this);
-        createTextControls(uiToolkit, workArea, valueDatatype, valueSet.getIpsProject());
+        createTextControls(uiToolkit, workArea, Datatype.INTEGER, valueSet.getIpsProject());
         this.uiController = uiController;
         connectToModel();
     }

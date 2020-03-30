@@ -75,7 +75,7 @@ public class ValueSetEditControlFactory {
             return enumValueSetEditControl;
         }
         if (valueSet.isStringLength()) {
-            return new StringLengthEditControl(parent, toolkit, valueDatatype, (IStringLengthValueSet)valueSet,
+            return new StringLengthEditControl(parent, toolkit, (IStringLengthValueSet)valueSet,
                     uiController);
         }
         throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype " //$NON-NLS-1$ //$NON-NLS-2$
