@@ -24,4 +24,6 @@ public interface IStringLengthValueSet extends IValueSet {
     public static final String PROPERTY_MAXIMUMLENGTH = "maximumLength"; //$NON-NLS-1$
 
     String getMaximumLength();
+
+    void setMaximumLength(String maximumLength);
 }

@@ -76,11 +76,12 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      * @param configuredValueSet The {@link IConfiguredValueSet} that contains the value set.
      * @param shell The shell to open the details edit dialog within.
      */
-    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet, Shell shell) {
+    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet,
+            Shell shell) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.configValueSet = configuredValueSet;
         this.shell = shell;
-        getTextControl().setEditable(true);
+        setTextControlEnabled(true);
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configuredValueSet));
     }
 
@@ -98,12 +99,18 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
                 String formattedValue = IpsUIPlugin.getDefault().getDatatypeFormatter()
                         .formatValueSet(configValueSet.getValueSet());
                 getTextControl().setText(formattedValue);
+                setTextControlEnabled(true);
+
             } else {
                 resetState();
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+    }
+
+    private void setTextControlEnabled(boolean enabled) {
+        getTextControl().setEnabled(enabled && !configValueSet.getValueSet().isStringLength());
     }
 
     private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) {

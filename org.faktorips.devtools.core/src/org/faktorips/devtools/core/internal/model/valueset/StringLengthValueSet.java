@@ -53,6 +53,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
         this.containsNull = containsNull;
     }
 
+    @Override
     public void setMaximumLength(String maximumLength) {
         String oldMax = this.maximumLength;
         this.maximumLength = maximumLength;
@@ -66,7 +67,13 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
-        return value == null ? isContainsNull() : value.length() <= Integer.parseInt(maximumLength);
+        if (value == null) {
+            return isContainsNull();
+        }
+        if (maximumLength == null) {
+            return true;
+        }
+        return value.length() <= Integer.parseInt(maximumLength);
     }
 
     @Override

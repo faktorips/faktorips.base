@@ -198,7 +198,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
-        if (attribute.getValueSet().isUnrestricted()
+        if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isStringLength()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }

@@ -624,6 +624,9 @@ public class XPolicyAttribute extends XAttribute {
         if (isValueSetEnum()) {
             return "allowedValuesFor" + StringUtils.capitalize(getFieldName());
         }
+        if (isValueSetStringLength()) {
+            return "maximumLength" + StringUtils.capitalize(getFieldName());
+        }
         throw new RuntimeException(NLS.bind("Attribute {0} has an invalid value set type.", getAttribute()));
     }
 

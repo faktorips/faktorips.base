@@ -112,10 +112,9 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         // => only unrestricted and enum should be available
         a1.setDatatype("String");
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(3, types.size());
+        assertEquals(2, types.size());
         assertTrue(types.contains(ValueSetType.ENUM));
         assertTrue(types.contains(ValueSetType.UNRESTRICTED));
-        assertTrue(types.contains(ValueSetType.STRINGLENGTH));
 
         // case 4: as before, but with datatype String
         // => only unrestricted and enum should be available
