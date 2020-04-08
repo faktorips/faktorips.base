@@ -26,4 +26,6 @@ public interface IStringLengthValueSet extends IValueSet {
     String getMaximumLength();
 
     void setMaximumLength(String maximumLength);
+
+    Integer getParsedMaximumLength();
 }

@@ -699,4 +699,14 @@ public interface IIpsProjectProperties {
      */
     void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity);
 
+    /**
+     * Returns the severity for validation messages when model and persistence constraints don't
+     * match
+     */
+    DesignTimeSeverity getPersistenceColumnSizeChecksSeverity();
+
+    /**
+     * @see #getPersistenceColumnSizeChecksSeverity()
+     */
+    void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity);
 }
