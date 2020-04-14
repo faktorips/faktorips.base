@@ -202,7 +202,7 @@ public class XPolicyAttribute extends XAttribute {
             getValuesetDatatypeHelper().getJavaClassName();
             return addImport(getValuesetDatatypeHelper().getRangeJavaClassName(true));
         } else if (isValueSetStringLength()) {
-            return addImport(StringLengthValueSet.class);
+            return addImport(ValueSet.class) + "<String>";
         } else {
             throw new RuntimeException("Unexpected valueset type for attribute " + getName());
         }
