@@ -51,7 +51,6 @@ class ProductAssociationTmpl {
                 «addMethod»
                 «addMethodWithCardinality»
                 «removeMethod»
-                «removeAllMethod»
             «ENDIF»
             «IF !constrain»
                 «getterLinksFor»
@@ -254,6 +253,7 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER)»
              «overrideAnnotationIf(constrain)»
             public void «method(getMethodNameRemove(false), targetInterfaceNameBase, "target")» {
                 «IF constrain»
@@ -262,25 +262,6 @@ class ProductAssociationTmpl {
                 «ELSE»
                     «checkRepositoryModifyable»
                     this.«fieldName».remove(target.getId());
-                «ENDIF»
-            }
-        «ENDIF»
-    '''
-
-    def private static removeAllMethod(XProductAssociation it) '''
-        «IF oneToMany»
-            /**
-             * «localizedJDoc("METHOD_REMOVE_ALL_CMPT", getName(true))»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
-             * @generated
-             */
-             «overrideAnnotationIf(constrain)»
-            public void «method(getMethodNameRemove(true))» {
-                «IF constrain»
-                    super.«getMethodNameRemove(true)»();
-                «ELSE»
-                    «checkRepositoryModifyable»
-                    this.«fieldName».clear();
                 «ENDIF»
             }
         «ENDIF»

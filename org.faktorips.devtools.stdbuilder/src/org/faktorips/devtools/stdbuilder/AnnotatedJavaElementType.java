@@ -41,6 +41,12 @@ public enum AnnotatedJavaElementType {
     PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
 
     /**
+     * Represents the declaration of association remover methods. The remover methods are declared
+     * in the implementation classes.
+     */
+    PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER,
+
+    /**
      * Represents the declaration of association setter(..1)/adder(..*) methods. The setters/adders
      * are either declared in the published interface or in the implementation class, in case no
      * published interfaces are being generated.
