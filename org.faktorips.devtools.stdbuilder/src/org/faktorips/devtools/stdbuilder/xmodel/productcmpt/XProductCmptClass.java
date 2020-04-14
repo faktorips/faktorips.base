@@ -107,6 +107,10 @@ public class XProductCmptClass extends XProductClass {
         return getConfiguredAttributes(a -> !a.isChangingOverTime() && !a.isAbstract());
     }
 
+    public Set<XPolicyAttribute> getConfiguredAttributesIncludingChangingOverTime() {
+        return getConfiguredAttributes(a -> !a.isAbstract());
+    }
+
     public Set<XPolicyAttribute> getConfiguredAttributesIncludingAbstract() {
         return getConfiguredAttributes(a -> !a.isChangingOverTime());
     }
