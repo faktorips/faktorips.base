@@ -26,8 +26,11 @@ import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.DesignTimeSeverity;
@@ -132,6 +135,50 @@ public class Migration_20_6_0Test extends AbstractIpsPluginTest {
 
         assertThat(attr.getValueSet().isStringLength(), is(true));
         assertThat(((IStringLengthValueSet)attr.getValueSet()).getMaximumLength(), is("42"));
+    }
+
+    @Test
+    public void testMigrate_CascadeTypes_DetailToMaster()
+            throws InvocationTargetException, CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        IPersistentAssociationInfo persistenceInfo = association.getPersistenceAssociatonInfo();
+        persistenceInfo.setCascadeTypePersist(true);
+        persistenceInfo.setCascadeTypeMerge(true);
+        persistenceInfo.setCascadeTypeRemove(true);
+        persistenceInfo.setCascadeTypeRefresh(true);
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(persistenceInfo.isCascadeTypePersist(), is(false));
+        assertThat(persistenceInfo.isCascadeTypeMerge(), is(false));
+        assertThat(persistenceInfo.isCascadeTypeRemove(), is(false));
+        assertThat(persistenceInfo.isCascadeTypeRefresh(), is(false));
+    }
+
+    @Test
+    public void testMigrate_CascadeTypes_MasterToDetail()
+            throws InvocationTargetException, CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        IPersistentAssociationInfo persistenceInfo = association.getPersistenceAssociatonInfo();
+        persistenceInfo.setCascadeTypePersist(true);
+        persistenceInfo.setCascadeTypeMerge(false);
+        persistenceInfo.setCascadeTypeRemove(true);
+        persistenceInfo.setCascadeTypeRefresh(false);
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(persistenceInfo.isCascadeTypePersist(), is(true));
+        assertThat(persistenceInfo.isCascadeTypeMerge(), is(false));
+        assertThat(persistenceInfo.isCascadeTypeRemove(), is(true));
+        assertThat(persistenceInfo.isCascadeTypeRefresh(), is(false));
     }
 
     @Test

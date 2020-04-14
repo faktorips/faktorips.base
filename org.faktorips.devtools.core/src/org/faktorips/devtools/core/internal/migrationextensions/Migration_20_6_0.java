@@ -21,7 +21,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -63,18 +65,31 @@ public class Migration_20_6_0 extends MarkAsDirtyMigration {
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         if (getIpsProject().isPersistenceSupportEnabled()) {
-            migratePersistentAttributes(srcFile);
+            migratePersistentTypes(srcFile);
         }
         super.migrate(srcFile);
     }
 
-    private void migratePersistentAttributes(IIpsSrcFile srcFile) {
+    private void migratePersistentTypes(IIpsSrcFile srcFile) {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             IPolicyCmptType policyType = (IPolicyCmptType)srcFile.getIpsObject();
             migratePersistentAttributes(policyType);
+            migrateCascadeTypes(policyType);
         } else if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
             IProductCmpt productCmpt = (IProductCmpt)srcFile.getIpsObject();
             migratePersistentAttributes(productCmpt);
+        }
+    }
+
+    private void migrateCascadeTypes(IPolicyCmptType policyType) {
+        for (IPolicyCmptTypeAssociation association : policyType.getPolicyCmptTypeAssociations()) {
+            if (association.isCompositionDetailToMaster()) {
+                IPersistentAssociationInfo persistenceInfo = association.getPersistenceAssociatonInfo();
+                persistenceInfo.setCascadeTypePersist(false);
+                persistenceInfo.setCascadeTypeMerge(false);
+                persistenceInfo.setCascadeTypeRemove(false);
+                persistenceInfo.setCascadeTypeRefresh(false);
+            }
         }
     }
 
