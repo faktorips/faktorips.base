@@ -26,4 +26,9 @@ public @interface IpsAssociationAdder {
      * The name of the association.
      */
     String association();
+
+    /**
+     * Indicates whether the association has a cardinality
+     */
+    boolean withCardinality() default false;
 }

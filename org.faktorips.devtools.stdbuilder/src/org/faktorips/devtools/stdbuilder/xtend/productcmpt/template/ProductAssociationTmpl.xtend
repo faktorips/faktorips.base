@@ -212,6 +212,7 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
                 «IF constrain»
@@ -232,6 +233,7 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange, "cardinality")» {
                 «IF constrain»
@@ -291,6 +293,7 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
                 «IF constrain»
@@ -311,6 +314,7 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange, "cardinality")» {
                 «IF constrain»

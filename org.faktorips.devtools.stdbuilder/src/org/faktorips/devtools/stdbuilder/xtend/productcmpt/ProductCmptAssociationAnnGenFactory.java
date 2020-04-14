@@ -14,7 +14,9 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
+import org.faktorips.devtools.stdbuilder.xtend.association.AssociationWithCardinalityAnnGen;
 import org.faktorips.devtools.stdbuilder.xtend.association.SimpleAssociationAnnGen;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 
 public class ProductCmptAssociationAnnGenFactory implements IAnnotationGeneratorFactory {
@@ -31,6 +33,10 @@ public class ProductCmptAssociationAnnGenFactory implements IAnnotationGenerator
                 return new ProductCmptAssociationAnnGen();
             case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS:
                 return new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationLinks.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER:
+                return new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER:
+                return new AssociationWithCardinalityAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
 
             default:
                 return null;
