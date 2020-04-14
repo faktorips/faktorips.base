@@ -17,7 +17,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.StringLengthValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -106,15 +105,10 @@ public class StringLengthEditControl extends ControlComposite implements IValueS
         }
     }
 
-    /**
-     * {@inheritDoc} Product configuration may not alter the {@link StringLengthValueSet} maximum
-     * length defined in the model!
-     */
     @Override
     public void setEnabled(boolean enabled) {
-        boolean isModelAndEnabled = !(getValueSet().getValueSetOwner() instanceof IConfiguredValueSet) && enabled;
-        super.setEnabled(isModelAndEnabled);
-        maxLengthField.getControl().setEnabled(isModelAndEnabled);
+        super.setEnabled(enabled);
+        maxLengthField.getControl().setEnabled(enabled);
     }
 
     private void updateUI() {

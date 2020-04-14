@@ -81,7 +81,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.configValueSet = configuredValueSet;
         this.shell = shell;
-        setTextControlEnabled(true);
+        getTextControl().setEditable(true);
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configuredValueSet));
     }
 
@@ -99,18 +99,12 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
                 String formattedValue = IpsUIPlugin.getDefault().getDatatypeFormatter()
                         .formatValueSet(configValueSet.getValueSet());
                 getTextControl().setText(formattedValue);
-                setTextControlEnabled(true);
-
             } else {
                 resetState();
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-    }
-
-    private void setTextControlEnabled(boolean enabled) {
-        getTextControl().setEnabled(enabled && !configValueSet.getValueSet().isStringLength());
     }
 
     private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) {
