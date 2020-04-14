@@ -19,6 +19,7 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
+import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
@@ -38,6 +39,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     private Method defaultValueSetter;
 
     private Map<Type, Method> valueSetMethods = new HashMap<Type, Method>(2);
+    private Method allowedValuesSetter;
 
     public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
             boolean changingOverTime) {
@@ -95,7 +97,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Method findDefaultValueGetter(Type type) {
-        // TODO Java8 refactor
+        // TODO FIPS-6802 Java8 refactor
         AnnotatedElementMatcher<IpsDefaultValue> filter = new AnnotatedElementMatcher<IpsDefaultValue>() {
             @Override
             public boolean matches(IpsDefaultValue ann) {
@@ -203,4 +205,45 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
         return type.searchDeclaredMethod(IpsAllowedValues.class, filter);
     }
+
+    @Override
+    public void setValueSet(IConfigurableModelObject modelObject, ValueSet<?> valueSet) {
+        setValueSet(modelObject.getProductComponent(), modelObject.getEffectiveFromAsCalendar(), valueSet);
+    }
+
+    @Override
+    public void setValueSet(IProductComponent source, Calendar effectiveDate, ValueSet<?> valueSet) {
+        if (!isProductRelevant()) {
+            throw new IllegalStateException(
+                    "Trying to find setter method for allowed values in product class, but policy attribute "
+                            + getType().getName() + '.' + getName() + " is not configurable.");
+        }
+        invokeMethod(getAllowedValuesSetter(getType().getProductCmptType()),
+                getRelevantProductObject(source, effectiveDate), valueSet);
+    }
+
+    private Method getAllowedValuesSetter(Type type) {
+        if (allowedValuesSetter == null) {
+            allowedValuesSetter = findAllowedValuesSetter(type);
+        }
+        return allowedValuesSetter;
+    }
+
+    private Method findAllowedValuesSetter(Type type) {
+        // TODO FIPS-6802 Java8 refactor
+        AnnotatedElementMatcher<IpsAllowedValuesSetter> filter = new AnnotatedElementMatcher<IpsAllowedValuesSetter>() {
+            @Override
+            public boolean matches(IpsAllowedValuesSetter ann) {
+                return ann.value().equals(getName());
+            }
+        };
+
+        Method method = type.searchDeclaredMethod(IpsAllowedValuesSetter.class, filter);
+        if (method == null) {
+            throw new IllegalStateException(
+                    "No method found for setting the allowed values of attribute: " + getName());
+        }
+        return method;
+    }
+
 }

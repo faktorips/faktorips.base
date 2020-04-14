@@ -94,4 +94,14 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
         throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
     }
 
+    @Override
+    public void setValueSet(IProductComponent source, Calendar effectiveDate, ValueSet<?> valueSet) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
+    public void setValueSet(IConfigurableModelObject modelObject, ValueSet<?> valueSet) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
 }

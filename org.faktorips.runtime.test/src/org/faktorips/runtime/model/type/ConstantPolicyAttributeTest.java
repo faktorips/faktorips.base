@@ -93,6 +93,25 @@ public class ConstantPolicyAttributeTest {
         policyAttribute.setDefaultValue(policy.getProductComponent(), effectiveDate, "foo");
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testSetValueSetIConfigurableModelObject() throws Exception {
+        ConstPolicy policy = new ConstPolicy();
+        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+
+        policyAttribute.setValueSet(policy, new OrderedValueSet<Integer>(false, null, 1, 2, 3));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testSetValueSetIProductComponentCalendar() throws Exception {
+        ConstPolicy policy = new ConstPolicy();
+        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+
+        policyAttribute.setValueSet(policy.getProductComponent(), effectiveDate,
+                new OrderedValueSet<Integer>(false, null, 1, 2, 3));
+    }
+
     @Test
     public void testGetValueSetIModelObjectIValidationContext() throws Exception {
         ConstPolicy policy = new ConstPolicy();
