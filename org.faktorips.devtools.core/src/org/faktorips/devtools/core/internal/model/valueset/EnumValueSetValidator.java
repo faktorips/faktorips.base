@@ -90,7 +90,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
                     getDatatype().getName());
             list.add(new Message(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, op, getParentOp()));
         }
-        ValidationUtils.checkParsable(getDatatype(), value, this, IEnumValueSet.PROPERTY_VALUES, list);
+        ValidationUtils.checkParsable(getDatatype(), value, getValueSet(), IEnumValueSet.PROPERTY_VALUES, list);
     }
 
     private void checkForDuplicate(int index) {

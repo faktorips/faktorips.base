@@ -118,6 +118,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY = "duplicateProductComponentSeverity"; //$NON-NLS-1$
 
+    private static final String SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY = "persistenceColumnSizeChecksSeverity"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -181,6 +183,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
     private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
+    private DesignTimeSeverity persistenceColumnSizeChecksSeverity = DesignTimeSeverity.WARNING;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -670,6 +673,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY,
                 getDuplicateProductComponentSeverity().toString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY,
+                getPersistenceColumnSizeChecksSeverity().toString()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1041,6 +1047,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setInferredTemplatePropertyValueThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY)) {
             setDuplicateProductComponentSeverity(DesignTimeSeverity.valueOf(value));
+        } else if (name.contentEquals(SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY)) {
+            setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity.valueOf(value));
         }
     }
 
@@ -1431,6 +1439,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Severity for validation messages when model and persistence constraints don't match." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1806,6 +1818,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
         this.duplicateProductComponentSeverity = duplicateProductComponentSeverity;
+    }
+
+    @Override
+    public DesignTimeSeverity getPersistenceColumnSizeChecksSeverity() {
+        return persistenceColumnSizeChecksSeverity;
+    }
+
+    @Override
+    public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity persistenceColumnSizeChecksSeverity) {
+        this.persistenceColumnSizeChecksSeverity = persistenceColumnSizeChecksSeverity;
     }
 
 }

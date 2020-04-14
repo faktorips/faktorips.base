@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+
+  <ValueSet>
+    <StringLength containsNull="true">
+      <MaximumLength isNull="false">0</MaximumLength>
+    </StringLength>
+  </ValueSet>
+
+  <!-- empty range since 20.6 -->
+  <ValueSet>
+    <StringLength containsNull="false">
+      <MaximumLength isNull="false">0</MaximumLength>
+    </StringLength>
+  </ValueSet>
+	
+</TestCases>

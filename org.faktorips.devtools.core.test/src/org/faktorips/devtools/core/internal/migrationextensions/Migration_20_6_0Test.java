@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -25,6 +26,10 @@ import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,8 +63,75 @@ public class Migration_20_6_0Test extends AbstractIpsPluginTest {
     public void testMigrate_Properties() throws InvocationTargetException, CoreException {
         migration.migrate(new NullProgressMonitor());
         IIpsProjectProperties properties = ipsProject.getProperties();
-
         assertThat(properties.getDuplicateProductComponentSeverity(), is(DesignTimeSeverity.WARNING));
+        assertThat(properties.getPersistenceColumnSizeChecksSeverity(), is(DesignTimeSeverity.WARNING));
+    }
+
+    @Test
+    public void testMigrate_NoPersistence() throws InvocationTargetException, CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute("stringAttr");
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(attr.getValueSet().isStringLength(), is(false));
+    }
+
+    @Test
+    public void testMigrate_PersistentAttributes() throws InvocationTargetException, CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute("stringAttr");
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(attr.getValueSet().isStringLength(), is(true));
+        assertThat(((IStringLengthValueSet)attr.getValueSet()).getMaximumLength(), is("255"));
+    }
+
+    @Test
+    public void testMigrate_PersistedAttributesInProduct() throws CoreException, InvocationTargetException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute("stringAttr");
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.getPersistenceAttributeInfo().setTableColumnSize(42);
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setProductCmptType(productCmpt.getQualifiedName());
+        productCmptType.setConfigurationForPolicyCmptType(true);
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        productCmpt.setProductCmptType(productCmptType.getQualifiedName());
+
+        IConfiguredValueSet configuredValueSet = productCmpt.newPropertyValue(attr, IConfiguredValueSet.class);
+        configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(configuredValueSet.getValueSet().isStringLength(), is(true));
+        assertThat(((IStringLengthValueSet)configuredValueSet.getValueSet()).getMaximumLength(), is("42"));
+    }
+
+    @Test
+    public void testMigrate_PersistentAttributes_TableColumnSizeDeclared()
+            throws InvocationTargetException, CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPersistenceSupport(true);
+        ipsProject.setProperties(properties);
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute("stringAttr");
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.getPersistenceAttributeInfo().setTableColumnSize(42);
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(attr.getValueSet().isStringLength(), is(true));
+        assertThat(((IStringLengthValueSet)attr.getValueSet()).getMaximumLength(), is("42"));
     }
 
     @Test

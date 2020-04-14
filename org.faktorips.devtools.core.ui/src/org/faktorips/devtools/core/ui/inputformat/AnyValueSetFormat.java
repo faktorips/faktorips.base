@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.parse.AbstractValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.EnumValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.RangeValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.parse.StringLengthValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.UnrestrictedValueSetFormat;
 
 public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
@@ -34,12 +35,15 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     private UnrestrictedValueSetFormat unrestrictedValueSetFormat;
 
+    private StringLengthValueSetFormat stringLengthValueSetFormat;
+
     public AnyValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
         this.valueSetOwner = valueSetOwner;
         rangeValueSetFormat = new RangeValueSetFormat(valueSetOwner, uiPlugin);
         enumValueSetFormat = new EnumValueSetFormat(valueSetOwner, uiPlugin);
         unrestrictedValueSetFormat = new UnrestrictedValueSetFormat(valueSetOwner, uiPlugin);
+        stringLengthValueSetFormat = new StringLengthValueSetFormat(valueSetOwner, uiPlugin);
     }
 
     public static AnyValueSetFormat newInstance(IValueSetOwner valueSetOwner) {
@@ -56,6 +60,8 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
             return rangeValueSetFormat.formatInternal(valueSet);
         } else if (valueSet.isUnrestricted()) {
             return unrestrictedValueSetFormat.formatInternal(valueSet);
+        } else if (valueSet.isStringLength()) {
+            return stringLengthValueSetFormat.formatInternal(valueSet);
         }
         return StringUtils.EMPTY;
     }
@@ -75,6 +81,8 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
             return unrestrictedValueSetFormat;
         } else if (rangeValueSetFormat.isResponsibleFor(stringToBeParsed)) {
             return rangeValueSetFormat;
+        } else if (stringLengthValueSetFormat.isResponsibleFor(stringToBeParsed)) {
+            return stringLengthValueSetFormat;
         } else if (enumValueSetFormat.isResponsibleFor(stringToBeParsed)) {
             return enumValueSetFormat;
         } else if (StringUtils.isEmpty(stringToBeParsed)) {

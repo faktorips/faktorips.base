@@ -25,5 +25,8 @@ public class Messages extends NLS {
     }
 
     public static String RangeValueSetFormat_includingNull;
+    public static String StringLengthValueSetFormat_Description;
+    public static String StringLengthValueSetFormat_Unlimited;
+    public static String StringLengthValueSetFormat_ParseIndicator;
 
 }

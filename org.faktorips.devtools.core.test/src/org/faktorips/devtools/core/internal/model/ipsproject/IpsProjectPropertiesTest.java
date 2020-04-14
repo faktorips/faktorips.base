@@ -615,7 +615,13 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void readDuplicateProductComponentSeverityFromAdditionalSettings() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
-        assertEquals(DesignTimeSeverity.WARNING, props.getDuplicateProductComponentSeverity());
+        assertEquals(DesignTimeSeverity.ERROR, props.getDuplicateProductComponentSeverity());
+    }
+
+    @Test
+    public void readPersistenceColumnSizeChecksSeverityFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertEquals(DesignTimeSeverity.ERROR, props.getPersistenceColumnSizeChecksSeverity());
     }
 
     @Test

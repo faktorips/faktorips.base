@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.internal.model.valueset.DerivedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.StringLengthValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
@@ -70,6 +71,18 @@ public enum ValueSetType {
         public IValueSet newValueSet(IValueSetOwner parent, String id) {
             return new DerivedValueSet(parent, id);
         }
+    },
+
+    /**
+     * Defines the value set type stringLength. String values are restricted by maximum length.
+     * 
+     * @since 20.6
+     */
+    STRINGLENGTH("stringLength", Messages.ValueSetType_stringLength, ValueToXmlHelper.XML_TAG_STRINGLENGTH) { //$NON-NLS-1$
+        @Override
+        public IValueSet newValueSet(IValueSetOwner parent, String id) {
+            return new StringLengthValueSet(parent, id);
+        }
     };
 
     private final String id;
@@ -114,6 +127,10 @@ public enum ValueSetType {
         return Arrays.asList(values());
     }
 
+    public static List<ValueSetType> getNumericValueSetTypesAsList() {
+        return Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.RANGE, ValueSetType.ENUM, ValueSetType.DERIVED);
+    }
+
     public static ValueSetType getValueSetTypeByName(String name) {
         for (ValueSetType type : values()) {
             if (type.getName().equals(name)) {
@@ -140,6 +157,13 @@ public enum ValueSetType {
      */
     public boolean isDerived() {
         return this == ValueSetType.DERIVED;
+    }
+
+    /**
+     * @since 20.6
+     */
+    public boolean isStringLength() {
+        return this == ValueSetType.STRINGLENGTH;
     }
 
     public String getId() {

@@ -44,7 +44,12 @@ public class ConfiguredValueSetField extends FormattingTextField<IValueSet> {
         setSupportsNullStringRepresentation(false);
         this.valueSetControl = valueSetControl;
         this.configuredValueSet = configuredValueSet;
+        checkSpecialConstraints();
         initContentAssistent();
+    }
+
+    private void checkSpecialConstraints() {
+        valueSetControl.getTextControl().setEnabled(!configuredValueSet.getValueSet().isStringLength());
     }
 
     private void initContentAssistent() {

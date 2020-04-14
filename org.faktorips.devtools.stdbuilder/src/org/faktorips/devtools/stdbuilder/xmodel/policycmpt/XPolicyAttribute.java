@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
@@ -199,6 +201,8 @@ public class XPolicyAttribute extends XAttribute {
             // call this method to add import statement the type
             getValuesetDatatypeHelper().getJavaClassName();
             return addImport(getValuesetDatatypeHelper().getRangeJavaClassName(true));
+        } else if (isValueSetStringLength()) {
+            return addImport(ValueSet.class) + "<String>";
         } else {
             throw new RuntimeException("Unexpected valueset type for attribute " + getName());
         }
@@ -358,8 +362,9 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateConstantForValueSet() {
-        return isConcreteOrNotProductRelevant() && (isValueSetRange() || isNonExtensibleEnumValueSet()
-                || isUnrestrictedButStillNeedsAllowedValues());
+        boolean isGenerateForValueSetType = isValueSetRange() || isNonExtensibleEnumValueSet()
+                || isUnrestrictedButStillNeedsAllowedValues() || isValueSetStringLength();
+        return isConcreteOrNotProductRelevant() && isGenerateForValueSetType;
     }
 
     private boolean isConcreteOrNotProductRelevant() {
@@ -384,6 +389,10 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isValueSetDerived() {
         return isValueSetOfType(ValueSetType.DERIVED);
+    }
+
+    public boolean isValueSetStringLength() {
+        return isValueSetOfType(ValueSetType.STRINGLENGTH);
     }
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
@@ -499,6 +508,8 @@ public class XPolicyAttribute extends XAttribute {
         String constName = StringUtils.upperCase(name);
         if (isValueSetRange()) {
             return "MAX_ALLOWED_RANGE_FOR_" + constName;
+        } else if (isValueSetStringLength()) {
+            return "MAX_ALLOWED_STRING_LENGTH_FOR_" + constName;
         } else {
             return "MAX_ALLOWED_VALUES_FOR_" + constName;
         }
@@ -542,6 +553,11 @@ public class XPolicyAttribute extends XAttribute {
                         + "based on an EnumDatatype or containing an EnumValueSet.");
             }
             result = getValuesetDatatypeHelper().newEnumValueSetInstance(valueIds, containsNull, true);
+        } else if (isValueSetStringLength()) {
+            IStringLengthValueSet stringy = (IStringLengthValueSet)getAttribute().getValueSet();
+            result = new JavaCodeFragment("new ");
+            result.appendClassName(StringLengthValueSet.class);
+            result.append(String.format("(%1$s, %2$s)", stringy.getMaximumLength(), stringy.isContainsNull()));
         } else {
             result = getUnrestrictedValueSetCode();
         }
@@ -607,6 +623,9 @@ public class XPolicyAttribute extends XAttribute {
         }
         if (isValueSetEnum()) {
             return "allowedValuesFor" + StringUtils.capitalize(getFieldName());
+        }
+        if (isValueSetStringLength()) {
+            return "maximumLength" + StringUtils.capitalize(getFieldName());
         }
         throw new RuntimeException(NLS.bind("Attribute {0} has an invalid value set type.", getAttribute()));
     }

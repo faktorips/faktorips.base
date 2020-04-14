@@ -602,4 +602,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public DesignTimeSeverity getDuplicateProductComponentSeverity() {
         return propertiesInternal.getDuplicateProductComponentSeverity();
     }
+
+    @Override
+    public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public DesignTimeSeverity getPersistenceColumnSizeChecksSeverity() {
+        return propertiesInternal.getPersistenceColumnSizeChecksSeverity();
+    }
 }

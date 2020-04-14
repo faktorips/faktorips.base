@@ -15,6 +15,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -24,8 +25,8 @@ import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserEditControl;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 
 /**
- * Factory to create controls to edit a given value set. As the value set is given to the factory it
- * is not possible to switch the type of value set. The returned control es suitable to edit the
+ * Factory to create controls that edit a given value set. As the value set is given to the factory,
+ * it is not possible to switch the type of value set. The returned control is suitable to edit the
  * given value set instance.
  * 
  * @author Jan Ortmann
@@ -34,8 +35,8 @@ public class ValueSetEditControlFactory {
 
     /**
      * Creates a new control that allows to edit a value set of the given type where the values are
-     * instances of the given value datatype. The returned instance is an {@link Composite} and an
-     * {@link IValueSetEditControl}. It is safe to cast it to {@link Composite}.
+     * instances of the given {@link ValueDatatype}. The returned instance is a {@link Composite}
+     * and an {@link IValueSetEditControl}. It is safe to cast it to {@link Composite}.
      * 
      * @param valueSet The value set that needs to be edited.
      * @param valueDatatype The datatype the values in the set are instances of.
@@ -72,6 +73,10 @@ public class ValueSetEditControlFactory {
                     ipsProject);
             enumValueSetEditControl.initialize(enumValueSet, null);
             return enumValueSetEditControl;
+        }
+        if (valueSet.isStringLength()) {
+            return new StringLengthEditControl(parent, toolkit, (IStringLengthValueSet)valueSet,
+                    uiController);
         }
         throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype " //$NON-NLS-1$ //$NON-NLS-2$
                 + valueDatatype);
