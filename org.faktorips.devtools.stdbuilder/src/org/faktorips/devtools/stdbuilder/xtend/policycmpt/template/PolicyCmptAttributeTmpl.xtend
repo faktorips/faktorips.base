@@ -172,11 +172,7 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
         «IF genInterface() || isAbstract()»;«ELSE»
         {
             «IF productRelevant»
-              «IF overwritingValueSetWithMoreConcreteType»
-                return «castFromTo(overwrittenAttribute.valueSetJavaClassName,valueSetJavaClassName)» «getPropertyValueContainer(published)».«overwrittenAttribute.methodNameGetAllowedValuesFor»(context);
-              «ELSE»
                 return «getPropertyValueContainer(published)».«methodNameGetAllowedValuesFor»(context);
-              «ENDIF»
             «ELSEIF isValueSetDerived»
                 // begin-user-code
                 «IF overwritingValueSetWithDerived»
