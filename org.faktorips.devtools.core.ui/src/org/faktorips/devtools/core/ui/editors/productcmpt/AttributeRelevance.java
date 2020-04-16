@@ -51,7 +51,9 @@ public enum AttributeRelevance {
             if (valueSet.isRange()) {
                 ((IRangeValueSet)valueSet).setEmpty(true);
             } else {
-                configuredValueSet.changeValueSetType(ValueSetType.ENUM).setContainsNull(false);
+                IEnumValueSet newValueSet = (IEnumValueSet)configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+                newValueSet.removeValues(newValueSet.getValuesAsList());
+                newValueSet.setContainsNull(false);
             }
         }
     };
