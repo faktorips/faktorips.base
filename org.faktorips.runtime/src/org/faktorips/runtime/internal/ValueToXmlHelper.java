@@ -50,6 +50,7 @@ public enum ValueToXmlHelper {
     public static final String XML_ATTRIBUTE_ATTRIBUTE = "attribute";
 
     public static final String XML_TAG_ALL_VALUES = "AllValues"; //$NON-NLS-1$
+    public static final String XML_TAG_STRINGLENGTH = "StringLength"; //$NON-NLS-1$
     public static final String XML_TAG_DERIVED = "Derived"; //$NON-NLS-1$
     public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
     public static final String XML_TAG_RANGE = "Range"; //$NON-NLS-1$

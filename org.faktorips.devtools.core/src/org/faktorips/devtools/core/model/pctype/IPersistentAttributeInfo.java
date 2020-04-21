@@ -121,6 +121,27 @@ public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
             + "PersistenceattrColnameMustNotContainWhitespaceCharacters"; //$NON-NLS-1$
 
     /**
+     * Validation message code to warn about a String-Attribute with persistence limits that aren't
+     * represented in the model
+     */
+    public static final String MSGCODE_PERSISTENCEATTR_MODEL_CONTAINS_NO_LENGTH_RESTRICTION = MSGCODE_PREFIX
+            + "PersistenceattrModelContainsNoLengthRestriction"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to warn about a String-Attribute's model configuration that exceeds
+     * the persistence size limit
+     */
+    public static final String MSGCODE_PERSISTENCEATTR_MODEL_EXCEEDS_COLUMN_SIZE = MSGCODE_PREFIX
+            + "PersistenceAttrModelExceedsColumnSize"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to warn about null-values being allowed in the StringLengthValueSet
+     * model, but not in the persistence settings
+     */
+    public static final String MSGCODE_PERSISTENCEATTR_COLUMN_NULLABLE_DOES_NOT_MATCH_MODEL = MSGCODE_PREFIX
+            + "PersistenceAttrColumnNullableDoesNotMatchModel"; //$NON-NLS-1$
+
+    /**
      * Returns the {@link IPolicyCmptTypeAttribute} this info object belongs to.
      */
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute();

@@ -210,6 +210,15 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
     }
 
     /**
+     * Return {@code true} if the value set is restricting String length, otherwise {@code false}.
+     * 
+     * @since 20.6
+     */
+    public default boolean isStringLength() {
+        return getValueSetType().isStringLength();
+    }
+
+    /**
      * Returns {@code true} if this is a non-abstract enumeration value set. Non-abstract
      * enumeration value sets can be used as supersets for other enumeration value sets. Returns
      * {@code false} otherwise.

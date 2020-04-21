@@ -169,6 +169,20 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testSet_Irrelevant_From_EmptyEnum_WithEnumInModel() {
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        ((IEnumValueSet)attribute.getValueSet()).addValue("1");
+        ((IEnumValueSet)attribute.getValueSet()).addValue("3");
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        configuredValueSet.getValueSet().setContainsNull(false);
+
+        AttributeRelevance.Irrelevant.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(empty()));
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+    }
+
+    @Test
     public void testSet_Irrelevant_From_RangeWithNull() {
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
         configuredValueSet.getValueSet().setContainsNull(true);

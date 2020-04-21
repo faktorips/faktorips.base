@@ -18,6 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.valueset.StringLengthValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
@@ -201,13 +203,77 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         pAttInfo.setTableColumnName("ValidColumnName");
         MessageList ml = pAttInfo.validate(ipsProject);
         assertNull(ml
-                .getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
+                .getMessageByCode(
+                        IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
     }
 
     private void assertMessagePresent(IPersistentAttributeInfo pAttInfo) throws CoreException {
         MessageList ml = pAttInfo.validate(ipsProject);
         assertNotNull(ml
-                .getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
+                .getMessageByCode(
+                        IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
+    }
+
+    @Test
+    public void testvalidateTableColumnNullableMatchesValueSet() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("nullableAtt");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.getValueSet().setContainsNull(true);
+        IPersistentAttributeInfo persAttrInfo = attribute.getPersistenceAttributeInfo();
+        persAttrInfo.setTableColumnName("a");
+        persAttrInfo.setTableColumnNullable(false);
+
+        MessageList list = persAttrInfo.validate(ipsProject);
+
+        assertNotNull(list.getMessageByCode(
+                IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLUMN_NULLABLE_DOES_NOT_MATCH_MODEL));
+    }
+
+    @Test
+    public void testValidateStringLengthRestrictionsInModel_Unrestricted() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("stringAtt");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        IPersistentAttributeInfo persAttrInfo = attribute.getPersistenceAttributeInfo();
+        persAttrInfo.setTableColumnName("a");
+
+        MessageList list = persAttrInfo.validate(ipsProject);
+
+        assertNotNull(list.getMessageByCode(
+                IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_MODEL_CONTAINS_NO_LENGTH_RESTRICTION));
+    }
+
+    @Test
+    public void testValidateStringLengthRestrictionsInModel_LimitExceeded() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("stringAtt");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        StringLengthValueSet valueSet = new StringLengthValueSet(attribute, "partId", "300", false);
+        attribute.setValueSetCopy(valueSet);
+        IPersistentAttributeInfo persAttrInfo = attribute.getPersistenceAttributeInfo();
+        persAttrInfo.setTableColumnName("a");
+        persAttrInfo.setTableColumnNullable(true);
+        persAttrInfo.setTableColumnSize(255);
+
+        MessageList list = persAttrInfo.validate(ipsProject);
+
+        assertNotNull(list.getMessageByCode(
+                IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_MODEL_EXCEEDS_COLUMN_SIZE));
+    }
+
+    @Test
+    public void testValidateStringLengthRestrictionsInModel_LimitExceededUnlimited() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("stringAtt");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        StringLengthValueSet valueSet = new StringLengthValueSet(attribute, "partId", null, false);
+        attribute.setValueSetCopy(valueSet);
+        IPersistentAttributeInfo persAttrInfo = attribute.getPersistenceAttributeInfo();
+        persAttrInfo.setTableColumnName("a");
+        persAttrInfo.setTableColumnNullable(true);
+        persAttrInfo.setTableColumnSize(255);
+
+        MessageList list = persAttrInfo.validate(ipsProject);
+
+        assertNotNull(list.getMessageByCode(
+                IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_MODEL_EXCEEDS_COLUMN_SIZE));
     }
 
     @Test

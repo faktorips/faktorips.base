@@ -31,6 +31,7 @@
         <deploy.script.maven-central>${deploy.scriptsdir}/deployToMavenCentral.sh</deploy.script.maven-central>
         <deploy.release>false</deploy.release>
         <snapshotQualifier>-SNAPSHOT</snapshotQualifier>
+        <versionQualifier></versionQualifier>
     </properties>
 
     <parent>
@@ -111,6 +112,14 @@
             </activation>
             <properties>
                 <deploy.release>true</deploy.release>
+                <snapshotQualifier></snapshotQualifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>appendVersionKindToMvnVersion</id>
+            <properties>
+                <deploy.release>true</deploy.release>
+                <versionQualifier>-${version.kind}</versionQualifier>
                 <snapshotQualifier></snapshotQualifier>
             </properties>
         </profile>
@@ -290,7 +299,7 @@
                             <replacements>
                                 <replacement>
                                     <token>@version@</token>
-                                    <value>${unqualifiedVersion}${snapshotQualifier}</value>
+                                    <value>${unqualifiedVersion}${versionQualifier}${snapshotQualifier}</value>
                                 </replacement>
                             </replacements>
                         </configuration>

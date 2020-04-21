@@ -156,7 +156,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     @Override
-    public final IProductComponent getExistingProductComponent(String id) {
+    public IProductComponent getExistingProductComponent(String id) {
         if (id == null) {
             return null;
         }

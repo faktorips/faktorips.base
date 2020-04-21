@@ -38,7 +38,7 @@ if [[ -z "$VERSION_KIND" ]] || [[ $VERSION_KIND == "rfinal" ]]
 then
   RELEASE_VERSION=${VERSION}
 else
-  RELEASE_VERSION=${VERSION}"."${VERSION_KIND}
+  RELEASE_VERSION=${VERSION}"-"${VERSION_KIND}
 fi
 
 

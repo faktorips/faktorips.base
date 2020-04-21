@@ -149,7 +149,9 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         if (attribute == null) {
             types.add(valueSet.getValueSetType());
         } else if (attribute.getValueSet().isUnrestricted()) {
-            types.addAll(ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject)));
+            List<ValueSetType> valueSetTypes = ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject));
+            valueSetTypes.remove(ValueSetType.STRINGLENGTH);
+            types.addAll(valueSetTypes);
         } else {
             types.add(attribute.getValueSet().getValueSetType());
         }
@@ -195,7 +197,13 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     public void setValueSetType(ValueSetType type) {
         IValueSet oldset = valueSet;
-        valueSet = type.newValueSet(this, getNextPartId());
+        IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(valueSet.getIpsProject());
+        IValueSet modelValueSet = attribute == null ? null : attribute.getValueSet();
+        if (modelValueSet != null && modelValueSet.getValueSetType().equals(type)) {
+            valueSet = modelValueSet.copy(this, getNextPartId());
+        } else {
+            valueSet = type.newValueSet(this, getNextPartId());
+        }
         valueChanged(oldset, valueSet);
     }
 

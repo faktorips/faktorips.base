@@ -55,9 +55,9 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
 
         ValueDatatype datatypeToValidate = getDatatypeOrWrapperForPrimitivDatatype(getDatatype());
 
-        ValidationUtils.checkParsable(datatypeToValidate, lowerBound, this, PROPERTY_LOWERBOUND, messages);
-        ValidationUtils.checkParsable(datatypeToValidate, upperBound, this, PROPERTY_UPPERBOUND, messages);
-        boolean stepParsable = ValidationUtils.checkParsable(datatypeToValidate, getValueSet().getStep(), this,
+        ValidationUtils.checkParsable(datatypeToValidate, lowerBound, getValueSet(), PROPERTY_LOWERBOUND, messages);
+        ValidationUtils.checkParsable(datatypeToValidate, upperBound, getValueSet(), PROPERTY_UPPERBOUND, messages);
+        boolean stepParsable = ValidationUtils.checkParsable(datatypeToValidate, getValueSet().getStep(), getValueSet(),
                 PROPERTY_STEP, messages);
 
         NumericDatatype numDatatype = getAndValidateNumericDatatype(datatypeToValidate, messages);

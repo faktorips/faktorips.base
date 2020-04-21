@@ -76,7 +76,8 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      * @param configuredValueSet The {@link IConfiguredValueSet} that contains the value set.
      * @param shell The shell to open the details edit dialog within.
      */
-    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet, Shell shell) {
+    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet,
+            Shell shell) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.configValueSet = configuredValueSet;
         this.shell = shell;

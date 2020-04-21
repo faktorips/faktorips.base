@@ -16,9 +16,21 @@ import com.google.common.collect.ImmutableSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.core.util.DesignTimeSeverity;
@@ -45,8 +57,75 @@ public class Migration_20_6_0 extends MarkAsDirtyMigration {
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         IIpsProjectProperties properties = getIpsProject().getProperties();
         properties.setDuplicateProductComponentSeverity(DesignTimeSeverity.WARNING);
+        properties.setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity.WARNING);
         getIpsProject().setProperties(properties);
         return super.migrate(monitor);
+    }
+
+    @Override
+    protected void migrate(IIpsSrcFile srcFile) throws CoreException {
+        if (getIpsProject().isPersistenceSupportEnabled()) {
+            migratePersistentTypes(srcFile);
+        }
+        super.migrate(srcFile);
+    }
+
+    private void migratePersistentTypes(IIpsSrcFile srcFile) {
+        if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
+            IPolicyCmptType policyType = (IPolicyCmptType)srcFile.getIpsObject();
+            migratePersistentAttributes(policyType);
+            migrateCascadeTypes(policyType);
+        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+            IProductCmpt productCmpt = (IProductCmpt)srcFile.getIpsObject();
+            migratePersistentAttributes(productCmpt);
+        }
+    }
+
+    private void migrateCascadeTypes(IPolicyCmptType policyType) {
+        for (IPolicyCmptTypeAssociation association : policyType.getPolicyCmptTypeAssociations()) {
+            if (association.isCompositionDetailToMaster()) {
+                IPersistentAssociationInfo persistenceInfo = association.getPersistenceAssociatonInfo();
+                persistenceInfo.setCascadeTypePersist(false);
+                persistenceInfo.setCascadeTypeMerge(false);
+                persistenceInfo.setCascadeTypeRemove(false);
+                persistenceInfo.setCascadeTypeRefresh(false);
+            }
+        }
+    }
+
+    private void migratePersistentAttributes(IPolicyCmptType policyType) {
+        for (IAttribute attribute : policyType.getAttributes()) {
+            IPolicyCmptTypeAttribute polAttr = (IPolicyCmptTypeAttribute)attribute;
+            if (polAttr.findValueDatatype(getIpsProject()) instanceof StringDatatype
+                    && (polAttr.getValueSet() == null || polAttr.getValueSet().isUnrestricted())) {
+                int tableColumnSize = polAttr.getPersistenceAttributeInfo().getTableColumnSize();
+                changeValueSetToStringLength(polAttr, tableColumnSize);
+            }
+        }
+    }
+
+    private void migratePersistentAttributes(IProductCmpt productCmpt) {
+        for (IConfiguredValueSet propertyValue : productCmpt.getPropertyValues(IConfiguredValueSet.class)) {
+            try {
+                if (propertyValue.getValueSet() != null && propertyValue.getValueSet().isUnrestricted()) {
+                    IPolicyCmptTypeAttribute polAttr = propertyValue.findPcTypeAttribute(getIpsProject());
+                    if (polAttr.findValueDatatype(getIpsProject()) instanceof StringDatatype
+                            && (polAttr.getValueSet() == null || polAttr.getValueSet().isUnrestricted()
+                                    || polAttr.getValueSet().isStringLength())) {
+                        int tableColumnSize = polAttr.getPersistenceAttributeInfo().getTableColumnSize();
+                        changeValueSetToStringLength(propertyValue, tableColumnSize);
+                    }
+                }
+            } catch (CoreException e) {
+                continue;
+            }
+        }
+    }
+
+    private void changeValueSetToStringLength(IValueSetOwner polAttr, int tableColumnSize) {
+        polAttr.changeValueSetType(ValueSetType.STRINGLENGTH);
+        IStringLengthValueSet set = (IStringLengthValueSet)polAttr.getValueSet();
+        set.setMaximumLength(String.valueOf(tableColumnSize));
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
