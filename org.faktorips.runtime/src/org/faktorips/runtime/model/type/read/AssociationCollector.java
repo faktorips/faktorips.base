@@ -70,11 +70,14 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
 
     }
 
-    static class IpsAssociationAdderProcessor<D extends PolicyAssociationCollector.PolicyAssociationDescriptor>
+    abstract static class IpsAssociationAdderProcessor<D extends AbstractAssociationDescriptor<? extends Association>>
             extends AnnotationProcessor<IpsAssociationAdder, D> {
 
-        public IpsAssociationAdderProcessor() {
+        private final boolean withCardinality;
+
+        public IpsAssociationAdderProcessor(boolean withCardinality) {
             super(IpsAssociationAdder.class);
+            this.withCardinality = withCardinality;
         }
 
         @Override
@@ -83,12 +86,45 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
         }
 
         @Override
-        public void process(PolicyAssociationDescriptor descriptor,
+        public boolean accept(AnnotatedElement annotatedElement) {
+            return super.accept(annotatedElement) && cardinalityMatches(annotatedElement);
+        }
+
+        public boolean cardinalityMatches(AnnotatedElement annotatedElement) {
+            return !(withCardinality ^ (annotatedElement
+                    .getAnnotation(IpsAssociationAdder.class).withCardinality()));
+        }
+
+    }
+
+    static class IpsAssociationAdderProcessorNoCardinality<D extends AbstractAssociationDescriptor<? extends Association>>
+            extends IpsAssociationAdderProcessor<D> {
+
+        public IpsAssociationAdderProcessorNoCardinality() {
+            super(false);
+        }
+
+        @Override
+        public void process(D descriptor,
                 AnnotatedDeclaration annotatedDeclaration,
                 AnnotatedElement annotatedElement) {
             descriptor.setAddMethod((Method)annotatedElement);
         }
+    }
 
+    static class IpsAssociationAdderProcessorWithCardinality<D extends ProductAssociationDescriptor>
+            extends IpsAssociationAdderProcessor<D> {
+
+        public IpsAssociationAdderProcessorWithCardinality() {
+            super(true);
+        }
+
+        @Override
+        public void process(D descriptor,
+                AnnotatedDeclaration annotatedDeclaration,
+                AnnotatedElement annotatedElement) {
+            descriptor.setAddMethodWithCardinality((Method)annotatedElement);
+        }
     }
 
     static class IpsAssociationRemoverProcessor<D extends PolicyAssociationCollector.PolicyAssociationDescriptor>

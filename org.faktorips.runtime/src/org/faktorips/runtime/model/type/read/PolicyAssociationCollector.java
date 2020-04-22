@@ -24,7 +24,7 @@ public class PolicyAssociationCollector
     public PolicyAssociationCollector() {
         super(Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(
                 new IpsAssociationProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
-                new IpsAssociationAdderProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
+                new IpsAssociationAdderProcessorNoCardinality<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
                 new IpsAssociationRemoverProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>()));
     }
 
@@ -34,19 +34,14 @@ public class PolicyAssociationCollector
     }
 
     protected static class PolicyAssociationDescriptor extends AbstractAssociationDescriptor<PolicyAssociation> {
-
-        private Method addMethod;
         private Method removeMethod;
 
         @Override
         public PolicyAssociation createValid(Type type) {
-            return new PolicyAssociation(type, getAnnotatedElement(), addMethod, removeMethod);
+            return new PolicyAssociation(type, getAnnotatedElement(), getAddMethod(), removeMethod);
         }
 
-        public void setAddMethod(Method adderMethod) {
-            this.addMethod = adderMethod;
-        }
-
+        @Override
         public void setRemoveMethod(Method removeMethod) {
             this.removeMethod = removeMethod;
         }

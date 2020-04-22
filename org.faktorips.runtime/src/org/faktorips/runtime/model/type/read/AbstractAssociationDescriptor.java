@@ -18,6 +18,8 @@ import org.faktorips.runtime.model.type.Type;
 public abstract class AbstractAssociationDescriptor<P extends Association> extends PartDescriptor<P> {
 
     private Method annotatedElement;
+    private Method addMethod;
+    private Method removeMethod;
 
     public boolean isValid() {
         return getAnnotatedElement() != null;
@@ -29,6 +31,22 @@ public abstract class AbstractAssociationDescriptor<P extends Association> exten
 
     public void setAnnotatedElement(Method annotatedElement) {
         this.annotatedElement = annotatedElement;
+    }
+
+    public void setAddMethod(Method adderMethod) {
+        this.addMethod = adderMethod;
+    }
+
+    public Method getAddMethod() {
+        return addMethod;
+    }
+
+    public Method getRemoveMethod() {
+        return removeMethod;
+    }
+
+    public void setRemoveMethod(Method removeMethod) {
+        this.removeMethod = removeMethod;
     }
 
     @Override

@@ -26,7 +26,9 @@ public class ProductAssociationCollector
     // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
     public ProductAssociationCollector() {
         super(Arrays.<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new ProductIpsAssociationProcessor(),
-                new IpsAssociationLinksProcessor<ProductAssociationDescriptor>()));
+                new IpsAssociationLinksProcessor<ProductAssociationDescriptor>(),
+                new IpsAssociationAdderProcessorNoCardinality<ProductAssociationCollector.ProductAssociationDescriptor>(),
+                new IpsAssociationAdderProcessorWithCardinality<ProductAssociationCollector.ProductAssociationDescriptor>()));
     }
 
     @Override
@@ -44,30 +46,37 @@ public class ProductAssociationCollector
             descriptor.setChangingOverTime(
                     IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration.getImplementationClass()));
         }
-
     }
 
     protected static class ProductAssociationDescriptor extends AbstractAssociationDescriptor<ProductAssociation> {
 
         private boolean changingOverTime;
         private Method getLinksMethod;
+        private Method addWithCardinality;
 
         public boolean isChangingOverTime() {
             return changingOverTime;
+        }
+
+        public void setGetLinksMethod(Method getLinksMethod) {
+            this.getLinksMethod = getLinksMethod;
         }
 
         public void setChangingOverTime(boolean changingOverTime) {
             this.changingOverTime = changingOverTime;
         }
 
-        @Override
-        protected ProductAssociation createValid(Type type) {
-            return new ProductAssociation(type, getAnnotatedElement(), changingOverTime, getLinksMethod);
+        public void setAddMethodWithCardinality(Method addWithCardinality) {
+            this.addWithCardinality = addWithCardinality;
         }
 
-        public void setGetLinksMethod(Method getLinksMethod) {
-            this.getLinksMethod = getLinksMethod;
+        @Override
+        protected ProductAssociation createValid(Type type) {
+            return new ProductAssociation(type, getAnnotatedElement(), getAddMethod(), addWithCardinality,
+                    changingOverTime,
+                    getLinksMethod);
         }
+
     }
 
 }

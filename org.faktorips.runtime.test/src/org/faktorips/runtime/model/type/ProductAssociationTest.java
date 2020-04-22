@@ -9,8 +9,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -18,8 +20,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -31,6 +35,7 @@ import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.ProductComponentLink;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
@@ -42,6 +47,7 @@ import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
+import org.faktorips.values.ObjectUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +60,7 @@ public class ProductAssociationTest {
     private final ProductCmptType productCmptType = IpsModel.getProductCmptType(Source.class);
     private final ProductAssociation association = productCmptType.getAssociation("asso");
     private final ProductAssociation association2 = productCmptType.getAssociation("asso2");
+    private final ProductAssociation association3 = productCmptType.getAssociation("asso3");
     private final ProductAssociation overriddenAsso = productCmptType.getAssociation("overriddenAsso");
 
     @Before
@@ -257,8 +264,204 @@ public class ProductAssociationTest {
                 productCmptType.getAssociation("overriddenAsso"));
     }
 
+    @Test
+    public void testAddTargetObjects_To1_Association() {
+        SubSource source = new SubSource();
+        Target target = new Target();
+
+        association.addTargetObjects(source, null, target);
+
+        assertThat(source.getTarget(), is(target));
+    }
+
+    @Test
+    public void testAddTargetObjects_AssociationWithCardinality() {
+        Source source = new Source();
+        Target target = new Target();
+        CardinalityRange cardinality = new CardinalityRange(0, 10, 1);
+
+        association2.addTargetObject(source, null, target, cardinality);
+
+        assertThat(source.productGen.getTargets(), hasItem(target));
+        assertThat(source.productGen.getCardinalityForTarget(target), is(cardinality));
+    }
+
+    @Test
+    public void testAddTargetObject_AssociationWithCardinalityInGeneration1() {
+        Source source = new Source();
+        Target target = new Target();
+        CardinalityRange cardinality = new CardinalityRange(0, 10, 1);
+
+        association2.addTargetObject(source, effectiveDate, target, cardinality);
+
+        assertThat(source.productGen.getTargets(), hasItem(target));
+        assertThat(source.productGen.getCardinalityForTarget(target), is(cardinality));
+        assertNull(source.productGen2.target);
+    }
+
+    @Test
+    public void testAddTargetObject_AssociationWithCardinalityInGeneration2() {
+        Source source = new Source();
+        Target target = new Target();
+        CardinalityRange cardinality = new CardinalityRange(0, 10, 1);
+
+        association2.addTargetObject(source, new GregorianCalendar(1999, 2, 2), target, cardinality);
+
+        assertThat(source.productGen2.getTargets(), hasItem(target));
+        assertThat(source.productGen2.getCardinalityForTarget(target), is(cardinality));
+        assertNull(source.productGen.target);
+    }
+
+    @Test
+    public void testAddTargetObjects_To1_ReplaceAssociatedObject() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+        association.addTargetObjects(source, null, target);
+
+        association.addTargetObjects(source, null, target2);
+
+        assertThat(source.getTarget(), is(target2));
+    }
+
+    @Test
+    public void testAddTargetObjects_To1_ReplaceAssociatedObjectWithCardinality() {
+        SubSource source = new SubSource();
+        ProductAssociation overriddenAssoInSub = IpsModel.getProductCmptType(source)
+                .getAssociation("overriddenAsso");
+        Target target = new SubTarget();
+        Target target2 = new SubTarget();
+        CardinalityRange cardinality = new CardinalityRange(0, 10, 1);
+        CardinalityRange cardinality2 = new CardinalityRange(10, 20, 10);
+        overriddenAssoInSub.addTargetObject(source, null, target, cardinality);
+
+        overriddenAssoInSub.addTargetObject(source, null, target2, cardinality2);
+
+        assertThat(source.getTarget(), is(target2));
+        assertSame(cardinality2, source.getCardinalityForTarget(target2));
+    }
+
+    @Test
+    public void testAddTargetObjects_ToN_AddMultipleTargets() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+
+        association2.addTargetObjects(source, null, target);
+        association2.addTargetObjects(source, null, target2);
+
+        assertThat(source.productGen.getTargets().size(), is(2));
+    }
+
+    @Test
+    public void testAddTargetObjects_ToN_ExisingTarget() {
+        Source source = new Source();
+        Target existingTarget = new Target();
+        Target newTarget = new Target();
+        source.productGen.target = existingTarget;
+
+        association2.addTargetObjects(source, null, newTarget);
+
+        assertThat(source.productGen.getTargets().size(), is(2));
+        assertThat(source.productGen.getTargets().get(0), is(existingTarget));
+        assertThat(source.productGen.getTargets().get(1), is(newTarget));
+    }
+
+    @Test
+    public void testAddTargetObjects_VarArg() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+
+        association2.addTargetObjects(source, null, target, target2);
+
+        assertThat(source.productGen.getTargets().size(), is(2));
+    }
+
+    @Test
+    public void testAddTargetObjects_List() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+
+        association2.addTargetObjects(source, null, Arrays.<IProductComponent> asList(target, target2));
+
+        assertThat(source.productGen.getTargets().size(), is(2));
+    }
+
+    @Test
+    public void testAddTargetObjects_ToN_DoNothingIfEmptyVarArg() {
+        Source source = new Source();
+
+        association2.addTargetObjects(source, null);
+
+        assertThat(source.productGen.getTargets().size(), is(0));
+    }
+
+    @Test
+    public void testAddTargetObjects_ToN_DoNothingIfEmptyList() {
+        Source source = new Source();
+
+        association2.addTargetObjects(source, null, new ArrayList<IProductComponent>());
+
+        assertThat(source.productGen.getTargets().size(), is(0));
+    }
+
+    @Test
+    public void testAddTargetObjects_To1_MultipleObjects() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+
+        try {
+            association.addTargetObjects(source, null, Arrays.<IProductComponent> asList(target, target2));
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertNull(source.target);
+        }
+    }
+
+    @Test
+    public void testAddTargetObjects_NoMethod() {
+        Source source = new Source();
+        Target target = new Target();
+
+        try {
+            association3.addTargetObjects(source, null, target);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertNull(source.target);
+        }
+    }
+
+    @Test
+    public void testAddTargetObjects_To1_Overridden() {
+        SubSource subSource = new SubSource();
+        Target subTarget = new SubTarget();
+        ProductAssociation overridingAssociation = IpsModel.getProductCmptType(subSource)
+                .getAssociation("overriddenAsso");
+
+        overridingAssociation.addTargetObjects(subSource, null, subTarget);
+
+        assertThat(subSource.getOverriddenAsso(), is(subTarget));
+    }
+
+    @Test
+    public void testAddTargetObjects_To1_Overridden_WrongType() {
+        SubSource subSource = new SubSource();
+        Target wrongTarget = new Target();
+        ProductAssociation overridingAssociation = IpsModel.getProductCmptType(subSource)
+                .getAssociation("overriddenAsso");
+        try {
+            overridingAssociation.addTargetObjects(subSource, null, wrongTarget);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertNull(subSource.getOverriddenAsso());
+        }
+    }
+
     @IpsProductCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "overriddenAsso", "asso4" })
+    @IpsAssociations({ "asso", "asso2", "asso3", "overriddenAsso", "asso4" })
     @IpsChangingOverTime(ProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class Source extends ProductComponent {
@@ -278,6 +481,11 @@ public class ProductAssociationTest {
             return target;
         }
 
+        @IpsAssociationAdder(association = "asso")
+        public void setTarget(Target target) {
+            this.target = target;
+        }
+
         @IpsAssociationLinks(association = "asso")
         public IProductComponentLink<Target> getLinkForAsso() {
             return new ProductComponentLink<Target>(this, target);
@@ -291,6 +499,11 @@ public class ProductAssociationTest {
         @IpsAssociationLinks(association = "overriddenAsso")
         public IProductComponentLink<Target> getLinkForOverriddenAsso() {
             return null;
+        }
+
+        @IpsAssociation(name = "asso3", pluralName = "assos3", min = 1, max = 10, kind = AssociationKind.Association, targetClass = Target.class)
+        public List<Target> getTargets() {
+            return Arrays.asList(target);
         }
 
         @IpsAssociation(name = "asso4", pluralName = "assos4", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
@@ -332,6 +545,7 @@ public class ProductAssociationTest {
     private class SubSource extends Source {
 
         private Target subAssoTarget;
+        private CardinalityRange cardinality;
 
         @IpsAssociation(name = "SubAsso", pluralName = "SubAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
         @IpsDerivedUnion
@@ -346,8 +560,29 @@ public class ProductAssociationTest {
 
         @Override
         @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsMatchingAssociation(source = Policy.class, name = "Matching")
         public Target getOverriddenAsso() {
             return super.getOverriddenAsso();
+        }
+
+        @IpsAssociationAdder(association = "overriddenAsso")
+        public void setOverriddenAsso(Target target) {
+            ObjectUtil.checkInstanceOf(target, SubTarget.class);
+            super.target = target;
+        }
+
+        @IpsAssociationAdder(association = "overriddenAsso", withCardinality = true)
+        public void setOverriddenAsso(Target target, CardinalityRange cardinality) {
+            ObjectUtil.checkInstanceOf(target, SubTarget.class);
+            this.cardinality = cardinality;
+            super.target = target;
+        }
+
+        public CardinalityRange getCardinalityForTarget(Target productCmpt) {
+            if (productCmpt.equals(super.target)) {
+                return cardinality;
+            }
+            return null;
         }
     }
 
@@ -355,6 +590,10 @@ public class ProductAssociationTest {
 
         private Target target;
         private Target target2;
+
+        public CardinalityRange cardinality;
+
+        public CardinalityRange cardinality2;
 
         public ProductGen(Source product) {
             super(product);
@@ -372,6 +611,36 @@ public class ProductAssociationTest {
                 targets.add(target2);
             }
             return targets;
+        }
+
+        @IpsAssociationAdder(association = "asso2")
+        public void addTarget(Target target) {
+            if (this.target == null) {
+                this.target = target;
+            } else {
+                target2 = target;
+            }
+        }
+
+        @IpsAssociationAdder(association = "asso2", withCardinality = true)
+        public void addTarget(Target target, CardinalityRange cardinality) {
+            if (this.target == null) {
+                this.target = target;
+                this.cardinality = cardinality;
+            } else {
+                target2 = target;
+                cardinality2 = cardinality;
+            }
+        }
+
+        public CardinalityRange getCardinalityForTarget(Target productCmpt) {
+            if (productCmpt.equals(target)) {
+                return cardinality;
+            } else if (productCmpt.equals(target2)) {
+                return cardinality2;
+            }
+
+            return null;
         }
 
         @IpsAssociationLinks(association = "asso2")
