@@ -37,6 +37,7 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
+import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
@@ -460,6 +461,167 @@ public class ProductAssociationTest {
         }
     }
 
+    @Test
+    public void testRemoveTargetObjects_To1_Association() {
+        Source source = new Source();
+        Target target = new Target();
+        source.setTarget(target);
+
+        association.removeTargetObjects(source, null, target);
+
+        assertNull(source.getTarget());
+    }
+
+    @Test
+    public void testRemoveTargetObjects_To1_DoNothingIfDifferentObject() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+        source.setTarget(target);
+
+        association.removeTargetObjects(source, null, target2);
+
+        assertThat(source.getTarget(), is(target));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_ToN() {
+        Source source = new Source();
+        ProductGen generation = (ProductGen)source.getLatestProductComponentGeneration();
+        Target target = new Target();
+        generation.addTarget(target);
+
+        association2.removeTargetObjects(source, effectiveDate, target);
+        association2.removeTargetObjects(source, effectiveDate, target);
+
+        assertThat(generation.getTargets().size(), is(0));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_To1_Overridden() {
+        SubSource subSource = new SubSource();
+        Target subTarget = new SubTarget();
+        subSource.setOverriddenAsso(subTarget);
+        ProductAssociation overridingAssociation = IpsModel.getProductCmptType(subSource)
+                .getAssociation("overriddenAsso");
+
+        overridingAssociation.removeTargetObjects(subSource, null, subTarget);
+
+        assertNull(subSource.getOverriddenAsso());
+    }
+
+    @Test
+    public void testRemoveTargetObjects_ToN_DoNothingIfNotPresent() {
+        Source source = new Source();
+        ProductGen generation = (ProductGen)source.getLatestProductComponentGeneration();
+        Target target = new Target();
+        Target target2 = new Target();
+        generation.addTarget(target);
+
+        association2.removeTargetObjects(source, effectiveDate, target2);
+
+        assertThat(generation.getTargets(), hasItem(target));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_ToN_DoNothingIfEmptyVarArg() {
+        Source source = new Source();
+        ProductGen generation = (ProductGen)source.getLatestProductComponentGeneration();
+        Target target = new Target();
+        generation.addTarget(target);
+
+        association2.removeTargetObjects(source, effectiveDate);
+
+        assertThat(generation.getTargets().get(0), is(target));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_ToN_DoNothingIfEmptyList() {
+        Source source = new Source();
+        ProductGen generation = (ProductGen)source.getLatestProductComponentGeneration();
+        Target target = new Target();
+        generation.addTarget(target);
+
+        association2.removeTargetObjects(source, effectiveDate, new ArrayList<IProductComponent>());
+
+        assertThat(generation.getTargets().get(0), is(target));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_VarArg() {
+        Source source = new Source();
+        ProductGen generation = (ProductGen)source.getLatestProductComponentGeneration();
+        Target target = new Target();
+        Target target2 = new Target();
+        association2.addTargetObjects(source, effectiveDate, target, target2);
+
+        association2.removeTargetObjects(source, effectiveDate, target, target2);
+
+        assertThat(generation.getTargets().size(), is(0));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_List() {
+        Source source = new Source();
+        ProductGen generation = (ProductGen)source.getLatestProductComponentGeneration();
+        Target target = new Target();
+        Target target2 = new Target();
+        association2.addTargetObjects(source, effectiveDate, target, target2);
+
+        association2.removeTargetObjects(source, effectiveDate, Arrays.<IProductComponent> asList(target, target2));
+
+        assertThat(generation.getTargets().size(), is(0));
+    }
+
+    @Test
+    public void testRemoveTargetObjects_To1_MultipleObjects() {
+        Source source = new Source();
+        Target target = new Target();
+        Target target2 = new Target();
+        source.setTarget(target);
+
+        try {
+            association.removeTargetObjects(source, effectiveDate, Arrays.<IProductComponent> asList(target, target2));
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertThat(source.getTarget(), is(target));
+        }
+    }
+
+    @Test
+    public void testRemoveTargetObjects_NoMethod() {
+        Source source = new Source();
+        Target target = new Target();
+        source.setTarget(target);
+
+        try {
+            association3.removeTargetObjects(source, effectiveDate, target);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertThat(association3.getTargetObjects(source, effectiveDate), hasItem(target));
+        }
+    }
+
+    @Test
+    public void testRemoveTargetObjects_CorrectGenerationAffected() {
+        Source source = new Source();
+        Target target1 = new Target();
+        Target target2 = new Target();
+        Target target3 = new Target();
+        Target target4 = new Target();
+        Calendar date2ndGeneration = new GregorianCalendar(1999, 2, 2);
+        ProductGen generation1 = source.productGen;
+        ProductGen generation2 = source.productGen2;
+        association2.addTargetObjects(source, effectiveDate, target1, target2);
+        association2.addTargetObjects(source, date2ndGeneration, target3, target4);
+
+        association2.removeTargetObjects(source, date2ndGeneration, target3, target4);
+
+        assertThat(generation1.getTargets(), hasItem(target1));
+        assertThat(generation1.getTargets(), hasItem(target2));
+        assertThat(generation2.getTargets().size(), is(0));
+    }
+
     @IpsProductCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "asso3", "overriddenAsso", "asso4" })
     @IpsChangingOverTime(ProductGen.class)
@@ -484,6 +646,13 @@ public class ProductAssociationTest {
         @IpsAssociationAdder(association = "asso")
         public void setTarget(Target target) {
             this.target = target;
+        }
+
+        @IpsAssociationRemover(association = "asso")
+        public void removeTarget(Target target) {
+            if (target.equals(this.target)) {
+                this.target = null;
+            }
         }
 
         @IpsAssociationLinks(association = "asso")
@@ -630,6 +799,17 @@ public class ProductAssociationTest {
             } else {
                 target2 = target;
                 cardinality2 = cardinality;
+            }
+        }
+
+        @IpsAssociationRemover(association = "asso2")
+        public void removeTarget(Target target) {
+            if (target.equals(this.target)) {
+                this.target = null;
+                cardinality = null;
+            } else if (target.equals(target2)) {
+                target2 = null;
+                cardinality2 = null;
             }
         }
 

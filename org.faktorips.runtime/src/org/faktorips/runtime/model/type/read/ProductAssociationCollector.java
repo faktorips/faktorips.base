@@ -28,7 +28,8 @@ public class ProductAssociationCollector
         super(Arrays.<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new ProductIpsAssociationProcessor(),
                 new IpsAssociationLinksProcessor<ProductAssociationDescriptor>(),
                 new IpsAssociationAdderProcessorNoCardinality<ProductAssociationCollector.ProductAssociationDescriptor>(),
-                new IpsAssociationAdderProcessorWithCardinality<ProductAssociationCollector.ProductAssociationDescriptor>()));
+                new IpsAssociationAdderProcessorWithCardinality<ProductAssociationCollector.ProductAssociationDescriptor>(),
+                new IpsAssociationRemoverProcessor<ProductAssociationDescriptor>()));
     }
 
     @Override
@@ -73,6 +74,7 @@ public class ProductAssociationCollector
         @Override
         protected ProductAssociation createValid(Type type) {
             return new ProductAssociation(type, getAnnotatedElement(), getAddMethod(), addWithCardinality,
+                    getRemoveMethod(),
                     changingOverTime,
                     getLinksMethod);
         }

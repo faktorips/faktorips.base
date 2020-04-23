@@ -22,7 +22,6 @@ import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.type.Association;
-import org.faktorips.runtime.model.type.read.PolicyAssociationCollector.PolicyAssociationDescriptor;
 import org.faktorips.runtime.model.type.read.ProductAssociationCollector.ProductAssociationDescriptor;
 
 public abstract class AssociationCollector<T extends Association, D extends AbstractAssociationDescriptor<T>>
@@ -127,7 +126,7 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
         }
     }
 
-    static class IpsAssociationRemoverProcessor<D extends PolicyAssociationCollector.PolicyAssociationDescriptor>
+    static class IpsAssociationRemoverProcessor<D extends AbstractAssociationDescriptor<? extends Association>>
             extends AnnotationProcessor<IpsAssociationRemover, D> {
 
         public IpsAssociationRemoverProcessor() {
@@ -140,12 +139,11 @@ public abstract class AssociationCollector<T extends Association, D extends Abst
         }
 
         @Override
-        public void process(PolicyAssociationDescriptor descriptor,
+        public void process(D descriptor,
                 AnnotatedDeclaration annotatedDeclaration,
                 AnnotatedElement annotatedElement) {
             descriptor.setRemoveMethod((Method)annotatedElement);
         }
-
     }
 
     static class IpsAssociationLinksProcessor<D extends ProductAssociationDescriptor>
