@@ -16,6 +16,8 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the method setting the allowed values for an {@link IpsAttribute}.
+ * 
+ * @since 20.6
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

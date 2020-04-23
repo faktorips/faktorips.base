@@ -131,6 +131,7 @@ public abstract class PolicyAttribute extends Attribute {
      *             configured by a product class.
      * @throws IllegalArgumentException if the invocation of the method that should set the default
      *             value for this attribute fails for any reason
+     * @since 20.6
      */
     public abstract void setDefaultValue(IConfigurableModelObject modelObject, Object defaultValue);
 
@@ -150,6 +151,7 @@ public abstract class PolicyAttribute extends Attribute {
      *             configured by a product class.
      * @throws IllegalArgumentException if the invocation of the method that should set the default
      *             value for this attribute fails for any reason
+     * @since 20.6
      */
     public abstract void setDefaultValue(IProductComponent target, Calendar effectiveDate, Object defaultValue);
 
@@ -260,6 +262,7 @@ public abstract class PolicyAttribute extends Attribute {
      *             by a product class.
      * @throws IllegalArgumentException if the invocation of the method that should set the value
      *             set for this attribute fails for any reason
+     * @since 20.6
      */
     public abstract void setValueSet(IConfigurableModelObject modelObject, ValueSet<?> valueSet);
 
@@ -282,6 +285,7 @@ public abstract class PolicyAttribute extends Attribute {
      *             by a product class.
      * @throws IllegalArgumentException if the invocation of the method that should set the value
      *             set for this attribute fails for any reason
+     * @since 20.6
      */
     public abstract void setValueSet(IProductComponent target, Calendar effectiveDate, ValueSet<?> valueSet);
 

@@ -29,6 +29,8 @@ public @interface IpsAssociationAdder {
 
     /**
      * Indicates whether the association has a cardinality
+     * 
+     * @since 20.6
      */
     boolean withCardinality() default false;
 }
