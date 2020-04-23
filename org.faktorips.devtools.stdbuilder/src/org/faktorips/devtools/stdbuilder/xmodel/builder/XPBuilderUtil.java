@@ -67,21 +67,20 @@ public class XPBuilderUtil<B extends XPBuilder<B, AS, AT>, AS extends XAssociati
 
     public Set<AT> getSuperAttributes() {
         Set<AT> superAttributes = new HashSet<AT>();
-        if (builder.hasSupertype()) {
-            Set<AT> overwrittenAttributes = new HashSet<AT>();
-            for (AT attribute : builder.getAttributes()) {
-                if (attribute.isOverwrite()) {
-                    @SuppressWarnings("unchecked")
-                    AT overwrittenAttribute = (AT)attribute.getOverwrittenAttribute();
-                    overwrittenAttributes.add(overwrittenAttribute);
-                }
-            }
-            superAttributes = builder.getSupertype().getAttributes();
-            superAttributes.addAll(builder.getSupertype().getSuperAttributes());
-            superAttributes.removeAll(overwrittenAttributes);
+        if (!builder.hasSupertype()) {
             return superAttributes;
-        } else {
-            return new HashSet<AT>();
         }
+        Set<AT> overwrittenAttributes = new HashSet<AT>();
+        for (AT attribute : builder.getAttributes()) {
+            if (attribute.isOverwrite()) {
+                @SuppressWarnings("unchecked")
+                AT overwrittenAttribute = (AT)attribute.getOverwrittenAttribute();
+                overwrittenAttributes.add(overwrittenAttribute);
+            }
+        }
+        superAttributes = builder.getSupertype().getAttributes();
+        superAttributes.addAll(builder.getSupertype().getSuperAttributes());
+        superAttributes.removeAll(overwrittenAttributes);
+        return superAttributes;
     }
 }

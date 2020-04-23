@@ -1,5 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template
 
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder
 
@@ -23,10 +24,25 @@ class ProductBuilderTmpl{
             «variableDeclaration»
 
             «constructors»
-            «FOR attribute : attributes» «attributeSetter(attribute)»«ENDFOR»
+            «FOR attribute : attributes»«attributeSetter(attribute,false)»«ENDFOR»
 
             «IF hasSupertype»
-                «FOR attribute : superAttributes» «superAttributeSetter(attribute)» «ENDFOR»
+                ««« Generates setter for attributes of the supertypes that are not overwritten in order to override the return type
+                «FOR attribute : superAttributes»«attributeSetter(attribute,true)»«ENDFOR»
+            «ENDIF»
+            
+            «IF configurationForPolicyCmptType»
+                «FOR configuredAttribute : configuredAttributes»
+                    «defaultSetter(configuredAttribute,false)»
+                    «allowedValuesSetter(configuredAttribute,false)»
+                «ENDFOR»
+            
+                «IF hasSupertype»
+                    «FOR configuredAttribute : configuredSuperAttributes»
+                      «defaultSetter(configuredAttribute,true)»
+                      «allowedValuesSetter(configuredAttribute,true)»
+                    «ENDFOR»
+                «ENDIF»
             «ENDIF»
 
             «IF changingOverTime && !isAbstract»
@@ -59,9 +75,9 @@ def private static extendSuperclass (XProductBuilder it) '''
 
 
 //    The method generates variables that are needed in this class. They are:
-//    1. The InMemoryRuntimeRepository, which is needed to add changes to the product class durring Runtime.
+//    1. The InMemoryRuntimeRepository, which is needed to add changes to the product class at runtime.
 //    2. The product that is actually built by the class.
-//    In case the product is chaning over time, a field is also generated to store a generation to edit.
+//    In case the product is changing over time, a field is also generated to store a generation to edit.
 //
 //    Note that if a product has a generation, the supertype also has generation.
 
@@ -123,13 +139,13 @@ def private static constructors (XProductBuilder it) '''
         }
 '''
 
-def private static attributeSetter(XProductBuilder builder, XProductAttribute it) '''
+def private static attributeSetter(XProductBuilder builder, XProductAttribute it, boolean overrideSuper) '''
     /**
     * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
     *
     * @generated
     */
-    «IF overwrite && !overwrittenAttribute.isAbstract» @Override «ENDIF»
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.isAbstract)» @Override «ENDIF»
     public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
         «IF changingOverTime»
             «builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
@@ -140,25 +156,45 @@ def private static attributeSetter(XProductBuilder builder, XProductAttribute it
     }
 '''
 
-
-//Generates setter for attributes of the supertypes that are not overwritten in order to override the return type
-
-def private static superAttributeSetter(XProductBuilder builder, XProductAttribute it) '''
+def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
     /**
-    * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+    * «localizedJDoc("METHOD_SET_DEFAULTVALUE", name, descriptionForJDoc)»
     *
     * @generated
     */
-    @Override
-    public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.abstract 
+        && overwrittenAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy 
+        && builder.hasSupertype && builder.supertype.configurationForPolicyCmptType)» @Override «ENDIF»
+    public «builder.implClassName» «method(fieldName+"Default",javaClassName,fieldName)»{
         «IF changingOverTime»
-            «builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
+            «builder.prodGenFieldName».«methodNameSetDefaultValue»(«fieldName»);
         «ELSE»
-            «safeGetResult(builder)».«methodNameSetter»(«fieldName»);
+            «safeGetResult(builder)».«methodNameSetDefaultValue»(«fieldName»);
         «ENDIF»
         return this;
     }
 '''
+
+def private static allowedValuesSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
+    /**
+    * «localizedJDoc("METHOD_SET_VALUESET", name, descriptionForJDoc)»
+    *
+    * @generated
+    */
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.abstract 
+        && overwrittenAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy 
+        && builder.hasSupertype && builder.supertype.configurationForPolicyCmptType)» @Override «ENDIF»
+    public «builder.implClassName» «method(fieldName+"AllowedValues",ValueSet(javaClassUsedForValueSet),fieldName)»{
+        «IF changingOverTime»
+            «builder.prodGenFieldName».«methodNameSetAllowedValuesFor»(«fieldName»);
+        «ELSE»
+            «safeGetResult(builder)».«methodNameSetAllowedValuesFor»(«fieldName»);
+        «ENDIF»
+        return this;
+    }
+'''
+
+
 
 //        creates/gets generation builder
 //    - look for the valid generation to given date

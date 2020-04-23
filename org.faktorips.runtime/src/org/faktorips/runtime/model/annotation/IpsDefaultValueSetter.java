@@ -9,28 +9,23 @@
  *******************************************************************************/
 package org.faktorips.runtime.model.annotation;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks the method for adding target objects to an association.
+ * Marks the method setting the default value for an {@link IpsAttribute}.
+ * 
+ * @since 20.6
  */
-@Retention(RUNTIME)
-@Target(METHOD)
-public @interface IpsAssociationAdder {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface IpsDefaultValueSetter {
 
     /**
-     * The name of the association.
+     * The {@link IpsAttribute#name() attribute's name}.
      */
-    String association();
+    String value();
 
-    /**
-     * Indicates whether the association has a cardinality
-     * 
-     * @since 20.6
-     */
-    boolean withCardinality() default false;
 }

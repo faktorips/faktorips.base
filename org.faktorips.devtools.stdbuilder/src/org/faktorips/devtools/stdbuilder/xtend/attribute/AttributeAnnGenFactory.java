@@ -39,7 +39,10 @@ public class AttributeAnnGenFactory implements IAnnotationGeneratorFactory {
                 return new AttributeAllowedValuesAnnGen();
             case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT:
                 return new AttributeDefaultValueAnnGen();
-
+            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT_SETTER:
+                return new AttributeDefaultValueSetterAnnGen();
+            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES_SETTER:
+                return new AttributeAllowedValuesSetterAnnGen();
             default:
                 return null;
         }

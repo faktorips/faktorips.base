@@ -86,6 +86,13 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     /**
+     * The name of the remove method - only used for one-to-many associations.
+     */
+    public String getMethodNameRemove(boolean plural) {
+        return (plural ? "removeAll" : "remove") + StringUtils.capitalize(getName(plural));
+    }
+
+    /**
      * Returns true if this association is a one to many association and false if it is one to one.
      * 
      * @return true for one to many and false for one to one associations

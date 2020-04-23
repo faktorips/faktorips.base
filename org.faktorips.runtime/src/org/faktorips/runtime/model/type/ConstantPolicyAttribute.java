@@ -68,6 +68,16 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
     }
 
     @Override
+    public void setDefaultValue(IConfigurableModelObject modelObject, Object defaultValue) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
+    public void setDefaultValue(IProductComponent source, Calendar effectiveDate, Object defaultValue) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         Object value = getValue(modelObject);
         if (value == null) {
@@ -81,6 +91,16 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
 
     @Override
     public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate, IValidationContext context) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
+    public void setValueSet(IProductComponent source, Calendar effectiveDate, ValueSet<?> valueSet) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
+    public void setValueSet(IConfigurableModelObject modelObject, ValueSet<?> valueSet) {
         throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
     }
 

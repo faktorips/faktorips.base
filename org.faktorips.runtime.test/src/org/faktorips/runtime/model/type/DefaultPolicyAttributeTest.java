@@ -22,6 +22,7 @@ import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
+import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
@@ -30,6 +31,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
+import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
@@ -351,6 +353,14 @@ public class DefaultPolicyAttributeTest {
         assertEquals(new DefaultRange<String>("A", "Z"), valueSet);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetValueSet_Failing() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        attribute.getValueSet(new FailingProdukt(), null);
+    }
+
     @Test
     public void testGetValueSet_ModelObject_NotConfiguredOnConfigurablePolicy() {
         ConfVertrag vertrag = new ConfVertrag();
@@ -417,6 +427,14 @@ public class DefaultPolicyAttributeTest {
         attribute.getDefaultValue(new Produkt(), null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetDefaultValue_Failing() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        attribute.getDefaultValue(new FailingProdukt(), null);
+    }
+
     @Test
     public void testGetDefaultValue_ModelObject() {
         GregorianCalendar effectiveFrom = new GregorianCalendar();
@@ -446,6 +464,193 @@ public class DefaultPolicyAttributeTest {
         Object defaultValue = attribute.getDefaultValue(vertrag);
 
         assertEquals("blub", defaultValue);
+    }
+
+    @Test
+    public void testSetDefaultValue() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        Produkt produkt = new Produkt();
+
+        attribute.setDefaultValue(produkt, null, "new");
+
+        assertEquals("new", produkt.getDefaultValueAttr1());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetDefaultValue_NotProductRelevant() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+
+        attribute.setDefaultValue(new Produkt(), null, "not product relevant");
+    }
+
+    @Test
+    public void testSetDefaultValue_ChangingOverTimeWithCalendar() {
+        Produkt produkt = new Produkt();
+        ProduktGen gen = new ProduktGen();
+        gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
+        repository.putProductCmptGeneration(gen);
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+
+        attribute.setDefaultValue(produkt, effectiveDate, "new");
+
+        assertEquals("new", gen.getDefaultValueAttrChangingOverTime());
+    }
+
+    @Test
+    public void testSetDefaultValue_ChangingOverTime() {
+        Produkt produkt = new Produkt();
+        ProduktGen gen = new ProduktGen(produkt);
+        repository.putProductCmptGeneration(gen);
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+
+        attribute.setDefaultValue(produkt, null, "new");
+
+        assertEquals("new", gen.getDefaultValueAttrChangingOverTime());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetDefaultValue_NotConfigured() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        attribute.setDefaultValue(new Produkt(), null, "new");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetDefaultValue_Failing() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        attribute.setDefaultValue(new FailingProdukt(), null, "new");
+    }
+
+    @Test
+    public void testSetDefaultValue_ModelObject() {
+        GregorianCalendar effectiveFrom = new GregorianCalendar();
+        ProduktGen gen = new ProduktGen();
+        gen.setValidFrom(DateTime.createDateOnly(effectiveFrom));
+        repository.putProductCmptGeneration(gen);
+        ConfVertrag vertrag = new ConfVertrag();
+        vertrag.effectiveFrom = effectiveFrom;
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+
+        attribute.setDefaultValue(vertrag, "new");
+
+        assertEquals("new", gen.getDefaultValueAttrChangingOverTime());
+    }
+
+    @Test
+    public void testSetDefaultValue_ModelObject_NoEffectiveFrom() {
+        ProduktGen gen = new ProduktGen();
+        repository.putProductCmptGeneration(gen);
+        ConfVertrag vertrag = new ConfVertrag();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+
+        attribute.setDefaultValue(vertrag, "new");
+
+        assertEquals("new", gen.getDefaultValueAttrChangingOverTime());
+    }
+
+    @Test
+    public void testSetValueSet() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        Produkt produkt = new Produkt();
+        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+
+        attribute.setValueSet(produkt, null, valueSet);
+
+        assertEquals(valueSet, produkt.getSetOfAllowedValuesForAttr1(null));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetValueSet_NotProductRelevant() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+
+        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<String>());
+    }
+
+    @Test
+    public void testSetValueSet_ChangingOverTimeWithCalendar() {
+        Produkt produkt = new Produkt();
+        ProduktGen gen = new ProduktGen();
+        gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
+        repository.putProductCmptGeneration(gen);
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+
+        attribute.setValueSet(produkt, effectiveDate, valueSet);
+
+        assertEquals(valueSet, gen.getSetOfAllowedValuesForAttrChangingOverTime(null));
+    }
+
+    @Test
+    public void testSetValueSet_ChangingOverTime() {
+        Produkt produkt = new Produkt();
+        ProduktGen gen = new ProduktGen(produkt);
+        repository.putProductCmptGeneration(gen);
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+
+        attribute.setValueSet(produkt, null, valueSet);
+
+        assertEquals(valueSet, gen.getSetOfAllowedValuesForAttrChangingOverTime(null));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetValueSet_NotConfigured() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<String>());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetValueSet_Failing() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        attribute.setValueSet(new FailingProdukt(), null, new UnrestrictedValueSet<String>());
+    }
+
+    @Test
+    public void testSetValueSet_ModelObject() {
+        GregorianCalendar effectiveFrom = new GregorianCalendar();
+        ProduktGen gen = new ProduktGen();
+        gen.setValidFrom(DateTime.createDateOnly(effectiveFrom));
+        repository.putProductCmptGeneration(gen);
+        ConfVertrag vertrag = new ConfVertrag();
+        vertrag.effectiveFrom = effectiveFrom;
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+
+        attribute.setValueSet(vertrag, valueSet);
+
+        assertEquals(valueSet, gen.getSetOfAllowedValuesForAttrChangingOverTime(null));
+    }
+
+    @Test
+    public void testSetValueSet_ModelObject_NoEffectiveFrom() {
+        ProduktGen gen = new ProduktGen();
+        repository.putProductCmptGeneration(gen);
+        ConfVertrag vertrag = new ConfVertrag();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+
+        attribute.setValueSet(vertrag, valueSet);
+
+        assertEquals(valueSet, gen.getSetOfAllowedValuesForAttrChangingOverTime(null));
     }
 
     @Test
@@ -632,13 +837,21 @@ public class DefaultPolicyAttributeTest {
     @IpsChangingOverTime(ProduktGen.class)
     private class Produkt extends ProductComponent {
 
+        private String defaultValueAttr1 = "foobar";
+        private ValueSet<String> allowedValuesForAttr1 = new UnrestrictedValueSet<String>();
+
         public Produkt() {
             super(repository, "id", "kindId", "versionId");
         }
 
         @IpsDefaultValue("attr1")
         public String getDefaultValueAttr1() {
-            return "foobar";
+            return defaultValueAttr1;
+        }
+
+        @IpsDefaultValueSetter("attr1")
+        public void setDefaultValueAttr1(String defaultValueAttr1) {
+            this.defaultValueAttr1 = defaultValueAttr1;
         }
 
         /**
@@ -646,7 +859,12 @@ public class DefaultPolicyAttributeTest {
          */
         @IpsAllowedValues("attr1")
         public ValueSet<String> getSetOfAllowedValuesForAttr1(IValidationContext context) {
-            return new UnrestrictedValueSet<String>();
+            return allowedValuesForAttr1;
+        }
+
+        @IpsAllowedValuesSetter("attr1")
+        public void setSetOfAllowedValuesForAttr1(ValueSet<String> valueSet) {
+            allowedValuesForAttr1 = valueSet;
         }
 
         @SuppressWarnings("unused")
@@ -673,7 +891,57 @@ public class DefaultPolicyAttributeTest {
         }
     }
 
+    @IpsProductCmptType(name = "ProductXYZ")
+    @IpsConfigures(ConfVertrag.class)
+    @IpsChangingOverTime(ProduktGen.class)
+    private class FailingProdukt extends ProductComponent {
+
+        public FailingProdukt() {
+            super(repository, "id", "kindId", "versionId");
+        }
+
+        @IpsDefaultValue("attr1")
+        public String getDefaultValueAttr1() throws IllegalAccessException {
+            throw new IllegalAccessException("forbidden");
+        }
+
+        @IpsDefaultValueSetter("attr1")
+        public void setDefaultValueAttr1(@SuppressWarnings("unused") String defaultValueAttr1)
+                throws IllegalAccessException {
+            throw new IllegalAccessException("forbidden");
+        }
+
+        /**
+         * @param context validation context
+         */
+        @IpsAllowedValues("attr1")
+        public ValueSet<String> getSetOfAllowedValuesForAttr1(IValidationContext context)
+                throws IllegalAccessException {
+            throw new IllegalAccessException("forbidden");
+        }
+
+        @IpsAllowedValuesSetter("attr1")
+        public void setSetOfAllowedValuesForAttr1(@SuppressWarnings("unused") ValueSet<String> valueSet)
+                throws IllegalAccessException {
+            throw new IllegalAccessException("forbidden");
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+    }
+
     private class ProduktGen extends ProductComponentGeneration {
+
+        private String defaultValueAttrChangingOverTime = "blub";
+        private ValueSet<String> allowedValuesForAttrChangingOverTime = new OrderedValueSet<String>(false, null,
+                "foo", "bar");
 
         public ProduktGen() {
             this(new Produkt());
@@ -685,7 +953,12 @@ public class DefaultPolicyAttributeTest {
 
         @IpsDefaultValue("attrChangingOverTime")
         public String getDefaultValueAttrChangingOverTime() {
-            return "blub";
+            return defaultValueAttrChangingOverTime;
+        }
+
+        @IpsDefaultValueSetter("attrChangingOverTime")
+        public void setDefaultValueAttrChangingOverTime(String defaultValueAttrChangingOverTime) {
+            this.defaultValueAttrChangingOverTime = defaultValueAttrChangingOverTime;
         }
 
         /**
@@ -693,7 +966,12 @@ public class DefaultPolicyAttributeTest {
          */
         @IpsAllowedValues("attrChangingOverTime")
         public ValueSet<String> getSetOfAllowedValuesForAttrChangingOverTime(IValidationContext context) {
-            return new OrderedValueSet<String>(false, null, "foo", "bar");
+            return allowedValuesForAttrChangingOverTime;
+        }
+
+        @IpsAllowedValuesSetter("attrChangingOverTime")
+        public void setSetOfAllowedValuesForAttrChangingOverTime(ValueSet<String> valueSet) {
+            allowedValuesForAttrChangingOverTime = valueSet;
         }
     }
 

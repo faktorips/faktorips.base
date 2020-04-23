@@ -25,7 +25,11 @@ public enum AnnotatedJavaElementType {
 
     PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES,
 
+    PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES_SETTER,
+
     PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT,
+
+    PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT_SETTER,
 
     PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_SETTER,
 
@@ -35,6 +39,26 @@ public enum AnnotatedJavaElementType {
      * being generated.
      */
     PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER,
+
+    /**
+     * Represents the declaration of association remover methods. The remover methods are declared
+     * in the implementation classes.
+     */
+    PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER,
+
+    /**
+     * Represents the declaration of association setter(..1)/adder(..*) methods. The setters/adders
+     * are either declared in the published interface or in the implementation class, in case no
+     * published interfaces are being generated.
+     */
+    PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER,
+
+    /**
+     * Represents the declaration of association setter(..1)/adder(..*) methods, that specify a
+     * cardinality. The setters/adders are either declared in the published interface or in the
+     * implementation class, in case no published interfaces are being generated.
+     */
+    PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER,
 
     /**
      * Represents the declaration of methods that return all links for an association. The link

@@ -38,7 +38,7 @@ class ProductAssociationTmpl {
         «ENDIF»
     '''
 
-    def package static getterSetterAdder(XProductAssociation it) '''
+    def package static getterSetterAdderRemover(XProductAssociation it) '''
         «IF !derivedUnion»
             «getterProductCmpt»
             «IF generateGenerationAccessMethods»
@@ -47,8 +47,10 @@ class ProductAssociationTmpl {
             «getterProductCmptPerIndex»
             «IF !genInterface»
                 «setterMethodForToOne»
+                «setterMethodForToOneWithCardinality»
                 «addMethod»
                 «addMethodWithCardinality»
+                «removeMethod»
             «ENDIF»
             «IF !constrain»
                 «getterLinksFor»
@@ -209,6 +211,7 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
                 «IF constrain»
@@ -223,21 +226,42 @@ class ProductAssociationTmpl {
     '''
 
     def private static addMethodWithCardinality(XProductAssociation it) '''
-    ««« TODO FIPS-1141
-        «IF oneToMany»
+        «IF oneToMany && matchingAssociation!==null»
             /**
              * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange, "cardinality")» {
                 «IF constrain»
                     «ObjectUtil».«checkInstanceOf("target", targetInterfaceName)»;
                     super.«methodNameSetOrAdd»(target, cardinality);
                 «ELSE»
-                    «ProductCommonsTmpl.checkRepositoryModifyable(it)»
+                    «checkRepositoryModifyable»
                     this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality, "«it.name»"));
+                «ENDIF»
+            }
+        «ENDIF»
+    '''
+
+    def private static removeMethod(XProductAssociation it) '''
+        «IF oneToMany»
+            /**
+             * «localizedJDoc("METHOD_REMOVE_CMPT")»
+             * «getAnnotations(ELEMENT_JAVA_DOC)»
+             * @generated
+             */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER)»
+             «overrideAnnotationIf(constrain)»
+            public void «method(getMethodNameRemove(false), targetInterfaceNameBase, "target")» {
+                «IF constrain»
+                    «ObjectUtil».«checkInstanceOf("target", targetInterfaceName)»;
+                    super.«getMethodNameRemove(false)»(target);
+                «ELSE»
+                    «checkRepositoryModifyable»
+                    this.«fieldName».remove(target.getId());
                 «ENDIF»
             }
         «ENDIF»
@@ -250,14 +274,36 @@ class ProductAssociationTmpl {
              * «getAnnotations(ELEMENT_JAVA_DOC)»
              * @generated
              */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER)»
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
                 «IF constrain»
                     «ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
                     super.«methodNameSetOrAdd»(target);
                 «ELSE»
-                    «ProductCommonsTmpl.checkRepositoryModifyable(it)»
+                    «checkRepositoryModifyable»
                     «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target, "«it.name»"));
+                «ENDIF»
+            }
+        «ENDIF»
+    '''
+
+    def private static setterMethodForToOneWithCardinality(XProductAssociation it) '''
+        «IF !oneToMany && matchingAssociation!==null»
+            /**
+             * «localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY", name)»
+             * «getAnnotations(ELEMENT_JAVA_DOC)»
+             * @generated
+             */
+             «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER)»
+             «overrideAnnotationIf(constrain)»
+            public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange, "cardinality")» {
+                «IF constrain»
+                    «ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+                    super.«methodNameSetOrAdd»(target, cardinality);
+                «ELSE»
+                    «checkRepositoryModifyable»
+                    «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»

@@ -84,21 +84,24 @@ public abstract class PolicyAttribute extends Attribute {
 
     /**
      * Returns the product configured default value of the attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
+     * attribute. Throws an {@link IllegalStateException} if the model object has no
      * getDefaultValue() method for this attribute. This also occurs if the corresponding policy
      * class is not configured by a product class.
      * 
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
      * @see #getDefaultValue(IProductComponent, Calendar)
+     * @throws IllegalStateException if the model object has no getter method for this attribute's
+     *             default value. This also occurs if the corresponding policy class is not
+     *             configured by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should get the default
+     *             value for this attribute fails for any reason
      */
     public abstract Object getDefaultValue(IConfigurableModelObject modelObject);
 
     /**
      * Returns the product configured default value of the attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getDefaultValue() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
+     * attribute.
      * 
      * @param source the product component to read the attribute default value from.
      * @param effectiveDate the date to determine the product component generation. If
@@ -106,8 +109,51 @@ public abstract class PolicyAttribute extends Attribute {
      *            configuration is not changing over time.
      * @throws UnsupportedOperationException if invoked on a
      *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the model object has no getter method for this attribute's
+     *             default value. This also occurs if the corresponding policy class is not
+     *             configured by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should get the default
+     *             value for this attribute fails for any reason
      */
     public abstract Object getDefaultValue(IProductComponent source, Calendar effectiveDate);
+
+    /**
+     * Sets the product configured default value of the attribute identified by this model type
+     * attribute.
+     * 
+     * @param modelObject the configurable model object from which product component and (if
+     *            necessary) effective date can be retrieved
+     * @param defaultValue the new default value
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the model object has no setter method for this attribute's
+     *             default value. This also occurs if the corresponding policy class is not
+     *             configured by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should set the default
+     *             value for this attribute fails for any reason
+     * @since 20.6
+     */
+    public abstract void setDefaultValue(IConfigurableModelObject modelObject, Object defaultValue);
+
+    /**
+     * Sets the product configured default value of the attribute identified by this model type
+     * attribute.
+     * 
+     * @param target the product component to write the attribute default value to
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the attribute's
+     *            configuration is not changing over time.
+     * @param defaultValue the new default value
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the model object has no setter method for this attribute's
+     *             default value. This also occurs if the corresponding policy class is not
+     *             configured by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should set the default
+     *             value for this attribute fails for any reason
+     * @since 20.6
+     */
+    public abstract void setDefaultValue(IProductComponent target, Calendar effectiveDate, Object defaultValue);
 
     /**
      * Returns the value set of the given model object's attribute identified by this model type
@@ -123,6 +169,10 @@ public abstract class PolicyAttribute extends Attribute {
      * </p>
      *
      * @param modelObject a model object
+     * @throws IllegalStateException if the method that should return a value set for this attribute
+     *             has too many arguments
+     * @throws IllegalArgumentException if the invocation of the method that should return a value
+     *             set for this attribute fails for any reason
      */
     public abstract ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context);
 
@@ -143,6 +193,10 @@ public abstract class PolicyAttribute extends Attribute {
      * @param modelObject a model object
      * @throws UnsupportedOperationException if invoked on a
      *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the method that should return a value set for this attribute
+     *             has too many arguments
+     * @throws IllegalArgumentException if the invocation of the method that should return a value
+     *             set for this attribute fails for any reason
      */
     public ValueSet<?> getValueSet(IModelObject modelObject) {
         return getValueSet(modelObject, new ValidationContext());
@@ -150,9 +204,8 @@ public abstract class PolicyAttribute extends Attribute {
 
     /**
      * Returns the value set of the given model object's attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
+     * attribute. Returns an {@link UnrestrictedValueSet} if there is no method that returns a value
+     * set for this attribute.
      *
      * @param source the product component to read an attribute value set from. Must correspond to
      *            the {@link Type} this attribute belongs to.
@@ -161,6 +214,10 @@ public abstract class PolicyAttribute extends Attribute {
      *            configuration is not changing over time.
      * @throws UnsupportedOperationException if invoked on a
      *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the method that should return a value set for this attribute
+     *             has too many arguments
+     * @throws IllegalArgumentException if the invocation of the method that should return a value
+     *             set for this attribute fails for any reason
      */
     public abstract ValueSet<?> getValueSet(IProductComponent source,
             Calendar effectiveDate,
@@ -168,9 +225,8 @@ public abstract class PolicyAttribute extends Attribute {
 
     /**
      * Returns the value set of the given model object's attribute identified by this model type
-     * attribute. Throws an {@link IllegalArgumentException} if the model object has no
-     * getAllowedValues() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
+     * attribute. Returns an {@link UnrestrictedValueSet} if there is no method that returns a value
+     * set for this attribute.
      * <p>
      * This method uses a default {@link IValidationContext}.
      *
@@ -181,9 +237,56 @@ public abstract class PolicyAttribute extends Attribute {
      *            configuration is not changing over time.
      * @throws UnsupportedOperationException if invoked on a
      *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the method that should return a value set for this attribute
+     *             has too many arguments
+     * @throws IllegalArgumentException if the invocation of the method that should return a value
+     *             set for this attribute fails for any reason
      */
     public ValueSet<?> getValueSet(IProductComponent source, Calendar effectiveDate) {
         return getValueSet(source, effectiveDate, new ValidationContext());
     }
+
+    /**
+     * Sets the product configured set of allowed values of the attribute identified by this model
+     * type attribute.
+     * 
+     * @param modelObject the configurable model object from which product component and (if
+     *            necessary) effective date can be retrieved
+     * @param valueSet the new value set
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws ClassCastException if the type of value set does not match the property's
+     *             configuration
+     * @throws IllegalStateException if the model object has no setter method for this attribute's
+     *             value set. This also occurs if the corresponding policy class is not configured
+     *             by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should set the value
+     *             set for this attribute fails for any reason
+     * @since 20.6
+     */
+    public abstract void setValueSet(IConfigurableModelObject modelObject, ValueSet<?> valueSet);
+
+    /**
+     * Sets the product configured set of allowed values of the attribute identified by this model
+     * type attribute.
+     * 
+     * @param target the product component to write the attribute value set to. Must correspond to
+     *            the {@link Type} this attribute belongs to.
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the attribute's
+     *            configuration is not changing over time.
+     * @param valueSet the new value set
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws ClassCastException if the type of value set does not match the property's
+     *             configuration
+     * @throws IllegalStateException if the model object has no setter method for this attribute's
+     *             value set. This also occurs if the corresponding policy class is not configured
+     *             by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should set the value
+     *             set for this attribute fails for any reason
+     * @since 20.6
+     */
+    public abstract void setValueSet(IProductComponent target, Calendar effectiveDate, ValueSet<?> valueSet);
 
 }
