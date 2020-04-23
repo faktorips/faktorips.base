@@ -133,9 +133,7 @@ public abstract class XProductClass extends XType {
         return resultingAttributes;
     }
 
-    public Set<XPolicyAttribute> getConfiguredAttributes() {
-        return getConfiguredAttributes(a -> true);
-    }
+    public abstract Set<XPolicyAttribute> getConfiguredAttributes();
 
     public Set<XPolicyAttribute> getConfiguredAttributes(Predicate<XPolicyAttribute> filter) {
         Set<XPolicyAttribute> attributes;

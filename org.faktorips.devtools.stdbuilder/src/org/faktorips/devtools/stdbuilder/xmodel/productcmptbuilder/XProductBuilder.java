@@ -18,8 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
+import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.builder.XPBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.builder.XPBuilderUtil;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
@@ -231,5 +234,36 @@ public class XProductBuilder extends XProductCmptClass
     @Override
     public boolean isGeneratePublishedInterfaces() {
         return getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
+    }
+
+    @Override
+    public Set<XPolicyAttribute> getConfiguredAttributes() {
+        return getConfiguredAttributes(a -> !a.isAbstract());
+    }
+
+    public Set<XPolicyAttribute> getConfiguredSuperAttributes() {
+        Set<XPolicyAttribute> superAttributes = new HashSet<XPolicyAttribute>();
+        if (!hasSupertype()) {
+            return new HashSet<XPolicyAttribute>();
+        }
+        Set<XAttribute> overwrittenAttributes = new HashSet<XAttribute>();
+
+        // also check non-product-configured attributes for configuration in superclasses
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            if (policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
+                for (XAttribute attribute : policyCmptClass.getAttributes()) {
+                    if (attribute.isOverwrite()) {
+                        XAttribute overwrittenAttribute = attribute.getOverwrittenAttribute();
+                        overwrittenAttributes.add(overwrittenAttribute);
+                    }
+                }
+            }
+        }
+        superAttributes = getSupertype().getConfiguredAttributes();
+        superAttributes.addAll(getSupertype().getConfiguredSuperAttributes());
+        superAttributes.removeAll(overwrittenAttributes);
+
+        return superAttributes;
     }
 }

@@ -31,18 +31,18 @@ class ProductBuilderTmpl{
                 «FOR attribute : superAttributes»«attributeSetter(attribute,true)»«ENDFOR»
             «ENDIF»
             
-            «FOR configuredAttribute : configuredAttributesIncludingChangingOverTime»
-              «IF !configuredAttribute.overwrite»
-                «defaultSetter(configuredAttribute,false)»
-                «allowedValuesSetter(configuredAttribute,false)»
-              «ENDIF»
-            «ENDFOR»
-            
-            «IF hasSupertype»
-                «FOR configuredAttribute : supertype.configuredAttributesIncludingChangingOverTime»
-                  «defaultSetter(configuredAttribute,true)»
-                  «allowedValuesSetter(configuredAttribute,true)»
+            «IF configurationForPolicyCmptType»
+                «FOR configuredAttribute : configuredAttributes»
+                    «defaultSetter(configuredAttribute,false)»
+                    «allowedValuesSetter(configuredAttribute,false)»
                 «ENDFOR»
+            
+                «IF hasSupertype»
+                    «FOR configuredAttribute : configuredSuperAttributes»
+                      «defaultSetter(configuredAttribute,true)»
+                      «allowedValuesSetter(configuredAttribute,true)»
+                    «ENDFOR»
+                «ENDIF»
             «ENDIF»
 
             «IF changingOverTime && !isAbstract»
@@ -162,7 +162,9 @@ def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, b
     *
     * @generated
     */
-    «IF overrideSuper || (overwrite && !overwrittenAttribute.isAbstract)» @Override «ENDIF»
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.abstract 
+        && overwrittenAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy 
+        && builder.hasSupertype && builder.supertype.configurationForPolicyCmptType)» @Override «ENDIF»
     public «builder.implClassName» «method(fieldName+"Default",javaClassName,fieldName)»{
         «IF changingOverTime»
             «builder.prodGenFieldName».«methodNameSetDefaultValue»(«fieldName»);
@@ -179,7 +181,9 @@ def private static allowedValuesSetter(XProductBuilder builder, XPolicyAttribute
     *
     * @generated
     */
-    «IF overrideSuper || (overwrite && !overwrittenAttribute.isAbstract)» @Override «ENDIF»
+    «IF overrideSuper || (overwrite && !overwrittenAttribute.abstract 
+        && overwrittenAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy 
+        && builder.hasSupertype && builder.supertype.configurationForPolicyCmptType)» @Override «ENDIF»
     public «builder.implClassName» «method(fieldName+"AllowedValues",ValueSet(javaClassUsedForValueSet),fieldName)»{
         «IF changingOverTime»
             «builder.prodGenFieldName».«methodNameSetAllowedValuesFor»(«fieldName»);
