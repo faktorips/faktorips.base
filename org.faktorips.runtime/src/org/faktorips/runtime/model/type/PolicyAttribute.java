@@ -19,6 +19,7 @@ import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
@@ -249,6 +250,11 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Sets the product configured set of allowed values of the attribute identified by this model
      * type attribute.
+     * <p>
+     * <em>Caution:</em> as generics are erased at runtime, it is possible to set a {@link ValueSet}
+     * of a mismatched type with this method, for example an {@link OrderedValueSet
+     * OrderedValueSet&lt;String&gt;} for an attribute with {@link #getDatatype()} {@link Integer},
+     * which will result in a {@link ClassCastException} on later method calls.
      * 
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
@@ -269,6 +275,11 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Sets the product configured set of allowed values of the attribute identified by this model
      * type attribute.
+     * <p>
+     * <em>Caution:</em> as generics are erased at runtime, it is possible to set a {@link ValueSet}
+     * of a mismatched type with this method, for example an {@link OrderedValueSet
+     * OrderedValueSet&lt;String&gt;} for an attribute with {@link #getDatatype()} {@link Integer},
+     * which will result in a {@link ClassCastException} on later method calls.
      * 
      * @param target the product component to write the attribute value set to. Must correspond to
      *            the {@link Type} this attribute belongs to.

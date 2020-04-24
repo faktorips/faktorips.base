@@ -1,5 +1,7 @@
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -9,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Set;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -567,6 +570,30 @@ public class DefaultPolicyAttributeTest {
         attribute.setValueSet(produkt, null, valueSet);
 
         assertEquals(valueSet, produkt.getSetOfAllowedValuesForAttr1(null));
+    }
+
+    @Test
+    public void testSetValueSet_WithWrongGenericType() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        Produkt produkt = new Produkt();
+        OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, 1, 2, 3);
+
+        attribute.setValueSet(produkt, null, valueSet);
+
+        assertEquals(valueSet, produkt.getSetOfAllowedValuesForAttr1(null));
+        // yes, this works.
+        assertThat(produkt.getSetOfAllowedValuesForAttr1(null).contains("A"), is(false));
+        try {
+            ValueSet<String> setOfAllowedValuesForAttr1 = produkt.getSetOfAllowedValuesForAttr1(null);
+            Set<String> values = setOfAllowedValuesForAttr1.getValues(true);
+            String firstValue = values.iterator().next();
+            fail("expected a " + ClassCastException.class.getSimpleName()
+                    + " when casting Integer 1 to a String, but we got \""
+                    + firstValue + "\"");
+        } catch (ClassCastException e) {
+            // Generics are fun
+        }
     }
 
     @Test(expected = IllegalStateException.class)
