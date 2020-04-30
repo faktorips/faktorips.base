@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.message.ObjectProperty;
 import org.faktorips.values.ObjectUtil;
 
@@ -329,10 +330,12 @@ public class ComponentPropertiesSection extends IpsSection {
             IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
             try {
                 /*
-                 * First set the runtime ID to null so that in fact nothing happens when the button
-                 * is clicked while the runtime ID equals the runtime ID that would be generated.
+                 * First set the runtime ID to "" so that in fact nothing happens when the button is
+                 * clicked while the runtime ID equals the runtime ID that would be generated. If
+                 * the old value remains here, the naming strategy would find it and create a new
+                 * name with added 1.
                  */
-                product.setRuntimeId(null);
+                product.setRuntimeId(IpsStringUtils.EMPTY);
                 String generatedRuntimeId = namingStrategy.getUniqueRuntimeId(ipsProject, product.getName());
                 product.setRuntimeId(generatedRuntimeId);
             } catch (CoreException e) {
