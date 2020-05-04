@@ -10,12 +10,17 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
@@ -78,6 +83,15 @@ public class XProductAttribute extends XAttribute {
         return super.getJavaClassName();
     }
 
+    public String getReturnType() {
+        if (getDatatype() instanceof ListOfTypeDatatype && getDatatype().isAbstract()) {
+            return addImport(List.class) + "<? extends " + addImport(
+                    getDatatypeHelper(((ListOfTypeDatatype)getDatatype()).getBasicDatatype()).getJavaClassName()) + ">";
+        } else {
+            return getJavaClassName();
+        }
+    }
+
     @Override
     public String getDefaultValueCode() {
         if (isMultiValue()) {
@@ -106,14 +120,13 @@ public class XProductAttribute extends XAttribute {
         }
     }
 
-    private JavaCodeFragment newListInitializer(String defaultValue) {
+    private JavaCodeFragment newListInitializer(List<String> values) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.appendClassName(ListUtil.class.getName());
         builder.append(".");
         builder.append("newList");
-        builder.appendParameters(new String[] { defaultValue });
+        builder.appendParameters(values.toArray(new String[0]));
         return builder.getFragment();
-
     }
 
     public String getNewMultiValueInstanceWithDefaultValue() {
@@ -122,11 +135,17 @@ public class XProductAttribute extends XAttribute {
             addImport(newInstance.getImportDeclaration());
             return newInstance.getSourcecode();
         } else {
-            JavaCodeFragment defaultValueCode = super.getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
-            addImport(defaultValueCode.getImportDeclaration());
-            JavaCodeFragment fragment = newListInitializer(defaultValueCode.getSourcecode());
-            addImport(fragment.getImportDeclaration());
-            return fragment.getSourcecode();
+            String[] defaultValues = MultiValueHolder.Factory.getSplitMultiValue(getAttribute().getDefaultValue());
+            List<String> defaultValueCodes = new ArrayList<>(defaultValues.length);
+            for (String defaultValue : defaultValues) {
+                JavaCodeFragment fragment = super.getDatatypeHelper().newInstance(defaultValue);
+                addImport(fragment.getImportDeclaration());
+                defaultValueCodes.add(fragment.getSourcecode());
+            }
+
+            JavaCodeFragment result = newListInitializer(defaultValueCodes);
+            addImport(result.getImportDeclaration());
+            return result.getSourcecode();
         }
     }
 

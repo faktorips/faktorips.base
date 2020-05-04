@@ -12,7 +12,6 @@ package org.faktorips.values;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -24,10 +23,7 @@ public class ListUtilTest {
 
     @Before
     public void setUp() {
-        objectList = new ArrayList<Object>();
-        objectList.add(Integer.valueOf(3));
-        objectList.add(Integer.valueOf(5));
-        objectList.add(Integer.valueOf(8));
+        objectList = ListUtil.newList((Object)3, 5, 8);
     }
 
     @Test

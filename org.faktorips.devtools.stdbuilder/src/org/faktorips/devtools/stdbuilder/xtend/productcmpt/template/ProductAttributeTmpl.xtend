@@ -40,7 +40,7 @@ class ProductAttributeTmpl {
              */
              «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface)»
              «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overwrite)»
-            public abstract «javaClassName» «method(methodNameGetter)»;
+            public abstract «returnType» «method(methodNameGetter)»;
     '''
 
     def package static getterSetter (XProductAttribute it) '''
@@ -63,7 +63,7 @@ class ProductAttributeTmpl {
              */
             «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface)»
             «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overwrite)»
-            public «javaClassName» «method(methodNameGetter)»
+            public «returnType» «method(methodNameGetter)»
             «IF genInterface»;«ELSE»
             {
                 return «getReferenceOrSafeCopyIfNecessary(fieldName)»;

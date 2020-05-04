@@ -11,6 +11,7 @@ package org.faktorips.runtime.model.type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.WildcardType;
 import java.util.Calendar;
 import java.util.List;
 
@@ -96,6 +97,8 @@ public class ProductAttribute extends Attribute {
         }
         if (type instanceof ParameterizedType) {
             return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0]);
+        } else if (type instanceof WildcardType) {
+            return getInnermostGenericClass(((WildcardType)type).getUpperBounds()[0]);
         } else {
             throw new IllegalArgumentException("can't find class for " + type.toString());
         }

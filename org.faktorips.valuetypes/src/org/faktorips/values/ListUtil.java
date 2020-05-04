@@ -25,12 +25,25 @@ public class ListUtil {
     }
 
     /**
-     * Initializes a list with a given value. Uses the default value's type as the list's (generic)
+     * Initializes a list with a given value. Uses the value's type as the list's (generic) element
+     * type.
+     */
+    public static final <T> List<T> newList(T value) {
+        List<T> newList = new ArrayList<T>();
+        newList.add(value);
+        return newList;
+    }
+
+    /**
+     * Initializes a list with the given values. Uses the value's type as the list's (generic)
      * element type.
      */
-    public static final <T> List<T> newList(T defaultValue) {
+    public static final <T> List<T> newList(T firstValue, T... moreValues) {
         List<T> newList = new ArrayList<T>();
-        newList.add(defaultValue);
+        newList.add(firstValue);
+        for (T value : moreValues) {
+            newList.add(value);
+        }
         return newList;
     }
 

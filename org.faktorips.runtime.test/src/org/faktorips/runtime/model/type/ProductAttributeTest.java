@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,11 +103,13 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attr1").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("attr2").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("multiString").isChangingOverTime(), is(false));
+        assertThat(productCmptType.getAttribute("multiEnum").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("attrGen").isChangingOverTime(), is(true));
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("attr2").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("multiString").isChangingOverTime(), is(false));
+        assertThat(productCmptType.getAttribute("multiEnum").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("attr3").isChangingOverTime(), is(false));
         assertThat(productCmptType.getAttribute("attrGen").isChangingOverTime(), is(true));
     }
@@ -116,12 +120,14 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attr1").isMultiValue(), is(false));
         assertThat(productCmptType.getAttribute("attr2").isMultiValue(), is(false));
         assertThat(productCmptType.getAttribute("multiString").isMultiValue(), is(true));
+        assertThat(productCmptType.getAttribute("multiEnum").isMultiValue(), is(true));
         assertThat(productCmptType.getAttribute("attrGen").isMultiValue(), is(false));
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").isMultiValue(), is(false));
         assertThat(productCmptType.getAttribute("attr2").isMultiValue(), is(false));
         assertThat(productCmptType.getAttribute("multiString").isMultiValue(), is(true));
         assertThat(productCmptType.getAttribute("attr3").isMultiValue(), is(false));
+        assertThat(productCmptType.getAttribute("multiEnum").isMultiValue(), is(true));
         assertThat(productCmptType.getAttribute("attrGen").isMultiValue(), is(false));
     }
 
@@ -132,17 +138,21 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));
         assertThat(productCmptType.getAttribute("attrGen").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("multiString").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productCmptType.getAttribute("multiEnum").getDatatype(),
+                is(equalTo((Object)AbstractEnumType.class)));
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));
         assertThat(productCmptType.getAttribute("attrGen").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("multiString").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("attr3").getDatatype(), is(equalTo((Object)String.class)));
+        assertThat(productCmptType.getAttribute("multiEnum").getDatatype(),
+                is(equalTo((Object)ConcreteEnumType.class)));
     }
 
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
-    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen" })
+    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum" })
     private class Produkt extends ProductComponent {
 
         private final ProduktGen produktGen = new ProduktGen(this);
@@ -164,6 +174,11 @@ public class ProductAttributeTest {
         @IpsAttribute(name = "multiString", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public List<String> getMultiString() {
             return Arrays.asList("hello", "world");
+        }
+
+        @IpsAttribute(name = "multiEnum", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public List<? extends AbstractEnumType> getMultiEnum() {
+            return Collections.emptyList();
         }
 
         @Override
@@ -203,10 +218,11 @@ public class ProductAttributeTest {
 
     @IpsProductCmptType(name = "SubProductXYZ")
     @IpsChangingOverTime(SubProduktGen.class)
-    @IpsAttributes({ "attr2", "attrGen", "attr3" })
+    @IpsAttributes({ "attr2", "attrGen", "attr3", "multiEnum" })
     private class SubProdukt extends Produkt {
 
         private final SubProduktGen subProduktGen = new SubProduktGen(this);
+        private final List<ConcreteEnumType> multiEnum = Arrays.asList(new ConcreteEnumType());
 
         @Override
         @IpsAttribute(name = "attr2", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -217,6 +233,12 @@ public class ProductAttributeTest {
         @IpsAttribute(name = "attr3", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public String getAttr3() {
             return "foofoo";
+        }
+
+        @Override
+        @IpsAttribute(name = "multiEnum", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public List<ConcreteEnumType> getMultiEnum() {
+            return multiEnum;
         }
 
         @Override
@@ -262,6 +284,16 @@ public class ProductAttributeTest {
         public String getAttrGen() {
             return "foobaz";
         }
+
+    }
+
+    @IpsEnumType(name = "AbstractEnumType", attributeNames = { "" })
+    private static interface AbstractEnumType {
+
+    }
+
+    @IpsEnumType(name = "ConcreteEnumType", attributeNames = { "" })
+    private static class ConcreteEnumType implements AbstractEnumType {
 
     }
 

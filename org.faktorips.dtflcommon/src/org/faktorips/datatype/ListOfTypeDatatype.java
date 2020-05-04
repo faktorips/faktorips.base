@@ -80,7 +80,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
 
     @Override
     public boolean isAbstract() {
-        return false;
+        return basicType.isAbstract();
     }
 
     @Override
