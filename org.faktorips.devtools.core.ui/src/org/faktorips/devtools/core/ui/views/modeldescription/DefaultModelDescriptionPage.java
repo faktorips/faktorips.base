@@ -85,6 +85,11 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
      * Initialize the DescriptionPage
      */
     protected void setDescriptionData() {
+        if (getIpsObject() == null) {
+            setTitle(Messages.DefaultModelDescriptionPage_ErrorIpsModelNotFound);
+            setDescriptionItems(new ArrayList<DescriptionItem>());
+            return;
+        }
         try {
             if (getIpsObject() instanceof ILabeledElement) {
                 setTitle(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)getIpsObject()));
