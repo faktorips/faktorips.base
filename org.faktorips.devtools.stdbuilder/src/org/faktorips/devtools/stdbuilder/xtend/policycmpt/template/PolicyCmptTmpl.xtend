@@ -513,6 +513,18 @@ def private static  generalMethods (XPolicyCmptClass it) '''
     «ENDIF»
 
     «validateMethods(it)»
+    
+    «IF isConfigured»
+        /**
+         * @restrainedmodifiable
+         */
+        @Override
+        public String toString(){
+            // begin-user-code
+            return getClass().getSimpleName() + '[' + getProductComponent().toString() + ']';
+            // end-user-code
+        }
+    «ENDIF»
 '''
 
 def private static  validateMethods (XPolicyCmptClass it) '''

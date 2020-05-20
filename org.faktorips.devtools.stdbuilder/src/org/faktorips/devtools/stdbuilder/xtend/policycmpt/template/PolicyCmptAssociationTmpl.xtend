@@ -252,7 +252,7 @@ def private static generateSetter (XPolicyAssociation it) '''
                     }
                     «IModelObject» «parentVar» = «getParentModelObject()»;
                     if (newParent != null && «parentVar» != null) {
-                        throw new «IllegalStateException»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)»);
+                        throw new «IllegalStateException»(String.format(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", typeName, name)», toString(), newParent.toString(), «parentVar».toString()));
                     }
                     this.«fieldName» = «castToImplementation(targetClassName)» newParent;
                     «IF typeConfigurableByProductCmptType»
