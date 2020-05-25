@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
  * 
  * @author Stefan Widmaier
  */
-public class ModelExplorerSorter extends ViewerSorter {
+public class ModelExplorerSorter extends ViewerComparator {
 
     private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new HashMap<IpsObjectType, ModelExplorerCategory>();
 
@@ -123,8 +123,15 @@ public class ModelExplorerSorter extends ViewerSorter {
         }
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public int compare(Viewer viewer, Object o1, Object o2) {
+        int cat1 = category(o1);
+        int cat2 = category(o2);
+        if (cat1 != cat2) {
+            return cat1 - cat2;
+        }
+
         if (isAnyNull(o1, o2)) {
             return super.compare(viewer, o1, o2);
         }
@@ -158,8 +165,8 @@ public class ModelExplorerSorter extends ViewerSorter {
         }
 
         return super.compare(viewer, o1, o2);
-
     }
+    // CSON: CyclomaticComplexity
 
     private boolean isBothIpsSrcFile(Object o1, Object o2) {
         return o1 instanceof IIpsSrcFile && o2 instanceof IIpsSrcFile;

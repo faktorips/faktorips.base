@@ -176,7 +176,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
                 decoManager.getLabelDecorator());
         getTreeViewer().setLabelProvider(decoProvider);
         sorter = new ModelExplorerSorter(isSupportCategories());
-        getTreeViewer().setSorter(sorter);
+        getTreeViewer().setComparator(sorter);
         getTreeViewer().setInput(IpsPlugin.getDefault().getIpsModel());
 
         getTreeViewer().addDoubleClickListener(new ModelExplorerDoubleclickListener(getTreeViewer()));
@@ -532,14 +532,14 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             public ImageDescriptor getImageDescriptor() {
                 return null;
             }
-    
+
             @Override
             public void run() {
                 excludeNoIpsProjects = !excludeNoIpsProjects;
                 contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
                 getTreeViewer().refresh();
             }
-    
+
             @Override
             public String getToolTipText() {
                 return Messages.ModelExplorer_menuShowIpsProjectsOnly_Tooltip;
@@ -553,7 +553,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             public String getToolTipText() {
                 return Messages.ModelExplorer_menuGroupCategories_Tooltip;
             }
-    
+
             @Override
             public void run() {
                 setSupportCategories(!isSupportCategories());
@@ -570,7 +570,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
      * 
      * disposed.
      */
-    
+
     private void activateContext() {
         IContextService service = (IContextService)getSite().getService(IContextService.class);
         service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$

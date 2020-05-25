@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.util;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,9 +104,9 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
         }
 
         private int compareAsNumbers(String numPart1, String numPart2) {
-            int num1 = Integer.valueOf(numPart1);
-            int num2 = Integer.valueOf(numPart2);
-            if (num1 == num2) {
+            BigInteger num1 = new BigInteger(numPart1);
+            BigInteger num2 = new BigInteger(numPart2);
+            if (num1.equals(num2)) {
                 int furtherCompare = compareAlphabeticPart(input1Matcher.end(), input2Matcher.end());
                 if (furtherCompare == 0) {
                     return numPart1.compareTo(numPart2);
@@ -113,7 +114,7 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
                     return furtherCompare;
                 }
             } else {
-                return num1 - num2;
+                return num1.compareTo(num2);
             }
         }
 
