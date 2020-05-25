@@ -521,7 +521,7 @@ def private static  generalMethods (XPolicyCmptClass it) '''
         @Override
         public String toString(){
             // begin-user-code
-            return getClass().getSimpleName() + '[' + getProductComponent().toString() + ']';
+            return getProductComponent() == null ? getClass().getSimpleName() : getClass().getSimpleName() + '[' + getProductComponent().toString() + ']';
             // end-user-code
         }
     «ENDIF»
