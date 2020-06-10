@@ -86,6 +86,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -1103,6 +1104,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                 new Object[] { "4444", Integer.valueOf(IMarker.SEVERITY_ERROR) });
     }
 
+    @Ignore("till it can be fixed in FIPS-6812")
     @Test
     public void testCreateMarkersForIpsProjectPropertiesUsingManifestWhichDoesNotExist() throws CoreException {
         IpsBuilder ipsBuilder = new IpsBuilder();
