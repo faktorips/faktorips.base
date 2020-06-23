@@ -32,9 +32,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
 import org.faktorips.devtools.core.util.ProjectUtil;
 
@@ -152,7 +154,8 @@ public class AddIpsNatureAction extends ActionDelegate {
             path.setOutputFolderForMergableSources(javaSrcFolder);
             path.setBasePackageNameForDerivedJavaClasses(dialog.getBasePackageName());
             if (javaSrcFolder.exists()) {
-                IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path("derived")); //$NON-NLS-1$
+                String derivedsrcFolderName = dialog.isModelProject() ? "resources" : "derived"; //$NON-NLS-1$//$NON-NLS-2$
+                IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path(derivedsrcFolderName));
                 derivedsrcFolder.create(true, true, new NullProgressMonitor());
                 IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());
                 IClasspathEntry[] rawClassPath = javaProject.getRawClasspath();
@@ -164,6 +167,14 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
             path.newSourceFolderEntry(ipsModelFolder);
             ipsProject.setIpsObjectPath(path);
+
+            if (dialog.isModelProject()) {
+                IIpsProjectProperties properties = ipsProject.getProperties();
+                properties.getBuilderSetConfig()
+                        .setPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED, "false", //$NON-NLS-1$
+                                null);
+                ipsProject.setProperties(properties);
+            }
 
         } catch (CoreException e) {
             IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgErrorCreatingIPSProject + javaProject, e);

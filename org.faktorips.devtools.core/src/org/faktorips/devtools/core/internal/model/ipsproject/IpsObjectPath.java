@@ -610,7 +610,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Searches all {@link IIpsObjectPathEntry}s for their appropriateness and safes them in
+     * Searches all {@link IIpsObjectPathEntry}s for their appropriateness and saves them in
      * {@link AbstractSearch}.
      */
     private void searchIpsObjectPath(AbstractSearch search) {
