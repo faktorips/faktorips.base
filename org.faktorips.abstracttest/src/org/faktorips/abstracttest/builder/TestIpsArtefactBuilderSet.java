@@ -24,7 +24,9 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -32,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
@@ -102,7 +105,8 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         return inverseRelationLinkRequiredFor2WayCompositions;
     }
 
-    public void setInverseRelationLinkRequiredFor2WayCompositions(boolean inverseRelationLinkRequiredFor2WayCompositions) {
+    public void setInverseRelationLinkRequiredFor2WayCompositions(
+            boolean inverseRelationLinkRequiredFor2WayCompositions) {
         this.inverseRelationLinkRequiredFor2WayCompositions = inverseRelationLinkRequiredFor2WayCompositions;
     }
 
@@ -199,15 +203,68 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
         @Override
         protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
-            // TODO Auto-generated method stub
-            return null;
+            return new IdentifierNodeGeneratorFactory<JavaCodeFragment>() {
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAssociationNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAttributeNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumClassNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumValueNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForIndexBasedAssociationNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForQualifiedAssociationNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+
+                @Override
+                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForInvalidNode() {
+                    return new DummyIdentifierNodeGenerator(this);
+                }
+            };
         }
 
         @Override
         protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
-            // TODO Auto-generated method stub
-            return null;
+            return new CompilationResultImpl("this", getExpression().findProductCmptType(getIpsProject())); //$NON-NLS-1$
         }
+    }
+
+    private static class DummyIdentifierNodeGenerator extends IdentifierNodeGenerator<JavaCodeFragment> {
+
+        public DummyIdentifierNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory) {
+            super(factory);
+        }
+
+        @Override
+        protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
+                CompilationResult<JavaCodeFragment> contextCompilationResult) {
+            return contextCompilationResult;
+        }
+
     }
 
 }
