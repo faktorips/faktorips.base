@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.builder.ModelBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -61,6 +66,12 @@ public class AssociationTest extends AbstractIpsPluginTest {
     private IProductCmptType constrains_subSourceProductClass;
     private IProductCmptType constrains_subTargetProductClass;
 
+    private ModelBuilder builder;
+    private IPolicyCmptType A;
+    private IPolicyCmptType SUB_A;
+    private IPolicyCmptType SUB_SUB_A;
+    private IPolicyCmptType B;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -71,6 +82,12 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association = productType.newAssociation();
         association.setTarget(targetType.getQualifiedName());
         association.setTargetRoleSingular("CoverageType");
+
+        builder = new ModelBuilder(ipsProject);
+        A = builder.createPolicyCmptType("A").build();
+        SUB_A = builder.createPolicyCmptType("SubA").withSupertype(A).build();
+        SUB_SUB_A = builder.createPolicyCmptType("SubSubA").withSupertype(SUB_A).build();
+        B = builder.createPolicyCmptType("B").build();
 
         IType motorProductType = newProductCmptType(ipsProject, "MotorProduct");
         IType motorCoverageType = newProductCmptType(ipsProject, "MotorCoverageType");
@@ -387,8 +404,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateDerivedUnionAndSubsetOfDerivedUnionNotTheSame() throws Exception {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IAssociation association = sourceCmpt.newAssociation();
         association.setTarget(targetCmpt.getQualifiedName());
         association.setDerivedUnion(true);
@@ -405,8 +422,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateSubsetOfDerivedUnionSameMaxCardinality() throws Exception {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
         association.setTarget(targetCmpt.getQualifiedName());
         association.setDerivedUnion(true);
@@ -441,8 +458,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateConstrain_Names() throws Exception {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
         association.setTarget(targetCmpt.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -477,8 +494,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateConstrain_DerivedUnionOrSubSetOfDerivedUnion() throws Exception {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
         association.setTarget(targetCmpt.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -508,8 +525,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateConstrain_SupertypeDerivedUnionOrSubSetOfDerivedUnion() throws Exception {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
         association.setTarget(targetCmpt.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -539,8 +556,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateConstrain_SupertypeOfTargetIsNotInAssociationWithSupertypeOfThis() throws CoreException {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
         association.setTarget(targetCmpt.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -655,8 +672,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     private void setUpConstrainedMatchingAssociations() throws CoreException {
-        constrains_sourceClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        constrains_targetClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        constrains_sourceClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
+        constrains_targetClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)constrains_sourceClass.newAssociation();
         association.setTarget(constrains_targetClass.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -705,68 +722,79 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_CardinalityNotEqualToSuperAssosiation() throws CoreException {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
-        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
-        association.setTarget(targetCmpt.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        association.setMinCardinality(1);
-        association.setMaxCardinality(30);
-        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
+    public void testValidateConstrain_Cardinality_LargerMaximum() throws CoreException {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(0, 5).build();
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(0, 7).build();
 
-        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
-        subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
-        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
-        subTargetCmpt.setSupertype(targetCmpt.getQualifiedName());
-        IPolicyCmptTypeAssociation subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
-        subAssociation.setTarget(subTargetCmpt.getQualifiedName());
-        subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        subAssociation.setMinCardinality(1);
-        subAssociation.setMaxCardinality(30);
-        subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
-        subAssociation.setConstrain(true);
+        MessageList messages = subAssociation.validate(ipsProject);
+        Message error = messages
+                .getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION);
 
-        MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION));
+        assertThat(messages.size(), is(1));
+        assertThat(error, is(not(nullValue())));
+    }
 
-        subAssociation.setMinCardinality(5);
-        subAssociation.setMaxCardinality(25);
-        msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION));
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION));
+    @Test
+    public void testValidateConstrain_Cardinality_SmallerMinimum() throws CoreException {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(5, 10).build();
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(3, 10).build();
+
+        MessageList messages = subAssociation.validate(ipsProject);
+        Message error = messages
+                .getMessageByCode(IAssociation.MSGCODE_MIN_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION);
+
+        assertThat(messages.size(), is(1));
+        assertThat(error, is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidateConstrain_Cardinality_MultipleToSingle() throws CoreException {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 2).build();
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(1, 1).build();
+
+        MessageList messages = subAssociation.validate(ipsProject);
+        Message error = messages
+                .getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION);
+
+        assertThat(messages.size(), is(1));
+        assertThat(error, is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidateConstrain_Cardinality_SubSubAssociation() throws CoreException {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(2, 4).build();
+        IAssociation subSubAssociation = builder.constrain(subAssociation).from(SUB_SUB_A).withCardinality(1, 5)
+                .build();
+
+        MessageList messages = subAssociation.validate(ipsProject);
+        MessageList subMessages = subSubAssociation.validate(ipsProject);
+        Message minError = subMessages
+                .getMessageByCode(IAssociation.MSGCODE_MIN_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION);
+        Message maxError = subMessages
+                .getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION);
+
+        assertThat(messages.size(), is(0));
+        assertThat(subMessages.size(), is(2));
+        assertThat(minError, is(not(nullValue())));
+        assertThat(maxError, is(not(nullValue())));
     }
 
     @Test
     public void testValidateConstrain_AssociationTypeNotEqualToSuperAssosiation() throws CoreException {
-        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
-        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
-        association.setTarget(targetCmpt.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        association.setMinCardinality(1);
-        association.setMaxCardinality(30);
-        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
-
-        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
-        subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
-        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
-        subTargetCmpt.setSupertype(targetCmpt.getQualifiedName());
-        IPolicyCmptTypeAssociation subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
-        subAssociation.setTarget(subTargetCmpt.getQualifiedName());
-        subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        subAssociation.setMinCardinality(1);
-        subAssociation.setMaxCardinality(30);
-        subAssociation.setTargetRoleSingular(targetCmpt.getQualifiedName());
-        subAssociation.setConstrain(true);
-
-        MessageList msgList = subAssociation.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION));
-
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A)
+                .withCardinality(1, 5).build();
         subAssociation.setAssociationType(AssociationType.ASSOCIATION);
-        msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getText(),
-                msgList.getMessageByCode(IAssociation.MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION));
+
+        MessageList superMessages = association.validate(ipsProject);
+        MessageList messages = subAssociation.validate(ipsProject);
+        Message error = messages.getMessageByCode(IAssociation.MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION);
+
+        assertThat(superMessages.size(), is(0));
+        assertThat(messages.size(), is(1));
+        assertThat(error, is(not(nullValue())));
+        assertThat(error.getText(), is(not(nullValue())));
     }
 
     @Test

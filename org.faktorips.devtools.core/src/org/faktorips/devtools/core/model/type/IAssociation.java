@@ -133,18 +133,18 @@ public interface IAssociation extends ITypePart {
             + "ConstrainInvalidMatchingAssociation"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that maximum cardinality is not equal to maximum
-     * cardinality of super association.
+     * Validation message code to indicate that maximum cardinality is not a valid constraint for
+     * the maximum cardinality of super association.
      */
-    public static final String MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION = MSGCODE_PREFIX
-            + "MaxCardinalityNotEqualSuperAssociation"; //$NON-NLS-1$
+    public static final String MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION = MSGCODE_PREFIX
+            + "MaxCardinalityNotValidConstraintForSuperAssociation"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that minimum cardinality is not equal to minimum
-     * cardinality of super association.
+     * Validation message code to indicate that minimum cardinality is not a valid constraint for
+     * the minimum cardinality of super association.
      */
-    public static final String MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION = MSGCODE_PREFIX
-            + "MinCardinalityNotEqualSuperAssociation"; //$NON-NLS-1$
+    public static final String MSGCODE_MIN_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION = MSGCODE_PREFIX
+            + "MinCardinalityNotValidConstraintForSuperAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that maximum cardinality is not equal to maximum

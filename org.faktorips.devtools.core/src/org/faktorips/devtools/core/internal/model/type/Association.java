@@ -485,26 +485,29 @@ public abstract class Association extends TypePart implements IAssociation {
                         new ObjectProperty(this, PROPERTY_CONSTRAIN),
                         new ObjectProperty(this, PROPERTY_TARGET_ROLE_SINGULAR));
             } else {
-                validateConstrainedAssociation(list, constrainedAssociation);
+                IAssociation parentAssociation = findSuperAssociationWithSameName(ipsProject);
+                validateConstrainedAssociation(list, constrainedAssociation, parentAssociation);
             }
         }
     }
 
-    private void validateConstrainedAssociation(MessageList list, IAssociation constrainedAssociation)
+    private void validateConstrainedAssociation(MessageList list,
+            IAssociation constrainedAssociation,
+            IAssociation parentAssociation)
             throws CoreException {
         if (!isCovariantTargetType(constrainedAssociation)) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
             list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
-
         }
         if (!constrainedAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
             String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
                     constrainedAssociation.getTargetRolePlural());
             list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
         }
+
         validateConstrainedAssociationType(list, constrainedAssociation);
-        validateConstrainedCardinality(list, constrainedAssociation);
+        validateConstrainedCardinality(list, parentAssociation);
         validateConstrainingNotDerivedUnion(list);
         validateConstrainedAssociationNotDerivedUnion(list, constrainedAssociation);
         validateConstrainedIsMatchingAssociationParallel(list, constrainedAssociation);
@@ -559,16 +562,22 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
-        if (superAssociation.getMinCardinality() != getMinCardinality()) {
-            String text = NLS.bind(Messages.Association_msg_MinCardinalityForConstrainNotEqualToSuperAssociation,
+        if (getMaxCardinality() == 1 && superAssociation.getMaxCardinality() > 1) {
+            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainMustAllowMultipleItems,
                     getStringCardinality(superAssociation.getMinCardinality()));
-            list.newError(MSGCODE_MIN_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text,
+            list.newError(MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION, text,
+                    new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
+        }
+        if (superAssociation.getMinCardinality() > getMinCardinality()) {
+            String text = NLS.bind(Messages.Association_msg_MinCardinalityForConstrainHigherThanSuperAssociation,
+                    getStringCardinality(superAssociation.getMinCardinality()));
+            list.newError(MSGCODE_MIN_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
         }
-        if (superAssociation.getMaxCardinality() != getMaxCardinality()) {
-            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainNotEqualToSuperAssociation,
+        if (superAssociation.getMaxCardinality() < getMaxCardinality()) {
+            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainLowerThanSuperAssociation,
                     getStringCardinality(superAssociation.getMaxCardinality()));
-            list.newError(MSGCODE_MAX_CARDINALITY_NOT_EQUAL_TO_SUPER_ASSOCIATION, text,
+            list.newError(MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
         }
     }
