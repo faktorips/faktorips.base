@@ -120,6 +120,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY = "persistenceColumnSizeChecksSeverity"; //$NON-NLS-1$
 
+    private static final String SETTING_TABLE_CONTENT_FORMAT = "tableContentFormat"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -184,6 +186,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
     private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
     private DesignTimeSeverity persistenceColumnSizeChecksSeverity = DesignTimeSeverity.WARNING;
+    private TableContentFormat tableContentFormat = TableContentFormat.XML;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -676,6 +679,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY,
                 getPersistenceColumnSizeChecksSeverity().toString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_TABLE_CONTENT_FORMAT,
+                getTableContentFormat().name()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1049,6 +1055,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setDuplicateProductComponentSeverity(DesignTimeSeverity.valueOf(value));
         } else if (name.contentEquals(SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY)) {
             setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity.valueOf(value));
+        } else if (name.contentEquals(SETTING_TABLE_CONTENT_FORMAT)) {
+            setTableContentFormat(TableContentFormat.valueOf(value));
         }
     }
 
@@ -1443,6 +1451,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Format for table content data." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        Possible values are XML and CSV, where XML is the Faktor-IPS standard and CSV is a more compact form optimised for large tables." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        Changing this setting will only affect tables when they are saved the next time. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_TABLE_CONTENT_FORMAT + "\" value=\"XML\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1828,6 +1841,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity persistenceColumnSizeChecksSeverity) {
         this.persistenceColumnSizeChecksSeverity = persistenceColumnSizeChecksSeverity;
+    }
+
+    @Override
+    public TableContentFormat getTableContentFormat() {
+        return tableContentFormat;
+    }
+
+    @Override
+    public void setTableContentFormat(TableContentFormat tableContentFormat) {
+        this.tableContentFormat = tableContentFormat;
     }
 
 }

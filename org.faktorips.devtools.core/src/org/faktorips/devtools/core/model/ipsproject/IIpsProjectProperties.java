@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
+import org.faktorips.devtools.core.internal.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -709,4 +710,16 @@ public interface IIpsProjectProperties {
      * @see #getPersistenceColumnSizeChecksSeverity()
      */
     void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity);
+
+    /**
+     * Returns which format is used to save table contents.
+     *
+     * @see TableContentFormat
+     */
+    TableContentFormat getTableContentFormat();
+
+    /**
+     * @see #getTableContentFormat()
+     */
+    void setTableContentFormat(TableContentFormat tableContentFormat);
 }

@@ -612,4 +612,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public DesignTimeSeverity getPersistenceColumnSizeChecksSeverity() {
         return propertiesInternal.getPersistenceColumnSizeChecksSeverity();
     }
+
+    @Override
+    public TableContentFormat getTableContentFormat() {
+        return propertiesInternal.getTableContentFormat();
+    }
+
+    @Override
+    public void setTableContentFormat(TableContentFormat tableContentFormat) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
 }
