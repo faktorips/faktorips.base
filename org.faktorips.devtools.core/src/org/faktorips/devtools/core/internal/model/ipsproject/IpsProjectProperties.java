@@ -1056,7 +1056,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else if (name.contentEquals(SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY)) {
             setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity.valueOf(value));
         } else if (name.contentEquals(SETTING_TABLE_CONTENT_FORMAT)) {
-            setTableContentFormat(TableContentFormat.valueOf(value));
+            setTableContentFormat(TableContentFormat.valueById(value));
         }
     }
 

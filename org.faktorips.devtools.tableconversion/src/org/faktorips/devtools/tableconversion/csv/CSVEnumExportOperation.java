@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVWriter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -57,7 +57,8 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
         if (!(typeToExport instanceof IEnumValueContainer)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" //$NON-NLS-1$
+                            + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
         this.typeToExport = typeToExport;
         this.filename = filename;

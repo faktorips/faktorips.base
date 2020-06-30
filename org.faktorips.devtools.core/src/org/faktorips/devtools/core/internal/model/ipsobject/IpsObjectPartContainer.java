@@ -324,19 +324,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Is called from the toXml() method to create the xml element for this container.
+     * Is called from the {@link #toXml(Document)} method to create the XML element for this
+     * container.
      */
     protected abstract Element createElement(Document doc);
 
     /**
-     * Transforms the parts this container contains to xml elements and adds them to the given xml
+     * Transforms the parts this container contains to XML elements and adds them to the given XML
      * element.
      * 
-     * @param doc xml document used to create new element.
+     * @param doc XML document used to create new elements
      * 
-     * @param element the element to which the part elements should be added.
+     * @param element the element to which the part elements should be added
      */
-    private void partsToXml(Document doc, Element element) {
+    protected void partsToXml(Document doc, Element element) {
         IIpsElement[] children = getChildren();
         for (IIpsElement element2 : children) {
             IIpsObjectPart part = (IIpsObjectPart)element2;
@@ -370,7 +371,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * The method is called by the toXml() method, so that subclasses can store their properties in
-     * the xml element passed as parameter.
+     * the XML element passed as parameter.
      */
     protected abstract void propertiesToXml(Element element);
 
@@ -394,7 +395,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * The method is called by the initFromXml() method, so that subclasses can load their
-     * properties from the xml element passed as parameter.
+     * properties from the XML element passed as parameter.
      * 
      * @param id The value for the id-property of the ips object part or null, if the id should be
      *            generated automatically (preferred).
@@ -539,7 +540,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <p>
      * The given part must be added to the correct collection.
      * <p>
-     * This method is called by {@link #addPart(IIpsObjectPart)} which is called during xml
+     * This method is called by {@link #addPart(IIpsObjectPart)} which is called during XML
      * initialization. It is important NOT to call the {@link #objectHasChanged()} method after
      * adding a part!
      * 

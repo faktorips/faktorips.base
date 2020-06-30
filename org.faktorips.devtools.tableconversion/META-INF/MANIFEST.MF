@@ -7,14 +7,14 @@ Bundle-Activator: org.faktorips.devtools.tableconversion.TableConversionPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui,
- org.faktorips.valuetypes
+ org.faktorips.valuetypes,
+ com.opencsv;bundle-version="3.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.tableconversion,org.faktorips.d
  evtools.tableconversion.csv,org.faktorips.devtools.tableconversion.ex
  cel,org.faktorips.devtools.tableconversion.ui
 Bundle-ClassPath: .,
- lib/opencsv-1.8.jar,
  lib/poi-3.9-20121203.jar,
  lib/poi-ooxml-3.9-20121203.jar,
  lib/poi-ooxml-schemas-3.9-20121203.jar,

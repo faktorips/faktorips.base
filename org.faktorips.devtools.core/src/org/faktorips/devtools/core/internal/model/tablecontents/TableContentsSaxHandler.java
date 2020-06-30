@@ -13,9 +13,10 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;
@@ -55,6 +57,9 @@ public class TableContentsSaxHandler extends DefaultHandler {
     /** the table which will be filled */
     private final TableContents tableContents;
 
+    /** the referenced table structure, hold for performance optimization */
+    private ITableStructure tableStructure;
+
     private final boolean readRowsContent;
 
     /** contains all column values */
@@ -74,6 +79,9 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     /** true if the parser is inside the description node */
     private boolean insideDescriptionNode;
+
+    /** true if the parser is inside the rows node with format=CSV */
+    private boolean insideCsvContent;
 
     /** true if the current value node represents the null value */
     private boolean nullValue;
@@ -99,12 +107,18 @@ public class TableContentsSaxHandler extends DefaultHandler {
         updateCurrentId(attributes);
         if (isTableContents(qName)) {
             tableContents.setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
+            try {
+                this.tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
+            } catch (CoreException e) {
+                this.tableStructure = null;
+            }
             tableContents.setNumOfColumnsInternal(Integer.parseInt(attributes.getValue(ATTRIBUTE_NUMOFCOLUMNS)));
         } else if (COLUMNREFERENCE_TAG.equals(qName)) {
             referenceName = attributes.getValue(COLUMNREFERENCE_NAME);
         } else if (isTableRowsTag(qName)) {
             tableContents.migrateColumnReferences();
             readRowsContent();
+            insideCsvContent = isFormatCsv(attributes);
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
             currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);
@@ -121,6 +135,11 @@ public class TableContentsSaxHandler extends DefaultHandler {
             extensionPropertyId = attributes.getValue(EXTENSIONPROPERTIES_ID);
         }
 
+    }
+
+    private boolean isFormatCsv(Attributes attributes) {
+        String format = attributes.getValue(ITableRows.PROPERTY_FORMAT);
+        return format != null && ITableRows.FORMAT_CSV.equals(format);
     }
 
     private boolean isTableContents(String qName) {
@@ -143,11 +162,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private void updateCurrentId(Attributes attributes) {
         if (attributes != null) {
             String idValue = attributes.getValue(IIpsObjectPart.PROPERTY_ID);
-            if (idValue != null) {
-                currentId = idValue;
-            } else {
-                currentId = UUID.randomUUID().toString();
-            }
+            currentId = idValue;
         }
     }
 
@@ -155,38 +170,50 @@ public class TableContentsSaxHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
             insideRowNode = false;
-            currentTableRows.newRow(columns, currentId);
+            currentTableRows.newRow(tableStructure, Optional.ofNullable(currentId), columns);
             columns.clear();
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
-            if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
-                Locale locale = new Locale(currentDescriptionLocale);
-                Description description = (Description)tableContents.getDescription(locale);
-                if (description == null) {
-                    description = (Description)tableContents.newDescription(currentId);
-                    description.setLocaleWithoutChangeEvent(locale);
-                }
-                description.setTextWithoutChangeEvent(getText());
-            }
+            handleDescription();
             textBuffer = null;
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
             insideExtensionPropertiesNode = false;
+        } else if (insideCsvContent && isTableRowsTag(qName)) {
+            insideCsvContent = false;
+            currentTableRows.initFromCsv(getText());
+            textBuffer = null;
         } else if (isColumnValueNode(qName)) {
             insideValueNode = false;
             columns.add(getText());
             textBuffer = null;
         } else if (isExtensionPropertiesValueNode(qName)) {
             insideValueNode = false;
-            if (currentTableRows == null) {
-                tableContents.addExtensionProperty(extensionPropertyId, getText());
-            } else {
-                throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
-            }
+            handleExtensionProperty();
             textBuffer = null;
         } else if (isAttributeReferenceNode(qName)) {
             tableContents.createColumnReferenceSaxHandler(referenceName);
             referenceName = null;
 
+        }
+    }
+
+    private void handleExtensionProperty() throws SAXNotSupportedException {
+        if (currentTableRows == null) {
+            tableContents.addExtensionProperty(extensionPropertyId, getText());
+        } else {
+            throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
+        }
+    }
+
+    private void handleDescription() {
+        if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
+            Locale locale = new Locale(currentDescriptionLocale);
+            Description description = (Description)tableContents.getDescription(locale);
+            if (description == null) {
+                description = (Description)tableContents.newDescription(currentId);
+                description.setLocaleWithoutChangeEvent(locale);
+            }
+            description.setTextWithoutChangeEvent(getText());
         }
     }
 
@@ -196,7 +223,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
-        if (insideDescriptionNode || insideValueNode) {
+        if (insideDescriptionNode || insideValueNode || insideCsvContent) {
             String s = new String(buf, offset, len);
             if (textBuffer == null) {
                 textBuffer = new StringBuffer(s);

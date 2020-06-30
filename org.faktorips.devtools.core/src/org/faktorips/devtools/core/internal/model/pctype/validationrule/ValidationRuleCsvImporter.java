@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
-import au.com.bytecode.opencsv.bean.CsvToBean;
+import com.opencsv.CSVReader;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -71,7 +71,6 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
     @Override
     protected IStatus loadContent() {
         ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<CsvTableBean>();
-        strat.setType(CsvTableBean.class);
         String[] columns = new String[Math.max(keyColumnIndex, valueColumnIndex) + 1];
         try {
             columns[keyColumnIndex] = CsvTableBean.PROPERTY_KEY;

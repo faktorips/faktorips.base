@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -37,14 +37,12 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * Table format for comma separated values (CSV).
- * 
- * @author Roman Grutza
  */
 public class CSVTableFormat extends AbstractExternalTableFormat {
 
     // property constants following the JavaBeans standard
-    public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter"; //$NON-NLS-1$
-    public final static String PROPERTY_DATE_FORMAT = "dateFormat"; //$NON-NLS-1$
+    public static final String PROPERTY_FIELD_DELIMITER = "fieldDelimiter"; //$NON-NLS-1$
+    public static final String PROPERTY_DATE_FORMAT = "dateFormat"; //$NON-NLS-1$
     public static final String PROPERTY_DECIMAL_SEPARATOR_CHAR = "decimalFormat"; //$NON-NLS-1$
     public static final String PROPERTY_DECIMAL_GROUPING_CHAR = "decimalSeparatorChar"; //$NON-NLS-1$
 

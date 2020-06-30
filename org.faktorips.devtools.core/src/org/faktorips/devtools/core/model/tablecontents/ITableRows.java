@@ -10,7 +10,13 @@
 
 package org.faktorips.devtools.core.model.tablecontents;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.faktorips.devtools.core.internal.model.ipsproject.TableContentFormat;
+import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public interface ITableRows extends IIpsObjectPart {
 
@@ -18,6 +24,14 @@ public interface ITableRows extends IIpsObjectPart {
      * The name of the XML tag used if this object is saved to XML.
      */
     public static final String TAG_NAME = "Rows"; //$NON-NLS-1$
+
+    /**
+     * The property of the {@link ITableRows#TAG_NAME} element that defines the
+     * {@link TableContentFormat}.
+     */
+    public static final String PROPERTY_FORMAT = "format"; //$NON-NLS-1$
+
+    public static final String FORMAT_CSV = TableContentFormat.CSV.getId();
 
     /**
      * Prefix for all message codes of this class.
@@ -56,5 +70,14 @@ public interface ITableRows extends IIpsObjectPart {
      * removes all rows
      */
     public void clear();
+
+    /**
+     * This method is used to create a new row with read content. The tableStructure is provided for
+     * performance optimization so this method does not have to find the references table structure
+     * every time it is called.
+     * <p>
+     * If the optional id is not present a new ID will be generated automatically.
+     */
+    Row newRow(ITableStructure tableStructure, Optional<String> id, List<String> columns);
 
 }

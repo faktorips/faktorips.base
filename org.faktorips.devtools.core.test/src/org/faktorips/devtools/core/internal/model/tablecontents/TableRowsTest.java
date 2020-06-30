@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,11 +22,14 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -31,6 +37,7 @@ import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class TableRowsTest extends AbstractIpsPluginTest {
@@ -130,14 +137,48 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml() {
-        IRow row1 = tableRows.newRow();
-        IRow row2 = tableRows.newRow();
+    public void testToXml_Roundtrip() {
+        IRow row1 = newRow("A", "1", "\"ä,;\"");
+        IRow row2 = newRow("", null, "|");
+
         Element element = tableRows.toXml(newDocument());
         row1.delete();
         row2.delete();
         tableRows.initFromXml(element);
-        assertEquals(2, tableRows.getNumOfRows());
+
+        assertThat(tableRows.getNumOfRows(), is(2));
+        assertThat(tableRows.getRow(0).getValue(0), is("A"));
+        assertThat(tableRows.getRow(0).getValue(1), is("1"));
+        assertThat(tableRows.getRow(0).getValue(2), is("\"ä,;\""));
+        assertThat(tableRows.getRow(1).getValue(0), is(""));
+        assertThat(tableRows.getRow(1).getValue(1), is(nullValue()));
+        assertThat(tableRows.getRow(1).getValue(2), is("|"));
+    }
+
+    @Test
+    public void testToXml_RoundtripWithCVS() throws CoreException {
+        setFormatToCsv();
+        IRow row1 = newRow("A", "1", "\"ä,;\"");
+        IRow row2 = newRow("", null, "|");
+
+        Element element = tableRows.toXml(newDocument());
+        row1.delete();
+        row2.delete();
+        tableRows.initFromXml(element);
+
+        assertThat(tableRows.getNumOfRows(), is(2));
+        assertThat(tableRows.getRow(0).getValue(0), is("A"));
+        assertThat(tableRows.getRow(0).getValue(1), is("1"));
+        assertThat(tableRows.getRow(0).getValue(2), is("\"ä,;\""));
+        assertThat(tableRows.getRow(1).getValue(0), is(""));
+        assertThat(tableRows.getRow(1).getValue(1), is(nullValue()));
+        assertThat(tableRows.getRow(1).getValue(2), is("|"));
+    }
+
+    private void setFormatToCsv() throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setTableContentFormat(TableContentFormat.CSV);
+        project.setProperties(properties);
     }
 
     @Test
@@ -226,6 +267,46 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         newRow("5000", "5001");
 
         assertFalse(tableRows.isUniqueKeyValidatedAutomatically());
+    }
+
+    @Test
+    public void testPropertiesToXml_SetsCsvFormatProperty() throws CoreException {
+        setFormatToCsv();
+        Document document = newDocument();
+        Element element = document.createElement(ITableRows.TAG_NAME);
+
+        tableRows.propertiesToXml(element);
+
+        assertThat(element.getAttribute(ITableRows.PROPERTY_FORMAT), is("CSV"));
+    }
+
+    @Test
+    public void testPropertiesToXml_SetsNoFormatPropertyForXmlFormat() throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setTableContentFormat(TableContentFormat.XML);
+        project.setProperties(properties);
+        Document document = newDocument();
+        Element element = document.createElement(ITableRows.TAG_NAME);
+
+        tableRows.propertiesToXml(element);
+
+        assertThat(element.hasAttribute(ITableRows.PROPERTY_FORMAT), is(false));
+    }
+
+    @Test
+    public void testPartsToXml_writesCsv() throws CoreException {
+        setFormatToCsv();
+        Document document = newDocument();
+        Element element = document.createElement(ITableRows.TAG_NAME);
+        newRow("A", "1", "\"ä,;\"");
+        newRow("", null, "|");
+
+        tableRows.partsToXml(document, element);
+
+        assertThat(element.hasChildNodes(), is(true));
+        String textContent = element.getTextContent();
+        assertThat(textContent, is("A|1|\"\\\"ä,;\\\"\"\n" +
+                "|\"\\\\N\"|\"|\"\n"));
     }
 
     private IRow newRow(String... values) {

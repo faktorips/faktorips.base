@@ -14,8 +14,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Optional;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,7 +25,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -47,8 +48,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     /**
      * Generation of the table contents the import has to be inserted.
      */
-    private ITableRows targetGeneration;
+    private ITableRows tableRows;
 
+    // CSOFF: ParameterNumberCheck
     public CSVTableImportOperation(ITableStructure structure, String sourceFile, ITableRows targetGeneration,
             ITableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list,
             boolean importIntoExisting) {
@@ -56,10 +58,11 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
 
         this.structure = structure;
-        this.targetGeneration = targetGeneration;
+        this.tableRows = targetGeneration;
 
         initDatatypes();
     }
+    // CSON: ParameterNumberCheck
 
     private void initDatatypes() {
         IColumn[] columns = structure.getColumns();
@@ -93,7 +96,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 // update datatypes because the structure might be altered if this operation is
                 // reused
                 initDatatypes();
-                fillGeneration(targetGeneration, fis);
+                messageList.add(fillGeneration(fis));
             } finally {
                 if (fis != null) {
                     fis.close();
@@ -103,7 +106,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             monitor.worked(1);
 
             if (monitor.isCanceled()) {
-                targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
+                tableRows.getIpsObject().getIpsSrcFile().discardChanges();
             }
 
             monitor.done();
@@ -113,7 +116,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         }
     }
 
-    private void fillGeneration(ITableRows targetGeneration, FileInputStream fis) throws IOException {
+    private MessageList fillGeneration(FileInputStream fis) throws IOException {
         char fieldSeparator = getFieldSeparator();
         CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
 
@@ -124,45 +127,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 reader.readNext();
             }
 
-            int expectedFields = structure.getNumOfColumns();
-            String[] readLine;
-            int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
-
-            while ((readLine = reader.readNext()) != null) {
-                if (isEmptyRow(readLine)) {
-                    rowNumber++;
-                    continue;
-                }
-                if (readLine.length != expectedFields) {
-                    String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber); //$NON-NLS-1$
-                    messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
-                }
-
-                IRow genRow = targetGeneration.newRow();
-                for (short j = 0; j < Math.min(structure.getNumOfColumns(), readLine.length); j++) {
-                    String ipsValue = null;
-
-                    String tableField = readLine[j];
-                    if (j < readLine.length) {
-                        if (!(nullRepresentationString.equals(tableField))) {
-                            ipsValue = getIpsValue(tableField, datatypes[j]);
-                        }
-                    }
-
-                    if (tableField == null) {
-                        Object[] objects = new Object[3];
-                        objects[0] = Integer.valueOf(rowNumber);
-                        objects[1] = Integer.valueOf(j);
-                        objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-                        String msg = NLS
-                                .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
-                        messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-
-                    }
-                    genRow.setValue(j, ipsValue);
-                }
-                ++rowNumber;
-            }
+            return readFromCsv(reader);
         } finally {
             try {
                 reader.close();
@@ -177,10 +142,6 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         return row.length == 1 && row[0].length() == 0;
     }
 
-    private String getIpsValue(Object rawValue, Datatype datatype) {
-        return format.getIpsValue(rawValue, datatype, messageList);
-    }
-
     private char getFieldSeparator() {
         String fieldSeparator = format.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
         if (fieldSeparator == null || fieldSeparator.length() != 1) {
@@ -188,5 +149,70 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         }
 
         return fieldSeparator.charAt(0);
+    }
+
+    /**
+     * Reads the values from the CVS reader and adds them to the table rows, reporting errors in a
+     * message list.
+     *
+     * @param reader the CVS reader
+     */
+    private MessageList readFromCsv(CSVReader reader) throws IOException {
+        MessageList msgList = new MessageList();
+        int expectedFields = structure.getNumOfColumns();
+        Datatype[] datatypes = new Datatype[expectedFields];
+        for (int i = 0; i < datatypes.length; i++) {
+            String datatype = structure.getColumns()[i].getDatatype();
+            datatypes[i] = structure.getIpsProject().findDatatype(datatype);
+        }
+        String[] readLine;
+        int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
+        while ((readLine = reader.readNext()) != null) {
+            if (isEmptyRow(readLine)) {
+                rowNumber++;
+                continue;
+            }
+            if (readLine.length != expectedFields) {
+                String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber); //$NON-NLS-1$
+                msgList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+            }
+
+            int columns = Math.min(structure.getNumOfColumns(), readLine.length);
+            String[] values = new String[columns];
+            for (int i = 0; i < columns; i++) {
+                values[i] = readValueFromCsv(i, readLine, datatypes, nullRepresentationString,
+                        msgList, rowNumber);
+            }
+            tableRows.newRow(structure, Optional.empty(), Arrays.asList(values));
+            ++rowNumber;
+        }
+        return msgList;
+    }
+
+    private String readValueFromCsv(int i,
+            String[] csvLine,
+            Datatype[] datatypes,
+            String nullRepresentationString,
+            MessageList messageList,
+            int rowNumber) {
+        String ipsValue = null;
+        String csvField = csvLine[i];
+        if (i < csvLine.length) {
+            if (!(nullRepresentationString.equals(csvField))) {
+                ipsValue = format.getIpsValue(csvField, datatypes[i], messageList);
+            }
+        }
+
+        if (csvField == null) {
+            Object[] objects = new Object[3];
+            objects[0] = Integer.valueOf(rowNumber);
+            objects[1] = Integer.valueOf(i);
+            objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            String msg = NLS
+                    .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
+            messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+
+        }
+        return ipsValue;
     }
 }

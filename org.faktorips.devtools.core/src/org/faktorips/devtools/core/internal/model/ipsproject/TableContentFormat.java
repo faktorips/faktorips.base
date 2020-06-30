@@ -9,10 +9,34 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.NoSuchElementException;
+
 /**
  * Defines which format is used to save table contents.
  */
 public enum TableContentFormat {
-    XML,
-    CSV
+
+    XML("XML"), //$NON-NLS-1$
+
+    CSV("CSV"); //$NON-NLS-1$
+
+    private final String id;
+
+    private TableContentFormat(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public static TableContentFormat valueById(String id) {
+        for (TableContentFormat format : values()) {
+            if (format.id.equals(id)) {
+                return format;
+            }
+        }
+        throw new NoSuchElementException("No TableContentFormat found for ID " + id); //$NON-NLS-1$
+    }
+
 }
