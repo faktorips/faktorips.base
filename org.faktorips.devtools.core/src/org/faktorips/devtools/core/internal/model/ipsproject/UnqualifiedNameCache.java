@@ -111,7 +111,9 @@ public class UnqualifiedNameCache {
     }
 
     void addProductCmpt(IIpsSrcFile productCmpt) {
-        prodCmptIpsSrcFilesMap.put(productCmpt.getIpsObjectName(), productCmpt);
+        if (!prodCmptIpsSrcFilesMap.get(productCmpt.getIpsObjectName()).contains(productCmpt)) {
+            prodCmptIpsSrcFilesMap.put(productCmpt.getIpsObjectName(), productCmpt);
+        }
     }
 
     void removeProductCmpt(IIpsSrcFile ipsSrcFile) {
