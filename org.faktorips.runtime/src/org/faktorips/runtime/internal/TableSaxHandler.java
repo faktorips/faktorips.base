@@ -69,7 +69,7 @@ public class TableSaxHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (ROWS.equals(qName)) {
+        if (ROWS.equals(qName) && insideCsvContent) {
             insideCsvContent = false;
             initFromCsv(getText());
         } else if (ROW.equals(qName)) {
