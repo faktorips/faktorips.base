@@ -25,7 +25,7 @@
 						<plugin id="joda-convert" />
 						<plugin id="com.google.guava" />
 						<plugin id="org.aopalliance" />
-						<plugin id="opencsv" />
+						<plugin id="com.opencsv" />
 						<plugin id="org.apache.commons.collections" />
 					</excludes>
 				</configuration>

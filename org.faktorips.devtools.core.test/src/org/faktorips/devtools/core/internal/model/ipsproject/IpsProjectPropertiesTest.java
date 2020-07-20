@@ -625,6 +625,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void readTableContentFormatFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertEquals(TableContentFormat.CSV, props.getTableContentFormat());
+    }
+
+    @Test
     public void ignoreIncompleteSettings() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());

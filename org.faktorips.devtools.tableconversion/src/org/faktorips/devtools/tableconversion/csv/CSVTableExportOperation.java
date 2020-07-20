@@ -15,8 +15,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVWriter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,7 +58,8 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
         if (!(typeToExport instanceof ITableContents)) {
             throw new IllegalArgumentException(
-                    "The given IPS object is not supported. Expected ITableContents, but got '" + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                    "The given IPS object is not supported. Expected ITableContents, but got '" //$NON-NLS-1$
+                            + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -137,6 +140,64 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         }
     }
 
+    /**
+     * Create the cells for the export
+     * 
+     * @param writer A CSV writer instance.
+     * @param contents The table contents for export.
+     * @param tableRows The rows of the content to get the values from.
+     * @param structure The structure the content is bound to.
+     * @param monitor The monitor to display the progress.
+     * @param exportColumnHeaderRow column header names included or not.
+     * 
+     * @throws CoreException thrown if an error occurs during the search for the datatypes of the
+     *             structure.
+     */
+    private void exportDataCells(CSVWriter writer,
+            ITableContents contents,
+            ITableRows tableRows,
+            ITableStructure structure,
+            IProgressMonitor monitor,
+            boolean exportColumnHeaderRow) throws CoreException {
+
+        List<Datatype> datatypes = new ArrayList<>(contents.getNumOfColumns());
+        for (IColumn column : structure.getColumns()) {
+            Datatype datatype = structure.getIpsProject().findDatatype(column.getDatatype());
+            datatypes.add(datatype);
+        }
+
+        int numOfColumns = structure.getNumOfColumns();
+        String[] fieldsToExport = new String[numOfColumns];
+        for (IRow row : tableRows.getRows()) {
+            for (int i = 0; i < numOfColumns; i++) {
+                fieldsToExport[i] = valueToCsv(row.getValue(i), datatypes.get(i), nullRepresentationString,
+                        messageList);
+            }
+            writer.writeNext(fieldsToExport);
+
+            if (monitor.isCanceled()) {
+                return;
+            }
+            monitor.worked(1);
+        }
+    }
+
+    private String valueToCsv(String ipsValue,
+            Datatype datatype,
+            String nullRepresentationString,
+            MessageList messageList) {
+        Object obj = format.getExternalValue(ipsValue, datatype, messageList);
+
+        String csvField;
+        try {
+            csvField = (obj == null) ? nullRepresentationString : obj.toString();
+        } catch (NumberFormatException e) {
+            // Null Object for Decimal Datatype returned, see Null-Object Pattern
+            csvField = nullRepresentationString;
+        }
+        return csvField;
+    }
+
     private ITableContents getTableContents(IIpsObject typeToExport) {
         if (typeToExport instanceof ITableContents) {
             return (ITableContents)typeToExport;
@@ -148,7 +209,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      * Writes the CSV header containing the names of the columns using the given CSV writer.
      * 
      * @param writer A CSV writer instance
-     * @param columns The tablescontents` columns
+     * @param columns The table content's columns
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
     private void exportHeader(CSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow) {
@@ -158,61 +219,6 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
                 header[i] = columns[i].getName();
             }
             writer.writeNext(header);
-        }
-    }
-
-    /**
-     * Create the cells for the export
-     * 
-     * @param writer A CSV writer instance.
-     * @param contents The tablecontents for export.
-     * @param generation The generation of the content to get the values from.
-     * @param structure The structure the content is bound to.
-     * @param monitor The monitor to display the progress.
-     * @param exportColumnHeaderRow column header names included or not.
-     * 
-     * @throws CoreException thrown if an error occurs during the search for the datatypes of the
-     *             structure.
-     */
-    private void exportDataCells(CSVWriter writer,
-            ITableContents contents,
-            ITableRows generation,
-            ITableStructure structure,
-            IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException {
-
-        Datatype[] datatypes = new Datatype[contents.getNumOfColumns()];
-        for (int i = 0; i < datatypes.length; i++) {
-            String datatype = structure.getColumns()[i].getDatatype();
-            datatypes[i] = structure.getIpsProject().findDatatype(datatype);
-        }
-        IRow[] contentRows = generation.getRows();
-        for (int i = 0; i < contentRows.length; i++) {
-            IRow row = generation.getRow(i);
-
-            String[] fieldsToExport = new String[contents.getNumOfColumns()];
-            for (int j = 0; j < contents.getNumOfColumns(); j++) {
-                String ipsValue = row.getValue(j);
-                Object obj = format.getExternalValue(ipsValue, datatypes[j], messageList);
-
-                String csvField;
-                try {
-                    csvField = (obj == null) ? nullRepresentationString : obj.toString();
-                } catch (NumberFormatException e) {
-                    // Null Object for Decimal Datatype returned, see Null-Object Pattern
-                    csvField = nullRepresentationString;
-                }
-
-                fieldsToExport[j] = csvField;
-            }
-
-            writer.writeNext(fieldsToExport);
-
-            if (monitor.isCanceled()) {
-                return;
-            }
-
-            monitor.worked(1);
         }
     }
 

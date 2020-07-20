@@ -11,7 +11,9 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
@@ -48,9 +50,11 @@ public class TableRows extends IpsObjectPart implements ITableRows {
 
     @Override
     public IRow[] getRows() {
-        IRow[] r = new IRow[rows.size()];
-        rows.toArray(r);
-        return r;
+        return rows.toArray(new IRow[0]);
+    }
+
+    protected List<Row> getRowsAsList() {
+        return Collections.unmodifiableList(rows);
     }
 
     @Override
@@ -73,16 +77,12 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         return newRow;
     }
 
-    /**
-     * This method is used by the table contents sax handler, after finishing a row node
-     */
-    Row newRow(List<String> columns, String id) {
-        Row newRow = newRowInternal(id);
-        int column = 0;
-        for (String value : columns) {
-            newRow.setValueInternal(column++, value);
+    @Override
+    public Row newRow(ITableStructure tableStructure, Optional<String> id, List<String> columns) {
+        Row newRow = newRowInternal(id.orElseGet(() -> getNextPartId()));
+        for (int i = 0; i < columns.size(); i++) {
+            newRow.setValueInternal(i, columns.get(i));
         }
-        ITableStructure tableStructure = findTableStructure();
         if (tableStructure != null) {
             updateUniqueKeyCacheFor(newRow, tableStructure.getUniqueKeys());
         }
@@ -390,5 +390,35 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.removeAttribute(IpsObjectPart.PROPERTY_ID);
+        if (usesCsv()) {
+            element.setAttribute(PROPERTY_FORMAT, FORMAT_CSV);
+        }
     }
+
+    private boolean usesCsv() {
+        return FORMAT_CSV.equals(getIpsProject().getReadOnlyProperties().getTableContentFormat().getId());
+    }
+
+    @Override
+    protected void partsToXml(Document doc, Element element) {
+        if (usesCsv()) {
+            new TableRowsCsvHelper(this).partsToCsv(doc, element);
+        } else {
+            super.partsToXml(doc, element);
+        }
+    }
+
+    @Override
+    public void initFromXml(Element element) {
+        super.initFromXml(element);
+        if (element.hasAttribute(PROPERTY_FORMAT)
+                && FORMAT_CSV.equals(element.getAttribute(PROPERTY_FORMAT))) {
+            initFromCsv(element.getTextContent());
+        }
+    }
+
+    public void initFromCsv(String text) {
+        new TableRowsCsvHelper(this).initFromCsv(text);
+    }
+
 }

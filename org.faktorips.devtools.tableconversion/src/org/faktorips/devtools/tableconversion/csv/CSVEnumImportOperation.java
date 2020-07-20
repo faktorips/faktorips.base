@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;

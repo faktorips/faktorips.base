@@ -73,6 +73,7 @@
 	<Setting enabled="true" name="businessFunctionsForValidationRules"/>
 	<Setting enabled="false" name="changingOverTimeDefault"/>
 	<Setting name="duplicateProductComponentSeverity" value="ERROR"/>
-	<Setting name="persistenceColumnSizeChecksSeverity" value="ERROR"/>
+  <Setting name="persistenceColumnSizeChecksSeverity" value="ERROR"/>
+  <Setting name="tableContentFormat" value="CSV"/>
   </AdditionalSettings>
 </IpsProject>
