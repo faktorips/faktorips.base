@@ -3,12 +3,12 @@ package org.faktorips.runtime.model.enumtype;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
 import org.junit.Test;
 
@@ -54,6 +54,15 @@ public class EnumTypeTest {
         assertThat(fooAttributes.get(0), is(equalTo("x")));
         assertThat(fooAttributes.get(1), is(equalTo("z")));
         assertThat(fooAttributes.get(2), is(equalTo("y")));
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void testGetEnumClass() {
+        EnumType type = new EnumType(Foo.class);
+
+        // is(Class) is deprecated and raw cast is required due to assertThat
+        assertThat(type.getEnumClass(), is(equalTo((Class)Foo.class)));
     }
 
     @Test
