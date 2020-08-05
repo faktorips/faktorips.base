@@ -268,6 +268,7 @@
 <setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:default"/>
 <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:default"/>
 <setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:default"/>
+<setEntry value="org.faktorips.runtime.groovy@default:default"/>
 <setEntry value="org.faktorips.runtime@default:default"/>
 <setEntry value="org.faktorips.util@default:default"/>
 <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
