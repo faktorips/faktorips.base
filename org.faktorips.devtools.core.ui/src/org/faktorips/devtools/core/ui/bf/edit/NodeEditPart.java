@@ -34,7 +34,7 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * The base edit part for all edit parts of this package. It provides an anchor for incoming and one
- * for outgoing connections. It registers itself as {@link ContentsChangeListener} to the faktor ips
+ * for outgoing connections. It registers itself as {@link ContentsChangeListener} to the Faktor-IPS
  * model so that it refreshs its ui components like its figure and connects according to content
  * change events. It provides a label that can show the name and the error state of the associated
  * model object.

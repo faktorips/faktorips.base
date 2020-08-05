@@ -105,5 +105,41 @@
         }
       ]
     }
+  },
+  "20.6.1": {
+    "revapi": {
+      "ignore": [
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.IRuntimeRepository::getAllEnumContentClasses()",
+          "justification": "FIPS-7016"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumContentClasses()",
+          "justification": "FIPS-7016"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method void org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::getAllEnumContentClasses(java.util.List<java.lang.Class<?>>)",
+          "justification": "FIPS-7016"
+        },
+        {
+          "code": "java.method.abstractMethodAdded",
+          "new": "method void org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumContentClasses(java.util.List<java.lang.Class<?>>)",
+          "justification": "FIPS-7016"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method void org.faktorips.runtime.InMemoryRuntimeRepository::getAllEnumContentClasses(java.util.List<java.lang.Class<?>>)",
+          "justification": "FIPS-7016"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method java.lang.Class<?> org.faktorips.runtime.model.enumtype.EnumType::getEnumClass()",
+          "justification": "FIPS-7016"
+        }
+      ]
+    }
   }
 }

@@ -20,8 +20,8 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.DocumentationKind;
+import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -33,11 +33,13 @@ public class EnumType extends ModelElement {
 
     private final MessagesHelper messagesHelper;
 
-    private List<String> attributeNames;
+    private final List<String> attributeNames;
 
-    private LinkedHashMap<String, EnumAttribute> attributeModels;
+    private final LinkedHashMap<String, EnumAttribute> attributeModels;
 
-    private IpsExtensibleEnum ipsExtensibleEnum;
+    private final IpsExtensibleEnum ipsExtensibleEnum;
+
+    private final Class<?> enumTypeClass;
 
     public EnumType(Class<?> enumTypeClass) {
         super(enumTypeClass.getAnnotation(IpsEnumType.class).name(), enumTypeClass
@@ -48,6 +50,7 @@ public class EnumType extends ModelElement {
         ipsExtensibleEnum = enumTypeClass.getAnnotation(IpsExtensibleEnum.class);
         messagesHelper = createMessageHelper(enumTypeClass.getAnnotation(IpsDocumented.class),
                 enumTypeClass.getClassLoader());
+        this.enumTypeClass = enumTypeClass;
     }
 
     /**
@@ -116,7 +119,7 @@ public class EnumType extends ModelElement {
     }
 
     /**
-     * finds the first attribute matched by the given {@link AttributeMatcher}
+     * Finds the first attribute matched by the given {@link AttributeMatcher}
      */
     private EnumAttribute findMarkedAttribute(String marker, AttributeMatcher matcher) {
         for (EnumAttribute attributeModel : attributeModels.values()) {
@@ -135,6 +138,13 @@ public class EnumType extends ModelElement {
     @Override
     protected String getMessageKey(DocumentationKind messageType) {
         return messageType.getKey(getName(), KIND_NAME, IpsStringUtils.EMPTY);
+    }
+
+    /**
+     * Returns the class this enum type represents.
+     */
+    public Class<?> getEnumClass() {
+        return enumTypeClass;
     }
 
     @Override
