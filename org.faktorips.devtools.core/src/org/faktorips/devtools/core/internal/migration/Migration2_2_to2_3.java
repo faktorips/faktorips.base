@@ -136,7 +136,7 @@ public class Migration2_2_to2_3 {
 
         MultiStatus status = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
                 "At least one exception occurred while migrating the ips project: \"" + ipsProject.getName() //$NON-NLS-1$
-                        + "\" from faktor ips version 2.2 to 2.3.", null); //$NON-NLS-1$
+                        + "\" from Faktor-IPS version 2.2 to 2.3.", null); //$NON-NLS-1$
         // Add enumeration types for the table structures and replace the table contents.
         addForTableStructures(enumTableStructures, monitor, status);
         replaceTableContents(enumTableContents, ipsProject, monitor);

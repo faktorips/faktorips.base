@@ -89,6 +89,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
+    public void getAllEnumContentClasses(List<Class<?>> result) {
+        for (TocEntryObject entry : toc.getEnumContentTocEntries()) {
+            result.add(getClass(entry.getImplementationClassName(), getClassLoader()));
+        }
+    }
+
+    @Override
     public void getAllProductComponentIds(List<String> result) {
         List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
         for (TocEntryObject entry : entries) {

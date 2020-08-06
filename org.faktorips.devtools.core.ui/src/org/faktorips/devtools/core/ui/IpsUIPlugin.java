@@ -1427,7 +1427,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * "http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
      * >Using Images in the Eclipse UI</a>
      * <p>
-     * In Faktor IPS we have a two kinds of images handled by the image handling. The first kind of
+     * In Faktor-IPS we have a two kinds of images handled by the image handling. The first kind of
      * image is a plugin shared image. Only use shared images for those icons that are realy
      * important for several components of the plugin and more important, those does not change over
      * time.

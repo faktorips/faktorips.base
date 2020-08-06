@@ -299,6 +299,11 @@ public class AbstractRuntimeRepositoryMockTest {
         protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
             return Collections.emptyList();
         }
+
+        @Override
+        protected void getAllEnumContentClasses(List<Class<?>> result) {
+
+        }
     }
 
     public static class FooSuppe2 extends FooSuppe {
