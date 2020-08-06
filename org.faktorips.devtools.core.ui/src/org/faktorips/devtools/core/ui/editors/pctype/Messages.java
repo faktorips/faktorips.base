@@ -282,6 +282,7 @@ public class Messages extends NLS {
     public static String RulesSection_title;
     public static String RulesSection_titleMissingAttribute;
     public static String RulesSection_msgMissingAttribute;
+    public static String RulesSection_labelSeparateValidatorClass;
     public static String StructurePage_title;
 
     public static String GeneralInfoSection_labelAbstractClass;

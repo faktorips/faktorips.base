@@ -716,6 +716,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         IDescription description = policyCmptType.getDescription(Locale.US);
         description.setText("blabla");
         policyCmptType.setAbstract(true);
+        policyCmptType.setGenerateValidatorClass(true);
         policyCmptType.setSupertype("NewSuperType");
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
@@ -743,6 +744,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertEquals("Product", copy.getProductCmptType());
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
+        assertTrue(copy.isGenerateValidatorClass());
         assertEquals("blabla", copy.getDescriptionText(Locale.US));
         List<IPolicyCmptTypeAttribute> attributes = copy.getPolicyCmptTypeAttributes();
         assertEquals(2, attributes.size());

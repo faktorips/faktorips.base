@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
@@ -47,6 +48,16 @@ public class RulesSection extends SimpleIpsPartsSection {
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RulesComposite(getIpsObject(), parent, toolkit);
+    }
+
+    @Override
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
+        super.initClientComposite(client, toolkit);
+        // Validator generation flag
+        Checkbox validateCheckbox = toolkit.createCheckbox(client, Messages.RulesSection_labelSeparateValidatorClass);
+        toolkit.grabHorizontalSpace(validateCheckbox, false);
+        getBindingContext().bindContent(validateCheckbox, getPcType(),
+                IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS);
     }
 
     /**

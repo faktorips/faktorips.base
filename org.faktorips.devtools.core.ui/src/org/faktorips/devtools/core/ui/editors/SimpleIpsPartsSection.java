@@ -73,7 +73,7 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
     }
 
     @Override
-    protected final void initClientComposite(Composite client, UIToolkit toolkit) {
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
         partsComposite = createIpsPartsComposite(client, toolkit);
         partsComposite.createContextMenu();
     }

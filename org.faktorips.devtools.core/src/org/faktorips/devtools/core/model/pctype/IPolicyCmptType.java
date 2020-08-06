@@ -32,6 +32,10 @@ public interface IPolicyCmptType extends IType {
     public static final String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
 
     /**
+     * The name of the "generateValidatorClass" property.
+     */
+    public static final String PROPERTY_GENERATE_VALIDATOR_CLASS = "generateValidatorClass"; //$NON-NLS-1$
+    /**
      * The name of the product component type property.
      */
     public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
@@ -97,6 +101,18 @@ public interface IPolicyCmptType extends IType {
      * Sets if this policy component type has a corresponding product component type or not.
      */
     public void setConfigurableByProductCmptType(boolean newValue);
+
+    /**
+     * Returns whether this policy component type is configured to delegate validation to a separate
+     * validation class.
+     */
+    public boolean isGenerateValidatorClass();
+
+    /**
+     * Configure this policy component type to generate a separate validation class and delegate
+     * validation to that class.
+     */
+    public void setGenerateValidatorClass(boolean newValue);
 
     /**
      * Returns the qualified name of the product component type. Returns an empty string if this
@@ -372,8 +388,8 @@ public interface IPolicyCmptType extends IType {
     public IPersistentTypeInfo getPersistenceTypeInfo();
 
     /**
-     * Returns true if the policy component type should persistent. Returns <code>false</code> if
-     * the type shouldn't persists, and therefore no persistent type info is necessary.
+     * Returns true if the policy component type should be persistent. Returns <code>false</code> if
+     * the type shouldn't persist, and therefore no persistent type info is necessary.
      * 
      * @see #getPersistenceTypeInfo()
      * @see PersistentTypeInfo#isEnabled()
