@@ -228,6 +228,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         props.setBusinessFunctionsForValidationRules(true);
         props.setChangingOverTimeDefault(false);
+        props.setGenerateValidatorClassDefault(true);
         props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
         IIpsObjectPath path = new IpsObjectPath(ipsProject);
         path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
@@ -275,6 +276,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
         assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
+        assertTrue(props.isGenerateValidatorClassDefaultEnabled());
         assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
         assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
         assertEquals("myBuilder", props.getBuilderSetId());
@@ -397,6 +399,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
         assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
+        assertFalse(props.isGenerateValidatorClassDefaultEnabled());
         assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
         assertEquals("testPrefix", props.getRuntimeIdPrefix());
 
@@ -508,6 +511,21 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setChangingOverTimeDefault(true);
 
         assertTrue(props.isChangingOverTimeDefaultEnabled());
+    }
+
+    @Test
+    public void testIsGenerateValidationClassDefaultEnabled_default() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+
+        assertFalse(props.isGenerateValidatorClassDefaultEnabled());
+    }
+
+    @Test
+    public void testIsGenerateValidationClassDefaultEnabled() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        props.setGenerateValidatorClassDefault(true);
+
+        assertTrue(props.isGenerateValidatorClassDefaultEnabled());
     }
 
     @Test

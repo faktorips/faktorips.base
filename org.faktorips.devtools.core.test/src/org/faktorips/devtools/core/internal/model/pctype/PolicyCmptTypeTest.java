@@ -32,6 +32,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -1179,6 +1180,14 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertThat(message, hasInvalidObject(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE)));
         assertThat(message, hasInvalidObject(new ObjectProperty(policyCmptType, IType.PROPERTY_ABSTRACT)));
+    }
+
+    @Test
+    public void testConstructor_NoIpsProject() {
+        IpsSrcFile file = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
+        PolicyCmptType cmpt = new PolicyCmptType(file);
+
+        assertFalse(cmpt.isGenerateValidatorClass());
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

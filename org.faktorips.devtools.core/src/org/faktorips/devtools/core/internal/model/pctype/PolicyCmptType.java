@@ -72,7 +72,8 @@ import org.w3c.dom.Element;
 public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private boolean configurableByProductCmptType = false;
-    private boolean generateValidatorClass = false;
+    private boolean generateValidatorClass = getIpsProject() == null ? false
+            : getIpsProject().getReadOnlyProperties().isGenerateValidatorClassDefaultEnabled();
 
     private String productCmptType = ""; //$NON-NLS-1$
 

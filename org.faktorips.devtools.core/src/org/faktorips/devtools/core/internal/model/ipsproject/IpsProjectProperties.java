@@ -122,6 +122,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_TABLE_CONTENT_FORMAT = "tableContentFormat"; //$NON-NLS-1$
 
+    private static final String SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT = "generateValidatorClassDefault"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -182,6 +184,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean enableMarkerEnums = true;
     private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
+    private boolean generateValidatorClassByDefault = false;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
     private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
@@ -682,6 +685,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_TABLE_CONTENT_FORMAT,
                 getTableContentFormat().name()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT,
+                isGenerateValidatorClassDefaultEnabled()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1047,6 +1053,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setBusinessFunctionsForValidationRules(enabled);
         } else if (name.equals(SETTING_CHANGING_OVER_TIME_DEFAULT)) {
             setChangingOverTimeDefault(enabled);
+        } else if (name.equals(SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT)) {
+            setGenerateValidatorClassDefault(enabled);
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD)) {
             setInferredTemplateLinkThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
@@ -1456,6 +1464,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        Changing this setting will only affect tables when they are saved the next time. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_TABLE_CONTENT_FORMAT + "\" value=\"XML\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Default value for 'generate validation class' property on new PolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\" value=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1801,6 +1812,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setChangingOverTimeDefault(boolean enabled) {
         changingOverTimeDefault = enabled;
+    }
+
+    @Override
+    public boolean isGenerateValidatorClassDefaultEnabled() {
+        return generateValidatorClassByDefault;
+    }
+
+    @Override
+    public void setGenerateValidatorClassDefault(boolean enabled) {
+        generateValidatorClassByDefault = enabled;
     }
 
     @Override
