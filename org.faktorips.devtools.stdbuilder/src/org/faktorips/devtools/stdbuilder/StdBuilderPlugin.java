@@ -23,7 +23,7 @@ import org.faktorips.runtime.internal.toc.ITocEntryFactory;
 import org.osgi.framework.BundleContext;
 
 /**
- * The plugin class for this faktor ips standard builder plugin.
+ * The plugin class for this Faktor-IPS standard builder plugin.
  * 
  * @author Peter Erzberger
  */

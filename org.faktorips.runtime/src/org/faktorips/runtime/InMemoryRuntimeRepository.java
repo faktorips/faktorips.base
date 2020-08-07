@@ -32,7 +32,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.values.ObjectUtil;
 
 /**
- * A runtime repository that keeps it's data in memory.
+ * A runtime repository that keeps its data in memory.
  */
 public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
@@ -48,8 +48,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     private List<ITable<?>> tables = new ArrayList<ITable<?>>();
 
     /**
-     * Contains the table contents for structures that allow multiple contents key is the qName, value
-     * the table.
+     * Contains the table contents for structures that allow multiple contents key is the qName,
+     * value the table.
      */
     private Map<String, ITable<?>> multipleContentTables = new HashMap<String, ITable<?>>();
 
@@ -146,8 +146,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Puts the table into the repository. Replaces any table instance of the same class or any of it's
-     * superclasses. The latter check is needed to replace tables with mock implementations.
+     * Puts the table into the repository. Replaces any table instance of the same class or any of
+     * its superclasses. The latter check is needed to replace tables with mock implementations.
      * 
      * @throws NullPointerException if table is <code>null</code>.
      */
@@ -202,16 +202,21 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
+    protected void getAllEnumContentClasses(List<Class<?>> result) {
+        result.addAll(enumValuesMap.keySet());
+    }
+
+    @Override
     public boolean isModifiable() {
         return true;
     }
 
     /**
-     * Puts the product component into the repository. If the repository already contains a component
-     * with the same id, the new component replaces the old one.
+     * Puts the product component into the repository. If the repository already contains a
+     * component with the same id, the new component replaces the old one.
      * 
      * @throws IllegalRepositoryModificationException if this repository does not allows to modify
-     * @throws NullPointerException if cmpt is <code>null</code> it's contents.
+     * @throws NullPointerException if productCmpt is <code>null</code> its contents.
      * 
      * @see IRuntimeRepository#isModifiable()
      */
@@ -247,12 +252,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Puts the product component generation and it's product componet into the repository. If the
+     * Puts the product component generation and its product component into the repository. If the
      * repository already contains a generation with the same id, the new component replaces the old
      * one. The same applies for the product component.
      * 
-     * @throws IllegalRepositoryModificationException if this repository does not allows to modify it's
-     *             contents.
+     * @throws IllegalRepositoryModificationException if this repository does not allows to modify
+     *             its contents.
      * @throws NullPointerException if generation is <code>null</code>
      * 
      * @see IRuntimeRepository#isModifiable()
@@ -366,8 +371,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a enumeration
-     * content to this repository.
+     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a
+     * enumeration content to this repository.
      */
     public void addEnumXmlAdapter(XmlAdapter<?, ?> enumXmlAdapter) {
         enumXmlAdapters.add(enumXmlAdapter);

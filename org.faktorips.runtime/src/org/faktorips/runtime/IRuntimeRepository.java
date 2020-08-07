@@ -120,8 +120,8 @@ public interface IRuntimeRepository {
     public List<IProductComponent> getAllProductComponents(String kindId);
 
     /**
-     * Returns the type safe {@link List} of enumeration values of the provided faktor ips generated
-     * enumeration class. This method is only relevant for faktor ips enumerations whose values are
+     * Returns the type safe {@link List} of enumeration values of the provided Faktor-IPS generated
+     * enumeration class. This method is only relevant for Faktor-IPS enumerations whose values are
      * deferred to a content that is hold by this repository.
      * 
      * @param clazz the enumeration class upon which the list of enumeration values is returned
@@ -195,6 +195,15 @@ public interface IRuntimeRepository {
      * service has been registered.
      */
     public void removeEnumValueLookupService(IEnumValueLookupService<?> lookupService);
+
+    /**
+     * Returns all classes for which enum contents are available in this repository. Returns an
+     * empty list if no enum content is available.
+     * <p>
+     * Note that only Faktor-IPS enums with separated content are returned by this method, not Java
+     * enums created from Faktor-IPS model enums without separated content.
+     */
+    public List<Class<?>> getAllEnumContentClasses();
 
     /**
      * Returns the product component generation identified by the id and the effective date. Returns
