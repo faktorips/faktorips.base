@@ -317,6 +317,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 entries.add(createTocEntry((IEnumContent)object));
             } else if (type.equals(IpsObjectType.ENUM_TYPE)) {
                 entries.add(createTocEntry((IEnumType)object));
+                entries.add(createEmptyEnumContentTocEntry((IEnumType)object));
             } else if (ipsObjectTypeToTocEntryBuilderMap.containsKey(type)) {
                 List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(type);
                 for (ITocEntryBuilder builder : builderList) {
@@ -454,6 +455,18 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String enumTypeName = getBuilderSet().getEnumTypeBuilder().getQualifiedClassName(enumType);
         TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(),
                 xmlResourceName.toString(), enumTypeName);
+        return entry;
+    }
+
+    public TocEntryObject createEmptyEnumContentTocEntry(IEnumType enumType) {
+        if (enumType.isAbstract()) {
+            return null;
+        }
+        String packageRootName = enumType.getIpsPackageFragment().getRoot().getName();
+        String objectId = packageRootName + "." + enumType.getQualifiedName(); //$NON-NLS-1$
+        String enumTypeName = getBuilderSet().getEnumTypeBuilder().getQualifiedClassName(enumType);
+        TocEntryObject entry = new EnumContentTocEntry(objectId, enumType.getQualifiedName() + ".Type", "",
+                enumTypeName);
         return entry;
     }
 

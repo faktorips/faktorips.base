@@ -27,12 +27,17 @@ public class AbstractTocBasedRuntimeRepositoryTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetAllEnumContentClasses() throws Exception {
+    public void testGetAllEnumClasses() throws Exception {
         ClassLoader cl = getClass().getClassLoader();
         IReadonlyTableOfContents referencedToc = mock(IReadonlyTableOfContents.class);
         when(referencedToc.getEnumContentTocEntries()).thenReturn(
-                Arrays.asList(new EnumContentTocEntry("enumC", "my.EnumC", "my.EnumC.xml", EnumC.class.getName())));
-        AbstractTocBasedRuntimeRepository referencedRepository = new TestAbstractTocBasedRuntimeRepository("r2", cl, referencedToc);
+                Arrays.asList(new EnumContentTocEntry("enumC", "my.EnumC", "my.EnumC.xml", EnumC.class.getName()),
+                        // Entry for Type with content in product repository
+                        new EnumContentTocEntry("enumA", "my.EnumA.Type", "", EnumC.class.getName()),
+                        // Entry for Java Enum
+                        new EnumContentTocEntry("enumE", "my.EnumE.Type", "", RealEnum.class.getName())));
+        AbstractTocBasedRuntimeRepository referencedRepository = new TestAbstractTocBasedRuntimeRepository("r2", cl,
+                referencedToc);
         IReadonlyTableOfContents toc = mock(IReadonlyTableOfContents.class);
         when(toc.getEnumContentTocEntries()).thenReturn(
                 Arrays.asList(new EnumContentTocEntry("enumA", "my.EnumA", "my.EnumA.xml", EnumA.class.getName()),
@@ -40,9 +45,9 @@ public class AbstractTocBasedRuntimeRepositoryTest {
         AbstractTocBasedRuntimeRepository repository = new TestAbstractTocBasedRuntimeRepository("r", cl, toc);
         repository.addDirectlyReferencedRepository(referencedRepository);
 
-        List<Class<?>> allEnumContentClasses = repository.getAllEnumContentClasses();
+        List<Class<?>> allEnumContentClasses = repository.getAllEnumClasses();
 
-        assertThat(allEnumContentClasses, hasItems(EnumA.class, EnumB.class, EnumC.class));
+        assertThat(allEnumContentClasses, hasItems(EnumA.class, EnumB.class, EnumC.class, RealEnum.class));
     }
 
     private static final class EnumA {
@@ -55,6 +60,10 @@ public class AbstractTocBasedRuntimeRepositoryTest {
 
     private static final class EnumC {
 
+    }
+
+    private enum RealEnum {
+        E
     }
 
     private static final class TestAbstractTocBasedRuntimeRepository extends AbstractTocBasedRuntimeRepository {

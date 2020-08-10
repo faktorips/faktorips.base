@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -202,7 +203,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    protected void getAllEnumContentClasses(List<Class<?>> result) {
+    protected void getAllEnumClasses(LinkedHashSet<Class<?>> result) {
         result.addAll(enumValuesMap.keySet());
     }
 

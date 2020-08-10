@@ -22,7 +22,11 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -33,7 +37,10 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableBuilder;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
@@ -70,7 +77,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         newProductCmpt(productCmptType, "motor.MotorProduct");
 
-        // toc should be empty as long as the project hasn't been builder
+        // toc should be empty as long as the project hasn't been built
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         TableOfContent toc = tocFileBuilder.getToc(root);
         assertEquals(0, toc.getEntries().size());
@@ -87,6 +94,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
 
         ProductCmptTocEntry entry = tocFileBuilder.createTocEntry(productCmpt);
+
         assertEquals("test.ProductCmpt", entry.getIpsObjectQualifiedName());
         assertEquals("ProductCmpt", entry.getIpsObjectId());
         assertEquals("org.faktorips.sample.model.internal.test.ProductCmpt", entry.getImplementationClassName());
@@ -103,6 +111,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
 
         ProductCmptTocEntry entry = tocFileBuilder.createTocEntry(productCmpt);
+
         assertEquals("test.ProductCmpt", entry.getIpsObjectQualifiedName());
         assertEquals("ProductCmpt", entry.getIpsObjectId());
         assertEquals("org.faktorips.sample.model.internal.test.ProductCmpt", entry.getImplementationClassName());
@@ -122,7 +131,9 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testCreateTocEntryProductCmptType() throws CoreException {
         ProductCmptType type = newProductCmptType(ipsProject, "test.Product");
+
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
+
         assertEquals("test.Product", entry.getIpsObjectQualifiedName());
         assertEquals("test.Product", entry.getIpsObjectId());
         assertEquals("org.faktorips.sample.model.internal.test.Product", entry.getImplementationClassName());
@@ -140,13 +151,94 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         table.getIpsSrcFile().save(true, null);
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(table);
+
         assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry instanceof TableContentTocEntry);
     }
 
+    @Test
+    public void testCreateTocEntry_RealEnum() throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
+        enumType.setExtensible(false);
+        IEnumAttribute idAttribute = enumType.newEnumAttribute();
+        idAttribute.setName("id");
+        idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute.setIdentifier(true);
+        idAttribute.setUnique(true);
+        IEnumAttribute nameAttribute = enumType.newEnumAttribute();
+        nameAttribute.setName("name");
+        nameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+        enumType.newEnumLiteralNameAttribute();
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumValue.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("a"));
+        enumValue.setEnumAttributeValue(nameAttribute, ValueFactory.createStringValue("A"));
+        enumType.getIpsSrcFile().save(true, null);
+
+        TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
+
+        assertEquals("productdef.test.JavaEnum", entry.getIpsObjectId());
+        EnumTypeBuilder enumTypeBuilder = builderSet.getEnumTypeBuilder();
+        assertEquals(enumTypeBuilder.getQualifiedClassName(enumType), entry.getImplementationClassName());
+        assertTrue(entry instanceof EnumContentTocEntry);
+    }
+
+    @Test
+    public void testCreateTocEntry_SeparatedEnum() throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
+        enumType.setExtensible(true);
+        IEnumAttribute idAttribute = enumType.newEnumAttribute();
+        idAttribute.setName("id");
+        idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute.setIdentifier(true);
+        idAttribute.setUnique(true);
+        IEnumAttribute nameAttribute = enumType.newEnumAttribute();
+        nameAttribute.setName("name");
+        nameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+        enumType.newEnumLiteralNameAttribute();
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumValue.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("a"));
+        enumValue.setEnumAttributeValue(nameAttribute, ValueFactory.createStringValue("A"));
+        enumType.getIpsSrcFile().save(true, null);
+
+        TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
+
+        assertEquals("productdef.test.JavaEnum", entry.getIpsObjectId());
+        EnumTypeBuilder enumTypeBuilder = builderSet.getEnumTypeBuilder();
+        assertEquals(enumTypeBuilder.getQualifiedClassName(enumType), entry.getImplementationClassName());
+        assertTrue(entry instanceof EnumContentTocEntry);
+    }
+
+    @Test
+    public void testCreateTocEntry_AbstractEnum() throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
+        enumType.setExtensible(true);
+        enumType.setIdentifierBoundary("e");
+        enumType.setAbstract(true);
+        IEnumAttribute idAttribute = enumType.newEnumAttribute();
+        idAttribute.setName("id");
+        idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute.setIdentifier(true);
+        idAttribute.setUnique(true);
+        IEnumAttribute nameAttribute = enumType.newEnumAttribute();
+        nameAttribute.setName("name");
+        nameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+        enumType.newEnumLiteralNameAttribute();
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumValue.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("a"));
+        enumValue.setEnumAttributeValue(nameAttribute, ValueFactory.createStringValue("A"));
+        enumType.getIpsSrcFile().save(true, null);
+
+        TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
+
+        assertNull(entry);
+    }
+
     /*
-     * The wrrows with numbers ( => 7 ) counting the actual size of the TOC
+     * The arrows with numbers ( => 7 ) counting the actual size of the TOC
      */
     @Test
     public void testToc() throws Exception {
@@ -252,22 +344,23 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
         // check removing of table toc entries depending on the table structure type
         // create table content
-        ITableStructure structureEnum = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
-                "motor.RateTableStructureEnum");
-        ITableContents tableEnum = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
-                "motor.RateTableEnum");
-        structureEnum.newColumn();
-        structureEnum.newColumn();
-        tableEnum.newTableRows();
-        tableEnum.setTableStructure(structureEnum.getQualifiedName());
-        tableEnum.newColumn("", "");
-        tableEnum.newColumn("", "");
-        tableEnum.getIpsSrcFile().save(true, null);
+        ITableStructure tableStructure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
+                "motor.RateTableStructure3");
+        ITableContents tableContent = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "motor.RateTableContent");
+        tableStructure.newColumn();
+        tableStructure.newColumn();
+        tableContent.newTableRows();
+        tableContent.setTableStructure(tableStructure.getQualifiedName());
+        tableContent.newColumn("", "");
+        tableContent.newColumn("", "");
+        tableContent.getIpsSrcFile().save(true, null);
 
         // build
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         TableOfContent builderToc = tocFileBuilder.getToc(root);
-        assertNotNull(builderToc.getEntry(new QualifiedNameType("motor.RateTableEnum", IpsObjectType.TABLE_CONTENTS)));
+        assertNotNull(
+                builderToc.getEntry(new QualifiedNameType("motor.RateTableContent", IpsObjectType.TABLE_CONTENTS)));
     }
 
     @Ignore

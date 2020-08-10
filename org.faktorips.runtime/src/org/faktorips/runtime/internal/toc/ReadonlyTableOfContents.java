@@ -20,6 +20,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.faktorips.runtime.IRuntimeObject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -49,7 +50,9 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      */
     private Map<String, TableContentTocEntry> tableImplClassTocEntryMap;
 
-    /** Maps a qualified table name to the TOC entry that contains information about a table object. */
+    /**
+     * Maps a qualified table name to the TOC entry that contains information about a table object.
+     */
     private Map<String, TableContentTocEntry> tableContentNameTocEntryMap;
 
     /**
@@ -154,7 +157,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
 
         if (entry instanceof EnumContentTocEntry) {
-            enumContentImplClassTocEntryMap.put(entry.getImplementationClassName(), (EnumContentTocEntry)entry);
+            addEnumContentTocEntry(entry);
             return;
         }
         if (entry instanceof EnumXmlAdapterTocEntry) {
@@ -167,6 +170,13 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
 
         throw new IllegalArgumentException("Unknown entry type " + entry);
+    }
+
+    private void addEnumContentTocEntry(TocEntryObject entry) {
+        EnumContentTocEntry previousEntry = enumContentImplClassTocEntryMap.get(entry.getImplementationClassName());
+        if (previousEntry == null || IpsStringUtils.isEmpty(previousEntry.getXmlResourceName())) {
+            enumContentImplClassTocEntryMap.put(entry.getImplementationClassName(), (EnumContentTocEntry)entry);
+        }
     }
 
     private <T> void putTypedTocEntryToMap(CustomTocEntryObject<T> tocEntry) {
