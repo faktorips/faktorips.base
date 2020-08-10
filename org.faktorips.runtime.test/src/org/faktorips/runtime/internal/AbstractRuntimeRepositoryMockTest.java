@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -77,22 +78,31 @@ public class AbstractRuntimeRepositoryMockTest {
     public void testGetEnumValuesDefinedInType() {
         AbstractRuntimeRepository abstractRuntimeRepository = mock(AbstractRuntimeRepository.class, CALLS_REAL_METHODS);
 
-        List<EnumTestClass> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(EnumTestClass.class);
+        List<ExtensibleEnum> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
 
-        assertEquals(EnumTestClass.VALUES, enumValues);
+        assertEquals(ExtensibleEnum.VALUES, enumValues);
+    }
+
+    @Test
+    public void testGetEnumValuesDefinedInType_JavaEnum() {
+        AbstractRuntimeRepository abstractRuntimeRepository = mock(AbstractRuntimeRepository.class, CALLS_REAL_METHODS);
+
+        List<RealEnum> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(RealEnum.class);
+
+        assertEquals(Arrays.asList(RealEnum.values()), enumValues);
     }
 
     @Test
     public void testGetEnumValuesReferencedContent() throws Exception {
-        EnumTestClass myEnum = mock(EnumTestClass.class);
-        List<EnumTestClass> list = new ArrayList<EnumTestClass>();
+        ExtensibleEnum myEnum = mock(ExtensibleEnum.class);
+        List<ExtensibleEnum> list = new ArrayList<ExtensibleEnum>();
         list.add(myEnum);
         initRepositoryReferences(repositoryA, repositoryB, repositoryC, repositoryD);
-        doReturn(list).when(repositoryD).getEnumValuesInternal(EnumTestClass.class);
-        List<EnumTestClass> expected = new ArrayList<EnumTestClass>(EnumTestClass.VALUES);
+        doReturn(list).when(repositoryD).getEnumValuesInternal(ExtensibleEnum.class);
+        List<ExtensibleEnum> expected = new ArrayList<ExtensibleEnum>(ExtensibleEnum.VALUES);
         expected.addAll(list);
 
-        List<EnumTestClass> enumValues = repositoryA.getEnumValues(EnumTestClass.class);
+        List<ExtensibleEnum> enumValues = repositoryA.getEnumValues(ExtensibleEnum.class);
 
         assertEquals(expected, enumValues);
     }
@@ -100,9 +110,9 @@ public class AbstractRuntimeRepositoryMockTest {
     @Test
     public void testGetEnumValuesNoContent() throws Exception {
         initRepositoryReferences(repositoryA, repositoryB, repositoryC, repositoryD);
-        List<EnumTestClass> expected = new ArrayList<EnumTestClass>(EnumTestClass.VALUES);
+        List<ExtensibleEnum> expected = new ArrayList<ExtensibleEnum>(ExtensibleEnum.VALUES);
 
-        List<EnumTestClass> enumValues = repositoryA.getEnumValues(EnumTestClass.class);
+        List<ExtensibleEnum> enumValues = repositoryA.getEnumValues(ExtensibleEnum.class);
 
         assertEquals(expected, enumValues);
     }
@@ -134,8 +144,8 @@ public class AbstractRuntimeRepositoryMockTest {
     }
 
     private void mockRepository(AbstractRuntimeRepository repository) {
-        doReturn(null).when(repository).getEnumValueLookupService(EnumTestClass.class);
-        doReturn(null).when(repository).getEnumValuesInternal(EnumTestClass.class);
+        doReturn(null).when(repository).getEnumValueLookupService(ExtensibleEnum.class);
+        doReturn(null).when(repository).getEnumValuesInternal(ExtensibleEnum.class);
         doNothing().when(repository).getAllModelTypeImplementationClasses(anySetOf(String.class));
     }
 
@@ -301,7 +311,7 @@ public class AbstractRuntimeRepositoryMockTest {
         }
 
         @Override
-        protected void getAllEnumContentClasses(List<Class<?>> result) {
+        protected void getAllEnumClasses(LinkedHashSet<Class<?>> result) {
 
         }
     }
@@ -349,14 +359,19 @@ public class AbstractRuntimeRepositoryMockTest {
 
     }
 
-    public static class EnumTestClass {
+    public static class ExtensibleEnum {
 
-        public static final EnumTestClass VALUE1 = new EnumTestClass();
+        public static final ExtensibleEnum VALUE1 = new ExtensibleEnum();
 
-        public static final EnumTestClass VALUE2 = new EnumTestClass();
+        public static final ExtensibleEnum VALUE2 = new ExtensibleEnum();
 
-        public static final List<EnumTestClass> VALUES = Arrays.asList(VALUE1, VALUE2);
+        public static final List<ExtensibleEnum> VALUES = Arrays.asList(VALUE1, VALUE2);
 
+    }
+
+    public enum RealEnum {
+        FOO,
+        BAR
     }
 
 }

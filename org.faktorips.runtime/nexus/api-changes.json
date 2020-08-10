@@ -110,34 +110,34 @@
     "revapi": {
       "ignore": [
         {
+          "code": "java.method.added",
+          "new": "method java.lang.Class<?> org.faktorips.runtime.model.enumtype.EnumType::getEnumClass()",
+          "justification": "FIPS-7016: Product info for data warehouse"
+        },
+        {
           "code": "java.method.addedToInterface",
-          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.IRuntimeRepository::getAllEnumContentClasses()",
-          "justification": "FIPS-7016"
+          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.IRuntimeRepository::getAllEnumClasses()",
+          "justification": "FIPS-7016: Product info for data warehouse"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method void org.faktorips.runtime.InMemoryRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
+          "justification": "FIPS-7016: Product info for data warehouse"
         },
         {
           "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumContentClasses()",
-          "justification": "FIPS-7016"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method void org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::getAllEnumContentClasses(java.util.List<java.lang.Class<?>>)",
-          "justification": "FIPS-7016"
+          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumClasses()",
+          "justification": "FIPS-7016: Product info for data warehouse"
         },
         {
           "code": "java.method.abstractMethodAdded",
-          "new": "method void org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumContentClasses(java.util.List<java.lang.Class<?>>)",
-          "justification": "FIPS-7016"
+          "new": "method void org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
+          "justification": "FIPS-7016: Product info for data warehouse"
         },
         {
           "code": "java.method.added",
-          "new": "method void org.faktorips.runtime.InMemoryRuntimeRepository::getAllEnumContentClasses(java.util.List<java.lang.Class<?>>)",
-          "justification": "FIPS-7016"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method java.lang.Class<?> org.faktorips.runtime.model.enumtype.EnumType::getEnumClass()",
-          "justification": "FIPS-7016"
+          "new": "method void org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
+          "justification": "FIPS-7016: Product info for data warehouse"
         }
       ]
     }

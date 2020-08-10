@@ -32,6 +32,10 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
         assertEquals(1, toc.getProductCmptTocEntries().size());
         assertEquals(2, toc.getModelTypeTocEntries().size());
         assertEquals(3, toc.getEnumContentTocEntries().size());
+        assertEquals("org/faktorips/sample/OptionContent2.xml",
+                toc.getEnumContentTocEntry("org.faktorips.sample.Option2").getXmlResourceName());
+        assertEquals("org/faktorips/sample/OptionContent3.xml",
+                toc.getEnumContentTocEntry("org.faktorips.sample.Option3").getXmlResourceName());
     }
 
 }

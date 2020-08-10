@@ -179,9 +179,13 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     }
 
     private List<List<Object>> getEnumValueListFromSaxHandler(EnumContentTocEntry tocEntry) {
-        EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
-        List<List<Object>> enumValueList = saxhandler.getEnumValueList();
-        return enumValueList;
+        if (IpsStringUtils.isNotEmpty(tocEntry.getXmlResourceName())) {
+            EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
+            List<List<Object>> enumValueList = saxhandler.getEnumValueList();
+            return enumValueList;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private EnumSaxHandler parseEnumValues(EnumContentTocEntry tocEntry) {

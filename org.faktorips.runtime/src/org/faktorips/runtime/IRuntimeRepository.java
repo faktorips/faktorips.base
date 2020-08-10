@@ -197,13 +197,16 @@ public interface IRuntimeRepository {
     public void removeEnumValueLookupService(IEnumValueLookupService<?> lookupService);
 
     /**
-     * Returns all classes for which enum contents are available in this repository. Returns an
-     * empty list if no enum content is available.
+     * Returns all classes for that define enumerations in this repository. All enums types (with
+     * and without separated content) defined by Faktor-IPS are returned for the model project they
+     * are defined in. For projects containing enum contents, only the matching structure classes
+     * are returned from the product project. Model projects must be referenced with
+     * {@link #addDirectlyReferencedRepository(IRuntimeRepository)} for their enum structures
+     * without content to be found.
      * <p>
-     * Note that only Faktor-IPS enums with separated content are returned by this method, not Java
-     * enums created from Faktor-IPS model enums without separated content.
+     * Returns an empty list if no enum class is available.
      */
-    public List<Class<?>> getAllEnumContentClasses();
+    public List<Class<?>> getAllEnumClasses();
 
     /**
      * Returns the product component generation identified by the id and the effective date. Returns

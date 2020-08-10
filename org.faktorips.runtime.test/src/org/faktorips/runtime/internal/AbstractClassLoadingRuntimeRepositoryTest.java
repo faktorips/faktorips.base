@@ -134,6 +134,15 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     }
 
     @Test
+    public void testCreateEnumValues_NoXml() throws Exception {
+        EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
+
+        List<Object> enumValues = repo.createEnumValues(tocEntry, Object.class);
+
+        assertTrue(enumValues.isEmpty());
+    }
+
+    @Test
     public void testCreateEnumValues_Empty() throws Exception {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
         when(tocEntry.getXmlResourceName()).thenReturn("org/faktorips/runtime/internal/EmptyEnum.xml");

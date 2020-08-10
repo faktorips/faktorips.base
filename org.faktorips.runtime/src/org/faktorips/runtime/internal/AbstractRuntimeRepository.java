@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -335,8 +336,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getAllProductComponentIds() but searches only in this repository and not the ones
-     * this repository depends on. Adds the components found to the given result list.
+     * Same as {@link #getAllProductComponentIds()} but searches only in this repository and not the
+     * ones this repository depends on. Adds the components found to the given result list.
      */
     protected abstract void getAllProductComponentIds(List<String> result);
 
@@ -352,8 +353,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as <code>getAllTables()</code> but searches only in this repository and not the ones
-     * this repository depends on. Adds the tables found to the given result list.
+     * Same as {@link #getAllTables()} but searches only in this repository and not the ones this
+     * repository depends on. Adds the tables found to the given result list.
      */
     protected abstract void getAllTables(List<ITable<?>> result);
 
@@ -644,8 +645,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getAllModelTypeImplementationClasses() but searches only in this repository and not
-     * the ones this repository depends on. Adds the types found to the given result list.
+     * Same as {@link #getAllModelTypeImplementationClasses()} but searches only in this repository
+     * and not the ones this repository depends on. Adds the types found to the given result list.
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
@@ -784,6 +785,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     private <T> List<T> getEnumValuesDefinedInTypeByReflection(Class<T> enumClass) {
+        if (enumClass.isEnum()) {
+            return Arrays.asList(enumClass.getEnumConstants());
+        }
         try {
             Field valuesField = enumClass.getDeclaredField("VALUES");
             @SuppressWarnings("unchecked")
@@ -860,21 +864,21 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     @Override
-    public final List<Class<?>> getAllEnumContentClasses() {
-        List<Class<?>> result = new ArrayList<Class<?>>();
-        getAllEnumContentClasses(result);
+    public final List<Class<?>> getAllEnumClasses() {
+        LinkedHashSet<Class<?>> result = new LinkedHashSet<Class<?>>();
+        getAllEnumClasses(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
-            refRepository.getAllEnumContentClasses(result);
+            refRepository.getAllEnumClasses(result);
         }
-        return result;
+        return new ArrayList<Class<?>>(result);
     }
 
     /**
-     * Same as getAllEnumContentClasses() but searches only in this repository and not the ones this
-     * repository depends on. Adds the classes found to the given result list.
+     * Same as {@link #getAllEnumClasses()} but searches only in this repository and not the ones
+     * this repository depends on. Adds the classes found to the given result set.
      */
-    protected abstract void getAllEnumContentClasses(List<Class<?>> result);
+    protected abstract void getAllEnumClasses(LinkedHashSet<Class<?>> result);
 
     /**
      * Creates a {@link JAXBContext} that wraps the provided context and extends the marshaling
