@@ -109,7 +109,11 @@ class MethodNames {
     def static validateSelf(String argument1, String argument2) {     "validateSelf("+argument1+", "+argument2+")"    }
 
     def static validateDependants(String argument1, String argument2) {     "validateDependants("+argument1+", "+argument2+")"    }
-
+    
+    def static validatePolicy(String argument1, String argument2){
+        "validatePolicy("+argument1+", "+argument2+")"
+    }
+    
     // ---------------------------------
     // Methods in IRuntimeRepository
     // ---------------------------------

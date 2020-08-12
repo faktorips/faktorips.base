@@ -20,10 +20,12 @@ def package static constants (XValidationRule it) '''
     «constantRuleName»
 '''
 
-def package static validationRuleMethods (XValidationRule it) '''
-    «execRuleMethod»
+def package static validationRuleMethods (XValidationRule it, String modelObject) '''
+    «execRuleMethod(modelObject)»
     «createMessageFor»
 '''
+
+def package static validationRuleMethods (XValidationRule it) '''«validationRuleMethods("")»'''
 
 def private static constantMsgCode (XValidationRule it) '''
     /**
@@ -45,7 +47,7 @@ def private static constantRuleName (XValidationRule it) '''
     «ENDIF»
 '''
 
-def private static execRuleMethod (XValidationRule it) '''
+def private static execRuleMethod (XValidationRule it, String modelObject) '''
     /**
      * «localizedJDoc("EXEC_RULE", name)»
      * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
@@ -75,7 +77,7 @@ def private static execRuleMethod (XValidationRule it) '''
             // end-user-code
         «ELSE»
             «val attribute = checkedAttribute»
-            if (!«attribute.methodNameGetAllowedValuesFor»(context).contains(«attribute.methodNameGetter»())) {
+            if (!«modelObject»«attribute.methodNameGetAllowedValuesFor»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
 
                 // begin-user-code
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));

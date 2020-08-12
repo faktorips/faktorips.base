@@ -94,6 +94,7 @@ import org.faktorips.devtools.stdbuilder.xtend.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilderFactory;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptValidatorBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableBuilder;
@@ -352,6 +353,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                 new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService));
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION,
                 new PolicyCmptClassBuilder(false, this, generatorModelContext, modelService));
+        builders.put(BuilderKindIds.POLICY_CMPT_VALIDATOR_CLASS,
+                new PolicyCmptValidatorBuilder(this, generatorModelContext, modelService));
 
         // create product component type builders
         builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_INTERFACE,

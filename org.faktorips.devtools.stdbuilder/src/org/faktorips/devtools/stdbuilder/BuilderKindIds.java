@@ -34,6 +34,8 @@ public enum BuilderKindIds implements IBuilderKindId {
 
     POLICY_CMPT_MODEL_TYPE,
 
+    POLICY_CMPT_VALIDATOR_CLASS,
+
     TABLE(),
 
     TABLE_ROW(),
