@@ -96,7 +96,8 @@ public class PolicyCmptType extends Type {
     public PolicyCmptType getSuperType() {
         Class<?> superclass = getJavaClass().getSuperclass();
         return IpsModel.isPolicyCmptType(superclass)
-                ? IpsModel.getPolicyCmptType(superclass.asSubclass(IModelObject.class)) : null;
+                ? IpsModel.getPolicyCmptType(superclass.asSubclass(IModelObject.class))
+                : null;
     }
 
     @Override
@@ -301,6 +302,5 @@ public class PolicyCmptType extends Type {
         public List<ValidationRule> getResult() {
             return result;
         }
-
     }
 }

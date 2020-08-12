@@ -11,7 +11,9 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,6 +30,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
+import org.faktorips.abstracttest.matcher.Matchers;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -75,6 +78,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -1188,6 +1192,36 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         PolicyCmptType cmpt = new PolicyCmptType(file);
 
         assertFalse(cmpt.isGenerateValidatorClass());
+    }
+
+    public void testValidateSameGenerateValidatorClassSetting_sameSetting() throws CoreException {
+        superSuperPolicyCmptType.setGenerateValidatorClass(false);
+        superPolicyCmptType.setGenerateValidatorClass(false);
+        policyCmptType.setGenerateValidatorClass(false);
+
+        MessageList messageList = superPolicyCmptType.validate(ipsProject);
+
+        assertThat(messageList,
+                lacksMessageCode(IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY));
+    }
+
+    @Test
+    public void testValidateSameGenerateValidatorClassSetting_differentSettingInSuperClass() throws CoreException {
+        superSuperPolicyCmptType.setGenerateValidatorClass(true);
+        superPolicyCmptType.setGenerateValidatorClass(false);
+        policyCmptType.setGenerateValidatorClass(false);
+
+        MessageList messageList = superPolicyCmptType.validate(ipsProject);
+
+        assertThat(messageList,
+                hasMessageCode(
+                        IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY));
+        Message message = messageList
+                .getMessageByCode(IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY);
+        assertThat(message, Matchers.hasSeverity(Message.ERROR));
+        assertThat(message, hasInvalidObject(
+                new ObjectProperty(policyCmptType, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS)));
+        assertThat(message.getText(), CoreMatchers.containsString(superSuperPolicyCmptType.getQualifiedName()));
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

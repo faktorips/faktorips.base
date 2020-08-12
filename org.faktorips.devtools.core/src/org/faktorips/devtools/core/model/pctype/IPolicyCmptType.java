@@ -92,6 +92,13 @@ public interface IPolicyCmptType extends IType {
             + "SupertypeProductRelevantForcesThisTypeIsProductRelevant"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that not all classes in the hierarchy have the same
+     * setting for creating a separate validator class.
+     */
+    public static final String MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY = MSGCODE_PREFIX
+            + "DifferentGenerateValidatorClassSettingInHierarchy"; //$NON-NLS-1$
+
+    /**
      * Returns <code>true</code> if this class has a corresponding product component type, otherwise
      * <code>false</code>.
      */

@@ -344,6 +344,21 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
         validateDuplicateRulesNames(list);
+        validateSameGenerateValidatorClassSetting(list);
+    }
+
+    private void validateSameGenerateValidatorClassSetting(MessageList list) {
+        getSupertypeHierarchy().getAllSupertypes(this).stream()
+                .map(IPolicyCmptType.class::cast)
+                .filter(t -> t.isGenerateValidatorClass() != isGenerateValidatorClass())
+                .findAny()
+                .map(typeWithDifferentSetting -> NLS.bind(
+                        Messages.PolicyCmptType_msgDifferentGenerateValidatorClassSetting,
+                        typeWithDifferentSetting.getQualifiedName()))
+                .map(text -> new Message(MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY, text,
+                        Message.ERROR,
+                        this, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS))
+                .ifPresent(message -> list.add(message));
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) {
