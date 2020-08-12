@@ -16,24 +16,48 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.junit.Test;
 
 public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
 
-    public PolicyCmptValidatorBuilderTest() {
-        super();
-    }
-
     @Test
-    public void testValidator() throws CoreException {
+    public void testValidator_Generate_WithInterface() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
         sourceType.setGenerateValidatorClass(true);
 
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        assertTrue(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java")
+        assertTrue(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java").exists());
+    }
+
+    @Test
+    public void testValidator_Generate_WithoutInterface() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IIpsProjectProperties properties = project.getProperties();
+        properties.getBuilderSetConfig()
+                .setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES, "false", "");
+        project.setProperties(properties);
+        IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
+        sourceType.setGenerateValidatorClass(true);
+
+        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        assertTrue(project.getProject().getFile("src/org/faktorips/sample/model/CmptValidator.java")
+                .exists());
+    }
+
+    @Test
+    public void testValidator_Generate_false() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
+        sourceType.setGenerateValidatorClass(false);
+
+        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+
+        assertFalse(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java")
                 .exists());
     }
 

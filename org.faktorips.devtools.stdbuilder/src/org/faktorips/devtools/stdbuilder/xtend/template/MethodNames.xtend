@@ -110,8 +110,8 @@ class MethodNames {
 
     def static validateDependants(String argument1, String argument2) {     "validateDependants("+argument1+", "+argument2+")"    }
     
-    def static validatePolicy(String argument1, String argument2){
-        "validatePolicy("+argument1+", "+argument2+")"
+    def static validate(String argument1, String argument2){
+        "validate("+argument1+", "+argument2+")"
     }
     
     // ---------------------------------

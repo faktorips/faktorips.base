@@ -28,7 +28,7 @@ import org.faktorips.util.LocalizedStringsSet;
 
 public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
 
-    private IJavaClassNameProvider javaClassNameProvider;
+    private final IJavaClassNameProvider javaClassNameProvider;
 
     public PolicyCmptValidatorBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -45,6 +45,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
+            // make sure validator class is deleted if the type is removed
             if (!ipsSrcFile.exists()) {
                 return true;
             }
