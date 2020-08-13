@@ -50,7 +50,9 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
                 return true;
             }
             PolicyCmptType cmpt = (PolicyCmptType)ipsSrcFile.getIpsObject();
-            return cmpt.isGenerateValidatorClass();
+            // existing validator classes should be deprecated instead of deleted to
+            // preserve manual calls and custom implementations
+            return cmpt.isGenerateValidatorClass() || isValidatorClassAlreadyPresent(ipsSrcFile);
         } else {
             return false;
         }
@@ -83,5 +85,9 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
         } else {
             return null;
         }
+    }
+
+    private boolean isValidatorClassAlreadyPresent(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getJavaFile(ipsSrcFile).exists();
     }
 }

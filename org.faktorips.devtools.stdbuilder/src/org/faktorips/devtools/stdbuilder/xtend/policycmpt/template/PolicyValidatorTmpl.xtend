@@ -9,9 +9,16 @@ class PolicyValidatorTmpl {
 		
 		/**
 		* «localizedJDoc("VALIDATOR_CLASS", implClassName)»
+		«IF !type.generateValidatorClass»
+		* <p>
+		* «localizedJDoc("DEPRECATED_VALIDATOR_CLASS")»
+		«ENDIF»
 		*
 		* @generated
 		*/
+		«IF !type.generateValidatorClass»
+		@Deprecated
+		«ENDIF»
 		public class «implClassName»Validator
 		{
 		 
