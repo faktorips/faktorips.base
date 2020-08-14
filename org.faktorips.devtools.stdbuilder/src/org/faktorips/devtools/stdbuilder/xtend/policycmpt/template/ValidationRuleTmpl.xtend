@@ -1,8 +1,10 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XValidationRule
 
+import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
@@ -20,13 +22,18 @@ def package static constants (XValidationRule it) '''
     «constantMsgCode»
     «constantRuleName»
 '''
-
-def package static validationRuleMethods (XValidationRule it, String modelObject) '''
-    «execRuleMethod(modelObject)»
-    «createMessageFor»
+def package static validationRuleMethods (XValidationRule it, XPolicyCmptClass modelObject) '''
+    «IF modelObject !== null»
+      «execRuleMethod("get"+ modelObject.implClassName +"().")»
+      «createMessageFor(modelObject.interfaceOrClassName + ".")»
+    «ELSE»
+      «execRuleMethod("")»
+      «createMessageFor("")»
+    «ENDIF»
 '''
 
-def package static validationRuleMethods (XValidationRule it) '''«validationRuleMethods("")»'''
+
+def package static validationRuleMethods (XValidationRule it) '''«validationRuleMethods(it,null)»'''
 
 def private static constantMsgCode (XValidationRule it) '''
     /**
@@ -64,7 +71,7 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
               ) {
         «ENDIF»
         «IF configured»
-            if («IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
+            if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
         «ENDIF»
         «IF !checkValueAgainstValueSetRule»
              // begin-user-code
@@ -97,7 +104,7 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     }
 '''
 
-def private static createMessageFor (XValidationRule it) '''
+def private static createMessageFor (XValidationRule it, String modelObject) '''
     /**
      * «localizedJDoc("CREATE_MESSAGE", name)»
      * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
@@ -107,7 +114,7 @@ def private static createMessageFor (XValidationRule it) '''
         «IF validateAttributes && !validatedAttrSpecifiedInSrc»
                 «List_(ObjectProperty())» invalidObjectProperties = «Arrays()».asList(
                 «FOR constant : validatedAttributeConstants SEPARATOR  ","»
-                new «ObjectProperty()»(this, «constant»)
+                new «ObjectProperty()»(this, «modelObject»«constant»)
                 «ENDFOR»
                  );
         «ENDIF»
@@ -140,6 +147,14 @@ def private static createMessageFor (XValidationRule it) '''
                ;
         return builder.create();
     }
+'''
+  
+def private static getInterfaceOrClassName(XPolicyCmptClass it)'''
+    «IF genInterface»
+        «interfaceName»
+    «ELSE»
+        «name»
+    «ENDIF»
 '''
 
 }
