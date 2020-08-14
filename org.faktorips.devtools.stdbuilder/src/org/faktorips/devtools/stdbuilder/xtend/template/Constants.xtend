@@ -1,6 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
+import org.faktorips.runtime.IModelObject
 
 class Constants {
 
@@ -74,6 +75,14 @@ class Constants {
 
     def static CONFIGURED_DEFAULT_PREFIX(AbstractGeneratorModelNode it) {
         addImport(org.faktorips.runtime.internal.ValueToXmlHelper.name) + ".CONFIGURED_DEFAULT_PREFIX"
+    }
+
+    def static CONTINUE_VALIDATION(AbstractGeneratorModelNode it) {
+        addStaticImport(IModelObject.name, "CONTINUE_VALIDATION");
+    }
+
+    def static STOP_VALIDATION(AbstractGeneratorModelNode it) {
+        addStaticImport(IModelObject.name, "STOP_VALIDATION");
     }
 
 }

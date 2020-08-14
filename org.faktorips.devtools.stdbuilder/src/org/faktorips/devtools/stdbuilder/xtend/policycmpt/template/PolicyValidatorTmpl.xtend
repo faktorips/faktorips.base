@@ -2,6 +2,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 class PolicyValidatorTmpl {
 
@@ -21,11 +22,7 @@ class PolicyValidatorTmpl {
 		«ENDIF»
 		public class «implClassName»Validator
 		{
-		 
-		    private static final boolean STOP_VALIDATION = false;
-
-		    private static final boolean CONTINUE_VALIDATION = true;
-		    
+		 		    
 		    private final «implClassName» «nameForVariable»;
 		    
 		    public «implClassName»Validator(«implClassName» «nameForVariable»){
@@ -43,7 +40,7 @@ class PolicyValidatorTmpl {
         */
         public boolean «validate(MessageList() + " ml", IValidationContext() + " context")»{
 ««« TODO FIPS-7041           «FOR it : validationRules» «ValidationRuleTmpl.validate(it)» «ENDFOR»
-            return CONTINUE_VALIDATION;
+            return «CONTINUE_VALIDATION»;
         }
     '''
     }

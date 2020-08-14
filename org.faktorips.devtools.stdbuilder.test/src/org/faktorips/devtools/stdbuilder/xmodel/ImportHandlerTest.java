@@ -10,15 +10,16 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.devtools.stdbuilder.xmodel.ImportHandler;
-import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
-
-import static org.hamcrest.CoreMatchers.hasItem;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class ImportHandlerTest {
 
     @Before
     public void createImportHandler() {
-        importHandler = new ImportHandler("my.package");
+        importHandler = new ImportHandler("my.package", Collections.emptySet());
         // Use to run testcases against JavaCodeFragment's import logic
         // importHandler = new DelegateImportHandler();
     }
@@ -113,6 +114,35 @@ public class ImportHandlerTest {
     public void testAdd() {
         importHandler.add("test.pack.TestClass");
         assertThat(importHandler.getImports(), hasItem(new ImportStatement("test.pack.TestClass")));
+    }
+
+    @Test
+    public void testAddStatic() {
+        importHandler.addStatic("test.pack.TestClass", "FOO");
+
+        assertThat(importHandler.getImports(), not(hasItem(new ImportStatement("test.pack.TestClass"))));
+        assertThat(importHandler.getStaticImports(), hasItem(new StaticImportStatement("test.pack.TestClass", "FOO")));
+    }
+
+    @Test
+    public void testAddStatic_MultipleConstantsFromSameClass() {
+        importHandler.addStatic("test.pack.TestClass", "FOO");
+        importHandler.addStatic("test.pack.TestClass", "BAR");
+
+        assertThat(importHandler.getImports(), not(hasItem(new ImportStatement("test.pack.TestClass"))));
+        assertThat(importHandler.getStaticImports(), hasItem(new StaticImportStatement("test.pack.TestClass", "FOO")));
+        assertThat(importHandler.getStaticImports(), hasItem(new StaticImportStatement("test.pack.TestClass", "BAR")));
+    }
+
+    @Test
+    public void testAddStatic_Superclass() {
+        importHandler = new ImportHandler("test.pack",
+                new HashSet<>(Arrays.asList("test.pack.AClass", "a.SuperClass")));
+
+        importHandler.addStatic("a.SuperClass", "FOO");
+
+        assertThat(importHandler.getImports(), not(hasItem(new ImportStatement("a.SuperClass"))));
+        assertThat(importHandler.getStaticImports(), not(hasItem(new StaticImportStatement("a.SuperClass", "FOO"))));
     }
 
     @Test

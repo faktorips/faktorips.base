@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.xtend;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -191,11 +192,12 @@ public class GeneratorModelContext {
      * Resetting the builder context for starting a new build process with clean context
      * information.
      * 
-     * @param packageOfArtifacts The package of the source file to be generated to handle the
+     * @param packageOfArtifacts the package of the source file to be generated to handle the
      *            correct import statements
+     * @param superTypeNames the qualified names of the generated class and its supertypes
      */
-    public void resetContext(String packageOfArtifacts) {
-        importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts));
+    public void resetContext(String packageOfArtifacts, Set<String> superTypeNames) {
+        importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts, superTypeNames));
         generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
         generatedJavaElements.set(new LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>());
     }
@@ -217,7 +219,7 @@ public class GeneratorModelContext {
         if (importHandler != null) {
             return importHandler;
         } else {
-            return new ImportHandler(StringUtils.EMPTY);
+            return new ImportHandler(StringUtils.EMPTY, Collections.emptySet());
         }
     }
 
@@ -257,7 +259,7 @@ public class GeneratorModelContext {
     }
 
     /**
-     * Adds a new import. The import statement should be the full qualified name of a class.
+     * Adds a new import. The import statement should be the fully qualified name of a class.
      * 
      * @param importStatement The full qualified name of a class that should be imported.
      * @return the qualified or unqualified class name depending on whether it is required.
@@ -265,6 +267,19 @@ public class GeneratorModelContext {
      */
     public String addImport(String importStatement) {
         return getImportHandler().addImportAndReturnClassName(importStatement);
+    }
+
+    /**
+     * Adds a new static import. The import statement should be the fully qualified name of a class
+     * followed by an accessible element of that class.
+     * 
+     * @param qualifiedName The qualified name of the class you want to add to the import handler
+     * @param element The element in the class you want to import, may be '*'
+     * @return the unqualified name of the imported element as given, for convenient use
+     * @see ImportHandler#addStaticImportAndReturnElementName(String,String)
+     */
+    public String addStaticImport(String qualifiedName, String element) {
+        return getImportHandler().addStaticImportAndReturnElementName(qualifiedName, element);
     }
 
     public boolean removeImport(String importStatement) {

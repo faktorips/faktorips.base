@@ -3,15 +3,16 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XValidationRule
 
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 
 class ValidationRuleTmpl {
 
 def package static validate (XValidationRule it) '''
         if (!«methodNameExecRule»(ml, context)) {
-            return STOP_VALIDATION;
+            return «STOP_VALIDATION»;
         }
 '''
 
@@ -73,7 +74,7 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
                 «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
                 «ENDIF»
             }
-            return CONTINUE_VALIDATION;
+            return «CONTINUE_VALIDATION»;
             // end-user-code
         «ELSE»
             «val attribute = checkedAttribute»
@@ -83,15 +84,15 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
                 // end-user-code
             }
-              return CONTINUE_VALIDATION;
+              return «CONTINUE_VALIDATION»;
         «ENDIF»
         «IF configured»
         }
-        return CONTINUE_VALIDATION;
+        return «CONTINUE_VALIDATION»;
         «ENDIF»
         «IF specificBusinessFunctions»
         }
-        return CONTINUE_VALIDATION;
+        return «CONTINUE_VALIDATION»;
         «ENDIF»
     }
 '''

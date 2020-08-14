@@ -3,22 +3,23 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 import org.faktorips.devtools.core.builder.naming.BuilderAspect
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
-import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XTableUsage
+import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
+import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
+import org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions
 import org.faktorips.devtools.stdbuilder.xtend.template.DerivedUnionAssociationTmpl
 
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.ValidationRuleTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
-import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
-import org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 
 class PolicyCmptTmpl{
 
@@ -536,10 +537,10 @@ def private static  validateMethods (XPolicyCmptClass it) '''
     @Override
     public boolean «validateSelf(MessageList()+" ml", IValidationContext()+" context")» {
         if (!super.«validateSelf("ml", "context")») {
-            return STOP_VALIDATION;
+            return «STOP_VALIDATION»;
         }
         «FOR it : validationRules» «ValidationRuleTmpl.validate(it)» «ENDFOR»
-        return CONTINUE_VALIDATION;
+        return «CONTINUE_VALIDATION»;
     }
 
     /**

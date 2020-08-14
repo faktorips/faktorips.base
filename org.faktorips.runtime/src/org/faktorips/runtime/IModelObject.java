@@ -18,6 +18,17 @@ package org.faktorips.runtime;
 public interface IModelObject {
 
     /**
+     * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()). Indicates
+     * that the validation should be stopped.
+     */
+    boolean STOP_VALIDATION = false;
+    /**
+     * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()). Indicates
+     * that the validation should be continued.
+     */
+    boolean CONTINUE_VALIDATION = true;
+
+    /**
      * Validates the model object and returns a list of messages. If no message is generated the
      * method returns an empty list. Note that also messages like warnings or informations can be
      * returned for valid objects.
