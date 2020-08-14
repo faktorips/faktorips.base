@@ -114,6 +114,14 @@ class MethodNames {
         "validate("+argument1+", "+argument2+")"
     }
     
+    def static getValidator(){
+        "getValidator()"
+    }
+    
+     def static createValidator(){
+        "createValidator()"
+    }
+    
     // ---------------------------------
     // Methods in IRuntimeRepository
     // ---------------------------------

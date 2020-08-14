@@ -62,6 +62,13 @@ def static  String body (XPolicyCmptClass it) '''
              */
             private static final long serialVersionUID = 1L;
         «ENDIF»
+        
+        «IF type.generateValidatorClass && !hasSupertype()»
+            /**
+             * @generated
+             */
+            private volatile «validatorClassName» validator;
+        «ENDIF»
 
         «PropertyChangeSupportTmpl.fieldDefinition(it)»
 
@@ -149,7 +156,9 @@ def static  String body (XPolicyCmptClass it) '''
 
         «generalMethods(it)»
 
-        «FOR it : validationRules» «validationRuleMethods» «ENDFOR»
+        «IF !type.generateValidatorClass»
+          «FOR it : validationRules»«validationRuleMethods»«ENDFOR»
+        «ENDIF»
 
         «IF generatePolicyBuilder && !isAbstract»
             «PolicyCmptCreateBuilderTmpl.builder(policyBuilderModelNode)»
@@ -529,6 +538,36 @@ def private static  generalMethods (XPolicyCmptClass it) '''
 '''
 
 def private static  validateMethods (XPolicyCmptClass it) '''
+
+    «IF type.generateValidatorClass && !hasSupertype()»
+    /**
+     * «localizedJDoc("GET_VALIDATOR", name, validatorClassName)»
+     *
+     * @generated
+     */
+    protected «validatorClassName» «getValidator()» {
+        «validatorClassName» result = validator;
+        if (result == null) {
+        	validator = result = createValidator();
+        }
+        return result;
+    }
+    «ENDIF»
+    
+    «IF type.generateValidatorClass»
+    /**
+     * «localizedJDoc("CREATE_VALIDATOR", name, validatorClassName)»
+     *
+     * @restrainedmodifiable
+     */
+    «overrideAnnotationIf(hasSupertype())»
+    protected «validatorClassName» «createValidator()» {
+        // begin-user-code
+        return new «validatorClassName»(this);
+        // end-user-code
+    }
+    «ENDIF»
+
     /**
      * «localizedJDoc("VALIDATE_SELF", name)»
      *
@@ -539,8 +578,16 @@ def private static  validateMethods (XPolicyCmptClass it) '''
         if (!super.«validateSelf("ml", "context")») {
             return «STOP_VALIDATION»;
         }
-        «FOR it : validationRules» «ValidationRuleTmpl.validate(it)» «ENDFOR»
-        return «CONTINUE_VALIDATION»;
+        «IF type.generateValidatorClass»  
+          «IF hasSupertype»
+            return «CONTINUE_VALIDATION»;
+          «ELSE»
+            return getValidator().validate(ml, context);
+          «ENDIF»
+        «ELSE»
+          «FOR it : validationRules» «ValidationRuleTmpl.validate(it)» «ENDFOR»
+          return «CONTINUE_VALIDATION»;
+        «ENDIF»
     }
 
     /**
