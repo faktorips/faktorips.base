@@ -23,8 +23,10 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
+import org.faktorips.runtime.model.annotation.IpsValidatedBy;
 import org.faktorips.runtime.model.type.read.PolicyAssociationCollector;
 import org.faktorips.runtime.model.type.read.PolicyAttributeCollector;
+import org.faktorips.runtime.model.type.read.TypePartCollector;
 import org.faktorips.runtime.model.type.read.TypePartsReader;
 import org.faktorips.runtime.model.type.read.ValidationRuleCollector;
 
@@ -45,21 +47,30 @@ public class PolicyCmptType extends Type {
         super(name, annotatedDeclararation);
         PolicyAttributeCollector attributeCollector = new PolicyAttributeCollector();
         PolicyAssociationCollector associationCollector = new PolicyAssociationCollector();
-        ValidationRuleCollector validationRuleCollector = new ValidationRuleCollector();
-        initParts(annotatedDeclararation, attributeCollector, associationCollector, validationRuleCollector);
+        initParts(annotatedDeclararation, attributeCollector, associationCollector);
         attributes = attributeCollector.createParts(this);
         associations = associationCollector.createParts(this);
+
+        AnnotatedDeclaration validationClass = getClassContainingValidationRules(annotatedDeclararation);
+        ValidationRuleCollector validationRuleCollector = new ValidationRuleCollector();
+        initParts(validationClass, validationRuleCollector);
         validationRules = validationRuleCollector.createParts(this);
     }
 
     private void initParts(AnnotatedDeclaration annotatedDeclararation,
-            PolicyAttributeCollector attributeCollector,
-            PolicyAssociationCollector associationCollector,
-            ValidationRuleCollector validationRuleCollector) {
-        TypePartsReader typePartsReader = new TypePartsReader(attributeCollector, associationCollector,
-                validationRuleCollector);
+            TypePartCollector<?, ?>... collectors) {
+        TypePartsReader typePartsReader = new TypePartsReader(collectors);
         typePartsReader.init(annotatedDeclararation);
         typePartsReader.read(annotatedDeclararation);
+    }
+
+    private AnnotatedDeclaration getClassContainingValidationRules(AnnotatedDeclaration policyCmptType) {
+        if (policyCmptType.is(IpsValidatedBy.class)) {
+            Class<?> validator = policyCmptType.get(IpsValidatedBy.class).value();
+            return AnnotatedDeclaration.from(validator);
+        } else {
+            return policyCmptType;
+        }
     }
 
     @Override

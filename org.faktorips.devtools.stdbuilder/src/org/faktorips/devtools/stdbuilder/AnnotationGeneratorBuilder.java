@@ -24,10 +24,12 @@ import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptAssociationAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptDeclClassAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptSeparateValidatorClassAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptAssociationAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptDeclClassAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.TableUsageAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableAnnGenFactory;
+import org.faktorips.devtools.stdbuilder.xtend.validationrule.ValidatedByAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.xtend.validationrule.ValidationRuleAnnGenFactory;
 
 public class AnnotationGeneratorBuilder {
@@ -55,6 +57,8 @@ public class AnnotationGeneratorBuilder {
                 new ProductCmptAssociationAnnGenFactory(),
                 // policy component implementation classes
                 new PolicyCmptDeclClassAnnGenFactory(),
+                // separate validator class
+                new PolicyCmptSeparateValidatorClassAnnGenFactory(),
                 // product component implementation classes
                 new ProductCmptDeclClassAnnGenFactory(),
                 // published interfaces
@@ -67,6 +71,8 @@ public class AnnotationGeneratorBuilder {
                 new TableUsageAnnGenFactory(),
                 // enums
                 new EnumAnnGenFactory(),
+                // separate validator class
+                new ValidatedByAnnGenFactory(),
                 // validation rule
                 new ValidationRuleAnnGenFactory() };
     }

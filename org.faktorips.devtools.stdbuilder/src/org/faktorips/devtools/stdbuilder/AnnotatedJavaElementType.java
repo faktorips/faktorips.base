@@ -115,6 +115,11 @@ public enum AnnotatedJavaElementType {
     POLICY_CMPT_DECL_CLASS,
 
     /**
+     * Represents the declaration of a policy component's separate validator class.
+     */
+    POLICY_CMPT_SEPARATE_VALIDATOR_CLASS,
+
+    /**
      * Represents the declaration of validation rule execution methods.
      */
     POLICY_CMPT_VALIDATION_RULE,

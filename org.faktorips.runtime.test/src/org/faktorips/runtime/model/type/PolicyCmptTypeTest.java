@@ -28,6 +28,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsConfiguredValidationRule;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.annotation.IpsValidatedBy;
 import org.faktorips.runtime.model.annotation.IpsValidationRule;
 import org.faktorips.runtime.model.annotation.IpsValidationRules;
 import org.junit.Test;
@@ -199,10 +200,53 @@ public class PolicyCmptTypeTest {
     @Test
     public void testGetDeclaredValidationRules() {
         List<ValidationRule> declaredValidationRules = policyCmptType.getDeclaredValidationRules();
+
         assertThat(declaredValidationRules.size(), is(2));
         assertThat(declaredValidationRules.get(0).getName(), is("someRule"));
         assertThat(declaredValidationRules.get(1).getName(), is("anotherRule"));
         assertThat(getAllNames(declaredValidationRules), not(hasItem("superRule")));
+    }
+
+    @Test
+    public void testGetDeclaredValidationRules_SeparateValidatorClass() {
+        PolicyCmptType type = IpsModel.getPolicyCmptType(SeparatelyValidatedPolicy.class);
+
+        List<ValidationRule> declaredValidationRules = type.getDeclaredValidationRules();
+
+        assertThat(declaredValidationRules.size(), is(2));
+        assertThat(declaredValidationRules.get(0).getName(), is("rule"));
+        assertThat(declaredValidationRules.get(1).getName(), is("configuredRule"));
+    }
+
+    @Test
+    public void testGetDeclaredValidationRule_SeparateValidatorClass() {
+        PolicyCmptType type = IpsModel.getPolicyCmptType(SeparatelyValidatedPolicy.class);
+
+        ValidationRule rule = type.getDeclaredValidationRule("rule");
+
+        assertThat(rule.getName(), is("rule"));
+    }
+
+    @Test
+    public void testGetDeclaredValidationRule_SeparateValidatorClass_ConfiguredRule() {
+        PolicyCmptType type = IpsModel.getPolicyCmptType(SeparatelyValidatedPolicy.class);
+
+        ValidationRule rule = type.getDeclaredValidationRule("configuredRule");
+
+        assertThat(rule.getName(), is("configuredRule"));
+        assertThat(rule.isChangingOverTime(), is(true));
+    }
+
+    @Test
+    public void testGetValidationRules_SeparateValidatorClass() {
+        PolicyCmptType type = IpsModel.getPolicyCmptType(SeparatelyValidatedPolicy.class);
+
+        List<ValidationRule> rules = type.getValidationRules();
+
+        assertThat(rules.size(), is(3));
+        assertThat(rules.get(0).getName(), is("rule"));
+        assertThat(rules.get(1).getName(), is("configuredRule"));
+        assertThat(rules.get(2).getName(), is("superRule"));
     }
 
     private List<String> getAllNames(List<ValidationRule> declaredValidationRules) {
@@ -348,6 +392,51 @@ public class PolicyCmptTypeTest {
 
         public Product(IRuntimeRepository repository, String id, String productKindId, String versionId) {
             super(repository, id, productKindId, versionId);
+        }
+
+    }
+
+    @IpsPolicyCmptType(name = "SeparatelyValidatedSuperPolicy")
+    @IpsValidatedBy(SeparatelyValidatedSuperPolicyValidator.class)
+    private static class SeparatelyValidatedSuperPolicy extends AbstractModelObject {
+
+    }
+
+    @IpsValidationRules({ "superRule" })
+    private static class SeparatelyValidatedSuperPolicyValidator {
+
+        public static final String MSG_CODE_SUPER_RULE = "message code";
+
+        @SuppressWarnings("unused")
+        @IpsValidationRule(name = "superRule", msgCode = MSG_CODE_SUPER_RULE, severity = Severity.ERROR)
+        protected boolean superRule(MessageList ml, IValidationContext context) {
+            return false;
+        }
+
+    }
+
+    @IpsPolicyCmptType(name = "SeparatelyValidatedPolicy")
+    @IpsValidatedBy(SeparatelyValidatedPolicyValidator.class)
+    private static class SeparatelyValidatedPolicy extends SeparatelyValidatedSuperPolicy {
+
+    }
+
+    @IpsValidationRules({ "rule", "configuredRule" })
+    private static class SeparatelyValidatedPolicyValidator extends SeparatelyValidatedSuperPolicyValidator {
+
+        public static final String MSG_CODE_RULE = "message code";
+
+        @SuppressWarnings("unused")
+        @IpsValidationRule(name = "rule", msgCode = MSG_CODE_RULE, severity = Severity.ERROR)
+        protected boolean rule(MessageList ml, IValidationContext context) {
+            return false;
+        }
+
+        @SuppressWarnings("unused")
+        @IpsValidationRule(name = "configuredRule", msgCode = MSG_CODE_RULE, severity = Severity.ERROR)
+        @IpsConfiguredValidationRule(changingOverTime = true, defaultActivated = false)
+        protected boolean configuredRule(MessageList ml, IValidationContext context) {
+            return false;
         }
 
     }

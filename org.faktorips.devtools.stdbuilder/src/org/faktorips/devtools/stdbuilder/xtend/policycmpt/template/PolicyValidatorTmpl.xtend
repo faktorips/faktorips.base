@@ -3,6 +3,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.ValidationRuleTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
@@ -19,6 +20,7 @@ class PolicyValidatorTmpl {
     *
     * @generated
     */
+    «getAnnotations(POLICY_CMPT_SEPARATE_VALIDATOR_CLASS)»
     public class «implClassName»Validator«IF hasSupertype» extends «superclassName»Validator«ENDIF» {
       «IF !hasSupertype»private final «implClassName» «nameForVariable»;«ENDIF»
       
