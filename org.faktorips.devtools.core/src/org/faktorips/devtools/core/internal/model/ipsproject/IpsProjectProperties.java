@@ -1465,7 +1465,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_TABLE_CONTENT_FORMAT + "\" value=\"XML\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- Default value for 'generate validation class' property on new PolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\" value=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
