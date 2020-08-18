@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptTmpl;
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
@@ -43,6 +46,15 @@ public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
     @Override
     protected Class<XPolicyCmptClass> getGeneratorModelRootType() {
         return XPolicyCmptClass.class;
+    }
+
+    @Override
+    protected Set<String> getAllSuperTypeNames(IIpsSrcFile ipsSrcFile) {
+        Set<String> allSuperTypeNames = super.getAllSuperTypeNames(ipsSrcFile);
+        // this is the base interface containing STOP/CONTINUE_VALIDATION
+        // we need to add it for the first build where the java type and it's hierarchy don't exist
+        allSuperTypeNames.add(IModelObject.class.getName());
+        return allSuperTypeNames;
     }
 
     @Override

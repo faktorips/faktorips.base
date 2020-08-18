@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -53,13 +54,18 @@ public class ImportHandler {
 
     private Map<String, ImportStatement> classNameToImportStatementMap;
     private Map<String, ImportStatement> implicitlyImportedClassNamesMap;
+    private Map<String, StaticImportStatement> qualifiedPropertyNameToStaticImportStatementMap;
 
     private final String ownPackage;
 
-    public ImportHandler(String ownPackage) {
+    private final Set<String> superTypeNames;
+
+    public ImportHandler(String ownPackage, Set<String> superTypeNames) {
         this.ownPackage = ownPackage;
-        this.classNameToImportStatementMap = new LinkedHashMap<String, ImportStatement>();
-        this.implicitlyImportedClassNamesMap = new LinkedHashMap<String, ImportStatement>();
+        this.superTypeNames = superTypeNames;
+        this.classNameToImportStatementMap = new LinkedHashMap<>();
+        this.implicitlyImportedClassNamesMap = new LinkedHashMap<>();
+        this.qualifiedPropertyNameToStaticImportStatementMap = new LinkedHashMap<>();
     }
 
     /**
@@ -69,6 +75,15 @@ public class ImportHandler {
      */
     public Set<ImportStatement> getImports() {
         return new LinkedHashSet<ImportStatement>(classNameToImportStatementMap.values());
+    }
+
+    /**
+     * Returns the set of static imports this handler collected
+     * 
+     * @return The set of static import statements collected by this import handler
+     */
+    public Set<StaticImportStatement> getStaticImports() {
+        return new LinkedHashSet<StaticImportStatement>(qualifiedPropertyNameToStaticImportStatementMap.values());
     }
 
     /**
@@ -110,6 +125,46 @@ public class ImportHandler {
     }
 
     /**
+     * Adds the given static import statement and returns the unqualified name of the imported
+     * element.
+     * 
+     * @param qualifiedName The qualified name of the class you want to add to the import handler
+     * @param element The element in the class you want to import, may be '*'
+     * @return the unqualified name of the imported element as given, for convenient use
+     */
+    public String addStaticImportAndReturnElementName(String qualifiedName, String element) {
+        addStatic(qualifiedName, element);
+        return element;
+    }
+
+    /**
+     * Add a new static import statement.
+     * 
+     * @param qualifiedName The qualified name of the class you want to add to the import handler
+     * @param element The element in the class you want to import, may be '*'
+     * 
+     * @return the import statement created and stored in this handler or {@link Optional#empty()}
+     *         if it's not necessary to import
+     */
+    public Optional<StaticImportStatement> addStatic(String qualifiedName, String element) {
+        String className = qualifiedName.trim();
+        if (superTypeNames.contains(className)) {
+            return Optional.empty();
+        }
+        StaticImportStatement importStatement = new StaticImportStatement(className, element.trim());
+        registerImportStatementIfPossible(qualifiedPropertyNameToStaticImportStatementMap, importStatement);
+        return Optional.of(importStatement);
+    }
+
+    private void registerImportStatementIfPossible(
+            Map<String, StaticImportStatement> registeredImportsMap,
+            StaticImportStatement importStatement) {
+        if (!isInConflictWithImportedClassName(registeredImportsMap, importStatement)) {
+            registeredImportsMap.put(importStatement.getUnqualifiedName(), importStatement);
+        }
+    }
+
+    /**
      * Add a new import statement.
      * 
      * @param qualifiedName The qualified name of the class you want to add to the import handler
@@ -144,15 +199,18 @@ public class ImportHandler {
         return importStatements;
     }
 
-    private void registerImportStatementIfPossible(Map<String, ImportStatement> registeredImportsMap,
+    private void registerImportStatementIfPossible(
+            Map<String, ImportStatement> registeredImportsMap,
             ImportStatement importStatement) {
-        if (!isInConflictWithImportedClassName(importStatement) && !isInConflictWithImplicitClassName(importStatement)) {
+        if (!isInConflictWithImportedClassName(classNameToImportStatementMap, importStatement)
+                && !isInConflictWithImportedClassName(implicitlyImportedClassNamesMap, importStatement)) {
             registeredImportsMap.put(importStatement.getUnqualifiedName(), importStatement);
         }
     }
 
-    private boolean isInConflictWithImportedClassName(Map<String, ImportStatement> registeredImportsMap,
-            ImportStatement importStatement) {
+    private <I extends AbstractImportStatement> boolean isInConflictWithImportedClassName(
+            Map<String, I> registeredImportsMap,
+            I importStatement) {
         if (isImported(registeredImportsMap, importStatement)) {
             return false;
         } else {
@@ -160,9 +218,10 @@ public class ImportHandler {
         }
     }
 
-    private boolean isImported(Map<String, ImportStatement> registeredImportsMap, ImportStatement importStatement) {
+    private <I extends AbstractImportStatement> boolean isImported(Map<String, I> registeredImportsMap,
+            I importStatement) {
         String unqualifiedName = importStatement.getUnqualifiedName();
-        ImportStatement registeredImportStatement = registeredImportsMap.get(unqualifiedName);
+        I registeredImportStatement = registeredImportsMap.get(unqualifiedName);
         return importStatement.equals(registeredImportStatement);
     }
 
@@ -193,16 +252,8 @@ public class ImportHandler {
     public boolean requiresQualifiedClassName(ImportStatement importStatement) {
         return (!isImported(classNameToImportStatementMap, importStatement) && !isImported(
                 implicitlyImportedClassNamesMap, importStatement))
-                || isInConflictWithImportedClassName(importStatement)
-                || isInConflictWithImplicitClassName(importStatement);
-    }
-
-    private boolean isInConflictWithImportedClassName(ImportStatement importStatement) {
-        return isInConflictWithImportedClassName(classNameToImportStatementMap, importStatement);
-    }
-
-    private boolean isInConflictWithImplicitClassName(ImportStatement importStatement) {
-        return isInConflictWithImportedClassName(implicitlyImportedClassNamesMap, importStatement);
+                || isInConflictWithImportedClassName(classNameToImportStatementMap, importStatement)
+                || isInConflictWithImportedClassName(implicitlyImportedClassNamesMap, importStatement);
     }
 
     /**

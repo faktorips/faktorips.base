@@ -9,13 +9,19 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
+import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -95,13 +101,34 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
-        generatorModelContext.resetContext(getPackage());
+        generatorModelContext.resetContext(getPackage(), getAllSuperTypeNames(ipsSrcFile));
+    }
+
+    protected Set<String> getAllSuperTypeNames(IIpsSrcFile ipsSrcFile) {
+        List<IType> generatedJavaTypes = getGeneratedJavaTypes(ipsSrcFile.getIpsObject());
+        Stream<Set<String>> map = generatedJavaTypes.stream().map(this::getAllSuperTypeNames);
+        return map.flatMap(Set::stream).collect(Collectors.toSet());
+    }
+
+    protected Set<String> getAllSuperTypeNames(IType generatedType) {
+        ITypeHierarchy supertypeHierarchy;
+        try {
+            supertypeHierarchy = generatedType.newSupertypeHierarchy(null);
+        } catch (JavaModelException e) {
+            // first build: file does not exist
+            return Collections.emptySet();
+        }
+        IType[] allSupertypes = supertypeHierarchy.getAllSupertypes(generatedType);
+        IType[] allSuperInterfaces = supertypeHierarchy.getAllSuperInterfaces(generatedType);
+        Set<String> noImportNecessary = Stream.concat(Arrays.stream(allSupertypes), Arrays.stream(allSuperInterfaces))
+                .map(IType::getFullyQualifiedName).collect(Collectors.toSet());
+        return noImportNecessary;
     }
 
     @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         super.afterBuild(ipsSrcFile);
-        generatorModelContext.resetContext(null);
+        generatorModelContext.resetContext(null, Collections.emptySet());
     }
 
     protected T getGeneratorModelRoot(IIpsObject ipsObject) {
@@ -170,7 +197,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
             IIpsObjectPartContainer ipsObjectPartContainer,
             List<IJavaElement> javaElements) {
 
-        generatorModelContext.resetContext(null);
+        generatorModelContext.resetContext(null, Collections.emptySet());
 
         generateBodyInternal(ipsObject);
 

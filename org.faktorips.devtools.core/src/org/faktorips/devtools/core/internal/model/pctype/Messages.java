@@ -81,6 +81,7 @@ public class Messages extends NLS {
     public static String PolicyCmptType_msgInverseDerivedUnionNotSepcified;
     public static String PolicyCmptType_msgRuleMethodNameConflict;
     public static String PolicyCmptType_caption;
+    public static String PolicyCmptType_msgDifferentGenerateValidatorClassSetting;
 
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;

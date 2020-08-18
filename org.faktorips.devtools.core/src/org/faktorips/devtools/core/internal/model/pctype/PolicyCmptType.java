@@ -72,6 +72,8 @@ import org.w3c.dom.Element;
 public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private boolean configurableByProductCmptType = false;
+    private boolean generateValidatorClass = getIpsProject() == null ? false
+            : getIpsProject().getReadOnlyProperties().isGenerateValidatorClassDefaultEnabled();
 
     private String productCmptType = ""; //$NON-NLS-1$
 
@@ -131,6 +133,18 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     public boolean isConfigurableByProductCmptType() {
         return configurableByProductCmptType;
+    }
+
+    @Override
+    public boolean isGenerateValidatorClass() {
+        return generateValidatorClass;
+    }
+
+    @Override
+    public void setGenerateValidatorClass(boolean newValue) {
+        boolean oldValue = generateValidatorClass;
+        generateValidatorClass = newValue;
+        valueChanged(oldValue, newValue);
     }
 
     @Override
@@ -306,6 +320,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         super.initPropertiesFromXml(element, id);
         configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE))
                 .booleanValue();
+        generateValidatorClass = Boolean.valueOf(element.getAttribute(PROPERTY_GENERATE_VALIDATOR_CLASS))
+                .booleanValue();
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         forceExtensionCompilationUnitGeneration = Boolean
                 .valueOf(element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
@@ -315,6 +331,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_GENERATE_VALIDATOR_CLASS, "" + generateValidatorClass); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU,
                 "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
@@ -327,6 +344,21 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
         validateDuplicateRulesNames(list);
+        validateSameGenerateValidatorClassSetting(list);
+    }
+
+    private void validateSameGenerateValidatorClassSetting(MessageList list) {
+        getSupertypeHierarchy().getAllSupertypes(this).stream()
+                .map(IPolicyCmptType.class::cast)
+                .filter(t -> t.isGenerateValidatorClass() != isGenerateValidatorClass())
+                .findAny()
+                .map(typeWithDifferentSetting -> NLS.bind(
+                        Messages.PolicyCmptType_msgDifferentGenerateValidatorClassSetting,
+                        typeWithDifferentSetting.getQualifiedName()))
+                .map(text -> new Message(MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY, text,
+                        Message.ERROR,
+                        this, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS))
+                .ifPresent(message -> list.add(message));
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) {

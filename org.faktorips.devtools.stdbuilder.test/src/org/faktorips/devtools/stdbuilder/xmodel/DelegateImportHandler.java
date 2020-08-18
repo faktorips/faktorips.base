@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.stdbuilder.xmodel.ImportHandler;
-import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
 
 /**
  * Delegates to a {@link JavaCodeFragment} to ensure the same behavior as the standard
@@ -28,7 +27,7 @@ public class DelegateImportHandler extends ImportHandler {
     private JavaCodeFragment fragment;
 
     public DelegateImportHandler() {
-        super("");
+        super("", Collections.emptySet());
         fragment = new JavaCodeFragment();
     }
 

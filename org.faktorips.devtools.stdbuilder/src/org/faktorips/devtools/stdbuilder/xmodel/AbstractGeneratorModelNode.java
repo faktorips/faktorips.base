@@ -332,6 +332,18 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Add the qualified name and element to the list of static import statements and return the
+     * element.
+     * 
+     * @param qName The qualified name of the type
+     * @param element The element in the class you want to import, may be '*'
+     * @return the unqualified name of the imported element as given, for convenient use
+     */
+    public String addStaticImport(String qName, String element) {
+        return getContext().addStaticImport(qName, element);
+    }
+
+    /**
      * Add the qualified name to the list of import statements and return the unqualified name
      * 
      * @param importDeclaration The import declaration contains a set of imports

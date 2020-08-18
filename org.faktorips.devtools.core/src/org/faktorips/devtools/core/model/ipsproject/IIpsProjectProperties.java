@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.ipsproject.TableContentFormat;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -722,4 +723,15 @@ public interface IIpsProjectProperties {
      * @see #getTableContentFormat()
      */
     void setTableContentFormat(TableContentFormat tableContentFormat);
+
+    /**
+     * Returns true if newly created policy component types should always have
+     * {@link PolicyCmptType#isGenerateValidatorClass()} enabled.
+     */
+    boolean isGenerateValidatorClassDefaultEnabled();
+
+    /**
+     * @see #isGenerateValidatorClassDefaultEnabled()
+     */
+    void setGenerateValidatorClassDefault(boolean enabled);
 }

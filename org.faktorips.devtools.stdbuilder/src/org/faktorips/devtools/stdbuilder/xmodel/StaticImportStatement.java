@@ -7,26 +7,27 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
 package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.Objects;
 
-/**
- * This class represents an import statement for the Xtend builder.
- */
-public class ImportStatement extends AbstractImportStatement {
+public class StaticImportStatement extends AbstractImportStatement {
 
-    public ImportStatement(String qualifiedName) {
+    private final String element;
+
+    /**
+     * Creates a new static import statement.
+     * 
+     * @param qualifiedName The qualified name of the class you want to add to the import handler
+     * @param element The element in the class you want to import, may be '*'
+     */
+    public StaticImportStatement(String qualifiedName, String element) {
         super(qualifiedName);
+        this.element = element;
     }
 
-    public ImportStatement(Class<?> clazz) {
-        super(clazz);
-    }
-
-    public static ImportStatement newInstance(String qName) {
-        return new ImportStatement(qName);
+    public String getElement() {
+        return element;
     }
 
     @Override
@@ -35,6 +36,7 @@ public class ImportStatement extends AbstractImportStatement {
         int result = 1;
         result = prime * result + ((getClassName() == null) ? 0 : getClassName().hashCode());
         result = prime * result + ((getPackageName() == null) ? 0 : getPackageName().hashCode());
+        result = prime * result + ((element == null) ? 0 : element.hashCode());
         return result;
     }
 
@@ -43,17 +45,23 @@ public class ImportStatement extends AbstractImportStatement {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof ImportStatement)) {
+        if (!(obj instanceof StaticImportStatement)) {
             return false;
         }
-        ImportStatement other = (ImportStatement)obj;
+        StaticImportStatement other = (StaticImportStatement)obj;
         return Objects.equals(getClassName(), other.getClassName())
-                && Objects.equals(getPackageName(), other.getPackageName());
+                && Objects.equals(getPackageName(), other.getPackageName())
+                && Objects.equals(getElement(), other.getElement());
     }
 
     @Override
     public String toString() {
-        return "ImportStatement [" + getQualifiedName() + "]";
+        return "StaticImportStatement [" + getQualifiedName() + SEPERATOR + element + "]";
+    }
+
+    @Override
+    public String getUnqualifiedName() {
+        return super.getUnqualifiedName() + SEPERATOR + element;
     }
 
 }

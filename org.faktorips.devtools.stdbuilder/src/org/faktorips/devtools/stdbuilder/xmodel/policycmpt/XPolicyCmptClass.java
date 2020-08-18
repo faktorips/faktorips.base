@@ -35,6 +35,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XTableUsage;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xtend.policycmpt.ValidatorJavaClassNameProvider;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
@@ -605,5 +606,10 @@ public class XPolicyCmptClass extends XType {
 
     public XPolicyBuilder getPolicyBuilderModelNode() {
         return getModelNode(getIpsObjectPartContainer(), XPolicyBuilder.class);
+    }
+
+    public String getValidatorClassName() {
+        ValidatorJavaClassNameProvider provider = new ValidatorJavaClassNameProvider(false);
+        return provider.getImplClassName(getIpsObjectPartContainer().getIpsSrcFile());
     }
 }

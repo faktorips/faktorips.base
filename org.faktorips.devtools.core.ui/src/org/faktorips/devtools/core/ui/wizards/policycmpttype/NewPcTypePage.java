@@ -144,6 +144,14 @@ public class NewPcTypePage extends NewTypePage {
             type.setConfigurableByProductCmptType(true);
             type.setProductCmptType(getPageOfAssociatedType().getQualifiedIpsObjectName());
         }
+
+        if (type.hasSupertype()) {
+            IPolicyCmptType supertype = (IPolicyCmptType)type.findSupertype(getIpsProject());
+
+            if (supertype != null) {
+                type.setGenerateValidatorClass(supertype.isGenerateValidatorClass());
+            }
+        }
     }
 
     @Override

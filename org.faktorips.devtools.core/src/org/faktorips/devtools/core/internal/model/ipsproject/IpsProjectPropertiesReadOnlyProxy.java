@@ -622,4 +622,15 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public void setTableContentFormat(TableContentFormat tableContentFormat) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
+
+    @Override
+    public boolean isGenerateValidatorClassDefaultEnabled() {
+        return propertiesInternal.isGenerateValidatorClassDefaultEnabled();
+    }
+
+    @Override
+    public void setGenerateValidatorClassDefault(boolean enabled) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+
+    }
 }
