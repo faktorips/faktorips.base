@@ -17,6 +17,10 @@ class PolicyValidatorTmpl {
     «importConstants»
     /**
     * «localizedJDoc("VALIDATOR_CLASS", implClassName)»
+    «IF !type.generateValidatorClass»
+    * <p>
+    * «localizedJDoc("DEPRECATED_VALIDATOR_CLASS")»
+    «ENDIF»
     *
     * @generated
     */
@@ -52,6 +56,9 @@ class PolicyValidatorTmpl {
     /**
     * @generated
     */
+    «IF !type.generateValidatorClass»
+    @Deprecated
+    «ENDIF»
     public «implClassName» get«implClassName»() {
         «IF hasSupertype»
           return («implClassName»)super.get«supertype.name»();
