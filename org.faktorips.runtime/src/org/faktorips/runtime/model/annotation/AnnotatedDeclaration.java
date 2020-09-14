@@ -125,7 +125,13 @@ public class AnnotatedDeclaration {
     public List<Method> getDeclaredMethods() {
         ArrayList<Method> result = new ArrayList<Method>();
         for (Class<?> annotatedClass : annotatedClasses) {
-            result.addAll(Arrays.asList(annotatedClass.getDeclaredMethods()));
+            for (Method declaredMethod : annotatedClass.getDeclaredMethods()) {
+                // filter out overridden methods generated when overriding methods use covariant
+                // return types
+                if (!declaredMethod.isBridge()) {
+                    result.add(declaredMethod);
+                }
+            }
         }
         return result;
     }
@@ -161,8 +167,9 @@ public class AnnotatedDeclaration {
     }
 
     public String getDeclarationClassName() {
-        return getPublishedInterface() != null ? getPublishedInterface().getCanonicalName() : getImplementationClass()
-                .getCanonicalName();
+        return getPublishedInterface() != null ? getPublishedInterface().getCanonicalName()
+                : getImplementationClass()
+                        .getCanonicalName();
     }
 
     @Override

@@ -2,10 +2,10 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -22,6 +22,8 @@ import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
@@ -67,11 +69,20 @@ public class ProductCmptTypeTest {
 
     @Test
     public void testGetDeclaredAttributes() {
-        assertThat(productCmptType.getDeclaredAttributes().size(), is(4));
+        assertThat(productCmptType.getDeclaredAttributes().size(), is(5));
         assertThat(productCmptType.getDeclaredAttributes().get(0).getName(), is("attr"));
-        assertThat(productCmptType.getAttributes().get(1).getName(), is("overwrittenAttr"));
+        assertThat(productCmptType.getDeclaredAttributes().get(1).getName(), is("overwrittenAttr"));
         assertThat(productCmptType.getDeclaredAttributes().get(2).getName(), is("BigAttr"));
         assertThat(productCmptType.getDeclaredAttributes().get(3).getName(), is("attr_changing"));
+        assertThat(productCmptType.getDeclaredAttributes().get(4).getName(), is("abstractSuper"));
+    }
+
+    @Test
+    public void testGetDeclaredAttribute_FindsCorrectCovariantReturnType() {
+        assertThat(superProductModel.getDeclaredAttribute("abstractSuper").getDatatype().getName(),
+                is(AbstractEnum.class.getName()));
+        assertThat(productCmptType.getDeclaredAttribute("abstractSuper").getDatatype().getName(),
+                is(SubOfAbstractEnum.class.getName()));
     }
 
     @Test
@@ -84,12 +95,13 @@ public class ProductCmptTypeTest {
 
     @Test
     public void testGetAttributes() {
-        assertThat(productCmptType.getAttributes().size(), is(5));
+        assertThat(productCmptType.getAttributes().size(), is(6));
         assertThat(productCmptType.getAttributes().get(0).getName(), is("attr"));
         assertThat(productCmptType.getAttributes().get(1).getName(), is("overwrittenAttr"));
         assertThat(productCmptType.getAttributes().get(2).getName(), is("BigAttr"));
         assertThat(productCmptType.getAttributes().get(3).getName(), is("attr_changing"));
-        assertThat(productCmptType.getAttributes().get(4).getName(), is("supAttr"));
+        assertThat(productCmptType.getAttributes().get(4).getName(), is("abstractSuper"));
+        assertThat(productCmptType.getAttributes().get(5).getName(), is("supAttr"));
     }
 
     @Test
@@ -190,7 +202,7 @@ public class ProductCmptTypeTest {
     @IpsProductCmptType(name = "MyProduct")
     @IpsConfigures(Policy.class)
     @IpsChangingOverTime(ProductGen.class)
-    @IpsAttributes({ "attr", "overwrittenAttr", "BigAttr", "attr_changing" })
+    @IpsAttributes({ "attr", "overwrittenAttr", "BigAttr", "attr_changing", "abstractSuper" })
     @IpsAssociations({ "asso", "asso_changing" })
     private static abstract class Product extends SuperProduct {
 
@@ -207,6 +219,10 @@ public class ProductCmptTypeTest {
         @Override
         @IpsAttribute(name = "overwrittenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
         public abstract String getOverwrittenAttr();
+
+        @Override
+        @IpsAttribute(name = "abstractSuper", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public abstract SubOfAbstractEnum getAbstractSuper();
 
         @IpsAttribute(name = "BigAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public abstract String getBigAttr();
@@ -234,7 +250,7 @@ public class ProductCmptTypeTest {
     }
 
     @IpsProductCmptType(name = "MySuperProduct")
-    @IpsAttributes({ "supAttr", "overwrittenAttr" })
+    @IpsAttributes({ "supAttr", "overwrittenAttr", "abstractSuper" })
     @IpsAssociations({ "SupAsso" })
     private static abstract class SuperProduct extends ProductComponent {
 
@@ -245,6 +261,9 @@ public class ProductCmptTypeTest {
 
         @IpsAttribute(name = "overwrittenAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
         public abstract String getOverwrittenAttr();
+
+        @IpsAttribute(name = "abstractSuper", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public abstract AbstractEnum getAbstractSuper();
 
         @IpsAssociation(name = "SupAsso", pluralName = "SupAssos", max = 5, min = 1, targetClass = SuperProduct.class, kind = AssociationKind.Association)
         public abstract SuperProduct getSupAsso();
@@ -257,6 +276,43 @@ public class ProductCmptTypeTest {
 
     @IpsPolicyCmptType(name = "MyPolicy")
     private static abstract class Policy extends AbstractModelObject implements IConfigurableModelObject {
+
+    }
+
+    @IpsEnumType(name = "enums.AnnotatedAbstractEnum", attributeNames = { "id", "name" })
+    private static interface AbstractEnum {
+
+        @IpsEnumAttribute(name = "id", identifier = true, unique = true)
+        String getId();
+
+        @IpsEnumAttribute(name = "name", unique = true, displayName = true)
+        String getName();
+    }
+
+    @IpsEnumType(name = "enums.SubOfAnnotatedAbstractEnum", attributeNames = { "id", "name" })
+    private static enum SubOfAbstractEnum implements AbstractEnum {
+
+        VALUE("1", "1");
+
+        private final String id;
+        private final String name;
+
+        private SubOfAbstractEnum(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @IpsEnumAttribute(name = "id", identifier = true, unique = true)
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @IpsEnumAttribute(name = "name", unique = true, displayName = true)
+        @Override
+        public String getName() {
+            return name;
+        }
 
     }
 
