@@ -64,7 +64,7 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The <tt>ModelExplorer</tt> is a <tt>ViewPart</tt> for displaying <tt>IIpsObject</tt>s along with
+ * The <code>ModelExplorer</code> is a <code>ViewPart</code> for displaying <code>IIpsObject</code>s along with
  * their attributes.
  * <p>
  * The view uses a <code>TreeViewer</code> to represent the hierarchical data structure. It can be
@@ -82,10 +82,10 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     /** The filter group in the context menu of the model explorer. */
     protected static final String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
 
-    /** Used for saving the current filter into an eclipse <tt>Memento</tt>. */
+    /** Used for saving the current filter into an eclipse <code>Memento</code>. */
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
 
-    /** Used for saving the state of group by into an eclipse <tt>Memento</tt>. */
+    /** Used for saving the state of group by into an eclipse <code>Memento</code>. */
     protected static final String GROUP_BY_KEY = "groupby"; //$NON-NLS-1$
 
     protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
@@ -135,7 +135,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     private ModelExplorerSorter sorter;
 
-    /** Creates a new <tt>ModelExplorer</tt>. */
+    /** Creates a new <code>ModelExplorer</code>. */
     public ModelExplorer() {
         super();
         config = createConfig();
@@ -638,7 +638,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         }
 
         /**
-         * Returns <tt>true</tt> if the activation was triggered by the model explorer. Additionally
+         * Returns <code>true</code> if the activation was triggered by the model explorer. Additionally
          * resets the activation flag.
          */
         private boolean wasActivatedByModelExplorer() {

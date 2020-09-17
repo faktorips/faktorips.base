@@ -15,7 +15,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
 /**
- * A wizard responsible for the creation of a new <tt>IEnumType</tt>.
+ * A wizard responsible for the creation of a new <code>IEnumType</code>.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 

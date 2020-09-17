@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Implementation of <tt>IEnumAttributeValue</tt>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumAttributeValue</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumAttributeValue
  * 
@@ -66,10 +66,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private final Observer valueObserver;
 
     /**
-     * Creates a new <tt>IEnumAttributeValue</tt>.
+     * Creates a new <code>IEnumAttributeValue</code>.
      * 
-     * @param parent The <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.
-     * @param id A unique ID for this <tt>IEnumAttributeValue</tt>.
+     * @param parent The <code>IEnumValue</code> this <code>IEnumAttributeValue</code> belongs to.
+     * @param id A unique ID for this <code>IEnumAttributeValue</code>.
      * 
      * @throws CoreException If an error occurs while initializing the object.
      */
@@ -152,9 +152,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Returns the <tt>IEnumAttribute</tt> this <tt>IEnumAttributeValue</tt> is a value for. t
+     * Returns the <code>IEnumAttribute</code> this <code>IEnumAttributeValue</code> is a value for. t
      * 
-     * @param enumType The <tt>IEnumType</tt> this <tt>IEnumAttributeValue</tt> is referring to.
+     * @param enumType The <code>IEnumType</code> this <code>IEnumAttributeValue</code> is referring to.
      */
     private IEnumAttribute getEnumAttribute(IEnumType enumType) {
         IEnumValue enumValue = getEnumValue();
@@ -296,8 +296,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Validations necessary if this <tt>IEnumAttributeValue</tt> refers to a unique identifier
-     * <tt>IEnumAttribute</tt>.
+     * Validations necessary if this <code>IEnumAttributeValue</code> refers to a unique identifier
+     * <code>IEnumAttribute</code>.
      */
     private void validateUniqueIdentifierEnumAttributeValue(MessageList list) {
         String text;
@@ -327,8 +327,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Returns whether this <tt>IEnumAttributeValue</tt> refers to a unique identifier
-     * <tt>IEnumAttribute</tt>.
+     * Returns whether this <code>IEnumAttributeValue</code> refers to a unique identifier
+     * <code>IEnumAttribute</code>.
      */
     private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute) {
         try {

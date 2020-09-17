@@ -15,17 +15,17 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
- * An <tt>IPartReference</tt> is part of an <tt>IEnumContent</tt>/<tt>ITableContents</tt> used to
- * save information about the <tt>IEnumAttribute</tt>s/<tt>IColumn</tt>s of the
- * <tt>IEnumType</tt>/<tt>ITableStructure</tt> the <tt>IEnumContent</tt>/<tt>ITableContents</tt> is
+ * An <code>IPartReference</code> is part of an <code>IEnumContent</code>/<code>ITableContents</code> used to
+ * save information about the <code>IEnumAttribute</code>s/<code>IColumn</code>s of the
+ * <code>IEnumType</code>/<code>ITableStructure</code> the <code>IEnumContent</code>/<code>ITableContents</code> is
  * based upon.
  * <p>
- * This is necessary to be able to determine if the <tt>IEnumAttribute</tt>s/<tt>IColumn</tt>s have
- * changed since the creation of the <tt>IEnumContent</tt>/<tt>ITableContents</tt>. In this case,
- * the <tt>IEnumContent</tt> needs to be fixed to be once again consistent with the model.
+ * This is necessary to be able to determine if the <code>IEnumAttribute</code>s/<code>IColumn</code>s have
+ * changed since the creation of the <code>IEnumContent</code>/<code>ITableContents</code>. In this case,
+ * the <code>IEnumContent</code> needs to be fixed to be once again consistent with the model.
  * <p>
- * With the use of <tt>IPartReference</tt>s we can determine whether the names of the
- * <tt>IEnumAttribute</tt>s/<tt>IColumn</tt>s or their ordering has changed.
+ * With the use of <code>IPartReference</code>s we can determine whether the names of the
+ * <code>IEnumAttribute</code>s/<code>IColumn</code>s or their ordering has changed.
  * 
  * @see IEnumContent
  * @see ITableContents
@@ -37,11 +37,11 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 public interface IPartReference extends IIpsObjectPart {
 
     /**
-     * Sets the name of this <tt>IPartReference</tt>.
+     * Sets the name of this <code>IPartReference</code>.
      * 
-     * @param name The new name for this <tt>IPartReference</tt>.
+     * @param name The new name for this <code>IPartReference</code>.
      * 
-     * @throws NullPointerException If <tt>name</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
     public void setName(String name);
 

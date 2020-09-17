@@ -54,7 +54,7 @@ public class IpsSrcFileContent {
     /** Map containing the root properties of the source file. */
     private Map<String, String> rootProperties = null;
 
-    /** This flag is <tt>true</tt> if the content has been modified. */
+    /** This flag is <code>true</code> if the content has been modified. */
     private boolean modified = false;
 
     /**
@@ -64,7 +64,7 @@ public class IpsSrcFileContent {
 
     private boolean parsable = true;
 
-    /** See <tt>wasModStampTriggeredBySave()</tt> for details. */
+    /** See <code>wasModStampTriggeredBySave()</code> for details. */
     private List<Long> modStampsAfterSave = null;
 
     /** Indicates if the ips object is completely initialized with the ips source file content. */

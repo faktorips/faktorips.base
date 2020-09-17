@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <tt>IEnumAttribute</tt>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumAttribute</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumAttribute
  * 
@@ -45,32 +45,32 @@ import org.w3c.dom.Element;
  * @since 2.3
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
-    /** The data type of this <tt>IEnumAttribute</tt>. */
+    /** The data type of this <code>IEnumAttribute</code>. */
     private String datatype;
 
-    /** Flag indicating whether this <tt>IEnumAttribute</tt> is inherited from the super type. */
+    /** Flag indicating whether this <code>IEnumAttribute</code> is inherited from the super type. */
     private boolean inherited;
 
-    /** Flag indicating whether this <tt>IEnumAttribute</tt> is unique. */
+    /** Flag indicating whether this <code>IEnumAttribute</code> is unique. */
     private boolean unique;
 
     /**
-     * Flag indicating whether this <tt>IEnumAttribute</tt> is the identifying attribute of this
+     * Flag indicating whether this <code>IEnumAttribute</code> is the identifying attribute of this
      * enumeration type.
      */
     private boolean identifier;
 
-    /** Flag indicating whether this <tt>IEnumAttribute</tt> is used as display name. */
+    /** Flag indicating whether this <code>IEnumAttribute</code> is used as display name. */
     private boolean usedAsNameInFaktorIpsUi;
 
-    /** Flag indicating whether this <tt>IEnumAttribute</tt> is multilingual or not. */
+    /** Flag indicating whether this <code>IEnumAttribute</code> is multilingual or not. */
     private boolean multilingual;
 
     /**
-     * Creates a new <tt>IEnumAttribute</tt>.
+     * Creates a new <code>IEnumAttribute</code>.
      * 
-     * @param parent The <tt>IEnumType</tt> this <tt>IEnumAttribute</tt> belongs to.
-     * @param id A unique ID for this <tt>IEnumAttribute</tt>.
+     * @param parent The <code>IEnumType</code> this <code>IEnumAttribute</code> belongs to.
+     * @param id A unique ID for this <code>IEnumAttribute</code>.
      */
     public EnumAttribute(IEnumType parent, String id) {
         super(parent, id);
@@ -172,7 +172,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         return multilingual != superEnumAttribute.isMultilingual();
     }
 
-    /** Validates the <tt>name</tt> property. */
+    /** Validates the <code>name</code> property. */
     private void validateName(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
@@ -230,7 +230,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the <tt>datatype</tt> property. */
+    /** Validates the <code>datatype</code> property. */
     private void validateDatatype(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;

@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Base class for all <tt>CellEditor</tt>s for ColumnViewers. This cell editor is created with a
+ * Base class for all <code>CellEditor</code>s for ColumnViewers. This cell editor is created with a
  * control that is displayed when the user edits a table cell.
  * <p>
  * This CellEditor can be configured to create new rows if needed and append them to the end of the
@@ -35,16 +35,16 @@ public abstract class IpsCellEditor extends CellEditor {
     private TraversalStrategy traversalStrategy;
 
     /**
-     * Constructs a <tt>TableCellEditor</tt> that is used in the given <tt>TableViewer</tt>. The
-     * given control is displayed when a cell is edited. The given <tt>columnIndex</tt> indicates in
+     * Constructs a <code>TableCellEditor</code> that is used in the given <code>TableViewer</code>. The
+     * given control is displayed when a cell is edited. The given <code>columnIndex</code> indicates in
      * which column of the table this editor is used.
      * <p>
-     * The created <tt>TableCellEditor</tt> does not create rows automatically and must be
+     * The created <code>TableCellEditor</code> does not create rows automatically and must be
      * configured to do so.
      * 
      * @param control The control to be displayed in a cell when editing.
      * 
-     * @throws NullPointerException If <tt>control</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>control</code> is <code>null</code>.
      */
     public IpsCellEditor(Control control) {
         // Do not call super-constructor.
@@ -87,11 +87,11 @@ public abstract class IpsCellEditor extends CellEditor {
     }
 
     /**
-     * Returns <tt>true</tt> if this <tt>TableCellEditor</tt> supports mapping between an id and a
+     * Returns <code>true</code> if this <code>TableCellEditor</code> supports mapping between an id and a
      * text which will be displayed (e.g. a combo box internally stores an id but the user can
      * select the value by using names).
      * <p>
-     * Returns <tt>false</tt> otherwise.
+     * Returns <code>false</code> otherwise.
      */
     public abstract boolean isMappedValue();
 
@@ -99,7 +99,7 @@ public abstract class IpsCellEditor extends CellEditor {
      * {@inheritDoc}
      * <p>
      * This method is never called, since the super-constructor is not used to create this
-     * <tt>CellEditor</tt>. Returns the control given at instantiation.
+     * <code>CellEditor</code>. Returns the control given at instantiation.
      */
     @Override
     protected Control createControl(Composite parent) {
@@ -110,7 +110,7 @@ public abstract class IpsCellEditor extends CellEditor {
      * {@inheritDoc}
      * <p>
      * Copied from super class. We needed to do this because we do not call the super constructor
-     * and so the <tt>control</tt> attribute of the super class is always <tt>null</tt>. This method
+     * and so the <code>control</code> attribute of the super class is always <code>null</code>. This method
      * accesses the duplicated attribute in this class.
      */
     @Override
@@ -127,7 +127,7 @@ public abstract class IpsCellEditor extends CellEditor {
      * {@inheritDoc}
      * <p>
      * Copied from super class. We needed to do this because we do not call the super constructor
-     * and so the <tt>control</tt> attribute of the super class is always <tt>null</tt>. This method
+     * and so the <code>control</code> attribute of the super class is always <code>null</code>. This method
      * accesses the duplicated attribute in this class.
      */
     @Override
@@ -142,7 +142,7 @@ public abstract class IpsCellEditor extends CellEditor {
      * {@inheritDoc}
      * <p>
      * Copied from super class. We needed to do this because we do not call the super constructor
-     * and so the <tt>control</tt> attribute of the super class is always <tt>null</tt>. This method
+     * and so the <code>control</code> attribute of the super class is always <code>null</code>. This method
      * accesses the duplicated attribute in this class.
      */
     @Override
@@ -154,7 +154,7 @@ public abstract class IpsCellEditor extends CellEditor {
      * {@inheritDoc}
      * <p>
      * Copied from super class. We needed to do this because we do not call the super constructor
-     * and so the <tt>control</tt> attribute of the super class is always <tt>null</tt>. This method
+     * and so the <code>control</code> attribute of the super class is always <code>null</code>. This method
      * accesses the duplicated attribute in this class.
      */
     @Override

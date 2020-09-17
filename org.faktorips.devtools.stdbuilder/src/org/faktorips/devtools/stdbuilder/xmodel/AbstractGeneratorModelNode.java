@@ -171,7 +171,7 @@ public abstract class AbstractGeneratorModelNode {
      * Returns an empty string if there is no default description as well or the given
      * {@link IIpsObjectPartContainer} does not support descriptions.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPart</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPart</code> is <code>null</code>.
      */
     public String getDescription() {
         String description = ""; //$NON-NLS-1$

@@ -550,7 +550,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     /**
-     * Returns the <tt>ProductCmptGenImplClassBuilder</tt> or <tt>null</tt> if non has been
+     * Returns the <code>ProductCmptGenImplClassBuilder</code> or <code>null</code> if non has been
      * assembled yet.
      */
     public final ProductCmptGenerationClassBuilder getProductCmptGenImplClassBuilder() {
@@ -563,14 +563,14 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     /**
-     * Returns the <tt>PolicyCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled yet.
+     * Returns the <code>PolicyCmptClassBuilder</code> or <code>null</code> if non has been assembled yet.
      */
     public final PolicyCmptClassBuilder getPolicyCmptImplClassBuilder() {
         return getBuilderById(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, PolicyCmptClassBuilder.class);
     }
 
     /**
-     * Returns the <tt>ProductCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled yet.
+     * Returns the <code>ProductCmptClassBuilder</code> or <code>null</code> if non has been assembled yet.
      */
     public final ProductCmptClassBuilder getProductCmptImplClassBuilder() {
         return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, ProductCmptClassBuilder.class);

@@ -67,4 +67,43 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.xml.bind</groupId>
+                    <artifactId>jakarta.xml.bind-api</artifactId>
+                    <version>2.3.3</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-impl</artifactId>
+                    <version>2.3.3</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <properties>
+                <maven-javadoc-plugin-version>3.2.0</maven-javadoc-plugin-version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>${maven-javadoc-plugin-version}</version>
+                            <configuration>
+                                <source>1.6</source>
+                                <!-- at the moment we do not check missing javadoc like missing @param or @return -->
+                                <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>

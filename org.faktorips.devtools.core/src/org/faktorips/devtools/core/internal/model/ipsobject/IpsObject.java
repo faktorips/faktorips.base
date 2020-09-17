@@ -46,13 +46,13 @@ import org.w3c.dom.Element;
  */
 public abstract class IpsObject extends IpsObjectPartContainer implements IIpsObject {
 
-    /** Flag indicating whether this <tt>IpsObject</tt> was created from a parsable file content. */
+    /** Flag indicating whether this <code>IpsObject</code> was created from a parsable file content. */
     private boolean fromParsableFile = false;
 
     /**
-     * Creates a new <tt>IpsObject</tt>.
+     * Creates a new <code>IpsObject</code>.
      * 
-     * @param file The <tt>IIpsSrcFile</tt> in which this <tt>IpsObject</tt> will be stored in.
+     * @param file The <code>IIpsSrcFile</code> in which this <code>IpsObject</code> will be stored in.
      */
     protected IpsObject(IIpsSrcFile file) {
         super(file, (file == null) ? "" : StringUtil.getFilenameWithoutExtension(file.getName())); //$NON-NLS-1$
@@ -69,7 +69,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * Marks the <tt>IpsObject</tt> as originating from an <tt>IIpsSrcFile</tt> with an invalid file
+     * Marks the <code>IpsObject</code> as originating from an <code>IIpsSrcFile</code> with an invalid file
      * format.
      */
     void markAsFromUnparsableFile() {
@@ -120,7 +120,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return null;
     }
 
-    /** Notifies the model that this <tt>IpsObject</tt> has changed. */
+    /** Notifies the model that this <code>IpsObject</code> has changed. */
     @Override
     protected void objectHasChanged() {
         ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());

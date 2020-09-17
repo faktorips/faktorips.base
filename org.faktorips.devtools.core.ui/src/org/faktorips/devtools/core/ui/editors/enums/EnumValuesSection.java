@@ -79,15 +79,15 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The UI section for the <tt>EnumTypeEditorPage</tt> and the <tt>EnumContentEditorPage</tt> that
- * contains the <tt>enumValuesTable</tt> to be edited.
+ * The UI section for the <code>EnumTypeEditorPage</code> and the <code>EnumContentEditorPage</code> that
+ * contains the <code>enumValuesTable</code> to be edited.
  * <p>
- * If the IPS object being edited is an <tt>IEnumType</tt> then in-place fixing of the
- * <tt>enumValuesTable</tt> will be done. That means, if an <tt>IEnumAttribute</tt> is added there
- * will be a new column in the table, if an <tt>IEnumAttribute</tt> is deleted the corresponding
+ * If the IPS object being edited is an <code>IEnumType</code> then in-place fixing of the
+ * <code>enumValuesTable</code> will be done. That means, if an <code>IEnumAttribute</code> is added there
+ * will be a new column in the table, if an <code>IEnumAttribute</code> is deleted the corresponding
  * table column will be deleted and so on.
  * <p>
- * Fixing the table when editing <tt>IEnumContent</tt> objects is done manually by the user trough a
+ * Fixing the table when editing <code>IEnumContent</code> objects is done manually by the user trough a
  * separate dialog.
  * 
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditorPage
@@ -102,22 +102,22 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** Key to store the state of the action in the dialog settings. */
     private static final String SETTINGS_KEY_LOCK_AND_SYNC = "lockAndSyncLiteralNames"; //$NON-NLS-1$
 
-    /** The <tt>IEnumValueContainer</tt> holding the <tt>IEnumValue</tt>s to be edited. */
+    /** The <code>IEnumValueContainer</code> holding the <code>IEnumValue</code>s to be edited. */
     private final IEnumValueContainer enumValueContainer;
 
     /**
-     * The <tt>IEnumType</tt> holding the <tt>IEnumValue</tt>s to be edited or <tt>null</tt> if an
-     * <tt>IEnumContent</tt> is being edited.
+     * The <code>IEnumType</code> holding the <code>IEnumValue</code>s to be edited or <code>null</code> if an
+     * <code>IEnumContent</code> is being edited.
      */
     private IEnumType enumType;
 
     /**
-     * The <tt>IEnumContent</tt> holding the <tt>IEnumValue</tt>s to be edited or <tt>null</tt> if
-     * an <tt>IEnumType</tt> is being edited.
+     * The <code>IEnumContent</code> holding the <code>IEnumValue</code>s to be edited or <code>null</code> if
+     * an <code>IEnumType</code> is being edited.
      */
     private IEnumContent enumContent;
 
-    /** The <tt>IIpsProject</tt> the <tt>IEnumValueContainer</tt> to edit is stored in. */
+    /** The <code>IIpsProject</code> the <code>IEnumValueContainer</code> to edit is stored in. */
     private IIpsProject ipsProject;
 
     /** The UI table widget. */
@@ -126,16 +126,16 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** The JFace table viewer linking the UI table with the model data. */
     private TableViewer enumValuesTableViewer;
 
-    /** Action to add new <tt>IEnumValue</tt>s. */
+    /** Action to add new <code>IEnumValue</code>s. */
     private IAction newEnumValueAction;
 
-    /** Action to delete <tt>IEnumValue</tt>s. */
+    /** Action to delete <code>IEnumValue</code>s. */
     private IAction deleteEnumValueAction;
 
-    /** Action to move <tt>IEnumValue</tt>s up by 1. */
+    /** Action to move <code>IEnumValue</code>s up by 1. */
     private IAction moveEnumValueUpAction;
 
-    /** Action to move <tt>IEnumValue</tt>s down by 1. */
+    /** Action to move <code>IEnumValue</code>s down by 1. */
     private IAction moveEnumValueDownAction;
 
     /**
@@ -158,8 +158,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private boolean lockAndSynchronizeLiteralNames;
 
     /**
-     * Flag indicating whether the section is used to edit the <tt>IEnumValue</tt>s of an
-     * <tt>IEnumType</tt> (<tt>true</tt>) or an <tt>IEnumContent</tt> (<tt>false</tt>).
+     * Flag indicating whether the section is used to edit the <code>IEnumValue</code>s of an
+     * <code>IEnumType</code> (<code>true</code>) or an <code>IEnumContent</code> (<code>false</code>).
      */
     private boolean enumTypeEditing;
 
@@ -168,18 +168,18 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private SearchBar searchBar;
 
     /**
-     * Creates a new <tt>EnumValuesSection</tt> containing the <tt>IEnumValue</tt>s of the given
-     * <tt>IEnumValueContainer</tt>.
+     * Creates a new <code>EnumValuesSection</code> containing the <code>IEnumValue</code>s of the given
+     * <code>IEnumValueContainer</code>.
      * 
-     * @param enumValueContainer The <tt>IEnumValue</tt>s of this <tt>IEnumValueContainer</tt> will
+     * @param enumValueContainer The <code>IEnumValue</code>s of this <code>IEnumValueContainer</code> will
      *            be shown.
      * @param editorSite the editor site to register common providers
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
-     * @throws CoreException If an error occurs while searching for the <tt>IEnumType</tt>
+     * @throws CoreException If an error occurs while searching for the <code>IEnumType</code>
      *             referenced by the IPS object being edited.
-     * @throws NullPointerException If <tt>enumValueContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, IEditorSite editorSite, Composite parent,
             UIToolkit toolkit) throws CoreException {
@@ -306,7 +306,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Creates the table columns based on the <tt>IEnumAttribute</tt>s of the <tt>IEnumType</tt> to
+     * Creates the table columns based on the <code>IEnumAttribute</code>s of the <code>IEnumType</code> to
      * edit.
      */
     private void createTableColumnsForEnumType() {
@@ -326,8 +326,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Creates the table columns based upon the <tt>IEnumAttributeReference</tt>s (and upon the
-     * <tt>IEnumAttribute</tt>s of the referenced <tt>IEnumType</tt> if possible).
+     * Creates the table columns based upon the <code>IEnumAttributeReference</code>s (and upon the
+     * <code>IEnumAttribute</code>s of the referenced <code>IEnumType</code> if possible).
      */
     private void createTableColumnsForEnumContent() {
         try {
@@ -437,7 +437,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Returns the current index of the column identified by the given name. Returns <tt>null</tt>
+     * Returns the current index of the column identified by the given name. Returns <code>null</code>
      * if no column with the given name exists.
      */
     private int getColumnIndexByName(String columnName) {
@@ -497,7 +497,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Registers this section as <tt>ChangeListener</tt> to the <tt>IEnumValueContainer</tt> that is
+     * Registers this section as <code>ChangeListener</code> to the <code>IEnumValueContainer</code> that is
      * being edited.
      */
     private void registerAsChangeListenerToEnumValueContainer() {
@@ -525,7 +525,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /**
      * Reinitializes the contents of this section:
      * <ul>
-     * <li>The <tt>columnNames</tt> will be emptied and created anew.
+     * <li>The <code>columnNames</code> will be emptied and created anew.
      * <li>Every table column of the table will be disposed and created anew.
      * <li>The table viewer will be refreshed.
      * <li>The default provider values will be re-initialized.
@@ -582,7 +582,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Updates the cell editors for the <tt>enumValuesTableViewer</tt> by creating them anew and
+     * Updates the cell editors for the <code>enumValuesTableViewer</code> by creating them anew and
      * overwrites the column properties with actual data. Also refreshes the viewer with actual
      * model data.
      */
@@ -590,7 +590,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         enumValuesTableViewer.refresh();
     }
 
-    /** Creates the hover service for validation messages for the <tt>enumValuesTableViewer</tt>. */
+    /** Creates the hover service for validation messages for the <code>enumValuesTableViewer</code>. */
     private void createTableValidationHoverService() {
         new TableMessageHoverService(enumValuesTableViewer) {
 
@@ -606,11 +606,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Initiates in-place fixing of the <tt>enumValuesTable</tt> if the <tt>IEnumValueContainer</tt>
-     * to be edited is an <tt>IEnumType</tt>.
+     * Initiates in-place fixing of the <code>enumValuesTable</code> if the <code>IEnumValueContainer</code>
+     * to be edited is an <code>IEnumType</code>.
      * <p>
-     * Updates the <tt>originalOrderedAttributeValuesMap</tt> and refreshes the <tt>
-     * enumValuesTableViewer</tt> when <tt>IEnumValue</tt>s have been added, moved or removed.
+     * Updates the <code>originalOrderedAttributeValuesMap</code> and refreshes the <code>
+     * enumValuesTableViewer</code> when <code>IEnumValue</code>s have been added, moved or removed.
      */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
@@ -755,8 +755,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         }
 
         /**
-         * Returns <tt>true</tt> if the validation of the given <tt>IEnumValue</tt> detects an error
-         * at the given column index, <tt>false</tt> otherwise.
+         * Returns <code>true</code> if the validation of the given <code>IEnumValue</code> detects an error
+         * at the given column index, <code>false</code> otherwise.
          */
         private int getSeverity(IEnumValue enumValue, int columnIndex) {
             // Don't validate if the indicated column does not exist.
@@ -811,7 +811,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Listener that reacts to <tt>SelectionChangedEvent</tt>s by deleting all empty rows at the
+     * Listener that reacts to <code>SelectionChangedEvent</code>s by deleting all empty rows at the
      * bottom of the table.
      */
     private static class RowDeletor implements ISelectionChangedListener {
@@ -850,10 +850,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         }
 
         /**
-         * Checks whether a row (<tt>IEnumValue</tt>) is empty or not. Returns <tt>true</tt> if all
+         * Checks whether a row (<code>IEnumValue</code>) is empty or not. Returns <code>true</code> if all
          * the given row's values (columns) contain a whitespace string.
          * <p>
-         * The value <tt>null</tt> is treated as content. Thus a row that contains <tt>null</tt>
+         * The value <code>null</code> is treated as content. Thus a row that contains <code>null</code>
          * values is not empty.
          */
         private boolean isRowEmpty(IEnumValue enumValue) {

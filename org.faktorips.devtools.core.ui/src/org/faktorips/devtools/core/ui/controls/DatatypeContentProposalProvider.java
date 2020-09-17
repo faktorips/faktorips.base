@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 
 /**
- * An <tt>IContentProposalProvider</tt> for <tt>Datatype</tt> proposal.
+ * An <code>IContentProposalProvider</code> for <code>Datatype</code> proposal.
  * 
  * @author hbaagil
  */

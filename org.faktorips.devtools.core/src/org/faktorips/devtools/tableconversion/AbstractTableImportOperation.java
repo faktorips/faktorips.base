@@ -17,7 +17,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Abstract operation to import <tt>ITableContents</tt> in an arbitrary format.
+ * Abstract operation to import <code>ITableContents</code> in an arbitrary format.
  * <p>
  * Implementors of a new table format should subclass this class and use the
  * <code>externalTableFormat</code> extension point to register the new table format.

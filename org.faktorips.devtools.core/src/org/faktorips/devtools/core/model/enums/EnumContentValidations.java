@@ -21,7 +21,7 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <tt>IEnumContent</tt> that are also used in
+ * A class that contains validations of the model class <code>IEnumContent</code> that are also used in
  * the creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumContent
@@ -37,20 +37,20 @@ public abstract class EnumContentValidations {
     }
 
     /**
-     * Validates whether the given qualified name of an <tt>IEnumContent</tt> is equal to the
-     * enumeration content name that is specified in provided <tt>IEnumType</tt>. Therefore it is
-     * assumed that the provided <tt>IEnumType</tt> is the corresponding one for the
-     * <tt>IEnumContent</tt> in question.
+     * Validates whether the given qualified name of an <code>IEnumContent</code> is equal to the
+     * enumeration content name that is specified in provided <code>IEnumType</code>. Therefore it is
+     * assumed that the provided <code>IEnumType</code> is the corresponding one for the
+     * <code>IEnumContent</code> in question.
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumContent The <tt>IEnumContent</tt> object can be specified if available. If so it
+     * @param enumContent The <code>IEnumContent</code> object can be specified if available. If so it
      *            is added to the message object in case the check fails.
-     * @param enumType The corresponding <tt>IEnumType</tt>.
-     * @param enumContentName The qualified name of the <tt>IEnumContent</tt> that is validated by
+     * @param enumType The corresponding <code>IEnumType</code>.
+     * @param enumContentName The qualified name of the <code>IEnumContent</code> that is validated by
      *            this method.
      * 
-     * @throws NullPointerException If <tt>validationMessageList</tt>, <tt>enumType</tt> or
-     *             <tt>enumContentPackageFragmentQualifiedName</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>validationMessageList</code>, <code>enumType</code> or
+     *             <code>enumContentPackageFragmentQualifiedName</code> is <code>null</code>.
      */
     public static void validateEnumContentName(MessageList validationMessageList,
             IEnumContent enumContent,
@@ -74,27 +74,27 @@ public abstract class EnumContentValidations {
     }
 
     /**
-     * Validates the <tt>enumType</tt> property of the given <tt>IEnumContent</tt>.
+     * Validates the <code>enumType</code> property of the given <code>IEnumContent</code>.
      * <p>
      * Appropriate validation messages will be added to the given message list if:
      * <ul>
-     * <li>The qualified name of the <tt>IEnumType</tt> equals an empty string (<tt>IEnumType</tt>
+     * <li>The qualified name of the <code>IEnumType</code> equals an empty string (<code>IEnumType</code>
      * is missing).
-     * <li>The <tt>IEnumType</tt> is specified but does not exist.
-     * <li>The <tt>IEnumType</tt> does exist but its values are defined in the model.
-     * <li>The <tt>IEnumType</tt> does exist but is abstract.
+     * <li>The <code>IEnumType</code> is specified but does not exist.
+     * <li>The <code>IEnumType</code> does exist but its values are defined in the model.
+     * <li>The <code>IEnumType</code> does exist but is abstract.
      * </ul>
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumContent The <tt>IEnumContent</tt> that might be invalid or <tt>null</tt> if that
+     * @param enumContent The <code>IEnumContent</code> that might be invalid or <code>null</code> if that
      *            information cannot be supported.
-     * @param enumTypeQualifiedName The qualified name of the <tt>IEnumType</tt> the
-     *            <tt>IEnumContent</tt> is based upon.
+     * @param enumTypeQualifiedName The qualified name of the <code>IEnumType</code> the
+     *            <code>IEnumContent</code> is based upon.
      * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws CoreException If an error occurs while searching for the <tt>IEnumType</tt>.
-     * @throws NullPointerException If <tt>validationMessageList</tt>,
-     *             <tt>enumTypeQualifiedName</tt> or <tt>ipsProject</tt> is <tt>null</tt>.
+     * @throws CoreException If an error occurs while searching for the <code>IEnumType</code>.
+     * @throws NullPointerException If <code>validationMessageList</code>,
+     *             <code>enumTypeQualifiedName</code> or <code>ipsProject</code> is <code>null</code>.
      */
     public static void validateEnumType(MessageList validationMessageList,
             IEnumContent enumContent,

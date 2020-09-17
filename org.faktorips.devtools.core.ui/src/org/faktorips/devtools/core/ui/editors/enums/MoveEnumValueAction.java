@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <tt>EnumValuesSection</tt> for moving <tt>IEnumValue</tt>s.
+ * This action is used by the <code>EnumValuesSection</code> for moving <code>IEnumValue</code>s.
  * 
  * @see EnumValuesSection
  * 
@@ -47,13 +47,13 @@ public class MoveEnumValueAction extends Action {
     private boolean up;
 
     /**
-     * Creates a new <tt>MoveEnumValueAction</tt>.
+     * Creates a new <code>MoveEnumValueAction</code>.
      * 
      * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
-     * @param up Flag indicating whether the selected <tt>IEnumValue</tt> shall be moved upwards or
+     * @param up Flag indicating whether the selected <code>IEnumValue</code> shall be moved upwards or
      *            downwards.
      * 
-     * @throws NullPointerException If <tt>enumValuesTableViewer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
     public MoveEnumValueAction(TableViewer enumValuesTableViewer, boolean up) {
         super();

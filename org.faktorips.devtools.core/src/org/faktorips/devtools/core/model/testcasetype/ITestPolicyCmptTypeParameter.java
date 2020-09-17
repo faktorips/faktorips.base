@@ -164,13 +164,13 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public ITestAttribute getTestAttribute(String attributeName);
 
     /**
-     * Returns an array of all <tt>ITestAttribute</tt>s that are based on the
-     * <tt>IPolicyCmptTypeAttribute</tt> with the given name.
+     * Returns an array of all <code>ITestAttribute</code>s that are based on the
+     * <code>IPolicyCmptTypeAttribute</code> with the given name.
      * <p>
-     * Returns an empty array if no <tt>ITestAttribute</tt>s based on the
-     * <tt>IPolicyCmptTypeAttribute</tt> identified by the provided <tt>attributeName</tt> exist.
+     * Returns an empty array if no <code>ITestAttribute</code>s based on the
+     * <code>IPolicyCmptTypeAttribute</code> identified by the provided <code>attributeName</code> exist.
      * 
-     * @param attributeName The name of the <tt>IPolicyCmptTypeAttribute</tt> that results must be
+     * @param attributeName The name of the <code>IPolicyCmptTypeAttribute</code> that results must be
      *            based upon.
      */
     public ITestAttribute[] getTestAttributes(String attributeName);

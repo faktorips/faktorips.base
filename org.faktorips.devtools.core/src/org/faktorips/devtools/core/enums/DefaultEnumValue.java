@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.enums;
 
 /**
- * Default implementation of <tt>EnumValue</tt>.
+ * Default implementation of <code>EnumValue</code>.
  * 
  * @see EnumValue
  */

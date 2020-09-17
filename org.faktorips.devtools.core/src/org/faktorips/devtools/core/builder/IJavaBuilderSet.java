@@ -23,17 +23,17 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 public interface IJavaBuilderSet extends IJavaPackageStructure, IIpsArtefactBuilderSet {
 
     /**
-     * Returns a list containing all <tt>IJavaElement</tt>s this builder set generates for the given
-     * <tt>IIpsObjectPartContainer</tt>.
+     * Returns a list containing all <code>IJavaElement</code>s this builder set generates for the given
+     * <code>IIpsObjectPartContainer</code>.
      * <p>
-     * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
-     * <tt>IIpsObjectPartContainer</tt>.
+     * Returns an empty list if no <code>IJavaElement</code>s are generated for the provided
+     * <code>IIpsObjectPartContainer</code>.
      * <p>
      * The IPS model should be completely valid if calling this method or else the results may not
      * be exhaustive.
      * 
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
-     *            <tt>IJavaElement</tt>s for.
+     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the generated
+     *            <code>IJavaElement</code>s for.
      * 
      * @throws NullPointerException If the parameter is null
      */

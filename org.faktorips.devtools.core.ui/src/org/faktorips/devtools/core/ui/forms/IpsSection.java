@@ -87,7 +87,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     /**
      * Creates a new {@link IpsSection} with the style
-     * <tt>ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE</tt>.
+     * <code>ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE</code>.
      * 
      * @param parent The parent UI composite
      * @param layoutData How to layout the data within the section

@@ -16,7 +16,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <tt>EnumValuesSection</tt>. It enables the user to lock the values of
+ * This action is used by the <code>EnumValuesSection</code>. It enables the user to lock the values of
  * the literal name column and synchronize it's values with the default provider column.
  * 
  * @see EnumValuesSection
@@ -30,15 +30,15 @@ public class LockAndSyncLiteralNameAction extends Action {
     /** The name of the image for the action. */
     private final String IMAGE_NAME = "SyncLiteralNames.gif"; //$NON-NLS-1$
 
-    /** The <tt>EnumValuesSection</tt> this action belongs to. */
+    /** The <code>EnumValuesSection</code> this action belongs to. */
     private EnumValuesSection enumValuesSection;
 
     /**
-     * Creates the <tt>LockAndSyncLiteralNameAction</tt>.
+     * Creates the <code>LockAndSyncLiteralNameAction</code>.
      * 
-     * @param enumValuesSection The <tt>EnumValuesSection</tt> this action belongs to.
+     * @param enumValuesSection The <code>EnumValuesSection</code> this action belongs to.
      * 
-     * @throws NullPointerException If <tt>enumValuesSection</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>enumValuesSection</code> is <code>null</code>.
      */
     public LockAndSyncLiteralNameAction(EnumValuesSection enumValuesSection) {
         super(Messages.EnumValuesSection_labelLockAndSync, IAction.AS_CHECK_BOX);

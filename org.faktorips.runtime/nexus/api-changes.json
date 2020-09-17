@@ -138,6 +138,32 @@
           "code": "java.method.added",
           "new": "method void org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
           "justification": "FIPS-7016: Product info for data warehouse"
+        },
+        {
+          "regex": true,
+          "code": "java.missing.oldClass",
+          "old": "missing-class javax.xml..*",
+          "justification": "Java 11"
+        },
+        {
+          "regex": true,
+          "code": "java.class.externalClassExposedInAPI",
+          "new": "(class|interface) javax.activation..*",
+          "justification": "Java 11"
+        },
+        {
+          "regex": true,
+          "code": "java.class.externalClassExposedInAPI",
+          "new": "(class|interface) javax.xml..*",
+          "justification": "Java 11"
+        },
+        {
+          "regex": true,
+          "code": "java.missing.oldSuperType",
+          "old": "class org.faktorips.runtime.jaxb..*",
+          "new": "class org.faktorips.runtime.jaxb..*",
+          "superClass": "javax.xml.bind..*",
+          "justification": "Java 11"
         }
       ]
     }

@@ -113,9 +113,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
     public boolean hasSupertype();
 
     /**
-     * Returns whether this <tt>IType</tt> has a supertype that really exists.
+     * Returns whether this <code>IType</code> has a supertype that really exists.
      * 
-     * @param ipsProject The <tt>IIpsProject</tt> providing the object path that is used to search
+     * @param ipsProject The <code>IIpsProject</code> providing the object path that is used to search
      *            for the supertype.
      * 
      */
@@ -135,7 +135,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
     /**
      * Sets the type's supertype.
      * 
-     * @throws IllegalArgumentException If <tt>newSupertype</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If <code>newSupertype</code> is <code>null</code>.
      */
     public void setSupertype(String newSupertype);
 
@@ -205,7 +205,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws NullPointerException If <tt>project</tt> is <code>null</code>.
+     * @throws NullPointerException If <code>project</code> is <code>null</code>.
      */
     public IAttribute findAttribute(String name, IIpsProject ipsProject);
 
@@ -229,8 +229,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param indices The indices identifying the attributes.
      * @param up <code>true</code>, to move the attributes up, <false> to move them down.
      * 
-     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
-     * @throws IndexOutOfBoundsException If one of the <tt>indices</tt> does not identify an
+     * @throws NullPointerException If <code>indices</code> is <code>null</code>.
+     * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
      *             attribute.
      */
     public int[] moveAttributes(int[] indices, boolean up);
@@ -241,7 +241,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * <p>
      * If more than one association with the given role name singular exists, the first one is
      * returned. Returns <code>null</code> if no association with the given role name singular
-     * exists or <tt>roleNameSingular</tt> is <code>null</code>.
+     * exists or <code>roleNameSingular</code> is <code>null</code>.
      * 
      * @param roleNameSingular The association's role name singular.
      */
@@ -253,7 +253,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * <p>
      * If more than one association with the role name plural exist, the first one is returned.
      * Returns <code>null</code> if no association with the given role name plural exists or
-     * <tt>roleNamePlural</tt> is <code>null</code>.
+     * <code>roleNamePlural</code> is <code>null</code>.
      * 
      * @param roleNamePlural The association's role name plural.
      */
@@ -285,7 +285,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
     /**
      * Returns all associations that have the indicated target and association type in the current
      * type and optional it's supertype hierarchy. Returns an empty array if no such association
-     * exists or target or <tt>associationType</tt> is <code>null</code>.
+     * exists or target or <code>associationType</code> is <code>null</code>.
      * <p>
      * Constrained associations are not added to the result if a constraining association is already
      * added.
@@ -293,7 +293,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param target The qualified name of the target type.
      * @param associationType The association type.
      * @param includeSupertypes <code>true</code> if the supertype hierarchy should be included in
-     *            the search, <tt>false</tt> otherwise.
+     *            the search, <code>false</code> otherwise.
      */
     public List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
@@ -343,8 +343,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param indices The indices identifying the associations.
      * @param up <code>true</code>, to move the associations up, <false> to move them down.
      * 
-     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
-     * @throws IndexOutOfBoundsException If one of the <tt>indices</tt> does not identify an
+     * @throws NullPointerException If <code>indices</code> is <code>null</code>.
+     * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
      *             association.
      */
     public int[] moveAssociations(int[] indices, boolean up);
@@ -378,7 +378,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Returns the first method with the given signature. This method does not search the supertype
      * hierarchy. Returns <code>null</code> if no such method exists.
      * 
-     * @param signature The method's signature, e.g. <tt>calcPremium(base.Vertrag, Integer)</tt>
+     * @param signature The method's signature, e.g. <code>calcPremium(base.Vertrag, Integer)</code>
      */
     public IMethod getMethod(String signature);
 
@@ -386,8 +386,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Searches a method with the given signature in the type and its supertype hierarchy and
      * returns it. Returns <code>null</code> if no such method exists.
      * 
-     * @param signature The method's signature as string, e.g. <tt>computePremium(base.Contract,
-     *            base.Coverage)</tt>
+     * @param signature The method's signature as string, e.g. <code>computePremium(base.Contract,
+     *            base.Coverage)</code>
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
@@ -430,7 +430,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param indices The indices identifying the methods.
      * @param up <code>true</code>, to move the methods up, <false> to move them down.
      * 
-     * @throws NullPointerException If <tt>indices</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the indices does not identify a method.
      */
     public int[] moveMethods(int[] indices, boolean up);

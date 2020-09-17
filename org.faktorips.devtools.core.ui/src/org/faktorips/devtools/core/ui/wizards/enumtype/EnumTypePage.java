@@ -44,7 +44,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The wizard page for the <tt>NewEnumTypeWizard</tt>.
+ * The wizard page for the <code>NewEnumTypeWizard</code>.
  * 
  * @see NewEnumTypeWizard
  * 
@@ -57,14 +57,14 @@ public class EnumTypePage extends IpsObjectPage {
     /** The image for the wizard page. */
     private static final String PAGE_IMAGE = "wizards/NewEnumTypeWizard.png"; //$NON-NLS-1$
 
-    /** The text field to choose the supertype for the new <tt>IEnumType</tt>. */
+    /** The text field to choose the supertype for the new <code>IEnumType</code>. */
     private TextButtonField supertypeField;
 
-    /** The check box field to mark the new <tt>IEnumType</tt> as being abstract. */
+    /** The check box field to mark the new <code>IEnumType</code> as being abstract. */
     private CheckboxField isAbstractField;
 
     /**
-     * The check box field to mark the new <tt>IEnumType</tt> that its values are defined in the
+     * The check box field to mark the new <code>IEnumType</code> that its values are defined in the
      * model.
      */
     private CheckboxField extensibleField;
@@ -82,13 +82,13 @@ public class EnumTypePage extends IpsObjectPage {
     private Text nameAttributeNameField;
 
     /**
-     * The text field to specify qualified name for <tt>IEnumContent</tt> (only enabled if the
-     * values are not part of the model and the <tt>IEnumType</tt> is not abstract).
+     * The text field to specify qualified name for <code>IEnumContent</code> (only enabled if the
+     * values are not part of the model and the <code>IEnumType</code> is not abstract).
      */
     private TextField enumContentQualifiedNameField;
 
     /**
-     * Creates the <tt>EnumTypePage</tt>.
+     * Creates the <code>EnumTypePage</code>.
      * 
      * @param selection Active user selection.
      */
@@ -170,9 +170,9 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     /**
-     * Enables or disables the <tt>rootPackageSpecificationControl</tt> and the
-     * <tt>enumContentQualifiedNameField</tt> depending on the values of the
-     * <tt>isAbstractField</tt> and <tt>containingValuesField</tt>.
+     * Enables or disables the <code>rootPackageSpecificationControl</code> and the
+     * <code>enumContentQualifiedNameField</code> depending on the values of the
+     * <code>isAbstractField</code> and <code>containingValuesField</code>.
      */
     private void enableEnumContentControls() {
         boolean isAbstract = isAbstractField.getValue();
@@ -230,8 +230,8 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     /**
-     * Updates the <tt>enumContentQualifiedNameField</tt> so that it reflects the current package
-     * and name of the <tt>IEnumType</tt>.
+     * Updates the <code>enumContentQualifiedNameField</code> so that it reflects the current package
+     * and name of the <code>IEnumType</code>.
      */
     private void updateEnumContentName() {
         // Do only if the check box is not active yet to not destroy any user input.

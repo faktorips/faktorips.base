@@ -218,7 +218,7 @@ public interface IAssociation extends ITypePart {
     /**
      * Sets the association's type.
      * 
-     * @throws NullPointerException If <tt>newType</tt> is <code>null</code>.
+     * @throws NullPointerException If <code>newType</code> is <code>null</code>.
      */
     public void setAssociationType(AssociationType newType);
 
@@ -314,7 +314,7 @@ public interface IAssociation extends ITypePart {
      * Returns the maximum number of links allowed in this association. If this is a qualified
      * association, the max cardinality specifies the number of links per qualifier(!).
      * <p>
-     * If the number is not limited, <tt>CARDINALITY_MANY</tt> is returned.
+     * If the number is not limited, <code>CARDINALITY_MANY</code> is returned.
      */
     public int getMaxCardinality();
 
@@ -357,7 +357,7 @@ public interface IAssociation extends ITypePart {
 
     /**
      * Sets the maximum number of target instances allowed in this association. An unlimited number
-     * is represented by <tt>CARDINALITY_MANY</tt>.
+     * is represented by <code>CARDINALITY_MANY</code>.
      */
     public void setMaxCardinality(int newValue);
 

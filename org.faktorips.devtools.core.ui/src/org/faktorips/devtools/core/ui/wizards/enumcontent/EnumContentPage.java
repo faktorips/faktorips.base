@@ -60,7 +60,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     private static final String PAGE_IMAGE = "wizards/NewEnumContentWizard.png"; //$NON-NLS-1$
 
     /**
-     * The text field to choose the <tt>IEnumType</tt> on which the new <tt>IEnumContent</tt> shall
+     * The text field to choose the <code>IEnumType</code> on which the new <code>IEnumContent</code> shall
      * be based upon.
      */
     private TextButtonField enumTypeField;
@@ -70,7 +70,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     private IpsPckFragmentRootRefControl sourceFolderControl;
 
     /**
-     * Flag that is <tt>true</tt> if the input is validated and errors are displayed in the messages
+     * Flag that is <code>true</code> if the input is validated and errors are displayed in the messages
      * area.
      */
     private boolean validateInput = true;
@@ -81,7 +81,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     private IEnumContent createdEnumContent;
 
     /**
-     * Creates the <tt>EnumContentEditorPage</tt>.
+     * Creates the <code>EnumContentEditorPage</code>.
      * 
      * @param selection If a selection is provided default values for some fields can be derived
      *            from that.
@@ -255,8 +255,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     /**
-     * Returns the selected <tt>IEnumType</tt> which defines the structure for the
-     * <tt>IEnumContent</tt> to be created.
+     * Returns the selected <code>IEnumType</code> which defines the structure for the
+     * <code>IEnumContent</code> to be created.
      */
     public IEnumType getEnumType() {
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
@@ -264,7 +264,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     /**
-     * Returns the <tt>IEnumContent</tt> that has been created by this page or <tt>null</tt> if it
+     * Returns the <code>IEnumContent</code> that has been created by this page or <code>null</code> if it
      * has not been created yet.
      */
     public IEnumContent getCreatedEnumContent() {

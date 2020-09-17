@@ -42,7 +42,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <tt>IEnumContent</tt>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumContent</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
@@ -60,18 +60,18 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID,
             IEnumAttributeValue.MSGCODE_INVALID_VALUE_TYPE);
 
-    /** The <tt>IEnumType</tt> this <tt>IEnumContent</tt> is build upon. */
+    /** The <code>IEnumType</code> this <code>IEnumContent</code> is build upon. */
     private String enumType;
 
     /**
-     * Collection containing <tt>IPartReference</tt>s that belong to this <tt>IEnumContent</tt>.
+     * Collection containing <code>IPartReference</code>s that belong to this <code>IEnumContent</code>.
      */
     private IpsObjectPartCollection<IPartReference> enumAttributeReferences;
 
     /**
-     * Creates a new <tt>IEnumContent</tt>.
+     * Creates a new <code>IEnumContent</code>.
      * 
-     * @param file The IPS source file in which this <tt>IEnumContent</tt> will be stored in.
+     * @param file The IPS source file in which this <code>IEnumContent</code> will be stored in.
      */
     public EnumContent(IIpsSrcFile file) {
         super(file);
@@ -116,8 +116,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * Refreshes the <tt>IPartReference</tt>s that belong to this <tt>IEnumContent</tt> by looking
-     * up recent information in the base <tt>IEnumType</tt>.
+     * Refreshes the <code>IPartReference</code>s that belong to this <code>IEnumContent</code> by looking
+     * up recent information in the base <code>IEnumType</code>.
      */
     private void refreshEnumAttributeReferences() {
         IEnumType newEnumType = findEnumType(getIpsProject());
@@ -163,7 +163,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         validateEnumAttributeReferences(list, referencedEnumType);
     }
 
-    /** Validates the <tt>IPartReference</tt>s. */
+    /** Validates the <code>IPartReference</code>s. */
     private void validateEnumAttributeReferences(MessageList validationMessageList, IEnumType enumType) {
         validateEnumAttributeReferencesCount(validationMessageList, enumType);
         if (validationMessageList.containsErrorMsg()) {
@@ -181,8 +181,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * The ordering of the <tt>IPartReference</tt>s must match the ordering of the
-     * <tt>IEnumAttribute</tt>s in the base <tt>IEnumType</tt>.
+     * The ordering of the <code>IPartReference</code>s must match the ordering of the
+     * <code>IEnumAttribute</code>s in the base <code>IEnumType</code>.
      */
     private void validateEnumAttributeReferenceOrdering(MessageList validationMessageList,
             IEnumType enumType,
@@ -204,8 +204,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * The names of the <tt>IPartReference</tt>s must match the names of the
-     * <tt>IEnumAttribute</tt>s in the base <tt>IEnumType</tt>.
+     * The names of the <code>IPartReference</code>s must match the names of the
+     * <code>IEnumAttribute</code>s in the base <code>IEnumType</code>.
      */
     private void validateEnumAttributeReferenceNames(MessageList validationMessageList,
             IEnumType enumType,
@@ -224,8 +224,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * The number of <tt>IPartReference</tt>s must match the number of <tt>IEnumAttribute</tt>s
-     * defined in the base <tt>IEnumType</tt>.
+     * The number of <code>IPartReference</code>s must match the number of <code>IEnumAttribute</code>s
+     * defined in the base <code>IEnumType</code>.
      */
     private void validateEnumAttributeReferencesCount(MessageList validationMessageList, IEnumType enumType) {
         if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getEnumAttributeReferencesCount()) {
@@ -239,8 +239,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * Returns <tt>true</tt> if an <tt>IPartReference</tt> with the given name exists in this
-     * <tt>IEnumContent</tt>, <tt>false</tt> otherwise.
+     * Returns <code>true</code> if an <code>IPartReference</code> with the given name exists in this
+     * <code>IEnumContent</code>, <code>false</code> otherwise.
      */
     private boolean containsEnumAttributeReference(String name) {
         for (IPartReference currentReference : enumAttributeReferences) {
@@ -292,7 +292,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * Returns <tt>false</tt>.
+     * Returns <code>false</code>.
      */
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
@@ -317,8 +317,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     /**
-     * Returns <tt>true</tt> if the referenced base <tt>IEnumType</tt> can be found and if this
-     * <tt>IEnumContent</tt> is consistent with this base <tt>IEnumType</tt>.
+     * Returns <code>true</code> if the referenced base <code>IEnumType</code> can be found and if this
+     * <code>IEnumContent</code> is consistent with this base <code>IEnumType</code>.
      */
     @Override
     public boolean isCapableOfContainingValues() {

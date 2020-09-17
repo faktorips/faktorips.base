@@ -32,16 +32,16 @@ import org.faktorips.util.StringUtil;
 public final class RefactorUtil {
 
     /**
-     * Copies the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination package.
-     * Returns a handle to the new <tt>IIpsSrcFile</tt>.
+     * Copies the given <code>IIpsSrcFile</code> into a new source file at the desired destination package.
+     * Returns a handle to the new <code>IIpsSrcFile</code>.
      * 
-     * @param toBeCopied The <tt>IIpsSrcFile</tt> to be copied.
+     * @param toBeCopied The <code>IIpsSrcFile</code> to be copied.
      * @param targetIpsPackageFragment The destination IPS package.
      * @param copyName The name of the copied source file.
-     * @param progressMonitor A progress monitor to report progress to or <tt>null</tt>.
+     * @param progressMonitor A progress monitor to report progress to or <code>null</code>.
      * 
-     * @throws NullPointerException If <tt>toBeCopied</tt>, <tt>targetIpsPackageFragment</tt> or
-     *             <tt>newName</tt> is <tt>null</tt>
+     * @throws NullPointerException If <code>toBeCopied</code>, <code>targetIpsPackageFragment</code> or
+     *             <code>newName</code> is <code>null</code>
      * @throws IllegalArgumentException if the source file to be copied is dirty
      */
     public static final IIpsSrcFile copyIpsSrcFile(IIpsSrcFile toBeCopied,
@@ -66,16 +66,16 @@ public final class RefactorUtil {
     }
 
     /**
-     * Copies the given <tt>IIpsSrcFile</tt> into a temporary source file at the destination package.
-     * The file name will contain a time stamp. Returns a handle to the temporary <tt>IIpsSrcFile</tt>.
+     * Copies the given <code>IIpsSrcFile</code> into a temporary source file at the destination package.
+     * The file name will contain a time stamp. Returns a handle to the temporary <code>IIpsSrcFile</code>.
      * 
-     * @param toBeCopied The <tt>IIpsSrcFile</tt> to be copied.
+     * @param toBeCopied The <code>IIpsSrcFile</code> to be copied.
      * @param targetIpsPackageFragment The destination IPS package.
      * @param copyName The name of the copied source file.
-     * @param progressMonitor A progress monitor to report progress to or <tt>null</tt>.
+     * @param progressMonitor A progress monitor to report progress to or <code>null</code>.
      * 
-     * @throws NullPointerException If <tt>toBeCopied</tt>, <tt>targetIpsPackageFragment</tt> or
-     *             <tt>newName</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>toBeCopied</code>, <code>targetIpsPackageFragment</code> or
+     *             <code>newName</code> is <code>null</code>.
      */
     public static final IIpsSrcFile copyIpsSrcFileToTemporary(IIpsSrcFile toBeCopied,
             IIpsPackageFragment targetIpsPackageFragment,
@@ -89,16 +89,16 @@ public final class RefactorUtil {
     }
 
     /**
-     * Moves the given <tt>IIpsSrcFile</tt> into a new source file at the desired destination package.
-     * Returns a handle to the new <tt>IIpsSrcFile</tt>.
+     * Moves the given <code>IIpsSrcFile</code> into a new source file at the desired destination package.
+     * Returns a handle to the new <code>IIpsSrcFile</code>.
      * 
-     * @param originalSrcFile The <tt>IIpsSrcFile</tt> to be moved.
+     * @param originalSrcFile The <code>IIpsSrcFile</code> to be moved.
      * @param targetIpsPackageFragment The destination IPS package.
      * @param newName The new name of the source file.
-     * @param pm A progress monitor to report progress to or <tt>null</tt>.
+     * @param pm A progress monitor to report progress to or <code>null</code>.
      * 
-     * @throws NullPointerException If <tt>originalSrcFile</tt>, <tt>targetIpsPackageFragment</tt> or
-     *             <tt>newName</tt> is <tt>null</tt>
+     * @throws NullPointerException If <code>originalSrcFile</code>, <code>targetIpsPackageFragment</code> or
+     *             <code>newName</code> is <code>null</code>
      * @throws IllegalArgumentException if the source file to be copied is dirty
      * 
      */

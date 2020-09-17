@@ -27,7 +27,7 @@ public abstract class TypeHierarchyVisitor<T extends IType> extends HierarchyVis
     /**
      * @param ipsProject The project which IPS object path is used to search.
      * 
-     * @throws NullPointerException If <tt>ipsProject</tt> is <code>null</code>.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     public TypeHierarchyVisitor(IIpsProject ipsProject) {
         super(ipsProject);

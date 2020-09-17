@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.enums;
 
 /**
- * Default implementation of <tt>EnumType</tt>.
+ * Default implementation of <code>EnumType</code>.
  * 
  * @see EnumType
  */
@@ -29,8 +29,8 @@ public class DefaultEnumType implements EnumType {
      * @param name The enumeration type's name.
      * @param valueClass The Java class the values are instances of.
      * 
-     * @throws IllegalArgumentException If <tt>name</tt> is <tt>null</tt> or if the
-     *             <tt>valueClass</tt> is not a subclass of <tt>DefaultEnumValue</tt>.
+     * @throws IllegalArgumentException If <code>name</code> is <code>null</code> or if the
+     *             <code>valueClass</code> is not a subclass of <code>DefaultEnumValue</code>.
      */
     public DefaultEnumType(String name, Class<?> valueClass) {
         if (name == null) {

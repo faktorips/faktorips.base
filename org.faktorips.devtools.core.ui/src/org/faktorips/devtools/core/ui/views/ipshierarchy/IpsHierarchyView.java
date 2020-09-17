@@ -75,7 +75,7 @@ import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 /**
- * The <tt>IpsHierarchyView</tt> is a <tt>ViewPart</tt> for displaying a<tt>hierarchy of ITypes</tt>
+ * The <code>IpsHierarchyView</code> is a <code>ViewPart</code> for displaying a<code>hierarchy of ITypes</code>
  * 
  * @author Quirin Stoll
  */

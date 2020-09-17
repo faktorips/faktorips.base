@@ -103,7 +103,7 @@ public enum ValueSetType {
     public abstract IValueSet newValueSet(IValueSetOwner parent, String id);
 
     /**
-     * Creates a new <tt>IValueSet</tt> - the type of the value set is derived from the given XML
+     * Creates a new <code>IValueSet</code> - the type of the value set is derived from the given XML
      * element.
      * 
      * @param valueSetNode The node describing the value set.

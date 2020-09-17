@@ -33,18 +33,18 @@ public interface EnumType {
     public String[] getValueIds();
 
     /**
-     * Returns <tt>true</tt> if the ID identifies an <tt>EnumValue</tt>, otherwise <tt>false</tt>.
+     * Returns <code>true</code> if the ID identifies an <code>EnumValue</code>, otherwise <code>false</code>.
      */
     public boolean containsValue(String id);
 
     /**
-     * Returns the <tt>EnumValue</tt> identified by the given ID. If the ID does not represent an
-     * <tt>EnumValue</tt>, <code>null</code> will be returned.
+     * Returns the <code>EnumValue</code> identified by the given ID. If the ID does not represent an
+     * <code>EnumValue</code>, <code>null</code> will be returned.
      */
     public EnumValue getEnumValue(String id);
 
     /**
-     * Returns the <tt>EnumValue</tt> at the given index.
+     * Returns the <code>EnumValue</code> at the given index.
      *
      * @throws IllegalArgumentException If the index is out of bounds.
      */

@@ -119,7 +119,7 @@ public interface ITableFormat {
      * @param list A list for messages describing any problems occurred during the import. If no
      *            messages of severity ERROR are contained in this list, the import is considered
      *            successful.
-     * @param importIntoExisting <tt>true</tt> if the import method chosen was replace or append
+     * @param importIntoExisting <code>true</code> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
      * 
      * @throws CoreException If the file could not be imported. This can happen for instance if the
@@ -151,7 +151,7 @@ public interface ITableFormat {
      * @param list A list for messages describing any problems occurred during the import. If no
      *            messages of severity ERROR are contained in this list, the import is considered
      *            successful.
-     * @param importIntoExisting <tt>true</tt> if the import method chosen was replace or append
+     * @param importIntoExisting <code>true</code> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
      * 
      * @throws CoreException If the file could not be imported. This can happen for instance if the
@@ -211,11 +211,11 @@ public interface ITableFormat {
 
     /**
      * Retrieves a table format specific property using the given property name. Returns the
-     * property value if defined, or <tt>null</tt> if the property could not be found.
+     * property value if defined, or <code>null</code> if the property could not be found.
      * 
      * @param propertyName The name of the property to be retrieved.
      * 
-     * @throws NullPointerException if the given <tt>propertyName</tt> is <tt>null</tt>.
+     * @throws NullPointerException if the given <code>propertyName</code> is <code>null</code>.
      */
     public String getProperty(String propertyName);
 
@@ -239,7 +239,7 @@ public interface ITableFormat {
      * @param nullRepresentationString The string to use to replace <code>null</code>.
      * 
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
-     *         <tt>Collections.EMPTY_LIST</tt> if the preview could not be computed or the file
+     *         <code>Collections.EMPTY_LIST</code> if the preview could not be computed or the file
      *         contains no entries.
      */
     public List<String[]> getImportTablePreview(ITableStructure structure,
@@ -250,7 +250,7 @@ public interface ITableFormat {
 
     /**
      * Computes a preview for the enumeration to be imported and returns <code>List</code>
-     * containing a <code>String[]</code> for each row, or <tt>Collections.EMPTY_LIST</tt> if the
+     * containing a <code>String[]</code> for each row, or <code>Collections.EMPTY_LIST</code> if the
      * preview could not be computed or the file contains no entries.
      * 
      * @param structure The enumeration type to use (derive data types) for the preview.

@@ -105,7 +105,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of <tt>IIpsModel</tt>.
+ * Implementation of <code>IIpsModel</code>.
  * 
  * @see IIpsModel
  */

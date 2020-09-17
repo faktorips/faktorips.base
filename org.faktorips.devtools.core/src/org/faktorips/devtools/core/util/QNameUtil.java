@@ -25,7 +25,7 @@ public class QNameUtil {
      * Returns the package name for a given class name. Returns an empty String if the class name
      * does not contain a package name.
      * 
-     * @throws NullPointerException if <tt>qName</tt> is <tt>null</tt>.
+     * @throws NullPointerException if <code>qName</code> is <code>null</code>.
      */
     public final static String getPackageName(String qName) {
         if (qName == null) {
@@ -40,7 +40,7 @@ public class QNameUtil {
 
     /**
      * Returns the unqualified name part of the given qualified name. Returns <code>null</code> if
-     * <tt>qName</tt> is <code>null</code>.
+     * <code>qName</code> is <code>null</code>.
      */
     public final static String getUnqualifiedName(String qName) {
         if (qName == null) {
@@ -57,8 +57,8 @@ public class QNameUtil {
     }
 
     /**
-     * Concatenates package prefix and the <tt>packOrUnqualifiedName</tt>. If the package prefix is
-     * <code>null</code> or the empty string the <tt>packOrUnqualifiedName</tt> is returned.
+     * Concatenates package prefix and the <code>packOrUnqualifiedName</code>. If the package prefix is
+     * <code>null</code> or the empty string the <code>packOrUnqualifiedName</code> is returned.
      */
     public final static String concat(String packagePrefix, String packOrUnqualifiedName) {
         if (StringUtils.isEmpty(packagePrefix)) {
@@ -111,7 +111,7 @@ public class QNameUtil {
      * position of <code>qName</code> and ends at segment <code>numberOfSegments</code>.
      * <p>
      * Returns the <code>qName</code> if <code>numberOfSegments</code> is less equals 0 or exceeds
-     * the number of segments of <tt>qName</tt>. Returns an empty String if <code>qName</code> is
+     * the number of segments of <code>qName</code>. Returns an empty String if <code>qName</code> is
      * empty.
      * <p>
      * Example: The following call returns "org.faktorips".
@@ -151,7 +151,7 @@ public class QNameUtil {
     }
 
     /**
-     * Transforms the given qualified name to a path. Returns <code>null</code> if <tt>qName</tt> is
+     * Transforms the given qualified name to a path. Returns <code>null</code> if <code>qName</code> is
      * <code>null</code>.
      */
     public final static Path toPath(String qName) {

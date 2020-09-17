@@ -40,7 +40,7 @@ public class RenameLiteralNameRefactoringAction extends Action {
     /**
      * @param tableViewer The table viewer linking the table widget with the model data.
      * 
-     * @throws NullPointerException If <tt>tableViewer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>tableViewer</code> is <code>null</code>.
      */
     public RenameLiteralNameRefactoringAction(TableViewer tableViewer) {
         super();

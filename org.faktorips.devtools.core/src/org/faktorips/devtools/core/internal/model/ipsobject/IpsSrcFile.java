@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.w3c.dom.Document;
 
 /**
- * Implementation of <tt>IIpsSrcFile</tt>.
+ * Implementation of <code>IIpsSrcFile</code>.
  * 
  * @author Jan Ortmann
  */

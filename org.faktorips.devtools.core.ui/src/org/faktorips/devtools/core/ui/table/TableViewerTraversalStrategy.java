@@ -23,16 +23,16 @@ import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
- * Supports the navigation in a <tt>Table</tt> / <tt>TableViewer</tt> using the
- * <tt>SWT.TRAVERSE_ESCAPE</tt>, <tt>SWT.TRAVERSE_RETURN</tt>, <tt>SWT.TRAVERSE_TAB_NEXT</tt>,
- * <tt>SWT.TRAVERSE_TAB_PREVIOUS</tt>, <tt>SWT.ARROW_DOWN</tt>, <tt>SWT.ARROW_UP</tt> keys.
+ * Supports the navigation in a <code>Table</code> / <code>TableViewer</code> using the
+ * <code>SWT.TRAVERSE_ESCAPE</code>, <code>SWT.TRAVERSE_RETURN</code>, <code>SWT.TRAVERSE_TAB_NEXT</code>,
+ * <code>SWT.TRAVERSE_TAB_PREVIOUS</code>, <code>SWT.ARROW_DOWN</code>, <code>SWT.ARROW_UP</code> keys.
  * 
  * @author Stefan Widmaier, Alexander Weickmann
  */
 public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     private TableViewer tableViewer;
     /**
-     * Flag that is <tt>true</tt> if this {@link TraversalStrategy} creates new rows if requested.
+     * Flag that is <code>true</code> if this {@link TraversalStrategy} creates new rows if requested.
      */
     private boolean rowCreating;
 
@@ -63,12 +63,12 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     }
 
     /**
-     * Edits the next row relative to the current selection of the <tt>TableViewer</tt> this
-     * <tt>TableCellEditor</tt> is used in. If no following row exists, two behaviors are possible:
+     * Edits the next row relative to the current selection of the <code>TableViewer</code> this
+     * <code>TableCellEditor</code> is used in. If no following row exists, two behaviors are possible:
      * <ul>
-     * <li>If this <tt>TableCellEditor</tt> is configured to create rows a new row is created and
+     * <li>If this <code>TableCellEditor</code> is configured to create rows a new row is created and
      * the current column in the new row is edited.
-     * <li>If this <tt>TableCellEditor</tt> is configured to not create rows the current column of
+     * <li>If this <code>TableCellEditor</code> is configured to not create rows the current column of
      * the last row is edited.
      * </ul>
      */
@@ -82,13 +82,13 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     }
 
     /**
-     * Edits the next column relative to the column this <tt>TableCellEditor</tt> is used for. If
+     * Edits the next column relative to the column this <code>TableCellEditor</code> is used for. If
      * there is no next column, the first cell of the next row is edited. If in turn no following
      * row exists two behaviors are possible:
      * <ul>
-     * <li>If this <tt>TableCellEditor</tt> is configured to create rows a new row is created and
+     * <li>If this <code>TableCellEditor</code> is configured to create rows a new row is created and
      * the first cell edited.
-     * <li>If this <tt>TableCellEditor</tt> is configured to not create rows the last cell of the
+     * <li>If this <code>TableCellEditor</code> is configured to not create rows the last cell of the
      * last row of the table is edited.
      * </ul>
      * 
@@ -126,7 +126,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
 
     /**
      * Returns the index of the next row. If no following row exists and this
-     * <tt>TableCellEditor</tt> wasn't configured to create new rows, the index of the last row will
+     * <code>TableCellEditor</code> wasn't configured to create new rows, the index of the last row will
      * be returned.
      */
     @Override
@@ -187,13 +187,13 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
         return firstNotSkippedColumn;
     }
 
-    /** Returns <tt>true</tt> if the next row does not exist yet, <tt>false</tt> otherwise. */
+    /** Returns <code>true</code> if the next row does not exist yet, <code>false</code> otherwise. */
     private boolean isAtNewRow() {
         return getCurrentRow() + 1 == getRowCount();
     }
 
     /**
-     * Returns <tt>true</tt> if the next column does not exist yet, <tt>false</tt> otherwise. Takes
+     * Returns <code>true</code> if the next column does not exist yet, <code>false</code> otherwise. Takes
      * skipped columns into account.
      */
     @Override
@@ -207,7 +207,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
 
     /**
      * Edits the table cell in the given column of the given row. Expects valid values for
-     * <tt>rowIndex</tt> and <tt>columnIndex</tt>. Out-of-bound values will cause the table viewer
+     * <code>rowIndex</code> and <code>columnIndex</code>. Out-of-bound values will cause the table viewer
      * to loose focus.
      * <p>
      * For optimization reasons this method only informs the table viewer of a cell edit if the cell
@@ -233,11 +233,11 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     }
 
     /**
-     * Appends a new <tt>IRow</tt> to the table if the tableviewer's input is a
-     * <tt>TableContents</tt>.
+     * Appends a new <code>IRow</code> to the table if the tableviewer's input is a
+     * <code>TableContents</code>.
      * <p>
-     * Appends a new <tt>IEnumValue</tt> to the table if the tableviewer's input is an
-     * <tt>EnumValueContainer</tt>.
+     * Appends a new <code>IEnumValue</code> to the table if the tableviewer's input is an
+     * <code>EnumValueContainer</code>.
      * <p>
      * Does nothing otherwise.
      */
@@ -279,7 +279,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * Adds the column identified by the given column index to the list of columns that are skipped
      * while navigating trough the table.
      * <p>
-     * Returns <tt>true</tt> if the index was added, <tt>false</tt> otherwise (e.g. if the given
+     * Returns <code>true</code> if the index was added, <code>false</code> otherwise (e.g. if the given
      * index is already skipped).
      */
     public boolean addSkippedColumnIndex(int columnIndex) {
@@ -290,7 +290,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * Removes the column identified by the given column index from the list of columns that are
      * skipped while navigating trough the table.
      * <p>
-     * Returns <tt>true</tt> if the index was found and removed, <tt>false</tt> otherwise (e.g. if
+     * Returns <code>true</code> if the index was found and removed, <code>false</code> otherwise (e.g. if
      * the given index was not skipped).
      */
     public boolean removeSkippedColumnIndex(int columnIndex) {
@@ -306,19 +306,19 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     }
 
     /**
-     * Indicates whether this <tt>TableCellEditor</tt> creates new rows when requested (
-     * <tt>true</tt>) or not (<tt>false</tt>).
+     * Indicates whether this <code>TableCellEditor</code> creates new rows when requested (
+     * <code>true</code>) or not (<code>false</code>).
      */
     public boolean isRowCreating() {
         return rowCreating;
     }
 
     /**
-     * Configures this <tt>TableCellEditor</tt> to create new rows dynamically. New rows are created
+     * Configures this <code>TableCellEditor</code> to create new rows dynamically. New rows are created
      * when the user tries to navigate into a cell / row that is not in the table (yet).
      * <p>
-     * If <tt>false</tt> is given this <tt>TableCellEditor</tt> will not create any rows and simply
-     * edit the last cell of the table. On the other hand, if <tt>true</tt> is given a new row is
+     * If <code>false</code> is given this <code>TableCellEditor</code> will not create any rows and simply
+     * edit the last cell of the table. On the other hand, if <code>true</code> is given a new row is
      * created when needed.
      * 
      * @param rowCreating Flag indicating whether new rows shall be created by this cell editor when

@@ -255,13 +255,13 @@ public class ProjectUtil {
     }
 
     /**
-     * Creates and returns an <tt>IIpsProject</tt> based on the given <tt>IJavaProject</tt>. This
+     * Creates and returns an <code>IIpsProject</code> based on the given <code>IJavaProject</code>. This
      * project does not use the persistence feature.
      * 
      * @deprecated As of release 2.6, replaced by
      *             {@link #createIpsProject(IJavaProject, String, boolean, boolean, boolean)}.
      * 
-     * @param javaProject The <tt>IJavaProject</tt> which is to be extended with IPS capabilities.
+     * @param javaProject The <code>IJavaProject</code> which is to be extended with IPS capabilities.
      * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
      * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
      *            project.
@@ -278,9 +278,9 @@ public class ProjectUtil {
     }
 
     /**
-     * Creates and returns an <tt>IIpsProject</tt> based on the given <tt>IJavaProject</tt>.
+     * Creates and returns an <code>IIpsProject</code> based on the given <code>IJavaProject</code>.
      * 
-     * @param javaProject The <tt>IJavaProject</tt> which is to be extended with IPS capabilities.
+     * @param javaProject The <code>IJavaProject</code> which is to be extended with IPS capabilities.
      * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
      * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
      *            project.
@@ -309,9 +309,9 @@ public class ProjectUtil {
     }
 
     /**
-     * Creates and returns an <tt>IIpsProject</tt> based on the given <tt>IJavaProject</tt>.
+     * Creates and returns an <code>IIpsProject</code> based on the given <code>IJavaProject</code>.
      * 
-     * @param javaProject The <tt>IJavaProject</tt> which is to be extended with IPS capabilities.
+     * @param javaProject The <code>IJavaProject</code> which is to be extended with IPS capabilities.
      * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
      * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
      *            project.
@@ -399,8 +399,8 @@ public class ProjectUtil {
     }
 
     /**
-     * Creates a hidden file <code>.keepme</code> in the given folder. Returns <tt>true</tt> if done
-     * successfully, <tt>false</tt> otherwise.
+     * Creates a hidden file <code>.keepme</code> in the given folder. Returns <code>true</code> if done
+     * successfully, <code>false</code> otherwise.
      * 
      * @param folder parent folder
      */

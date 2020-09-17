@@ -215,10 +215,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     /**
      * Creates and returns a new part. The concrete type of the new part depends on the given class.
      * <p>
-     * The given class must be a subclass of the class this <tt>IpsObjectPartCollection</tt> is
-     * based upon. If that is not the case, <tt>null</tt> will be returned.
+     * The given class must be a subclass of the class this <code>IpsObjectPartCollection</code> is
+     * based upon. If that is not the case, <code>null</code> will be returned.
      * <p>
-     * This operation can be used if you want to create an <tt>IpsObjectPartCollection</tt> of a
+     * This operation can be used if you want to create an <code>IpsObjectPartCollection</code> of a
      * certain type and you also want to store subclasses of that type in the collection.
      */
     @SuppressWarnings("unchecked")

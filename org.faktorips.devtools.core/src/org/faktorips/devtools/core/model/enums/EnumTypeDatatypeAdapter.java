@@ -25,7 +25,7 @@ import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is an adapter for an <tt>IEnumType</tt> that adapts the <tt>EnumDatatype</tt> interface.
+ * This is an adapter for an <code>IEnumType</code> that adapts the <code>EnumDatatype</code> interface.
  * 
  * @see IEnumType
  * @see org.faktorips.datatype.EnumDatatype
@@ -41,12 +41,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     private IEnumAttribute nameAttribute;
 
     /**
-     * Creates a new <tt>EnumTypeDatatypeAdapter</tt>.
+     * Creates a new <code>EnumTypeDatatypeAdapter</code>.
      * 
-     * @param enumType The <tt>IEnumType</tt> that is adapted. This parameter cannot be
-     *            <tt>null</tt>.
-     * @param enumContent The <tt>IEnumContent</tt> that is adapted. This parameter can be
-     *            <tt>null</tt>.
+     * @param enumType The <code>IEnumType</code> that is adapted. This parameter cannot be
+     *            <code>null</code>.
+     * @param enumContent The <code>IEnumContent</code> that is adapted. This parameter can be
+     *            <code>null</code>.
      */
     public EnumTypeDatatypeAdapter(IEnumType enumType, IEnumContent enumContent) {
         super();
@@ -68,16 +68,16 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * content. The attribute value referring to the enumeration attribute marked as identifier is
      * considered to be the ID.
      * <p>
-     * Returns a string array containing only <tt>null</tt> as a value if the enumeration type of
+     * Returns a string array containing only <code>null</code> as a value if the enumeration type of
      * this adapter doesn't contain values and the enumeration content of this adapter is
-     * <tt>null</tt> and the parameter includeNull is set to true. Returns an empty string array if
-     * the parameter <tt>includeNull</tt> is set to false.
+     * <code>null</code> and the parameter includeNull is set to true. Returns an empty string array if
+     * the parameter <code>includeNull</code> is set to false.
      * <p>
      * Returns an empty string array if the identifier attribute of the adapted enumeration type has
      * not been specified.
      * 
-     * @throws RuntimeException If the process of determining the <tt>IEnumAttributeValue</tt>s
-     *             throws a <tt>CoreException</tt>.
+     * @throws RuntimeException If the process of determining the <code>IEnumAttributeValue</code>s
+     *             throws a <code>CoreException</code>.
      */
     @Override
     public String[] getAllValueIds(boolean includeNull) {
@@ -148,7 +148,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>true</tt>.
+     * Returns <code>true</code>.
      */
     @Override
     public boolean isSupportingNames() {
@@ -237,7 +237,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>null</tt>.
+     * Returns <code>null</code>.
      */
     @Override
     public String getDefaultValue() {
@@ -247,7 +247,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>null</tt>.
+     * Returns <code>null</code>.
      */
     @Override
     public ValueDatatype getWrapperType() {
@@ -257,7 +257,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>true</tt>.
+     * Returns <code>true</code>.
      */
     @Override
     public boolean isImmutable() {
@@ -267,7 +267,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>false</tt>.
+     * Returns <code>false</code>.
      */
     @Override
     public boolean isMutable() {
@@ -277,7 +277,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>true</tt> if the provided value is <tt>null</tt>
+     * Returns <code>true</code> if the provided value is <code>null</code>
      */
     @Override
     public boolean isNull(String value) {
@@ -285,7 +285,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
-     * Returns <tt>true</tt> if the provided value is in the list of enumeration attribute values of
+     * Returns <code>true</code> if the provided value is in the list of enumeration attribute values of
      * the literal name attribute of the adapted enumeration type.
      */
     @Override
@@ -296,7 +296,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>true</tt>.
+     * Returns <code>true</code>.
      */
     @Override
     public boolean supportsCompare() {
@@ -316,7 +316,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>false</tt>.
+     * Returns <code>false</code>.
      */
     @Override
     public boolean hasNullObject() {
@@ -326,7 +326,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>true</tt> if the adapted enumeration type is abstract.
+     * Returns <code>true</code> if the adapted enumeration type is abstract.
      */
     @Override
     public boolean isAbstract() {
@@ -336,7 +336,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>false</tt>.
+     * Returns <code>false</code>.
      */
     @Override
     public boolean isPrimitive() {
@@ -346,7 +346,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>true</tt>.
+     * Returns <code>true</code>.
      */
     @Override
     public boolean isValueDatatype() {
@@ -356,7 +356,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * {@inheritDoc}
      * <p>
-     * Returns <tt>false</tt>.
+     * Returns <code>false</code>.
      */
     @Override
     public boolean isVoid() {
@@ -374,7 +374,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
-     * Returns the enumeration content if this adapter adapts one, otherwise <tt>null</tt> is
+     * Returns the enumeration content if this adapter adapts one, otherwise <code>null</code> is
      * returned.
      */
     public IEnumContent getEnumContent() {
@@ -392,7 +392,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return enumContent;
     }
 
-    /** Returns <tt>true</tt> if this adapter adapts an enumeration content. */
+    /** Returns <code>true</code> if this adapter adapts an enumeration content. */
     public boolean hasEnumContent() {
         return getEnumContent() != null;
     }

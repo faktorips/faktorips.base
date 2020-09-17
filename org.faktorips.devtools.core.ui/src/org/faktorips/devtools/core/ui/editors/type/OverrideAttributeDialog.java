@@ -21,15 +21,15 @@ import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialo
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 
 /**
- * A dialog that enables the user to select <tt>IAttribute</tt>s to overwrite.
+ * A dialog that enables the user to select <code>IAttribute</code>s to overwrite.
  * 
  * @author Alexander Weickmann
  */
 public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog<IAttribute> {
 
     /**
-     * @param cmptType The <tt>cmptType</tt> to get the candidates to possibly overwrite from.
-     * @param parent The <tt>Shell</tt> to show this dialog in.
+     * @param cmptType The <code>cmptType</code> to get the candidates to possibly overwrite from.
+     * @param parent The <code>Shell</code> to show this dialog in.
      */
     public OverrideAttributeDialog(IType cmptType, Shell parent) {
         super(parent, new CandidatesContentProvider(cmptType));
@@ -38,11 +38,11 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
         setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
     }
 
-    /** Provides the <tt>IAttribute</tt>s available for selection. */
+    /** Provides the <code>IAttribute</code>s available for selection. */
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
 
         /**
-         * @param cmptType The <tt>cmptType</tt> the <tt>IAttribute</tt>s available for selection
+         * @param cmptType The <code>cmptType</code> the <code>IAttribute</code>s available for selection
          *            belong to.
          */
         public CandidatesContentProvider(IType cmptType) {

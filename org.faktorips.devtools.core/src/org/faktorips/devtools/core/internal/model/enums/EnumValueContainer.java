@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Implementation of <tt>IEnumValueContainer</tt>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumValueContainer</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValueContainer
  * 

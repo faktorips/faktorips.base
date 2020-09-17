@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <tt>IEnumLiteralNameAttributeValue</tt>, see the corresponding interface for
+ * Implementation of <code>IEnumLiteralNameAttributeValue</code>, see the corresponding interface for
  * more details.
  * 
  * @see IEnumLiteralNameAttributeValue

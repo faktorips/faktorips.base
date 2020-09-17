@@ -141,7 +141,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method
      * @param parameterTypeSignatures The parameter type signatures of the expected method (use the
-     *            <tt>xxxParam(...)</tt> methods offered by this class)
+     *            <code>xxxParam(...)</code> methods offered by this class)
      */
     protected final void expectMethod(IType javaType, String methodName, String... parameterTypeSignatures) {
         IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);

@@ -17,14 +17,14 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingComboField;
 
 /**
- * Supports the navigation in a <tt>Table</tt> / <tt>TableViewer</tt> using the
- * <tt>SWT.TRAVERSE_ESCAPE</tt>, <tt>SWT.TRAVERSE_RETURN</tt>, <tt>SWT.TRAVERSE_TAB_NEXT</tt>,
- * <tt>SWT.TRAVERSE_TAB_PREVIOUS</tt>, <tt>SWT.ARROW_DOWN</tt>, <tt>SWT.ARROW_UP</tt> keys.
+ * Supports the navigation in a <code>Table</code> / <code>TableViewer</code> using the
+ * <code>SWT.TRAVERSE_ESCAPE</code>, <code>SWT.TRAVERSE_RETURN</code>, <code>SWT.TRAVERSE_TAB_NEXT</code>,
+ * <code>SWT.TRAVERSE_TAB_PREVIOUS</code>, <code>SWT.ARROW_DOWN</code>, <code>SWT.ARROW_UP</code> keys.
  * 
  * @author Stefan Widmaier, Alexander Weickmann
  */
 public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
-    /** Index of the table column this <tt>CellEditor</tt> was created for. */
+    /** Index of the table column this <code>CellEditor</code> was created for. */
     private final int columnIndex;
 
     public TableTraversalStrategy(IpsCellEditor cellEditor, int colIndex) {
@@ -79,8 +79,8 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     }
 
     /**
-     * Edits the previous row relative to the current selection of the <tt>TableViewer</tt> this
-     * <tt>TableCellEditor</tt> is used in. Does nothing if the first row of the table is selected.
+     * Edits the previous row relative to the current selection of the <code>TableViewer</code> this
+     * <code>TableCellEditor</code> is used in. Does nothing if the first row of the table is selected.
      */
     private void editPreviousRow() {
         fireApplyEditorValue();
@@ -88,7 +88,7 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     }
 
     /**
-     * Edits the previous column relative to the column this <tt>TableCellEditor</tt> is used for.
+     * Edits the previous column relative to the column this <code>TableCellEditor</code> is used for.
      * If there is no previous column, the last cell of the previous row is edited. If in turn the
      * previous row does not exist the first cell of the topmost row of the table is edited (first
      * cell of the table).
@@ -107,8 +107,8 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     }
 
     /**
-     * Edits the next row relative to the current selection of the <tt>TableViewer</tt> this
-     * <tt>TableCellEditor</tt> is used in. If no following row exists, this method does nothing.
+     * Edits the next row relative to the current selection of the <code>TableViewer</code> this
+     * <code>TableCellEditor</code> is used in. If no following row exists, this method does nothing.
      */
     protected void editNextRow() {
         if (!isAtNewRow()) {
@@ -118,7 +118,7 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     }
 
     /**
-     * Edits the next column relative to the column this <tt>TableCellEditor</tt> is used for. If
+     * Edits the next column relative to the column this <code>TableCellEditor</code> is used for. If
      * there is no next column, the first cell of the next row is edited. If in turn no following
      * row exists this method does nothing.
      */
@@ -178,13 +178,13 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
         return previousColumn;
     }
 
-    /** Returns <tt>true</tt> if the next row does not exist, <tt>false</tt> otherwise. */
+    /** Returns <code>true</code> if the next row does not exist, <code>false</code> otherwise. */
     private boolean isAtNewRow() {
         return getCurrentRow() + 1 == getRowCount();
     }
 
     /**
-     * Returns <tt>true</tt> if the next column does not exist, <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the next column does not exist, <code>false</code> otherwise.
      */
     protected boolean isAtNewColumn() {
         int nextColIndex = columnIndex + 1;
@@ -193,7 +193,7 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     /**
      * Edits the table cell in the given column of the given row. Expects valid values for
-     * <tt>rowIndex</tt> and <tt>columnIndex</tt>. Out-of-bound values will cause the table viewer
+     * <code>rowIndex</code> and <code>columnIndex</code>. Out-of-bound values will cause the table viewer
      * to loose focus.
      * <p>
      * For optimization reasons this method only informs the table viewer of a cell edit if the cell

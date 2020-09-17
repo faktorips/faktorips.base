@@ -85,8 +85,8 @@ public interface IRow extends IIpsObjectPart {
      * Moves the Value at the given Index up/down by one
      * 
      * @param columnIndex Index of the Value to move
-     * @param up Flag indicating whether to move upwards (<tt>true</tt>) or downwards (
-     *            <tt>false</tt>).
+     * @param up Flag indicating whether to move upwards (<code>true</code>) or downwards (
+     *            <code>false</code>).
      * @return new Index of the Value
      */
     public int moveValue(int columnIndex, boolean up);

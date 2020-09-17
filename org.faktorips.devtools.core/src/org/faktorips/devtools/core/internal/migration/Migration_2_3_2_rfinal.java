@@ -96,7 +96,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
     }
 
     /**
-     * Resets the referenced <tt>IEnumType</tt> for the given <tt>IEnumContent</tt>. This way the
+     * Resets the referenced <code>IEnumType</code> for the given <code>IEnumContent</code>. This way the
      * new XML storage will be adapted.
      */
     private void migrateEnumContent(IEnumContent enumContent) throws CoreException {

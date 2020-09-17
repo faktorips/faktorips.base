@@ -60,10 +60,10 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.util.StringUtil;
 
 /**
- * The <tt>CreateMissingEnumContentsWizard</tt> that searches for <tt>IEnumContent</tt>s that should
- * be existent in <tt>IIpsProject</tt>s (the information is derived from the <tt>IIpsProject</tt>'s
- * <tt>IEnumType</tt>s). The wizard enables the user to comfortably select the missing
- * <tt>IEnumContent</tt>s that shall be created.
+ * The <code>CreateMissingEnumContentsWizard</code> that searches for <code>IEnumContent</code>s that should
+ * be existent in <code>IIpsProject</code>s (the information is derived from the <code>IIpsProject</code>'s
+ * <code>IEnumType</code>s). The wizard enables the user to comfortably select the missing
+ * <code>IEnumContent</code>s that shall be created.
  * 
  * @author Alexander Weickmann
  * 
@@ -74,16 +74,16 @@ public class CreateMissingEnumContentsWizard extends Wizard {
     /** The one and only wizard page. */
     private SelectEnumContentsPage selectEnumContentsPage;
 
-    /** The <tt>WizardDialog</tt> this wizard will be started with. */
+    /** The <code>WizardDialog</code> this wizard will be started with. */
     private WizardDialog wizardDialog;
 
-    /** The preselected <tt>IIpsElement</tt>. */
+    /** The preselected <code>IIpsElement</code>. */
     private IIpsElement preselectedIpsElement;
 
     /**
-     * Creates the <tt>CreateMissingEnumContentsWizard</tt>.
+     * Creates the <code>CreateMissingEnumContentsWizard</code>.
      * 
-     * @param preselectedIpsElement The preselected <tt>IIpsElement</tt>.
+     * @param preselectedIpsElement The preselected <code>IIpsElement</code>.
      */
     public CreateMissingEnumContentsWizard(IIpsElement preselectedIpsElement) {
         this.preselectedIpsElement = preselectedIpsElement;
@@ -91,7 +91,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         setNeedsProgressMonitor(true);
     }
 
-    /** Opens the wizard in a new <tt>WizardDialog</tt>. */
+    /** Opens the wizard in a new <code>WizardDialog</code>. */
     public void open(Shell parentShell) {
         if (wizardDialog != null) {
             return;
@@ -107,7 +107,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
     }
 
     /**
-     * The action will run in the <tt>IRunnableContext</tt> of the wizard dialog so that a progress
+     * The action will run in the <code>IRunnableContext</code> of the wizard dialog so that a progress
      * monitor can be shown directly in the wizard.
      */
     @Override
@@ -125,7 +125,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         return true;
     }
 
-    /** This page enables the user to select the missing <tt>IEnumContent</tt>s to create. */
+    /** This page enables the user to select the missing <code>IEnumContent</code>s to create. */
     private class SelectEnumContentsPage extends WizardPage implements ValueChangeListener {
 
         /** The tree viewer widget. */
@@ -137,7 +137,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         /** The text field on the top of the wizard to select the target source folder with. */
         private IpsPckFragmentRootRefControl targetSourceFolderControl;
 
-        /** Creates the <tt>SelectEnumContentsPage</tt>. */
+        /** Creates the <code>SelectEnumContentsPage</code>. */
         protected SelectEnumContentsPage() {
             super(Messages.SelectEnumContentsPage_title);
             setImageDescriptor(IpsUIPlugin.getImageHandling()
@@ -162,7 +162,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         }
 
         /**
-         * Creates the section on top of the wizard page containing a <tt>TextButtonField</tt> to
+         * Creates the section on top of the wizard page containing a <code>TextButtonField</code> to
          * select the target source folder with.
          */
         private void createTopSection(Composite pageControl) {
@@ -229,7 +229,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         }
 
         /**
-         * Initializes the target folder <tt>TextButtonControl</tt> based on the user selection
+         * Initializes the target folder <code>TextButtonControl</code> based on the user selection
          * input.
          */
         private void setTargetFolderBasedOnSelection(TextButtonField targetFolderField) {
@@ -264,8 +264,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         }
 
         /**
-         * Checks whether this page is complete. Returns <tt>true</tt> if at least one element is
-         * checked in the tree viewer widget and the page is valid, <tt>false</tt> otherwise.
+         * Checks whether this page is complete. Returns <code>true</code> if at least one element is
+         * checked in the tree viewer widget and the page is valid, <code>false</code> otherwise.
          */
         private boolean checkPageCompleteCondition() {
             return viewer.getCheckedElements().length > 0 && validatePage();
@@ -336,7 +336,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
         /**
          * Resolves the target IPS project from the user input in the target source folder
-         * <tt>TextButtonControl</tt>. If this is not possible <tt>null</tt> will be returned.
+         * <code>TextButtonControl</code>. If this is not possible <code>null</code> will be returned.
          */
         private IIpsProject getTargetIpsProject() {
             String targetFolder = targetSourceFolderControl.getText();
@@ -349,7 +349,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
         /**
          * Resolves the name of the target source folder specified by the user from the target
-         * source folder <tt>TextButtonControl</tt>.
+         * source folder <code>TextButtonControl</code>.
          */
         private String getTargetSourceFolderName() {
             String targetFolder = targetSourceFolderControl.getText();
@@ -365,7 +365,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             return root;
         }
 
-        /** The <tt>LabelProvider</tt> for the tree viewer widget. */
+        /** The <code>LabelProvider</code> for the tree viewer widget. */
         private class EnumContentsLabelProvider extends DefaultLabelProvider {
 
             @Override
@@ -392,13 +392,13 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
         }
 
-        /** The <tt>ContentProvider</tt> for the tree viewer widget. */
+        /** The <code>ContentProvider</code> for the tree viewer widget. */
         private class EnumContentsContentProvider implements ITreeContentProvider {
 
-            /** A map that is used to speed up the <tt>getChildren(Object)</tt> operation. */
+            /** A map that is used to speed up the <code>getChildren(Object)</code> operation. */
             private Map<IIpsPackageFragment, List<IEnumType>> treeStructure;
 
-            /** Creates the <tt>EnumContentsContentProvider</tt>. */
+            /** Creates the <code>EnumContentsContentProvider</code>. */
             public EnumContentsContentProvider() {
                 treeStructure = new HashMap<IIpsPackageFragment, List<IEnumType>>();
             }
@@ -450,14 +450,14 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             }
 
             /**
-             * Searches for <tt>IEnumType</tt>s currently lacking of <tt>IEnumContent</tt>s while
-             * needing them. Returns all found <tt>IEnumType</tt>s in a list.
+             * Searches for <code>IEnumType</code>s currently lacking of <code>IEnumContent</code>s while
+             * needing them. Returns all found <code>IEnumType</code>s in a list.
              * <p>
-             * Never returns <tt>null</tt>; An empty list is returned if no <tt>IEnumType</tt>s were
+             * Never returns <code>null</code>; An empty list is returned if no <code>IEnumType</code>s were
              * found.
              * 
-             * @param ipsProject The IPS project (starting point) where <tt>IEnumType</tt>s needing
-             *            <tt>IEnumContent</tt>s shall be searched.
+             * @param ipsProject The IPS project (starting point) where <code>IEnumType</code>s needing
+             *            <code>IEnumContent</code>s shall be searched.
              */
             private List<IEnumType> findEnumTypesNeedingEnumContent(IIpsProject ipsProject) {
                 List<IEnumType> enumTypesInProject = ipsProject.findEnumTypes(false, true);
@@ -494,30 +494,30 @@ public class CreateMissingEnumContentsWizard extends Wizard {
     }
 
     /**
-     * This <tt>IRunnableWithProgress</tt> will be executed when the user clicks the 'Finish' -
-     * button. All selected missing <tt>IEnumContent</tt>s will be created by the operation.
+     * This <code>IRunnableWithProgress</code> will be executed when the user clicks the 'Finish' -
+     * button. All selected missing <code>IEnumContent</code>s will be created by the operation.
      */
     private class CreateIpsSrcFilesRunnable implements IRunnableWithProgress {
 
         /**
          * The elements that user selected in the tree viewer widget of the
-         * <tt>SelectEnumContentsPage</tt>.
+         * <code>SelectEnumContentsPage</code>.
          */
         private Object[] checkedElements;
 
         /**
-         * The target <tt>IIpsPackageFragmentRoot</tt> the user selected the missing
-         * <tt>IEnumContent</tt>s to be created into.
+         * The target <code>IIpsPackageFragmentRoot</code> the user selected the missing
+         * <code>IEnumContent</code>s to be created into.
          */
         private IIpsPackageFragmentRoot targetRoot;
 
         /**
-         * Creates the <tt>CreateIpsSrcFilesRunnable</tt>.
+         * Creates the <code>CreateIpsSrcFilesRunnable</code>.
          * 
          * @param checkedElements The elements the user selected in the tree viewer widget of the
-         *            <tt>SelectEnumContentsPage</tt>.
-         * @param targetRoot The target <tt>IIpsPackageFragmentRoot</tt> missing
-         *            <tt>IEnumContent</tt>s shall be created into.
+         *            <code>SelectEnumContentsPage</code>.
+         * @param targetRoot The target <code>IIpsPackageFragmentRoot</code> missing
+         *            <code>IEnumContent</code>s shall be created into.
          */
         public CreateIpsSrcFilesRunnable(Object[] checkedElements, IIpsPackageFragmentRoot targetRoot) {
             this.checkedElements = checkedElements;

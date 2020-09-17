@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.EnumsDescriptionPag
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 
 /**
- * The Faktor-IPS editor to edit <tt>IEnumType</tt> objects with.
+ * The Faktor-IPS editor to edit <code>IEnumType</code> objects with.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -34,7 +34,7 @@ public class EnumTypeEditor extends IpsObjectEditor implements IModelDescription
         return Messages.EnumTypeEditor_title + getIpsObject().getName();
     }
 
-    /** Returns the <tt>IEnumType</tt> this editor is currently editing. */
+    /** Returns the <code>IEnumType</code> this editor is currently editing. */
     IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
     }

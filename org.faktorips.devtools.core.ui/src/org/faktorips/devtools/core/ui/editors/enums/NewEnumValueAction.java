@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <tt>EnumValuesSection</tt> for creating new <tt>IEnumValue</tt>s.
+ * This action is used by the <code>EnumValuesSection</code> for creating new <code>IEnumValue</code>s.
  * 
  * @see EnumValuesSection
  * 
@@ -39,7 +39,7 @@ public class NewEnumValueAction extends Action {
     /**
      * @param tableViewer The table viewer linking the table widget with the model data.
      * 
-     * @throws NullPointerException If <tt>tableViewer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>tableViewer</code> is <code>null</code>.
      */
     public NewEnumValueAction(TableViewer tableViewer) {
         super();

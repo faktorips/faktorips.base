@@ -99,7 +99,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     private DeleteRowAction deleteRowAction;
 
     /**
-     * The <tt>ITableContents</tt> the <tt>TableContentsEditor</tt> this page belongs to is
+     * The <code>ITableContents</code> the <code>TableContentsEditor</code> this page belongs to is
      * currently editing.
      */
     private final ITableContents tableContents;
@@ -378,7 +378,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     /**
-     * creates a new <tt>TableViewer</tt> based on the corresponding <tt>ITableContents</tt>
+     * creates a new <code>TableViewer</code> based on the corresponding <code>ITableContents</code>
      */
     private void createNewTableViewer() {
         ITableStructure tableStructure = getTableStructure();
@@ -568,8 +568,8 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
     /*
      * 
-     * Updates the enabled states of the tool bar. <p> The <tt>OpenFixEnumContentWizardAction</tt>
-     * will be enabled if the <tt>ITableStructure</tt> the <tt>ITableContents</tt> to edit is built
+     * Updates the enabled states of the tool bar. <p> The <code>OpenFixEnumContentWizardAction</code>
+     * will be enabled if the <code>ITableStructure</code> the <code>ITableContents</code> to edit is built
      * upon is not correct
      */
     void updateToolbarActionsEnabledStates() {

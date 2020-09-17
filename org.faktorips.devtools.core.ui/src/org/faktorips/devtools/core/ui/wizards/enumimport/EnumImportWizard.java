@@ -44,7 +44,7 @@ import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Wizard to import tabular data into an <tt>IEnumType</tt> or <tt>IEnumContent</tt>.
+ * Wizard to import tabular data into an <code>IEnumType</code> or <code>IEnumContent</code>.
  * 
  * @author Roman Grutza, Alexander Weickmann
  */

@@ -162,7 +162,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
 
     /**
-     * Returns the <tt>ITableContents</tt> that has been created by this page or <tt>null</tt> if it
+     * Returns the <code>ITableContents</code> that has been created by this page or <code>null</code> if it
      * has not been created yet.
      */
     public ITableContents getCreatedTableContents() {

@@ -48,7 +48,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     private List<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
     /**
-     * Creates a new <tt>IpsObjectEditorPage</tt>.
+     * Creates a new <code>IpsObjectEditorPage</code>.
      * 
      * @param editor The editor the page belongs to.
      * @param id Page id used to identify the page.
@@ -59,14 +59,14 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         uiToolkit = new UIToolkit(new FormToolkit(Display.getCurrent()));
     }
 
-    /** Returns the <tt>IpsObjectEditor</tt> this page belongs to. */
+    /** Returns the <code>IpsObjectEditor</code> this page belongs to. */
     public IpsObjectEditor getIpsObjectEditor() {
         return (IpsObjectEditor)getEditor();
     }
 
     /**
-     * Returns the <tt>IIpsObject</tt> of the <tt>IIpsSrcFile</tt> being edited. Returns
-     * <tt>null</tt> if the source file couldn't determine the IPS object (e.g. if the source file
+     * Returns the <code>IIpsObject</code> of the <code>IIpsSrcFile</code> being edited. Returns
+     * <code>null</code> if the source file couldn't determine the IPS object (e.g. if the source file
      * is stored outside an IPS package).
      */
     public IIpsObject getIpsObject() {
@@ -175,7 +175,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * default spacing settings.
      * 
      * @param numOfColumns Number of columns in the grid.
-     * @param equalSize Set to <tt>true</tt> if the columns should have the same size.
+     * @param equalSize Set to <code>true</code> if the columns should have the same size.
      */
     protected Composite createGridComposite(UIToolkit toolkit,
             Composite parent,
@@ -200,7 +200,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * Refreshes the page with the data from the model.
      * <p>
-     * The default implementation refreshes all ancestors that are instances of <tt>IpsSection</tt>.
+     * The default implementation refreshes all ancestors that are instances of <code>IpsSection</code>.
      * By ancestors we mean the children of the composite that represents this page and its
      * children.
      */
@@ -224,8 +224,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * Returns <tt>true</tt> if the content shown on this page is changeable, otherwise
-     * <tt>false</tt>.
+     * Returns <code>true</code> if the content shown on this page is changeable, otherwise
+     * <code>false</code>.
      */
     @Override
     public boolean isDataChangeable() {
@@ -237,7 +237,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * <p>
      * If the user can't change the data shown in the editor's at all, he also can't change the data
      * shown on this page. If the user can change editor's data in general, the
-     * <tt>computeDataChangeableState()</tt> is called to evaluate if the data shown on this page
+     * <code>computeDataChangeableState()</code> is called to evaluate if the data shown on this page
      * can be changed.
      * 
      * @see #computeDataChangeableState()
@@ -254,14 +254,14 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * Evaluates whether the data shown on this page is changeable by the user. This method does not
      * consider the state of the IPS object editor.
      * <p>
-     * The default implementation returns <tt>true</tt>, subclasses may override.
+     * The default implementation returns <code>true</code>, subclasses may override.
      */
     protected boolean computeDataChangeableState() {
         return true;
     }
 
     /**
-     * Resets the data changeable state to it's default, which is <tt>true</tt>, so that it matches
+     * Resets the data changeable state to it's default, which is <code>true</code>, so that it matches
      * the initial state of controls which are by default enabled / editable.
      */
     protected void resetDataChangeableState() {

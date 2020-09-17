@@ -21,10 +21,10 @@ public class TableColumnReference extends PartReference {
     static final String XML_TAG = "ColumnTableReference"; //$NON-NLS-1$
 
     /**
-     * Creates a new <tt>TableColumnReference</tt>.
+     * Creates a new <code>TableColumnReference</code>.
      * 
-     * @param parent The <tt>ITableContents</tt> this <tt>TableColumnReference</tt> belongs to.
-     * @param id A unique ID for this <tt>TableColumnReference</tt>.
+     * @param parent The <code>ITableContents</code> this <code>TableColumnReference</code> belongs to.
+     * @param id A unique ID for this <code>TableColumnReference</code>.
      */
     public TableColumnReference(IIpsMetaObject parent, String id) {
         super(parent, id);

@@ -156,23 +156,23 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * The simple extension point id of the extension point
-     * <tt>extensionPropertyEditFieldFactory</tt>.
+     * <code>extensionPropertyEditFieldFactory</code>.
      */
     public static final String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
 
     /**
-     * The simple extension point id of the extension point <tt>inputFormat</tt>.
+     * The simple extension point id of the extension point <code>inputFormat</code>.
      */
     public static final String EXTENSION_POINT_INPUT_FORMAT = "inputFormat"; //$NON-NLS-1$
 
     /**
-     * The simple extension point id of the extension point <tt>extensionPropertySectionFactory</tt>
+     * The simple extension point id of the extension point <code>extensionPropertySectionFactory</code>
      * .
      */
     public static final String EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY = "extensionPropertySectionFactory"; //$NON-NLS-1$
 
     /**
-     * The extension point id of the extension point <tt>adapterprovider</tt>.
+     * The extension point id of the extension point <code>adapterprovider</code>.
      */
     public static final String EXTENSION_POINT_ID_ADAPTER_PROVIDER = "adapterprovider"; //$NON-NLS-1$
 
@@ -182,7 +182,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public static final String EXTENSION_POINT_ID_IPS_DROP_ADAPTER_PROVIDER = "ipsDropAdapterProvider"; //$NON-NLS-1$
 
     /**
-     * The extension point id of the extension point property <tt>workbenchadapter</tt> in the
+     * The extension point id of the extension point property <code>workbenchadapter</code> in the
      * extension point adapterprovider.
      */
     public static final String CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER = "workbenchadapter"; //$NON-NLS-1$

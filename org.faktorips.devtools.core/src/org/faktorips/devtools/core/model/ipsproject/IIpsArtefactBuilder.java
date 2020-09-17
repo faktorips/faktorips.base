@@ -106,8 +106,8 @@ public interface IIpsArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException;
 
     /**
-     * Is supposed to return <tt>true</tt> if this builder is a builder for the provided
-     * <tt>IIpsSrcFile</tt>.
+     * Is supposed to return <code>true</code> if this builder is a builder for the provided
+     * <code>IIpsSrcFile</code>.
      */
     // TODO AW: This method does not need to - and should not - throw a checked exception.
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException;

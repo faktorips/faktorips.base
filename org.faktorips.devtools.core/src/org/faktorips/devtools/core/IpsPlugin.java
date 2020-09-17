@@ -78,12 +78,12 @@ public class IpsPlugin extends AbstractUIPlugin {
     public static final String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
 
     /**
-     * The extension point id of the extension point <tt>ipsMigrationOperation</tt>.
+     * The extension point id of the extension point <code>ipsMigrationOperation</code>.
      */
     public static final String EXTENSION_POINT_ID_MIGRATION_OPERATION = "org.faktorips.devtools.core.ipsMigrationOperation"; //$NON-NLS-1$
 
     /**
-     * The extension point id of the extension point property <tt>migrationOperation</tt> in the
+     * The extension point id of the extension point property <code>migrationOperation</code> in the
      * extension point ipsMigrationOperation.
      */
     public static final String CONFIG_ELEMENT_ID_MIGRATION_OPERATION = "migrationOperation"; //$NON-NLS-1$

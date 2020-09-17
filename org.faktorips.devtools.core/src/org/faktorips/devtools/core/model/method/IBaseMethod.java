@@ -58,12 +58,12 @@ public interface IBaseMethod extends IParameterContainer {
      *            necessarily the project this method belongs to.
      * 
      * @throws CoreException If an error occurs while searching.
-     * @throws NullPointerException If <tt>ipsProject</tt> is <code>null</code>.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Checks whether the signature of the <tt>otherMethod</tt> is the same as the signature of this
+     * Checks whether the signature of the <code>otherMethod</code> is the same as the signature of this
      * method. The signature is the same if the name of the method is equal, the number of
      * parameters is equal and the data types of the parameters are equal. Note that the return
      * values are not compared.
@@ -76,8 +76,8 @@ public interface IBaseMethod extends IParameterContainer {
     public boolean isSameSignature(IBaseMethod otherMethod);
 
     /**
-     * Returns the method's signature in string format, e.g. <tt>computePremium(base.Coverage,
-     * base.Contract, Integer)</tt>.
+     * Returns the method's signature in string format, e.g. <code>computePremium(base.Coverage,
+     * base.Contract, Integer)</code>.
      */
     public String getSignatureString();
 

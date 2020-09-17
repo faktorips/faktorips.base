@@ -39,12 +39,12 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
- * The <tt>EnumContentEditorPage</tt> shows general information about an <tt>IEnumContent</tt> and
+ * The <code>EnumContentEditorPage</code> shows general information about an <code>IEnumContent</code> and
  * provides controls to edit, import and export its values. It is intended to be used with the
- * <tt>EnumContentEditor</tt>.
+ * <code>EnumContentEditor</code>.
  * <p>
- * This page is a listener for changes in the IPS model: If the <tt>IEnumType</tt> the edited
- * <tt>IEnumContent</tt> is built upon changes the enabled states of the tool bar buttons will be
+ * This page is a listener for changes in the IPS model: If the <code>IEnumType</code> the edited
+ * <code>IEnumContent</code> is built upon changes the enabled states of the tool bar buttons will be
  * updated.
  * 
  * @see EnumContentEditor
@@ -55,16 +55,16 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
  */
 public class EnumContentEditorPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
-    /** Values section showing the <tt>IEnumValue</tt>s. */
+    /** Values section showing the <code>IEnumValue</code>s. */
     private EnumValuesSection enumValuesSection;
 
     /**
-     * The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> this page belongs to is currently
+     * The <code>IEnumContent</code> the <code>EnumContentEditor</code> this page belongs to is currently
      * editing.
      */
     private IEnumContent enumContent;
 
-    /** The action to open a <tt>FixEnumContentWizard</tt>. */
+    /** The action to open a <code>FixEnumContentWizard</code>. */
     private IAction openFixEnumContentDialogAction;
 
     private EnumImportExportActionInEditor importAction;
@@ -74,9 +74,9 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     private SelectionStatusBarPublisher selectionStatusBarPublisher;
 
     /**
-     * Creates a new <tt>EnumContentEditorPage</tt>.
+     * Creates a new <code>EnumContentEditorPage</code>.
      * 
-     * @param editor The <tt>EnumContentEditor</tt> this page belongs to.
+     * @param editor The <code>EnumContentEditor</code> this page belongs to.
      */
     public EnumContentEditorPage(EnumContentEditor editor) {
         super(editor, "EnumContentEditorPage", Messages.EnumContentValuesPage_title); //$NON-NLS-1$
@@ -146,18 +146,18 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     /**
      * Updates the enabled states of the tool bar.
      * <p>
-     * The <tt>OpenFixEnumContentWizardAction</tt> will be enabled if the <tt>IEnumType</tt> the
-     * <tt>IEnumContent</tt> to edit is built upon
+     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the <code>IEnumType</code> the
+     * <code>IEnumContent</code> to edit is built upon
      * <ul>
      * <li>does not exist or is missing.
      * <li>is abstract.
      * <li>defines its values in the model.
-     * <li>defines not the exact number of <tt>IEnumAttribute</tt>s as there are
-     * <tt>IEnumAttributeValue</tt>s in the <tt>IEnumContent</tt> to edit.
-     * <li>defines not the same enumeration attribute names as stored in the <tt>IEnumContent</tt>
+     * <li>defines not the exact number of <code>IEnumAttribute</code>s as there are
+     * <code>IEnumAttributeValue</code>s in the <code>IEnumContent</code> to edit.
+     * <li>defines not the same enumeration attribute names as stored in the <code>IEnumContent</code>
      * to edit.
-     * <li>defines not the same ordering of <tt>IEnumAttribute</tt>s as stored in the
-     * <tt>IEnumContent</tt> to edit.
+     * <li>defines not the same ordering of <code>IEnumAttribute</code>s as stored in the
+     * <code>IEnumContent</code> to edit.
      * </ul>
      */
     private void updateToolbarActionsEnabledStates() {
@@ -194,7 +194,7 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         return enumValuesSection;
     }
 
-    /** Executes the <tt>EnumImportExportOperation</tt> and refreshes the view. */
+    /** Executes the <code>EnumImportExportOperation</code> and refreshes the view. */
     private class EnumImportExportActionInEditor extends EnumImportExportAction {
 
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {

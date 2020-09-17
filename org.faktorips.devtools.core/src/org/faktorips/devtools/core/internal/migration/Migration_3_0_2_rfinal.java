@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  * Migration to version 3.1.0.ms1.
  * <p>
  * This migration ensures that the .ipsproject files are rewritten. This is necessary because a new
- * XML element <tt>&lt;SupportedLanguages&gt;</tt> has been added.
+ * XML element <code>&lt;SupportedLanguages&gt;</code> has been added.
  * <p>
  * Furthermore, the natural language used when generating source code is added as
  * {@link ISupportedLanguage} to each IPS project. An {@link ILabel} is added for that language in

@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <tt>EnumValuesSection</tt> for deleting <tt>IEnumValue</tt>s.
+ * This action is used by the <code>EnumValuesSection</code> for deleting <code>IEnumValue</code>s.
  * 
  * @see EnumValuesSection
  * 
@@ -41,11 +41,11 @@ public class DeleteEnumValueAction extends Action {
     private TableViewer enumValuesTableViewer;
 
     /**
-     * Creates a new <tt>DeleteEnumValueAction</tt>.
+     * Creates a new <code>DeleteEnumValueAction</code>.
      * 
      * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
      * 
-     * @throws NullPointerException If <tt>enumValuesTableViewer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
     public DeleteEnumValueAction(TableViewer enumValuesTableViewer) {
         super();

@@ -31,8 +31,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The general info section for the <tt>EnumContentEditor</tt>. It shows the <tt>IEnumType</tt> the
- * <tt>IEnumContent</tt> to edit is built upon and provides navigation to this <tt>IEnumType</tt>.
+ * The general info section for the <code>EnumContentEditor</code>. It shows the <code>IEnumType</code> the
+ * <code>IEnumContent</code> to edit is built upon and provides navigation to this <code>IEnumType</code>.
  * 
  * @see EnumContentEditor
  * 
@@ -42,28 +42,28 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumContentGeneralInfoSection extends IpsSection {
 
-    /** The <tt>IEnumContent</tt> the editor is currently editing. */
+    /** The <code>IEnumContent</code> the editor is currently editing. */
     private IEnumContent enumContent;
 
-    /** The wizard page of the <tt>EnumContentEditor</tt>. */
+    /** The wizard page of the <code>EnumContentEditor</code>. */
     private EnumContentEditorPage enumContentEditorPage;
 
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The label showing the base <tt>IEnumType</tt>. */
+    /** The label showing the base <code>IEnumType</code>. */
     Label enumTypeLabel;
 
     /**
-     * Creates a new <tt>EnumContentGeneralInfoSection</tt> using the specified parameters.
+     * Creates a new <code>EnumContentGeneralInfoSection</code> using the specified parameters.
      * 
-     * @param enumContentEditorPage The wizard page of the <tt>EnumContentEditor</tt>.
-     * @param enumContent The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> is currently
+     * @param enumContentEditorPage The wizard page of the <code>EnumContentEditor</code>.
+     * @param enumContent The <code>IEnumContent</code> the <code>EnumContentEditor</code> is currently
      *            editing.
      * @param parent The parent UI composite to attach this info section to.
      * @param toolkit The UI toolkit to be used to create new UI elements.
      * 
-     * @throws NullPointerException If <tt>enumContent</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>enumContent</code> is <code>null</code>.
      */
     public EnumContentGeneralInfoSection(EnumContentEditorPage enumContentEditorPage, IEnumContent enumContent,
             Composite parent, UIToolkit toolkit) {

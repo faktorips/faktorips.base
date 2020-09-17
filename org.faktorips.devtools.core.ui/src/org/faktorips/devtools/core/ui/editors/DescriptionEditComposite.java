@@ -139,7 +139,7 @@ public final class DescriptionEditComposite extends Composite {
     /**
      * Sets the element to be described.
      * 
-     * @param describedElement The <tt>IDescribedElement</tt> to be described.
+     * @param describedElement The <code>IDescribedElement</code> to be described.
      */
     public void setDescribedElement(IDescribedElement describedElement) {
         this.describedElement = describedElement;

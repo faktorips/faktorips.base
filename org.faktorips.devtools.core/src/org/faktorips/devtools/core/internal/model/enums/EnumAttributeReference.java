@@ -20,10 +20,10 @@ public class EnumAttributeReference extends PartReference {
     static final String XML_TAG = "EnumAttributeReference"; //$NON-NLS-1$
 
     /**
-     * Creates a new <tt>EnumAttributeReference</tt>.
+     * Creates a new <code>EnumAttributeReference</code>.
      * 
-     * @param parent The <tt>IEnumContent</tt> this <tt>EnumAttributeReference</tt> belongs to.
-     * @param id A unique ID for this <tt>EnumAttributeReference</tt>.
+     * @param parent The <code>IEnumContent</code> this <code>EnumAttributeReference</code> belongs to.
+     * @param id A unique ID for this <code>EnumAttributeReference</code>.
      */
     public EnumAttributeReference(IIpsMetaObject parent, String id) {
         super(parent, id);

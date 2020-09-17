@@ -91,8 +91,8 @@ import org.faktorips.devtools.core.ui.commands.InferTemplateHandler;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
- * The <tt>ModelExplorerContextMenuBuilder</tt> is used to create the context menu of the
- * <tt>ModelExplorer</tt>.
+ * The <code>ModelExplorerContextMenuBuilder</code> is used to create the context menu of the
+ * <code>ModelExplorer</code>.
  */
 public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
@@ -127,7 +127,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     private TreeViewer treeViewer;
 
     /**
-     * Creates a <tt>ModelExplorerContextMenuBuilder</tt>.
+     * Creates a <code>ModelExplorerContextMenuBuilder</code>.
      * 
      */
     public ModelExplorerContextMenuBuilder(ModelExplorer modelExplorer, ModelExplorerConfiguration modelExplorerConfig,
@@ -157,7 +157,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     /**
      * Creates this parts' context menu in the given MenuManager dynamically. The context menu and
-     * its elements depend on the current selection and the <tt>ModelExplorerConfiguration</tt>.
+     * its elements depend on the current selection and the <code>ModelExplorerConfiguration</code>.
      */
     @Override
     public void menuAboutToShow(IMenuManager manager) {

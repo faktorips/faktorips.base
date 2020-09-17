@@ -38,4 +38,31 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <properties>
+                <maven-javadoc-plugin-version>3.2.0</maven-javadoc-plugin-version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>${maven-javadoc-plugin-version}</version>
+                            <configuration>
+                                <source>1.6</source>
+                                <!-- at the moment we do not check missing javadoc like missing @param or @return -->
+                                <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

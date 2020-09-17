@@ -21,15 +21,15 @@ import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialo
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 
 /**
- * Dialog that enables the user to select <tt>IEnumAttribute</tt>s to inherit.
+ * Dialog that enables the user to select <code>IEnumAttribute</code>s to inherit.
  * 
  * @author Alexander Weickmann
  */
 public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDialog<IEnumAttribute> {
 
     /**
-     * @param enumType The <tt>IEnumType</tt> to get the candidates to possibly inherit from.
-     * @param parent The <tt>Shell</tt> to show this dialog in.
+     * @param enumType The <code>IEnumType</code> to get the candidates to possibly inherit from.
+     * @param parent The <code>Shell</code> to show this dialog in.
      */
     public InheritEnumAttributesDialog(IEnumType enumType, Shell parent) {
         super(parent, new CandidatesContentProvider(enumType));
@@ -38,11 +38,11 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
         setSelectLabelText(Messages.InheritAttributesDialog_labelSelectAttribute);
     }
 
-    /** Provides the <tt>IEnumAttribute</tt>s available for selection. */
+    /** Provides the <code>IEnumAttribute</code>s available for selection. */
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
 
         /**
-         * @param enumType The <tt>IEnumType</tt> the <tt>IEnumAttribute</tt>s available for
+         * @param enumType The <code>IEnumType</code> the <code>IEnumAttribute</code>s available for
          *            selection belong to.
          */
         public CandidatesContentProvider(IEnumType enumType) {

@@ -68,8 +68,8 @@ public class ArrayElementMover implements IElementMover {
     }
 
     /**
-     * Returns <tt>true</tt> if the given indices array contains the given index, otherwise
-     * <tt>false</tt>.
+     * Returns <code>true</code> if the given indices array contains the given index, otherwise
+     * <code>false</code>.
      */
     private boolean contains(int[] indices, int index) {
         for (int indice : indices) {

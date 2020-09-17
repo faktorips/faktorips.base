@@ -66,7 +66,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * <code>Decimal.NULL</code> if <code>s</code> is either <code>null</code> or an empty string or
      * "DecimalNull".
      * 
-     * @throws NumberFormatException if <tt>s</tt> is not a valid representation of a Decimal.
+     * @throws NumberFormatException if <code>s</code> is not a valid representation of a Decimal.
      */
     public final static Decimal valueOf(String s) {
         if (s == null || s.equals("") || s.equals(DecimalNull.STRING_REPRESENTATION)) {
@@ -131,18 +131,18 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
 
     /**
      * Returns a Decimal whose value is the absolute value of this Decimal, and whose scale is
-     * <tt>this.scale()</tt>.
+     * <code>this.scale()</code>.
      * 
-     * @return <tt>abs(this)</tt>
+     * @return <code>abs(this)</code>
      */
     public Decimal abs() {
         return (signum() < 0 ? negate() : this);
     }
 
     /**
-     * Returns a Decimal whose value is <tt>(-this)</tt>, and whose scale is <tt>this.scale()</tt>.
+     * Returns a Decimal whose value is <code>(-this)</code>, and whose scale is <code>this.scale()</code>.
      * 
-     * @return <tt>-this</tt>
+     * @return <code>-this</code>
      */
     public Decimal negate() {
         return new Decimal(value.negate());
@@ -325,7 +325,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     }
 
     /**
-     * Returns a Decimal whose value is <tt>(this / d)</tt>, and whose scale is as specified. If
+     * Returns a Decimal whose value is <code>(this / d)</code>, and whose scale is as specified. If
      * rounding must be performed to generate a result with the specified scale, the specified
      * rounding mode is applied. If this decimal is the Decimal.NULL object, then Decimal.NULL is
      * returned.
@@ -334,11 +334,11 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param scale scale of the Decimal quotient to be returned
      * @param roundingMode rounding mode to apply
      * 
-     * @return <tt>this / d</tt>
-     * @throws ArithmeticException <tt>value</tt> is zero, <tt>scale</tt> is negative, or
-     *             <tt>roundingMode==ROUND_UNNECESSARY</tt> and the specified scale is insufficient
+     * @return <code>this / d</code>
+     * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is insufficient
      *             to represent the result of the division exactly.
-     * @throws IllegalArgumentException <tt>roundingMode</tt> does not represent a valid rounding
+     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
      *             mode.
      */
     public Decimal divide(int value, int scale, int roundingMode) {
@@ -346,7 +346,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     }
 
     /**
-     * Returns a Decimal whose value is <tt>(this / d)</tt>, and whose scale is as specified. If
+     * Returns a Decimal whose value is <code>(this / d)</code>, and whose scale is as specified. If
      * rounding must be performed to generate a result with the specified scale, the specified
      * rounding mode is applied. If this decimal is the Decimal.NULL object, then Decimal.NULL is
      * returned.
@@ -355,11 +355,11 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param scale scale of the Decimal quotient to be returned
      * @param roundingMode rounding mode to apply
      * 
-     * @return <tt>this / d</tt>
-     * @throws ArithmeticException <tt>value</tt> is zero, <tt>scale</tt> is negative, or
-     *             <tt>roundingMode==ROUND_UNNECESSARY</tt> and the specified scale is insufficient
+     * @return <code>this / d</code>
+     * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is insufficient
      *             to represent the result of the division exactly.
-     * @throws IllegalArgumentException <tt>roundingMode</tt> does not represent a valid rounding
+     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
      *             mode.
      */
     public Decimal divide(long value, int scale, int roundingMode) {
@@ -367,7 +367,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     }
 
     /**
-     * Returns a Decimal whose value is <tt>(this / d)</tt>, and whose scale is as specified. If
+     * Returns a Decimal whose value is <code>(this / d)</code>, and whose scale is as specified. If
      * rounding must be performed to generate a result with the specified scale, the specified
      * rounding mode is applied. If either this decimal or d is the Decimal.NULL, then Decimal.NULL
      * is returned.
@@ -376,11 +376,11 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param scale scale of the Decimal quotient to be returned.
      * @param roundingMode rounding mode to apply.
      * 
-     * @return <tt>this / d</tt>
-     * @throws ArithmeticException <tt>value</tt> is zero, <tt>scale</tt> is negative, or
-     *             <tt>roundingMode==ROUND_UNNECESSARY</tt> and the specified scale is insufficient
+     * @return <code>this / d</code>
+     * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is insufficient
      *             to represent the result of the division exactly.
-     * @throws IllegalArgumentException <tt>roundingMode</tt> does not represent a valid rounding
+     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
      *             mode.
      */
     public Decimal divide(Decimal d, int scale, int roundingMode) {
@@ -408,10 +408,10 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @return a Decimal whose scale is the specified value, and whose unscaled value is determined
      *         by multiplying or dividing this Decimal's unscaled value by the appropriate power of
      *         ten to maintain its overall value.
-     * @throws ArithmeticException <tt>scale</tt> is negative, or
-     *             <tt>roundingMode==ROUND_UNNECESSARY</tt> and the specified scaling operation
+     * @throws ArithmeticException <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scaling operation
      *             would require rounding.
-     * @throws IllegalArgumentException <tt>roundingMode</tt> does not represent a valid rounding
+     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
      *             mode.
      * @see java.math.BigDecimal#ROUND_UP
      * @see java.math.BigDecimal#ROUND_DOWN
@@ -433,8 +433,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param precision The number of digits the value is rounded to.
      * @param roundingMode The rounding mode to apply
      * 
-     * @throws ArithmeticException <tt>precision</tt> is negative.
-     * @throws IllegalArgumentException <tt>roundingMode</tt> does not represent a valid rounding
+     * @throws ArithmeticException <code>precision</code> is negative.
+     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
      *             mode.
      * 
      * @see #setScale(int, int)

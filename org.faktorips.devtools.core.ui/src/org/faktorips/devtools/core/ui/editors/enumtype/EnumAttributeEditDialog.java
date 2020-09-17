@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.util.StringUtil;
 
 /**
- * Dialog to edit an <tt>IEnumAttribute</tt> of an <tt>IEnumType</tt>.
+ * Dialog to edit an <code>IEnumAttribute</code> of an <code>IEnumType</code>.
  * 
  * @author Alexander Weickmann
  * 
@@ -53,40 +53,40 @@ import org.faktorips.util.StringUtil;
  */
 public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
-    /** The <tt>IEnumAttribute</tt> being edited. */
+    /** The <code>IEnumAttribute</code> being edited. */
     private IEnumAttribute enumAttribute;
 
     /** The extension property factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The UI control to set the <tt>name</tt> property. */
+    /** The UI control to set the <code>name</code> property. */
     private Text nameText;
 
     /** Keep track of the content of the name field to be able to determine whether it has changed. */
     private final String initialName;
 
     /**
-     * The UI control to set the <tt>defaultValueProviderAttribute</tt> property (only for
-     * <tt>IEnumLiteralNameAttribute</tt>).
+     * The UI control to set the <code>defaultValueProviderAttribute</code> property (only for
+     * <code>IEnumLiteralNameAttribute</code>).
      */
     private Text defaultValueProviderAttributeText;
 
-    /** The UI control to set the <tt>datatype</tt> property. */
+    /** The UI control to set the <code>datatype</code> property. */
     private DatatypeRefControl datatypeControl;
 
-    /** The UI control to set the <tt>multilingual</tt> property. */
+    /** The UI control to set the <code>multilingual</code> property. */
     private Checkbox multilingualCheckbox;
 
-    /** The UI control to set the <tt>unique</tt> property. */
+    /** The UI control to set the <code>unique</code> property. */
     private Checkbox uniqueCheckbox;
 
-    /** The UI control to set the <tt>identifier</tt> property. */
+    /** The UI control to set the <code>identifier</code> property. */
     private Checkbox identifierCheckbox;
 
-    /** The UI control to set the <tt>inherited</tt> property. */
+    /** The UI control to set the <code>inherited</code> property. */
     private Checkbox inheritedCheckbox;
 
-    /** The UI control to set the <tt>usedAsNameInFaktorIpsUi</tt> property. */
+    /** The UI control to set the <code>usedAsNameInFaktorIpsUi</code> property. */
     private Checkbox displayNameCheckbox;
 
     /** The canvas. */
@@ -95,18 +95,18 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private InfoLabel infoLabel;
 
     /**
-     * Flag indicating whether the given <tt>IEnumAttribute</tt> is a
-     * <tt>IEnumLiteralNameAttribute</tt> which leads to a variation of this dialog.
+     * Flag indicating whether the given <code>IEnumAttribute</code> is a
+     * <code>IEnumLiteralNameAttribute</code> which leads to a variation of this dialog.
      */
     private boolean literalNameAttribute;
 
     private boolean inherited;
 
     /**
-     * Creates a new <tt>EnumAttributeEditDialog</tt> for the user to edit the given
-     * <tt>IEnumAttribute</tt> with.
+     * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given
+     * <code>IEnumAttribute</code> with.
      * 
-     * @param enumAttribute The <tt>IEnumAttribute</tt> to edit with the dialog.
+     * @param enumAttribute The <code>IEnumAttribute</code> to edit with the dialog.
      * @param parentShell The parent UI shell.
      */
     public EnumAttributeEditDialog(IEnumAttribute enumAttribute, Shell parentShell) {
@@ -180,7 +180,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         infoLabel = new InfoLabel(control);
     }
 
-    /** Creates the UI fields for a <tt>IEnumLiteralNameAttribute</tt>. */
+    /** Creates the UI fields for a <code>IEnumLiteralNameAttribute</code>. */
     private void createFieldsForLiteralNameAttribute() {
         // Name
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
@@ -194,7 +194,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
     }
 
-    /** Creates the UI fields for a normal <tt>IEnumAttribute</tt>. */
+    /** Creates the UI fields for a normal <code>IEnumAttribute</code>. */
     private void createFieldsForNormalAttribute() {
         // Name
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
@@ -231,11 +231,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     /**
-     * Searches all the <tt>IEnumType</tt>s that are subclasses of the <tt>IEnumType</tt> the
-     * <tt>IEnumAttribute</tt> to edit belongs to. All those sub <tt>IEnumType</tt>s and the
-     * <tt>IEnumType</tt> itself will not be available in the data type selection.
+     * Searches all the <code>IEnumType</code>s that are subclasses of the <code>IEnumType</code> the
+     * <code>IEnumAttribute</code> to edit belongs to. All those sub <code>IEnumType</code>s and the
+     * <code>IEnumType</code> itself will not be available in the data type selection.
      * <p>
-     * Also, if the <tt>IEnumType</tt> does contain values all <tt>IEnumType</tt> that do not
+     * Also, if the <code>IEnumType</code> does contain values all <code>IEnumType</code> that do not
      * contain values will be disallowed to select, too.
      */
     private void filterDatatypes() {
@@ -277,7 +277,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /**
      * Binds the contents of the fields to the contents of the super enumeration attribute if the
-     * <tt>IEnumAttribute</tt> to be edited is marked as being inherited. Otherwise the contens are
+     * <code>IEnumAttribute</code> to be edited is marked as being inherited. Otherwise the contens are
      * bound to the respective properties of the attribute.
      * <p>
      * Also handles the enabled states of the fields.

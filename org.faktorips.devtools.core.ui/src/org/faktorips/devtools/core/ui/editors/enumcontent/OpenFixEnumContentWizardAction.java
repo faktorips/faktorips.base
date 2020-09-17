@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.wizards.fixcontent.FixContentWizard;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Opens a <tt>FixEnumContentWizard</tt>.
+ * Opens a <code>FixEnumContentWizard</code>.
  * 
  * @see FixContentWizard
  * 
@@ -36,25 +36,25 @@ public class OpenFixEnumContentWizardAction extends Action {
     /** The name of the image for the action. */
     private static final String IMAGE_NAME = "BrokenEnum.gif"; //$NON-NLS-1$
 
-    /** The <tt>IEnumContent</tt> to fix. */
+    /** The <code>IEnumContent</code> to fix. */
     private IEnumContent enumContent;
 
     /** The parent shell. */
     private Shell parentShell;
 
-    /** The editor page that requested the operation or <tt>null</tt>. */
+    /** The editor page that requested the operation or <code>null</code>. */
     private IpsObjectEditorPage editorPage;
 
     /**
-     * Creates a new <tt>OpenFixEnumContentWizardAction</tt>.
+     * Creates a new <code>OpenFixEnumContentWizardAction</code>.
      * 
-     * @param editorPage The <tt>IpsObjectEditorPage</tt> that requested the operation or
-     *            <tt>null</tt> (the page will be refreshed after the operation was performed if
+     * @param editorPage The <code>IpsObjectEditorPage</code> that requested the operation or
+     *            <code>null</code> (the page will be refreshed after the operation was performed if
      *            given).
-     * @param enumContent The <tt>IEnumContent</tt> to fix.
+     * @param enumContent The <code>IEnumContent</code> to fix.
      * @param parentShell The parent shell.
      * 
-     * @throws NullPointerException If <tt>enumContent</tt> or <tt>parentShell</tt> is <tt>null</tt>
+     * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is <code>null</code>
      *             .
      */
     public OpenFixEnumContentWizardAction(IpsObjectEditorPage editorPage, IEnumContent enumContent, Shell parentShell) {

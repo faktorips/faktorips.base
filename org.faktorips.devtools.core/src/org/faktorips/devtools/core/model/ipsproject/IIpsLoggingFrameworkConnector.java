@@ -130,7 +130,7 @@ public interface IIpsLoggingFrameworkConnector {
 
     /**
      * Returns the primitive boolean expression that indicates if the logging of the provided
-     * logging level is to execute, typically something like <tt>Logger.isDebugEnabled()</tt>.
+     * logging level is to execute, typically something like <code>Logger.isDebugEnabled()</code>.
      * 
      * @param level the logging level that is to check by the generated expression
      * @param loggerInstanceExp the logger instance expression. The result of the call to one of the

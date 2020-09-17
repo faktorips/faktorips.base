@@ -15,8 +15,8 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.Datatype;
 
 /**
- * A content proposal for <tt>Datatype</tt>. The label and image of these proposals could be
- * provided by the <tt>DatatypeContentProposalProvider</tt>.
+ * A content proposal for <code>Datatype</code>. The label and image of these proposals could be
+ * provided by the <code>DatatypeContentProposalProvider</code>.
  * 
  * @see IContentProposal
  * 

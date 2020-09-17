@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.model.enums;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * An <tt>IEnumLiteralNameAttributeValue</tt> represents a value for a
- * <tt>IEnumLiteralNameAttribute</tt>.
+ * An <code>IEnumLiteralNameAttributeValue</code> represents a value for a
+ * <code>IEnumLiteralNameAttribute</code>.
  * 
  * @author Alexander Weickmann
  * 

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IIpsElement extends IAdaptable {
 
-    /** The name of the <tt>name</tt> property. */
+    /** The name of the <code>name</code> property. */
     public final static String PROPERTY_NAME = "name"; //$NON-NLS-1$
 
     /**
@@ -31,36 +31,36 @@ public interface IIpsElement extends IAdaptable {
     public String getName();
 
     /**
-     * Returns the model this <tt>IIpsElement</tt> belongs to.
+     * Returns the model this <code>IIpsElement</code> belongs to.
      */
     public IIpsModel getIpsModel();
 
     /**
-     * Returns the <tt>IIpsProject</tt> this element belongs to or <tt>null</tt> if this is the
+     * Returns the <code>IIpsProject</code> this element belongs to or <code>null</code> if this is the
      * model.
      */
     public IIpsProject getIpsProject();
 
     /**
-     * Returns <tt>true</tt> if this element exists. This is the case if every ancestor up to the
-     * <tt>IIpsProject</tt> does exist and, if this element has a corresponding resource, that
+     * Returns <code>true</code> if this element exists. This is the case if every ancestor up to the
+     * <code>IIpsProject</code> does exist and, if this element has a corresponding resource, that
      * resource exists as well.
      */
     public boolean exists();
 
     /**
-     * Returns the resource corresponding to this element, e.g. an <tt>IIpsPackageFragment</tt>
+     * Returns the resource corresponding to this element, e.g. an <code>IIpsPackageFragment</code>
      * containing source files corresponds to a folder in the file system, a product definition
      * project belongs to a project and so on. If the element does not correspond to a resource,
-     * e.g. a product definition object, the operation will return <tt>null</tt>.
+     * e.g. a product definition object, the operation will return <code>null</code>.
      * 
      * @see #getEnclosingResource()
      */
     public IResource getCorrespondingResource();
 
     /**
-     * Returns the resource this <tt>IIpsElement</tt> is stored in. In contrast to
-     * <tt>getCorrespondingResource()</tt> this methods never returns <tt>null</tt>. E.g. for a pd
+     * Returns the resource this <code>IIpsElement</code> is stored in. In contrast to
+     * <code>getCorrespondingResource()</code> this methods never returns <code>null</code>. E.g. for a pd
      * object contained in a source file, the method returns the file the source file corresponds
      * to.
      * 
@@ -69,8 +69,8 @@ public interface IIpsElement extends IAdaptable {
     public IResource getEnclosingResource();
 
     /**
-     * Returns the parent <tt>IIpsElement</tt> or <tt>null</tt> if this element has no parent. This
-     * is the case for the <tt>IIpsModel</tt> only.
+     * Returns the parent <code>IIpsElement</code> or <code>null</code> if this element has no parent. This
+     * is the case for the <code>IIpsModel</code> only.
      */
     public IIpsElement getParent();
 
@@ -80,10 +80,10 @@ public interface IIpsElement extends IAdaptable {
      */
     public IIpsElement[] getChildren() throws CoreException;
 
-    /** Returns <tt>true</tt> if this element has any children, otherwise <tt>false</tt>. */
+    /** Returns <code>true</code> if this element has any children, otherwise <code>false</code>. */
     public boolean hasChildren() throws CoreException;
 
-    /** Returns <tt>true</tt> if this element is contained in an archive, <tt>false</tt> otherwise. */
+    /** Returns <code>true</code> if this element is contained in an archive, <code>false</code> otherwise. */
     public boolean isContainedInArchive();
 
     /**

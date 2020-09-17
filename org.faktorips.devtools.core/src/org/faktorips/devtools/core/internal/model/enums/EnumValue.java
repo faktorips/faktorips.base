@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <tt>IEnumValue</tt>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumValue</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValue
  * 
@@ -44,16 +44,16 @@ import org.w3c.dom.Element;
 public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     /**
-     * Collection containing all <tt>IEnumAttributeValue</tt>s that belong to this
-     * <tt>IEnumValue</tt>.
+     * Collection containing all <code>IEnumAttributeValue</code>s that belong to this
+     * <code>IEnumValue</code>.
      */
     private IpsObjectPartCollection<IEnumAttributeValue> enumAttributeValues;
 
     /**
-     * Creates a new <tt>IEnumValue</tt>.
+     * Creates a new <code>IEnumValue</code>.
      * 
-     * @param parent The <tt>IEnumValueContainer</tt> this <tt>IEnumValue</tt> belongs to.
-     * @param id A unique ID for this <tt>IEnumValue</tt>.
+     * @param parent The <code>IEnumValueContainer</code> this <code>IEnumValue</code> belongs to.
+     * @param id A unique ID for this <code>IEnumValue</code>.
      */
     public EnumValue(EnumValueContainer parent, String id) {
         super(parent, id);

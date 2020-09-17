@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <tt>IEnumLiteralNameAttribute</tt>, see the corresponding interface for more
+ * Implementation of <code>IEnumLiteralNameAttribute</code>, see the corresponding interface for more
  * details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute
@@ -37,16 +37,16 @@ import org.w3c.dom.Element;
 public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLiteralNameAttribute {
 
     /**
-     * The name of the <tt>IEnumAttribute</tt> that is used as default value provider for
+     * The name of the <code>IEnumAttribute</code> that is used as default value provider for
      * enumeration literals.
      */
     private String defaultValueProviderAttribute;
 
     /**
-     * Creates a new <tt>IEnumLiteralNameAttribute</tt>.
+     * Creates a new <code>IEnumLiteralNameAttribute</code>.
      * 
-     * @param parent The <tt>IEnumType</tt> this <tt>IEnumLiteralNameAttribute</tt> belongs to.
-     * @param id A unique ID for this <tt>IEnumLiteralNameAttribute</tt>.
+     * @param parent The <code>IEnumType</code> this <code>IEnumLiteralNameAttribute</code> belongs to.
+     * @param id A unique ID for this <code>IEnumLiteralNameAttribute</code>.
      */
     public EnumLiteralNameAttribute(IEnumType parent, String id) {
         super(parent, id);
@@ -90,7 +90,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * Validates whether this <tt>IEnumLiteralNameAttribute</tt> is needed by the <tt>IEnumType</tt>
+     * Validates whether this <code>IEnumLiteralNameAttribute</code> is needed by the <code>IEnumType</code>
      * it belongs to.
      */
     private void validateIsNeeded(MessageList list) {
@@ -102,7 +102,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         }
     }
 
-    /** Validates the <tt>defaultValueProviderAttribute</tt> property. */
+    /** Validates the <code>defaultValueProviderAttribute</code> property. */
     private void validateDefaultValueProviderAttribute(MessageList list) throws CoreException {
         // Pass validation if no provider is specified.
         if (StringUtils.isEmpty(defaultValueProviderAttribute)) {
@@ -150,7 +150,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * Not supported by <tt>IEnumLiteralNameAttribute</tt>s.
+     * Not supported by <code>IEnumLiteralNameAttribute</code>s.
      * 
      * @throws UnsupportedOperationException If the operation is called.
      */
@@ -160,7 +160,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * Not supported by <tt>IEnumLiteralNameAttribute</tt>s.
+     * Not supported by <code>IEnumLiteralNameAttribute</code>s.
      * 
      * @throws UnsupportedOperationException If the operation is called.
      */
@@ -170,7 +170,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * Not supported by <tt>IEnumLiteralNameAttribute</tt>s.
+     * Not supported by <code>IEnumLiteralNameAttribute</code>s.
      * 
      * @throws UnsupportedOperationException If the operation is called.
      */

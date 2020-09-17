@@ -20,24 +20,24 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * <tt>SupertypeHierarchyPartsContentProvider</tt>s provide a set of <tt>IIpsObjectPart</tt>s from
- * the supertype hierarchy of an <tt>IIpsObject</tt>.
+ * <code>SupertypeHierarchyPartsContentProvider</code>s provide a set of <code>IIpsObjectPart</code>s from
+ * the supertype hierarchy of an <code>IIpsObject</code>.
  * 
  * @author Alexander Weickmann
  */
 public abstract class SupertypeHierarchyPartsContentProvider implements ITreeContentProvider {
 
-    /** The set of provided <tt>IIpsObjectPart</tt>s. */
+    /** The set of provided <code>IIpsObjectPart</code>s. */
     private List<? extends IIpsObjectPart> providedObjectParts;
 
     /**
-     * The supertypes building the supertype hierarchy to which the provided <tt>IIpsObjectPart</tt>
+     * The supertypes building the supertype hierarchy to which the provided <code>IIpsObjectPart</code>
      * s belong to.
      */
     private List<? extends IIpsObject> supertypes;
 
     /**
-     * @param ipsObject The <tt>IIpsObject</tt> the <tt>IIpsObjectPart</tt>s available for selection
+     * @param ipsObject The <code>IIpsObject</code> the <code>IIpsObjectPart</code>s available for selection
      *            belong to.
      */
     public SupertypeHierarchyPartsContentProvider(IIpsObject ipsObject) {

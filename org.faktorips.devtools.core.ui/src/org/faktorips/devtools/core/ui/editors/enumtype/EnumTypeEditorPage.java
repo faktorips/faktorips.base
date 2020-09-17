@@ -31,10 +31,10 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 
 /**
- * Base page for <tt>IEnumType</tt> editors providing controls to edit its properties and
+ * Base page for <code>IEnumType</code> editors providing controls to edit its properties and
  * attributes.
  * <p>
- * This class also adds controls to import an export <tt>IEnumValue</tt>s.
+ * This class also adds controls to import an export <code>IEnumValue</code>s.
  * 
  * @see EnumTypeEditor
  * 
@@ -46,31 +46,31 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
     /**
-     * The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> this page belongs to is currently editing.
+     * The <code>IEnumType</code> the <code>EnumTypeEditor</code> this page belongs to is currently editing.
      */
     private IEnumType enumType;
 
-    /** Attributes section to show the <tt>IEnumAttribute</tt>s. */
+    /** Attributes section to show the <code>IEnumAttribute</code>s. */
     private EnumAttributesSection enumAttributesSection;
 
-    /** Values section showing the <tt>IEnumValue</tt>s. */
+    /** Values section showing the <code>IEnumValue</code>s. */
     private EnumValuesSection enumValuesSection;
 
     /**
-     * Action to import <tt>IEnumValue</tt>s into the opened <tt>IEnumType</tt> from an external
+     * Action to import <code>IEnumValue</code>s into the opened <code>IEnumType</code> from an external
      * file.
      */
     private EnumImportExportActionInEditor importAction;
 
     /**
-     * Action to export the <tt>IEnumValue</tt>s of the opened <tt>IEnumType</tt> to an external
+     * Action to export the <code>IEnumValue</code>s of the opened <code>IEnumType</code> to an external
      * file.
      */
     private EnumImportExportActionInEditor exportAction;
 
     /**
      * Listener responsible for toggling the import/export actions and to refresh the
-     * <tt>EnumAttributesSection</tt> on page change.
+     * <code>EnumAttributesSection</code> on page change.
      */
     private ContentsChangeListener changeListener;
 
@@ -128,7 +128,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     }
 
     /**
-     * Enable the import and export operation if the <tt>IEnumType</tt> contains values and is not
+     * Enable the import and export operation if the <code>IEnumType</code> contains values and is not
      * abstract.
      */
     protected void updateToolbarActionEnabledStates() {
@@ -143,7 +143,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     }
 
     /**
-     * Extend <tt>EnumImportExportAction</tt> in order to react to import operations and update the
+     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update the
      * view after the operation is completed.
      */
     class EnumImportExportActionInEditor extends EnumImportExportAction {

@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Section to edit supertype, abstract flag, changing over time flag, layer supertype flag, and
- * configured <tt>IPolicyCmptType</tt>.
+ * configured <code>IPolicyCmptType</code>.
  * 
  * @author Jan Ortmann
  */

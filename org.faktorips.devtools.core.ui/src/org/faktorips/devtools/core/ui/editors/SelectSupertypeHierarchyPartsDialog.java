@@ -29,37 +29,37 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
- * This dialog lets the user select a set of <tt>IIpsObjectPart</tt>s from the supertype hierarchy
- * of a specified <tt>IIpsObject</tt> in a comfortable way.
+ * This dialog lets the user select a set of <code>IIpsObjectPart</code>s from the supertype hierarchy
+ * of a specified <code>IIpsObject</code> in a comfortable way.
  * <p>
  * The dialog is intended to be used by UI editors that are responsible for doing something useful
  * with the user's selection (e. g. the dialog may be used to let the user select a set of methods
- * from super classes of a <tt>IPolicyCmptType</tt> which are then overridden by the currently
- * edited <tt>IPolicyCmptType</tt>).
+ * from super classes of a <code>IPolicyCmptType</code> which are then overridden by the currently
+ * edited <code>IPolicyCmptType</code>).
  * 
  * @param <T> The type of the {@link IIpsObjectPart}s that shall be selected by the user
  */
 public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPart> extends CheckedTreeSelectionDialog {
 
-    /** The width of the UI tree widget showing the available <tt>IIpsObjectPartContainer</tt>s. */
+    /** The width of the UI tree widget showing the available <code>IIpsObjectPartContainer</code>s. */
     private int width;
 
-    /** The height of the UI tree widget showing the available <tt>IIpsObjectPartContainer</tt>s. */
+    /** The height of the UI tree widget showing the available <code>IIpsObjectPartContainer</code>s. */
     private int height;
 
     /**
-     * A short human-readable message to inform the user what type of <tt>IIpsObjectPart</tt>s he is
+     * A short human-readable message to inform the user what type of <code>IIpsObjectPart</code>s he is
      * now selecting and why.
      * <p>
      * Example:<br />
-     * <tt>Select methods to override:</tt>
+     * <code>Select methods to override:</code>
      */
     private String selectLabelText;
 
     /**
-     * @param parent The parent <tt>Shell</tt> to show this dialog in.
-     * @param contentProvider A <tt>SupertypeHierarchyPartsContentProvider</tt> providing this
-     *            dialog with available <tt>IIpsObjectPart</tt>s.
+     * @param parent The parent <code>Shell</code> to show this dialog in.
+     * @param contentProvider A <code>SupertypeHierarchyPartsContentProvider</code> providing this
+     *            dialog with available <code>IIpsObjectPart</code>s.
      */
     public SelectSupertypeHierarchyPartsDialog(Shell parent, SupertypeHierarchyPartsContentProvider contentProvider) {
         super(parent, new DefaultLabelProvider(), contentProvider);
@@ -133,11 +133,11 @@ public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPa
     }
 
     /**
-     * Sets the short human-readable message to inform the user what type of <tt>IIpsObjectPart</tt>
+     * Sets the short human-readable message to inform the user what type of <code>IIpsObjectPart</code>
      * s he is now selecting and why.
      * <p>
      * Example:<br />
-     * <tt>Select methods to override:</tt>
+     * <code>Select methods to override:</code>
      * 
      * @param selectLabelText The short human-readable message to show.
      */

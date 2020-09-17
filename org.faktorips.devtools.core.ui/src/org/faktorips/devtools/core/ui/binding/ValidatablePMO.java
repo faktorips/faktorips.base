@@ -71,7 +71,7 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
 
     /**
      * Utility class that allows writing easily readable mapping definitions. e.g.
-     * <tt>pmo.mapValidationMessagesFor(modelProperty).to(uiProperty);</tt>
+     * <code>pmo.mapValidationMessagesFor(modelProperty).to(uiProperty);</code>
      * 
      * 
      * @author Stefan Widmaier

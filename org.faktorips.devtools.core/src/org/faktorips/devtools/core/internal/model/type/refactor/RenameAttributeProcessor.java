@@ -182,10 +182,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <tt>IAttribute</tt> in <tt>IAttributeValue</tt>s of referencing
-     * <tt>IProductCmpt</tt>s.
+     * Updates all references to the <code>IAttribute</code> in <code>IAttributeValue</code>s of referencing
+     * <code>IProductCmpt</code>s.
      * <p>
-     * Only applicable to <tt>IProductCmptTypeAttribute</tt>s.
+     * Only applicable to <code>IProductCmptTypeAttribute</code>s.
      */
     private void updateProductCmptAttributeValueReferences() {
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
@@ -216,10 +216,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates the reference to the <tt>IAttribute</tt> in the corresponding
-     * <tt>IValidationRule</tt> if any exists.
+     * Updates the reference to the <code>IAttribute</code> in the corresponding
+     * <code>IValidationRule</code> if any exists.
      * <p>
-     * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
+     * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
      */
     private void updateValidationRule() {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)getAttribute();
@@ -236,10 +236,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <tt>IPolicyCmptTypeAttribute</tt> in <tt>IConfigElement</tt>s
-     * of referencing <tt>IProductCmpt</tt>s.
+     * Updates all references to the <code>IPolicyCmptTypeAttribute</code> in <code>IConfigElement</code>s
+     * of referencing <code>IProductCmpt</code>s.
      * <p>
-     * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
+     * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
      */
     private void updateProductCmptConfigElementReferences() {
         if (!((IPolicyCmptTypeAttribute)getAttribute()).isProductRelevant()) {
@@ -273,9 +273,9 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <tt>IAttribute</tt> in referencing <tt>ITestCaseType</tt>s.
+     * Updates all references to the <code>IAttribute</code> in referencing <code>ITestCaseType</code>s.
      * <p>
-     * Only applicable to <tt>IPolicyCmptTypeAttribute</tt>s.
+     * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
      */
     private void updateTestCaseTypeReferences() {
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
@@ -297,7 +297,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Changes the name of the <tt>IAttribute</tt> to be refactored to the new name provided by the
+     * Changes the name of the <code>IAttribute</code> to be refactored to the new name provided by the
      * user.
      */
     private void updateAttributeName() {

@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.enums;
 
 /**
- * An <code>EnumValue</code> represents a value in an <tt>EnumType</tt>, e.g. male and female are
+ * An <code>EnumValue</code> represents a value in an <code>EnumType</code>, e.g. male and female are
  * values in the type gender.
  * <p>
- * Two <tt>EnumValue</tt>s are considered equal if they belong to the same type and have the same
+ * Two <code>EnumValue</code>s are considered equal if they belong to the same type and have the same
  * ID.
  * 
  * @author Jan Ortmann
@@ -25,12 +25,12 @@ package org.faktorips.devtools.core.enums;
 public interface EnumValue extends Comparable<Object> {
 
     /**
-     * Returns the <tt>EnumType</tt> this value belongs to.
+     * Returns the <code>EnumType</code> this value belongs to.
      */
     public EnumType getType();
 
     /**
-     * Returns the <tt>EnumValue</tt>'s s identification in the <tt>EnumType</tt>.
+     * Returns the <code>EnumValue</code>'s s identification in the <code>EnumType</code>.
      */
     public String getId();
 

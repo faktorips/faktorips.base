@@ -30,7 +30,7 @@ public class IpsElementDragListener implements DragSourceListener {
     StructuredViewer dragSource;
 
     /**
-     * Constructor for <tt>IpsElementDragListener</tt> needs a <tt>StructuredViewer</tt>
+     * Constructor for <code>IpsElementDragListener</code> needs a <code>StructuredViewer</code>
      * 
      * @param dragSource The source you want to add drag support to; you want to drag from this
      *            structured viewer

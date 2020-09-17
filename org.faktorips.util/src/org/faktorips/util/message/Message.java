@@ -268,7 +268,7 @@ public class Message {
      * Creates and returns a copy of the given message and replaces all references to the old object
      * with the new object.
      * 
-     * @param objectPropertyMap The <tt>Map</tt> between old and new <tt>ObjectProperty</tt>
+     * @param objectPropertyMap The <code>Map</code> between old and new <code>ObjectProperty</code>
      * @return Message
      */
     public Message createCopy(Map<ObjectProperty, ObjectProperty> objectPropertyMap) {

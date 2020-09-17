@@ -23,7 +23,7 @@ import java.beans.PropertyDescriptor;
 public final class BeanUtil {
 
     /**
-     * Returns the <tt>PropertyDescriptor</tt> for the given class and property name.
+     * Returns the <code>PropertyDescriptor</code> for the given class and property name.
      * 
      * @throws IllegalArgumentException If the class hasn't got a property of the given name.
      * 

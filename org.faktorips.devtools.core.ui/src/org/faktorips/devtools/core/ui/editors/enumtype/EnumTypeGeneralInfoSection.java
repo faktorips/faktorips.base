@@ -40,11 +40,11 @@ import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The general info section for the <tt>EnumTypeEditor</tt> provides UI controls to edit the
+ * The general info section for the <code>EnumTypeEditor</code> provides UI controls to edit the
  * <em>superEnumType</em> property, the <em>abstract</em> property and the
- * <em>valuesArePartOfModel</em> property of an <tt>IEnumType</tt>.
+ * <em>valuesArePartOfModel</em> property of an <code>IEnumType</code>.
  * <p>
- * It is part of the <tt>EnumTypeStructurePage</tt>.
+ * It is part of the <code>EnumTypeStructurePage</code>.
  * 
  * @see EnumTypeEditor
  * @see EnumTypePage
@@ -57,7 +57,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private static final String ID = "org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeGeneralInfoSection"; //$NON-NLS-1$
 
-    /** The <tt>IEnumType</tt> the editor is currently editing. */
+    /** The <code>IEnumType</code> the editor is currently editing. */
     private IEnumType enumType;
 
     /** The extension property control factory that may extend the controls. */
@@ -66,32 +66,32 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The RefControl for supertype. */
     private EnumTypeRefControl supertypeRefControl;
 
-    /** The UI check box for the <tt>abstract</tt> property. */
+    /** The UI check box for the <code>abstract</code> property. */
     private Button isAbstractCheckbox;
 
-    /** The UI check box for the <tt>extensible</tt> property. */
+    /** The UI check box for the <code>extensible</code> property. */
     private Button extensibleCheckbox;
 
-    /** The IU buttonField for <tt>extensible</tt> property. */
+    /** The IU buttonField for <code>extensible</code> property. */
     private ButtonField extensibleButtonField;
 
-    /** The UI control for the <tt>enumContentPackageFragment</tt> property */
+    /** The UI control for the <code>enumContentPackageFragment</code> property */
     private TextField enumContentNameControl;
 
-    /** The UI text for <tt>identifierBoundary</tt> property */
+    /** The UI text for <code>identifierBoundary</code> property */
     private Text boundaryText;
 
     /** pmo for Binding */
     private final EnumTypePmo pmo;
 
     /**
-     * Creates a new <tt>EnumTypeGeneralInfoSection</tt>.
+     * Creates a new <code>EnumTypeGeneralInfoSection</code>.
      * 
-     * @param enumType The <tt>IEnumType</tt> the <tt>EnumTypeEditor</tt> is currently editing.
+     * @param enumType The <code>IEnumType</code> the <code>EnumTypeEditor</code> is currently editing.
      * @param parent The parent UI composite to attach this info section to.
      * @param toolkit The UI toolkit to be used to create new UI elements.
      * 
-     * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
     public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH, toolkit);

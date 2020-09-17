@@ -24,7 +24,7 @@ public interface IElementMover {
      * new indices of the moved elements.
      * 
      * @param indices The indices array identifying the elements to move.
-     * @param up <tt>true</tt> to move up, <tt>false</tt> to move down.
+     * @param up <code>true</code> to move up, <code>false</code> to move down.
      */
     public int[] move(int[] indices, boolean up);
 

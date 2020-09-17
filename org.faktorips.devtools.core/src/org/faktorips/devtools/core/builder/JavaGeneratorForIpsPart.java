@@ -37,7 +37,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class JavaGeneratorForIpsPart {
 
-    /** The <tt>IIpsObjectPartContainer</tt> this generator generates source code for. */
+    /** The <code>IIpsObjectPartContainer</code> this generator generates source code for. */
     private IIpsObjectPartContainer ipsPart;
 
     private LocalizedTextHelper localizedTextHelper;
@@ -125,7 +125,7 @@ public abstract class JavaGeneratorForIpsPart {
      * 
      * @param ipsObjectPart The {@link IIpsObjectPart} to obtain the description of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPart</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPart</code> is <code>null</code>.
      */
     protected final String getDescriptionInGeneratorLanguage(IIpsObjectPart ipsObjectPart) {
         ArgumentCheck.notNull(ipsObjectPart);
@@ -291,40 +291,40 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     /**
-     * Collects all <tt>IJavaElement</tt>s generated for the published interface by this generator
+     * Collects all <code>IJavaElement</code>s generated for the published interface by this generator
      * into the provided list.
      * <p>
-     * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
-     * <tt>IIpsElement</tt> to the provided list (collecting parameter pattern).
+     * Subclasses must add the <code>IJavaElement</code>s they generate for the given
+     * <code>IIpsElement</code> to the provided list (collecting parameter pattern).
      * <p>
-     * Only <tt>IJavaElement</tt>s generated for the published interface shall be added to the list.
+     * Only <code>IJavaElement</code>s generated for the published interface shall be added to the list.
      * 
      * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsElement)
      * 
-     * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
+     * @param javaElements The list to add generated <code>IJavaElement</code>s to.
      * @param generatedJavaType The Java type that the calling builder is generating.
-     * @param ipsElement The <tt>IIpsElement</tt> for that the client requested the generated
-     *            <tt>IJavaElement</tt>s.
+     * @param ipsElement The <code>IIpsElement</code> for that the client requested the generated
+     *            <code>IJavaElement</code>s.
      */
     public abstract void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement);
 
     /**
-     * Collects all <tt>IJavaElement</tt>s generated for the implementation by this generator into
+     * Collects all <code>IJavaElement</code>s generated for the implementation by this generator into
      * the provided list.
      * <p>
-     * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
-     * <tt>IIpsElement</tt> to the provided list (collecting parameter pattern).
+     * Subclasses must add the <code>IJavaElement</code>s they generate for the given
+     * <code>IIpsElement</code> to the provided list (collecting parameter pattern).
      * <p>
-     * Only <tt>IJavaElement</tt>s generated for the implementation shall be added to the list.
+     * Only <code>IJavaElement</code>s generated for the implementation shall be added to the list.
      * 
      * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsElement)
      * 
-     * @param javaElements The list to add generated <tt>IJavaElement</tt>s to.
+     * @param javaElements The list to add generated <code>IJavaElement</code>s to.
      * @param generatedJavaType The Java type that the calling builder is generating.
-     * @param ipsElement The <tt>IIpsElement</tt> for that the client requested the generated
-     *            <tt>IJavaElement</tt>s.
+     * @param ipsElement The <code>IIpsElement</code> for that the client requested the generated
+     *            <code>IJavaElement</code>s.
      */
     public abstract void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,

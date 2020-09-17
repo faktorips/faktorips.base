@@ -177,7 +177,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Subclass implementation that can be used to extend the method {@link #getChildren()}. Must
-     * not return <tt>null</tt>.
+     * not return <code>null</code>.
      */
     protected abstract IIpsElement[] getChildrenThis();
 
@@ -512,8 +512,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract void reinitPartCollectionsThis();
 
     /**
-     * Adds the given part to the container. Returns <tt>true</tt> if successfully added,
-     * <tt>false</tt> otherwise.
+     * Adds the given part to the container. Returns <code>true</code> if successfully added,
+     * <code>false</code> otherwise.
      * <p>
      * This method is called during the process of initialization from XML when the part has been
      * part of the parent before the XML initialization and is still found in the XML file (the
@@ -549,7 +549,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract boolean addPartThis(IIpsObjectPart part);
 
     /**
-     * Removes the given part from the container. Returns <tt>true</tt> if removed, <tt>false</tt>
+     * Removes the given part from the container. Returns <code>true</code> if removed, <code>false</code>
      * otherwise.
      * <p>
      * Subclasses may extend this method by using the method
@@ -609,7 +609,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * this is done later by the caller calling initFromXml(). Also it is NOT <strong>NOT</strong>
      * necessary to notify any change listener about the newly added part!
      * <p>
-     * Should return <tt>null</tt> if the XML tag is unknown.
+     * Should return <code>null</code> if the XML tag is unknown.
      * 
      * @param xmlTag The XML tag that describes the part to create.
      * @param id The unique id for the new part.
@@ -618,7 +618,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Creates a new {@link IIpsObjectPart} of the given type. If the type is not supported,
-     * <tt>null</tt> is returned.
+     * <code>null</code> is returned.
      * 
      * @param partType The published interface of the IPS object part that should be created.
      */
@@ -641,7 +641,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Subclass implementation that must create and return the right part based on the given
      * published interface class.
      * <p>
-     * Should return <tt>null</tt> if the type is unknown.
+     * Should return <code>null</code> if the type is unknown.
      * <p>
      * This class is not type safe because it was to late to implement generics correctly. However
      * the implementer needs to ensure that the returned object could safely casted to

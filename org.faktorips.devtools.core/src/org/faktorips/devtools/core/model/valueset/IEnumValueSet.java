@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
- * An <tt>IEnumValueSet</tt> represents a value set of discrete values where each value has to be
+ * An <code>IEnumValueSet</code> represents a value set of discrete values where each value has to be
  * explicitly defined.
  * 
  * @author Thorsten Guenther

@@ -106,7 +106,7 @@ public final class StdBuilderHelper {
     }
 
     /**
-     * Shortcut for <tt>unresolvedParam(class_.getSimpleName())</tt>.
+     * Shortcut for <code>unresolvedParam(class_.getSimpleName())</code>.
      * 
      * @see #unresolvedParam(String)
      */
@@ -119,7 +119,7 @@ public final class StdBuilderHelper {
      * <p>
      * Use this method to create type signatures for types that are not found in the source code or via
      * import (e.g. if a type is written fully qualified in the source code such as
-     * <tt>java.util.Calendar</tt>).
+     * <code>java.util.Calendar</code>).
      */
     public static String resolvedParam(String qualifiedTypeName) {
         return Signature.createTypeSignature(qualifiedTypeName, true);
@@ -129,12 +129,12 @@ public final class StdBuilderHelper {
      * Returns the JDT type signature for the given {@link Datatype}.
      * <p>
      * The JDT type signature is a special representation of a datatype so it can be used to identify
-     * {@link IJavaElement}s. For example, the datatype <tt>int</tt> in JDT is represented as just
-     * <tt>I</tt>.
+     * {@link IJavaElement}s. For example, the datatype <code>int</code> in JDT is represented as just
+     * <code>I</code>.
      * <p>
      * When dealing with Faktor-IPS datatypes it is also possible that the datatype should be resolved
      * to the published interface. In this case depending on the used naming convention the name of the
-     * datatype is modified, e.g. from <tt>Policy</tt> to <tt>IPolicy</tt>.
+     * datatype is modified, e.g. from <code>Policy</code> to <code>IPolicy</code>.
      * 
      * @param datatype The {@link Datatype} to get the parameter type signature for
      * @param resolveToPublishedInterface Flag indicating whether the datatype should be resolved to the

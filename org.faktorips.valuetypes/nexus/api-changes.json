@@ -27,5 +27,18 @@
         }
       ]
     }
+  },
+  "20.9.0": {
+    "revapi": {
+      "ignore": [
+        { "regex": true,
+          "code": "java.missing.oldSuperType",
+          "old": "class org.faktorips.values.xml..*Adapter",
+          "new": "class org.faktorips.values.xml..*Adapter",
+          "superClass": "javax.xml.bind.annotation.adapters.XmlAdapter<.*>",
+          "justification": "Java 11"
+        }
+      ] 
+    }
   }
 }

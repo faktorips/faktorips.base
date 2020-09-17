@@ -595,8 +595,8 @@ public class CodeGenUtil {
 
     /**
      * Returns the package name for a qualified class name, i.e., a substring from the first char
-     * until the last &quot;.&quot;. If the argument is <tt>null</tt> or a non-qualified name, this
-     * method returns <tt>null</tt>.
+     * until the last &quot;.&quot;. If the argument is <code>null</code> or a non-qualified name, this
+     * method returns <code>null</code>.
      * 
      * @param qualifiedClassName
      * @return String

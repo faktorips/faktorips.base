@@ -31,12 +31,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * This decorator marks <tt>IIpsObject</tt>s, <tt>IIpsPackageFragment</tt>s,
- * <tt>IIpsPackageFragmentRoot</tt>s and <tt>IIpsProject</tt>s with warning and error icons if
+ * This decorator marks <code>IIpsObject</code>s, <code>IIpsPackageFragment</code>s,
+ * <code>IIpsPackageFragmentRoot</code>s and <code>IIpsProject</code>s with warning and error icons if
  * problems are detected.
  * <p>
- * The <tt>IpsProblemsLabelDecorator</tt> is configurable for flat or hierarchical layout styles in
- * <tt>TreeViewer</tt>s.
+ * The <code>IpsProblemsLabelDecorator</code> is configurable for flat or hierarchical layout styles in
+ * <code>TreeViewer</code>s.
  * 
  * @author Stefan Widmaier
  */
@@ -44,8 +44,8 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     /**
      * Indicates if the LabelDecorator works with a flat or hierarchical view structure where
-     * <tt>true</tt> means flat layout and <tt>false</tt> means hierarchical layout. Default is
-     * <tt>false</tt> for use with the hierarchical <tt>ProductStructureExplorer</tt>.
+     * <code>true</code> means flat layout and <code>false</code> means hierarchical layout. Default is
+     * <code>false</code> for use with the hierarchical <code>ProductStructureExplorer</code>.
      */
     private boolean isFlatLayout = false;
 
@@ -123,7 +123,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     /**
-     * Collects the error flags of all <tt>IIpsPackageFragmentRoot</tt>s contained in the given ips
+     * Collects the error flags of all <code>IIpsPackageFragmentRoot</code>s contained in the given ips
      * project and returns the resulting flag. This procedure makes sure no markers of the
      * underlying java-project are interpreted as problems of the ips project and erroneously
      * displayed by the decorator.

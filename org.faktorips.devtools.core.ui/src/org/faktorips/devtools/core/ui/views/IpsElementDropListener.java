@@ -84,7 +84,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
      * 
      * <p>
      * Note for Linux: If this method is called during drag action (e.g. called by dropAccept
-     * method) the <tt>transferData</tt> is not set correctly and this method returns <tt>null</tt>.
+     * method) the <code>transferData</code> is not set correctly and this method returns <code>null</code>.
      * If you want to check files during drag action you have to use the method
      * {@link ByteArrayTransfer#isSupportedType(TransferData)}
      * 

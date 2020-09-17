@@ -24,7 +24,7 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <tt>IEnumType</tt> that are also used in the
+ * A class that contains validations of the model class <code>IEnumType</code> that are also used in the
  * creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
@@ -40,20 +40,20 @@ public class EnumTypeValidations {
     }
 
     /**
-     * Validates whether the given super <tt>IEnumType</tt> exists in the IPS object path of the
-     * given IPS project and that super <tt>IEnumType</tt> is abstract.
+     * Validates whether the given super <code>IEnumType</code> exists in the IPS object path of the
+     * given IPS project and that super <code>IEnumType</code> is abstract.
      * <p>
      * Adds validation messages to the given message list.
      * 
      * @param validationMessageList The message list to save validation messages into.
-     * @param enumType The <tt>IEnumType</tt> that might be invalid or <tt>null</tt> if that
+     * @param enumType The <code>IEnumType</code> that might be invalid or <code>null</code> if that
      *            information cannot be supported.
-     * @param superEnumTypeQualifiedName The qualified name of the super <tt>IEnumType</tt>.
+     * @param superEnumTypeQualifiedName The qualified name of the super <code>IEnumType</code>.
      * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws IllegalArgumentException If <tt>superEnumTypeQualifiedName</tt> is an empty string.
-     * @throws NullPointerException If <tt>validationMessageList</tt>,
-     *             <tt>superEnumTypeQualifiedName</tt> or <tt>ipsProject</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If <code>superEnumTypeQualifiedName</code> is an empty string.
+     * @throws NullPointerException If <code>validationMessageList</code>,
+     *             <code>superEnumTypeQualifiedName</code> or <code>ipsProject</code> is <code>null</code>.
      */
     public static void validateSuperEnumType(MessageList validationMessageList,
             IEnumType enumType,
@@ -94,8 +94,8 @@ public class EnumTypeValidations {
      * 
      * @param msgList The message list where messages are added to in cases of failing validations.
      * @param enumType The enumeration type that is validated.
-     * @param ipsProject The <tt>IpsProject</tt> used as starting point for searches. Note: Not the
-     *            <tt>IpsProject</tt> of the provided enumeration type is used within this method.
+     * @param ipsProject The <code>IpsProject</code> used as starting point for searches. Note: Not the
+     *            <code>IpsProject</code> of the provided enumeration type is used within this method.
      * 
      * @throws CoreException If an exception occurs during processing.
      */
@@ -142,7 +142,7 @@ public class EnumTypeValidations {
      * @param enumContentName The qualified name of the enumeration content of the enumeration type
      *            that is validated
      * 
-     * @throws NullPointerException If <tt>msgList</tt> or <tt>enumContentName</tt> is <tt>null</tt>
+     * @throws NullPointerException If <code>msgList</code> or <code>enumContentName</code> is <code>null</code>
      *             .
      */
     public static void validateEnumContentName(MessageList msgList,

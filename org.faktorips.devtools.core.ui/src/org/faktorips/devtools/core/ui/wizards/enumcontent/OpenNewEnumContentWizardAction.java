@@ -14,7 +14,7 @@ import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
 /**
- * This action is responsible for opening a <tt>NewEnumContentWizard</tt>.
+ * This action is responsible for opening a <code>NewEnumContentWizard</code>.
  * 
  * @see NewEnumContentWizard
  * 

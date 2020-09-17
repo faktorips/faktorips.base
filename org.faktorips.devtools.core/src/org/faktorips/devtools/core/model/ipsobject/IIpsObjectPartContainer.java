@@ -49,57 +49,57 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     public static final String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
 
     /**
-     * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a
-     * part, or the IPS object itself, if this <tt>IIpsObjectPartContainer</tt> is the IPS object.
+     * Returns the IPS object this part belongs to if this <code>IIpsObjectPartContainer</code> is a
+     * part, or the IPS object itself, if this <code>IIpsObjectPartContainer</code> is the IPS object.
      */
     public IIpsObject getIpsObject();
 
     /**
-     * Returns the IPS source file this <tt>IIpsObjectPartContainer</tt> belongs to.
+     * Returns the IPS source file this <code>IIpsObjectPartContainer</code> belongs to.
      */
     public IIpsSrcFile getIpsSrcFile();
 
     /**
-     * Returns the caption of this <tt>IIpsObjectPartContainer</tt> for the given {@link Locale}. A
+     * Returns the caption of this <code>IIpsObjectPartContainer</code> for the given {@link Locale}. A
      * caption is a string that describes the object itself.
      * <p>
-     * Returns <tt>null</tt> if no caption for the given locale exists.
+     * Returns <code>null</code> if no caption for the given locale exists.
      * 
      * @param locale The locale to request the caption for.
      * 
      * @throws CoreException If any error occurs while retrieving the caption.
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>locale</code> is <code>null</code>.
      */
     public String getCaption(Locale locale) throws CoreException;
 
     /**
-     * Returns the plural caption of this <tt>IIpsObjectPartContainer</tt> for the given
+     * Returns the plural caption of this <code>IIpsObjectPartContainer</code> for the given
      * {@link Locale}. A caption is a string that describes the object itself.
      * <p>
-     * Returns <tt>null</tt> if no plural caption for the given locale exists.
+     * Returns <code>null</code> if no plural caption for the given locale exists.
      * 
      * @param locale The locale to request the plural caption for.
      * 
      * @throws CoreException If any error occurs while retrieving the caption.
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>locale</code> is <code>null</code>.
      */
     public String getPluralCaption(Locale locale) throws CoreException;
 
     /**
-     * Returns the last resort caption of this <tt>IIpsObjectPartContainer</tt>. The last resort
+     * Returns the last resort caption of this <code>IIpsObjectPartContainer</code>. The last resort
      * caption is used in case that neither the caption for the requested locale nor a caption for
      * the default locale exists.
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      */
     public String getLastResortCaption();
 
     /**
-     * Returns the last resort plural caption of this <tt>IIpsObjectPartContainer</tt>. The last
+     * Returns the last resort plural caption of this <code>IIpsObjectPartContainer</code>. The last
      * resort plural caption is used in case that neither the plural caption for the requested
      * locale nor a plural caption for the default locale exists.
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      */
     public String getLastResortPluralCaption();
 

@@ -28,11 +28,11 @@ public class CollectionUtil {
     }
 
     /**
-     * Creates a new <tt>ArrayList</tt> that contains the object references in the given array in
+     * Creates a new <code>ArrayList</code> that contains the object references in the given array in
      * the same order. The list's capacity is equal to the array's length.
      * <p>
      * Note that the list returned by this method can be modified (without modifying the array) -
-     * which is not possible if one uses <tt>java.util.Arrays.asList()</tt>.
+     * which is not possible if one uses <code>java.util.Arrays.asList()</code>.
      * 
      * @throws NullPointerException if array is <code>null</code>.
      */

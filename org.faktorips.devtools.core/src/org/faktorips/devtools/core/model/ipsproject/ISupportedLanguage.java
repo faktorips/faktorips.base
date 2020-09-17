@@ -44,7 +44,7 @@ public interface ISupportedLanguage extends XmlSupport {
      * Returns the name of the language.
      * <p>
      * This is a shortcut for<br />
-     * <tt>getLocale().getDisplayLanguage();</tt>
+     * <code>getLocale().getDisplayLanguage();</code>
      */
     public String getLanguageName();
 

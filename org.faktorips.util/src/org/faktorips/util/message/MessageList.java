@@ -52,7 +52,7 @@ public class MessageList implements Iterable<Message> {
      * Creates a copy from the message list and replaces all references to the old object with the
      * new object.
      * 
-     * @param objectPropertyMap The <tt>Map</tt> between old and new <tt>ObjectProperty</tt>
+     * @param objectPropertyMap The <code>Map</code> between old and new <code>ObjectProperty</code>
      * @return MessageList
      */
     public MessageList createCopy(Map<ObjectProperty, ObjectProperty> objectPropertyMap) {
@@ -342,7 +342,7 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
-     * Returns a new <tt>MessageList</tt> containing only the <tt>Message</tt>s with the indicated
+     * Returns a new <code>MessageList</code> containing only the <code>Message</code>s with the indicated
      * severity.
      */
     public MessageList getMessages(int severity) {

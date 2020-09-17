@@ -61,7 +61,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Provides a static method that performs the migration to version 2.3 featuring new
- * <tt>IEnumType</tt> IPS objects.
+ * <code>IEnumType</code> IPS objects.
  * 
  * @author Alexander Weickmann
  * 
@@ -75,25 +75,25 @@ public class Migration2_2_to2_3 {
     }
 
     /**
-     * Creates new, abstract <tt>IEnumType</tt>s for all <tt>ITableStructure</tt>s that have been
-     * declared to be enumeration structures. The old <tt>ITableStructure</tt>s will not be deleted
-     * however because this would result in <tt>NullPointerException</tt>s when an
-     * <tt>ITableContents</tt> in another project is based upon an <tt>ITableStructure</tt> already
-     * deleted. Clients need to delete the <tt>ITableStructure</tt>s themselves after the migration
+     * Creates new, abstract <code>IEnumType</code>s for all <code>ITableStructure</code>s that have been
+     * declared to be enumeration structures. The old <code>ITableStructure</code>s will not be deleted
+     * however because this would result in <code>NullPointerException</code>s when an
+     * <code>ITableContents</code> in another project is based upon an <code>ITableStructure</code> already
+     * deleted. Clients need to delete the <code>ITableStructure</code>s themselves after the migration
      * was performed.
      * <p>
-     * Also, all <tt>ITableContents</tt> that are built upon an <tt>ITableStructure</tt> will become
+     * Also, all <code>ITableContents</code> that are built upon an <code>ITableStructure</code> will become
      * <code>IEnumType</code>s containing the enumeration values. The referenced table structure
      * will be the super enumeration type.
      * 
      * @param ipsProject The IPS project to migrate to version 2.3.
-     * @param monitor The progress monitor to use to show progress to the user or <tt>null</tt> if
+     * @param monitor The progress monitor to use to show progress to the user or <code>null</code> if
      *            none is available.
      * 
-     * @throws CoreException If an error occurs while searching for the <tt>ITableStructure</tt> or
-     *             <tt>ITableContents</tt> IPS objects or while creating the new <tt>IEnumType</tt>
+     * @throws CoreException If an error occurs while searching for the <code>ITableStructure</code> or
+     *             <code>ITableContents</code> IPS objects or while creating the new <code>IEnumType</code>
      *             IPS objects.
-     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     @SuppressWarnings("deprecation")
     public static void migrate(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
@@ -226,7 +226,7 @@ public class Migration2_2_to2_3 {
     }
 
     /**
-     * Adds new <tt>IEnumType</tt>s for the given enumeration table structures.
+     * Adds new <code>IEnumType</code>s for the given enumeration table structures.
      */
     private static void addForTableStructures(List<ITableStructure> enumTableStructures,
             IProgressMonitor monitor,
@@ -310,7 +310,7 @@ public class Migration2_2_to2_3 {
 
     /**
      * Replaces the given table contents referring to enumeration table structures with new
-     * <tt>IEnumType</tt>s containing the <tt>IEnumValue</tt>s.
+     * <code>IEnumType</code>s containing the <code>IEnumValue</code>s.
      */
     private static void replaceTableContents(List<ITableContents> enumTableContents,
             IIpsProject ipsProject,

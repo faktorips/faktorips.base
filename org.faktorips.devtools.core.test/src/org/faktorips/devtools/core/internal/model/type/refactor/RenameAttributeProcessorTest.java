@@ -110,16 +110,16 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Creates another attribute in the second <tt>IPolicyCmptType</tt> that that corresponds
-     * exactly to the attribute of the already existing <tt>IPolicyCmptType</tt>.
+     * Creates another attribute in the second <code>IPolicyCmptType</code> that that corresponds
+     * exactly to the attribute of the already existing <code>IPolicyCmptType</code>.
      * <p>
-     * This other <tt>IPolicyCmptType</tt> is configured by a new <tt>IProductCmptType</tt>. Based
-     * on that <tt>IProductCmptType</tt> exists an <tt>IProductCmpt</tt>. The refactoring of the
-     * original <tt>IPolicyCmptTypeAttribute</tt> may not cause modifications to this new
-     * <tt>IProductCmpt</tt>'s <tt>IConfigElement</tt>s.
+     * This other <code>IPolicyCmptType</code> is configured by a new <code>IProductCmptType</code>. Based
+     * on that <code>IProductCmptType</code> exists an <code>IProductCmpt</code>. The refactoring of the
+     * original <code>IPolicyCmptTypeAttribute</code> may not cause modifications to this new
+     * <code>IProductCmpt</code>'s <code>IConfigElement</code>s.
      * <p>
-     * Also creates another <tt>ITestCaseType</tt> based on the new <tt>IPolicyCmptType</tt> /
-     * <tt>IPolicyCmptTypeAttribute</tt>. The new <tt>ITestCaseType</tt> may not be modified by the
+     * Also creates another <code>ITestCaseType</code> based on the new <code>IPolicyCmptType</code> /
+     * <code>IPolicyCmptTypeAttribute</code>. The new <code>ITestCaseType</code> may not be modified by the
      * refactoring, too.
      */
     @Test
@@ -168,8 +168,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Test to rename an <tt>IPolicyCmptTypeAttribute</tt> from an <tt>IPolicyCmptType</tt> that is
-     * a super type of another <tt>IPolicyCmptType</tt>.
+     * Test to rename an <code>IPolicyCmptTypeAttribute</code> from an <code>IPolicyCmptType</code> that is
+     * a super type of another <code>IPolicyCmptType</code>.
      */
     @Test
     public void testRenamePolicyCmptTypeAttributeInheritance() throws CoreException {
@@ -224,8 +224,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Create yet another <tt>IProductCmpt</tt> based on another <tt>IProductCmptType</tt> that has
-     * an attribute with the same name as the first <tt>IProductCmptType</tt> (this may no be
+     * Create yet another <code>IProductCmpt</code> based on another <code>IProductCmptType</code> that has
+     * an attribute with the same name as the first <code>IProductCmptType</code> (this may no be
      * modified by the rename refactoring).
      */
     @Test
@@ -259,8 +259,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Test to rename an <tt>IProductCmptTypeAttribute</tt> from an <tt>IProductCmptType</tt> that
-     * is a super type of another <tt>IProductCmptType</tt>.
+     * Test to rename an <code>IProductCmptTypeAttribute</code> from an <code>IProductCmptType</code> that
+     * is a super type of another <code>IProductCmptType</code>.
      */
     @Test
     public void testRenameProductCmptTypeAttributeInheritance() throws CoreException {

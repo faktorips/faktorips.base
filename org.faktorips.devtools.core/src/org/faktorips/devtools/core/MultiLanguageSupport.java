@@ -71,12 +71,12 @@ public class MultiLanguageSupport {
      * If there is no caption for that locale, the default caption will be returned. If there is no
      * default caption as well, a last resort caption that is specific to the element is returned.
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      * 
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
      *            caption of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPartContainer</code> is <code>null</code>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultCaption(IIpsObjectPartContainer)
@@ -105,12 +105,12 @@ public class MultiLanguageSupport {
      * If there is no default plural caption as well, a last resort plural caption that is specific
      * to the element is returned.
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      * 
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
      *            plural caption of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPartContainer</code> is <code>null</code>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultPluralCaption(IIpsObjectPartContainer)
@@ -138,12 +138,12 @@ public class MultiLanguageSupport {
      * If there is no caption for that locale, a last resort caption that is specific to the element
      * is returned.
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      * 
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
      *            caption of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPartContainer</code> is <code>null</code>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
@@ -173,12 +173,12 @@ public class MultiLanguageSupport {
      * If there is no plural caption for that locale, a last resort plural caption that is specific
      * to the element is returned.
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      * 
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
      *            plural caption of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPartContainer</code> is <code>null</code>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
@@ -208,11 +208,11 @@ public class MultiLanguageSupport {
      * If there is no label for that locale, the default label will be returned. If there is no
      * default label as well, the pure name of the element is returned (capitalized).
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      * 
      * @param labeledElement The {@link ILabeledElement} to obtain the localized label of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPartContainer</code> is <code>null</code>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultLabel(ILabeledElement)
@@ -242,11 +242,11 @@ public class MultiLanguageSupport {
      * If there is no plural label for that locale, the default label will be returned. If there is
      * no default label as well, the pure name of the element is returned (capitalized).
      * <p>
-     * Never returns <tt>null</tt>.
+     * Never returns <code>null</code>.
      * 
      * @param labeledElement The {@link ILabeledElement} to obtain the localized plural label of.
      * 
-     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>ipsObjectPartContainer</code> is <code>null</code>.
      * @throws IllegalArgumentException If the given {@link ILabeledElement} does not support plural
      *             labels.
      * 
@@ -282,7 +282,7 @@ public class MultiLanguageSupport {
      * 
      * @param labeledElement The {@link ILabeledElement} to obtain the default label of.
      * 
-     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>labeledElement</code> is <code>null</code>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
@@ -318,7 +318,7 @@ public class MultiLanguageSupport {
      * 
      * @param labeledElement The {@link ILabeledElement} to obtain the default plural label of.
      * 
-     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>labeledElement</code> is <code>null</code>.
      * @throws IllegalArgumentException If the given {@link ILabeledElement} does not support plural
      *             labels.
      * 
@@ -356,7 +356,7 @@ public class MultiLanguageSupport {
      * @param labeledElement The {@link ILabeledElement} to set the default label for.
      * @param value The value to set the label to.
      * 
-     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>labeledElement</code> is <code>null</code>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
@@ -379,7 +379,7 @@ public class MultiLanguageSupport {
      * @param labeledElement The {@link ILabeledElement} to set the default plural label for.
      * @param pluralValue The value to set the plural label to.
      * 
-     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>labeledElement</code> is <code>null</code>.
      * @throws IllegalArgumentException If the given {@link ILabeledElement} does not support plural
      *             labels.
      * 
@@ -405,7 +405,7 @@ public class MultiLanguageSupport {
      * 
      * @param describedElement The {@link IDescribedElement} to obtain the localized description of.
      * 
-     * @throws NullPointerException If <tt>describedElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>describedElement</code> is <code>null</code>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultDescription(IDescribedElement)
@@ -437,7 +437,7 @@ public class MultiLanguageSupport {
      * 
      * @param describedElement The {@link IDescribedElement} to obtain the default description of.
      * 
-     * @throws NullPointerException If <tt>describedElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>describedElement</code> is <code>null</code>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
@@ -462,7 +462,7 @@ public class MultiLanguageSupport {
      * @param describedElement The {@link IDescribedElement} to set the default description for.
      * @param text The description text to set.
      * 
-     * @throws NullPointerException If <tt>describedElement</tt> or <tt>text</tt> is <tt>null</tt>.
+     * @throws NullPointerException If <code>describedElement</code> or <code>text</code> is <code>null</code>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */

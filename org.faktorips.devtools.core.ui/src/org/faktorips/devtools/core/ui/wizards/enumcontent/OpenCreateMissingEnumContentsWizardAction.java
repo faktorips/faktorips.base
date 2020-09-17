@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * This action opens up a wizard that enables the user to create missing <tt>IEnumContent</tt>s.
+ * This action opens up a wizard that enables the user to create missing <code>IEnumContent</code>s.
  * 
  * @author Alexander Weickmann
  * 
@@ -34,7 +34,7 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
 
     private IWorkbenchWindow workbenchWindow;
 
-    /** The preselected <tt>IIpsElement</tt>. */
+    /** The preselected <code>IIpsElement</code>. */
     private IIpsElement preselectedIpsElement;
 
     @Override

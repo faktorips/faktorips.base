@@ -29,13 +29,13 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
- * Interface for the extension point <tt>org.faktorips.plugin.artefactbuilderset</tt>, provided by
+ * Interface for the extension point <code>org.faktorips.plugin.artefactbuilderset</code>, provided by
  * this plug-in.
  * <p>
  * Only one implementation of this interface can be registered to this extension point. If more than
  * one extension is declared only the first one will be registered and the others will be ignored.
  * <p>
- * An <tt>IIpsArtefactBuilderSet</tt> collects a list of <tt>IIpsArtefactBuilders</tt> and makes
+ * An <code>IIpsArtefactBuilderSet</code> collects a list of <code>IIpsArtefactBuilders</code> and makes
  * them available to the build system.
  * 
  * @author Peter Erzberger
@@ -46,7 +46,7 @@ public interface IIpsArtefactBuilderSet {
     public static final String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
 
     /**
-     * Returns the <tt>IIpsArtefactBuilderSetConfig</tt> that configures this builder set. The
+     * Returns the <code>IIpsArtefactBuilderSetConfig</code> that configures this builder set. The
      * configuration is available after the initialize method has been called.
      * 
      * @since 2.1
@@ -54,20 +54,20 @@ public interface IIpsArtefactBuilderSet {
     public IIpsArtefactBuilderSetConfig getConfig();
 
     /**
-     * Returns all <tt>IIpsArtefactBuilders</tt> of this set.
+     * Returns all <code>IIpsArtefactBuilders</code> of this set.
      * <p>
      * An empty array has to be returned, if the set is empty.
      */
     public IIpsArtefactBuilder[] getArtefactBuilders();
 
-    /** Returns <tt>true</tt> if the builder set supports table access functions, otherwise false. */
+    /** Returns <code>true</code> if the builder set supports table access functions, otherwise false. */
     public boolean isSupportTableAccess();
 
-    /** Returns <tt>true</tt> if the builder set supports a formula language identifier resolver. */
+    /** Returns <code>true</code> if the builder set supports a formula language identifier resolver. */
     public boolean isSupportFlIdentifierResolver();
 
     /**
-     * Returns <tt>true</tt> if this builder set requires role names in plural form, even for
+     * Returns <code>true</code> if this builder set requires role names in plural form, even for
      * relations with a max cardinality of 1.
      */
     public boolean isRoleNamePluralRequiredForTo1Relations();
@@ -183,7 +183,7 @@ public interface IIpsArtefactBuilderSet {
      * @param config the configuration for this builder set instance. The configuration for a
      *            builder set instance is defined in the .ipsproject file of an IPS project.
      * 
-     * @throws NullPointerException if <tt>config</tt> is <code>null</code>.
+     * @throws NullPointerException if <code>config</code> is <code>null</code>.
      * 
      * @see IIpsArtefactBuilderSetConfig class description
      */
@@ -225,8 +225,8 @@ public interface IIpsArtefactBuilderSet {
 
     /**
      * This method is called when the build process is finished for this builder set. It is called
-     * after the <tt>afterBuildProcess(IIpsProject, int)</tt> methods on the registered
-     * <tt>IIpsArtefactBuilders</tt> were called.
+     * after the <code>afterBuildProcess(IIpsProject, int)</code> methods on the registered
+     * <code>IIpsArtefactBuilders</code> were called.
      * 
      * @param buildKind One of the build kinds defined in
      *            <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>

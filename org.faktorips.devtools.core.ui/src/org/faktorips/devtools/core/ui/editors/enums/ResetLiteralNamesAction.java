@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used in the context menu of the <tt>EnumValuesSection</tt>. It enables the user to
+ * This action is used in the context menu of the <code>EnumValuesSection</code>. It enables the user to
  * reset all literal names to their default values.
  * <p>
- * The action is only applicable for <tt>IEnumType</tt>s
+ * The action is only applicable for <code>IEnumType</code>s
  * 
  * @see EnumValuesSection
  * 
@@ -44,17 +44,17 @@ public class ResetLiteralNamesAction extends Action {
     /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;
 
-    /** The <tt>IEnumType</tt> being edited. */
+    /** The <code>IEnumType</code> being edited. */
     private IEnumType enumType;
 
     /**
-     * Creates a new <tt>ResetLiteralNamesAction</tt>.
+     * Creates a new <code>ResetLiteralNamesAction</code>.
      * 
      * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
-     * @param enumType The <tt>IEnumType</tt> being edited.
+     * @param enumType The <code>IEnumType</code> being edited.
      * 
-     * @throws NullPointerException If <tt>enumValuesTableViewer</tt> or <tt>enumType</tt> is
-     *             <tt>null</tt>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> or <code>enumType</code> is
+     *             <code>null</code>.
      */
     public ResetLiteralNamesAction(TableViewer enumValuesTableViewer, IEnumType enumType) {
         super();

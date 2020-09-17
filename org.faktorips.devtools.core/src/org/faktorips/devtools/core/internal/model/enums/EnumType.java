@@ -53,7 +53,7 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <tt>IEnumType</tt>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumType</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -63,33 +63,33 @@ import org.w3c.dom.Element;
  */
 public class EnumType extends EnumValueContainer implements IEnumType {
 
-    /** Qualified name of the super <tt>IEnumType</tt> if any. */
+    /** Qualified name of the super <code>IEnumType</code> if any. */
     private String superEnumType;
 
-    /** Flag indicating whether this <tt>IEnumType</tt> is extensible. */
+    /** Flag indicating whether this <code>IEnumType</code> is extensible. */
     private boolean extensible;
 
     /** Boundary for the identifier attribute of this {@link IEnumType}. */
     private String identifierBoundary;
 
     /**
-     * Qualified name of the package fragment a referencing <tt>IEnumContent</tt> must be stored in.
+     * Qualified name of the package fragment a referencing <code>IEnumContent</code> must be stored in.
      */
     private String enumContentPackageFragment;
 
-    /** Collection containing all <tt>IEnumAttribute</tt>s for this <tt>IEnumType</tt>. */
+    /** Collection containing all <code>IEnumAttribute</code>s for this <code>IEnumType</code>. */
     private IpsObjectPartCollection<IEnumAttribute> enumAttributes;
 
     /**
-     * Flag indicating whether this <tt>IEnumType</tt> is abstract in means of the object oriented
+     * Flag indicating whether this <code>IEnumType</code> is abstract in means of the object oriented
      * abstract concept.
      */
     private boolean isAbstract;
 
     /**
-     * Creates a new <tt>IEnumType</tt>.
+     * Creates a new <code>IEnumType</code>.
      * 
-     * @param file The IPS source file in which this <tt>IEnumType</tt> will be stored in.
+     * @param file The IPS source file in which this <code>IEnumType</code> will be stored in.
      */
     public EnumType(IIpsSrcFile file) {
         super(file);
@@ -215,7 +215,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns a list containing all <tt>IEnumAttribute</tt>s that belong to this <tt>IEnumType</tt>
+     * Returns a list containing all <code>IEnumAttribute</code>s that belong to this <code>IEnumType</code>
      * . It can be specified whether to include copied inherited attributes or not and whether to
      * include literal name attributes or not.
      */
@@ -447,8 +447,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Moves the <tt>IEnumAttributeValue</tt> corresponding to the given <tt>IEnumAttribute</tt>
-     * identified by its index in each given <tt>IEnumValue</tt> up or down in the containing list
+     * Moves the <code>IEnumAttributeValue</code> corresponding to the given <code>IEnumAttribute</code>
+     * identified by its index in each given <code>IEnumValue</code> up or down in the containing list
      * by 1.
      */
     private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up) {
@@ -471,8 +471,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Searches and returns the <tt>IEnumAttribute</tt> with the given name or <tt>null</tt> if none
-     * exists. It can be specified whether to include inherited <tt>IEnumAttribute</tt>s.
+     * Searches and returns the <code>IEnumAttribute</code> with the given name or <code>null</code> if none
+     * exists. It can be specified whether to include inherited <code>IEnumAttribute</code>s.
      */
     private IEnumAttribute getEnumAttribute(String name, boolean includeInherited) {
         List<IEnumAttribute> enumAttributesToSearch;
@@ -553,11 +553,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> contains at least one
-     * <tt>IEnumLiteralNameAttribute</tt>.
+     * Validates whether this <code>IEnumType</code> contains at least one
+     * <code>IEnumLiteralNameAttribute</code>.
      * <p>
-     * If this <tt>IEnumType</tt> is abstract or is extensible the validation will succeed even if
-     * there is no <tt>IEnumLiteralNameAttribute</tt>.
+     * If this <code>IEnumType</code> is abstract or is extensible the validation will succeed even if
+     * there is no <code>IEnumLiteralNameAttribute</code>.
      */
     private void validateLiteralNameAttribute(MessageList validationMessageList) {
         if (isAbstract()) {
@@ -568,11 +568,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being
+     * Validates whether this <code>IEnumType</code> has at least one <code>IEnumAttribute</code> being
      * marked to be used as ID in the Faktor-IPS UI.
      * <p>
-     * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
-     * <tt>IEnumAttribute</tt>.
+     * If the <code>IEnumType</code> is abstract the validation will succeed even if there is no such
+     * <code>IEnumAttribute</code>.
      */
     private void validateIdentifierAttribute(MessageList validationMessageList, IIpsProject ipsProject) {
         ArgumentCheck.notNull(new Object[] { ipsProject });
@@ -591,11 +591,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> has at least one <tt>IEnumAttribute</tt> being
+     * Validates whether this <code>IEnumType</code> has at least one <code>IEnumAttribute</code> being
      * marked to be used as name in the Faktor-IPS UI.
      * <p>
-     * If the <tt>IEnumType</tt> is abstract the validation will succeed even if there is no such
-     * <tt>IEnumAttribute</tt>.
+     * If the <code>IEnumType</code> is abstract the validation will succeed even if there is no such
+     * <code>IEnumAttribute</code>.
      */
     private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList, IIpsProject ipsProject) {
 
@@ -615,8 +615,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether the <tt>IEnumContent</tt> specified by this <tt>IEnumType</tt> is already
-     * used by another <tt>IEnumType</tt>.
+     * Validates whether the <code>IEnumContent</code> specified by this <code>IEnumType</code> is already
+     * used by another <code>IEnumType</code>.
      */
     private void validateEnumContentAlreadyUsed(MessageList validationMessageList, IIpsProject ipsProject) {
 
@@ -694,11 +694,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether this <tt>IEnumType</tt> inherits all <tt>IEnumAttribute</tt>s defined in
+     * Validates whether this <code>IEnumType</code> inherits all <code>IEnumAttribute</code>s defined in
      * its supertype hierarchy.
      * <p>
      * Adds validation messages to the given message list. The validation will pass immediately if
-     * the <tt>IEnumType</tt> is abstract.
+     * the <code>IEnumType</code> is abstract.
      */
     private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
             throws CoreException {
@@ -749,8 +749,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns all <tt>IEnumAttribute</tt>s that are defined in the supertype hierarchy of this
-     * <tt>IEnumType</tt>.
+     * Returns all <code>IEnumAttribute</code>s that are defined in the supertype hierarchy of this
+     * <code>IEnumType</code>.
      */
     private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IIpsProject ipsProject) {
         List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
@@ -867,10 +867,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Deletes all <tt>IEnumAttributeValue</tt>s in the given <tt>IEnumValue</tt>s that refer to the
-     * given <tt>IEnumAttribute</tt>.
+     * Deletes all <code>IEnumAttributeValue</code>s in the given <code>IEnumValue</code>s that refer to the
+     * given <code>IEnumAttribute</code>.
      * <p>
-     * If no <tt>IEnumAttributeValue</tt>s remain in the given <tt>IEnumValue</tt>s they will be
+     * If no <code>IEnumAttributeValue</code>s remain in the given <code>IEnumValue</code>s they will be
      * deleted, too.
      */
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues) {
@@ -940,8 +940,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Checks whether the given <tt>IEnumAttribute</tt> is contained in the given list of
-     * <tt>IEnumAttribute</tt>s in means of an equal <tt>IEnumAttribute</tt>.
+     * Checks whether the given <code>IEnumAttribute</code> is contained in the given list of
+     * <code>IEnumAttribute</code>s in means of an equal <code>IEnumAttribute</code>.
      */
     private boolean containsEqualEnumAttribute(List<IEnumAttribute> listOfEnumAttributes,
             IEnumAttribute enumAttribute) {
@@ -1058,8 +1058,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns whether an <tt>IEnumAttribute</tt> with the given name exists in this
-     * <tt>IEnumType</tt>. Depending on the boolean flag the supertype copies are included in the
+     * Returns whether an <code>IEnumAttribute</code> with the given name exists in this
+     * <code>IEnumType</code>. Depending on the boolean flag the supertype copies are included in the
      * check.
      */
     private boolean containsEnumAttribute(String attributeName, boolean includeSupertypeCopies) {
@@ -1097,7 +1097,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns <tt>true</tt> if this <tt>IEnumType</tt> is not abstract.
+     * Returns <code>true</code> if this <code>IEnumType</code> is not abstract.
      */
     @Override
     public boolean isCapableOfContainingValues() {

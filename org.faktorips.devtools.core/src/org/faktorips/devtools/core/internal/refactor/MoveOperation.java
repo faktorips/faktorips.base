@@ -100,7 +100,7 @@ public abstract class MoveOperation {
      * given array of sources, e.g. moving an Object in itself. If the given target is a package,
      * this method returns <code>false</code> if the package is a subpackage of the given sources.
      * <code>true</code> otherwise. If the corresponding resource of the target is null return
-     * <code>false</code> e.g. target is inside an ips archive. Also returns <tt>false</tt> if at
+     * <code>false</code> e.g. target is inside an ips archive. Also returns <code>false</code> if at
      * least one of the sources to move is a default package.
      */
     public static boolean canMovePackages(Object[] sources, Object target) {
