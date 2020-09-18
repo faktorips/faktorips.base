@@ -111,4 +111,11 @@ public class GeneratorConfigTest {
         assertThat(generatorConfig.isGeneratePublishedInterfaces(otherProject), is(false));
     }
 
+    @Test
+    public void testGenerateMinimalJavadoc_Default() throws Exception {
+        Boolean propertyValueAsBoolean = config
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC);
+        assertThat(propertyValueAsBoolean, is(false));
+    }
+
 }

@@ -206,7 +206,9 @@ public class GeneratorConfig {
      * documentation defined in the model.
      */
     public boolean isGenerateMinimalJavadoc() {
-        return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC);
+        Boolean propertyValueAsBoolean = config
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {

@@ -14,7 +14,7 @@ class CopySupportTmpl {
 
     def package static copyMethods(XPolicyCmptClass it) '''
 
-        «IF genInterface()»
+        «IF genInterface»
             «copyMethodsDecl»
         «ELSE»
             «copyMethodsImpl»
@@ -25,7 +25,7 @@ class CopySupportTmpl {
     def private static copyMethodsDecl(XPolicyCmptClass it) '''
 
             /**
-             * «inheritDoc()»
+             * «inheritDoc»
              *
              * @generated
              */

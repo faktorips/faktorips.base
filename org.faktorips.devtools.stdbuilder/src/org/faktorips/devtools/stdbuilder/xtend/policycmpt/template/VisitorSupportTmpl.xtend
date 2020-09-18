@@ -12,7 +12,7 @@ class VisitorSupportTmpl {
 
 def package static acceptMethod (XPolicyCmptClass it) '''
     /**
-     * «inheritDoc»
+     * «inheritDoc(it)»
      *
      * @generated
      */
