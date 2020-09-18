@@ -48,6 +48,13 @@
             name="loggingFrameworkConnector"
             type="extensionPoint"/>
          <builderSetPropertyDef
+            name="minimalJavadoc"
+            description="%minimalJavadocDescription"
+            label="%minimalJavadocLabel"
+            type="boolean"
+            disableValue="false"
+            defaultValue="false"/>
+         <builderSetPropertyDef
             defaultValue="de"
             description="%generatorLocaleDescription"
             label="%generatorLocaleLabel"

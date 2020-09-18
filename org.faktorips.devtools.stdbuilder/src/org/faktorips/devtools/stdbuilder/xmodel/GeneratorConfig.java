@@ -177,7 +177,8 @@ public class GeneratorConfig {
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
         return StringUtils.isBlank(baseClass)
                 ? config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)
-                        ? AbstractJaxbModelObject.class.getName() : AbstractModelObject.class.getName()
+                        ? AbstractJaxbModelObject.class.getName()
+                        : AbstractModelObject.class.getName()
                 : baseClass;
     }
 
@@ -198,6 +199,14 @@ public class GeneratorConfig {
      */
     public boolean isGenerateJaxbSupport() {
         return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
+    }
+
+    /**
+     * Minimal Javadoc includes functional Javadoc tags like {@code @generated}, as well as
+     * documentation defined in the model.
+     */
+    public boolean isGenerateMinimalJavadoc() {
+        return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC);
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {

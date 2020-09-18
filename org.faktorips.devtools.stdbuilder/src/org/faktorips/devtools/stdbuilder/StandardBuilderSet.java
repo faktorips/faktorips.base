@@ -234,6 +234,11 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = ChangesOverTimeNamingConventionPropertyDef.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION;
 
+    /**
+     * Configuration property that reduces the amount of generated comments.
+     */
+    public static final String CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC = "minimalJavadoc"; //$NON-NLS-1$
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;
@@ -563,14 +568,16 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     /**
-     * Returns the <code>PolicyCmptClassBuilder</code> or <code>null</code> if non has been assembled yet.
+     * Returns the <code>PolicyCmptClassBuilder</code> or <code>null</code> if non has been
+     * assembled yet.
      */
     public final PolicyCmptClassBuilder getPolicyCmptImplClassBuilder() {
         return getBuilderById(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, PolicyCmptClassBuilder.class);
     }
 
     /**
-     * Returns the <code>ProductCmptClassBuilder</code> or <code>null</code> if non has been assembled yet.
+     * Returns the <code>ProductCmptClassBuilder</code> or <code>null</code> if non has been
+     * assembled yet.
      */
     public final ProductCmptClassBuilder getProductCmptImplClassBuilder() {
         return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, ProductCmptClassBuilder.class);
