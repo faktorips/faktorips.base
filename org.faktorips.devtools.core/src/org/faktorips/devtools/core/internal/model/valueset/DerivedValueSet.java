@@ -93,7 +93,8 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
                 }
             }
         }
-        return !findValueDatatype(getIpsProject()).isPrimitive();
+        ValueDatatype valueDatatype = findValueDatatype(getIpsProject());
+        return valueDatatype == null || !valueDatatype.isPrimitive();
     }
 
     @Override

@@ -100,6 +100,14 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsContainsNull_UnknownDatatype() throws Exception {
+        attr.setDatatype("Ceci n’est pas un type de données");
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
+
+        assertTrue(derivedValueSet.isContainsNull());
+    }
+
+    @Test
     public void testIsContainsNull_Overwritten_WithoutNull() throws Exception {
         PolicyCmptType subPolicyCmptType = newPolicyCmptType(ipsProject, "test.Sub");
         subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
