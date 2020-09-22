@@ -4,16 +4,16 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 
 class DeltaSupportTmpl {
 
 def package static computeDeltaMethod (XPolicyCmptClass it) '''
     /**
-     * «inheritDoc()»
+     * «inheritDoc»
      *
      * @generated
      */

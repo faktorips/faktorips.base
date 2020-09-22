@@ -399,7 +399,8 @@ public abstract class AbstractGeneratorModelNode {
      * @return the localized java doc statement
      */
     public String localizedJDoc(String key, Object... replacements) {
-        String text = getLocalizedText(key + "_JAVADOC", replacements); //$NON-NLS-1$
+        String text = getGeneratorConfig().isGenerateMinimalJavadoc() ? "" //$NON-NLS-1$
+                : getLocalizedText(key + "_JAVADOC", replacements);
         return text;
     }
 

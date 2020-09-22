@@ -383,7 +383,7 @@ def private static  generalMethodsForConfiguredPolicyCmpts (XPolicyCmptClass it)
         «IF firstDependantTypeInHierarchy»
 
             /**
-             * «inheritDoc()»
+             * «inheritDoc»
              *
              * @generated
              */
@@ -397,7 +397,7 @@ def private static  generalMethodsForConfiguredPolicyCmpts (XPolicyCmptClass it)
             }
         «ELSEIF aggregateRoot»
             /**
-             * «inheritDoc()»
+             * «inheritDoc»
              *
              * @generated
              */
@@ -418,7 +418,7 @@ def private static  generalMethodsForConfiguredPolicyCmpts (XPolicyCmptClass it)
 def private static  generateCodeForDependentObject (XPolicyCmptClass it) '''
     «IF generateGetParentModelObject»
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -445,7 +445,7 @@ def private static  generalMethods (XPolicyCmptClass it) '''
 
     «IF firstConfigurableInHierarchy»
         /**
-        * «inheritDoc()»
+        * «inheritDoc»
         *
         * @generated
         */
@@ -467,7 +467,7 @@ def private static  generalMethods (XPolicyCmptClass it) '''
 
     «IF generateInitPropertiesFromXML»
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -480,7 +480,7 @@ def private static  generalMethods (XPolicyCmptClass it) '''
     «ENDIF»
 
     /**
-     * «inheritDoc()»
+     * «inheritDoc»
      *
      * @generated
      */
@@ -498,7 +498,7 @@ def private static  generalMethods (XPolicyCmptClass it) '''
 
     «IF generateMethodCreateUnresolvedReference»
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */

@@ -81,6 +81,10 @@ class CommonGeneratorExtensions {
         generatorConfig.generateVisitorSupport
     }
     
+    def static isGenerateMinimalJavadoc(AbstractGeneratorModelNode it){
+        generatorConfig.isGenerateMinimalJavadoc
+    }
+    
     // Use it function for published methods. i.e. methods that are defined in a published interface.
     // Returns the @Override annotation if the condition is true and at the same time published interfaces are being generated
     def static overrideAnnotationForPublishedMethodImplementation(AbstractGeneratorModelNode it) {
@@ -130,8 +134,8 @@ class CommonGeneratorExtensions {
         if(hasSupertype()) "@Override"
     }
 
-    def static inheritDoc() {
-        "{@inheritDoc}"
+    def static inheritDoc(AbstractGeneratorModelNode it) {
+        generateMinimalJavadoc ? "" : "{@inheritDoc}"
     }
 
     def static inheritDocOrText(AbstractGeneratorModelNode it, String text) {
@@ -140,7 +144,7 @@ class CommonGeneratorExtensions {
 
     def static inheritDocOrTextIf(AbstractGeneratorModelNode it, boolean generateInterface, String text) {
         if (generatePublishedInterfaces && !generateInterface)
-            inheritDoc()
+            inheritDoc
         else
             text
     }
@@ -154,12 +158,12 @@ class CommonGeneratorExtensions {
     }
 
     def static inheritDocOrJavaDocIf(AbstractGeneratorModelNode it, boolean generatesInterface, String key) {
-        if(generatePublishedInterfaces && !generatesInterface) inheritDoc() else localizedJDoc(key)
+        if(generatePublishedInterfaces && !generatesInterface) inheritDoc else localizedJDoc(key)
     }
 
     def static inheritDocOrJavaDocIf(AbstractGeneratorModelNode it, boolean generatesInterface, String key,
         String... params) {
-        if(generatePublishedInterfaces && !generatesInterface) inheritDoc() else localizedJDoc(key, params)
+        if(generatePublishedInterfaces && !generatesInterface) inheritDoc else localizedJDoc(key, params)
     }
 
     def static localizedJDocOrDescription(AbstractGeneratorModelNode it, String key, String param, String description) {
@@ -195,5 +199,4 @@ class CommonGeneratorExtensions {
         String varName) {
         if(currentClassName != castClassName) "((" + castClassName + ")" + varName + ")" else varName
     }
-
 }

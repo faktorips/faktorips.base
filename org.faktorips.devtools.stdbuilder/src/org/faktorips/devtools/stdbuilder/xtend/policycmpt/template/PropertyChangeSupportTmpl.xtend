@@ -31,7 +31,7 @@ def package static generalMethods (XPolicyCmptClass it) '''
 def private static notifyChangeListeners (XPolicyCmptClass it) '''
     «IF generateNotifyChangeListeners»
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -60,7 +60,7 @@ def private static notifyChangeListeners (XPolicyCmptClass it) '''
 def private static addRemoveListenerMethods (XPolicyCmptClass it) '''
     «IF generateChangeSupport && !hasSupertype()»
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -70,7 +70,7 @@ def private static addRemoveListenerMethods (XPolicyCmptClass it) '''
         }
 
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -80,7 +80,7 @@ def private static addRemoveListenerMethods (XPolicyCmptClass it) '''
         }
 
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -90,7 +90,7 @@ def private static addRemoveListenerMethods (XPolicyCmptClass it) '''
         }
 
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -100,7 +100,7 @@ def private static addRemoveListenerMethods (XPolicyCmptClass it) '''
         }
 
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
@@ -110,7 +110,7 @@ def private static addRemoveListenerMethods (XPolicyCmptClass it) '''
         }
 
         /**
-         * «inheritDoc()»
+         * «inheritDoc»
          *
          * @generated
          */
