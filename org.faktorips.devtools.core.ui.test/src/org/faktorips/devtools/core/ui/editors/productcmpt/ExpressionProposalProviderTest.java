@@ -140,7 +140,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(formula, parser);
         IContentProposal[] results = proposalProvider.getProposals("WE", 2);
         IContentProposal proposal = results[0];
-        assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());
+        assertEquals("WENN(Boolean; any; any) - any", proposal.getLabel());
         assertEquals("WE", ((ContentProposal)proposal).getPrefix());
         assertEquals(2, ((ContentProposal)proposal).getPrefixLength());
 
@@ -157,7 +157,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         results = proposalProvider.getProposals("I", 1);
         proposal = results[0];
-        assertEquals("IF(boolean; any; any) - any", proposal.getLabel());
+        assertEquals("IF(Boolean; any; any) - any", proposal.getLabel());
     }
 
     @Test

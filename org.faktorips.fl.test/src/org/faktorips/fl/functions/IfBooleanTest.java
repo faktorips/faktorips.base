@@ -16,21 +16,19 @@ import org.faktorips.values.Money;
 import org.junit.Before;
 import org.junit.Test;
 
-import bsh.TargetError;
-
 /**
  *
  */
-public class IfTest extends FunctionAbstractTest {
+public class IfBooleanTest extends FunctionAbstractTest {
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        registerFunction(new If("IF", ""));
+        registerFunction(new IfBoolean("IF", ""));
     }
 
-    @Test(expected = TargetError.class)
+    @Test
     public void testNull() throws Exception {
         registerFunction(new BooleanFct("NULLOBJ", null));
         execAndTestSuccessfull("IF(NULLOBJ(); 2.1; 3.2)", Decimal.valueOf("3.2"), Datatype.DECIMAL);
@@ -99,5 +97,4 @@ public class IfTest extends FunctionAbstractTest {
         execAndTestSuccessfull("IF(1=1; 2; 3) + 10 + IF(1=2; 2; 3) ", Integer.valueOf(15), Datatype.INTEGER);
         execAndTestSuccessfull("IF(1=1; IF(1=2; 2; 30); 3) + 1", Integer.valueOf(31), Datatype.INTEGER);
     }
-
 }

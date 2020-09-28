@@ -19,6 +19,7 @@ import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.Count;
 import org.faktorips.fl.functions.If;
+import org.faktorips.fl.functions.IfBoolean;
 import org.faktorips.fl.functions.IsEmpty;
 import org.faktorips.fl.functions.MinMaxComparableDatatypes;
 import org.faktorips.fl.functions.MinMaxDecimal;
@@ -57,6 +58,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
     public ExcelFunctionsResolver(Locale locale) {
         super(locale);
         add(new Abs(getFctName(ExcelFunction.ABS), getFctDescription(ExcelFunction.ABS)));
+        add(new IfBoolean(getFctName(ExcelFunction.IF), getFctDescription(ExcelFunction.IF)));
         add(new If(getFctName(ExcelFunction.IF), getFctDescription(ExcelFunction.IF)));
         add(new Or(getFctName(ExcelFunction.OR), getFctDescription(ExcelFunction.OR)));
         add(new And(getFctName(ExcelFunction.AND), getFctDescription(ExcelFunction.AND)));

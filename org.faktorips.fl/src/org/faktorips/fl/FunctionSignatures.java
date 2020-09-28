@@ -54,13 +54,23 @@ public enum FunctionSignatures {
      */
     Exists(PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
     /**
-     * Returns the second argument if the first argument is {@code true}, the third argument if not.<br/>
+     * Returns the second argument if the first argument is {@code true}, the third argument if
+     * not.<br/>
      * {@code Object=If(boolean, Object, Object)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
      * @see AnyDatatype
      */
     If(AnyDatatype.INSTANCE, new Datatype[] { PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
+    /**
+     * Returns the second argument if the first argument is {@code true}, the third argument if not.
+     * {@code null} is treated as {@code false}.<br/>
+     * {@code Object=If(Boolean, Object, Object)}
+     * 
+     * @see Datatype#BOOLEAN
+     * @see AnyDatatype
+     */
+    IfBoolean(AnyDatatype.INSTANCE, new Datatype[] { BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
     /**
      * Returns whether the argument is an empty array, {@code null} or a Null-Object.<br/>
      * {@code boolean=IsEmpty(Object)}
@@ -265,14 +275,14 @@ public enum FunctionSignatures {
 
     DATE(LocalDateDatatype.DATATYPE, new Datatype[] { ValueDatatype.PRIMITIVE_INT, ValueDatatype.PRIMITIVE_INT,
             ValueDatatype.PRIMITIVE_INT }),
-            DAYS360(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
+    DAYS360(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
 
-            /**
-             * Returns the textual representation of the given argument
-             * 
-             * @see AnyDatatype
-             */
-            TextFunction(AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE });
+    /**
+     * Returns the textual representation of the given argument
+     * 
+     * @see AnyDatatype
+     */
+    TextFunction(AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE });
 
     private final Datatype type;
     private final Datatype[] argTypes;
