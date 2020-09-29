@@ -108,6 +108,16 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsContainsNull_MissingOverwrittenAttribute() throws Exception {
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        attr.setOverwrite(true);
+        IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
+
+        // the normal implementation should be used if the overwritten attribute cannot be found
+        assertFalse(derivedValueSet.isContainsNull());
+    }
+
+    @Test
     public void testIsContainsNull_Overwritten_WithoutNull() throws Exception {
         PolicyCmptType subPolicyCmptType = newPolicyCmptType(ipsProject, "test.Sub");
         subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
