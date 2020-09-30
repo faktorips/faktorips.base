@@ -9,8 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -58,7 +59,7 @@ public class IpsObjectEditorTest {
 
         int highestSeverity = ipsObjectEditor.getHighestSeverity(messages);
 
-        assertEquals(IMessageProvider.NONE, highestSeverity);
+        assertThat(highestSeverity, is(IMessageProvider.NONE));
     }
 
     @Test
@@ -68,7 +69,7 @@ public class IpsObjectEditorTest {
 
         int highestSeverity = ipsObjectEditor.getHighestSeverity(messages);
 
-        assertEquals(IMessageProvider.WARNING, highestSeverity);
+        assertThat(highestSeverity, is(IMessageProvider.WARNING));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class IpsObjectEditorTest {
 
         int highestSeverity = ipsObjectEditor.getHighestSeverity(messages);
 
-        assertEquals(IMessageProvider.WARNING, highestSeverity);
+        assertThat(highestSeverity, is(IMessageProvider.WARNING));
     }
 
     @Test
@@ -90,7 +91,7 @@ public class IpsObjectEditorTest {
 
         List<IMessage> messages = ipsObjectEditor.getMessages();
 
-        assertTrue(messages.isEmpty());
+        assertThat(messages.isEmpty(), is(true));
     }
 
     @Test
@@ -120,17 +121,21 @@ public class IpsObjectEditorTest {
 
         String headerMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
 
-        assertTrue(headerMessage.isEmpty());
+        assertThat(headerMessage.isEmpty(), is(true));
     }
 
     @Test
     public void testCreateHeaderMessage_oneMessage() throws Exception {
         List<IMessage> messages = new ArrayList<IMessage>();
-        messages.add(new UiMessage(new Message("asd", "test", Message.WARNING)));
+        messages.add(new UiMessage(new Message("asd", "test", Message.NONE)));
 
-        String headerMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
+        String errorMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
+        String warningMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.WARNING);
+        String informationMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.INFORMATION);
 
-        assertEquals("test", headerMessage);
+        assertThat(errorMessage, is(Messages.IpsObjectEditor_singleErrorMessage));
+        assertThat(warningMessage, is(Messages.IpsObjectEditor_singleWarningMessage));
+        assertThat(informationMessage, is(Messages.IpsObjectEditor_singleInformationMessage));
     }
 
     @Test
@@ -141,10 +146,13 @@ public class IpsObjectEditorTest {
         messages.add(new UiMessage(new Message("asd", "test", Message.NONE)));
         messages.add(new UiMessage(new Message("asd", "test", Message.INFO)));
 
-        String headerMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
+        String errorMessages = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
+        String warningMessages = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.WARNING);
+        String informationMessages = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.INFORMATION);
 
-        assertEquals(NLS.bind(Messages.IpsObjectEditor_messagesText, Messages.IpsObjectEditor_messagesErrors),
-                headerMessage);
+        assertThat(errorMessages, is(Messages.IpsObjectEditor_multipleErrorMessages));
+        assertThat(warningMessages, is(Messages.IpsObjectEditor_multipleWarningMessages));
+        assertThat(informationMessages, is(Messages.IpsObjectEditor_multipleInformationMessages));
     }
 
     @Test

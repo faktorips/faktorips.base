@@ -877,7 +877,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
-    int getHighestSeverity(List<IMessage> messages) {
+    protected int getHighestSeverity(List<IMessage> messages) {
         int messageType = IMessageProvider.NONE;
         for (IMessage message : messages) {
             if (message.getMessageType() > messageType) {
@@ -904,30 +904,36 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (messages.size() > 1) {
             return getTextForMultipleMessages(messageType);
         } else {
-            IMessage message = messages.get(0);
-            return message.getPrefix() + message.getMessage();
+            return getTextForSingleMessage(messageType);
         }
     }
 
     private String getTextForMultipleMessages(int messageType) {
-        String messageTypeName;
         switch (messageType) {
             case IMessageProvider.ERROR:
-                messageTypeName = Messages.IpsObjectEditor_messagesErrors;
-                break;
-
+                return Messages.IpsObjectEditor_multipleErrorMessages;
             case IMessageProvider.WARNING:
-                messageTypeName = Messages.IpsObjectEditor_messagesWarnings;
-                break;
-
+                return Messages.IpsObjectEditor_multipleWarningMessages;
             case IMessageProvider.INFORMATION:
-                messageTypeName = Messages.IpsObjectEditor_messagesInformations;
-                break;
+                return Messages.IpsObjectEditor_multipleInformationMessages;
             default:
                 // should not happen
                 return StringUtils.EMPTY;
         }
-        return NLS.bind(Messages.IpsObjectEditor_messagesText, messageTypeName);
+    }
+
+    private String getTextForSingleMessage(int messageType) {
+        switch (messageType) {
+            case IMessageProvider.ERROR:
+                return Messages.IpsObjectEditor_singleErrorMessage;
+            case IMessageProvider.WARNING:
+                return Messages.IpsObjectEditor_singleWarningMessage;
+            case IMessageProvider.INFORMATION:
+                return Messages.IpsObjectEditor_singleInformationMessage;
+            default:
+                // should not happen
+                return StringUtils.EMPTY;
+        }
     }
 
     protected List<IMessage> getMessages() {
