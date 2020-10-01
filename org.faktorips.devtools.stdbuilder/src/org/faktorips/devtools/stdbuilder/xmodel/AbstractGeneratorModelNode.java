@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -399,7 +400,8 @@ public abstract class AbstractGeneratorModelNode {
      * @return the localized java doc statement
      */
     public String localizedJDoc(String key, Object... replacements) {
-        String text = getGeneratorConfig().isGenerateMinimalJavadoc() ? "" //$NON-NLS-1$
+        String text = getGeneratorConfig().isGenerateMinimalJavadoc()
+                ? Arrays.toString(replacements).contains(getDescription()) ? getDescription() : ""
                 : getLocalizedText(key + "_JAVADOC", replacements);
         return text;
     }
