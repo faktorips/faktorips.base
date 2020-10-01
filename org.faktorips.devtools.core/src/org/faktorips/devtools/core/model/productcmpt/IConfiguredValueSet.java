@@ -54,6 +54,11 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     public static final String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a string is too long to fit into the value set.
+     */
+    public static final String MSGCODE_STRING_TOO_LONG = MSGCODE_PREFIX + "StringTooLong"; //$NON-NLS-1$
+
+    /**
      * Returns the set of allowed values.
      */
     @Override
