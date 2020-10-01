@@ -211,8 +211,8 @@ class TableTmpl {
         /**
         * «localizedJDoc("METHOD_FIND_EXISTING_ROW")»
         *
-        * @return «localizedJDoc("METHOD_FIND_EXISTING_ROW_RETURN")»
-        * @throws «localizedJDoc("METHOD_FIND_EXISTING_ROW_THROW")»
+        * @return «localizedText("METHOD_FIND_EXISTING_ROW_RETURN_JAVADOC")»
+        * @throws «localizedText("METHOD_FIND_EXISTING_ROW_THROW_JAVADOC")»
         * «getAnnotations(ELEMENT_JAVA_DOC)»
         * @generated
         */

@@ -129,7 +129,7 @@ class EnumEnumTypeTmpl {
         /**
         * «localizedJDoc("METHOD_GET_EXISTING_VALUE_BY_XXX", memberVarName)»
         *
-        * @throws IllegalArgumentException «localizedJDoc("METHOD_GET_EXISTING_VALUE_BY_XXX_EXCEPTION")»
+        * @throws IllegalArgumentException «localizedText("METHOD_GET_EXISTING_VALUE_BY_XXX_EXCEPTION_JAVADOC")»
         *
         * @generated
         */

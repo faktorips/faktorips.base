@@ -5,7 +5,7 @@
   block="\s*@\s*generated\s*NOT\s*(?:\n\r?|\r\n?)"
   xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
 
-	<merge:dictionaryPattern name="generatedUnmodifiableMembers" select="Member/getComment" match="@\s*(gen)erated\s*(This field/method[^(?:\n\r?|\r\n?)]*)*(?:\n\r?|\r\n?)"/>
+	<merge:dictionaryPattern name="generatedUnmodifiableMembers" select="Member/getComment" match="@\s*(gen)erated\s*(This field/method[^(?:\n\r?|\r\n?)]*)*(?:\n\r?|\r\n?| \*/)"/>
 	<merge:dictionaryPattern name="generatedRestrainedModifableMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
 
 	<merge:pull sourceGet="Member/getFlags" targetMarkup="^gen$" equals="Member/getName" targetPut="Member/setFlags"/>
