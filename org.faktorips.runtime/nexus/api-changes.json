@@ -140,6 +140,11 @@
           "justification": "FIPS-7016: Product info for data warehouse"
         },
         {
+          "code": "java.class.externalClassExposedInAPI",
+          "new": "class org.faktorips.valueset.StringLengthValueSet",
+          "justification": "FIPS-6980: Handle product-configured StringLengthValueSets"
+        },
+        {
           "regex": true,
           "code": "java.missing.oldClass",
           "old": "missing-class javax.xml..*",

@@ -66,6 +66,7 @@ import org.w3c.dom.Element
 import org.faktorips.runtime.internal.Range
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.faktorips.runtime.util.ProductComponentLinks
+import org.faktorips.valueset.StringLengthValueSet
 
 @SuppressFBWarnings
 class ClassNames {
@@ -199,6 +200,10 @@ class ClassNames {
 
     def static OrderedValueSet(AbstractGeneratorModelNode it, String genericType) {
         addImport(typeof(OrderedValueSet)) + "<" + genericType + ">"
+    }
+    
+    def static StringLengthValueSet(AbstractGeneratorModelNode it) {
+        addImport(typeof(StringLengthValueSet))
     }
 
     def static qnameRange(AbstractGeneratorModelNode it, String genericType) {

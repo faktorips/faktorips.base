@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -313,6 +314,22 @@ public enum ValueToXmlHelper {
             }
         }
         return new EnumValues(values, containsNull);
+    }
+
+    public static StringLengthValueSet getStringLengthValueSetFromElement(Element el, String tagName) {
+        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
+        if (valueSetEl == null) {
+            return null;
+        }
+        Element stringLengthEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_STRINGLENGTH);
+        if (stringLengthEl == null) {
+            return null;
+        }
+        Element maximumLengthEl = XmlUtil.getFirstElement(stringLengthEl, "MaximumLength");
+
+        int maximumLength = Integer.parseInt(maximumLengthEl.getTextContent());
+        boolean containsNull = Boolean.valueOf(stringLengthEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
+        return new StringLengthValueSet(maximumLength, containsNull);
     }
 
     public static <T> UnrestrictedValueSet<T> getUnrestrictedValueSet(Element el, String tagName) {

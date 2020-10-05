@@ -148,6 +148,10 @@ class MethodNames {
     def static getEnumValueSetFromElement(String paramConfigElement, String paramValueSet)  {     "getEnumValueSetFromElement(" + paramConfigElement + ", " + paramValueSet + ")"    }
 
     def static getRangeFromElement(String paramConfigElement, String paramValueSet)  {     "getRangeFromElement(" + paramConfigElement + ", " + paramValueSet + ")"    }
+    
+    def static getStringLengthValueSetFromElement(String paramConfigElement, String paramValueSet)  {
+     "getStringLengthValueSetFromElement(" + paramConfigElement + ", " + paramValueSet + ")"
+    }
 
     def static addValueAndReturnElement(String valueParam, String elementParam, String tagNameParam)  {     "addValueAndReturnElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")"    }
 
