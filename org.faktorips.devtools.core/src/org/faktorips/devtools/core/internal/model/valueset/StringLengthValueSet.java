@@ -35,7 +35,6 @@ import org.w3c.dom.Element;
  */
 public class StringLengthValueSet extends ValueSet implements IStringLengthValueSet {
 
-    private static final String XML_TAG_STRINGLENGTH = ValueToXmlHelper.XML_TAG_STRINGLENGTH;
     private String maximumLength;
     private boolean containsNull;
 
@@ -190,10 +189,9 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
-        Element tagElement = doc.createElement(XML_TAG_STRINGLENGTH);
+        Element tagElement = doc.createElement(ValueToXmlHelper.XML_TAG_STRINGLENGTH);
         tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(isContainsNull()));
-        ValueToXmlHelper.addValueToElement(maximumLength, tagElement,
-                StringUtils.capitalize(PROPERTY_MAXIMUMLENGTH));
+        ValueToXmlHelper.addValueToElement(maximumLength, tagElement, ValueToXmlHelper.XML_TAG_MAXIMUM_LENGTH);
         element.appendChild(tagElement);
     }
 

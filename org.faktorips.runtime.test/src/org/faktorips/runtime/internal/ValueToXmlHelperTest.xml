@@ -1,84 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DocElement>
-	<TestElement value="2">
-	    <ValueNode><![CDATA[cdataValue]]></ValueNode>
-	</TestElement>
-	<EmptyValueTestElement>
-	    <ValueNode/>
-	</EmptyValueTestElement>
-	<NullTestElement>
-	    <ValueNode isNull="true"/>
-	</NullTestElement>
-	<EmptyTestElement/>
-	<TextNodeElement>
-		<Property>42</Property>
-	</TextNodeElement>
-  <ConfigElement>
-    <ValueSet id="1" description="">
-        <Range containsNull="false">
-        	<LowerBound isNull="false">100</LowerBound>
-        	<UpperBound isNull="false">200</UpperBound>
-        	<Step isNull="false">10</Step>
-        </Range>
-    </ValueSet>
-	</ConfigElement>
-	<ConfigElement>
-    <ValueSet id="1" description="">
-    </ValueSet>
-	</ConfigElement>
-	<ConfigElement>
-	</ConfigElement>
-	<ConfigElement>
-    	<ValueSet id="1" description="">
-      	  <Enum>
-        	    <Value>
-          	      <Data isNull="false"><![CDATA[10.0]]></Data>
-            	</Value>
-            	<Value>
-              	  <Data isNull="false"><![CDATA[20.0]]></Data>
-            	</Value>
-	        </Enum>
-  	  </ValueSet>
-	</ConfigElement>
-	<ConfigElement>
-	    <ValueSet id="1" description="">
-	        <Enum>
-	            <Value>
-	                <Data isNull="false"><![CDATA[j]]></Data>
-	            </Value>
-	            <Value>
-	                <Data isNull="false"><![CDATA[h]]></Data>
-	            </Value>
-	            <Value>
-	                <Data isNull="true"/>
-	            </Value>
-	        </Enum>
-	    </ValueSet>
-	</ConfigElement>
-	<ConfigElement>
-	    <ValueSet id="1" description="">
-	        <AllValues/>
-	    </ValueSet>
-	</ConfigElement>
-	<ConfigElement>
-	    <ValueSet id="1" description="">
-	        <AllValues containsNull="false" />
-	    </ValueSet>
-	</ConfigElement>
-  <ConfigElement>
-    <ValueSet id="1" description="">
-        <Range containsNull="false" empty="true">
-          <LowerBound isNull="true"></LowerBound>
-          <UpperBound isNull="true"></UpperBound>
-          <Step isNull="true"></Step>
-        </Range>
-    </ValueSet>
-  </ConfigElement>
+    <TestElement value="2">
+        <ValueNode><![CDATA[cdataValue]]></ValueNode>
+    </TestElement>
+    <EmptyValueTestElement>
+        <ValueNode />
+    </EmptyValueTestElement>
+    <NullTestElement>
+        <ValueNode isNull="true" />
+    </NullTestElement>
+    <EmptyTestElement />
+    <TextNodeElement>
+        <Property>42</Property>
+    </TextNodeElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Range containsNull="false">
+                <LowerBound isNull="false">100</LowerBound>
+                <UpperBound isNull="false">200</UpperBound>
+                <Step isNull="false">10</Step>
+            </Range>
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Enum>
+                <Value>
+                    <Data isNull="false"><![CDATA[10.0]]></Data>
+                </Value>
+                <Value>
+                    <Data isNull="false"><![CDATA[20.0]]></Data>
+                </Value>
+            </Enum>
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Enum>
+                <Value>
+                    <Data isNull="false"><![CDATA[j]]></Data>
+                </Value>
+                <Value>
+                    <Data isNull="false"><![CDATA[h]]></Data>
+                </Value>
+                <Value>
+                    <Data isNull="true" />
+                </Value>
+            </Enum>
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <AllValues />
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <AllValues containsNull="false" />
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Range containsNull="false" empty="true">
+                <LowerBound isNull="true"></LowerBound>
+                <UpperBound isNull="true"></UpperBound>
+                <Step isNull="true"></Step>
+            </Range>
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <StringLength containsNull="false">
+                <MaximumLength>15</MaximumLength>
+            </StringLength>
+        </ValueSet>
+    </ConfigElement>
     <AttributeValue attribute="A" id="1">
         <Value isNull="false" valueType="SingleValue">
             <InternationalString defaultLocale="hy">
-                <LocalizedString locale="hy" text="hyfds"/>
-                <LocalizedString locale="as" text="asfdsa"/>
+                <LocalizedString locale="hy"
+                    text="hyfds" />
+                <LocalizedString locale="as"
+                    text="asfdsa" />
             </InternationalString>
         </Value>
     </AttributeValue>

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
@@ -32,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -95,6 +97,15 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
+        if (valueSetToValidate.isEnum() && modelValueSet.isStringLength()) {
+            MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
+                    (IEnumValueSet)valueSetToValidate,
+                    (IStringLengthValueSet)modelValueSet);
+            if (!valueValidationResult.isEmpty()) {
+                list.add(valueValidationResult);
+                return;
+            }
+        }
         if (valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
             // situations like model value set is unrestricted, and this value set is a range
             // are ok.
@@ -132,6 +143,34 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         new ValueSetNullIncompatibleValidator(modelValueSet, valueSetToValidate).validateAndAppendMessages(list);
     }
 
+    private MessageList validateEnumValueStringLength(IIpsProject ipsProject,
+            IEnumValueSet enumValueSet,
+            IStringLengthValueSet stringLengthValueSet) {
+
+        MessageList messages = new MessageList();
+        String[] values = enumValueSet.getValues();
+
+        for (int i = 0; i < values.length; i++) {
+            String value = values[i];
+            try {
+                if (!stringLengthValueSet.containsValue(value, ipsProject)) {
+                    String msgCode = IConfiguredValueSet.MSGCODE_STRING_TOO_LONG;
+                    String text = NLS.bind(Messages.ConfigElement_stringTooLong, new String[] {
+                            value, String.valueOf(stringLengthValueSet.getParsedMaximumLength()) });
+
+                    messages.add(Message.newError(msgCode,
+                            text,
+                            new ObjectProperty(this, PROPERTY_VALUE_SET),
+                            new ObjectProperty(enumValueSet, IEnumValueSet.PROPERTY_VALUES, i)));
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+
+        return messages;
+    }
+
     private IValueSet findTemplateValueSet() {
         IConfiguredValueSet templateConfigElement = findTemplateProperty(getIpsProject());
         if (templateConfigElement == null) {
@@ -153,7 +192,12 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             valueSetTypes.remove(ValueSetType.STRINGLENGTH);
             types.addAll(valueSetTypes);
         } else {
-            types.add(attribute.getValueSet().getValueSetType());
+            ValueSetType attributeValueSetType = attribute.getValueSet().getValueSetType();
+            types.add(attributeValueSetType);
+
+            if (attributeValueSetType == ValueSetType.STRINGLENGTH) {
+                types.add(ValueSetType.ENUM);
+            }
         }
         types.removeIf(ValueSetType::isDerived);
         if (types.isEmpty()) {

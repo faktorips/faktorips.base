@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,6 +22,7 @@ import java.util.Locale;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -131,6 +134,18 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testGetStringLengthValueSetFromElement() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+        Element node = (Element)configElements.item(8);
+
+        StringLengthValueSet valueSet = ValueToXmlHelper.getStringLengthValueSetFromElement(node, "ValueSet");
+
+        assertThat(valueSet.containsNull(), is(false));
+        assertThat(valueSet.getMaximumLength(), is(15));
+    }
+
+    @Test
     public void testGetUnrestrictedValueSet_containsNull() {
         Document doc = getTestDocument();
         NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
@@ -148,14 +163,14 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     public void testAddTableUsageToElement() {
         Element element = getTestDocument().getDocumentElement();
         NodeList childNodes = element.getChildNodes();
-        assertEquals(29, childNodes.getLength());
+        assertEquals(31, childNodes.getLength());
 
         ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(30, childNodes.getLength());
-        Node namedItem = childNodes.item(29).getAttributes().getNamedItem("structureUsage");
+        assertEquals(32, childNodes.getLength());
+        Node namedItem = childNodes.item(31).getAttributes().getNamedItem("structureUsage");
         assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(29).getFirstChild().getTextContent();
+        String nodeValue = childNodes.item(31).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
     }
 

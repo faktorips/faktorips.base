@@ -15,6 +15,7 @@ import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -53,6 +54,7 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
@@ -371,6 +373,45 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         valueSet2.setUpperBound("10");
         ml = configuredValueSet.validate(ipsProject);
         assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_EnumValueSetForStringLengthValueSet() throws CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("valueTest");
+        attr.setValueSetType(ValueSetType.STRINGLENGTH);
+        attr.setDatatype("String");
+        IStringLengthValueSet valueSet = (IStringLengthValueSet)attr.getValueSet();
+        valueSet.setMaximumLength("12");
+
+        configuredValueSet = productCmpt.newPropertyValue(attr, IConfiguredValueSet.class);
+        configuredValueSet.setValueSetCopy(valueSet);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        IEnumValueSet enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
+        enumValueSet.addValue("short enough");
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_EnumValueSetForStringLengthValueSet_ValueTooLong() throws CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("valueTest");
+        attr.setValueSetType(ValueSetType.STRINGLENGTH);
+        attr.setDatatype("String");
+        IStringLengthValueSet valueSet = (IStringLengthValueSet)attr.getValueSet();
+        valueSet.setMaximumLength("12");
+
+        configuredValueSet = productCmpt.newPropertyValue(attr, IConfiguredValueSet.class);
+        configuredValueSet.setValueSetCopy(valueSet);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        IEnumValueSet enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
+        enumValueSet.addValue("this value is longer than the string length allows");
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml.containsErrorMsg(), is(true));
+        assertThat(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_STRING_TOO_LONG), is(not(nullValue())));
     }
 
     @Test

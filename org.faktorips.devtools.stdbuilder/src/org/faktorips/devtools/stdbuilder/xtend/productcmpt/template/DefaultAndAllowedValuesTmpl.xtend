@@ -140,7 +140,14 @@ class DefaultAndAllowedValuesTmpl {
                         «fieldNameValueSet» = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET)»;
                     «ENDIF»
                 «ENDIF»
-                «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)»
+                «IF valueSetStringLength»
+                	«StringLengthValueSet» stringLengthValueSet = «ValueToXmlHelper».«getStringLengthValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
+                	if (stringLengthValueSet != null) {
+                		«fieldNameValueSet» = stringLengthValueSet;
+                		return;
+                	}
+                «ENDIF»
+                «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported)»
                     «EnumValues» values = «ValueToXmlHelper».«getEnumValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (values != null) {
                         «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
