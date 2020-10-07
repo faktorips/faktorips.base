@@ -1342,16 +1342,20 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *            <code>false</code> if only the properties will be read
      */
     public synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file, boolean loadCompleteContent) {
-        if (file == null || !file.exists()) {
+        if (file == null) {
             return null;
         }
-        IpsSrcFileContent content = ipsObjectsMap.get(file);
 
-        // new content
+        IpsSrcFileContent content = ipsObjectsMap.get(file);
         if (content == null) {
-            content = readContentFromFile(file, loadCompleteContent);
-            ipsObjectsMap.put(file, content);
-            return content;
+            if (file.exists()) {
+                // new content
+                content = readContentFromFile(file, loadCompleteContent);
+                ipsObjectsMap.put(file, content);
+                return content;
+            } else {
+                return null;
+            }
         }
 
         IResource enclResource = file.getEnclosingResource();
