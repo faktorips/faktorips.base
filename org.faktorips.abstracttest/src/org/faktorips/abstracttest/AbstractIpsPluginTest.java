@@ -890,6 +890,28 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
+     * Creates a new association between 'from' and 'to' type. The role name singular is set to "a_"
+     * + the target's unqualified name. The plural name is the singular name followed by an 's'. Min
+     * cardinality is 1, max cardinality is '*'.
+     * 
+     * @throws CoreException if an error occurs while saving the files.
+     */
+    public IPolicyCmptTypeAssociation newAssociation(IPolicyCmptType from, IPolicyCmptType to)
+            throws CoreException {
+        IPolicyCmptTypeAssociation association = from.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setTarget(to.getQualifiedName());
+        association.setTargetRoleSingular("a_" + to.getUnqualifiedName());
+        association.setTargetRolePlural("a_" + to.getUnqualifiedName() + "s");
+        association.setMinCardinality(1);
+        association.setMaxCardinality(Integer.MAX_VALUE);
+
+        from.getIpsSrcFile().save(true, null);
+        to.getIpsSrcFile().save(true, null);
+        return association;
+    }
+
+    /**
      * Creates a new composition (master-detail) between 'from' and 'to' type and the inverse
      * detail-master association. The role name singular is set to the target's unqualified name.
      * The plural name is the singular name followed by an 's'. Min cardinality is 1, max
