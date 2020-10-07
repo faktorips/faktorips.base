@@ -39,7 +39,7 @@ public class StringLengthValueSetValidatorTest {
         MessageList list = vs.createValidator(valueSetOwner, null).validate();
 
         assertThat(list, hasMessageCode(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE));
-        assertThat(list.getMessageByCode(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE), hasInvalidObject(valueSetOwner));
+        assertThat(list.getMessageByCode(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE), hasInvalidObject(vs));
     }
 
     @Test

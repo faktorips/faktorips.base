@@ -182,7 +182,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
 
         assertThat(message, hasSeverity(Message.ERROR));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE));
     }
 
     @Test
@@ -195,7 +195,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
 
         assertThat(message, hasSeverity(Message.ERROR));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
 
         assertThat(message, hasSeverity(Message.ERROR));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
     }
 
     @Test
@@ -221,7 +221,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
 
         assertThat(message, hasSeverity(Message.ERROR));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
     }
 
     @Test
@@ -238,10 +238,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         assertThat(messages, hasSize(1));
         assertThat(message, hasSeverity(Message.ERROR));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
-        assertThat(message, hasInvalidObject(IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
     }
 
     @Test

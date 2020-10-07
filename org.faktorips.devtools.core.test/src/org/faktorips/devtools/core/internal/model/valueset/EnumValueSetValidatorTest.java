@@ -63,7 +63,8 @@ public class EnumValueSetValidatorTest {
         MessageList messageList = enumValueSetValidator.validate();
 
         assertThat(messageList, hasMessageCode(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE));
-        assertThat(messageList.getMessageByCode(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE), hasInvalidObject(owner));
+        assertThat(messageList.getMessageByCode(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE),
+                hasInvalidObject(owner));
     }
 
     @Test
@@ -76,10 +77,6 @@ public class EnumValueSetValidatorTest {
 
         assertThat(messageList,
                 hasMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
-        assertThat(
-                messageList.getMessageByCode(
-                        IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE),
-                hasInvalidObject(owner));
         assertThat(
                 messageList.getMessageByCode(
                         IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE),

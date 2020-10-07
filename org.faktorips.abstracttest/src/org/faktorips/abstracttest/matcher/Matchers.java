@@ -44,6 +44,10 @@ public class Matchers {
         return new MessageInvalidObjectMatcher(invalidObject);
     }
 
+    public static Matcher<Message> hasInvalidObject(Object invalidObject, String propertyName) {
+        return new MessageInvalidObjectMatcher(invalidObject, propertyName);
+    }
+
     public static Matcher<Message> hasSeverity(int severity) {
         return new MessageSevertiyMatcher(severity);
     }

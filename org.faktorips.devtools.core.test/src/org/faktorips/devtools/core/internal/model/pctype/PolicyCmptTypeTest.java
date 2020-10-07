@@ -77,7 +77,6 @@ import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -1166,7 +1165,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.validateAbstractAttributes(list, ipsProject);
 
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
-        assertThat(message, hasInvalidObject(new ObjectProperty(policyCmptType, IType.PROPERTY_ABSTRACT)));
+        assertThat(message, hasInvalidObject(policyCmptType, IType.PROPERTY_ABSTRACT));
     }
 
     @Test
@@ -1182,8 +1181,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         MessageList list = policyCmptType.validate(ipsProject);
 
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
-        assertThat(message, hasInvalidObject(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE)));
-        assertThat(message, hasInvalidObject(new ObjectProperty(policyCmptType, IType.PROPERTY_ABSTRACT)));
+        assertThat(message, hasInvalidObject(attr1, IAttribute.PROPERTY_DATATYPE));
+        assertThat(message, hasInvalidObject(policyCmptType, IType.PROPERTY_ABSTRACT));
     }
 
     @Test
@@ -1219,8 +1218,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         Message message = messageList
                 .getMessageByCode(IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY);
         assertThat(message, Matchers.hasSeverity(Message.ERROR));
-        assertThat(message, hasInvalidObject(
-                new ObjectProperty(policyCmptType, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS)));
+        assertThat(message,
+                hasInvalidObject(superPolicyCmptType, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS));
         assertThat(message.getText(), CoreMatchers.containsString(superSuperPolicyCmptType.getQualifiedName()));
     }
 
