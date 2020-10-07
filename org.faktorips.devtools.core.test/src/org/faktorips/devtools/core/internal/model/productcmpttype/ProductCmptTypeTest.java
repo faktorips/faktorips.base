@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -68,6 +69,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -1478,6 +1480,45 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertOneValidationMessage(validationMessageList,
                 IProductCmptType.MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, productCmptType, null,
                 Message.ERROR);
+    }
+
+    @Test
+    public void testValidate_AssociationTargetSameAsProductCmptTypeName() throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+        IProductCmptType target = newProductCmptType(ipsProject, "Target");
+
+        IAssociation association = productCmptType.newAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular("ProductCmptTypeName");
+        association.setMaxCardinality(1);
+        association.setTarget(target.getQualifiedName());
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, productCmptType, null,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString("The product component type itself and associations cannot have the same name."));
+    }
+
+    @Test
+    public void testValidate_AttributeNameSameAsProductCmptTypeName() throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+
+        IAttribute attribute = productCmptType.newAttribute();
+        attribute.setName("ProductCmptTypeName");
+        attribute.setDatatype("String");
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, productCmptType, null,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString("The product component type itself and attributes cannot have the same name."));
     }
 
     @Test

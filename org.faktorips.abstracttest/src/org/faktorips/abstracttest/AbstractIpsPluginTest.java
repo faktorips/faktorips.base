@@ -10,6 +10,10 @@
 
 package org.faktorips.abstracttest;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
+import static org.faktorips.abstracttest.matcher.Matchers.hasSize;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -122,7 +126,6 @@ import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -1548,10 +1551,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             String property,
             int severity) {
 
-        Message expectedMessage = list.getFirstMessage(severity);
-        assertEquals(1, list.size());
-        assertEquals(code, expectedMessage.getCode());
-        assertEquals(new ObjectProperty(invalidObject, property), expectedMessage.getInvalidObjectProperties()[0]);
+        assertThat(list, hasSize(1));
+        Message message = list.getFirstMessage(severity);
+        assertThat(message.getCode(), is(code));
+        assertThat(message, hasInvalidObject(invalidObject, property));
     }
 
     protected final void assertPropertyChangedEvent(IIpsObjectPart part,

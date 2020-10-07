@@ -1586,6 +1586,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
                             new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
                 }
             }
+            if (productCmptType.isChangingOverTime()) {
+                String name = productCmptType.getUnqualifiedName();
+                add(name, new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_NAME));
+            }
             super.visit(currentType);
             return true;
         }

@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -79,7 +80,8 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
      * 
      */
-    protected String createMoreSpecificErrorText(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
+    protected String createMoreSpecificErrorText(ObjectProperty invalidObjProperty1,
+            ObjectProperty invalidObjProperty2) {
         if (isIpsObjectPartContainer(invalidObjProperty1, invalidObjProperty2)) {
             IpsObjectPartContainer ipsObjectContainer2 = ((IpsObjectPartContainer)invalidObjProperty2.getObject());
             IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
@@ -130,6 +132,9 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         }
         if (objectPartContainer instanceof IMethod) {
             return Messages.DuplicatePropertyNameValidator_PluralMethod;
+        }
+        if (objectPartContainer instanceof IProductCmptType) {
+            return Messages.DuplicatePropertyNameValidator_ProductCmptTypeItself;
         }
         return Messages.DuplicatePropertyNameValidator_PluralElement;
     }
