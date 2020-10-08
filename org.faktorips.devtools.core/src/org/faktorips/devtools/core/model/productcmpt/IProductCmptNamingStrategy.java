@@ -226,10 +226,9 @@ public interface IProductCmptNamingStrategy {
      * both have the same runtime id 42, but because they are based on different templates they are
      * considered as different.
      * 
-     * @param runtimeId1 The first product component to check.
-     * @param runtimeId2 The second product component to check.
-     * @return <code>true</code> if the runtime IDs of both product components are the same,
-     *         <code>false</code> otherwise.
+     * @param runtimeId1 ID of the first product component
+     * @param runtimeId2 ID of the second product component
+     * @return <code>true</code> if the given runtime IDs are the same,<code>false</code> otherwise.
      */
     public boolean sameRuntimeId(String runtimeId1, String runtimeId2);
 

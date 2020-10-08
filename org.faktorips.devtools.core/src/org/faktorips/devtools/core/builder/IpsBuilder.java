@@ -196,18 +196,24 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     private boolean checkIpsProjectBeforeBuild(IIpsProject ipsProject) throws CoreException {
         ipsProject.getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
-        MessageList list = ipsProject.validate();
-        IResource markedResource = ipsProject.getIpsProjectPropertiesFile();
-        if (!markedResource.exists()) {
-            markedResource = ipsProject.getProject();
-            createMarkersFromMessageList(markedResource, list, IpsPlugin.PROBLEM_MARKER);
-        } else {
-            createMarkersForIpsProjectProperties(list, ipsProject);
-        }
-        if (!getIpsProject().canBeBuild()) {
-            IMarker marker = markedResource.createMarker(IpsPlugin.PROBLEM_MARKER);
-            String msg = Messages.IpsBuilder_msgInvalidProperties;
-            updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+        try {
+            MessageList list = ipsProject.validate();
+            IResource markedResource = ipsProject.getIpsProjectPropertiesFile();
+            if (!markedResource.exists()) {
+                markedResource = ipsProject.getProject();
+                createMarkersFromMessageList(markedResource, list, IpsPlugin.PROBLEM_MARKER);
+            } else {
+                createMarkersForIpsProjectProperties(list, ipsProject);
+            }
+
+            if (list.containsErrorMsg()) {
+                IMarker marker = markedResource.createMarker(IpsPlugin.PROBLEM_MARKER);
+                String msg = Messages.IpsBuilder_msgInvalidProperties;
+                updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+                return false;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
             return false;
         }
         return true;
@@ -460,6 +466,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     @Override
     protected void clean(IProgressMonitor monitor) throws CoreException {
+        getIpsProject().clearCaches();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
             if (monitor.isCanceled()) {

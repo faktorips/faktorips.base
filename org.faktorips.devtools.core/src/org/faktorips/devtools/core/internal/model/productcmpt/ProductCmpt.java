@@ -284,7 +284,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             list.add(msgNew);
         }
 
-        list2 = getIpsProject().checkForDuplicateRuntimeIds(new IIpsSrcFile[] { getIpsSrcFile() });
+        list2 = getIpsProject().checkForDuplicateRuntimeIds(getIpsSrcFile());
         list.add(list2);
     }
 
@@ -420,7 +420,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     public void setRuntimeId(String runtimeId) {
         String oldId = this.runtimeId;
         this.runtimeId = runtimeId;
-        valueChanged(oldId, runtimeId);
+        valueChanged(oldId, runtimeId, IProductCmpt.PROPERTY_RUNTIME_ID);
     }
 
     @Override

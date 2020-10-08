@@ -2019,7 +2019,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         cmpt3.setRuntimeId("Egon");
         cmpt2.setRuntimeId("Egon");
         ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
-        assertEquals(2, ml.size());
+        assertEquals(ml.toString(), 2, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that linked projects will be checked against each other

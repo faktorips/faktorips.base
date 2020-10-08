@@ -252,7 +252,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         long start = System.nanoTime();
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         long end = System.nanoTime();
-        System.out.println("Clean Build took " + (end - start) / 1000 + "ms");
+        System.out.println("Clean Build took " + (end - start) / 1_000_000 + "ms");
     }
 
 }

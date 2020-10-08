@@ -125,7 +125,8 @@ public class ContentChangeEvent {
         return new ContentChangeEvent(part, propertyChangeEvents);
     }
 
-    public static final ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
+    public static final ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file,
+            IIpsObjectPart[] parts) {
         return new ContentChangeEvent(file, parts);
     }
 
@@ -177,6 +178,7 @@ public class ContentChangeEvent {
     /**
      * Returns event type.
      * 
+     * @see #TYPE_WHOLE_CONTENT_CHANGED
      * @see #TYPE_PART_ADDED
      * @see #TYPE_PART_REMOVED
      * @see #TYPE_PARTS_CHANGED_POSITIONS

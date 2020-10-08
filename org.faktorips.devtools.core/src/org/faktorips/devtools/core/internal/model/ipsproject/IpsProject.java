@@ -146,7 +146,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IFile propertyFile;
 
     private final UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
-
+    private final RuntimeIdCache runtimeIdCache = new RuntimeIdCache(this);
     private final TableContentsStructureCache tableContentsStructureCache = new TableContentsStructureCache(this);
 
     /**
@@ -1670,92 +1670,29 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile[] cmptsToCheck) throws CoreException {
-        return checkForDuplicateRuntimeIdsInternal(cmptsToCheck);
-    }
-
-    /**
-     * Check product cmpts for duplicate runtime id.
-     * 
-     * @param cmptsToCheck List of product components to check.
-     * 
-     * @return A message list containing messages for each combination of a given product component
-     *         with the same runtime id as another one. The message has either one invalid object
-     *         property containing the given product component if <code>all</code> is
-     *         <code>false</code>, or two invalid object properties with the both product components
-     *         with the same runtime id if <code>all</code> is <code>true</code>.
-     * 
-     * @throws CoreException if an error occurs during processing.
-     */
-    private MessageList checkForDuplicateRuntimeIdsInternal(IIpsSrcFile[] cmptsToCheck) throws CoreException {
-
-        IIpsSrcFile[] baseCheck = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-
+    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws CoreException {
         MessageList result = new MessageList();
-        IProductCmptNamingStrategy strategyI = null;
-        IProductCmptNamingStrategy strategyJ = null;
-        for (IIpsSrcFile productCmptToCheck : cmptsToCheck) {
-            ArgumentCheck.equals(productCmptToCheck.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT);
-            strategyI = productCmptToCheck.getIpsProject().getProductCmptNamingStrategy();
-            for (IIpsSrcFile element : baseCheck) {
-                ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT);
-                IIpsSrcFile productCmptToCheckB = element;
-                if (!productCmptToCheck.getQualifiedNameType().equals(productCmptToCheckB.getQualifiedNameType())) {
-                    strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
-                    boolean duplicate = checkSameRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result,
-                            false);
-                    if (!duplicate && !strategyI.equals(strategyJ)) {
-                        checkSameRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, false);
-                    }
-                }
+        for (IIpsSrcFile cmptToCheck : cmptsToCheck) {
+            if (!cmptToCheck.exists()) {
+                continue;
             }
-        }
 
+            runtimeIdCache
+                    .findProductCmptByRuntimeId(cmptToCheck.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))
+                    .stream()
+                    .filter(p -> !p.equals(cmptToCheck))
+                    .forEach(p -> {
+                        ObjectProperty[] invalidObjectProperties = new ObjectProperty[1];
+                        invalidObjectProperties[0] = new ObjectProperty(cmptToCheck.getIpsObject(),
+                                IProductCmpt.PROPERTY_RUNTIME_ID);
+
+                        String msg = NLS.bind(Messages.IpsProject_msgRuntimeIDCollision, new String[] {
+                                cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName() });
+                        result.add(
+                                new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, invalidObjectProperties));
+                    });
+        }
         return result;
-    }
-
-    /**
-     * Checking whether the runtime IDs of the to product component source files are the same
-     * according to the rules implemented in the given strategy. If they are same, the method
-     * returns true and adding a message to the message list.
-     * 
-     * @param strategy the naming strategy to check the runtime IDs
-     * @param cmpt1 the {@link IIpsSrcFile} of the first product component
-     * @param cmpt2 the {@link IIpsSrcFile} of the second product component
-     * @param list the message list to add the message
-     * @param addBoth true when the first and the second product component should be added to the
-     *            {@link ObjectProperty}s of the {@link Message}
-     * @return true if the runtime IDs are duplicated
-     * @throws CoreException When properties or objects of the {@link IIpsSrcFile} are not
-     *             accessible
-     */
-    private boolean checkSameRuntimeId(IProductCmptNamingStrategy strategy,
-            IIpsSrcFile cmpt1,
-            IIpsSrcFile cmpt2,
-            MessageList list,
-            boolean addBoth) throws CoreException {
-
-        String runtimeId1 = cmpt1.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID);
-        String runtimeId2 = cmpt2.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID);
-        if (strategy.sameRuntimeId(runtimeId1, runtimeId2)) {
-            ObjectProperty[] objects;
-
-            if (addBoth) {
-                objects = new ObjectProperty[2];
-                objects[0] = new ObjectProperty(cmpt1.getIpsObject(), IProductCmpt.PROPERTY_RUNTIME_ID);
-                objects[1] = new ObjectProperty(cmpt2.getIpsObject(), IProductCmpt.PROPERTY_RUNTIME_ID);
-            } else {
-                objects = new ObjectProperty[1];
-                objects[0] = new ObjectProperty(cmpt1.getIpsObject(), IProductCmpt.PROPERTY_RUNTIME_ID);
-            }
-
-            String projectName = cmpt2.getIpsProject().getName();
-            String msg = NLS.bind(Messages.IpsProject_msgRuntimeIDCollision, new String[] {
-                    cmpt1.getQualifiedNameType().getName(), cmpt2.getQualifiedNameType().getName(), projectName });
-            list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -1835,12 +1772,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         getCorrespondingResource().delete(true, null);
         unqualifiedNameCache.dispose();
+        runtimeIdCache.dispose();
         tableContentsStructureCache.dispose();
     }
 
     @Override
     public void clearCaches() {
         unqualifiedNameCache.clear();
+        runtimeIdCache.clear();
         tableContentsStructureCache.clear();
     }
 
