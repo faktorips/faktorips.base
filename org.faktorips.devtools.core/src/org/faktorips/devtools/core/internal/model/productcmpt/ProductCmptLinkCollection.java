@@ -15,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.faktorips.devtools.core.model.DependencyDetail;
@@ -46,7 +48,7 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
  */
 public class ProductCmptLinkCollection {
 
-    private List<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
+    private final List<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
 
     /**
      * Returns all links in this collection for a given association. Returns an empty list if there
@@ -57,12 +59,9 @@ public class ProductCmptLinkCollection {
      * @param associationName the association name whose instances (links) should be returned.
      */
     public List<IProductCmptLink> getLinks(String associationName) {
-        List<IProductCmptLink> linksForAssociation = getLinksAsMap().get(associationName);
-        if (linksForAssociation == null) {
-            return new ArrayList<IProductCmptLink>();
-        } else {
-            return linksForAssociation;
-        }
+        return links.stream()
+                .filter(l -> associationName.equals(l.getAssociation()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -77,19 +76,9 @@ public class ProductCmptLinkCollection {
     public Map<String, List<IProductCmptLink>> getLinksAsMap() {
         Map<String, List<IProductCmptLink>> associationNameToLinksMap = new LinkedHashMap<String, List<IProductCmptLink>>();
         for (IProductCmptLink link : links) {
-            addToList(associationNameToLinksMap, link);
+            associationNameToLinksMap.computeIfAbsent(link.getAssociation(), $ -> new ArrayList<>()).add(link);
         }
         return associationNameToLinksMap;
-    }
-
-    private void addToList(Map<String, List<IProductCmptLink>> associationNameToLinksMap, IProductCmptLink link) {
-        String associationName = link.getAssociation();
-        List<IProductCmptLink> linksForAssciation = associationNameToLinksMap.get(associationName);
-        if (linksForAssciation == null) {
-            linksForAssciation = new ArrayList<IProductCmptLink>();
-            associationNameToLinksMap.put(associationName, linksForAssciation);
-        }
-        linksForAssciation.add(link);
     }
 
     /**
@@ -108,6 +97,7 @@ public class ProductCmptLinkCollection {
      * editor (but after all "standardCoverages"-links).
      */
     public List<IProductCmptLink> getLinks() {
+        // a stream with flatMap would be nice code, but not as efficient
         List<IProductCmptLink> allLinks = new ArrayList<IProductCmptLink>();
         for (List<IProductCmptLink> linkList : getLinksAsMap().values()) {
             allLinks.addAll(linkList);
@@ -299,7 +289,6 @@ public class ProductCmptLinkCollection {
      */
     public void addRelatedProductCmptQualifiedNameTypes(Set<IDependency> qaTypes,
             Map<IDependency, List<IDependencyDetail>> details) {
-        List<IProductCmptLink> links = getLinks();
         for (IProductCmptLink link : links) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(link.getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(link.getTarget(), IpsObjectType.PRODUCT_CMPT));
@@ -327,10 +316,11 @@ public class ProductCmptLinkCollection {
      * Removes all links whose {@link TemplateValueStatus} is {@link TemplateValueStatus#UNDEFINED}.
      */
     public void removeUndefinedLinks() {
-        for (IProductCmptLink link : getLinks()) {
+        for (IProductCmptLink link : new CopyOnWriteArrayList<>(links)) {
             if (link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
                 remove(link);
             }
         }
     }
+
 }

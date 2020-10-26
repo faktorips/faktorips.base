@@ -40,7 +40,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     private static final int NUMBER_OF_LAYERS = 8;
     private static final int NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER = 6;
     private static final int NUMBER_OF_ATTRIBUTES_PER_CMPTTYPE = 10;
-    private static final int NUMBER_OF_PRODUCTS_PER_PRODUCTCMPTTYPE = 5;
+    private static final int NUMBER_OF_PRODUCTS_PER_PRODUCTCMPTTYPE = 10;
 
     @Override
     @Before
