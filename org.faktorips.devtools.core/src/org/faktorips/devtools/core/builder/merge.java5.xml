@@ -14,19 +14,19 @@
 	<merge:pull sourceGet="Initializer/getBody" targetMarkup="^gen$" targetPut="Initializer/setBody"/>
 	<merge:pull sourceGet="Method/getBody" targetMarkup="^gen$" targetPut="Method/setBody"/>
   <merge:pull sourceGet="Method/getBody" sourceMarkup="^gen$" targetMarkup="^restrained$" targetPut="Method/setBody"/>
-	<merge:pull sourceGet="Method/getReturnType" targetMarkup="^gen$" targetPut="Method/setReturnType"/>
-	<merge:pull sourceGet="Method/getParameters" targetMarkup="^gen$" targetPut="Method/setParameters"/>
-	<merge:pull sourceGet="Method/getParameterNames" targetMarkup="^gen$" targetPut="Method/setParameterNames"/>
-	<merge:pull sourceGet="Method/getExceptions" targetMarkup="^gen$" targetPut="Method/addException"/>
+  <merge:pull sourceGet="Method/getReturnType" targetMarkup="^(gen|restrained)$" targetPut="Method/setReturnType"/>
+	<merge:pull sourceGet="Method/getParameters" targetMarkup="^(gen|restrained)$" targetPut="Method/setParameters"/>
+	<merge:pull sourceGet="Method/getParameterNames" targetMarkup="^(gen|restrained)$" targetPut="Method/setParameterNames"/>
+	<merge:pull sourceGet="Method/getExceptions" targetMarkup="^(gen|restrained)$" targetPut="Method/addException"/>
 	<merge:pull sourceGet="Field/getType" targetMarkup="^gen$" targetPut="Field/setType"/>
 	<merge:pull sourceGet="Field/getInitializer" targetMarkup="^gen$" targetPut="Field/setInitializer"/>
 	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
 	<merge:pull sourceGet="Enum/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Enum/addSuperInterface"/>
 	<merge:pull sourceGet="EnumConstant/getArguments" targetMarkup="^gen$" targetPut="EnumConstant/setArguments"/>
 	<merge:pull sourceGet="EnumConstant/getBody" targetMarkup="^gen$" targetPut="EnumConstant/setBody"/>
-	<!-- This is only for annotation type declarations - as far we do not generate our own annotations it is not realy needed -->
+	<!-- This is only for annotation type declarations - as far we do not generate our own annotations it is not really needed -->
 	<merge:pull sourceGet="AnnotationTypeMember/getType" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setType"/>
-    <merge:pull sourceGet="AnnotationTypeMember/getDefaultValue" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setDefaultValue"/>
+  <merge:pull sourceGet="AnnotationTypeMember/getDefaultValue" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setDefaultValue"/>
 
 	<!-- These are the settings for merging annotations -->
 	<!-- Defining the custom tag to keep custom annotations:
@@ -61,7 +61,7 @@
 	 -->
 
 	<!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated--> 
-	<merge:pull targetMarkup="^gen$|^restrained$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?(.*)?" targetPut="Member/setComment"/>
+	<merge:pull targetMarkup="^(gen|restrained)$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?(.*)?" targetPut="Member/setComment"/>
 
 </merge:options>
 
