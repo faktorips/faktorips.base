@@ -21,7 +21,8 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
 public class Migration_20_12_0_Factory implements IIpsProjectMigrationOperationFactory {
 
     private static final String VERSION = "20.12.0"; //$NON-NLS-1$
-    private static final Set<IpsObjectType> TYPES_TO_MIGRATE = ImmutableSet.of(IpsObjectType.TABLE_CONTENTS);
+    private static final Set<IpsObjectType> TYPES_TO_MIGRATE = ImmutableSet.of(IpsObjectType.TABLE_CONTENTS,
+            IpsObjectType.POLICY_CMPT_TYPE);
 
     @Override
     public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject projectToMigrate,
