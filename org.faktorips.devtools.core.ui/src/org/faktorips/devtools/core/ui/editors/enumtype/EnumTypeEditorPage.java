@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -46,7 +48,13 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
     /**
-     * The <code>IEnumType</code> the <code>EnumTypeEditor</code> this page belongs to is currently editing.
+     * The <code>UIToolkit<code> used for updating the changeability states.
+     */
+    private UIToolkit uiToolkit;
+
+    /**
+     * The <code>IEnumType</code> the <code>EnumTypeEditor</code> this page belongs to is currently
+     * editing.
      */
     private IEnumType enumType;
 
@@ -57,14 +65,14 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     private EnumValuesSection enumValuesSection;
 
     /**
-     * Action to import <code>IEnumValue</code>s into the opened <code>IEnumType</code> from an external
-     * file.
+     * Action to import <code>IEnumValue</code>s into the opened <code>IEnumType</code> from an
+     * external file.
      */
     private EnumImportExportActionInEditor importAction;
 
     /**
-     * Action to export the <code>IEnumValue</code>s of the opened <code>IEnumType</code> to an external
-     * file.
+     * Action to export the <code>IEnumValue</code>s of the opened <code>IEnumType</code> to an
+     * external file.
      */
     private EnumImportExportActionInEditor exportAction;
 
@@ -103,6 +111,8 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         super.createPageContent(formBody, toolkit);
         formBody.setLayout(createPageLayout(1, false));
 
+        uiToolkit = toolkit;
+
         new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
         enumAttributesSection = new EnumAttributesSection(enumType, formBody, getSite(), toolkit);
         try {
@@ -127,9 +137,32 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_ENUM_TYPE_EDITOR_PAGE.getId()));
     }
 
+    @Override
+    protected void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        Composite header = getManagedForm().getForm().getForm().getHead();
+        uiToolkit.setDataChangeable(header, true);
+        updateToolbarVisibilityState(changeable);
+    }
+
     /**
-     * Enable the import and export operation if the <code>IEnumType</code> contains values and is not
-     * abstract.
+     * Update the visibility of the toolbar items based on the current changeability state.
+     * <p>
+     * The export functionality should be always available.
+     * 
+     * @param changeable Whether the page content is changeable
+     */
+    protected void updateToolbarVisibilityState(boolean changeable) {
+        IToolBarManager toolBarManager = getManagedForm().getForm().getToolBarManager();
+        Arrays.stream(toolBarManager.getItems())
+                .filter(item -> item.getId() == null || !item.getId().equals(exportAction.getId()))
+                .forEach(item -> item.setVisible(changeable));
+        toolBarManager.update(true);
+    }
+
+    /**
+     * Enable the import and export operation if the <code>IEnumType</code> contains values and is
+     * not abstract.
      */
     protected void updateToolbarActionEnabledStates() {
         boolean enableImportExportActions;
@@ -143,17 +176,29 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     }
 
     /**
-     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update the
-     * view after the operation is completed.
+     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update
+     * the view after the operation is completed.
      */
     class EnumImportExportActionInEditor extends EnumImportExportAction {
+
+        /**
+         * ID used for identifying the import action within the toolbar.
+         */
+        private static final String IMPORT_ACTION_ID = "enum_type_import_action"; //$NON-NLS-1$
+        /**
+         * ID used for identifying the export action within the toolbar.
+         */
+        private static final String EXPORT_ACTION_ID = "enum_type_export_action"; //$NON-NLS-1$
 
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
             super(shell, enumValueContainer);
             if (isImport) {
                 initImportAction();
+                setId(IMPORT_ACTION_ID);
             } else {
                 initExportAction();
+                setId(EXPORT_ACTION_ID);
+
             }
         }
 

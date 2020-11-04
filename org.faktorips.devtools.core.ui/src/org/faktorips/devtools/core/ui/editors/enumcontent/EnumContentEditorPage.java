@@ -11,11 +11,13 @@
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -39,13 +41,13 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
- * The <code>EnumContentEditorPage</code> shows general information about an <code>IEnumContent</code> and
- * provides controls to edit, import and export its values. It is intended to be used with the
- * <code>EnumContentEditor</code>.
+ * The <code>EnumContentEditorPage</code> shows general information about an
+ * <code>IEnumContent</code> and provides controls to edit, import and export its values. It is
+ * intended to be used with the <code>EnumContentEditor</code>.
  * <p>
  * This page is a listener for changes in the IPS model: If the <code>IEnumType</code> the edited
- * <code>IEnumContent</code> is built upon changes the enabled states of the tool bar buttons will be
- * updated.
+ * <code>IEnumContent</code> is built upon changes the enabled states of the tool bar buttons will
+ * be updated.
  * 
  * @see EnumContentEditor
  * 
@@ -55,12 +57,17 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
  */
 public class EnumContentEditorPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
+    /**
+     * The <code>UIToolkit<code> used for updating the changeability states.
+     */
+    private UIToolkit uiToolkit;
+
     /** Values section showing the <code>IEnumValue</code>s. */
     private EnumValuesSection enumValuesSection;
 
     /**
-     * The <code>IEnumContent</code> the <code>EnumContentEditor</code> this page belongs to is currently
-     * editing.
+     * The <code>IEnumContent</code> the <code>EnumContentEditor</code> this page belongs to is
+     * currently editing.
      */
     private IEnumContent enumContent;
 
@@ -92,6 +99,8 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
+
+        uiToolkit = toolkit;
 
         createToolbarActions();
 
@@ -143,19 +152,42 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         updateToolbarActionsEnabledStates();
     }
 
+    @Override
+    protected void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        Composite header = getManagedForm().getForm().getForm().getHead();
+        uiToolkit.setDataChangeable(header, true);
+        updateToolbarVisibilityState(changeable);
+    }
+
+    /**
+     * Update the visibility of the toolbar items based on the current changeability state.
+     * <p>
+     * The export functionality should be always available.
+     * 
+     * @param changeable Whether the page content is changeable
+     */
+    protected void updateToolbarVisibilityState(boolean changeable) {
+        IToolBarManager toolBarManager = getManagedForm().getForm().getToolBarManager();
+        Arrays.stream(toolBarManager.getItems())
+                .filter(item -> item.getId() == null || !item.getId().equals(exportAction.getId()))
+                .forEach(item -> item.setVisible(changeable));
+        toolBarManager.update(true);
+    }
+
     /**
      * Updates the enabled states of the tool bar.
      * <p>
-     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the <code>IEnumType</code> the
-     * <code>IEnumContent</code> to edit is built upon
+     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the <code>IEnumType</code>
+     * the <code>IEnumContent</code> to edit is built upon
      * <ul>
      * <li>does not exist or is missing.
      * <li>is abstract.
      * <li>defines its values in the model.
      * <li>defines not the exact number of <code>IEnumAttribute</code>s as there are
      * <code>IEnumAttributeValue</code>s in the <code>IEnumContent</code> to edit.
-     * <li>defines not the same enumeration attribute names as stored in the <code>IEnumContent</code>
-     * to edit.
+     * <li>defines not the same enumeration attribute names as stored in the
+     * <code>IEnumContent</code> to edit.
      * <li>defines not the same ordering of <code>IEnumAttribute</code>s as stored in the
      * <code>IEnumContent</code> to edit.
      * </ul>
@@ -197,12 +229,23 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     /** Executes the <code>EnumImportExportOperation</code> and refreshes the view. */
     private class EnumImportExportActionInEditor extends EnumImportExportAction {
 
+        /**
+         * ID used for identifying the import action within the toolbar.
+         */
+        private static final String IMPORT_ACTION_ID = "enum_content_import_action"; //$NON-NLS-1$
+        /**
+         * ID used for identifying the export action within the toolbar.
+         */
+        private static final String EXPORT_ACTION_ID = "enum_content_export_action"; //$NON-NLS-1$
+
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
             super(shell, enumValueContainer);
             if (isImport) {
                 initImportAction();
+                setId(IMPORT_ACTION_ID);
             } else {
                 initExportAction();
+                setId(EXPORT_ACTION_ID);
             }
         }
 
