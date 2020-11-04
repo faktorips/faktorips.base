@@ -810,6 +810,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                         if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
                             getToolkit().setDataChangeable(getControl(), ruleModel.isEnabled());
+                            if (allowMarkerEditing()) {
+                                ruleMarkerUI.getMarkerTableControl().setEnabled(ruleModel.isEnabled());
+                            }
                         }
                     }
                 });
