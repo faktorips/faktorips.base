@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -62,6 +63,8 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             return createDocumentBuilder();
         }
     };
+
+    private static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
     /** Path to the resource containing the toc. **/
     private final String tocResourcePath;
@@ -291,10 +294,14 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     @Override
     protected InputStream getXmlAsStream(EnumContentTocEntry tocEntry) {
-        InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
+        String xmlResourceName = tocEntry.getXmlResourceName();
+        if (IpsStringUtils.isBlank(xmlResourceName)) {
+            return EMPTY_INPUT_STREAM;
+        }
+        InputStream is = getClassLoader().getResourceAsStream(xmlResourceName);
         if (is == null) {
             throw new RuntimeException("Cant't load the input stream for the enumeration content resource "
-                    + tocEntry.getXmlResourceName());
+                    + xmlResourceName);
         }
         return is;
     }
@@ -374,4 +381,10 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         return getDocumentElement((TocEntry)tocEntry);
     }
 
+    private static final class EmptyInputStream extends InputStream {
+        @Override
+        public int read() throws IOException {
+            return -1;
+        }
+    }
 }

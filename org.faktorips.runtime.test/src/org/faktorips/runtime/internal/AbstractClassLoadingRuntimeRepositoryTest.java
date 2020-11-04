@@ -134,6 +134,24 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     }
 
     @Test
+    public void testCreateEnumValues_NoXmlResourceName() throws Exception {
+        EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
+        // in a DetachedContentRuntimeRepository, the XML resource name will be empty, but a XML
+        // input stream may be created nonetheless
+        doReturn(EnumSaxHandlerTest.class.getClassLoader()
+                .getResourceAsStream("org/faktorips/runtime/internal/EnumSaxHandlerTest.xml")).when(repo)
+                        .getXmlAsStream(tocEntry);
+        List<TestEnum> enumValues = repo.createEnumValues(tocEntry, TestEnum.class);
+
+        assertThat(enumValues.size(), is(3));
+        for (int i = 0; i < enumValues.size(); i++) {
+            // repo.createEnumValues only creates extend values, the two static values are not
+            // included, but the index must start with 2 instead of 0
+            assertThat(enumValues.get(i).index, is(i + 2));
+        }
+    }
+
+    @Test
     public void testCreateEnumValues_NoXml() throws Exception {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
 

@@ -179,32 +179,42 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     }
 
     private List<List<Object>> getEnumValueListFromSaxHandler(EnumContentTocEntry tocEntry) {
-        if (IpsStringUtils.isNotEmpty(tocEntry.getXmlResourceName())) {
-            EnumSaxHandler saxhandler = parseEnumValues(tocEntry);
-            List<List<Object>> enumValueList = saxhandler.getEnumValueList();
-            return enumValueList;
+        InputStream xmlAsStream = getXmlAsStream(tocEntry);
+        if (isAvailable(xmlAsStream)) {
+            return parseEnumValues(tocEntry, xmlAsStream);
         } else {
             return Collections.emptyList();
         }
     }
 
-    private EnumSaxHandler parseEnumValues(EnumContentTocEntry tocEntry) {
-        InputStream is = getXmlAsStream(tocEntry);
+    private static boolean isAvailable(InputStream inputStream) {
+        try {
+            return inputStream != null && inputStream.available() > 0;
+        } catch (IOException e) {
+            // obviously not available
+        }
+        return false;
+    }
+
+    private static List<List<Object>> parseEnumValues(EnumContentTocEntry tocEntry, InputStream xmlAsStream) {
         EnumSaxHandler saxhandler = new EnumSaxHandler();
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            saxParser.parse(new InputSource(is), saxhandler);
+            saxParser.parse(new InputSource(xmlAsStream), saxhandler);
         } catch (SAXException e) {
-            throw new RuntimeException(
-                    "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
+            throwCantParseEnumContentException(tocEntry, e);
         } catch (ParserConfigurationException e) {
-            throw new RuntimeException(
-                    "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
+            throwCantParseEnumContentException(tocEntry, e);
         } catch (IOException e) {
-            throw new RuntimeException(
-                    "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
+            throwCantParseEnumContentException(tocEntry, e);
         }
-        return saxhandler;
+        List<List<Object>> enumValueList = saxhandler.getEnumValueList();
+        return enumValueList;
+    }
+
+    private static void throwCantParseEnumContentException(EnumContentTocEntry tocEntry, Exception e) {
+        throw new RuntimeException(
+                "Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName(), e);
     }
 
     private <T> Constructor<T> getCorrectConstructor(int parameterSize, Class<?> runtimeRepoClass, Class<T> enumClass) {
