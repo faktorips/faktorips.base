@@ -22,9 +22,9 @@ import org.faktorips.devtools.core.ui.team.compare.CompareViewerContentProvider;
 import org.faktorips.devtools.core.ui.team.compare.CompareViewerLineStyleListener;
 
 /**
- * A viewer for comparing productcomponents. Displays the structural differences between the
- * productcomponents in a tree. Displays detailed differences based on the text representation of
- * both productcomponents similarly to the JavaMergeViewer.
+ * A viewer for comparing product components and templates. Displays the structural differences
+ * between the product components in a tree. Displays detailed differences based on the text
+ * representation of both product components similarly to the JavaMergeViewer.
  * 
  * @author Stefan Widmaier
  */

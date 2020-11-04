@@ -1321,7 +1321,7 @@
          point="org.eclipse.compare.contentMergeViewers">
       <viewer
             class="org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareViewerCreator"
-            extensions="ipsproduct,ipsproductElement"
+            extensions="ipsproduct,ipsproductElement,ipstemplate"
             id="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
             label="%org.faktorips.devtools.core.ui.team.compare.productcmpt.contentMergeViewer"/>
       <contentTypeBinding
@@ -1343,10 +1343,13 @@
          point="org.eclipse.compare.structureCreators">
       <structureCreator
             class="org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator"
-            extensions="ipsproduct"
+            extensions="ipsproduct,ipstemplate"
             id="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <contentTypeBinding
             contentTypeId="org.faktorips.devtools.core.productComponent"
+            structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
+      <contentTypeBinding
+            contentTypeId="org.faktorips.devtools.core.productComponentTemplate"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <structureCreator
             class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator"

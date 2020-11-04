@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * Contentprovider for <code>ProductCmptCompareViewer</code>. Returns images for
- * <code>ProductCmptCompareItem</code>s by quering the contained <code>IIpsElement</code>. The
- * getXXXContent() methods simply return the left, right respectiveley ancestor input object
+ * Content provider for <code>ProductCmptCompareViewer</code>. Returns images for
+ * <code>ProductCmptCompareItem</code>s by querying the contained <code>IIpsElement</code>. The
+ * getXXXContent() methods simply return the left, right respectively ancestor input object
  * referenced by the given input.
  * 
  * @author Stefan Widmaier

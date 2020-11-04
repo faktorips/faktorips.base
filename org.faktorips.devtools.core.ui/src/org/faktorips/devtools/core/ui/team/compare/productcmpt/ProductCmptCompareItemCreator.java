@@ -13,16 +13,20 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
- * Creates a structure of <code>ProductCmptCompareItems</code> that is used for comparing
- * <code>ProductCmpt</code>s.
+ * Creates a structure of {@link ProductCmptCompareItem ProductCmptCompareItems} that is used for
+ * comparing {@link ProductCmpt ProductCmpts}.
  * 
  * @author Stefan Widmaier
  */
@@ -43,19 +47,19 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
     /**
      * {@inheritDoc}
      * <p>
-     * Creates a structure/tree of <code>ProductCmptCompareItem</code>s from the given
-     * <code>IIpsSrcFile</code> to represent an <code>IProductCmpt</code>. The
-     * <code>IIpsSrcFile</code>, the <code>IProductCmpt</code>, its
-     * <code>IProductCmptGeneration</code>s and all contained <code>IConfigElement</code>s and
-     * <code>IRelation</code>s are represented by a <code>ProductCmptCompareItem</code>.
+     * Creates a structure/tree of {@link ProductCmptCompareItem ProductCmptCompareItems} from the
+     * given {@link IIpsSrcFile} to represent an {@link IProductCmpt}. The {@link IIpsSrcFile}, the
+     * {@link IProductCmpt}, its {@link IProductCmptGeneration IProductCmptGenerations} and all
+     * contained {@link IConfigElement IConfigElements} and {@link IAssociation IAssociations} are
+     * represented by a {@link ProductCmptCompareItem}.
      * <p>
-     * The returned <code>ProductCmptCompareItem</code> is the root of the created structure and
-     * contains the given <code>IIpsSrcFile</code>. It has exactly one child representing (and
-     * referencing) the <code>IProductCmpt</code> contained in the srcfile. This
-     * <code>ProductCmptCompareItem</code> has a child for each generation the productcomponent
-     * posesses. Each generation-compareitem contains multiple <code>ProductCmptCompareItem</code>s
-     * representing the attributes (<code>IConfigElement</code>) and relations (
-     * <code>IRelation</code>) of the productcomponent (in the current generation).
+     * The returned {@link ProductCmptCompareItem} is the root of the created structure and contains
+     * the given {@link IIpsSrcFile}. It has exactly one child representing (and referencing) the
+     * {@link IProductCmpt} contained in the source file. This {@link ProductCmptCompareItem} has a
+     * child for each generation the product component possesses. Each generation-compare-item
+     * contains multiple {@link ProductCmptCompareItem ProductCmptCompareItems} representing the
+     * attributes ({@link IConfigElement}) and relations ( {@link IAssociation}) of the product
+     * component (in the current generation).
      * 
      */
     @Override
