@@ -10,6 +10,10 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -30,9 +34,10 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
- * Search bar for {@link TableViewer}, filtering the table viewer's content my matching the entered
+ * Search bar for {@link TableViewer}, filtering the table viewer's content by matching the entered
  * search pattern to the table's displayed cell values.
  */
 public class SearchBar {
@@ -116,29 +121,45 @@ public class SearchBar {
         }
     }
 
-    private static class SearchFilter extends ViewerFilter {
+    static class SearchFilter extends ViewerFilter {
 
-        private final SearchPattern searchPattern = new SearchPattern(SearchPattern.RULE_BLANK_MATCH
-                | SearchPattern.RULE_CAMELCASE_MATCH | SearchPattern.RULE_PATTERN_MATCH);
-
-        public SearchFilter() {
-            searchPattern.setPattern(StringUtils.EMPTY);
-        }
+        private static final String COLUMN_SEPARATOR = "\\|"; //$NON-NLS-1$
+        private static final Pattern WILDCARD_PATTERN = Pattern.compile("[\\*\\?]+"); //$NON-NLS-1$
+        private final List<SearchPattern> searchPatterns = new ArrayList<>();
+        private boolean containsWildcard;
 
         public void setPattern(String pattern) {
-            searchPattern.setPattern(pattern);
+            searchPatterns.clear();
+            Arrays.stream(pattern.split(COLUMN_SEPARATOR))
+                    .map(SearchFilter::camelCaseWildcardPattern)
+                    .forEach(searchPatterns::add);
+            containsWildcard = WILDCARD_PATTERN.matcher(pattern).find();
+        }
+
+        private static SearchPattern camelCaseWildcardPattern(String stringPattern) {
+            SearchPattern searchPattern = new SearchPattern(SearchPattern.RULE_BLANK_MATCH
+                    | SearchPattern.RULE_CAMELCASE_MATCH | SearchPattern.RULE_PATTERN_MATCH);
+            searchPattern.setPattern(stringPattern);
+            return searchPattern;
         }
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             TableViewer tableViewer = (TableViewer)viewer;
             int columnCount = tableViewer.getTable().getColumnCount();
+            String[] values = new String[columnCount];
+            int matches = 0;
 
-            for (int i = 0; i < columnCount; i++) {
-                String value = getLabelProvider(tableViewer, i).getColumnText(element, i);
-                if (searchPattern.matches(value)) {
-                    return true;
+            for (int i = 0; i < columnCount && matches < searchPatterns.size(); i++) {
+                values[i] = getLabelProvider(tableViewer, i).getColumnText(element, i);
+                if (searchPatterns.get(matches).matches(values[i])) {
+                    matches++;
                 }
+            }
+            if (matches == searchPatterns.size()) {
+                return true;
+            } else if (containsWildcard && searchPatterns.size() == 1) {
+                return searchPatterns.get(0).matches(String.join(IpsStringUtils.EMPTY, values));
             }
             return false;
         }
