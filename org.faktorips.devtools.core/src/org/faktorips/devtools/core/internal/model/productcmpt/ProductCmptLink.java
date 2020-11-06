@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -268,67 +267,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
-            } else {
-                validateTotalMax(list, associationObj);
-                if (!getProductCmptLinkContainer().isProductTemplate()) {
-                    validateTotalMin(list, associationObj);
-                }
             }
         }
-    }
-
-    /**
-     * FIPS-106: this.maxCardinality + ForAllOtherOfSameAssociation(Sum(other.minCardinality)) <=
-     * policyCmptAssociation.maxCardinality
-     */
-    private void validateTotalMax(MessageList list, IPolicyCmptTypeAssociation associationObj) {
-        int maxType = associationObj.getMaxCardinality();
-        if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
-            int sumMinCardinality = this.getMaxCardinality();
-            List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
-            if (sumMinCardinality < Cardinality.CARDINALITY_MANY) {
-                for (IProductCmptLink productCmptLink : links) {
-                    if (!equals(productCmptLink)) {
-                        sumMinCardinality += productCmptLink.getMinCardinality();
-                    }
-                }
-            }
-            if (sumMinCardinality > maxType) {
-                String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
-                        this.getMaxCardinality(), Integer.toString(maxType));
-                list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
-                        PROPERTY_MAX_CARDINALITY));
-            }
-        }
-    }
-
-    /**
-     * FIPS-106: this.minCardinality + ForAllOtherOfSameAssociation(Sum(other.maxCardinality)) <=
-     * policyCmptAssociation.minCardinality
-     */
-    private void validateTotalMin(MessageList list, IPolicyCmptTypeAssociation associationObj) {
-        int minType = associationObj.getMinCardinality();
-        int sumMaxCardinality = this.getMinCardinality();
-        List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
-        for (IProductCmptLink productCmptLink : links) {
-            if (!equals(productCmptLink)) {
-                if (productCmptLink.getMaxCardinality() == Cardinality.CARDINALITY_MANY) {
-                    sumMaxCardinality = Cardinality.CARDINALITY_MANY;
-                    break;
-                }
-                sumMaxCardinality += productCmptLink.getMaxCardinality();
-            }
-        }
-        if (sumMaxCardinality < minType) {
-            addTotalMinMessage(list, minType);
-        }
-    }
-
-    private void addTotalMinMessage(MessageList list, int minType) {
-        String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, this.getMinCardinality(),
-                Integer.toString(minType));
-        ObjectProperty property = new ObjectProperty(this, PROPERTY_MIN_CARDINALITY);
-        list.newError(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, property);
     }
 
     @Override

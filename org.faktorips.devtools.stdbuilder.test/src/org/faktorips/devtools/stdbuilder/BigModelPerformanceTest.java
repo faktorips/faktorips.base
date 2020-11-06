@@ -249,10 +249,22 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     @Ignore
     @Test
     public void testPerformance() throws CoreException {
-        long start = System.nanoTime();
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        long end = System.nanoTime();
-        System.out.println("Clean Build took " + (end - start) / 1_000_000 + "ms");
+        int warmup = 3;
+        int n = 10;
+        long average = 0;
+        for (int i = 0; i < warmup + n; i++) {
+            long start = System.nanoTime();
+            ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+            long end = System.nanoTime();
+            long duration = (end - start) / 1_000_000;
+            if (i < warmup) {
+                System.out.print("WARMUP ");
+            } else {
+                average += duration;
+            }
+            System.out.println("Clean Build took " + duration + "ms");
+        }
+        System.out.println("AVERAGE clean Build took " + average / n + "ms");
     }
 
 }

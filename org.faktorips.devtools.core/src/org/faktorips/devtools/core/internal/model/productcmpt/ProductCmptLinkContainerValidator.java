@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -36,14 +37,14 @@ import org.faktorips.util.message.ObjectProperty;
  * <ul>
  * <li>the number of links for a single association:</li>
  * <ul>
- * <li>
- * satisfies the minimum cardinality, and</li>
- * <li>
- * does not exceed the maximum cardinality defined by the type association.</li>
+ * <li>satisfies the minimum cardinality, and</li>
+ * <li>does not exceed the maximum cardinality defined by the type association.</li>
  * </ul>
  * <li>no duplicate targets exist. That is a product component is never linked (or used) more than
- * once by this container.</li> <li>a link has an effective date that is before or equal to the
- * effective date of the referencing product component link container.</li></ul>
+ * once by this container.</li>
+ * <li>a link has an effective date that is before or equal to the effective date of the referencing
+ * product component link container.</li>
+ * </ul>
  * 
  */
 public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
@@ -90,6 +91,80 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
             addMessageIfTargetNotValidOnValidFromDate(association, relations, list);
         }
+
+        if (association instanceof IProductCmptTypeAssociation) {
+            IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = productAssociation
+                    .findMatchingPolicyCmptTypeAssociation(getIpsProject());
+            validateCardinality(policyCmptTypeAssociation, relations, list);
+        }
+    }
+
+    private void validateCardinality(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
+            List<IProductCmptLink> relations,
+            MessageList list) {
+        if (policyCmptTypeAssociation != null && !policyCmptTypeAssociation.isQualified()) {
+            validateTotalMax(relations, list, policyCmptTypeAssociation);
+            if (!linkContainer.isProductTemplate()) {
+                validateTotalMin(relations, list, policyCmptTypeAssociation);
+            }
+        }
+    }
+
+    private void validateTotalMax(List<IProductCmptLink> relations,
+            MessageList list,
+            IPolicyCmptTypeAssociation associationObj) {
+        int maxType = associationObj.getMaxCardinality();
+        if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
+            int sumMinCardinality = relations.stream().mapToInt(IProductCmptLink::getMinCardinality).sum();
+            for (IProductCmptLink productCmptLink : relations) {
+                int sumCardinality;
+                if (productCmptLink.getMaxCardinality() < Cardinality.CARDINALITY_MANY) {
+                    sumCardinality = sumMinCardinality;
+                    sumCardinality += productCmptLink.getMaxCardinality();
+                    sumCardinality -= productCmptLink.getMinCardinality();
+                } else {
+                    sumCardinality = Cardinality.CARDINALITY_MANY;
+                }
+                if (sumCardinality > maxType) {
+                    String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
+                            productCmptLink.getMaxCardinality(), Integer.toString(maxType));
+                    list.add(
+                            new Message(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR,
+                                    productCmptLink,
+                                    IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+                }
+            }
+        }
+
+    }
+
+    private void validateTotalMin(List<IProductCmptLink> relations,
+            MessageList list,
+            IPolicyCmptTypeAssociation associationObj) {
+        int minType = associationObj.getMinCardinality();
+        for (IProductCmptLink productCmptLink : relations) {
+            int sumMaxCardinality = productCmptLink.getMinCardinality();
+            for (IProductCmptLink link : relations) {
+                if (!productCmptLink.equals(link)) {
+                    if (link.getMaxCardinality() == Cardinality.CARDINALITY_MANY) {
+                        sumMaxCardinality = Cardinality.CARDINALITY_MANY;
+                        break;
+                    }
+                    sumMaxCardinality += link.getMaxCardinality();
+                }
+            }
+            if (sumMaxCardinality < minType) {
+                addTotalMinMessage(list, minType, productCmptLink);
+            }
+        }
+    }
+
+    private void addTotalMinMessage(MessageList list, int minType, IProductCmptLink link) {
+        String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, link.getMinCardinality(),
+                Integer.toString(minType));
+        ObjectProperty property = new ObjectProperty(link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
+        list.newError(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, property);
     }
 
     protected void addMessageIfDuplicateTargetPresent(IAssociation association,
