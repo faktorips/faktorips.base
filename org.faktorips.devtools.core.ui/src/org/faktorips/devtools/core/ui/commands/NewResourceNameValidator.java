@@ -17,11 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.ui.actions.Messages;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 

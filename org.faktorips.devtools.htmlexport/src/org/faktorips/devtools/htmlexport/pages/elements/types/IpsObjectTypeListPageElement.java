@@ -12,9 +12,9 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 public class IpsObjectTypeListPageElement extends IpsElementListPageElement {
 

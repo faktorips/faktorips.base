@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 
 /**
  * ExtensionPropertyMatcher is a matcher for Extension Properties.

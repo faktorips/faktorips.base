@@ -15,11 +15,11 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.osgi.framework.Version;
 
 /**
@@ -112,12 +112,6 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
             String versionToStart) throws CoreException {
-
-        IpsPlugin ipsPlugin = IpsPlugin.getDefault();
-        if (ipsPlugin.isTestMode() && ipsPlugin.getTestAnswerProvider() != null) {
-            loader = (ClassLoader)ipsPlugin.getTestAnswerProvider().getAnswer();
-        }
-
         ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<AbstractIpsProjectMigrationOperation>();
         String migrationClassName = null;
         try {

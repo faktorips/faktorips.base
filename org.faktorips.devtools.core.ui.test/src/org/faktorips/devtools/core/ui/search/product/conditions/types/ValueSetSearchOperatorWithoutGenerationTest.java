@@ -18,14 +18,14 @@ import java.util.GregorianCalendar;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +39,7 @@ public class ValueSetSearchOperatorWithoutGenerationTest extends AbstractIpsPlug
     @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         valueDatatype = new IntegerDatatype();
 
         IIpsProject ipsProject = newIpsProject("Project");

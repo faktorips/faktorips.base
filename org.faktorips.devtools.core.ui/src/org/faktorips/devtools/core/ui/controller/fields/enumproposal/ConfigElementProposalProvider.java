@@ -14,17 +14,17 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.controller.fields.ConfiguredValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * An implementation of {@link AbstractProposalProvider} for {@link ConfiguredValueSetField}s. It

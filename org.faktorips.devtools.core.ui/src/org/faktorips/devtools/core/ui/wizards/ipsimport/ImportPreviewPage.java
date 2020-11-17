@@ -28,14 +28,15 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.TableFormatConfigurationCompositeFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -188,12 +189,12 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         // set column header text
         for (int i = 0; i < columnCount; i++) {
             if (structure instanceof ITableStructure) {
-                String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         ((ITableStructure)structure).getColumn(i));
                 columns[i].setText(columnName);
             } else if (structure instanceof IEnumType) {
                 IEnumType type = (IEnumType)structure;
-                String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         type.getEnumAttributesIncludeSupertypeCopies(true).get(i));
                 columns[i].setText(columnName);
             }

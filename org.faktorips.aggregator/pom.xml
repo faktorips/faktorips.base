@@ -9,7 +9,7 @@
         <git.user>${user.name}</git.user>
         <java.version>1.8</java.version>
 
-        <target-platform>eclipse-luna-4.4</target-platform>
+        <target-platform>eclipse-2019-03</target-platform>
     </properties>
 
     <groupId>org.faktorips</groupId>

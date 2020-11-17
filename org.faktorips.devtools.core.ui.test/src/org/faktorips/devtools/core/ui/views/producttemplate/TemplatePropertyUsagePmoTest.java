@@ -19,20 +19,20 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.junit.Test;
 
 public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {

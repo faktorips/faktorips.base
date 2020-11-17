@@ -17,10 +17,10 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

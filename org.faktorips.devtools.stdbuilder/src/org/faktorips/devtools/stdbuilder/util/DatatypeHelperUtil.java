@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.util;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.DatatypeUtil;
+import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.runtime.IRuntimeRepository;
 

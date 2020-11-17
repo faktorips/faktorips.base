@@ -13,9 +13,9 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
 

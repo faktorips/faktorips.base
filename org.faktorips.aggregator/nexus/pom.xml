@@ -13,7 +13,7 @@
         <surefire.skip>true</surefire.skip>
         <findbugs.skip>true</findbugs.skip>
         <checkstyle.skip>true</checkstyle.skip>
-        <java.version>1.8</java.version>
+        <java.version>8</java.version>
     </properties>
 
     <parent>
@@ -43,10 +43,21 @@
         <module>../../org.faktorips.valuetypes/nexus</module>
         <module>../../org.faktorips.valuetypes.joda/nexus</module>
         <module>../../org.faktorips.runtime.groovy/nexus</module>
+        <module>../../org.faktorips.util/nexus</module>
+        <module>../../org.faktorips.dtflcommon/nexus</module>
+        <module>../../org.faktorips.fl/nexus</module>
+        <module>../../org.faktorips.devtools.model/nexus</module>
     </modules>
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -143,7 +154,7 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <version>${maven-javadoc-plugin-version}</version>
                             <configuration>
-                                <source>1.8</source>
+                                <source>8</source>
                                 <!-- at the moment we do not check missing javadoc like missing @param or @return -->
                                 <doclint>accessibility,html,reference,syntax,-missing</doclint>
                             </configuration>

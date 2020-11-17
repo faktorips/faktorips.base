@@ -11,17 +11,17 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 public class NewTableContentsWizard extends NewProductDefinitionWizard {
 

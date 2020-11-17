@@ -13,15 +13,15 @@ package org.faktorips.devtools.core.internal.refactor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ILibraryIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.ILibraryIpsPackageFragmentRoot;
 
 /**
  * Helper Class for Drag&Drop Move Operations
@@ -67,8 +67,9 @@ public abstract class MoveOperation {
         for (Object source : sources) {
             if (source instanceof IIpsElement) {
                 IIpsProject ipsProject = ((IIpsElement)source).getIpsProject();
-                if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true) || ipsProject
-                        .isReferencing(targetIpsProject))) {
+                if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true)
+                        || ipsProject
+                                .isReferencing(targetIpsProject))) {
                     return false;
                 }
             }
@@ -89,8 +90,8 @@ public abstract class MoveOperation {
      */
     private static boolean isValidTargetType(Object target) {
         return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile)
-                & !(target instanceof IIpsSrcFile) & !(target instanceof LibraryIpsPackageFragment)
-                & !(target instanceof LibraryIpsPackageFragmentRoot);
+                & !(target instanceof IIpsSrcFile) & !(target instanceof ILibraryIpsPackageFragment)
+                & !(target instanceof ILibraryIpsPackageFragmentRoot);
     }
 
     /**
@@ -100,8 +101,8 @@ public abstract class MoveOperation {
      * given array of sources, e.g. moving an Object in itself. If the given target is a package,
      * this method returns <code>false</code> if the package is a subpackage of the given sources.
      * <code>true</code> otherwise. If the corresponding resource of the target is null return
-     * <code>false</code> e.g. target is inside an ips archive. Also returns <code>false</code> if at
-     * least one of the sources to move is a default package.
+     * <code>false</code> e.g. target is inside an ips archive. Also returns <code>false</code> if
+     * at least one of the sources to move is a default package.
      */
     public static boolean canMovePackages(Object[] sources, Object target) {
         for (Object source : sources) {

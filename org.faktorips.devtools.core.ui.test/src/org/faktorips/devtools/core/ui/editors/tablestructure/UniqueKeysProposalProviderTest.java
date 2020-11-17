@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

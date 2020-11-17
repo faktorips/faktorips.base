@@ -23,17 +23,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
-import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.internal.InternationalString;
+import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
+import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFileMemento;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -79,7 +80,7 @@ public class Migration_3_5 extends DefaultMigration {
 
     Element getElement(IFile file) throws CoreException, SAXException, IOException {
         InputStream inputStream = file.getContents();
-        DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
+        DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
         Document doc = builder.parse(inputStream);
         Element element = doc.getDocumentElement();
         return element;
@@ -88,7 +89,7 @@ public class Migration_3_5 extends DefaultMigration {
     boolean migrateXml(Element element) {
         boolean migratedAnyElement = false;
         if (element.getNodeName().equals(IpsObjectType.POLICY_CMPT_TYPE.getXmlElementName())) {
-            NodeList rulesNodeList = element.getElementsByTagName(ValidationRule.TAG_NAME);
+            NodeList rulesNodeList = element.getElementsByTagName(IValidationRule.TAG_NAME);
             for (int i = 0; i < rulesNodeList.getLength(); i++) {
                 Element ruleNode = (Element)rulesNodeList.item(i);
                 migratedAnyElement |= migrateRuleNode(ruleNode);
@@ -108,7 +109,7 @@ public class Migration_3_5 extends DefaultMigration {
         }
         IInternationalString internationalString = new InternationalString();
         internationalString.add(new LocalizedString(locale, oldMsgText));
-        InternationalStringXmlHelper.toXml(internationalString, ruleNode, ValidationRule.XML_TAG_MSG_TXT);
+        InternationalStringXmlHelper.toXml(internationalString, ruleNode, IValidationRule.XML_TAG_MSG_TXT);
         ruleNode.removeAttribute(OLD_XML_ATTR_MESSAGE_TEXT);
         return true;
     }

@@ -16,9 +16,9 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**

@@ -25,12 +25,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
- * This dialog lets the user select a set of <code>IIpsObjectPart</code>s from the supertype hierarchy
- * of a specified <code>IIpsObject</code> in a comfortable way.
+ * This dialog lets the user select a set of <code>IIpsObjectPart</code>s from the supertype
+ * hierarchy of a specified <code>IIpsObject</code> in a comfortable way.
  * <p>
  * The dialog is intended to be used by UI editors that are responsible for doing something useful
  * with the user's selection (e. g. the dialog may be used to let the user select a set of methods
@@ -41,15 +41,19 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  */
 public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPart> extends CheckedTreeSelectionDialog {
 
-    /** The width of the UI tree widget showing the available <code>IIpsObjectPartContainer</code>s. */
+    /**
+     * The width of the UI tree widget showing the available <code>IIpsObjectPartContainer</code>s.
+     */
     private int width;
 
-    /** The height of the UI tree widget showing the available <code>IIpsObjectPartContainer</code>s. */
+    /**
+     * The height of the UI tree widget showing the available <code>IIpsObjectPartContainer</code>s.
+     */
     private int height;
 
     /**
-     * A short human-readable message to inform the user what type of <code>IIpsObjectPart</code>s he is
-     * now selecting and why.
+     * A short human-readable message to inform the user what type of <code>IIpsObjectPart</code>s
+     * he is now selecting and why.
      * <p>
      * Example:<br />
      * <code>Select methods to override:</code>
@@ -133,8 +137,8 @@ public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPa
     }
 
     /**
-     * Sets the short human-readable message to inform the user what type of <code>IIpsObjectPart</code>
-     * s he is now selecting and why.
+     * Sets the short human-readable message to inform the user what type of
+     * <code>IIpsObjectPart</code> s he is now selecting and why.
      * <p>
      * Example:<br />
      * <code>Select methods to override:</code>
@@ -186,6 +190,7 @@ public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPa
     /**
      * Returns the parts the user has selected.
      */
+    @SuppressWarnings("unchecked")
     public List<T> getSelectedParts() {
         List<T> parts = new ArrayList<T>();
         Object[] checked = getResult();

@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.IRow;
 
 public class TableSorter extends ViewerSorter {
 

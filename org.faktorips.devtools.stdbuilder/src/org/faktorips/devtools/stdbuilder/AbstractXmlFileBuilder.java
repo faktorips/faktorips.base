@@ -19,12 +19,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 

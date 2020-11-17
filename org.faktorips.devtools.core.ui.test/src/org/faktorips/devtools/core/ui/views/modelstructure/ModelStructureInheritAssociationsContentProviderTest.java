@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,12 +23,12 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.junit.Test;
 
 public class ModelStructureInheritAssociationsContentProviderTest extends AbstractIpsPluginTest {
@@ -156,10 +156,12 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
         nonRootType.setSupertype(subType1.getQualifiedName()); // for the test of the diversity
 
         IIpsProject customProject = newIpsProject();
-        PolicyCmptType inheritedRootType1 = newPolicyCmptTypeWithoutProductCmptType(customProject, "InheritedRootType1");
+        PolicyCmptType inheritedRootType1 = newPolicyCmptTypeWithoutProductCmptType(customProject,
+                "InheritedRootType1");
         PolicyCmptType subInheritedRootType1 = newPolicyCmptTypeWithoutProductCmptType(customProject,
                 "SubInheritedRootType1");
-        PolicyCmptType inheritedRootType2 = newPolicyCmptTypeWithoutProductCmptType(customProject, "InheritedRootType2");
+        PolicyCmptType inheritedRootType2 = newPolicyCmptTypeWithoutProductCmptType(customProject,
+                "InheritedRootType2");
 
         inheritedRootType1.setSupertype(subType1.getQualifiedName());
         // check that no depth-first search is performed

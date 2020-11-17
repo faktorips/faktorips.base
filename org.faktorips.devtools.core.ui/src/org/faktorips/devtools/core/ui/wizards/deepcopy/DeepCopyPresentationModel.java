@@ -19,18 +19,18 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 public class DeepCopyPresentationModel extends PresentationModelObject {
 

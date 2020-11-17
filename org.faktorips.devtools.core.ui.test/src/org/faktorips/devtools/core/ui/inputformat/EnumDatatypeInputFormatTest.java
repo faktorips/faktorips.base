@@ -19,8 +19,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

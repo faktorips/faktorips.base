@@ -11,10 +11,10 @@
 package org.faktorips.abstracttest;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 
 /**
  * 
@@ -41,7 +41,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public String getCurrentVersion() {
-        return IpsPlugin.getInstalledFaktorIpsVersion();
+        return IpsModelActivator.getInstalledFaktorIpsVersion();
     }
 
     @Override

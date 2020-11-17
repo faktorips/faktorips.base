@@ -13,14 +13,14 @@ import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 
 /**
  * This is an Ant task that can only be used with the Eclipse Ant runner with an Eclipse
@@ -60,7 +60,7 @@ public class ExportHtmlTask extends AbstractIpsTask {
         context.setPath(destination);
         context.setShowValidationErrors(showValidationErrors);
         context.setShowInheritedObjectPartsInTable(showInheritedObjectPartsInTable);
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProjectName);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(ipsProjectName);
         if (ipsProject == null || !ipsProject.exists()) {
             throw new BuildException("No IpsProject found for the specified name: " + ipsProjectName);
         }
@@ -73,7 +73,7 @@ public class ExportHtmlTask extends AbstractIpsTask {
 
     private IpsObjectType[] getIpsObjectTypes() {
         return IpsObjectTypesParser.getIpsObjectTypes(ipsObjectTypes,
-                IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes());
+                IIpsModel.get().getIpsObjectTypes());
     }
 
     private Locale getValidLanguage(IIpsProject ipsProject) {

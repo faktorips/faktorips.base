@@ -18,7 +18,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

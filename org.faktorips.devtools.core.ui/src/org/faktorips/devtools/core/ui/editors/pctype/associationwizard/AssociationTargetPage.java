@@ -16,12 +16,12 @@ import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.pctype.AssociationDerivedUnionGroup;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 
 /**
  * Page to specify the target, the association type, the derived union option, and the description.

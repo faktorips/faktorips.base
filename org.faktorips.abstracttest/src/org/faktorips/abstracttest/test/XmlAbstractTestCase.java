@@ -87,7 +87,7 @@ public abstract class XmlAbstractTestCase {
         }
     }
 
-    public final static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+    public static final DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         factory.setNamespaceAware(true);

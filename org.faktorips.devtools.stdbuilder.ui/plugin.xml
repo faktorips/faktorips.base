@@ -20,7 +20,7 @@
                   <iterate
                         operator="or">
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <test
                               forcePluginActivation="true"
                               property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">

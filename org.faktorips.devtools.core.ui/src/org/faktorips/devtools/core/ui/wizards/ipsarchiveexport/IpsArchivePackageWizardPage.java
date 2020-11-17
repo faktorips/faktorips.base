@@ -54,16 +54,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -139,7 +140,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                             IProject project = ((IJavaProject)element2).getProject();
                             try {
                                 if (project.hasNature(IIpsProject.NATURE_ID)) {
-                                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel()
+                                    IIpsProject ipsProject = IIpsModel.get()
                                             .getIpsProject(project.getName());
                                     elementsInTree.put(project, ipsProject);
                                     result.add(ipsProject);

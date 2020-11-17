@@ -14,9 +14,9 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 
 /**
  * This Class filters empty associations of an {@link IProductCmptGeneration}.

@@ -12,12 +12,12 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 public class TestPolicyCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     @Override

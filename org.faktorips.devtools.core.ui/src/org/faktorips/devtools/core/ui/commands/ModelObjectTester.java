@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * This property tester is able to test an Object if it is a model object or not.

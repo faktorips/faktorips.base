@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsElement;
 
 /**
  * Java element types that can be annotated.

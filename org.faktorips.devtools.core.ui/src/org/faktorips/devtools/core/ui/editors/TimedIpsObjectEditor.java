@@ -17,7 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 
 /**
  * An abstract editor for timed objects.

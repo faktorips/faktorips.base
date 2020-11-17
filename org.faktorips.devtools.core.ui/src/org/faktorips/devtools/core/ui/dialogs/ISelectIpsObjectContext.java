@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * A class implementing this interface setting the context for an

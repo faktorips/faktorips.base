@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.ui.ide.IGotoMarker;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
  * An adapter interface for editors, which allows the editor to reveal the position of a given

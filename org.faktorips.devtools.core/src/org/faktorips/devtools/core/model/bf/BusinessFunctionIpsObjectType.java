@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.model.bf;
 
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 /**
  * The IPS object type for a business function. A reference to this class is made in an extension of
@@ -24,10 +24,10 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
  */
 public class BusinessFunctionIpsObjectType extends IpsObjectType {
 
-    public final static String ID = "org.faktorips.devtools.bf.model.BusinessFunction"; //$NON-NLS-1$
+    public static final String ID = "org.faktorips.devtools.bf.model.BusinessFunction"; //$NON-NLS-1$
 
     public BusinessFunctionIpsObjectType() {
-        super(ID, "BusinessFunction", // XML element name $NON-NLS-1$   //$NON-NLS-1$
+        super(ID, "BusinessFunction", // XML element name $NON-NLS-1$ //$NON-NLS-1$
                 Messages.BusinessFunctionIpsObjectType_displayName, // display name
                 Messages.BusinessFunctionIpsObjectType_displayNamePlural, // display name plural
                 "ipsbusinessfunction", false, false, BusinessFunction.class); //$NON-NLS-1$
@@ -36,8 +36,8 @@ public class BusinessFunctionIpsObjectType extends IpsObjectType {
     /**
      * Returns the unique instance of this class.
      */
-    public final static BusinessFunctionIpsObjectType getInstance() {
-        return (BusinessFunctionIpsObjectType)IpsPlugin.getDefault().getIpsModel().getIpsObjectType(ID);
+    public static final BusinessFunctionIpsObjectType getInstance() {
+        return (BusinessFunctionIpsObjectType)IIpsModel.get().getIpsObjectType(ID);
     }
 
     @Override

@@ -17,9 +17,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Test;
 
 public class NewWizardUtilTest extends AbstractIpsPluginTest {

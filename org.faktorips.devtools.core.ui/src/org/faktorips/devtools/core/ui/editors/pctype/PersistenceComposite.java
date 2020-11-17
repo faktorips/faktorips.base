@@ -20,9 +20,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * Extends the super type with the ability to view tabular data.

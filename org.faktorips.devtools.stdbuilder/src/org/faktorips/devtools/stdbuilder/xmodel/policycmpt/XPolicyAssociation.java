@@ -17,11 +17,11 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
@@ -126,7 +126,7 @@ public class XPolicyAssociation extends XAssociation {
 
     /**
      * This method returns the association found by
-     * {@link IPolicyCmptTypeAssociation#findSuperAssociationWithSameName(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * {@link IPolicyCmptTypeAssociation#findSuperAssociationWithSameName(org.faktorips.devtools.model.ipsproject.IIpsProject)}
      * <p>
      * Normally we want to throw an exception if there is not such an association. In this case we
      * simply return null because testing would be with equal low performance as this method itself.

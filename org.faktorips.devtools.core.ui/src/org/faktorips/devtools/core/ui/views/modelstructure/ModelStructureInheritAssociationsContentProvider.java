@@ -22,12 +22,12 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 public final class ModelStructureInheritAssociationsContentProvider extends AbstractModelStructureContentProvider {
 
@@ -145,7 +145,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         if (rootElements.isEmpty()
                 && association == ToChildAssociationType.SUPERTYPE
                 && !element.getAssociations(AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL)
-                .isEmpty()) {
+                        .isEmpty()) {
             rootElements.add(element);
         }
 
@@ -172,7 +172,8 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
             IType supertype = projectType.findSupertype(project);
 
             if ((supertype == null || !supertype.getIpsProject().equals(project))
-                    && !isAssociated(projectType, projectSpecificITypes, allComponentITypes, project, ASSOCIATION_TYPES)) {
+                    && !isAssociated(projectType, projectSpecificITypes, allComponentITypes, project,
+                            ASSOCIATION_TYPES)) {
                 rootCandidates.add(projectType);
             }
         }
@@ -304,7 +305,8 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
 
     }
 
-    private List<AssociationComponentNode> getDirectAssociationComponentNodes(ComponentNode parent, IIpsProject project) {
+    private List<AssociationComponentNode> getDirectAssociationComponentNodes(ComponentNode parent,
+            IIpsProject project) {
         IType parentValue = parent.getValue();
         List<IAssociation> directAssociations = new ArrayList<IAssociation>();
         for (IAssociation directAssociation : parentValue.getAssociations(ASSOCIATION_TYPES)) {

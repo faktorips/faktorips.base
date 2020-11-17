@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;

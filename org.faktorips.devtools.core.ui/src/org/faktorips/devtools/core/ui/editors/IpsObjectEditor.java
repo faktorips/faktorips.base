@@ -54,20 +54,20 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
-import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.outline.OutlinePage;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileImmutable;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -188,8 +188,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         logMethodStarted("init"); //$NON-NLS-1$
 
         super.init(site, input);
-
-        IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+        IIpsModel model = IIpsModel.get();
 
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
@@ -259,8 +258,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         super.createPages();
 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
+        IIpsModel.get().addChangeListener(IpsObjectEditor.this);
+        IIpsModel.get().addModifcationStatusChangeListener(IpsObjectEditor.this);
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
         activateContext();
     }
@@ -268,13 +267,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * 
      * Activate a context that this view uses. It will be tied to this * view activation events and
-     * will be removed when the view is
-     * 
-     * disposed.
+     * will be removed when the view is disposed.
      */
 
     private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        IContextService service = getSite().getService(IContextService.class);
         service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
@@ -855,15 +852,14 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         return "IpsObjectEditor"; //$NON-NLS-1$
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    // eclipse api is not generified
-    @SuppressWarnings("rawtypes")
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if (adapter.equals(IContentOutlinePage.class)) {
             if (null == outlinePage) {
                 outlinePage = new OutlinePage(getIpsSrcFile());
             }
-            return outlinePage;
+            return (T)outlinePage;
         }
         return super.getAdapter(adapter);
     }
@@ -1036,8 +1032,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         private void removeListeners() {
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(IpsObjectEditor.this);
-            IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(IpsObjectEditor.this);
+            IIpsModel.get().removeChangeListener(IpsObjectEditor.this);
+            IIpsModel.get().removeModificationStatusChangeListener(IpsObjectEditor.this);
             IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(IpsObjectEditor.this);
         }
 

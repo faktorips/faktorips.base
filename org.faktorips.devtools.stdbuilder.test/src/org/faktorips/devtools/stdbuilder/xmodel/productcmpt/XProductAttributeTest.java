@@ -20,11 +20,11 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class XProductAttributeTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private ProductCmptType productCmptType;
+    private IProductCmptType productCmptType;
 
     @Mock
     private IProductCmptTypeAttribute attribute;

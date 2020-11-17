@@ -26,18 +26,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
-import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
+import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -62,7 +61,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
     @Test
     public void testStdBuilderSetPropertyDefinitions() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
-        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()
+        IIpsArtefactBuilderSetInfo builderSetInfo = IIpsModel.get()
                 .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
@@ -109,8 +108,8 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         ipsProject.setIpsObjectPath(path);
         System.out.println("init objects");
         for (int i = 0; i < 5000; i++) {
-            PolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy" + i);
-            ProductCmptType productType = newProductCmptType(ipsProject, "Product" + i);
+            IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy" + i);
+            IProductCmptType productType = newProductCmptType(ipsProject, "Product" + i);
 
             policyType.setConfigurableByProductCmptType(true);
             policyType.setProductCmptType(productType.getName());

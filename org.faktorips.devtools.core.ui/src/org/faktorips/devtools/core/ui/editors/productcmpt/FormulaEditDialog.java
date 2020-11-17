@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IBaseMethod;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.ui.controller.fields.StyledTextField;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.ParametersEditControl;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.method.IBaseMethod;
+import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.util.ArgumentCheck;
 
 public class FormulaEditDialog extends IpsPartEditDialog2 {
@@ -113,7 +113,7 @@ public class FormulaEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected String buildTitle() {
-        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(formula);
+        String localizedCaption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(formula);
         return localizedCaption + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

@@ -22,19 +22,18 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -67,6 +66,7 @@ public class DeepCopyPreview {
      * 
      * @param progressMonitor a progress monitor to show state of work
      */
+    @SuppressWarnings("deprecation")
     public void createTargetNodes(IProgressMonitor progressMonitor) {
         errorElements.clear();
         filename2referenceMap.clear();
@@ -106,7 +106,8 @@ public class DeepCopyPreview {
 
         MessageList validationResult = new MessageList();
         int noOfMessages = validationResult.size();
-        SubProgressMonitor subProgress = new SubProgressMonitor(progressMonitor, 5);
+        org.eclipse.core.runtime.SubProgressMonitor subProgress = new org.eclipse.core.runtime.SubProgressMonitor(
+                progressMonitor, 5);
         subProgress.beginTask("", noOfMessages); //$NON-NLS-1$
         for (int i = 0; i < noOfMessages; i++) {
             Message currMessage = validationResult.getMessage(i);
@@ -311,7 +312,8 @@ public class DeepCopyPreview {
             int uniqueCopyOfCounter) {
         IIpsSrcFile ipsSrcFile = targetPackage.getIpsSrcFile(ipsObjectType.getFileName(newName));
         if (ipsSrcFile.exists()) {
-            String copyOfName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
+            String copyOfName = org.faktorips.devtools.model.internal.util.StringUtils.computeCopyOfName(
+                    uniqueCopyOfCounter,
                     newName);
             return getUniqueCopyOfName(targetPackage, ipsObjectType, copyOfName, uniqueCopyOfCounter + 1);
         } else {

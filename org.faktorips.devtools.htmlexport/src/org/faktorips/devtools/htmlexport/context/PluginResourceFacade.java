@@ -17,17 +17,18 @@ import java.util.Properties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class PluginResourceFacade implements IPluginResourceFacade {
 
     @Override
     public IpsObjectType[] getDefaultIpsObjectTypes() {
-        return IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
+        return IIpsModel.get().getIpsObjectTypes();
     }
 
     @Override

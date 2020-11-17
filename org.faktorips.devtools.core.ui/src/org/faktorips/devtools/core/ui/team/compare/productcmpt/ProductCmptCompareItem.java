@@ -18,25 +18,25 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 
 /**
  * Treeitem used to create a tree/structure for representing a product component in the

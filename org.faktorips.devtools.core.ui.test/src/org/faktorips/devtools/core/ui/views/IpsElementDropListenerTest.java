@@ -32,9 +32,9 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
 public class IpsElementDropListenerTest extends AbstractIpsPluginTest {

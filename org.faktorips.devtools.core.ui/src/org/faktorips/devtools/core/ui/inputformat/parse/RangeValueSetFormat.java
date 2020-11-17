@@ -15,12 +15,12 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * Class to parse and format an {@link IRangeValueSet}.

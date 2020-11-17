@@ -21,18 +21,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.GenericBuilderKindId;
-import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
-import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.builder.GenericBuilderKindId;
+import org.faktorips.devtools.model.internal.builder.flidentifier.AbstractIdentifierResolver;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGenerator;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.productcmpt.IExpression;
+import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -40,7 +40,7 @@ import org.faktorips.fl.IdentifierResolver;
 
 public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
-    public final static String ID = "testbuilderset";
+    public static final String ID = "testbuilderset";
 
     private boolean inverseRelationLinkRequiredFor2WayCompositions;
 

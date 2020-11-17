@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAssociationJaxbAnnGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAttributeFieldJaxbGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGen;

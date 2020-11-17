@@ -48,10 +48,6 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -60,6 +56,10 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
  * Composite for modifying IPS source folders
@@ -345,17 +345,16 @@ public class SrcFolderComposite extends DataChangeableComposite {
         if (editDialog.open() == Window.OK) {
             IContainer newOutputFolder = editDialog.getSelectedFolder();
             if (attribute.isFolderForDerivedSources()) {
-                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles((IFolder)newOutputFolder
-                        .getAdapter(IFolder.class));
+                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(newOutputFolder.getAdapter(IFolder.class));
             } else {
-                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles((IFolder)newOutputFolder
-                        .getAdapter(IFolder.class));
+                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles(newOutputFolder.getAdapter(IFolder.class));
             }
             dataChanged = true;
         }
     }
 
-    private void editSelectionPackageDerived(IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+    private void editSelectionPackageDerived(IIpsSrcFolderEntry srcFolderEntry,
+            IIpsObjectPathEntryAttribute attribute) {
         PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
         if (editDialog.open() == Window.OK) {
             String newPackageName = editDialog.getPackageName();
@@ -364,7 +363,8 @@ public class SrcFolderComposite extends DataChangeableComposite {
         }
     }
 
-    private void editSelectionPackageMergable(IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+    private void editSelectionPackageMergable(IIpsSrcFolderEntry srcFolderEntry,
+            IIpsObjectPathEntryAttribute attribute) {
         PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
         if (editDialog.open() == Window.OK) {
             String newPackageName = editDialog.getPackageName();

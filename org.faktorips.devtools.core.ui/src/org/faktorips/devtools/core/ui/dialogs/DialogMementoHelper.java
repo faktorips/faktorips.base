@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.memento.Memento;
 
 /**

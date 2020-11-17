@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Alexander Weickmann
  */
+@SuppressWarnings("restriction")
 public final class IpsRefactoringDialog extends RefactoringWizardDialog {
 
     /**

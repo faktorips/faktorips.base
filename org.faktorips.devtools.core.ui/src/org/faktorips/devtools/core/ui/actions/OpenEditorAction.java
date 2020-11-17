@@ -15,10 +15,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Action for opening objects in the corresponding editor.

@@ -16,13 +16,13 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 
 /**
  * Provides the elements of product structure

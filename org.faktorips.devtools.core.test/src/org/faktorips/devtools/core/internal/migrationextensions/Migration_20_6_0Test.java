@@ -18,22 +18,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.testcase.TestCase;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.util.DesignTimeSeverity;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.util.DesignTimeSeverity;
+import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,13 +41,13 @@ public class Migration_20_6_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private Migration_20_6_0 migration;
-    private PolicyCmptType policyCmptType;
-    private ProductCmptType productCmptType;
-    private TableContents tableContents;
-    private ProductCmpt productCmpt;
-    private ProductCmpt productTmpl;
-    private TestCaseType testCaseType;
-    private TestCase testCase;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
+    private ITableContents tableContents;
+    private IProductCmpt productCmpt;
+    private IProductCmpt productTmpl;
+    private ITestCaseType testCaseType;
+    private ITestCase testCase;
 
     @Before
     public void setUpMigration() throws CoreException {

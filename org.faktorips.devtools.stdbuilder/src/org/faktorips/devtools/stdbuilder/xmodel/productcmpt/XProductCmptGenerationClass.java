@@ -15,8 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;

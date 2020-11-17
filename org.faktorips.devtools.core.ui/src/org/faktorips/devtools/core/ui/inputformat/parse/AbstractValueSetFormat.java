@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /***
  * Abstract class to parse and format an {@link IValueSet} according to its characteristics. The

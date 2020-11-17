@@ -15,20 +15,18 @@ import java.time.format.DateTimeFormatter;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,13 +44,13 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        PolicyCmptType[][] basePolicyCmptTypes = new PolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
-        ProductCmptType[][] baseProductCmptTypes = new ProductCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
+        IPolicyCmptType[][] basePolicyCmptTypes = new IPolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
+        IProductCmptType[][] baseProductCmptTypes = new IProductCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
             for (int j = 0; j < NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER; j++) {
                 basePolicyCmptTypes[i][j] = newPolicyAndProductCmptType(ipsProject, "base.l" + i + ".V_" + i + "_" + j,
                         "base.l" + i + ".P_" + i + "_" + j);
-                baseProductCmptTypes[i][j] = (ProductCmptType)basePolicyCmptTypes[i][j].findProductCmptType(ipsProject);
+                baseProductCmptTypes[i][j] = basePolicyCmptTypes[i][j].findProductCmptType(ipsProject);
                 for (int k = 0; k <= NUMBER_OF_ATTRIBUTES_PER_CMPTTYPE; k++) {
                     ValueDatatype datatype = ipsProject.getIpsModel().getPredefinedValueDatatypes()[k];
                     IPolicyCmptTypeAttribute policyAttribute = basePolicyCmptTypes[i][j]
@@ -101,14 +99,14 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
                 baseProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
             }
         }
-        PolicyCmptType[][] lobPolicyCmptTypes = new PolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
-        ProductCmptType[][] lobProductCmptTypes = new ProductCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
+        IPolicyCmptType[][] lobPolicyCmptTypes = new IPolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
+        IProductCmptType[][] lobProductCmptTypes = new IProductCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
             for (int j = 0; j < NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER; j++) {
                 lobPolicyCmptTypes[i][j] = newPolicyAndProductCmptType(ipsProject, "lob.l" + i + ".LV_" + i + "_" + j,
                         "lob.l" + i + ".LP_" + i + "_" + j, false);
                 lobPolicyCmptTypes[i][j].setSupertype(basePolicyCmptTypes[i][j].getQualifiedName());
-                lobProductCmptTypes[i][j] = (ProductCmptType)lobPolicyCmptTypes[i][j].findProductCmptType(ipsProject);
+                lobProductCmptTypes[i][j] = lobPolicyCmptTypes[i][j].findProductCmptType(ipsProject);
                 lobProductCmptTypes[i][j].setSupertype(baseProductCmptTypes[i][j].getQualifiedName());
                 lobProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
                 for (int k = 0; k <= NUMBER_OF_ATTRIBUTES_PER_CMPTTYPE; k++) {

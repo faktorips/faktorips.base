@@ -13,10 +13,10 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 
 public class Migration_20_12_0_Factory implements IIpsProjectMigrationOperationFactory {
 

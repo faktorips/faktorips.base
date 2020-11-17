@@ -14,9 +14,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableRows;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.tablecontents.TableRows;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 
 /**
  * Action to manually trigger the unique key validation.

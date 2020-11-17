@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
  * Contains utility methods for Faktor-IPS 'New' wizards.

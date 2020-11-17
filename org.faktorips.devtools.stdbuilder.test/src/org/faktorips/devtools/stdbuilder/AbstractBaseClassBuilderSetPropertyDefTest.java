@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.junit.Test;
 

@@ -19,13 +19,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * A section to display and edit a type's methods.
@@ -59,7 +59,8 @@ public class MethodsSection extends SimpleIpsPartsSection {
         protected MethodsComposite(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
             super(type, parent, site, EnumSet
                     .of(Option.CAN_CREATE, Option.CAN_DELETE, Option.CAN_EDIT, Option.CAN_MOVE, Option.CAN_OVERRIDE,
-                            Option.JUMP_TO_SOURCE_CODE_SUPPORTED, Option.SHOW_EDIT_BUTTON), toolkit);
+                            Option.JUMP_TO_SOURCE_CODE_SUPPORTED, Option.SHOW_EDIT_BUTTON),
+                    toolkit);
 
         }
 

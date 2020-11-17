@@ -13,12 +13,12 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.method.IBaseMethod;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.method.IBaseMethod;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 public class MethodWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {

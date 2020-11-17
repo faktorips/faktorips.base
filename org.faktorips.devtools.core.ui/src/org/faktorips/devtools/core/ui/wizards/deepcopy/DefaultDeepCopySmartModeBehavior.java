@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 
 /**
  * Default implementation for {@link IDeepCopySmartModeBehavior} that creates copies for elements

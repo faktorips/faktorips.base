@@ -25,17 +25,18 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -161,14 +162,15 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
         IAttributeValue attributeValue = generation.newAttributeValue(attribut);
         SingleValueHolder singleValueHolder1 = new SingleValueHolder(attributeValue, value1);
         SingleValueHolder singleValueHolder2 = new SingleValueHolder(attributeValue, value2);
-        List<SingleValueHolder> singleValueHolderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> singleValueHolderList = new ArrayList<>();
         singleValueHolderList.add(singleValueHolder1);
         singleValueHolderList.add(singleValueHolder2);
         attributeValue.setValueHolder(new MultiValueHolder(attributeValue, singleValueHolderList));
 
         IOperandProvider operandProvider = condition.createOperandProvider(attribut);
 
-        List<SingleValueHolder> valueList = ((MultiValueHolder)operandProvider.getSearchOperand(generation)).getValue();
+        List<ISingleValueHolder> valueList = ((MultiValueHolder)operandProvider.getSearchOperand(generation))
+                .getValue();
         assertEquals(value1, valueList.get(0).getValue().getContent());
         assertEquals(value2, valueList.get(1).getValue().getContent());
     }

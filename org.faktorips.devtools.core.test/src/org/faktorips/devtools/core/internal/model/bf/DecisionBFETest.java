@@ -23,9 +23,9 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         decision.setDatatype(Datatype.INTEGER.getQualifiedName());
         Document doc = getDocumentBuilder().newDocument();
         Element el = decision.toXml(doc);
-        DecisionBFE loadedDecision = new DecisionBFE(bf, "0");
+        IDecisionBFE loadedDecision = new DecisionBFE(bf, "0");
         loadedDecision.initFromXml(el);
         assertEquals(Datatype.INTEGER.getQualifiedName(), loadedDecision.getDatatype());
     }
@@ -65,7 +65,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         NodeList nl = doc.getElementsByTagName(IDecisionBFE.XML_TAG);
         Element el = (Element)nl.item(0);
-        DecisionBFE decision = new DecisionBFE(bf, "0");
+        IDecisionBFE decision = new DecisionBFE(bf, "0");
         decision.initFromXml(el);
         assertEquals(Datatype.STRING.getQualifiedName(), decision.getDatatype());
     }

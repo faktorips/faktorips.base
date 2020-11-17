@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Field for {@link IpsProjectRefControl project reference controls}.

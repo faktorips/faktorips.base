@@ -48,24 +48,25 @@ import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductTemplateWizard;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductWizard;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -73,7 +74,7 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
-    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
+    private static final IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
 
     private Clipboard clipboard;
     private Shell shell;
@@ -100,7 +101,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         }
         IAdaptable adaptable = (IAdaptable)object;
         if (adaptable.getAdapter(IIpsElement.class) != null) {
-            IIpsElement selected = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+            IIpsElement selected = adaptable.getAdapter(IIpsElement.class);
             if (selected instanceof IIpsSrcFile) {
                 IIpsObject ipsObject = ((IIpsSrcFile)selected).getIpsObject();
                 if (ipsObject instanceof IpsObjectPartContainer) {
@@ -117,7 +118,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
                 paste((IIpsPackageFragment)selected);
             }
         } else if (adaptable.getAdapter(IResource.class) != null) {
-            IResource selected = (IResource)adaptable.getAdapter(IResource.class);
+            IResource selected = adaptable.getAdapter(IResource.class);
             if (selected instanceof IContainer) {
                 paste((IContainer)selected);
             }
@@ -338,7 +339,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         for (String resourceLink : links) {
             String[] copiedResource = StringUtils.split(resourceLink, "#"); //$NON-NLS-1$
             // 1. find the project
-            IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(copiedResource[0]);
+            IIpsProject project = IIpsModel.get().getIpsProject(copiedResource[0]);
             try {
                 // 2. find the root
                 IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
@@ -380,7 +381,8 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         String contents;
         try {
-            contents = XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument()),
+                contents = XmlUtil.nodeToString(
+                    ipsObject.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument()),
                     encoding);
         } catch (TransformerException e) {
             throw new RuntimeException(e);
@@ -558,11 +560,11 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         boolean showExtension = !isResourceIpsObject(resource);
 
         if (isResourceProductCmpt(resource)) {
-            IIpsElement source = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            IIpsElement source = IIpsModel.get().getIpsElement(resource);
             copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), targetParent);
         } else {
             // non product cmpt
-            IIpsElement source = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            IIpsElement source = IIpsModel.get().getIpsElement(resource);
             String newName = getNewNameByDialogIfNecessary(resource.getType(), targetPath, suggestedName, extension,
                     showExtension, source instanceof IIpsSrcFile ? (IIpsSrcFile)source : null);
             copyResource(resource, targetPath, newName);
@@ -605,7 +607,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     private boolean isResourceProductCmpt(IResource resource) {
         if (resource instanceof IFile) {
-            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement(resource);
             if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {
                 if (((IIpsSrcFile)ipsElement).getIpsObject() instanceof IProductCmpt) {
                     return true;
@@ -617,7 +619,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     private boolean isResourceIpsObject(IResource resource) {
         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(resource.getFullPath());
-        IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+        IIpsElement ipsElement = IIpsModel.get().getIpsElement(file);
         if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {
             return true;
         }

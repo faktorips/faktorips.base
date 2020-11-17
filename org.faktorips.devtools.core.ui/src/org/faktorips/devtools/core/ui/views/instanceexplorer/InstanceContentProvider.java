@@ -15,10 +15,10 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
+import org.faktorips.devtools.model.IIpsMetaClass;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * The content provider for the instance explorer

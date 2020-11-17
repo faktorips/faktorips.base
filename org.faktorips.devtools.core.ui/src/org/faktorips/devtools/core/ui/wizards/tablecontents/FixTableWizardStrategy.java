@@ -14,17 +14,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IPartReference;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.Messages;
+import org.faktorips.devtools.model.IPartReference;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStructure, IColumn> {
 

@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
+import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 
 /**
  * Special ips test run listener to listen for failures and forward this failures as new expected

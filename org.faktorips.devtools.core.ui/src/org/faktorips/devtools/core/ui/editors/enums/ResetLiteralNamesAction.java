@@ -15,18 +15,18 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used in the context menu of the <code>EnumValuesSection</code>. It enables the user to
- * reset all literal names to their default values.
+ * This action is used in the context menu of the <code>EnumValuesSection</code>. It enables the
+ * user to reset all literal names to their default values.
  * <p>
  * The action is only applicable for <code>IEnumType</code>s
  * 
@@ -53,8 +53,8 @@ public class ResetLiteralNamesAction extends Action {
      * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
      * @param enumType The <code>IEnumType</code> being edited.
      * 
-     * @throws NullPointerException If <code>enumValuesTableViewer</code> or <code>enumType</code> is
-     *             <code>null</code>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> or <code>enumType</code>
+     *             is <code>null</code>.
      */
     public ResetLiteralNamesAction(TableViewer enumValuesTableViewer, IEnumType enumType) {
         super();
@@ -77,17 +77,20 @@ public class ResetLiteralNamesAction extends Action {
 
         IEnumAttribute defaultProviderAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
                 .getDefaultValueProviderAttribute());
-        int indexDefaultProvider = (defaultProviderAttribute == null) ? -1 : enumType.getIndexOfEnumAttribute(
-                defaultProviderAttribute, true);
+        int indexDefaultProvider = (defaultProviderAttribute == null) ? -1
+                : enumType.getIndexOfEnumAttribute(
+                        defaultProviderAttribute, true);
         int indexLiteralName = enumType.getIndexOfEnumAttribute(literalNameAttribute, true);
         for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
             List<IEnumAttributeValue> attributeValues = currentEnumValue.getEnumAttributeValues();
             String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             IEnumAttributeValue defaultProviderAttributeValue = attributeValues.get(indexDefaultProvider);
-            String defaultProviderValue = indexDefaultProvider == -1 ? nullPresentation : defaultProviderAttributeValue
-                    .getValue().getDefaultLocalizedContent(defaultProviderAttributeValue.getIpsProject());
-            String literalNameValue = defaultProviderValue.equals(nullPresentation) ? null : enumType.getIpsProject()
-                    .getJavaNamingConvention().getEnumLiteral(defaultProviderValue);
+            String defaultProviderValue = indexDefaultProvider == -1 ? nullPresentation
+                    : defaultProviderAttributeValue
+                            .getValue().getDefaultLocalizedContent(defaultProviderAttributeValue.getIpsProject());
+            String literalNameValue = defaultProviderValue.equals(nullPresentation) ? null
+                    : enumType.getIpsProject()
+                            .getJavaNamingConvention().getEnumLiteral(defaultProviderValue);
             attributeValues.get(indexLiteralName).setValue(ValueFactory.createStringValue(literalNameValue));
         }
 

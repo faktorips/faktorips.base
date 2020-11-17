@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * A {@link INewProductDefinitionOperationParticipant} will be called by a

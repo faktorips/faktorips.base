@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.inputformat;
 import java.util.Currency;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Factory that creates a MoneyFormat for a data type with the default currency

@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 
 public class TemplateValuePmo<T extends IPropertyValue> extends AbstractTemplateValuePmo<T> {
 

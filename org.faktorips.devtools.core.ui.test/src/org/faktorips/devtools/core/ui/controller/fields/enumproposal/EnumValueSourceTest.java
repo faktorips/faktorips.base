@@ -9,17 +9,17 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

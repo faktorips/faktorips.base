@@ -16,8 +16,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.util.StringUtil;
 
 /**

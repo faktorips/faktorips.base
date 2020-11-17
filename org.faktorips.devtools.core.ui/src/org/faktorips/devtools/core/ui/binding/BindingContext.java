@@ -36,15 +36,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.Validatable;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldExtensionPropertyMapping;
@@ -54,7 +45,6 @@ import org.faktorips.devtools.core.ui.controller.ProblemMarkerPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.LabelField;
@@ -64,7 +54,16 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
-import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.Validatable;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.util.BeanUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
@@ -106,7 +105,7 @@ public class BindingContext {
     private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
 
     /**
-     * a list of the IPS objects containing at least one binded IPS part container each container is
+     * A list of the IPS objects containing at least one bound IPS part container each container is
      * contained in the list only once, so it is actually used as a set, not we still use the list,
      * because once binded, we need to access all binded containers, and this is faster with a list,
      * than a hashset or treeset.
@@ -282,34 +281,6 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property's type is not a subclass of
      *             DefaultEnumValue.
      * @throws NullPointerException if any argument is <code>null</code>.
-     * 
-     * @see DefaultEnumValue
-     * 
-     * @deprecated This method is deprecated since the parameter type
-     *             {@link org.faktorips.devtools.core.enums.EnumType} is deprecated
-     */
-    @Deprecated
-    public EnumValueField bindContent(Combo combo,
-            Object object,
-            String property,
-            org.faktorips.devtools.core.enums.EnumType enumType) {
-        checkPropertyType(object, property, DefaultEnumValue.class);
-        EnumValueField field = new EnumValueField(combo, enumType);
-        bindContent(field, object, property);
-
-        return field;
-    }
-
-    /**
-     * Binds the given combo to the given IPS object's property.
-     * 
-     * @return the edit field created to access the value in the text control.
-     * 
-     * @throws IllegalArgumentException if the property's type is not a subclass of
-     *             DefaultEnumValue.
-     * @throws NullPointerException if any argument is <code>null</code>.
-     * 
-     * @see DefaultEnumValue
      */
     public <E extends Enum<E>> EnumField<E> bindContent(Combo combo,
             Object object,
@@ -329,8 +300,6 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property's type is not a subclass of
      *             DefaultEnumValue.
      * @throws NullPointerException if any argument is <code>null</code>.
-     * 
-     * @see DefaultEnumValue
      */
     public <E extends Enum<E>> EnumField<E> bindContent(Combo combo, Object object, String property, E[] values) {
         EnumField<E> field = new EnumField<E>(combo, values);
@@ -533,7 +502,7 @@ public class BindingContext {
 
     private void registerIpsModelChangeListener() {
         if (mappings.size() == 0 && controlBindings.size() == 0) {
-            IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
+            IIpsModel.get().addChangeListener(listener);
         }
     }
 
@@ -639,7 +608,7 @@ public class BindingContext {
      * Removes the registered listener.
      */
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener);
+        IIpsModel.get().removeChangeListener(listener);
         Set<Object> disposedPmos = new HashSet<Object>();
         for (FieldPropertyMapping<?> mapping : mappings) {
             mapping.getField().removeChangeListener(listener);
@@ -812,7 +781,7 @@ public class BindingContext {
         } else if (object instanceof IpsObjectPartPmo) {
             return ((IpsObjectPartPmo)object).getIpsObjectPartContainer();
         } else if (object instanceof IAdaptable) {
-            return (IIpsObjectPartContainer)((IAdaptable)object).getAdapter(IIpsObjectPartContainer.class);
+            return ((IAdaptable)object).getAdapter(IIpsObjectPartContainer.class);
         }
         return null;
     }

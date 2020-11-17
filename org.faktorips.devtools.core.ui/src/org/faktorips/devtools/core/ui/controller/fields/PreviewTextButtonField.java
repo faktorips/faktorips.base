@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * Field to handle a {@link TextButtonControl} for preview-purposes only (usually the button opens

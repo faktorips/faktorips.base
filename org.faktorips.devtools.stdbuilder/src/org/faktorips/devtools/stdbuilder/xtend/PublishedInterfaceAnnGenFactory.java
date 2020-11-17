@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;

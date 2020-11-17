@@ -13,23 +13,22 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.GregorianCalendar;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.junit.Test;
 
 public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExportTest {
 
     @Test
     public void testIgnoreDerivedUnions() throws Exception {
-        ProductCmptType productCmptType = newProductCmptType(ipsProject, "productType");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "productType");
         String targetRole = "targetRole";
         String subTargetRole = "subTargetRole";
 
@@ -44,7 +43,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         subsetOfDerivedUnion.setSubsettedDerivedUnion(subTargetRole);
         subsetOfDerivedUnion.setTargetRoleSingular(subTargetRole);
 
-        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
 
         productCmpt.newGeneration(new GregorianCalendar());
 
@@ -63,7 +62,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         tableStructureUsage1.setRoleName("tableStructureUsage1");
         tableStructureUsage1.setChangingOverTime(false);
 
-        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
         productCmpt.newPropertyValues(tableStructureUsage1);
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
@@ -86,7 +85,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         formulaProductCmpt.setDatatype(Datatype.STRING.getName());
         formulaProductCmpt.setChangingOverTime(false);
 
-        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
         productCmpt.newPropertyValues(formulaProductCmpt);
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
@@ -104,7 +103,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
 
     @Test
     public void testAddValidationRules() throws Exception {
-        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "policyType", "productType");
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "policyType", "productType");
         IValidationRule staticRule = policyCmptType.newRule();
         staticRule.setConfigurableByProductComponent(true);
         staticRule.setChangingOverTime(false);
@@ -115,7 +114,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         dynamicRule.setName("Dyn");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
-        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
         productCmpt.newPropertyValues(staticRule);
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
@@ -130,7 +129,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
 
     @Test
     public void testAddValidationRules_NoGeneration() throws Exception {
-        PolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "policyType", "productType");
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "policyType", "productType");
         IValidationRule staticRule = policyCmptType.newRule();
         staticRule.setConfigurableByProductComponent(true);
         staticRule.setChangingOverTime(false);
@@ -138,7 +137,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmptType.setChangingOverTime(false);
 
-        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
         productCmpt.newPropertyValues(staticRule);
 
         ProductGenerationAttributeTable productGenerationAttributeTable = new ProductGenerationAttributeTable(

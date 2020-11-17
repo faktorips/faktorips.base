@@ -12,8 +12,8 @@ package org.faktorips.devtools.stdbuilder.xmodel.enumtype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;

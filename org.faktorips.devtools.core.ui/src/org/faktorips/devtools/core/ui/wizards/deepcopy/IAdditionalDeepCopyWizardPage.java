@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import java.util.List;
 
 import org.eclipse.jface.wizard.IWizardPage;
-import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
-import org.faktorips.devtools.core.internal.model.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
+import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 
 /**
  * When a plugin needs additional information for a {@link IDeepCopyOperationFixup} it should

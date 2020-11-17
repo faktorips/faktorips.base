@@ -14,13 +14,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.TestParameterType;
 
 /**
  * @author Joerg Ortmann

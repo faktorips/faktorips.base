@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsElement;
 
 public abstract class DefaultTreeContentProvider implements ITreeContentProvider {
 

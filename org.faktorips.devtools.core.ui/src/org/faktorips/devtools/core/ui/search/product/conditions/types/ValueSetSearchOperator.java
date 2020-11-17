@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * The ValueSetSearchOperator checks, if the argument is or is not contained in the operand, which

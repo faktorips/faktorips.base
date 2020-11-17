@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;

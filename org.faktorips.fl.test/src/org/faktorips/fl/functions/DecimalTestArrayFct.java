@@ -24,7 +24,7 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalTestArrayFct extends AbstractFlFunction {
 
-    public final static String name = "DECIMALTESTARRAY";
+    public static final String name = "DECIMALTESTARRAY";
 
     // the values that will be returned by the function.
     private Decimal[] values;

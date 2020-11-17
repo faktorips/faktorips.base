@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.StringUtil;
 
 public class DefaultIpsObjectWorkbenchAdapter extends IpsObjectWorkbenchAdapter {

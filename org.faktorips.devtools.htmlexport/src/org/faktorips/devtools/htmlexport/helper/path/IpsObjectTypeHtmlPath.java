@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 public class IpsObjectTypeHtmlPath implements IHtmlPath {
     private final IpsObjectType ipsObjectType;

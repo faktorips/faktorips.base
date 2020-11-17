@@ -17,8 +17,8 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

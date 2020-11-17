@@ -16,8 +16,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class OpenModelSearchPageHandler extends AbstractHandler {
 

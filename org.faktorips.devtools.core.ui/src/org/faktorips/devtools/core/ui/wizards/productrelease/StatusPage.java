@@ -68,7 +68,7 @@ public class StatusPage extends WizardPage implements Observer {
 
     protected StatusPage() {
         super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png"));
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
     }
 
     @Override

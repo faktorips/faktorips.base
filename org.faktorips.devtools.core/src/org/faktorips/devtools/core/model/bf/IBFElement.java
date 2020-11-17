@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 
 /**
  * A business function contains business function elements which are represented by this interface.
@@ -29,13 +29,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions
  */
 public interface IBFElement extends IIpsObjectPart {
 
-    public final static String XML_TAG = "BFElement"; //$NON-NLS-1$
+    public static final String XML_TAG = "BFElement"; //$NON-NLS-1$
 
-    public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
-    public final static String PROPERTY_LOCATION = "location"; //$NON-NLS-1$
-    public final static String PROPERTY_SIZE = "size"; //$NON-NLS-1$
-    public final static String PROPERTY_INCOMMING_EDGES = "incommingEdges"; //$NON-NLS-1$
-    public final static String PROPERTY_OUTGOING_EDGES = "outgoingEdges"; //$NON-NLS-1$
+    public static final String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+    public static final String PROPERTY_LOCATION = "location"; //$NON-NLS-1$
+    public static final String PROPERTY_SIZE = "size"; //$NON-NLS-1$
+    public static final String PROPERTY_INCOMMING_EDGES = "incommingEdges"; //$NON-NLS-1$
+    public static final String PROPERTY_OUTGOING_EDGES = "outgoingEdges"; //$NON-NLS-1$
 
     // validation message codes
     public static final String MSGCODE_PREFIX = "BFELEMENT-"; //$NON-NLS-1$

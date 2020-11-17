@@ -16,13 +16,13 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IMethod;
 
 /**
  * Presentation Model for the Faktor-IPS Model Search

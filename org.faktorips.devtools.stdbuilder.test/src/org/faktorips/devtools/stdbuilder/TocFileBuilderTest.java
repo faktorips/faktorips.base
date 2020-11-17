@@ -23,21 +23,20 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableBuilder;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -130,7 +129,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateTocEntryProductCmptType() throws CoreException {
-        ProductCmptType type = newProductCmptType(ipsProject, "test.Product");
+        IProductCmptType type = newProductCmptType(ipsProject, "test.Product");
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
 
@@ -159,7 +158,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateTocEntry_RealEnum() throws CoreException {
-        EnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
+        IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(false);
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
         idAttribute.setName("id");
@@ -186,7 +185,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateTocEntry_SeparatedEnum() throws CoreException {
-        EnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
+        IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(true);
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
         idAttribute.setName("id");
@@ -213,7 +212,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateTocEntry_AbstractEnum() throws CoreException {
-        EnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
+        IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(true);
         enumType.setIdentifierBoundary("e");
         enumType.setAbstract(true);

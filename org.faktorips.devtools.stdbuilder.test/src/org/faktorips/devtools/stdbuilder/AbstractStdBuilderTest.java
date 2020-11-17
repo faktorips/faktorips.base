@@ -24,14 +24,14 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
+import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.junit.Before;
 
 /**
@@ -39,7 +39,7 @@ import org.junit.Before;
  * 
  * @author Alexander Weickmann
  */
-public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
+public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
 
     protected IIpsProject ipsProject;
 

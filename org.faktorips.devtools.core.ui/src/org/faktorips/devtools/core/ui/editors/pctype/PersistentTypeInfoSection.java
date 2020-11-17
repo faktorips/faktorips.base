@@ -22,19 +22,19 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.DiscriminatorDatatype;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.InheritanceStrategy;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * Section to display and edit the persistence properties specific to an {@link IPolicyCmptType}.
@@ -70,7 +70,8 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         private Boolean oldValue;
 
-        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property, boolean checkEnable) {
+        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property,
+                boolean checkEnable) {
             super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
             this.toolkit = toolkit;
             this.checkEnable = checkEnable;
@@ -140,7 +141,7 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
         defineDiscriminatorColumn
-        .setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
+                .setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
 
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 

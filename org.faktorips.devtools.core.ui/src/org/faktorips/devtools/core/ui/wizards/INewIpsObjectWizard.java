@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.wizards;
 
 import org.eclipse.ui.INewWizard;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 /**
  * Interface for new ips object creating wizards.

@@ -11,10 +11,10 @@
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;

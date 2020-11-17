@@ -17,10 +17,10 @@ import static org.junit.Assert.fail;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.junit.Test;
 
 public class EnumTypeDatatypeHelperTest extends AbstractStdBuilderTest {

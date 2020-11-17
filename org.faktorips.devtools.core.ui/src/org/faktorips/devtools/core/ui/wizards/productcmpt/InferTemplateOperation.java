@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 
 public class InferTemplateOperation extends NewProductCmptOperation {
 
@@ -35,7 +35,7 @@ public class InferTemplateOperation extends NewProductCmptOperation {
         List<IProductCmpt> productCmpts = getPmo().getProductCmptsToInferTemplate();
 
         InferTemplateProcessor inferTemplateProzessor = new InferTemplateProcessor(templateGeneration, productCmpts);
-        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(inferTemplateProzessor, monitor);
+        IIpsModel.get().runAndQueueChangeEvents(inferTemplateProzessor, monitor);
     }
 
 }

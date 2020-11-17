@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class UnreachableFilePage extends IpsObjectEditorPage {
 
-    public final static String PAGE_ID = "UnreachableFile"; //$NON-NLS-1$
+    public static final String PAGE_ID = "UnreachableFile"; //$NON-NLS-1$
 
     public UnreachableFilePage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, "UnreachableFile"); //$NON-NLS-1$

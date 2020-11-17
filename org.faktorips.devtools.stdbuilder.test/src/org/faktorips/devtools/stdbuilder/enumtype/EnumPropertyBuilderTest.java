@@ -24,10 +24,10 @@ import java.util.Locale;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -41,7 +41,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
 
     private EnumPropertyBuilder enumPropertyBuilder;
 
-    private EnumType enumType;
+    private IEnumType enumType;
 
     private IIpsSrcFile ipsSrcFile;
 

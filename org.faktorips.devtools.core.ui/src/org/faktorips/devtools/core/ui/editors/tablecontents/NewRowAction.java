@@ -12,11 +12,11 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.faktorips.devtools.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablecontents.ITableRows;
 
 /**
  * Action for add a new row in a tableviewer.

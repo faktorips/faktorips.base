@@ -15,9 +15,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionDialog {
 
@@ -26,7 +27,7 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
         setTitle(Messages.PdSourceRootSelectionDialog_title);
         setMessage(Messages.PdSourceRootSelectionDialog_description);
         setAllowMultiple(false);
-        setInput(IpsPlugin.getDefault().getIpsModel());
+        setInput(IIpsModel.get());
     }
 
     public IIpsPackageFragmentRoot getSelectedRoot() {
@@ -75,7 +76,7 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
         @Override
         public Object[] getElements(Object inputElement) {
             try {
-                return IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+                return IIpsModel.get().getIpsProjects();
             } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return new Object[0];

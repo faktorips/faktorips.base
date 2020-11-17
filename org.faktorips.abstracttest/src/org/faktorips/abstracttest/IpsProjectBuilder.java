@@ -24,11 +24,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 
 /**
  * Allows easy creation of {@linkplain IIpsProject IPS projects} with different configurations.
@@ -121,7 +121,7 @@ public class IpsProjectBuilder {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(name);
         IIpsProjectProperties properties = ipsProject.getProperties();
 
         properties.setChangingOverTimeDefault(changingOverTimeDefault);

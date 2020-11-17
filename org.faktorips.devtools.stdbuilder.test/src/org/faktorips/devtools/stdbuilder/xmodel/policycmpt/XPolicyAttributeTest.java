@@ -24,17 +24,17 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -498,7 +498,7 @@ public class XPolicyAttributeTest {
     @Test
     public void testGetDefaultValueCode() {
         EnumTypeDatatypeAdapter adapter = mock(EnumTypeDatatypeAdapter.class);
-        EnumType enumType = mock(EnumType.class);
+        IEnumType enumType = mock(IEnumType.class);
         when(datatypeHelper.getDatatype()).thenReturn(adapter);
         when(adapter.getEnumType()).thenReturn(enumType);
         when(enumType.isExtensible()).thenReturn(true);

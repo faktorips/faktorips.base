@@ -139,7 +139,7 @@
         Currently Faktor-IPS includes the following strategy:
          * DateBasedProductCmptNamingStrategy
            The product component name is made up of a "unversioned" name and a date format for the version id.
-           <ProductCmptNamingStrategy id="org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy">
+           <ProductCmptNamingStrategy id="org.faktorips.devtools.model.DateBasedProductCmptNamingStrategy">
                <DateBasedProductCmptNamingStrategy 
                    dateFormatPattern="yyyy-MM"                           Format of the version id according to
                                                                            java.text.DateFormat
@@ -155,7 +155,7 @@
                </DateBasedProductCmptNamingStrategy>
             </ProductCmptNamingStrategy>
     -->
-    <ProductCmptNamingStrategy id="org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy">
+    <ProductCmptNamingStrategy id="org.faktorips.devtools.model.DateBasedProductCmptNamingStrategy">
         <DateBasedProductCmptNamingStrategy dateFormatPattern="yyyy-MM" postfixAllowed="true" versionIdSeparator=" ">
             <JavaIdentifierCharReplacements>
                 <Replacement replacedChar=" " replacement="___"/>

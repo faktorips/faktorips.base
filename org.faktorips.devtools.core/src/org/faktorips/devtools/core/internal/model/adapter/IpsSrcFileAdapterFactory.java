@@ -10,32 +10,31 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.type.IType;
 
 public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
 
-    @SuppressWarnings("rawtypes")
-    // The Eclipse API uses raw type
+    @SuppressWarnings("unchecked")
     @Override
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (adaptableObject instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
             if (!ipsSrcFile.exists()) {
                 return null;
             }
             if (IProductCmpt.class.equals(adapterType)) {
-                return adaptToProductCmpt(ipsSrcFile);
+                return (T)adaptToProductCmpt(ipsSrcFile);
             }
 
             if (IType.class.equals(adapterType)) {
-                return adaptToType(ipsSrcFile);
+                return (T)adaptToType(ipsSrcFile);
             }
 
             if (IIpsObject.class.equals(adapterType)) {
-                return adaptToIpsObject(ipsSrcFile);
+                return (T)adaptToIpsObject(ipsSrcFile);
             }
 
             return null;
@@ -43,10 +42,8 @@ public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    // The Eclipse API uses raw type
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IProductCmpt.class, IType.class, IIpsObject.class };
     }
 

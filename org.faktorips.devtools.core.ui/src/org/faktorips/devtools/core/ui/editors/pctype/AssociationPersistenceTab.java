@@ -22,18 +22,18 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAssociationInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo.FetchType;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.util.StringUtil;
 
 /**

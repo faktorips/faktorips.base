@@ -14,9 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.type.CommonTypeFinder;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.CommonTypeFinder;
 
 public class InferTemplatePmo extends NewProductCmptPMO {
 

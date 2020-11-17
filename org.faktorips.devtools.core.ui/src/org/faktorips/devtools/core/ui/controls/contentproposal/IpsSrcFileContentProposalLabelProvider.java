@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.controls.contentproposal;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * The label provider for {@link IpsSrcFileContentProposal}. Loads the localized label and the image

@@ -15,12 +15,12 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
@@ -361,7 +361,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * @see AssociationKind
      */
     public AssociationKind getAssociationKind() {
-        org.faktorips.devtools.core.model.type.AssociationType associationType = getAssociation().getAssociationType();
+        org.faktorips.devtools.model.type.AssociationType associationType = getAssociation().getAssociationType();
         if (associationType.isMasterToDetail()) {
             return AssociationKind.Composition;
         } else if (associationType.isCompositionDetailToMaster()) {

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.stdbuilder.IIpsArtefactBuilderFactory;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 

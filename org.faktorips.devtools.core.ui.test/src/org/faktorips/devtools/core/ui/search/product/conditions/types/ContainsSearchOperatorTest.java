@@ -20,14 +20,15 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +45,7 @@ public class ContainsSearchOperatorTest extends AbstractIpsPluginTest {
     @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         IIpsProject ipsProject = newIpsProject("Project");
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         multiValueAttribute = productCmptType.newProductCmptTypeAttribute("attribute");
@@ -96,7 +98,7 @@ public class ContainsSearchOperatorTest extends AbstractIpsPluginTest {
     public void testCheck_NullValueIsContained() {
         String value = null;
         SingleValueHolder singleValueHolder1 = new SingleValueHolder(attributeValue, value);
-        List<SingleValueHolder> singleValueHolderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> singleValueHolderList = new ArrayList<>();
         singleValueHolderList.add(singleValueHolder1);
         MultiValueHolder multiValueHolder = new MultiValueHolder(attributeValue, singleValueHolderList);
         attributeValue.setValueHolder(multiValueHolder);
@@ -124,7 +126,7 @@ public class ContainsSearchOperatorTest extends AbstractIpsPluginTest {
      * Creates values which are contained in the multiValueAttribute.
      */
     private void createValues(String... values) {
-        List<SingleValueHolder> singleValueHolderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> singleValueHolderList = new ArrayList<>();
         for (String value : values) {
             SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, value);
             singleValueHolderList.add(singleValueHolder);

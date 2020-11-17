@@ -22,9 +22,9 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.ltk.ui.refactoring.resource.DeleteResourcesWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.util.ArgumentCheck;
 
 public class IpsDeleteHandler extends AbstractHandler {
@@ -65,11 +65,11 @@ public class IpsDeleteHandler extends AbstractHandler {
         if (adaptable instanceof IResource) {
             return (IResource)adaptable;
         }
-        IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+        IResource resource = adaptable.getAdapter(IResource.class);
         if (resource != null) {
             return resource;
         }
-        IIpsElement ipsElement = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+        IIpsElement ipsElement = adaptable.getAdapter(IIpsElement.class);
         if (ipsElement != null && !(ipsElement instanceof IIpsObjectPart)) {
             return getAdaptedResource(ipsElement);
         }

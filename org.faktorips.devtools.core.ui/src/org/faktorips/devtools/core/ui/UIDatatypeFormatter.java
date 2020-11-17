@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 public class UIDatatypeFormatter {
 

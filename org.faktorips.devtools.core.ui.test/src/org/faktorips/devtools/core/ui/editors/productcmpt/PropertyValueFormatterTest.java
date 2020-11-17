@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.mockito.Mockito.mock;
 
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.junit.Test;
 
 public class PropertyValueFormatterTest {

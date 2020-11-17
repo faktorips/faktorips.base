@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 public class TemplatePropertyUsageViewPart extends ViewPart {
 

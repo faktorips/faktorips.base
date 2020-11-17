@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder;

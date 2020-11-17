@@ -11,14 +11,14 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.model.type.IType;
 
 public class CustomIconPage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "CustomIconPage"; //$NON-NLS-1$
+    static final String PAGE_ID = "CustomIconPage"; //$NON-NLS-1$
 
     public CustomIconPage(TypeEditor editor) {
         super(editor, PAGE_ID, Messages.CustomIconPage_Page_Tab_Label);

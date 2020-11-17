@@ -16,12 +16,12 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsContainerEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Provides the children of an {@link IIpsProject} for a view of the model.

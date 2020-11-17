@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * Provides enum values from an enum value set or enum datatype.

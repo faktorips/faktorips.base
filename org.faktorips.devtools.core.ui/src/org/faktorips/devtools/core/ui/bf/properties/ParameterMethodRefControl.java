@@ -23,17 +23,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -120,7 +121,8 @@ public class ParameterMethodRefControl extends TextButtonControl {
             String match = prefix.toLowerCase();
             for (IMethod method : getSelectableMethods()) {
                 if (method.getName().startsWith(match)) {
-                    String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(method);
+                    String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
+                            .getLocalizedDescription(method);
                     Image image = IpsUIPlugin.getImageHandling().getImage(method);
                     result.add(new CompletionProposal(method.getName(), 0, documentOffset, method.getName().length(),
                             image, method.getSignatureString(), null, localizedDescription));

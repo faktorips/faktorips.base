@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.inputformat;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public class EnumDatatypeInputFormatFactory implements IDatatypeInputFormatFactory {
 

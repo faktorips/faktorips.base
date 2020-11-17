@@ -13,11 +13,11 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 import java.util.List;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
@@ -44,7 +44,8 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         return getCompilationResultForAssociation(contextCompilationResult, node);
     }
 
-    protected CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    protected CompilationResult<JavaCodeFragment> getCompilationResultForAssociation(
+            CompilationResult<JavaCodeFragment> contextCompilationResult,
             AssociationNode node) {
         if (isListDatatypeContext(contextCompilationResult)) {
             return compileListContext(contextCompilationResult, node);
@@ -55,7 +56,8 @@ public class AssociationNodeGenerator extends StdBuilderIdentifierNodeGenerator 
         }
     }
 
-    /* private */protected CompilationResult<JavaCodeFragment> compileListContext(CompilationResult<JavaCodeFragment> contextCompilationResult,
+    /* private */protected CompilationResult<JavaCodeFragment> compileListContext(
+            CompilationResult<JavaCodeFragment> contextCompilationResult,
             AssociationNode node) {
         JavaCodeFragment codeFragment = compileAssociationChain(contextCompilationResult, node);
         return createCompilationResult(codeFragment, node);

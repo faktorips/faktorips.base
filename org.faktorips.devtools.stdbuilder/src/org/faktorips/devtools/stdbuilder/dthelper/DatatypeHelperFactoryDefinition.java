@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
 public class DatatypeHelperFactoryDefinition {
 

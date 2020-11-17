@@ -14,9 +14,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * A {@link IValueSource} for the {@link EnumerationProposalProvider}. Reads all values from another

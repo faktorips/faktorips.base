@@ -22,13 +22,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class HtmlExportWizard extends Wizard implements IExportWizard {
 

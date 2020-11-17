@@ -12,12 +12,12 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
 
 public class ProductCmptTypeAttributesTablePageElement extends AttributesTablePageElement {
 

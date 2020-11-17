@@ -31,7 +31,7 @@ abstract class ProductCmptTypeEditorPage extends TypeEditorPage {
     protected void createToolbarActions(IToolBarManager toolbarManager) {
         toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
-        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        IMenuService menuService = getSite().getService(IMenuService.class);
         menuService.populateContributionManager((ContributionManager)toolbarManager,
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_PRODUCT_CMPT_TYPE_EDITOR_PAGE.getId()));
     }

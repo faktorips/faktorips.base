@@ -10,11 +10,11 @@
 
 package org.faktorips.abstracttest.builder;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;

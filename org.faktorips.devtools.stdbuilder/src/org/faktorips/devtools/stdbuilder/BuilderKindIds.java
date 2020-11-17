@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
+import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 
 public enum BuilderKindIds implements IBuilderKindId {
 

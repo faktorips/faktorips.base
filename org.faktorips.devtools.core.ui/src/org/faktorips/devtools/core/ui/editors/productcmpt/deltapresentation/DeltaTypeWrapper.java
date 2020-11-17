@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.model.productcmpt.DeltaType;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
 
 /**
  * Small helper class which provides the {@link DeltaType} and its parent, the

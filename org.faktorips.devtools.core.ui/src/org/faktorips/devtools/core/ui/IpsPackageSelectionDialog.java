@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui;
 
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
  * Dialog to select an ips package fragment.

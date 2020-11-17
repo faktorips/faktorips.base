@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.junit.Test;
 
 public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest {

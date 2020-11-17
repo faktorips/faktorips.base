@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.model.bf;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * A decision business function element has one incoming and one or more outgoing control flows.
@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IDecisionBFE extends IMethodCallBFE {
 
-    public final static String XML_TAG = "Decision"; //$NON-NLS-1$
-    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    public static final String XML_TAG = "Decision"; //$NON-NLS-1$
+    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "DECISIONBFE-"; //$NON-NLS-1$
     public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified"; //$NON-NLS-1$

@@ -19,14 +19,15 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
@@ -182,7 +183,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append("();"); //$NON-NLS-1$
 
         builder.javaDoc(getLocalizedText("METHOD_MARSHAL_JAVADOC"));
-        appendOverrideAnnotation(builder, false);
+        builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         builder.method(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), "marshal", new String[] { "value" }, //$NON-NLS-1$ //$NON-NLS-2$
                 new String[] { getEnumModelNode().getQualifiedClassName() }, body, null);
     }
@@ -216,7 +217,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         String throwsJavadoc = "throws IllegalArgumentException "
                 + getLocalizedText("METHOD_UNMARSHAL_JAVADOC_ILLEGALARGUMENTEXCEPTION");
         builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"), new String[] { throwsJavadoc });
-        appendOverrideAnnotation(builder, false);
+        builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         builder.method(Modifier.PUBLIC, getEnumModelNode().getQualifiedClassName(), "unmarshal", //$NON-NLS-1$
                 new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$
 

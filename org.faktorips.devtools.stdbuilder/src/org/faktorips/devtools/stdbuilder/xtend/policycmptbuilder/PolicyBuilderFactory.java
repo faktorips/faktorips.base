@@ -10,7 +10,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder;
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.stdbuilder.IIpsArtefactBuilderFactory;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 

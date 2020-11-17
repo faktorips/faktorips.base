@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
  * {@link IHtmlPath} for an {@link IIpsPackageFragment}

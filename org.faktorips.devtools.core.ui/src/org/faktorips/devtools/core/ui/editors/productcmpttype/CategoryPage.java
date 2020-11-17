@@ -28,12 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.PartAdapter;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -43,6 +37,12 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IAssociation;
 
 /**
  * {@link IpsObjectEditorPage} that allows to edit the categories of an {@link IProductCmptType}.

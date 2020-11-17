@@ -31,13 +31,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 
 public class InferTemplateWizard extends NewProductWizard {

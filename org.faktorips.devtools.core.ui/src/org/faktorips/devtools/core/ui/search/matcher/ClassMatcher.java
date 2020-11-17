@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.search.matcher;
 
 import java.util.Set;
 
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
  * The ClassMatcher tests, whether an IIpsElement matches given classes.

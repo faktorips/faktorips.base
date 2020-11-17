@@ -17,14 +17,15 @@ import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
@@ -106,7 +107,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
                         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                        localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(ipsObject);
+                        localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(ipsObject);
                     }
 
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),

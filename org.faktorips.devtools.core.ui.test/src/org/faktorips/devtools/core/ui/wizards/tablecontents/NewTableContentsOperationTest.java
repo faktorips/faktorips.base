@@ -29,16 +29,16 @@ import org.eclipse.core.runtime.Status;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableRows;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.tablecontents.TableContents;
+import org.faktorips.devtools.model.internal.tablestructure.TableStructure;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,8 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
 

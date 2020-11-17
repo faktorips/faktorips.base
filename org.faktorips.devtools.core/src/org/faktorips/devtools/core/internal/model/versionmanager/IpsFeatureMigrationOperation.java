@@ -19,15 +19,14 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.util.message.MessageList;
 import org.osgi.framework.Version;
 
@@ -73,6 +72,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
 
@@ -84,7 +84,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
                     throw new InterruptedException();
                 }
                 AbstractIpsProjectMigrationOperation operation = operations.get(i);
-                result.add(operation.migrate(new SubProgressMonitor(monitor, 1000)));
+                result.add(operation.migrate(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000)));
             }
         } catch (CoreException e) {
             rollback();
@@ -103,7 +103,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         projectToMigrate.findAllIpsSrcFiles(result);
-        IProgressMonitor saveMonitor = new SubProgressMonitor(monitor, 1000);
+        IProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000);
         saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
 
         // at this point, we do not allow the user to cancel this operation any more because

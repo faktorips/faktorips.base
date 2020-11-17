@@ -15,14 +15,14 @@ import java.util.function.Function;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.StyledTextButtonField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 
 /**
  * Provides controls that allow the user to edit an {@link IFormula}.

@@ -18,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Data type for {@link BigDecimal}.
  * 

@@ -16,12 +16,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
@@ -80,7 +79,7 @@ public class GeneratorConfigTest {
         String id = "FIPS";
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION))
                 .thenReturn(id);
-        IIpsModel ipsModel = mock(IpsModel.class);
+        IIpsModel ipsModel = mock(IIpsModel.class);
         when(ipsProject.getIpsModel()).thenReturn(ipsModel);
         IChangesOverTimeNamingConvention convention = mock(IChangesOverTimeNamingConvention.class);
         when(ipsModel.getChangesOverTimeNamingConvention(id)).thenReturn(convention);

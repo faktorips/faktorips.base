@@ -17,7 +17,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.IRow;
 
 /**
  * A CellModifyer that can modify and retrieve values from <code>IRow</code> objects (

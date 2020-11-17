@@ -27,21 +27,21 @@ import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
-import org.faktorips.devtools.core.util.QNameUtil;
-import org.faktorips.devtools.core.util.RefactorUtil;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.devtools.model.util.RefactorUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -243,7 +243,8 @@ public final class MoveRenamePackageHelper {
                 files.addAll(getRelativeFileNames(pathName, (IFolder)member));
             } else if (member.getType() == IResource.FILE) {
                 if (member.getName().equals(IIpsPackageFragment.SORT_ORDER_FILE_NAME)) {
-                    // put .sortorder first, because otherwise it would be destroyed by moving the contained files away
+                    // put .sortorder first, because otherwise it would be destroyed by moving the
+                    // contained files away
                     files.add(0, new FileInfo(path, member.getName()));
                 } else {
                     files.add(new FileInfo(path, member.getName()));
@@ -254,8 +255,8 @@ public final class MoveRenamePackageHelper {
     }
 
     /**
-     * Builds a package name by concatenating the given parts with dots. Each one of the three parts can
-     * be empty.
+     * Builds a package name by concatenating the given parts with dots. Each one of the three parts
+     * can be empty.
      */
     private String buildPackageName(String prefix, String middle, String postfix) {
         String result = prefix;
@@ -353,8 +354,8 @@ public final class MoveRenamePackageHelper {
     }
 
     /**
-     * Checks the final conditions on all AffectedIpsSourceFiles. It's necessary to create the target
-     * packages. After the check the target package will be deleted.
+     * Checks the final conditions on all AffectedIpsSourceFiles. It's necessary to create the
+     * target packages. After the check the target package will be deleted.
      */
     public void checkFinalConditions(IIpsPackageFragment targetIpsPackageFragment,
             RefactoringStatus status,
@@ -384,7 +385,7 @@ public final class MoveRenamePackageHelper {
                 status.addFatalError(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid);
                 return;
             } else if (newPackageFragment.exists()) {
-                status.addFatalError(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains,
+                status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorPackageAlreadyContains,
                         newPackageFragment.getName()));
                 return;
             }
@@ -398,8 +399,8 @@ public final class MoveRenamePackageHelper {
     /**
      * Calling the refactoring processor for {@link IIpsObject}. The source file of the
      * {@link IIpsObject} will be moved this early. Based on that new source file and on the moved
-     * {@link IIpsObject} validation is performed. After validation the file is moved back to perform
-     * the real model refactoring.
+     * {@link IIpsObject} validation is performed. After validation the file is moved back to
+     * perform the real model refactoring.
      */
     private void checkFinalConditionsOnIpsSrcFile(IIpsSrcFile originalFile,
             IIpsPackageFragment targetIpsPackageFragment,

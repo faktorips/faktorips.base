@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xmodel.table;
 
-import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;

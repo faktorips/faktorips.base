@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * A content proposal for {@link IIpsSrcFile IPS source files}. The label and image of these
@@ -45,7 +45,7 @@ class IpsSrcFileContentProposal implements IContentProposal {
 
     @Override
     public String getDescription() {
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+        String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(
                 getIpsSrcFile().getIpsObject());
         return localizedDescription.isEmpty() ? null : localizedDescription;
     }

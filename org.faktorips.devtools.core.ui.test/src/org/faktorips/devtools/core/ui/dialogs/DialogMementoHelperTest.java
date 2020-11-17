@@ -18,8 +18,8 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.memento.Memento;
 import org.junit.Before;
 import org.junit.Test;

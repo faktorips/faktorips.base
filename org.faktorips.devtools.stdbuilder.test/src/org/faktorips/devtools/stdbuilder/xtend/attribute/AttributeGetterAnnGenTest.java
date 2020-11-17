@@ -16,11 +16,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;

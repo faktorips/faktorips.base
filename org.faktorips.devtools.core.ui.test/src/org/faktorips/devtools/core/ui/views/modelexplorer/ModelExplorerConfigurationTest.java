@@ -26,18 +26,18 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,9 +81,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
                 "TestTableContents");
         tableStructure = (ITableStructure)newIpsObject(root.getDefaultIpsPackageFragment(),
                 IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
-
-        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IpsPlugin.getDefault()
-                .getIpsModel().getIpsObjectTypes()));
+        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IIpsModel.get().getIpsObjectTypes()));
         // config should not support TableStructure and TableContents
         allowedTypes.remove(IpsObjectType.TABLE_STRUCTURE);
         allowedTypes.remove(IpsObjectType.TABLE_CONTENTS);

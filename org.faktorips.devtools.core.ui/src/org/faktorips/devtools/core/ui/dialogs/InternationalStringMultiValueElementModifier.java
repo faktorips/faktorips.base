@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -31,7 +32,7 @@ public class InternationalStringMultiValueElementModifier implements
     public LocalizedString getValue(SingleValueViewItem element) {
         IInternationalString internationalString = getInternationalString(element);
         if (internationalString != null) {
-            LocalizedString locString = internationalString.get(IpsPlugin.getMultiLanguageSupport()
+            LocalizedString locString = internationalString.get(IIpsModel.get().getMultiLanguageSupport()
                     .getLocalizationLocaleOrDefault(element.getSingleValueHolder().getIpsProject()));
             return locString;
         }
@@ -39,7 +40,7 @@ public class InternationalStringMultiValueElementModifier implements
     }
 
     private IInternationalString getInternationalString(SingleValueViewItem element) {
-        SingleValueHolder item = element.getSingleValueHolder();
+        ISingleValueHolder item = element.getSingleValueHolder();
         if (item == null || item.getValue() == null) {
             return null;
         }
@@ -49,7 +50,7 @@ public class InternationalStringMultiValueElementModifier implements
         } else {
             throw new IllegalArgumentException("Unsupported type " //$NON-NLS-1$
                     + (content == null ? "<null>" : content.getClass().getName()) //$NON-NLS-1$
-                    + " in modifier found. Must be IInternationalString."); //$NON-NLS-1$            
+                    + " in modifier found. Must be IInternationalString."); //$NON-NLS-1$
         }
     }
 

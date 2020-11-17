@@ -14,12 +14,12 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.memento.Memento;
 
@@ -262,8 +262,8 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /**
      * Sets the title and the description of the second wizard page.
      */
-    public void setTitleAndDescriptionOfSecondPage(String title, String decsription) {
+    public void setTitleAndDescriptionOfSecondPage(String title, String description) {
         rootParamSelectWizardPage.setTitle(title);
-        rootParamSelectWizardPage.setDescription(title);
+        rootParamSelectWizardPage.setDescription(description);
     }
 }

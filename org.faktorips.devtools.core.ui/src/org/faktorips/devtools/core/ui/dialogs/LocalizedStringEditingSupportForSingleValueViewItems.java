@@ -13,13 +13,6 @@ package org.faktorips.devtools.core.ui.dialogs;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
 import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
@@ -29,6 +22,12 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueVi
 import org.faktorips.devtools.core.ui.table.InternationalStringCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -59,7 +58,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
 
     @Override
     protected IpsCellEditor getCellEditorInternal(SingleValueViewItem element) {
-        final SingleValueHolder singleValueHolder = element.getSingleValueHolder();
+        final ISingleValueHolder singleValueHolder = element.getSingleValueHolder();
 
         Table table = multiValueTableViewer.getTable();
         InternationalStringDialogHandler handler = new MultilingualValueHandler(table.getShell(),
@@ -81,8 +80,8 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
      * The Refresh of the table is needed because it may change without using the cell editor when
      * calling the multilingual dialog and changing the current language.
      */
-    private void bindTableRefresh(final SingleValueHolder singleValueHolder) {
-        final IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+    private void bindTableRefresh(final ISingleValueHolder singleValueHolder) {
+        final IIpsModel ipsModel = IIpsModel.get();
         final ContentsChangeListener contentChangeListener = event -> {
             if (event.isAffected(singleValueHolder.getParent())) {
                 multiValueTableViewer.refresh();
@@ -105,9 +104,9 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
 
     private static class MultilingualValueHandler extends InternationalStringDialogHandler {
 
-        private final SingleValueHolder singleValueHolder;
+        private final ISingleValueHolder singleValueHolder;
 
-        private MultilingualValueHandler(Shell shell, IIpsObjectPart part, SingleValueHolder singleValueHolder) {
+        private MultilingualValueHandler(Shell shell, IIpsObjectPart part, ISingleValueHolder singleValueHolder) {
             super(shell, part);
             this.singleValueHolder = singleValueHolder;
         }

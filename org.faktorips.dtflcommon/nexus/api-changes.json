@@ -1,0 +1,17 @@
+{
+  "all-versions" : {
+    "revapi" : {
+      "ignore" : [ {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "class org.faktorips.util..*",
+        "justification" : "Reexported util API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "class org.faktorips.values..*",
+        "justification" : "Reexported values API"
+      } ]
+    }
+  }
+}

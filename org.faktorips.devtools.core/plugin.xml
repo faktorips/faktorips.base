@@ -5,154 +5,22 @@
 <!--
 	Extension points
 -->
-   <extension-point id="artefactbuilderset" name="%artefactbuildersetname" schema="schema/artefactbuilderset.exsd"/>
-   <extension-point id="objectExtensionProperty" name="ObjectExtensionProperty" schema="schema/objectExtensionProperty.exsd"/>
-   <extension-point id="datatypeDefinition" name="DatatypeDefinition" schema="schema/datatypeDefinition.exsd"/>
-   <extension-point id="externalTableFormat" name="ExternalTableFormat" schema="schema/externalTableFormat.exsd"/>
-   <extension-point id="externalValueConverter" name="ExternalValueConverter" schema="schema/externalValueConverter.exsd"/>
-   <extension-point id="faktorIpsFeatureVersionManager" name="FaktorIpsFeatureVersionManager" schema="schema/faktorIpsFeatureVersionManager.exsd"/>
-   <extension-point id="ipsMigrationOperation" name="ipsMigrationOperation" schema="schema/ipsMigrationOperation.exsd"/>
-   <extension-point id="loggingFrameworkConnector" name="Logging Framework Connector" schema="schema/loggingFrameworkConnector.exsd"/>
-   <extension-point id="ipsobjecttype" name="ipsObjectType" schema="schema/ipsobjecttype.exsd"/>
-   <extension-point id="flFunctionResolverFactory" name="factory for formula language function resolvers" schema="schema/flFunctionResolverFactory.exsd"/>
+   <extension-point id="externalTableFormat" name="External Table Format" schema="schema/externalTableFormat.exsd"/>
+   <extension-point id="externalValueConverter" name="External Value Converter" schema="schema/externalValueConverter.exsd"/>
    <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
-   <extension-point id="customValidation" name="Custom Validation" schema="schema/customValidation.exsd"/>
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
-   <extension-point id="productComponentNamingStrategy" name="Product Component Naming Strategy" schema="schema/productComponentNamingStrategy.exsd"/>
-   <extension-point id="ipsObjectPathContainerType" name="IPS Object Path Container Type" schema="schema/ipsObjectPathContainerType.exsd"/>
-   <extension-point id="deepCopyOperation" name="Deep Copy Operation" schema="schema/deepCopyOperation.exsd"/>
-   <extension-point id="teamOperationsFactory" name="TeamOperationsFactory" schema="schema/teamOperationsFactory.exsd"/>
-   <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
+   <extension-point id="teamOperationsFactory" name="Team Operations Factory" schema="schema/teamOperationsFactory.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
-   <extension-point id="versionProvider" name="Version Provider" schema="schema/versionProvider.exsd"/>
    
    
 <!-- 
     Extensions to the Java perspective
   -->
-  
-   <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
-       <classpathVariableInitializer
-             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
-             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
-             variable="FAKTORIPS_VALUETYPES_JAVA5"/>                           
-       <classpathVariableInitializer
-             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
-             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
-             variable="FAKTORIPS_VALUETYPES_JAVA5_SRC"/>                           
-       <classpathVariableInitializer
-             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
-             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
-             variable="FAKTORIPS_RUNTIME_JAVA5"/>                           
-       <classpathVariableInitializer
-             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
-             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
-             variable="FAKTORIPS_RUNTIME_JAVA5_SRC"/>                           
-   </extension>
 
 <!-- 
     Nature and Builders
   -->
-   <extension
-         id="ipsnature"
-         name="FaktorIPS-Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.faktorips.devtools.core.internal.model.ipsproject.IpsProject">
-            <parameter
-                  name="installBuilder"
-                  value="true">
-            </parameter>
-         </run>
-      </runtime>
-      <builder
-            id="org.faktorips.devtools.core.ipsbuilder">
-      </builder>
-   </extension>
-   <extension
-         id="ipsbuilder"
-         name="FaktorIPS-Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="org.faktorips.devtools.core.builder.IpsBuilder">
-         </run>
-      </builder>
-   </extension>
    
-    
-<!-- 
-    Default Datatypes
--->
-   <extension point="org.faktorips.devtools.core.datatypeDefinition">
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.StringDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.StringHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.IntegerDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.IntegerHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.LongDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.LongHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.BooleanDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.BooleanHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.DateDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.DateHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.GregorianCalendarAsDateHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.DecimalDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.DecimalHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.MoneyDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.MoneyHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.classtypes.DoubleDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.DoubleHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.PrimitiveBooleanDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.PrimitiveBooleanHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
-      <datatypeDefinition 
-            datatypeClass="org.faktorips.datatype.PrimitiveLongDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.PrimitiveLongHelper"/>
-      <datatypeDefinition
-            datatypeClass="org.faktorips.datatype.classtypes.BigDecimalDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.BigDecimalHelper">
-      </datatypeDefinition>
-      <datatypeDefinition
-            datatypeClass="org.faktorips.datatype.joda.LocalDateDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.joda.LocalDateHelper">
-      </datatypeDefinition>
-      <datatypeDefinition
-            datatypeClass="org.faktorips.datatype.joda.LocalTimeDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.joda.LocalTimeHelper">
-      </datatypeDefinition>
-      <datatypeDefinition
-            datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper">
-      </datatypeDefinition>
-      <datatypeDefinition
-            datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.joda.MonthDayHelper">
-      </datatypeDefinition>
-   </extension>
-
-<!-- 
-  Markers
--->
-   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="%problemmarker.name"> 
-      <persistent value="true"/> 
-      <super type="org.eclipse.core.resources.problemmarker"/> 
-   </extension> 
-
 <!--
     Problem View Filter (available since Eclipse 3.2)
 -->
@@ -160,7 +28,7 @@
       <problemFilter name="Faktor-IPS Problems" id="org.faktorips.devtools.core.problemFilter"
                 enabled="true"
                 scope="ON_ANY">
-                <selectedType markerId="org.faktorips.devtools.core.problemmarker"/>
+                <selectedType markerId="org.faktorips.devtools.model.problemmarker"/>
       </problemFilter>
    </extension>  
 
@@ -168,81 +36,6 @@
   Product-Definition-Extensions
 -->
    
-
-   <extension
-         point="org.eclipse.core.contenttype.contentTypes">
-      <!-- the ipsSrcFile content-type will be used to open the standard text editor
-           if the ips object editor is not available, e.g. ips src file outside ips package -->
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            id="ipsSrcFile"
-            name="IPS Source File"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipsproject"
-            id="ipsProject"
-            name="IPS-Project"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipspolicycmpttype"
-            id="policyCmptType"
-            name="Policy Component Type"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipsproductcmpttype"
-            id="productCmptType"
-            name="Product Component Type"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipsproduct"
-            id="productComponent"
-            name="Product Component"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipstemplate"
-            id="productComponentTemplate"
-            name="Product Component Template"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipstablestructure"
-            id="tableStructure"
-            name="Table Structure"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipstablecontents"
-            id="tableContents"
-            name="Table Contents"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipstestcase"
-            id="testCase"
-            name="Test Case"
-            priority="normal"/>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            default-charset="UTF-8"
-            file-extensions="ipstestcasetype"
-            id="testCaseType"
-            name="TestCase Type"
-            priority="normal"/>
-   </extension>
    <extension
          id="productDefinitionTool"
          name="Faktor-IPS"
@@ -299,40 +92,9 @@
 			value="27,264,500,20"/>
       </product>
    </extension>
-
-<!-- Extensions for running and debugging ips tests -->
-   <extension
-         id="javaUtilLoggingConnector"
-         name="Java Util Logging Connector"
-         point="org.faktorips.devtools.core.loggingFrameworkConnector">
-      <loggingFrameworkConnector class="org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector"/>
-   </extension>
-   <extension
-         id="log4jLoggingConnector"
-         name="Log4j Logging Connector"
-         point="org.faktorips.devtools.core.loggingFrameworkConnector">
-      <loggingFrameworkConnector class="org.faktorips.devtools.core.builder.Log4jLoggingFrameworkConnector"/>
-   </extension>
    
    <extension
-         id="excelFunctionResolverFactory"
-         name="function resolver factory for an excel function resolver"
-         point="org.faktorips.devtools.core.flFunctionResolverFactory">
-         <functionResolverFactory
-               class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"
-               sortorder="0"/>
-         <functionResolverFactory
-               class="org.faktorips.devtools.core.fl.AssociationNavigationFunctionsResolverFactory"
-               sortorder="1">
-         </functionResolverFactory>
-         <functionResolverFactory
-               class="org.faktorips.devtools.core.fl.TableSingleContentFunctionResolverFactory"
-               sortorder="2">
-         </functionResolverFactory>
-   </extension>
-   
-   <extension
-         point="org.faktorips.devtools.core.faktorIpsFeatureVersionManager">
+         point="org.faktorips.devtools.model.faktorIpsFeatureVersionManager">
       <faktorIpsFeatureVersionManager
             basedOnFeatureManager="org.faktorips.feature.versionmanagerv2"
             class="org.faktorips.devtools.core.internal.migrationextensions.IpsExtendableVersionManager"
@@ -341,8 +103,9 @@
             requiredForAllProjects="true">
       </faktorIpsFeatureVersionManager>
    </extension>
+
    <extension
-         point="org.faktorips.devtools.core.ipsobjecttype">
+         point="org.faktorips.devtools.model.ipsobjecttype">
     	<ipsobjecttype
             class="org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType">
 		</ipsobjecttype>
@@ -350,90 +113,90 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink"
+            adaptableType="org.faktorips.devtools.model.productcmpt.IProductCmptLink"
             class="org.faktorips.devtools.core.internal.model.adapter.ProductCmptLinkAdapterFactory">
          <adapter
                type="org.eclipse.core.resources.IFile">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+               type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </adapter>
       </factory>
       <factory
-            adaptableType="org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper"
+            adaptableType="org.faktorips.devtools.model.adapter.IIpsSrcFileWrapper"
             class="org.faktorips.devtools.core.internal.model.adapter.IpsSrcFileWrapperAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+               type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.IIpsElement">
+               type="org.faktorips.devtools.model.IIpsElement">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.type.IType">
+               type="org.faktorips.devtools.model.type.IType">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </adapter>
          <adapter
                type="org.eclipse.core.resources.IResource">
          </adapter>
       </factory>
       <factory
-            adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"
+            adaptableType="org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer"
             class="org.faktorips.devtools.core.internal.model.adapter.IpsObjectPartContainerAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+               type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.type.IType">
+               type="org.faktorips.devtools.model.type.IType">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.core.resources.IResource"
             class="org.faktorips.devtools.core.internal.model.adapter.ResourceAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+               type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.type.IType">
+               type="org.faktorips.devtools.model.type.IType">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.IIpsElement">
+               type="org.faktorips.devtools.model.IIpsElement">
          </adapter>
       </factory>
       <factory
-            adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile"
+            adaptableType="org.faktorips.devtools.model.ipsobject.IIpsSrcFile"
             class="org.faktorips.devtools.core.internal.model.adapter.IpsSrcFileAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.type.IType">
+               type="org.faktorips.devtools.model.type.IType">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
          </adapter>
       </factory>
       <factory
-            adaptableType="org.faktorips.devtools.core.model.IIpsElement"
+            adaptableType="org.faktorips.devtools.model.IIpsElement"
             class="org.faktorips.devtools.core.internal.model.adapter.IpsElementAdapterFactory">
          <adapter
                type="org.eclipse.core.resources.IResource">
@@ -452,52 +215,35 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="org.faktorips.devtools.core.model.productcmpt.IPropertyValue"
+            adaptableType="org.faktorips.devtools.model.productcmpt.IPropertyValue"
             class="org.faktorips.devtools.core.internal.model.adapter.PropertyValueAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+               type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmptGeneration">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
          </adapter>
       </factory>
       <factory
-            adaptableType="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference"
-            class="org.faktorips.devtools.core.model.productcmpt.treestructure.ProductCmptStructureAdapterFactory">
+            adaptableType="org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference"
+            class="org.faktorips.devtools.model.productcmpt.treestructure.ProductCmptStructureAdapterFactory">
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation">
+               type="org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation">
          </adapter>
          <adapter
-               type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+               type="org.faktorips.devtools.model.productcmpt.IProductCmptGeneration">
          </adapter>
       </factory>
    </extension>
+   
    <extension
-         point="org.faktorips.devtools.core.productComponentNamingStrategy">
-      <productComponentNamingStrategy
-            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory">
-      </productComponentNamingStrategy>
-      <productComponentNamingStrategy
-            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory">
-      </productComponentNamingStrategy>
-   </extension>
-   <extension
-         point="org.faktorips.devtools.core.productComponentNamingStrategy">
-      <productComponentNamingStrategy
-            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory">
-      </productComponentNamingStrategy>
-      <productComponentNamingStrategy
-            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory">
-      </productComponentNamingStrategy>
-   </extension>
-   <extension
-         point="org.faktorips.devtools.core.ipsMigrationOperation">
+         point="org.faktorips.devtools.model.ipsMigrationOperation">
       <migrationOperation
             class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_2_0$Factory"
             targetVersion="3.2.0">
@@ -595,25 +341,10 @@
             targetVersion="20.12.0">
       </migrationOperation>
    </extension>
-   <extension
-         point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.faktorips.devtools.core.IpsClasspathContainerInitializer"
-            id="org.faktorips.devtools.core.ipsClasspathContainer">
-      </classpathContainerInitializer>
+   <extension point="org.faktorips.devtools.model.ipsModelPreferences">
+      <ipsModelPreferences provider="org.faktorips.devtools.core.internal.CoreIpsModelPreferencesProvider" />
    </extension>
-   <extension
-         point="org.faktorips.devtools.core.ipsObjectPathContainerType">
-      <containerType
-            class="org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType"
-            typeId="JDTClasspathContainer">
-      </containerType>
-   </extension>
-   <extension
-         point="org.faktorips.devtools.core.versionProvider">
-      <versionProvider
-            class="org.faktorips.devtools.core.internal.model.BundleVersionProviderFactory"
-            id="org.faktorips.devtools.core.bundleVersionProvider">
-      </versionProvider>
+   <extension point="org.faktorips.devtools.model.classLoaderProviderFactory">
+      <classLoaderProviderFactory class="org.faktorips.devtools.core.internal.JavaRuntimeClassLoaderProviderFactory" />
    </extension>
 </plugin>

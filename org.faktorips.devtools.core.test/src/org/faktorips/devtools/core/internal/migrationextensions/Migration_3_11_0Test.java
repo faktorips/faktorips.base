@@ -23,16 +23,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.util.IoUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +55,7 @@ public class Migration_3_11_0Test extends AbstractIpsPluginTest {
 
     @Test
     public void testMigrate_tableStructure() throws Exception {
-        TableStructure tableStructure = newTableStructure(ipsProject, "pack.my.MyTableContent");
+        ITableStructure tableStructure = newTableStructure(ipsProject, "pack.my.MyTableContent");
         IIpsSrcFile ipsSrcFile = tableStructure.getIpsSrcFile();
         IFile file = ipsSrcFile.getCorrespondingFile();
         writeTestDocument(file, getTableStructureTestResource());
@@ -83,7 +81,7 @@ public class Migration_3_11_0Test extends AbstractIpsPluginTest {
 
     @Test
     public void testMigrate_enumType() throws Exception {
-        EnumType enumType = newEnumType(ipsProject, "pack.my.MyEnumType");
+        IEnumType enumType = newEnumType(ipsProject, "pack.my.MyEnumType");
         IIpsSrcFile ipsSrcFile = enumType.getIpsSrcFile();
         IFile file = ipsSrcFile.getCorrespondingFile();
         writeTestDocument(file, getEnumTypeTestResource());

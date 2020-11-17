@@ -14,13 +14,12 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 
 /**
  * The structure page contain the general information section, the attributes section and the
@@ -91,7 +90,7 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
         getPartControl().addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                IIpsModel model = IIpsModel.get();
                 if (model != null) {
                     model.removeChangeListener(changeListener);
                 }

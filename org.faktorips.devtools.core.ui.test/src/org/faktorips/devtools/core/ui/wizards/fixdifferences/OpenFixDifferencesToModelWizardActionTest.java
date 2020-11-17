@@ -21,14 +21,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -48,6 +48,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         openFixDifferencesToModelWizardAction = new OpenFixDifferencesToModelWizardAction();
         ipsElementsToFix = new HashSet<IFixDifferencesToModelSupport>();
         ipsProject = newIpsProject();

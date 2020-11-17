@@ -19,7 +19,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * This class is the {@link EditingSupport} for the column of arguments in the table of search

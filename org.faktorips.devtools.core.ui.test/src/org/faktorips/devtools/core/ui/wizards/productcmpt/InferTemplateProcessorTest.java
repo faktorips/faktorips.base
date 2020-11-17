@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import static org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus.DEFINED;
-import static org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus.INHERITED;
-import static org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus.UNDEFINED;
+import static org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus.DEFINED;
+import static org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus.INHERITED;
+import static org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus.UNDEFINED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -25,25 +25,25 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.values.Decimal;
 import org.junit.Test;
 

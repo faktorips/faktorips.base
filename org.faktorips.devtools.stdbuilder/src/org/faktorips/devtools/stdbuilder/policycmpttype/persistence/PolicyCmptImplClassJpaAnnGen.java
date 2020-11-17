@@ -12,15 +12,14 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.DiscriminatorDatatype;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.InheritanceStrategy;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
@@ -29,7 +28,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
  * A generator for JPA annotations of <code>IPolicyCmptType</code>s.
  * <p/>
  * Each persistent policy component type needs at least an <code>@Entity</code> annotation. The
- * information which annotations to generate is pulled from the class {@link PersistentTypeInfo}
+ * information which annotations to generate is pulled from the class {@link IPersistentTypeInfo}
  * which is part of persistent {@link IPolicyCmptType}s.
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS
@@ -82,7 +81,8 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         return fragment;
     }
 
-    private void addAnnotationsForInheritanceStrategy(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
+    private void addAnnotationsForInheritanceStrategy(JavaCodeFragment fragment,
+            IPersistentTypeInfo persistenceTypeInfo) {
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
         String tableName = persistenceTypeInfo.getTableName();
 

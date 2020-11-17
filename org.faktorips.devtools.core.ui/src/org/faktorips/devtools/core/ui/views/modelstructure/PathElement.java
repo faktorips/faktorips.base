@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ToChildAssociationType;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.ArgumentCheck;
 
 class PathElement {

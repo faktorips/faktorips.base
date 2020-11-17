@@ -18,10 +18,10 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleIdentification;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.util.message.MessageList;
 
 public class MessagesImportPMO extends PresentationModelObject {

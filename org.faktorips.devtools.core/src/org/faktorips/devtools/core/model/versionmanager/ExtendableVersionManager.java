@@ -20,8 +20,11 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IExtendableVersionManager;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
@@ -72,9 +75,9 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
     }
 
     private Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredOperations(String contributorName) {
-        IpsPlugin ipsPlugin = IpsPlugin.getDefault();
-        if (ipsPlugin != null) {
-            return ipsPlugin.getRegisteredMigrationOperations(contributorName);
+        IIpsModelExtensions modelExtensions = IIpsModelExtensions.get();
+        if (modelExtensions != null) {
+            return modelExtensions.getRegisteredMigrationOperations(contributorName);
         } else {
             return new HashMap<Version, IIpsProjectMigrationOperationFactory>();
         }

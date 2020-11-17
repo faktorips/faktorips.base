@@ -11,8 +11,8 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Abstract base class for annotation generators.

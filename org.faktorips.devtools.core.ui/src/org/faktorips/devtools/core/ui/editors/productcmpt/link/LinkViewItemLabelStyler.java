@@ -11,11 +11,11 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.StyledString;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiStatus;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.util.StringUtil;
 
 public class LinkViewItemLabelStyler {

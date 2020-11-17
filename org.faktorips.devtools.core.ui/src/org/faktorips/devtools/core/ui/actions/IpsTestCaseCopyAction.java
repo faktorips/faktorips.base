@@ -14,9 +14,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.testcasecopy.TestCaseCopyWizard;
+import org.faktorips.devtools.model.testcase.ITestCase;
 
 public class IpsTestCaseCopyAction extends IpsAction {
 

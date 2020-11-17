@@ -16,10 +16,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This is an Ant task that can only be used with the Eclipse Ant runner with an Eclipse
@@ -49,7 +49,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
             throw new BuildException("The ipsProjectName needs to be specified.");
         }
 
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProjectName);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(ipsProjectName);
         if (ipsProject == null) {
             throw new BuildException("No IpsProject found for the specified name: " + ipsProjectName);
         }

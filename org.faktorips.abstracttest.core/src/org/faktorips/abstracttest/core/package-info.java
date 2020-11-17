@@ -1,0 +1,1 @@
+package org.faktorips.abstracttest.core;

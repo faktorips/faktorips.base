@@ -19,9 +19,9 @@ import java.util.Set;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.util.ArgumentCheck;
 
 /**

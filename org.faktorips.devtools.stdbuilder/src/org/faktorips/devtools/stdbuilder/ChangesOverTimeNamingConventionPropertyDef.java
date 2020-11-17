@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsBuilderSetPropertyDef;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.internal.ipsproject.ChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.message.Message;
 
 /**

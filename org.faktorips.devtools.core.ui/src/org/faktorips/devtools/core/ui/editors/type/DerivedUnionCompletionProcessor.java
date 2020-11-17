@@ -15,10 +15,10 @@ import java.util.List;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -51,7 +51,7 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
     private void addToResult(List<ICompletionProposal> result, IAssociation relation, int documentOffset) {
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(relation);
+        String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(relation);
         Image image = IpsUIPlugin.getImageHandling().getImage(relation);
         ICompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);

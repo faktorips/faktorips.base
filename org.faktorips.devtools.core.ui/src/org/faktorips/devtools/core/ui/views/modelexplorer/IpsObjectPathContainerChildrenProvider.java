@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 
 public class IpsObjectPathContainerChildrenProvider implements IChildrenProvider<IIpsObjectPathContainer> {
 

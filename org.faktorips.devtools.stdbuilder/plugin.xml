@@ -9,7 +9,7 @@
    <extension
          id="ipsstdbuilderset"
          name="%ipsstdbuilderset"
-         point="org.faktorips.devtools.core.artefactbuilderset">
+         point="org.faktorips.devtools.model.artefactbuilderset">
       <builderSet class="org.faktorips.devtools.stdbuilder.StandardBuilderSet">
          <builderSetPropertyDef 
             defaultValue="false" 
@@ -40,10 +40,10 @@
             name="generateVisitorSupport"
             type="boolean"/>
          <builderSetPropertyDef
-            class="org.faktorips.devtools.core.builder.IpsLoggingFrameworkConnectorPropertyDef"
-            defaultValue="org.faktorips.devtools.core.javaUtilLoggingConnector"
+            class="org.faktorips.devtools.model.builder.IpsLoggingFrameworkConnectorPropertyDef"
+            defaultValue="org.faktorips.devtools.model.javaUtilLoggingConnector"
             description="%loggingFrameworkConnectorDescription"
-            extensionPointId="org.faktorips.devtools.core.loggingFrameworkConnector"
+            extensionPointId="org.faktorips.devtools.model.loggingFrameworkConnector"
             label="%loggingFrameworkConnectorLabel"
             name="loggingFrameworkConnector"
             type="extensionPoint"/>
@@ -226,7 +226,7 @@
             name="StdBuilderRenameParticipant">
          <enablement>
             <instanceof
-                  value="org.faktorips.devtools.core.model.IIpsElement">
+                  value="org.faktorips.devtools.model.IIpsElement">
             </instanceof></enablement>
       </renameParticipant>
    </extension>
@@ -238,7 +238,7 @@
             name="StdBuilderMoveParticipant">
          <enablement>
             <instanceof
-                  value="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                  value="org.faktorips.devtools.model.ipsobject.IIpsObject">
             </instanceof></enablement>
       </moveParticipant>
    </extension>

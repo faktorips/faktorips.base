@@ -17,8 +17,8 @@ import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.InternationalStringDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
@@ -130,7 +130,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     /**
-     * @see IEnumAttribute#findDatatypeIgnoreEnumContents(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+     * @see IEnumAttribute#findDatatypeIgnoreEnumContents(org.faktorips.devtools.model.ipsproject.IIpsProject)
      */
     protected ValueDatatype getDatatypeIgnoreEnumContents() {
         try {

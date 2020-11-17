@@ -56,13 +56,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.contexts.IContextService;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -73,9 +66,18 @@ import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.internal.type.TypeHierarchy;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.ITypeHierarchy;
 
 /**
- * The <code>IpsHierarchyView</code> is a <code>ViewPart</code> for displaying a<code>hierarchy of ITypes</code>
+ * The <code>IpsHierarchyView</code> is a <code>ViewPart</code> for displaying
+ * a<code>hierarchy of ITypes</code>
  * 
  * @author Quirin Stoll
  */
@@ -98,7 +100,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     private ActivationListener editorActivationListener;
 
     public IpsHierarchyView() {
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+        IIpsModel.get().addIpsSrcFilesChangedListener(this);
     }
 
     /**
@@ -235,7 +237,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     @Override
     public void dispose() {
         editorActivationListener.dispose();
-        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
+        IIpsModel.get().removeIpsSrcFilesChangedListener(this);
         super.dispose();
     }
 
@@ -265,7 +267,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             // display.asyncExec(new Runnable() {
             // @Override
             // public void run() {
-            //                     selected.setText(""); //$NON-NLS-1$
+            // selected.setText(""); //$NON-NLS-1$
             // treeViewer.setInput(getWaitingLabel());
             // updateView();
             // }
@@ -441,7 +443,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     }
 
     private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        IContextService service = getSite().getService(IContextService.class);
         service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
@@ -452,7 +454,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
     @Override
     protected boolean show(IAdaptable adaptable) {
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        IIpsObject ipsObject = adaptable.getAdapter(IIpsObject.class);
         if (ipsObject == null) {
             return false;
         }

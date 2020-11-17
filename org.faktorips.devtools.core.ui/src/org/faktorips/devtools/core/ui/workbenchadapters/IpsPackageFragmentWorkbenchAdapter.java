@@ -14,10 +14,10 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 public class IpsPackageFragmentWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 
 public enum ValidationRuleIdentification {
 

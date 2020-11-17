@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.tablestructure.IForeignKey;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * PMO for {@link ForeignKeyEditDialog}
@@ -54,8 +54,8 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
     public IIndex[] getAvailableUniqueKeys() {
         IIpsObject ipsObject;
         ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
-        if (ipsObject != null && ipsObject instanceof TableStructure) {
-            TableStructure tableStructure = (TableStructure)ipsObject;
+        if (ipsObject != null && ipsObject instanceof ITableStructure) {
+            ITableStructure tableStructure = (ITableStructure)ipsObject;
             return tableStructure.getUniqueKeys();
         }
         return EMPTY_ARRAY;

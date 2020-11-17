@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IMarker;
@@ -93,7 +93,7 @@ public class XValidationRuleTest {
     @Test
     public void testGetMarkerSourceCodes() {
         DatatypeHelper datahelper = mock(DatatypeHelper.class);
-        EnumType enumType = mock(EnumType.class);
+        IEnumType enumType = mock(IEnumType.class);
         IIpsSrcFile enumTypeSrcFile = mock(IIpsSrcFile.class);
         List<String> values = new ArrayList<String>();
         LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<IIpsSrcFile>();

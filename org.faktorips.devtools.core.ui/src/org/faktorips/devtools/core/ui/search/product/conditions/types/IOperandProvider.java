@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 
 /**
  * Interface, that provides an operand for a condition of the product search

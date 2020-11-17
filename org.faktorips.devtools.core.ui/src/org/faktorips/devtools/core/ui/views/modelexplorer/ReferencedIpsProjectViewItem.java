@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 class ReferencedIpsProjectViewItem {
 

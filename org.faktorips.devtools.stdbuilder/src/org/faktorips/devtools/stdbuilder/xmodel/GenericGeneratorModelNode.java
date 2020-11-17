@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xmodel;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 
 public class GenericGeneratorModelNode extends AbstractGeneratorModelNode {

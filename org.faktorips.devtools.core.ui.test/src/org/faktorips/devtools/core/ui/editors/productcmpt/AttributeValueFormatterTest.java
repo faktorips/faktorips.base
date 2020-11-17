@@ -23,9 +23,10 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class AttributeValueFormatterTest {
     @Test
     public void testGetFormattedValue_MultiValueDate() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
-        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> holderList = new ArrayList<>();
         holderList.add(new SingleValueHolder(attrValue, "2012-04-02"));
         holderList.add(new SingleValueHolder(attrValue, "1999-01-31"));
         doReturn(new MultiValueHolder(attrValue, holderList)).when(attrValue).getValueHolder();
@@ -81,7 +82,7 @@ public class AttributeValueFormatterTest {
     @Test
     public void testGetFormattedValue_MultiValueDecimal() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
-        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> holderList = new ArrayList<>();
         holderList.add(new SingleValueHolder(attrValue, "1.23456"));
         holderList.add(new SingleValueHolder(attrValue, "23.42"));
         doReturn(new MultiValueHolder(attrValue, holderList)).when(attrValue).getValueHolder();

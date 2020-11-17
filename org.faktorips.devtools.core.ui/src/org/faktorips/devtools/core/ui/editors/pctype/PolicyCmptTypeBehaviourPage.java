@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IType;
 
 public class PolicyCmptTypeBehaviourPage extends PolicyCmptTypeEditorPage {
 

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
-import org.faktorips.devtools.core.model.Validatable;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.Validatable;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
 
 /**
  * Helper interface for all dummy test objects, a dummy test object is virtual test object displayed

@@ -35,13 +35,13 @@ import org.eclipse.text.edits.TextEdit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 
 /**
  * Migration to version 3.7.0.
@@ -82,7 +82,7 @@ public class Migration_3_7_0 extends DefaultMigration {
                 Document document = new Document(source);
 
                 // creation of DOM/AST from a ICompilationUnit
-                ASTParser parser = ASTParser.newParser(AST.JLS8);
+                ASTParser parser = ASTParser.newParser(AST.JLS11);
                 parser.setSource(compilationUnit);
                 CompilationUnit astRoot = (CompilationUnit)parser.createAST(null);
 
@@ -101,7 +101,8 @@ public class Migration_3_7_0 extends DefaultMigration {
                             if (variableDeclaration.getName().getIdentifier().equals("pathFromAggregateRoot")) { //$NON-NLS-1$
                                 variableDeclaration = (SingleVariableDeclaration)methodDeclaration.parameters().get(2);
                                 Type type = variableDeclaration.getType();
-                                if (variableDeclaration.getName().getIdentifier().equals("propMap") && !type.isParameterizedType()) { //$NON-NLS-1$
+                                if (variableDeclaration.getName().getIdentifier().equals("propMap") //$NON-NLS-1$
+                                        && !type.isParameterizedType()) {
                                     AST ast = astRoot.getAST();
                                     ParameterizedType newType = ast.newParameterizedType(ast.newSimpleType(ast
                                             .newName(Map.class.getSimpleName())));
@@ -149,7 +150,7 @@ public class Migration_3_7_0 extends DefaultMigration {
                 Document document = new Document(source);
 
                 // creation of DOM/AST from a ICompilationUnit
-                ASTParser parser = ASTParser.newParser(AST.JLS8);
+                ASTParser parser = ASTParser.newParser(AST.JLS11);
                 parser.setSource(compilationUnit);
                 CompilationUnit astRoot = (CompilationUnit)parser.createAST(null);
 

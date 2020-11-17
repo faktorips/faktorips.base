@@ -19,12 +19,12 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 public final class ModelStructureContentProvider extends AbstractModelStructureContentProvider {
 
@@ -91,7 +91,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
      * when the root elements for a single IType have to be calculated.
      */
     private IpsObjectType getCurrentlyNeededIpsObjectType(IType input) {
-        if (input instanceof PolicyCmptType) {
+        if (input instanceof IPolicyCmptType) {
             return IpsObjectType.POLICY_CMPT_TYPE;
         } else {
             return IpsObjectType.PRODUCT_CMPT_TYPE;

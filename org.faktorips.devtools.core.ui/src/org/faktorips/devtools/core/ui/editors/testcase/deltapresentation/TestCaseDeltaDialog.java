@@ -18,9 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
+import org.faktorips.devtools.model.testcase.ITestCaseTestCaseTypeDelta;
 
 /**
  * Dialog to display differences between a test case and its test case type.

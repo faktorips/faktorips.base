@@ -16,14 +16,13 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.ui.IEditorPart;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,6 @@ public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IpsPlugin.getDefault().setTestMode(true);
         IIpsProject project = newIpsProject();
         PolicyCmptType policyCmptType = newPolicyAndProductCmptType(project, "PolicyCmpt", "ProductCmpt");
 
@@ -46,12 +44,6 @@ public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
         generation.setValidFrom(new GregorianCalendar());
 
         ipsObject = generation.getIpsObject();
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        IpsPlugin.getDefault().setTestMode(false);
-        super.tearDown();
     }
 
     @Test

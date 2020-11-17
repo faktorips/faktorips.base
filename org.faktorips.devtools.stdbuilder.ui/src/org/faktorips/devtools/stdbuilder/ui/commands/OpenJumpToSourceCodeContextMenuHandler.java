@@ -17,8 +17,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPage;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.commands.IpsAbstractHandler;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
 import org.faktorips.devtools.stdbuilder.ui.dynamicmenus.JumpToSourceCodeDynamicMenuContribution;
 

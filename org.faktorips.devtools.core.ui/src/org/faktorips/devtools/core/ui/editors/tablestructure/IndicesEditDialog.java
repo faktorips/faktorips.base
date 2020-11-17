@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.IKey;
 
 /**
  * A dialog to edit indices.

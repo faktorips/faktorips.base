@@ -25,14 +25,14 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 public class MethodEditDialog extends IpsPartEditDialog2 {

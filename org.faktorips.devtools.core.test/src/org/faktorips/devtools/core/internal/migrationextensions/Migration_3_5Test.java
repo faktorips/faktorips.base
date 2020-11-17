@@ -27,15 +27,15 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
-import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
-import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,7 +71,7 @@ public class Migration_3_5Test extends XmlAbstractTestCase {
         when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
         migration_3_5.migrate(ipsSrcFile);
 
-        verify(ipsSrcFile).setMemento(any(IpsSrcFileMemento.class));
+        verify(ipsSrcFile).setMemento(any(IIpsSrcFileMemento.class));
         verify(ipsSrcFile).markAsDirty();
     }
 
@@ -92,17 +92,17 @@ public class Migration_3_5Test extends XmlAbstractTestCase {
         Element ruleElement = (Element)element.getElementsByTagName("ValidationRuleDef").item(0);
         assertTrue(StringUtils.isEmpty(ruleElement.getAttribute("messageText")));
 
-        Element msgTextElement = (Element)ruleElement.getElementsByTagName(ValidationRule.XML_TAG_MSG_TXT).item(0);
+        Element msgTextElement = (Element)ruleElement.getElementsByTagName(IValidationRule.XML_TAG_MSG_TXT).item(0);
         assertNotNull(msgTextElement);
 
-        Node isElement = msgTextElement.getElementsByTagName(InternationalString.XML_TAG).item(0);
+        Node isElement = msgTextElement.getElementsByTagName(IInternationalString.XML_TAG).item(0);
         assertNotNull(isElement);
 
         Element lsElement = (Element)msgTextElement.getElementsByTagName(
-                InternationalString.XML_ELEMENT_LOCALIZED_STRING).item(0);
+                IInternationalString.XML_ELEMENT_LOCALIZED_STRING).item(0);
         assertNotNull(lsElement);
-        assertEquals(locale.toString(), lsElement.getAttribute(InternationalString.XML_ATTR_LOCALE));
-        assertEquals("testMsgText", lsElement.getAttribute(InternationalString.XML_ATTR_TEXT));
+        assertEquals(locale.toString(), lsElement.getAttribute(IInternationalString.XML_ATTR_LOCALE));
+        assertEquals("testMsgText", lsElement.getAttribute(IInternationalString.XML_ATTR_TEXT));
 
         // a second call of the migration should change nothing
         migrateXml = migration_3_5.migrateXml(element);
@@ -111,17 +111,17 @@ public class Migration_3_5Test extends XmlAbstractTestCase {
         ruleElement = (Element)element.getElementsByTagName("ValidationRuleDef").item(0);
         assertTrue(StringUtils.isEmpty(ruleElement.getAttribute("messageText")));
 
-        msgTextElement = (Element)ruleElement.getElementsByTagName(ValidationRule.XML_TAG_MSG_TXT).item(0);
+        msgTextElement = (Element)ruleElement.getElementsByTagName(IValidationRule.XML_TAG_MSG_TXT).item(0);
         assertNotNull(msgTextElement);
 
-        isElement = msgTextElement.getElementsByTagName(InternationalString.XML_TAG).item(0);
+        isElement = msgTextElement.getElementsByTagName(IInternationalString.XML_TAG).item(0);
         assertNotNull(isElement);
 
-        lsElement = (Element)msgTextElement.getElementsByTagName(InternationalString.XML_ELEMENT_LOCALIZED_STRING)
+        lsElement = (Element)msgTextElement.getElementsByTagName(IInternationalString.XML_ELEMENT_LOCALIZED_STRING)
                 .item(0);
         assertNotNull(lsElement);
-        assertEquals(locale.toString(), lsElement.getAttribute(InternationalString.XML_ATTR_LOCALE));
-        assertEquals("testMsgText", lsElement.getAttribute(InternationalString.XML_ATTR_TEXT));
+        assertEquals(locale.toString(), lsElement.getAttribute(IInternationalString.XML_ATTR_LOCALE));
+        assertEquals("testMsgText", lsElement.getAttribute(IInternationalString.XML_ATTR_TEXT));
     }
 
     IIpsProject mockProject(Locale locale) {

@@ -29,20 +29,20 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -137,13 +137,13 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
      * 
      */
     @Test
-    public void testRuntimeIdDependency() throws CoreException, IOException, SAXException, ParserConfigurationException {
+    public void testRuntimeIdDependency()
+            throws CoreException, IOException, SAXException, ParserConfigurationException {
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmptType c = newProductCmptType(root, "C");
         IProductCmptType d = newProductCmptType(root, "D");
 
-        org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation association = c
-                .newProductCmptTypeAssociation();
+        IProductCmptTypeAssociation association = c.newProductCmptTypeAssociation();
         association.setTargetRoleSingular("relationD");
         association.setTarget(d.getQualifiedName());
         IProductCmpt productCmptC = newProductCmpt(c, "tests.productC");
@@ -229,7 +229,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     private void assertNumberOfGenerations(IProductCmpt productCmpt, int expectedGenerationCount) throws SAXException,
-    IOException, ParserConfigurationException, CoreException {
+            IOException, ParserConfigurationException, CoreException {
         IFile xmlFile = getXmlFile(productCmpt);
         Document document = getDocumentBuilder().parse(xmlFile.getContents());
         Element prodCmptElement = document.getDocumentElement();
@@ -302,10 +302,10 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         incrementalBuild();
 
         Element root = parseProductCmptElement();
-        NodeList internationalStrings = root.getElementsByTagName(InternationalString.XML_TAG);
+        NodeList internationalStrings = root.getElementsByTagName(IInternationalString.XML_TAG);
         assertThat(internationalStrings.getLength(), is(1));
         Element internationalString = (Element)internationalStrings.item(0);
-        assertThat(internationalString.getAttribute(InternationalString.XML_ATTR_DEFAULT_LOCALE),
+        assertThat(internationalString.getAttribute(IInternationalString.XML_ATTR_DEFAULT_LOCALE),
                 is(defaultLocale.getLanguage()));
 
     }
@@ -328,16 +328,16 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         incrementalBuild();
 
         Element root = parseProductCmptElement();
-        NodeList internationalStrings = root.getElementsByTagName(InternationalString.XML_TAG);
+        NodeList internationalStrings = root.getElementsByTagName(IInternationalString.XML_TAG);
         assertThat(internationalStrings.getLength(), is(1));
         Element internationalString = (Element)internationalStrings.item(0);
-        assertThat(internationalString.getAttribute(InternationalString.XML_ATTR_DEFAULT_LOCALE),
+        assertThat(internationalString.getAttribute(IInternationalString.XML_ATTR_DEFAULT_LOCALE),
                 is(defaultLocale.getLanguage()));
 
     }
 
     private Element parseProductCmptElement() throws SAXException, IOException, ParserConfigurationException,
-    CoreException {
+            CoreException {
         IFile xmlFile = getXmlFile(productCmpt);
         Document document = getDocumentBuilder().parse(xmlFile.getContents());
         return document.getDocumentElement();

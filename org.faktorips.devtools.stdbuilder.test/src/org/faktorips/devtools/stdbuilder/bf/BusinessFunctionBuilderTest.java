@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
 
-    private final static String BUSINESS_FUNCTION_NAME = "TestBusinessFunction";
+    private static final String BUSINESS_FUNCTION_NAME = "TestBusinessFunction";
 
     private BusinessFunctionBuilder builder;
 

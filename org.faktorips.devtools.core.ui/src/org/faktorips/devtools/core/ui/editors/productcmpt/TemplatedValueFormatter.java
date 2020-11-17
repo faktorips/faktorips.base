@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /**
  * Formats the value of {@link ITemplatedValue templated values}. It uses the

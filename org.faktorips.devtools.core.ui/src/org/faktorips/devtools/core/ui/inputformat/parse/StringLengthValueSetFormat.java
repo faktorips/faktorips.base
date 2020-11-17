@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.StringLengthValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * Formats and parses the contents of a {@link StringLengthValueSet}

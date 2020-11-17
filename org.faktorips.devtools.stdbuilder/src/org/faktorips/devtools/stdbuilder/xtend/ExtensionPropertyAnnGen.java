@@ -27,11 +27,11 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
@@ -116,7 +116,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
             annotationArg.append(", isNull = true");
         } else {
             annotationArg.append(", value = \"");
-            Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
+                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
             Element valueElement = doc.createElement("value");
             extensionPropertyDefinition.valueToXml(valueElement, value);
             String valueString = valueElement.getTextContent();

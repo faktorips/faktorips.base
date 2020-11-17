@@ -42,17 +42,17 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.util.StringUtils;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.internal.util.StringUtils;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -256,8 +256,7 @@ public class BuilderSetContainer {
 
     private String getBuilderSetIdByLabel(String builderSetLabel) {
         String builderSetId = null;
-
-        IIpsArtefactBuilderSetInfo[] ipsArtefactBuilderSetInfos = IpsPlugin.getDefault().getIpsModel()
+        IIpsArtefactBuilderSetInfo[] ipsArtefactBuilderSetInfos = IIpsModel.get()
                 .getIpsArtefactBuilderSetInfos();
         for (IIpsArtefactBuilderSetInfo ipsArtefactBuilderSetInfo : ipsArtefactBuilderSetInfos) {
             if (builderSetLabel.equals(ipsArtefactBuilderSetInfo.getBuilderSetLabel())) {
@@ -267,10 +266,10 @@ public class BuilderSetContainer {
         return builderSetId;
     }
 
-    private IpsArtefactBuilderSetInfo getBuilderSetInfo(String builderSetId) {
+    private IIpsArtefactBuilderSetInfo getBuilderSetInfo(String builderSetId) {
         List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos();
         for (IIpsArtefactBuilderSetInfo iIpsArtefactBuilderSetInfo : builderSetInfos) {
-            IpsArtefactBuilderSetInfo info = (IpsArtefactBuilderSetInfo)iIpsArtefactBuilderSetInfo;
+            IIpsArtefactBuilderSetInfo info = iIpsArtefactBuilderSetInfo;
             if (builderSetId.equals(info.getBuilderSetId())) {
                 return info;
             }
@@ -379,8 +378,7 @@ public class BuilderSetContainer {
             builderSetId = getBuilderSetIdByLabel(builderSetLabel);
             ipsProjectProperties = ipsProject.getProperties();
             ipsProjectProperties.setBuilderSetId(builderSetId);
-
-            IIpsArtefactBuilderSetInfo ipsArtefactBuilderSetInfo = IpsPlugin.getDefault().getIpsModel()
+            IIpsArtefactBuilderSetInfo ipsArtefactBuilderSetInfo = IIpsModel.get()
                     .getIpsArtefactBuilderSetInfo(builderSetId);
             builderSetConfigModel = ipsArtefactBuilderSetInfo.createDefaultConfiguration(ipsProject);
             ipsProjectProperties.setBuilderSetConfig(builderSetConfigModel);
@@ -409,7 +407,7 @@ public class BuilderSetContainer {
 
     private void validateBuilderSetConfig() {
         String builderSetId = getBuilderSetIdByLabel(builderSetComboField.getText());
-        IpsArtefactBuilderSetInfo info = getBuilderSetInfo(builderSetId);
+        IIpsArtefactBuilderSetInfo info = getBuilderSetInfo(builderSetId);
         builderSetConfigModel.validate(ipsProject, info);
     }
 
@@ -438,7 +436,7 @@ public class BuilderSetContainer {
         // restore old model if available, else create a new one
         builderSetConfigModel = builderSetModels.get(newBuilderSetId);
         if (builderSetConfigModel == null) {
-            IpsArtefactBuilderSetInfo info = getBuilderSetInfo(newBuilderSetId);
+            IIpsArtefactBuilderSetInfo info = getBuilderSetInfo(newBuilderSetId);
             builderSetConfigModel = info.createDefaultConfiguration(ipsProject);
         }
 
@@ -551,7 +549,7 @@ public class BuilderSetContainer {
 
         @Override
         public Object[] getElements(Object inputElement) {
-            IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()
+            IIpsArtefactBuilderSetInfo builderSetInfo = IIpsModel.get()
                     .getIpsArtefactBuilderSetInfo(inputElement.toString());
             if (builderSetInfo != null) {
                 return builderSetInfo.getPropertyDefinitions();

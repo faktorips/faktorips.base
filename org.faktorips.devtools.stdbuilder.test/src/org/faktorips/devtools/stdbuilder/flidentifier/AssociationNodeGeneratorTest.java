@@ -22,13 +22,13 @@ import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
-import org.faktorips.devtools.core.internal.model.type.Association;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.util.TextRegion;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -40,7 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AssociationNodeGeneratorTest {
     @Mock
-    Association association;
+    IAssociation association;
 
     @Mock
     IType target;

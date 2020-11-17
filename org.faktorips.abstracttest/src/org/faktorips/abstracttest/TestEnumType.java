@@ -15,11 +15,11 @@ import java.util.List;
 
 public class TestEnumType {
 
-    public final static TestEnumType FIRSTVALUE = new TestEnumType("1", "first");
-    public final static TestEnumType SECONDVALUE = new TestEnumType("2", "second");
-    public final static TestEnumType THIRDVALUE = new TestEnumType("3", "third");
+    public static final TestEnumType FIRSTVALUE = new TestEnumType("1", "first");
+    public static final TestEnumType SECONDVALUE = new TestEnumType("2", "second");
+    public static final TestEnumType THIRDVALUE = new TestEnumType("3", "third");
 
-    private final static List<TestEnumType> allValues;
+    private static final List<TestEnumType> allValues;
 
     static {
         allValues = new ArrayList<TestEnumType>();
@@ -37,7 +37,7 @@ public class TestEnumType {
         this.name = name;
     }
 
-    public final static TestEnumType[] getAllValues() {
+    public static final TestEnumType[] getAllValues() {
         return allValues.toArray(new TestEnumType[allValues.size()]);
     }
 
@@ -50,7 +50,7 @@ public class TestEnumType {
         }
     }
 
-    public final static TestEnumType valueOf(String id) {
+    public static final TestEnumType valueOf(String id) {
 
         TestEnumType[] allValues = getAllValues();
         for (TestEnumType allValue : allValues) {

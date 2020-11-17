@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * This interface describes a business function. A business function is a course grained definition

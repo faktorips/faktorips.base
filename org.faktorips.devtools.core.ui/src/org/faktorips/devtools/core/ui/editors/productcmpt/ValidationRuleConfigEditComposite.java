@@ -16,16 +16,16 @@ import java.util.function.Function;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 
 /**
  * Provides controls that allow the user to edit an {@link IValidationRuleConfig}.
@@ -55,7 +55,7 @@ public class ValidationRuleConfigEditComposite
     private CheckboxField createActiveEditField() {
         Checkbox checkbox = getToolkit().createCheckbox(this);
         checkbox.setChecked(getPropertyValue().isActive());
-        checkbox.setText(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
+        checkbox.setText(IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
         checkbox.setToolTipText(getValidationRuleDescription());
         CheckboxField editField = new CheckboxField(checkbox);
         getBindingContext().bindContent(editField, getPropertyValue(), IValidationRuleConfig.PROPERTY_ACTIVE);
@@ -66,7 +66,7 @@ public class ValidationRuleConfigEditComposite
         try {
             IValidationRule validationRule = getPropertyValue().findValidationRule(getPropertyValue().getIpsProject());
             if (validationRule != null) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(validationRule);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(validationRule);
             }
         } catch (CoreException ex) {
             throw new CoreRuntimeException(ex);

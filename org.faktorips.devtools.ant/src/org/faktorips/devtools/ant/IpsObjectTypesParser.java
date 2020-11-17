@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**

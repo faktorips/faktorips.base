@@ -25,8 +25,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveParticipant {
 
-    final static String FILE_NAME = "ips-editor-settings.txt"; //$NON-NLS-1$
+    static final String FILE_NAME = "ips-editor-settings.txt"; //$NON-NLS-1$
 
     private HashMap<String, Map<String, String>> settings = new HashMap<String, Map<String, String>>();
 

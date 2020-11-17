@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This drop listener is only responsible to show new objects not to drag into the structure. For

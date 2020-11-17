@@ -13,11 +13,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableRows;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablecontents.ITableRows;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,14 +31,14 @@ public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
     @Ignore
     @Test
     public void testBuildBigTable() throws CoreException {
-        TableStructure tableStructure = newTableStructure(ipsProject, "TS");
+        ITableStructure tableStructure = newTableStructure(ipsProject, "TS");
         for (int c = 0; c < COLUMNS; c++) {
             IColumn column = tableStructure.newColumn();
             column.setDatatype(Datatype.STRING.getQualifiedName());
             column.setName("C" + c);
         }
         tableStructure.getIpsSrcFile().save(true, null);
-        TableContents tableContents = newTableContents(tableStructure, "TC");
+        ITableContents tableContents = newTableContents(tableStructure, "TC");
         for (int c = 0; c < COLUMNS; c++) {
             tableContents.newColumn("VD", "C" + c);
         }

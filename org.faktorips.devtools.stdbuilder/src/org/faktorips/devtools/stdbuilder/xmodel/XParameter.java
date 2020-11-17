@@ -14,7 +14,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 
 public class XParameter extends AbstractGeneratorModelNode {

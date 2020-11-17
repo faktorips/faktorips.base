@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
  * Dialog for editing output folders of IPS source folder entries

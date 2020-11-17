@@ -15,21 +15,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
 import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
- * Creates a list with links to the pages of the given {@link IpsObject}s. The {@link IpsObject}s
+ * Creates a list with links to the pages of the given {@link IIpsObject}s. The {@link IIpsObject}s
  * will be filtered and sorted on the page.
  * 
  * @author dicker

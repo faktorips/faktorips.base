@@ -20,11 +20,11 @@ import java.util.function.Function;
 import com.google.common.collect.Lists;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

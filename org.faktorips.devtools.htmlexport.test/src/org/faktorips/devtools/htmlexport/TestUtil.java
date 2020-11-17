@@ -16,9 +16,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.IoHandler;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public class TestUtil {
 

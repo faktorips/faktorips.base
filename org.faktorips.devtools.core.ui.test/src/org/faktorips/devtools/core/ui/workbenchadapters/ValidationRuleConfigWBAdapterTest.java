@@ -16,8 +16,8 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.junit.Before;
 import org.junit.Test;
 

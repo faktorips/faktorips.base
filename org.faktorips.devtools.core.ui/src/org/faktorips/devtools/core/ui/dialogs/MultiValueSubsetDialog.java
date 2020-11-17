@@ -14,10 +14,10 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.controls.chooser.MultiValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 
 public class MultiValueSubsetDialog extends IpsPartEditDialog2 {
 

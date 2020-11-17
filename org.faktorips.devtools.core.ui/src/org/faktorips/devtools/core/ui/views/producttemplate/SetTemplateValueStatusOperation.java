@@ -13,9 +13,8 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
 /** An operation to set the template value status of property values. */
 public class SetTemplateValueStatusOperation extends AbstractTemplatedValueOperation {
@@ -29,6 +28,7 @@ public class SetTemplateValueStatusOperation extends AbstractTemplatedValueOpera
         this.status = status;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         int count = values.size();
@@ -38,7 +38,7 @@ public class SetTemplateValueStatusOperation extends AbstractTemplatedValueOpera
             propertyValue.setTemplateValueStatus(status);
             monitor.worked(1);
         }
-        save(new SubProgressMonitor(monitor, 10));
+        save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
         monitor.done();
     }
 

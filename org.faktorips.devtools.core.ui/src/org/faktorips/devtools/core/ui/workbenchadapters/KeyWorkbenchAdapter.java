@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.IKey;
 
 /**
  * WorkbenchAdapterProvider for ForeignKeys and Indices in TableStructure. It is the responsibility

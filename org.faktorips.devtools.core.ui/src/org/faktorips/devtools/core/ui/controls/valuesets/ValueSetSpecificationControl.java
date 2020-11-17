@@ -27,14 +27,6 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -44,12 +36,20 @@ import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
 
 /**
  * A control to specify the value set belonging to a {@link IValueSetOwner} . The control also
  * allows to change the type of the value set. Which value set types are allowed are defined by
- * {@link IValueSetOwner#getAllowedValueSetTypes(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+ * {@link IValueSetOwner#getAllowedValueSetTypes(org.faktorips.devtools.model.ipsproject.IIpsProject)}
  */
 public class ValueSetSpecificationControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 

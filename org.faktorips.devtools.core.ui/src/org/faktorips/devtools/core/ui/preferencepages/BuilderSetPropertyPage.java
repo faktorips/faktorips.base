@@ -18,8 +18,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Property page for configuring IPS builder sets. Changes made in this page are persisted in an IPS
@@ -103,12 +103,12 @@ public class BuilderSetPropertyPage extends PropertyPage {
     private IIpsProject getIpsProject() {
         IIpsProject ipsProject = null;
         if (element instanceof IProject) {
-            ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject((IProject)element);
+            ipsProject = IIpsModel.get().getIpsProject((IProject)element);
         } else {
-            IJavaElement javaElement = (IJavaElement)element.getAdapter(IJavaElement.class);
+            IJavaElement javaElement = element.getAdapter(IJavaElement.class);
             if (javaElement instanceof IJavaProject) {
                 IProject project = ((IJavaProject)javaElement).getProject();
-                ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                ipsProject = IIpsModel.get().getIpsProject(project);
             }
         }
         return ipsProject;

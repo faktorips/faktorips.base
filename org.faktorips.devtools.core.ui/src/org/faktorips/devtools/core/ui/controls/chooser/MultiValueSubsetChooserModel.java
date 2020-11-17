@@ -15,24 +15,25 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IMultiValueHolder;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.util.ListElementMover;
 import org.faktorips.util.message.MessageList;
 
 public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
-    private final MultiValueHolder multiValueHolder;
+    private final IMultiValueHolder multiValueHolder;
     private final List<ListChooserValue> resultingValues = new ArrayList<ListChooserValue>();
     private final List<ListChooserValue> sourceValues = new ArrayList<ListChooserValue>();
 
-    public MultiValueSubsetChooserModel(List<String> allValues, MultiValueHolder multiValueHolder,
+    public MultiValueSubsetChooserModel(List<String> allValues, IMultiValueHolder multiValueHolder,
             ValueDatatype datatype, IAttributeValue attributeValue) {
         super(datatype, attributeValue);
         this.multiValueHolder = multiValueHolder;
-        for (SingleValueHolder holder : multiValueHolder.getValue()) {
+        for (ISingleValueHolder holder : multiValueHolder.getValue()) {
             resultingValues.add(new ListChooserValue(holder.getStringValue()));
         }
         for (String string : allValues) {
@@ -53,7 +54,7 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     @Override
     public MessageList validateValue(ListChooserValue value) {
         try {
-            SingleValueHolder holder = findSingleValueHolderFor(value);
+            ISingleValueHolder holder = findSingleValueHolderFor(value);
             MessageList messageList = multiValueHolder.validate(multiValueHolder.getIpsProject());
             messageList = messageList.getMessagesFor(holder);
             return messageList;
@@ -62,9 +63,9 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
         }
     }
 
-    protected SingleValueHolder findSingleValueHolderFor(ListChooserValue value) {
-        List<SingleValueHolder> holders = multiValueHolder.getValue();
-        for (SingleValueHolder singleValueHolder : holders) {
+    protected ISingleValueHolder findSingleValueHolderFor(ListChooserValue value) {
+        List<ISingleValueHolder> holders = multiValueHolder.getValue();
+        for (ISingleValueHolder singleValueHolder : holders) {
             if (value.getValue() == null && singleValueHolder.getStringValue() == null) {
                 return singleValueHolder;
             } else if (value.getValue() != null && value.getValue().equals(singleValueHolder.getStringValue())) {
@@ -103,9 +104,9 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     protected void updateMultiValueHolder() {
-        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> holderList = new ArrayList<>();
         for (ListChooserValue value : getResultingValues()) {
-            SingleValueHolder holder = new SingleValueHolder(multiValueHolder.getParent(), value.getValue());
+            ISingleValueHolder holder = new SingleValueHolder(multiValueHolder.getParent(), value.getValue());
             holderList.add(holder);
         }
         multiValueHolder.setValue(holderList);

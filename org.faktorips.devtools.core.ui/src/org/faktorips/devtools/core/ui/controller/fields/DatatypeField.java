@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * A field for datatype references.

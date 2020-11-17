@@ -19,15 +19,15 @@ import java.util.Arrays;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.StringLengthValueSet;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IStringLengthValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
+import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,8 +59,8 @@ public class StringLengthValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
-    private final static String REGULARFORMAT = NLS.bind(Messages.StringLengthValueSetFormat_Description, "10");
-    private final static String UNLIMITEDFORMAT = NLS.bind(Messages.StringLengthValueSetFormat_Description,
+    private static final String REGULARFORMAT = NLS.bind(Messages.StringLengthValueSetFormat_Description, "10");
+    private static final String UNLIMITEDFORMAT = NLS.bind(Messages.StringLengthValueSetFormat_Description,
             Messages.StringLengthValueSetFormat_Unlimited);
 
     private StringLengthValueSetFormat format;

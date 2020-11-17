@@ -15,12 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -39,6 +33,12 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeAssoc
 import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeAttributesPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeMethodsPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 
 /**
  * A complete page representing an {@link IType}
@@ -157,8 +157,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new PageElementUtils(
-                getContext()).createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT, superTypes
-                        .get(0).getQualifiedName(), true), getContext()), getContext());
+                getContext()).createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT,
+                        superTypes
+                                .get(0).getQualifiedName(),
+                        true),
+                getContext()), getContext());
         TreeNodePageElement element = baseElement;
 
         for (int i = 1; i < superTypes.size(); i++) {
@@ -169,7 +172,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
             }
             TreeNodePageElement subElement = new TreeNodePageElement(
                     new PageElementUtils(getContext()).createLinkPageElement(getContext(), superTypes.get(i),
-                            TargetType.CONTENT, getContext().getLabel(superTypes.get(i)), true), getContext());
+                            TargetType.CONTENT, getContext().getLabel(superTypes.get(i)), true),
+                    getContext());
             element.addPageElements(subElement);
             element = subElement;
         }
@@ -204,9 +208,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 WrapperType.BLOCK,
                 getContext(),
                 new IPageElement[] {
-                    new TextPageElement(getContext().getMessage(
-                            HtmlExportMessages.AbstractTypeContentPageElement_extends)
-                            + " ", getContext()), new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
+                        new TextPageElement(getContext().getMessage(
+                                HtmlExportMessages.AbstractTypeContentPageElement_extends)
+                                + " ", getContext()), //$NON-NLS-1$
+                        new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT,
+                                getContext().getLabel(to), true) }));
     }
 
     /**
@@ -219,8 +225,9 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 TextType.HEADING_2, getContext()));
 
         wrapper.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext()
-                .getMessage(HtmlExportMessages.AbstractTypeContentPageElement_noAssociations)));
+                getContext()),
+                getContext()
+                        .getMessage(HtmlExportMessages.AbstractTypeContentPageElement_noAssociations)));
 
         addInheritedAssociations(wrapper);
 

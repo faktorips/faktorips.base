@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.part.IPage;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableRows;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
+import org.faktorips.devtools.model.internal.tablecontents.TableRows;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * Editor for a table content.

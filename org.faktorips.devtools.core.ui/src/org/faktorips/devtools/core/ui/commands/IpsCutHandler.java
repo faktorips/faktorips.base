@@ -20,8 +20,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
  * A handler to cut IpsObjectPartContainer-objects out of the model into the clipboard.

@@ -11,13 +11,13 @@
 package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablecontents.ITableRows;
 
 /**
  * A CompareItem for building a structure that represents a <code>ITableContents</code> object. The

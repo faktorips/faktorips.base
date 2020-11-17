@@ -14,11 +14,4 @@
             versionMustChange="false">
       </releaseExtension>
    </extension>
-   <extension
-         point="org.faktorips.devtools.core.datatypeDefinition">
-      <datatypeDefinition
-            datatypeClass="org.faktorips.devtools.core.internal.model.productcmpt.InvalidDatatype"
-            helperClass="org.faktorips.devtools.core.internal.model.productcmpt.InvalidDatatypeHelper">
-      </datatypeDefinition>
-   </extension>
 </fragment>

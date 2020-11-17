@@ -17,17 +17,17 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IVersion;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IVersion;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 
 public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends IIpsObjectPartContainer> extends
 AbstractStandardTablePageElement {

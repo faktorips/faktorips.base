@@ -11,7 +11,7 @@ package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
 
 public class EclipseLink25PersistenceProvider extends EclipseLink1PersistenceProvider {
 

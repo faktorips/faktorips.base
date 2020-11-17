@@ -18,11 +18,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
 
@@ -80,7 +80,7 @@ public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
     protected void createToolbarActions(IToolBarManager toolbarManager) {
         toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
-        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        IMenuService menuService = getSite().getService(IMenuService.class);
         menuService.populateContributionManager((ContributionManager)toolbarManager,
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_TABLE_STRUCTURE_EDITOR_PAGE.getId()));
     }

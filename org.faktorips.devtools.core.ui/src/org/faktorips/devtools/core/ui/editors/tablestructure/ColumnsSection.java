@@ -16,16 +16,15 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.faktorips.devtools.core.internal.model.tablestructure.Column;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 public class ColumnsSection extends SimpleIpsPartsSection {
 
@@ -95,7 +94,7 @@ public class ColumnsSection extends SimpleIpsPartsSection {
         @Override
         public String getText(Object element) {
             String text = super.getText(element);
-            IColumn column = (Column)element;
+            IColumn column = (IColumn)element;
             return text + " : " + column.getDatatype(); //$NON-NLS-1$
         }
     }

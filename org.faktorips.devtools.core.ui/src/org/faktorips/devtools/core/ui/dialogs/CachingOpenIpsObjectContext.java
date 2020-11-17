@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This implementation of {@link ISelectIpsObjectContext} supports a lazy loading mechanism getting

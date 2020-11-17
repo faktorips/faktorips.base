@@ -19,11 +19,12 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.refactor.Messages;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -90,7 +91,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
     }
 
     private String getLocalizedContainerCaption() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getIpsObjectPart().getIpsObject());
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getIpsObjectPart().getIpsObject());
     }
 
     /**

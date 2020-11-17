@@ -21,16 +21,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +64,7 @@ public class RangeValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
-    private final static String NULL_PRESENTATION = NLS.bind(Messages.RangeValueSetFormat_includingNull,
+    private static final String NULL_PRESENTATION = NLS.bind(Messages.RangeValueSetFormat_includingNull,
             IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 
     @Before

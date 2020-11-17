@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
-import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.junit.Test;
 
 public class PullUpEnumAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {

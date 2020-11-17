@@ -20,17 +20,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 
 /**
@@ -93,7 +93,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
             setTargetForImport(null);
             return;
         }
-        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
         if (element instanceof IIpsSrcFile) {
             IIpsSrcFile src = (IIpsSrcFile)element;
             setTargetForImport(src.getIpsObject());

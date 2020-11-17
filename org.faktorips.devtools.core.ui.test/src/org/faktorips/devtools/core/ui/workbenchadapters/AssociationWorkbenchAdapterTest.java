@@ -18,13 +18,13 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.AssociationType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,7 +88,7 @@ public class AssociationWorkbenchAdapterTest extends AbstractIpsPluginTest {
         assertNotNull(imageDescriptor);
         assertTrue(createImageDescriptor(
                 AssociationWorkbenchAdapter.ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE)
-                .equals(imageDescriptor));
+                        .equals(imageDescriptor));
     }
 
     @Test

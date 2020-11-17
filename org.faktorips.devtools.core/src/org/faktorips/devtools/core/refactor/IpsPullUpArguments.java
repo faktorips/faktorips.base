@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Arguments for Faktor-IPS "Pull Up" refactorings.

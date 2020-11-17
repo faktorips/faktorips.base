@@ -15,11 +15,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -19,13 +19,13 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.IIpsSearchPartPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 
 /**

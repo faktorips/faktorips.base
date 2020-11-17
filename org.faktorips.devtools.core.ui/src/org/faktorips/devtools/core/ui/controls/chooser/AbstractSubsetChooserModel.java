@@ -19,9 +19,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.util.message.MessageList;
 
 /**

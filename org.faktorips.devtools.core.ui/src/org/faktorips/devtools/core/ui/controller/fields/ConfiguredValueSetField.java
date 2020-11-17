@@ -14,11 +14,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.AbstractProposalProvider;
@@ -27,6 +22,11 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ContentProposalListener;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 public class ConfiguredValueSetField extends FormattingTextField<IValueSet> {
 

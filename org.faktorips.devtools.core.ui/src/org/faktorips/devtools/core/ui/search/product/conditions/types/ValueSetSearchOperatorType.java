@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * This Enumeration contains {@link ISearchOperatorType ISearchOperatorTypes} to check with

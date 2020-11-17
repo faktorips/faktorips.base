@@ -14,8 +14,8 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.swt.custom.StyledText;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.ui.controller.fields.StyledTextModifyListener;
+import org.faktorips.devtools.model.productcmpt.IFormula;
 
 public final class FormulaEdit {
 

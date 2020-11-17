@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Modifier;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;

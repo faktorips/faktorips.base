@@ -32,14 +32,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -55,7 +47,15 @@ import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -534,7 +534,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 }
                 IProductCmptTypeAssociation matchingProductCmptTypeAssociation = getDefaultMatchingAssociation();
                 getAssociation().setMatchingAssociationName(matchingProductCmptTypeAssociation != null
-                        ? matchingProductCmptTypeAssociation.getName() : null);
+                        ? matchingProductCmptTypeAssociation.getName()
+                        : null);
             } else {
                 getAssociation().setMatchingAssociationSource(StringUtils.EMPTY);
                 getAssociation().setMatchingAssociationName(null);

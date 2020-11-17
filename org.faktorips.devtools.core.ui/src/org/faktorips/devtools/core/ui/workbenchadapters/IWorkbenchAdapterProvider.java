@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import java.util.Map;
 
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.internal.model.IpsElement;
+import org.faktorips.devtools.model.internal.IpsElement;
 
 /**
  * A {@link IWorkbenchAdapterProvider} is able to provides a map of {@link IWorkbenchAdapter} for

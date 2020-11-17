@@ -1,6 +1,6 @@
 package org.faktorips.devtools.core.ui.commands;
 
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
 /**
  * A handler to set the template value status of property values to

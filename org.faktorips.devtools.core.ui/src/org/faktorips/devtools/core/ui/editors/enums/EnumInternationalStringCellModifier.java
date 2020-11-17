@@ -13,12 +13,12 @@ package org.faktorips.devtools.core.ui.editors.enums;
 import java.util.Locale;
 
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.values.LocalizedString;
 
 /**

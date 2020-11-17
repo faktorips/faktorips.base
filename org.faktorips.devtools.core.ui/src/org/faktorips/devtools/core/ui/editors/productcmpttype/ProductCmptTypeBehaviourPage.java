@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
  * 

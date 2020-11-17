@@ -23,14 +23,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
 
 public abstract class ValidationRuleMessagesImportOperation implements IWorkspaceRunnable {
@@ -163,6 +162,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
                 Messages.ValidationRuleCsvImporter_status_multipleUsedMessageCodes, null);
     }
 
+    @SuppressWarnings("deprecation")
     private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
@@ -173,7 +173,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
             importValidationMessages(pcType);
             getMonitor().worked(1);
             if (!dirtyState && ipsSrcFile.isDirty()) {
-                ipsSrcFile.save(false, new SubProgressMonitor(getMonitor(), 1));
+                ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(getMonitor(), 1));
             }
         }
     }

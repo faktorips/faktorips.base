@@ -34,7 +34,7 @@ public class ToggleActionTest {
     }
 
     private void checkAction(final boolean startValue) {
-        WritableValue observable = new WritableValue(startValue, Boolean.class);
+        WritableValue<Boolean> observable = new WritableValue<>(startValue, Boolean.class);
         ToggleAction action = new ToggleAction("description", "icon", observable);
 
         assertEquals(WRONG_ACTION_CHECKED_STATE, startValue, action.isChecked());
@@ -50,7 +50,7 @@ public class ToggleActionTest {
      */
     @Test
     public void testActionStateUpdateFromModel() {
-        WritableValue observable = new WritableValue(true, Boolean.class);
+        WritableValue<Boolean> observable = new WritableValue<>(true, Boolean.class);
         ToggleAction action = new ToggleAction("description", "icon", observable);
 
         assertTrue(WRONG_ACTION_CHECKED_STATE, action.isChecked());

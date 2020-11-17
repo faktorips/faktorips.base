@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 
 public class AssociationSelectionDialog extends ListSelectionDialog {
 

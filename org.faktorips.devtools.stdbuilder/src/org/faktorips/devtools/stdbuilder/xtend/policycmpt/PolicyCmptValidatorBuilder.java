@@ -10,14 +10,13 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
@@ -49,7 +48,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
             if (!ipsSrcFile.exists()) {
                 return true;
             }
-            PolicyCmptType cmpt = (PolicyCmptType)ipsSrcFile.getIpsObject();
+            IPolicyCmptType cmpt = (IPolicyCmptType)ipsSrcFile.getIpsObject();
             // existing validator classes should be deprecated instead of deleted to
             // preserve manual calls and custom implementations
             return cmpt.isGenerateValidatorClass() || isValidatorClassAlreadyPresent(ipsSrcFile);

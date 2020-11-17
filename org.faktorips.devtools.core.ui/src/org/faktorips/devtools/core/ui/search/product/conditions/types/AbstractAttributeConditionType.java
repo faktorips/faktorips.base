@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import java.util.Collection;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * Abstract implementation of {@link IConditionType} for searching attribute values.

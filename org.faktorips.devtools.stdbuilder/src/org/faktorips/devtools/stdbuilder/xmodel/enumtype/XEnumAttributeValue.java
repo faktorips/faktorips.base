@@ -11,7 +11,7 @@ package org.faktorips.devtools.stdbuilder.xmodel.enumtype;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;

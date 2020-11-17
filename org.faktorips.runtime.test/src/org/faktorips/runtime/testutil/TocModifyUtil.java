@@ -75,7 +75,7 @@ public class TocModifyUtil {
         writer.close();
     }
 
-    protected final static DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
+    protected static final DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder;

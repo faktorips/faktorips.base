@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.internal.migration;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Migration to version 3.1.0.ms2.

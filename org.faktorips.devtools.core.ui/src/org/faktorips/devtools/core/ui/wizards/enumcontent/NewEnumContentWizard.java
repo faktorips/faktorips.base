@@ -13,11 +13,12 @@ package org.faktorips.devtools.core.ui.wizards.enumcontent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.ui.wizards.AbstractIpsObjectNewWizardPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
+import org.faktorips.devtools.model.enums.IEnumContent;
 
 /**
- * A wizard responsible for the creation of a new <code>IEnumContent</code>.
+ * A wizard responsible for the creation of a new {@link IEnumContent}.
  * 
- * @see org.faktorips.devtools.core.model.enums.IEnumContent
+ * @see IEnumContent
  * 
  * @author Alexander Weickmann
  * 

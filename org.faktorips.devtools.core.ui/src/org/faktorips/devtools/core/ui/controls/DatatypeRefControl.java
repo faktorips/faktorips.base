@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * A control that allows to edit a reference to a datatype.

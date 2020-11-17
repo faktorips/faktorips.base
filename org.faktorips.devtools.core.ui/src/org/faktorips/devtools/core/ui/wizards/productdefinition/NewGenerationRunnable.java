@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 
 /**
  * Allows to create a new {@linkplain IIpsObjectGeneration IPS Object Generation} for a number of

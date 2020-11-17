@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.stdbuilder.MessagesProperties;
 import org.faktorips.util.MultiMap;
 

@@ -48,12 +48,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.contexts.IContextService;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
@@ -61,11 +55,17 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The <code>ModelExplorer</code> is a <code>ViewPart</code> for displaying <code>IIpsObject</code>s along with
- * their attributes.
+ * The <code>ModelExplorer</code> is a <code>ViewPart</code> for displaying <code>IIpsObject</code>s
+ * along with their attributes.
  * <p>
  * The view uses a <code>TreeViewer</code> to represent the hierarchical data structure. It can be
  * configured to show the tree of package fragments in a hierarchical (default) or a flat layout
@@ -150,7 +150,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
      * @see ModelExplorerConfiguration
      */
     protected ModelExplorerConfiguration createConfig() {
-        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IIpsModel ipsModel = IIpsModel.get();
         IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
         return new ModelExplorerConfiguration(objectTypes);
     }
@@ -177,7 +177,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         getTreeViewer().setLabelProvider(decoProvider);
         sorter = new ModelExplorerSorter(isSupportCategories());
         getTreeViewer().setComparator(sorter);
-        getTreeViewer().setInput(IpsPlugin.getDefault().getIpsModel());
+        getTreeViewer().setInput(IIpsModel.get());
 
         getTreeViewer().addDoubleClickListener(new ModelExplorerDoubleclickListener(getTreeViewer()));
         getTreeViewer().addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
@@ -233,7 +233,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             setSelectionInTree(ipsEditor.getIpsSrcFile());
         } else if (editorPart.getEditorInput() instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
-            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement(file);
             if (ipsElement == null || !ipsElement.exists()) {
                 setSelectionInTree(file);
             } else {
@@ -462,7 +462,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     @Override
     protected boolean show(IAdaptable adaptable) {
-        IIpsElement ipsElement = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+        IIpsElement ipsElement = adaptable.getAdapter(IIpsElement.class);
         if (ipsElement != null) {
             if (ipsElement instanceof IIpsObject) {
                 // If the object is an IpsElement we have to get the ipsSrcFile because only the
@@ -472,14 +472,14 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             selectAndReveal(ipsElement);
             return true;
         }
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
         if (ipsSrcFile != null) {
             selectAndReveal(ipsSrcFile);
             return true;
         }
-        IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+        IResource resource = adaptable.getAdapter(IResource.class);
         if (resource != null) {
-            ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            ipsElement = IIpsModel.get().getIpsElement(resource);
             if (ipsElement != null) {
                 selectAndReveal(ipsElement);
                 return true;
@@ -572,7 +572,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
      */
 
     private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        IContextService service = getSite().getService(IContextService.class);
         service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
@@ -638,8 +638,8 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         }
 
         /**
-         * Returns <code>true</code> if the activation was triggered by the model explorer. Additionally
-         * resets the activation flag.
+         * Returns <code>true</code> if the activation was triggered by the model explorer.
+         * Additionally resets the activation flag.
          */
         private boolean wasActivatedByModelExplorer() {
             return false;

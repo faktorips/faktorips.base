@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 
 /**
  * Class to represent the root element for the test case type tree.

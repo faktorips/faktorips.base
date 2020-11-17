@@ -18,8 +18,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationEditDialog.GenerationEditDialogPMO;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

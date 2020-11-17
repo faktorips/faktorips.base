@@ -17,8 +17,8 @@ import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 
 public abstract class AbstractPropertiesGenerator {

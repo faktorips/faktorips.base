@@ -15,23 +15,23 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractTextField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectContext;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
  * The ProductComponentTypeField is a field to choose a {@link IProductCmptType}.
  * <p>
- * This class is necessary, because {@link ProductCmptType2RefControl} takes
- * {@link IProductCmptType IProductCmptTypes} out of one given project. The search must provide all
- * IProductCmptTypes within the workspace.
+ * This class is necessary, because {@link ProductCmptType2RefControl} takes {@link IProductCmptType
+ * IProductCmptTypes} out of one given project. The search must provide all IProductCmptTypes within
+ * the workspace.
  * 
  * @author dicker
  */
@@ -49,7 +49,7 @@ public class ProductComponentTypeField extends AbstractTextField<IProductCmptTyp
     @Override
     public void setValue(IProductCmptType newValue) {
         productCmptType = newValue;
-        setText(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(newValue));
+        setText(IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(newValue));
     }
 
     @Override

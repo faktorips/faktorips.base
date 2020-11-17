@@ -15,9 +15,9 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
  * Content provider for the IPS object path

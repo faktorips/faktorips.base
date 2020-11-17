@@ -16,10 +16,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.model.testcasetype.TestParameterType;
 
 /**
  * Wizard page to define a new test attribute - this attribute is not based on a policy cmpt type

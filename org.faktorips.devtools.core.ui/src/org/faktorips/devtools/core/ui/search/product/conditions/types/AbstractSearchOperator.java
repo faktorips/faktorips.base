@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 
 /**
  * Abstract implementation of the {@link ISearchOperator}

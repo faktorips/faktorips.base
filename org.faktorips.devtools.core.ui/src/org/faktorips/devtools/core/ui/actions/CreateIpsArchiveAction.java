@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportW
 /**
  * Action delegate to create an ips archive.
  * 
- * @see org.faktorips.devtools.core.model.ipsproject.IIpsArchive
+ * @see org.faktorips.devtools.model.ipsproject.IIpsArchive
  * 
  * @author Jan Ortmann
  */

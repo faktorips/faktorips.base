@@ -11,12 +11,12 @@
 package org.faktorips.devtools.core.internal.model.adapter;
 
 import org.eclipse.core.resources.IResource;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * Adapts {@link IResource}s to all classes listed in {@link #getAdapterList()}.
@@ -25,32 +25,31 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
 
+    @SuppressWarnings("unchecked")
     @Override
-    @SuppressWarnings("rawtypes")
-    // The Eclipse API uses raw type
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (!(adaptableObject instanceof IResource)) {
             return null;
         }
 
         if (IIpsSrcFile.class.equals(adapterType)) {
-            return adaptToIpsSrcFile(adaptableObject);
+            return (T)adaptToIpsSrcFile(adaptableObject);
         }
 
         if (IProductCmpt.class.equals(adapterType)) {
-            return adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
+            return (T)adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
         }
 
         if (IType.class.equals(adapterType)) {
-            return adaptToType(adaptToIpsSrcFile(adaptableObject));
+            return (T)adaptToType(adaptToIpsSrcFile(adaptableObject));
         }
 
         if (IIpsObject.class.equals(adapterType)) {
-            return adaptToIpsObject(adaptToIpsSrcFile(adaptableObject));
+            return (T)adaptToIpsObject(adaptToIpsSrcFile(adaptableObject));
         }
 
         if (IIpsElement.class.equals(adapterType)) {
-            return adaptToIpsElement(adaptableObject);
+            return (T)adaptToIpsElement(adaptableObject);
         }
 
         return null;
@@ -70,7 +69,7 @@ public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
     }
 
     private IIpsElement adaptToIpsElement(Object adaptableObject) {
-        IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)adaptableObject);
+        IIpsElement ipsElement = IIpsModel.get().getIpsElement((IResource)adaptableObject);
         if (ipsElement == null || !ipsElement.exists()) {
             return null;
         }

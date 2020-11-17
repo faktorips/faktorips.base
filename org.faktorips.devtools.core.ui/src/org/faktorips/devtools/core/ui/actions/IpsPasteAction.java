@@ -14,8 +14,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.commands.IpsPasteHandler;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
  * Action to paste IpsElements or resources.

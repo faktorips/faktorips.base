@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IActionBFE extends IMethodCallBFE {
 
-    public final static String XML_TAG = "Action"; //$NON-NLS-1$
+    public static final String XML_TAG = "Action"; //$NON-NLS-1$
 
     /**
      * Returns the business function of this action. Only business function call actions can return

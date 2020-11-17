@@ -11,9 +11,9 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;

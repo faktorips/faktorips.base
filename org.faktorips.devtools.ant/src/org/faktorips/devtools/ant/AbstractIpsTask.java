@@ -13,8 +13,8 @@ package org.faktorips.devtools.ant;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
@@ -40,7 +40,7 @@ public abstract class AbstractIpsTask extends Task {
     public final void execute() {
         // CSOFF: IllegalCatch
         System.out.println(getTaskName() + ": execution started");
-        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
+        IIpsFeatureVersionManager[] managers = IIpsModelExtensions.get().getIpsFeatureVersionManagers();
         System.out.print("Installed Faktor-IPS Features: ");
         StringBuilder sb = new StringBuilder();
         StringBuilderJoiner.join(sb, managers, manager -> {

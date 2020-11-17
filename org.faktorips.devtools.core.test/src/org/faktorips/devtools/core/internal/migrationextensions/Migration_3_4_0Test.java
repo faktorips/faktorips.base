@@ -20,15 +20,14 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -36,7 +35,7 @@ import org.w3c.dom.Element;
 public class Migration_3_4_0Test extends AbstractIpsPluginTest {
 
     private IValidationRule rule;
-    private PolicyCmptType policyCmptType;
+    private IPolicyCmptType policyCmptType;
     private IIpsProject ipsProject;
     private Element docEl;
     private IProductCmptType prodType;
@@ -77,7 +76,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         new Migration_3_4_0(ipsProject, "test").migrate(policyCmptType.getIpsSrcFile());
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        policyCmptType = (PolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
+        policyCmptType = (IPolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
         rule = policyCmptType.getValidationRule("Rule1");
         assertFalse(rule.isConfigurableByProductComponent());
         assertTrue(rule.isActivatedByDefault());
@@ -87,7 +86,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
     public void migratePreviouslyMigratedPolicyCmptTypes() throws CoreException {
         migratePolicyCmptTypes();
 
-        policyCmptType = (PolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
+        policyCmptType = (IPolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
         rule = policyCmptType.getValidationRule("Rule1");
         rule.setConfigurableByProductComponent(true);
         rule.setActivatedByDefault(false);
@@ -96,7 +95,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         new Migration_3_4_0(ipsProject, "test").migrate(policyCmptType.getIpsSrcFile());
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        policyCmptType = (PolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
+        policyCmptType = (IPolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
         rule = policyCmptType.getValidationRule("Rule1");
         assertTrue(rule.isConfigurableByProductComponent());
         assertFalse(rule.isActivatedByDefault());
@@ -115,7 +114,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         new Migration_3_4_0(ipsProject, "test").migrate(prodType.getIpsSrcFile());
         prodType.getIpsSrcFile().save(true, null);
 
-        prodType = (ProductCmptType)prodType.getIpsSrcFile().getIpsObject();
+        prodType = (IProductCmptType)prodType.getIpsSrcFile().getIpsObject();
         attribute = (IProductCmptTypeAttribute)prodType.getAttribute("StringTest");
         assertTrue(attribute.isChangingOverTime());
     }
@@ -124,7 +123,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
     public void migratePreviouslyMigratedProductCmptTypes() throws CoreException {
         migrateProductCmptTypes();
 
-        prodType = (ProductCmptType)prodType.getIpsSrcFile().getIpsObject();
+        prodType = (IProductCmptType)prodType.getIpsSrcFile().getIpsObject();
         attribute = (IProductCmptTypeAttribute)prodType.getAttribute("StringTest");
         attribute.setChangingOverTime(false);
 
@@ -132,7 +131,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         new Migration_3_4_0(ipsProject, "test").migrate(prodType.getIpsSrcFile());
         prodType.getIpsSrcFile().save(true, null);
 
-        prodType = (ProductCmptType)prodType.getIpsSrcFile().getIpsObject();
+        prodType = (IProductCmptType)prodType.getIpsSrcFile().getIpsObject();
         attribute = (IProductCmptTypeAttribute)prodType.getAttribute("StringTest");
         assertFalse(attribute.isChangingOverTime());
     }
@@ -149,7 +148,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         new Migration_3_4_0(ipsProject, "test").migrate(policyCmptType.getIpsSrcFile());
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        policyCmptType = (PolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
+        policyCmptType = (IPolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
         rule = policyCmptType.getValidationRule("Rule1");
         assertNotNull(rule);
         assertEquals(3, rule.getLabels().size());

@@ -45,18 +45,18 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPartFactory;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
 import org.faktorips.devtools.core.ui.editors.IIpsSrcFileEditor;
 import org.faktorips.devtools.core.ui.editors.Messages;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * The editor for business functions.
@@ -64,7 +64,7 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
  * @author Peter Erzberger
  */
 public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
-ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEditor {
+        ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEditor {
 
     private IIpsSrcFile ipsSrcFile;
     private IBusinessFunction businessFunction;
@@ -187,9 +187,10 @@ ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEdit
     }
 
     // TODO part of this code is duplicate in IpsObjectEditor
+    @SuppressWarnings("deprecation")
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-        IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+        IIpsModel model = IIpsModel.get();
 
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
@@ -210,7 +211,8 @@ ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEdit
             businessFunction = (IBusinessFunction)ipsSrcFile.getIpsObject();
             ipsSrcFile.getIpsModel().addChangeListener(this);
         } catch (CoreRuntimeException e) {
-            throw new PartInitException("Unable to create a business function object from the provided ips source file"); //$NON-NLS-1$
+            throw new PartInitException(
+                    "Unable to create a business function object from the provided ips source file"); //$NON-NLS-1$
         }
         paletteRoot = new PaletteBuilder().buildPalette();
         setEditDomain(new DefaultEditDomain(this));
@@ -233,7 +235,7 @@ ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEdit
     @Override
     public void dispose() {
         super.dispose();
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        IIpsModel.get().removeChangeListener(this);
         decorator.dispose();
         IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
         if (activationListener != null) {
@@ -311,8 +313,9 @@ ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEdit
                 MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
                         Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
                         Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
-                    Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
-                    Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton },
+                        0);
                 dlg.open();
                 if (dlg.getReturnCode() == 0) {
                     try {
@@ -392,7 +395,7 @@ ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEdit
         }
 
         private void removeListeners() {
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(BusinessFunctionEditor.this);
+            IIpsModel.get().removeChangeListener(BusinessFunctionEditor.this);
         }
 
         @Override

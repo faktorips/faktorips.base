@@ -11,7 +11,7 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 

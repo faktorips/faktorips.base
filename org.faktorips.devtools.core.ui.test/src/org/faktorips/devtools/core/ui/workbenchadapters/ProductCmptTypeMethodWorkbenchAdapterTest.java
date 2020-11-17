@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.junit.Test;
 
 public class ProductCmptTypeMethodWorkbenchAdapterTest extends AbstractIpsPluginTest {

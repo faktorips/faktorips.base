@@ -18,12 +18,11 @@ import com.google.common.collect.Iterables;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.util.TemplatedValueUtil;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.util.TemplatedValueUtil;
 
 /**
  * An operation to switch a templated value. The operation is triggered with a list of
@@ -50,6 +49,7 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
         this.definingValues = definingValues;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         int count = getInheritingPropertyValues().size() + getDefiningPropertyValues().size() + 1;
@@ -68,7 +68,7 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
             definingPropertyValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
             monitor.worked(1);
         }
-        save(new SubProgressMonitor(monitor, 10));
+        save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
         monitor.done();
     }
 

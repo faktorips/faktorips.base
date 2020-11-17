@@ -26,19 +26,19 @@ import com.google.common.base.Objects;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -52,7 +52,8 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
         IIpsProject ipsProject = newIpsProject();
         PolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Pol", "ProdType");
         attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");

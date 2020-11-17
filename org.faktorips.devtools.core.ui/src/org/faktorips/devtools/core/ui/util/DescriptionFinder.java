@@ -1,10 +1,10 @@
 package org.faktorips.devtools.core.ui.util;
 
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 
 /**
  * Searching for a description in the type hierarchy. If the description of the given type is empty
@@ -38,6 +38,6 @@ public class DescriptionFinder extends TypeHierarchyVisitor<IType> {
     }
 
     protected void setDescription(IDescribedElement currentType) {
-        localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(currentType);
+        localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(currentType);
     }
 }

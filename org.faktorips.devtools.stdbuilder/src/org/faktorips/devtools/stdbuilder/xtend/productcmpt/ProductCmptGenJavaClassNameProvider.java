@@ -12,9 +12,10 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 
 public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNameProvider {
@@ -45,7 +46,7 @@ public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNamePro
      * @param ipsSrcFile An {@link IIpsSrcFile} needed to access the {@link IIpsProject} where the
      *            necessary configuration information is stored.
      * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
+     * @see IChangesOverTimeNamingConvention
      */
     public String getAbbreviationForGenerationConcept(IIpsSrcFile ipsSrcFile) {
         return GeneratorConfig.forIpsSrcFile(ipsSrcFile).getChangesOverTimeNamingConvention()

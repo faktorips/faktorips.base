@@ -49,7 +49,6 @@ import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -106,21 +105,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.Messages;
-import org.faktorips.devtools.core.internal.model.IpsElement;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
@@ -140,6 +126,19 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavio
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.internal.IpsElement;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILibraryIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.IpsCompositeSaveParticipant;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
@@ -166,8 +165,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public static final String EXTENSION_POINT_INPUT_FORMAT = "inputFormat"; //$NON-NLS-1$
 
     /**
-     * The simple extension point id of the extension point <code>extensionPropertySectionFactory</code>
-     * .
+     * The simple extension point id of the extension point
+     * <code>extensionPropertySectionFactory</code> .
      */
     public static final String EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY = "extensionPropertySectionFactory"; //$NON-NLS-1$
 
@@ -327,6 +326,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private List<IIpsDropAdapterProvider> initProductCmptDnDHandler() {
         List<IIpsDropAdapterProvider> dndHandler = new ArrayList<IIpsDropAdapterProvider>();
 
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_IPS_DROP_ADAPTER_PROVIDER);
         for (IExtension extension : extensions) {
@@ -372,6 +372,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreException {
         List<ValueDatatypeControlFactory> factories = new ArrayList<ValueDatatypeControlFactory>();
 
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension("valueDatatypeControlFactory"); //$NON-NLS-1$
         for (IExtension extension : extensions) {
@@ -396,6 +397,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /* private */ void initDeepCopySmartModeBehavior() {
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints
                 .getExtension(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
@@ -564,6 +566,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = null;
         tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension("externalTableFormat"); //$NON-NLS-1$
         for (IExtension extension : extensions) {
@@ -636,7 +639,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (srcFile == null) {
             return null;
         }
-        if (srcFile instanceof LibraryIpsSrcFile) {
+        if (srcFile instanceof ILibraryIpsSrcFile) {
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(srcFile.getName());
             IpsArchiveEditorInput input = new IpsArchiveEditorInput(srcFile);
@@ -796,7 +799,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public IExtensionPropertyEditFieldFactory getExtensionPropertyEditFieldFactory(String propertyId)
             throws CoreException {
-
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (extensionPropertyEditFieldFactoryMap == null) {
             extensionPropertyEditFieldFactoryMap = new HashMap<String, IExtensionPropertyEditFieldFactory>();
             ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
@@ -835,6 +838,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId) throws CoreException {
 
         if (extensionPropertySectionFactoriesMap == null) {
+            // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
             extensionPropertySectionFactoriesMap = new HashMap<String, IExtensionPropertySectionFactory>();
             ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
             IExtension[] extensions = extensionPoints
@@ -871,6 +875,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public static List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
         List<IWorkbenchAdapterProvider> result = new ArrayList<IWorkbenchAdapterProvider>();
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (workbenchAdapterProviders == null) {
             try {
                 ExtensionPoints extPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
@@ -1010,7 +1015,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      *         {@link IWorkbenchAdapter}
      */
     public static final String getLabel(IIpsElement ipsElement) {
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter adapter = ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
             return ""; //$NON-NLS-1$
         } else {
@@ -1104,8 +1109,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private boolean saveEditorsInternalOnePart(List<IEditorPart> editorParts) {
         // Use a simple dialog
         Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        return MessageDialog.openConfirm(activeShell, Messages.IpsPlugin_dialogSaveDirtyEditorTitle,
-                NLS.bind(Messages.IpsPlugin_dialogSaveDirtyEditorMessageSimple, editorParts.get(0).getTitle()));
+        return MessageDialog.openConfirm(activeShell, Messages.IpsUIPlugin_dialogSaveDirtyEditorTitle,
+                NLS.bind(Messages.IpsUIPlugin_dialogSaveDirtyEditorMessageSimple, editorParts.get(0).getTitle()));
     }
 
     private boolean saveEditorsInternalMultipleParts(List<IEditorPart> editorParts) {
@@ -1131,8 +1136,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         dialog.setLabelProvider(new WorkbenchPartLabelProvider());
         dialog.setContentProvider(new ArrayContentProvider());
         dialog.setInitialSelections(editorParts.toArray());
-        dialog.setTitle(Messages.IpsPlugin_dialogSaveDirtyEditorTitle);
-        dialog.setMessage(Messages.IpsPlugin_dialogSaveDirtyEditorMessageMany);
+        dialog.setTitle(Messages.IpsUIPlugin_dialogSaveDirtyEditorTitle);
+        dialog.setMessage(Messages.IpsUIPlugin_dialogSaveDirtyEditorMessageMany);
         dialog.setInitialSelections(new Object[0]);
         return dialog.open() == IDialogConstants.OK_ID;
     }
@@ -1212,7 +1217,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(action, monitor);
+                    IIpsModel.get().runAndQueueChangeEvents(action, monitor);
                 }
 
             });
@@ -1304,14 +1309,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public static final void logAndShowErrorDialog(final IStatus status) {
         plugin.getLog().log(status);
-        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
-                        Messages.IpsPlugin_msgUnexpectedError, status);
-            }
-        });
+        IIpsModelExtensions.get().getWorkspaceInteractions().showErrorDialog(status);
     }
 
     /**
@@ -1332,14 +1330,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Does not log the status but show an error dialog with the status message
      */
     public static final void showErrorDialog(final IStatus status) {
-        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog, null,
-                        status);
-            }
-        });
+        IIpsModelExtensions.get().getWorkspaceInteractions().showErrorDialog(status);
     }
 
     private static class CallableImplementation implements Callable<IEditorPart> {
@@ -1357,7 +1348,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         @Override
         public IEditorPart call() throws Exception {
-            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+            IIpsModel model = IIpsModel.get();
             IIpsElement ipsElement = model.getIpsElement(fileToEdit);
             if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
                 try {
@@ -1406,7 +1397,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                  */
                 ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
                         getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                        Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+                        Messages.IpsUIPlugin_infoDefaultTextEditorWasOpened);
                 return editorPart;
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
@@ -1636,7 +1627,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             if (adaptable == null) {
                 return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
             }
-            IWorkbenchAdapter adapter = (IWorkbenchAdapter)adaptable.getAdapter(IWorkbenchAdapter.class);
+            IWorkbenchAdapter adapter = adaptable.getAdapter(IWorkbenchAdapter.class);
             if (adapter != null) {
                 ImageDescriptor descriptor = adapter.getImageDescriptor(adaptable);
                 if (descriptor != null) {
@@ -1676,7 +1667,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * Get the default image descriptor for an ips element class. May return null. Note: The
          * workbench adapters are registered for concrete implementations not for interfaces
          */
-        public ImageDescriptor getDefaultImageDescriptor(Class<? extends IpsElement> ipsElementClass) {
+        public ImageDescriptor getDefaultImageDescriptor(Class<? extends IIpsElement> ipsElementClass) {
             IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory
                     .getAdapterByClass(ipsElementClass);
             if (adapter != null) {
@@ -1691,7 +1682,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * Get the default image for an ips element class. May return null. Note: The workbench
          * adapters are registered for concrete implementations not for interfaces
          */
-        public Image getDefaultImage(Class<? extends IpsElement> ipsElementClass) {
+        public Image getDefaultImage(Class<? extends IIpsElement> ipsElementClass) {
             ImageDescriptor descriptor = getDefaultImageDescriptor(ipsElementClass);
             if (descriptor != null) {
                 return getImage(descriptor);

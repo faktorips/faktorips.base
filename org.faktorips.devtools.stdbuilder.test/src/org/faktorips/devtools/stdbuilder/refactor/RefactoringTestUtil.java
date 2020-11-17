@@ -14,9 +14,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 public abstract class RefactoringTestUtil {
 

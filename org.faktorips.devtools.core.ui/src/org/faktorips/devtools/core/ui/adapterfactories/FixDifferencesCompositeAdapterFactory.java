@@ -12,26 +12,24 @@ package org.faktorips.devtools.core.ui.adapterfactories;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.ui.workbenchadapters.FixDifferencesCompositeWorkbenchAdapter;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
 
 public class FixDifferencesCompositeAdapterFactory implements IAdapterFactory {
 
+    @SuppressWarnings("unchecked")
     @Override
-    // eclipse adapters are not type safe
-    public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (adaptableObject instanceof IFixDifferencesComposite) {
             if (IWorkbenchAdapter.class.isAssignableFrom(adapterType)) {
-                return new FixDifferencesCompositeWorkbenchAdapter();
+                return (T)new FixDifferencesCompositeWorkbenchAdapter();
             }
         }
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    // eclipse adapters are not type safe
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class };
     }
 

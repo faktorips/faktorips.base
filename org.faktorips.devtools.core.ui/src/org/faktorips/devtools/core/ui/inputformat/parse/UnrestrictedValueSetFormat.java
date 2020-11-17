@@ -12,12 +12,12 @@
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.Messages;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.Messages;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * Class to parse and format an {@link UnrestrictedValueSet}.

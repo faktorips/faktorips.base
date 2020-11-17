@@ -24,9 +24,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
-import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /**
  * Provides the content for the right tree of the {@link TemplatePropertyUsageView}

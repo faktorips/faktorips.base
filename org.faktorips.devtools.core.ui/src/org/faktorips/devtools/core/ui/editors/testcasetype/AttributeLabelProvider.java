@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
  * Attribute label provider with optional policy cmpt type name beside the attributes name.

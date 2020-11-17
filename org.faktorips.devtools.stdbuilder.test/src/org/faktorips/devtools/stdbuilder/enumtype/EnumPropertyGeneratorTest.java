@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.value.IValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;

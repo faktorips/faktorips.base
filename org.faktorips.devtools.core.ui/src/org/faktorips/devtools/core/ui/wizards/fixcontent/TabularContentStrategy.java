@@ -12,14 +12,14 @@ package org.faktorips.devtools.core.ui.wizards.fixcontent;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.FixEnumContentStrategy;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.FixTableContentStrategy;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.value.ValueTypeMismatch;
 
 /**
  * Strategy Interface for FixContentWizard to work with {@link IEnumContent} and

@@ -35,14 +35,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IDecoratorManager;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -50,6 +42,15 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -90,7 +91,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             return ((IIpsElement)selectedObject).getEnclosingResource();
         } else if (selectedObject instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)selectedObject;
-            return (IResource)adaptable.getAdapter(IResource.class);
+            return adaptable.getAdapter(IResource.class);
         } else {
         	return null;
         }
@@ -171,7 +172,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             setIpsPackageFragment(null);
             return;
         }
-        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
             roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
@@ -262,7 +263,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         if (selectedResource == null) {
             return null;
         }
-        IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        IIpsElement el = IIpsModel.get().getIpsElement(selectedResource);
         if (el instanceof IIpsSrcFile) {
             return ((IIpsSrcFile)el).getIpsObject();
         }

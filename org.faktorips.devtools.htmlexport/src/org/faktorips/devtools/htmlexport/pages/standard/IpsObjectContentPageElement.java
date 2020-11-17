@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * A complete page representing an {@link IEnumContent}

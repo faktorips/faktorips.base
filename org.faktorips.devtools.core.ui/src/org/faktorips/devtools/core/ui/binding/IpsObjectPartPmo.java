@@ -13,11 +13,11 @@ package org.faktorips.devtools.core.ui.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -36,7 +36,7 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
     private IIpsObjectPartContainer part;
 
     public IpsObjectPartPmo() {
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IIpsModel.get().addChangeListener(this);
     }
 
     /**
@@ -60,7 +60,7 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
     }
 
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        IIpsModel.get().removeChangeListener(this);
     }
 
     @Override

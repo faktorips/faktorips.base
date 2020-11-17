@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.filter;
 
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 
 /**
  * Allows to filter {@link IProductCmptProperty product component properties} from UI elements.

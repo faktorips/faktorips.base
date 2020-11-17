@@ -12,9 +12,9 @@ package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.IPersistenceProvider;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
+import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
 import org.faktorips.util.StringUtil;
 
 /**

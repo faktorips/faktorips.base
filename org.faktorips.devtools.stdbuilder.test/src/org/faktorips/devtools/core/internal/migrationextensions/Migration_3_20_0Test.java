@@ -30,16 +30,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.enums.EnumContent;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -69,9 +69,9 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
     public void testMigrate_rewritesProductCmptWithoutUUID() throws Exception {
         setUpMigration();
         String testFileName = "Product 2017-03";
-        ProductCmptType productCmptType = newProductCmptType(ipsProject, "my.PcType");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "my.PcType");
         productCmptType.getIpsSrcFile().save(true, null);
-        ProductCmpt productCmpt = newProductCmpt(productCmptType, "my." + testFileName);
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "my." + testFileName);
         productCmpt.newGeneration(new GregorianCalendar(2017, Calendar.MARCH, 1));
         productCmpt.getIpsSrcFile().save(true, null);
         fullBuild();
@@ -91,12 +91,12 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
     public void testMigrate_rewritesTableContentWithoutUUID() throws Exception {
         setUpMigration();
         String testFileName = "TableContent";
-        TableStructure tableStructure = newTableStructure(ipsProject, "my.TableStructure");
+        ITableStructure tableStructure = newTableStructure(ipsProject, "my.TableStructure");
         IColumn column = tableStructure.newColumn();
         column.setDatatype(Datatype.INTEGER.getQualifiedName());
         column.setName("i");
         tableStructure.getIpsSrcFile().save(true, null);
-        TableContents tableContents = newTableContents(tableStructure, "my." + testFileName);
+        ITableContents tableContents = newTableContents(tableStructure, "my." + testFileName);
         tableContents.getIpsSrcFile().save(true, null);
         fullBuild();
         IFile file = writeTestContents(testFileName);
@@ -116,12 +116,12 @@ public class Migration_3_20_0Test extends AbstractIpsPluginTest {
     public void testMigrate_rewritesEnumContentWithoutUUID() throws Exception {
         setUpMigration();
         String testFileName = "EnumContent";
-        EnumType enumType = newEnumType(ipsProject, "my.EnumType");
+        IEnumType enumType = newEnumType(ipsProject, "my.EnumType");
         IEnumAttribute attribute = enumType.newEnumAttribute();
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setName("i");
         enumType.getIpsSrcFile().save(true, null);
-        EnumContent enumContents = newEnumContent(enumType, "my." + testFileName);
+        IEnumContent enumContents = newEnumContent(enumType, "my." + testFileName);
         enumContents.getIpsSrcFile().save(true, null);
         fullBuild();
         IFile file = writeTestContents(testFileName);

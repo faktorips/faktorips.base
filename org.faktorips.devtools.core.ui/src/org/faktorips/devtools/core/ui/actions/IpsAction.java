@@ -22,12 +22,12 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Abstract base action for global actions.
@@ -175,7 +175,7 @@ public abstract class IpsAction extends Action {
         }
         if (selectedObject instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)selectedObject;
-            IIpsSrcFile adaptedSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+            IIpsSrcFile adaptedSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
             if (adaptedSrcFile != null) {
                 return adaptedSrcFile.getIpsObject();
             }

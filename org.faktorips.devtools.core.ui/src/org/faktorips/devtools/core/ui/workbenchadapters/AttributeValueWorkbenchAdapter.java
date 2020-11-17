@@ -11,12 +11,12 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 
 public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
@@ -42,7 +42,7 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
 
         IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
 
-        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
+        String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(attributeValue);
 
         IValueHolder<?> valueHolder = attributeValue.getValueHolder();
         String value = valueHolder != null ? valueHolder.getStringValue() : null;

@@ -16,14 +16,14 @@ import java.util.List;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.util.ArgumentCheck;
 
 public class ValidatedAttributesCompletionProcessor extends AbstractCompletionProcessor {
@@ -60,7 +60,7 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
     private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAttribute attribute, int documentOffset) {
         String name = attribute.getName();
         Image image = IpsUIPlugin.getImageHandling().getImage(attribute);
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
+        String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(attribute);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image, name, null,
                 localizedDescription);
         result.add(proposal);

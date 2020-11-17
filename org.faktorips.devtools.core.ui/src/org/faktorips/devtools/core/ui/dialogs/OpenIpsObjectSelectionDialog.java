@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -43,18 +42,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Dialog showing a list of IpsObjects to select a single or multiple objects. This object is used
@@ -146,7 +145,9 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             progressMonitor = new NullProgressMonitor();
         }
         progressMonitor.beginTask(Messages.OpenIpsObjectSelectionDialog_processName, 100);
-        SubProgressMonitor subMonitor = new SubProgressMonitor(progressMonitor, 90);
+        @SuppressWarnings("deprecation")
+        org.eclipse.core.runtime.SubProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
+                progressMonitor, 90);
         List<IIpsSrcFile> srcFiles = context.getIpsSrcFiles(subMonitor);
         for (IIpsSrcFile srcFile : srcFiles) {
             contentProvider.add(srcFile, itemsFilter);
@@ -430,7 +431,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
                 // If the resource is invalid we return null, the object will be removed
                 return null;
             }
-            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+            IIpsModel ipsModel = IIpsModel.get();
             IIpsElement ipsElement = ipsModel.getIpsElement(resource);
             if (ipsElement instanceof IIpsSrcFile) {
                 return ipsElement;
@@ -440,7 +441,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         }
 
         protected IIpsSrcFile getIpsSrcFileFromArchive(IMemento memento, IResource resource) {
-            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+            IIpsModel ipsModel = IIpsModel.get();
             String nameType = memento.getString(TAG_NAMETYPE);
             if (nameType != null) {
                 IProject project = resource.getProject();

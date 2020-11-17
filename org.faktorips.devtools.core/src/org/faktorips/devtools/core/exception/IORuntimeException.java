@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.exception;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Similar to the {@link CoreRuntimeException} the {@link IORuntimeException} wraps another

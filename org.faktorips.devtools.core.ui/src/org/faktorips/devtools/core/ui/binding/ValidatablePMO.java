@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.Validatable;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.Validatable;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
@@ -44,18 +44,8 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
     }
 
     @Override
-    public boolean isValid() throws CoreException {
-        return isValid(getIpsProject());
-    }
-
-    @Override
     public boolean isValid(IIpsProject ipsProject) throws CoreException {
         return !validate(ipsProject).containsErrorMsg();
-    }
-
-    @Override
-    public int getValidationResultSeverity() throws CoreException {
-        return getValidationResultSeverity(getIpsProject());
     }
 
     @Override
@@ -77,15 +67,15 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
      * @author Stefan Widmaier
      */
     public class ObjectPropertyMappingDefinition {
-    
+
         private final ObjectProperty fromProperty;
         private final ValidatablePMO validatablePmo;
-    
+
         public ObjectPropertyMappingDefinition(ValidatablePMO validatablePmo, ObjectProperty objectProperty) {
             this.validatablePmo = validatablePmo;
             this.fromProperty = objectProperty;
         }
-    
+
         public void to(ObjectProperty toProperty) {
             validatablePmo.addMapping(fromProperty, toProperty);
         }

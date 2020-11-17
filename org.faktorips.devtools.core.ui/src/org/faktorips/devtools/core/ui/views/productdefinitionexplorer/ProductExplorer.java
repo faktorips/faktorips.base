@@ -31,10 +31,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.refactor.IpsMoveHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
@@ -43,6 +39,10 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
  * A <code>ModelExplorer</code> that displays product definition projects along with all contained
@@ -81,7 +81,7 @@ public class ProductExplorer extends ModelExplorer {
 
     @Override
     protected ModelExplorerConfiguration createConfig() {
-        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IIpsModel ipsModel = IIpsModel.get();
         IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
         List<IpsObjectType> allowedObjectTypes = new ArrayList<IpsObjectType>();
         for (IpsObjectType objectType : objectTypes) {

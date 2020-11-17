@@ -15,8 +15,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.MockPluginResourcesFacade;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.junit.Test;
 
 public class DocumentationContextTest {

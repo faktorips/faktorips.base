@@ -17,12 +17,12 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpt.DeltaType.Kind;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.DeltaType;
+import org.faktorips.devtools.model.productcmpt.DeltaType.Kind;
+import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
 
 /**
  * 

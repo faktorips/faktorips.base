@@ -75,7 +75,7 @@ public class FailurePane implements IMenuListener {
     // Action
     private Action showStackTraceAction;
 
-    // Indicates if the stacktrace elemets will be shown or not
+    // Indicates if the stack trace elements will be shown or not
     private boolean showStackTrace = false;
 
     // Contains the last reported failures in this pane
@@ -272,7 +272,7 @@ public class FailurePane implements IMenuListener {
                 editorInput = part.getEditorInput();
             }
             // goto corresponding line in the editor
-            IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName());
+            IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName(), true, true);
             ITextEditor textEditor = (ITextEditor)IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                     .getActivePage().openEditor(editorInput, editor.getId(), true);
             IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());

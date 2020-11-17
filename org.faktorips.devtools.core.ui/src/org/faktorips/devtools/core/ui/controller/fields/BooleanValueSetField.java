@@ -15,13 +15,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
 import org.faktorips.devtools.core.ui.util.SelectionListeners;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 public class BooleanValueSetField extends DefaultEditField<IValueSet> {
 

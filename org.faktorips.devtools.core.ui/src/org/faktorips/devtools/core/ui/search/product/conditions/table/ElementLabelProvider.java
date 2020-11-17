@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 
 /**
  * This is the {@link CellLabelProvider} for the column of the elements
@@ -41,7 +41,7 @@ final class ElementLabelProvider extends CellLabelProvider {
         if (ipsElement == null) {
             return StringUtils.EMPTY;
         } else if (ipsElement instanceof ILabeledElement) {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)ipsElement);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)ipsElement);
         } else {
             return ipsElement.getName();
         }

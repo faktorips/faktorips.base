@@ -28,7 +28,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.exception.IORuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.util.IoUtil;
 
 /**

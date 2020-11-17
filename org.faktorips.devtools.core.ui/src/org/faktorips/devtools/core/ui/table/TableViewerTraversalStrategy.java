@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Table;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 
 /**
  * Supports the navigation in a <code>Table</code> / <code>TableViewer</code> using the

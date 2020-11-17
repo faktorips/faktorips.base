@@ -16,27 +16,27 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.MessageSeverity;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 
@@ -92,10 +92,10 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
 
     protected void createMassivProjekt() {
         try {
-            PolicyCmptType vertrag = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
-            PolicyCmptType lvb = newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
-            PolicyCmptType baseBVB = newPolicyAndProductCmptType(ipsProject, "base.BVB", "base.BVBArt");
-            PolicyCmptType versObj = newPolicyAndProductCmptType(ipsProject, "base.versobj.VersObj",
+            IPolicyCmptType vertrag = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
+            IPolicyCmptType lvb = newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
+            IPolicyCmptType baseBVB = newPolicyAndProductCmptType(ipsProject, "base.BVB", "base.BVBArt");
+            IPolicyCmptType versObj = newPolicyAndProductCmptType(ipsProject, "base.versobj.VersObj",
                     "base.versobj.VersObjArt");
 
             IPolicyCmptTypeAssociation assoLvbBvb = lvb.newPolicyCmptTypeAssociation();
@@ -130,10 +130,11 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
             assoLvbVertrag.setTargetRoleSingular("Vertrag");
             assoLvbVertrag.setTargetRolePlural("Verträge");
 
-            PolicyCmptType baseSubBVB = newPolicyAndProductCmptType(ipsProject, "base.sub.SubBVB", "base.sub.SubBVBArt");
+            IPolicyCmptType baseSubBVB = newPolicyAndProductCmptType(ipsProject, "base.sub.SubBVB",
+                    "base.sub.SubBVBArt");
             baseSubBVB.setSupertype(baseBVB.getQualifiedName());
 
-            PolicyCmptType krankenBVB = newPolicyAndProductCmptType(ipsProject, "kranken.KrankenBVB",
+            IPolicyCmptType krankenBVB = newPolicyAndProductCmptType(ipsProject, "kranken.KrankenBVB",
                     "kranken.KrankenBVBArt");
             krankenBVB.setSupertype(baseSubBVB.getQualifiedName());
 

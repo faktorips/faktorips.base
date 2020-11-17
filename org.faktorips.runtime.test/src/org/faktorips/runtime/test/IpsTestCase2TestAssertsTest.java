@@ -65,9 +65,9 @@ public class IpsTestCase2TestAssertsTest {
         result.addListener(listener);
     }
 
-    private final static String OBJECT = "obj";
-    private final static String ATTRIBUTE = "attr";
-    private final static String MESSAGE = "message";
+    private static final String OBJECT = "obj";
+    private static final String ATTRIBUTE = "attr";
+    private static final String MESSAGE = "message";
 
     private static void assertFailure(IpsTestFailure failure) {
         assertEquals(OBJECT, failure.getTestObject());

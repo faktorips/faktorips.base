@@ -53,19 +53,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
@@ -74,6 +61,20 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dnd.IpsByteArrayTransfer;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartChangeRefreshHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -649,8 +650,7 @@ class CategoryComposite extends ViewerButtonComposite {
             String typeQualifiedName = readString(input);
             IpsObjectType typeObjectType = IpsObjectType.getTypeForName(readString(input));
             String partId = readString(input);
-
-            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+            IIpsProject ipsProject = IIpsModel.get().getIpsProject(projectName);
             try {
                 IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
                 IProductCmptProperty property = null;

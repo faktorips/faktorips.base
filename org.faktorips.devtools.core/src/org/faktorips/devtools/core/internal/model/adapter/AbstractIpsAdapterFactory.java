@@ -12,13 +12,12 @@ package org.faktorips.devtools.core.internal.model.adapter;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * An abstract class for IPS adapter factories, providing standard adaptation methods.
@@ -26,7 +25,7 @@ import org.faktorips.devtools.core.model.type.IType;
 public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
 
     /**
-     * Getting the {@link IIpsObject} of an {@link IpsSrcFile} if the file is of this type.
+     * Getting the {@link IIpsObject} of an {@link IIpsSrcFile} if the file is of this type.
      */
     protected IIpsObject adaptToIpsObject(IIpsSrcFile file) {
         if (file == null) {
@@ -41,7 +40,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
     }
 
     /**
-     * Getting the {@link IType} of an {@link IpsSrcFile} if the file is of this type.
+     * Getting the {@link IType} of an {@link IIpsSrcFile} if the file is of this type.
      */
     protected IType adaptToType(IIpsSrcFile file) {
         if (file == null) {
@@ -62,7 +61,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
     }
 
     /**
-     * Getting the IProductCmpt of an {@link IpsSrcFile} if the file is of type
+     * Getting the IProductCmpt of an {@link IIpsSrcFile} if the file is of type
      * {@link IpsObjectType#PRODUCT_CMPT} or {@link IpsObjectType#PRODUCT_TEMPLATE}.
      */
     protected IProductCmpt adaptToProductCmpt(IIpsSrcFile file) {
@@ -70,7 +69,8 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
             return null;
         }
         IpsObjectType fileObjectType = file.getIpsObjectType();
-        if (IpsObjectType.PRODUCT_CMPT.equals(fileObjectType) || IpsObjectType.PRODUCT_TEMPLATE.equals(fileObjectType)) {
+        if (IpsObjectType.PRODUCT_CMPT.equals(fileObjectType)
+                || IpsObjectType.PRODUCT_TEMPLATE.equals(fileObjectType)) {
             try {
                 return (IProductCmpt)file.getIpsObject();
             } catch (CoreRuntimeException e) {

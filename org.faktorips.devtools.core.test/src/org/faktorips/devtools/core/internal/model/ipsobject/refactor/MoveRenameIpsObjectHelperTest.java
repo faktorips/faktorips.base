@@ -15,10 +15,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
 
     private MoveRenameIpsObjectHelper moveRenameHelper;
 
-    private ProductCmptType productCmptType;
+    private IProductCmptType productCmptType;
 
     private org.faktorips.util.message.MessageList messageList;
 

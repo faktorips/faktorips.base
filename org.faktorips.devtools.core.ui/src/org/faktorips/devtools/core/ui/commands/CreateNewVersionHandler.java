@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public class CreateNewVersionHandler extends IpsAbstractHandler {
 

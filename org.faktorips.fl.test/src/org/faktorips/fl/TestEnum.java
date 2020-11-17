@@ -17,8 +17,8 @@ package org.faktorips.fl;
  */
 public class TestEnum {
 
-    public final static TestEnum MONTH = new TestEnum("MONTH");
-    public final static TestEnum YEAR = new TestEnum("YEAR");
+    public static final TestEnum MONTH = new TestEnum("MONTH");
+    public static final TestEnum YEAR = new TestEnum("YEAR");
 
     private String value;
 

@@ -31,18 +31,18 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredList;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.ITypeHierarchy;
+import org.faktorips.devtools.model.util.QNameUtil;
 
 /**
  * Wizard page to select one or more policy cmpt type attributes.

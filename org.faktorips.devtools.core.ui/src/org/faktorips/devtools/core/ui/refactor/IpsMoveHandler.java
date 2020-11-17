@@ -13,11 +13,11 @@ package org.faktorips.devtools.core.ui.refactor;
 import java.util.Set;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsMoveRefactoringWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
+import org.faktorips.devtools.model.IIpsElement;
 
 /**
  * Provides the "Move" workbench contribution which opens the appropriate Faktor-IPS refactoring

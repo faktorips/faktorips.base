@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.RuntimeObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.ITocEntryFactory;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Element;
 
 public class MyDummyTocEntryFactory implements ITocEntryFactory<MyDummyTypedTocEntryObject> {

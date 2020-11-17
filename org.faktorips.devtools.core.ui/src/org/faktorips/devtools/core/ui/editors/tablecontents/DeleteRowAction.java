@@ -16,16 +16,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.SingleEventModification;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.SingleEventModification;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.tablecontents.IRow;
 
 /**
  * Action for deleting a single row in a tableviewer.
@@ -60,7 +60,7 @@ public class DeleteRowAction extends IpsAction {
      */
     @Override
     public void run(final IStructuredSelection selection) {
-        IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+        IpsModel model = (IpsModel)IIpsModel.get();
         try {
             model.executeModificationsWithSingleEvent(new DeleteSelectedRowsModification(
                     getIpsSrcFileForSelection(selection), selection, tableViewer, contentPage));

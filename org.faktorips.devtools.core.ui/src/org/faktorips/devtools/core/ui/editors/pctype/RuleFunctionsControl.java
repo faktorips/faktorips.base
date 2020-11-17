@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
@@ -39,6 +37,8 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectCompletionProcessor;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -47,8 +47,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class RuleFunctionsControl extends EditTableControl {
 
-    private final static String IMAGE_COLUMN_VIEWER_PROPERTY = "imageColumn"; //$NON-NLS-1$
-    private final static String VALUE_COLUMN_VIEWER_PROPERTY = "valueColumn"; //$NON-NLS-1$
+    private static final String IMAGE_COLUMN_VIEWER_PROPERTY = "imageColumn"; //$NON-NLS-1$
+    private static final String VALUE_COLUMN_VIEWER_PROPERTY = "valueColumn"; //$NON-NLS-1$
 
     private IValidationRule rule;
 

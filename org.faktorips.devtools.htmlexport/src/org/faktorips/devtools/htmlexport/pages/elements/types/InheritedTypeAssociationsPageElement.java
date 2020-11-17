@@ -12,15 +12,16 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 public class InheritedTypeAssociationsPageElement extends
         AbstractInheritedIpsObjectPartsPageElement<IType, IAssociation> {
 
-    public InheritedTypeAssociationsPageElement(DocumentationContext context, IType element, List<IType> superElements) {
+    public InheritedTypeAssociationsPageElement(DocumentationContext context, IType element,
+            List<IType> superElements) {
         super(context, element, superElements);
     }
 

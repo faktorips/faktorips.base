@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This property tester is able to check if an {@link IIpsProject} is a modeling project.

@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestObject;
 
 /**
  * Listener no notify about redrawing the test case detail area.

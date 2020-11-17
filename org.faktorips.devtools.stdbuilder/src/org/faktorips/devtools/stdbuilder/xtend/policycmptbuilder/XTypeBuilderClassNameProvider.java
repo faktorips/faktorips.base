@@ -10,10 +10,10 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
 
 public class XTypeBuilderClassNameProvider {

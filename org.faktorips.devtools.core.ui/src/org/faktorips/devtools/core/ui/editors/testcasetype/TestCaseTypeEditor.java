@@ -16,10 +16,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TestCaseDescriptionPage;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 
 /**
  * The editor to edit test case types.

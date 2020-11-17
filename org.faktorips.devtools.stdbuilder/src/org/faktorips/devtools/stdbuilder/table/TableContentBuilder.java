@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.XmlContentFileCopyBuilder;
 
 public class TableContentBuilder extends XmlContentFileCopyBuilder {

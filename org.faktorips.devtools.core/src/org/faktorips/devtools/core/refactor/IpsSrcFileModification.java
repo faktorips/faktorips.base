@@ -12,11 +12,11 @@ package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
-import org.faktorips.devtools.core.util.RefactorUtil;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
+import org.faktorips.devtools.model.util.RefactorUtil;
 
 /**
  * This class is used to remember the state of {@link IIpsSrcFile} for undo some modifications.

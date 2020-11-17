@@ -29,23 +29,22 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.testcase.TestPolicyCmpt;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcase.ITestRule;
-import org.faktorips.devtools.core.model.testcase.ITestValue;
-import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
+import org.faktorips.devtools.model.internal.testcase.TestPolicyCmpt;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcase.ITestRule;
+import org.faktorips.devtools.model.testcase.ITestValue;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -66,19 +65,19 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      * Determines whether the extension (i.e. the actual policy class name) is shown for product
      * components.
      */
-    private final IObservableValue canShowPolicyComponentType;
+    private final IObservableValue<Boolean> canShowPolicyComponentType;
 
     public TestCaseLabelProvider(IIpsProject ipsProject) {
-        this(ipsProject, new WritableValue(Boolean.TRUE, Boolean.class));
+        this(ipsProject, new WritableValue<>(Boolean.TRUE, Boolean.class));
     }
 
-    public TestCaseLabelProvider(IIpsProject ipsProject, IObservableValue canShowPolicyComponentType) {
+    public TestCaseLabelProvider(IIpsProject ipsProject, IObservableValue<Boolean> canShowPolicyComponentType) {
         this.ipsProject = ipsProject;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
         this.canShowPolicyComponentType = canShowPolicyComponentType;
-        this.canShowPolicyComponentType.addValueChangeListener(new IValueChangeListener() {
+        this.canShowPolicyComponentType.addValueChangeListener(new IValueChangeListener<Boolean>() {
             @Override
-            public void handleValueChange(ValueChangeEvent event) {
+            public void handleValueChange(ValueChangeEvent<? extends Boolean> event) {
                 propagateEvent();
             }
         });
@@ -245,7 +244,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         try {
             validationRule = testRule.findValidationRule(ipsProject);
             if (validationRule != null) {
-                extForPolicyCmptForValidationRule = " - " + ((PolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
+                extForPolicyCmptForValidationRule = " - " + ((IPolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
             }
         } catch (CoreException e) {
             // ignore exception, return empty extension

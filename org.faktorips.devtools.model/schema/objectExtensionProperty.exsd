@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.faktorips.plugin" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.faktorips.plugin" id="objectExtensionProperty" name="ObjectExtensionProperty"/>
+      </appinfo>
+      <documentation>
+         By extending this extension point you are able to add an extension property to an IPS object or part. Basically you could add an extension property to every IIpsObjectPartContainer but the UI is not implemented for every part. Hence it would be a property that is only editable via XML. We add new UI functionality for not yet supported objects, if your object is not yet supported please send a request.
+
+Since 3.10 there is a new functionality to support extension properties that are not activated for every object of the same class. Have a look in the description of the class attribute.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="1">
+            <element ref="property"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Used as a reference for an extensionPropertyEditFieldFactory.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="property">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The definition of the extension property.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="extendedType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="defaultValue" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="position" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="top">
+                  </enumeration>
+                  <enumeration value="bottom">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="order" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="retention" use="default" value="RUNTIME">
+            <annotation>
+               <documentation>
+                  Indicates how long extension properties are to be retained and thus where they can be accessed.
+&lt;p&gt;
+DEFINITION-level extension properties are retained and accessible during design-time in model or product definitions (but not at runtime).
+&lt;p&gt;
+RUNTIME-level extension properties are retained and accessible at runtime (via runtime libraries). This includes the DEFINITION-level.
+&lt;p&gt;
+The retention policy is only a recommendation for the code generator. The code generator may override the retention policy (e.g. for performance reasons) and extend the scope (use RUNTIME where DEFINITION is defined).
+&lt;p&gt; 
+The default is RUNTIME.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="DEFINITION">
+                  </enumeration>
+                  <enumeration value="RUNTIME">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>

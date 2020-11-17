@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction;
+import org.faktorips.devtools.model.enums.IEnumContent;
 
 /**
  * Opens the wizard for creating a new {@link IEnumContent}.

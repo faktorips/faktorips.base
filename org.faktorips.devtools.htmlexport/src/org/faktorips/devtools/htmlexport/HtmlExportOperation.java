@@ -23,10 +23,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
  * Operation to run the HtmlExport
@@ -36,7 +35,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
  */
 public class HtmlExportOperation implements IWorkspaceRunnable {
     private DocumentationContext context;
-    private final static Set<Class<? extends NLS>> MESSAGE_CLAZZES = new HashSet<Class<? extends NLS>>();
+    private static final Set<Class<? extends NLS>> MESSAGE_CLAZZES = new HashSet<Class<? extends NLS>>();
 
     /**
      * Instantiates a HtmlExportOperation.
@@ -66,6 +65,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
      * 
      * {@inheritDoc}
      */
+    @SuppressWarnings("deprecation")
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
         List<IDocumentorScript> scripts = getDocumentationContext().getScripts();
@@ -74,11 +74,12 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
         monitor.beginTask("Html Export", scripts.size() * monitorScriptFaktor + 1); //$NON-NLS-1$
 
         for (IDocumentorScript documentorScript : scripts) {
-            IProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, monitorScriptFaktor);
+            IProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor,
+                    monitorScriptFaktor);
             documentorScript.execute(getDocumentationContext(), subProgressMonitor);
         }
 
-        refreshIfNecessary(new SubProgressMonitor(monitor, 1));
+        refreshIfNecessary(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
 
         monitor.done();
     }

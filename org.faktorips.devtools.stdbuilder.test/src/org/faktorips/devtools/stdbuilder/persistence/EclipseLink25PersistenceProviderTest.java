@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

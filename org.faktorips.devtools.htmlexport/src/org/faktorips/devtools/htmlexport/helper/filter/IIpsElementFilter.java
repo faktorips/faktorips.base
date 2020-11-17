@@ -10,16 +10,14 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
-import org.faktorips.devtools.core.internal.model.IpsElement;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsElement;
 
 /**
- * Filter for {@link IpsElement IpsElements}
+ * Filter for {@link IIpsElement IIpsElement}
  * 
  * @author dicker
  * 
  */
-@FunctionalInterface
 public interface IIpsElementFilter {
     /**
      * @param element filtered {@link IIpsElement}

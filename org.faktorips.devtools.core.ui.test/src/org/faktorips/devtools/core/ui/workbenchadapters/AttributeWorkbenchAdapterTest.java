@@ -18,14 +18,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute normalAttribute = bNormalType.newProductCmptTypeAttribute("overwrittenAttribute");
         normalAttribute.setOverwrite(true);
 
-        IWorkbenchAdapter superAdapter = (IWorkbenchAdapter)superAttribute.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter superAdapter = superAttribute.getAdapter(IWorkbenchAdapter.class);
         assertNotNull(superAdapter);
         assertTrue(superAdapter instanceof AttributeWorkbenchAdapter);
 
@@ -70,7 +70,7 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
                 .newProductCmptTypeAttribute("testAttribute");
         productCmptTypeAttribute.setChangingOverTime(false);
 
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)productCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter adapter = productCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
         ImageDescriptor imageDescriptor = adapter.getImageDescriptor(productCmptTypeAttribute);
         assertEquals(createImageDescriptorWithOverlays(false, true, false), imageDescriptor);
     }
@@ -86,7 +86,7 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
         policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
         policyCmptTypeAttribute.setChangingOverTime(false);
 
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter adapter = policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
         ImageDescriptor imageDescriptor = adapter.getImageDescriptor(policyCmptTypeAttribute);
         assertEquals(createImageDescriptorWithOverlays(false, true, true), imageDescriptor);
     }
@@ -97,7 +97,7 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("testAttribute");
         policyCmptTypeAttribute.setChangingOverTime(false);
 
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter adapter = policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
         ImageDescriptor imageDescriptor = adapter.getImageDescriptor(policyCmptTypeAttribute);
         assertEquals(createImageDescriptorWithOverlays(false, false, false), imageDescriptor);
     }

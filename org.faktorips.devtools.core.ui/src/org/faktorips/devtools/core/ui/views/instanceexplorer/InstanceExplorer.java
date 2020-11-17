@@ -50,22 +50,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsMetaClass;
-import org.faktorips.devtools.core.model.IIpsMetaObject;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsObjectDependency;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
@@ -73,6 +57,23 @@ import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsMetaClass;
+import org.faktorips.devtools.model.IIpsMetaObject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.w3c.dom.Element;
 
 /**
@@ -123,7 +124,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
      * The default constructor setup the listener and loads the default view.
      */
     public InstanceExplorer() {
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+        IIpsModel.get().addIpsSrcFilesChangedListener(this);
     }
 
     @Override
@@ -473,7 +474,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
     @Override
     protected boolean show(IAdaptable adaptable) {
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        IIpsObject ipsObject = adaptable.getAdapter(IIpsObject.class);
         if (ipsObject == null) {
             return false;
         }

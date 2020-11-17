@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Some extension properties contain data that can not be displayed in a simple {@link EditField} as

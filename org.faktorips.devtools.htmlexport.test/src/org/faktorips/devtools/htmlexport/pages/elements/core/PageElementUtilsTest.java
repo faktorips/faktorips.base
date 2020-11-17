@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.junit.Test;
 
 public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {

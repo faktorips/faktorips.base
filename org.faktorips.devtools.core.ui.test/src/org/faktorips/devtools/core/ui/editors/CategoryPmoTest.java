@@ -13,8 +13,6 @@ package org.faktorips.devtools.core.ui.editors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,13 +21,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.SingletonMockHelper;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,7 +50,7 @@ public class CategoryPmoTest {
     private IProductCmptCategory category3;
 
     @Mock
-    private IIpsModel ipsModel;
+    private IpsModel ipsModel;
 
     private List<IProductCmptCategory> categories;
 
@@ -73,12 +70,9 @@ public class CategoryPmoTest {
 
     @Test
     public void testListenerAdded() {
-        IpsPlugin ipsPlugin = IpsPlugin.getDefault();
-        ipsPlugin = spy(ipsPlugin);
         SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
         try {
-            singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
-            doReturn(ipsModel).when(ipsPlugin).getIpsModel();
+            singletonMockHelper.setSingletonInstance(IpsModel.class, ipsModel);
 
             ContentsChangeListener categoryPmo = new CategoryPmo(property);
 

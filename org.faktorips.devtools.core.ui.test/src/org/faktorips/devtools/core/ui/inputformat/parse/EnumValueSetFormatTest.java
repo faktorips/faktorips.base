@@ -20,17 +20,17 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -141,7 +141,8 @@ public class EnumValueSetFormatTest {
                 .getNullPresentation());
 
         assertNotNull(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
-        assertTrue(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
+        assertTrue(enumVSFormat
+                .parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
         assertEquals(configValueSet, enumVS.getParent());
         assertEquals(1, enumVS.getValuesAsList().size());
         assertEquals(null, enumVS.getValue(0));
@@ -155,7 +156,8 @@ public class EnumValueSetFormatTest {
                 .getNullPresentation());
 
         assertNotNull(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
-        assertTrue(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
+        assertTrue(enumVSFormat
+                .parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
         assertEquals(configValueSet, enumVS.getParent());
         assertEquals(1, enumVS.getValuesAsList().size());
         assertEquals(null, enumVS.getValue(0));

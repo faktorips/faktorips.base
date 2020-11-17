@@ -22,12 +22,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,6 +49,12 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         action = new CreateNewGenerationAction(shell, selectionProvider);
+    }
+
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        // nothing to tear down
     }
 
     @Test

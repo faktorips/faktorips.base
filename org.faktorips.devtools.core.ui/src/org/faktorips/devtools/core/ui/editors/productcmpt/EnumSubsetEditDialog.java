@@ -19,11 +19,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.chooser.AbstractSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
 
 /**
  * A dialog that allows to specify a subset of values available in a given enum data type.

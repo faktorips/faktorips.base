@@ -22,10 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -58,7 +57,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
     public void testGetMigrationOperations() throws Exception {
         mockMigrationOperations();
 
-        IpsProject ipsProject = mock(IpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        IIpsProject ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
         when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn(
                 currentVersion.toString());
 
@@ -101,7 +100,8 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
                 new IIpsProjectMigrationOperationFactory() {
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(
+                            IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation1;
                     }
@@ -110,7 +110,8 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
                 new IIpsProjectMigrationOperationFactory() {
 
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(
+                            IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation2;
                     }

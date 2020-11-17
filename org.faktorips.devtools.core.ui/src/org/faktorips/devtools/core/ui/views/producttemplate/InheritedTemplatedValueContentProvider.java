@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /**
  * Provides the content for the left tree of the {@link TemplatePropertyUsageView}.

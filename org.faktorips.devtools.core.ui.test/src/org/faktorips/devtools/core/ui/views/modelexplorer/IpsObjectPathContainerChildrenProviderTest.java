@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
+import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
+import org.faktorips.devtools.model.ipsproject.bundle.IIpsBundleEntry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class IpsObjectPathContainerChildrenProviderTest {
         referencedProject2 = mock(IIpsProject.class);
         when(projectEntry2.getReferencedIpsProject()).thenReturn(referencedProject2);
 
-        IpsBundleEntry jarBundleEntry = mock(IpsBundleEntry.class);
+        IIpsBundleEntry jarBundleEntry = mock(IIpsBundleEntry.class);
         jarBundleFragmentRoot = mock(LibraryIpsPackageFragmentRoot.class);
         when(jarBundleEntry.getIpsPackageFragmentRoot()).thenReturn(jarBundleFragmentRoot);
 

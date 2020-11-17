@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
  * Class to create and provide the content for a given test case type and a given test case.<br>

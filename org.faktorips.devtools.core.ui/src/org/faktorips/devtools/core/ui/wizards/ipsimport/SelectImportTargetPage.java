@@ -19,16 +19,16 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -81,7 +81,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      */
     public IIpsProject getIpsProject() {
         return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-                IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+                IIpsModel.get().getIpsProject(projectField.getText());
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
         if (selectedResource == null) {
             return;
         }
-        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
         if (element != null) {
             setIpsProject(element.getIpsProject());
         }
@@ -195,7 +195,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
             importTargetControl.setIpsProject(null);
             return;
         }
-        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+        IIpsProject project = IIpsModel.get().getIpsProject(projectField.getText());
         if (project.exists()) {
             importTargetControl.setIpsProject(project);
             return;

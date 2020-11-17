@@ -18,16 +18,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsMetaObject;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.IIpsMetaObject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * This wizard is available through the {@code ContentEditor} if the {@code  Content} to edit does
@@ -127,7 +127,7 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
                     contentStrategy.fixAllContentAttributeValues();
                 }
             };
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
+            IIpsModel.get().runAndQueueChangeEvents(workspaceRunnable, null);
         }
         return confirmed;
     }

@@ -18,11 +18,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.ITable;

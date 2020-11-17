@@ -21,7 +21,7 @@ import org.faktorips.datatype.PrimitiveIntegerDatatype;
  */
 public class CodeGenUtil {
 
-    public final static JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
+    public static final JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
         if (type instanceof PrimitiveBooleanDatatype) {
             return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)type).toWrapper(expression);
         }

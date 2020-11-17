@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

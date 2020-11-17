@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.ITypeHierarchy;
 
 /**
  * The HierarchyContentProvider is used with the Treeviewer in the class IpsHierarchyView Input

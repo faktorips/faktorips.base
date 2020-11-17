@@ -44,13 +44,13 @@ import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
 
@@ -113,11 +113,11 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IIpsElement getSelectedIpsElementFromEvaluationService() {
-        ISelectionService service = (ISelectionService)serviceLocator.getService(ISelectionService.class);
+        ISelectionService service = serviceLocator.getService(ISelectionService.class);
         ISelection selectedObject = service.getSelection();
         TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selectedObject);
         if (typedSelection.isValid()) {
-            return (IIpsElement)typedSelection.getElement().getAdapter(IIpsElement.class);
+            return typedSelection.getElement().getAdapter(IIpsElement.class);
         }
         return null;
     }
@@ -134,7 +134,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             return null;
         }
 
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
         return ipsSrcFile.getIpsObject();
     }
 
@@ -365,12 +365,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private String getLabelOnly(IJavaElement javaElement) {
-        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter workbenchAdapter = javaElement.getAdapter(IWorkbenchAdapter.class);
         return workbenchAdapter != null ? workbenchAdapter.getLabel(javaElement) : null;
     }
 
     private ImageDescriptor getJavaElementIcon(IJavaElement javaElement) {
-        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter workbenchAdapter = javaElement.getAdapter(IWorkbenchAdapter.class);
         return workbenchAdapter != null ? workbenchAdapter.getImageDescriptor(javaElement) : null;
     }
 

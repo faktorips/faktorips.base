@@ -123,8 +123,7 @@ public class TypedSelection<T> {
             if (type.isInstance(element)) {
                 elements.add(type.cast(element));
             } else if (element instanceof IAdaptable) {
-                @SuppressWarnings("unchecked")
-                T adapted = (T)((IAdaptable)element).getAdapter(type);
+                T adapted = ((IAdaptable)element).getAdapter(type);
                 if (adapted != null) {
                     elements.add(adapted);
                 } else {

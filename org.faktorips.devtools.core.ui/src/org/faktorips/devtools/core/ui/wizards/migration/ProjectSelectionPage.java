@@ -28,8 +28,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * 
@@ -114,7 +115,7 @@ public class ProjectSelectionPage extends WizardPage {
         public Object[] getElements(Object inputElement) {
             List<IIpsProject> result = new ArrayList<IIpsProject>();
             IIpsProject[] projects;
-            projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+            projects = IIpsModel.get().getIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 try {
                     if (!IpsPlugin.getDefault().getMigrationOperation(projects[i]).isEmpty()) {

@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.filter;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 
 /**
  * Manages the visibility of UI elements that are based upon {@link IProductCmptProperty product

@@ -15,8 +15,8 @@ import static org.junit.Assert.assertThat;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
@@ -53,7 +53,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateAnnotation() throws CoreException {
-        EnumType enumType = setUpEnumtype();
+        IEnumType enumType = setUpEnumtype();
         enumType.newEnumLiteralNameAttribute();
         XEnumType xEnumtype = modelService.getModelNode(enumType, XEnumType.class, modelContext);
 
@@ -67,7 +67,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateAnnotationExtensible() throws CoreException {
-        EnumType enumType = setUpEnumtype();
+        IEnumType enumType = setUpEnumtype();
         enumType.newEnumLiteralNameAttribute();
         enumType.setExtensible(true);
         enumType.setEnumContentName("foo.EnumName");
@@ -84,9 +84,9 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateAnnotation_abstractEnumWithAbstractParent() throws CoreException {
-        EnumType enumType = setUpEnumtype();
+        IEnumType enumType = setUpEnumtype();
         enumType.setAbstract(true);
-        EnumType parentEnumType = newEnumType(ipsProject, "test.AbstractEnumType");
+        IEnumType parentEnumType = newEnumType(ipsProject, "test.AbstractEnumType");
         parentEnumType.setAbstract(true);
         IEnumAttribute superAttr1 = parentEnumType.newEnumAttribute();
         superAttr1.setName("superAttr1");
@@ -104,8 +104,8 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
                                 + System.lineSeparator())));
     }
 
-    private EnumType setUpEnumtype() throws CoreException {
-        EnumType enumType = newEnumType(ipsProject, "test.EnumType");
+    private IEnumType setUpEnumtype() throws CoreException {
+        IEnumType enumType = newEnumType(ipsProject, "test.EnumType");
         IEnumAttribute attribute2 = enumType.newEnumAttribute();
         attribute2.setName("A2");
         IEnumAttribute attribute1 = enumType.newEnumAttribute();

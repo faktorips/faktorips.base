@@ -12,11 +12,11 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.LinkedHashSet;
 
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 
 public abstract class XClass extends AbstractGeneratorModelNode {
@@ -81,13 +81,13 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * on the specified {@link BuilderAspect} and this class' project settings. Use
      * {@link BuilderAspect#IMPLEMENTATION} if the implementation class name is required explicitly.
      * Use {@link BuilderAspect#INTERFACE} to let the project setting
-     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.model.ipsproject.IIpsProject)}
      * decide whether to return the published interface name or implementation class name.
      * <p>
      * Note that this method should <em>not</em> be called with the
-     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.model.ipsproject.IIpsProject)}
      * setting of another model node. This is due to the fact that
-     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.core.model.ipsproject.IIpsProject)}
+     * {@link GeneratorConfig#isGeneratePublishedInterfaces(org.faktorips.devtools.model.ipsproject.IIpsProject)}
      * may differ from one project to another. Use {@link #getPublishedInterfaceName()} instead in
      * such cases. It lets a class decide which name to return depending on its own project settings
      * in any case.

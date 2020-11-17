@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.wizards.type;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * Wizard to create constrained Associations. This Wizard appears when user clicks on the button

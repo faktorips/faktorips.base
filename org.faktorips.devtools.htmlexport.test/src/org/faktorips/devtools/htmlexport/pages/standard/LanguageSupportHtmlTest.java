@@ -14,16 +14,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.htmlexport.context.messages.LanguageSupportTest;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Test;
 
 /**
@@ -43,7 +43,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         String enBeschreibung = "English Description";
         String enXPath = "//div[.='" + enBeschreibung + "']";
 
-        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "VertragDesc", "VertragDescProdukt");
+        IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "VertragDesc", "VertragDescProdukt");
 
         IDescription deDescription = policy.getDescription(Locale.GERMANY);
         if (deDescription == null) {
@@ -75,8 +75,8 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         String enLabel = "Haggis";
         String name = "Schonkost";
 
-        ProductCmptType type = newProductCmptType(ipsProject, "ProduktTyp");
-        ProductCmpt productCmpt = newProductCmpt(type, "Produkt");
+        IProductCmptType type = newProductCmptType(ipsProject, "ProduktTyp");
+        IProductCmpt productCmpt = newProductCmpt(type, "Produkt");
         IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)type.newAttribute();
         attribute.setName(name);
         attribute.setDatatype("String");

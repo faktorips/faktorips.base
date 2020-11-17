@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This Action starts the product release builder wizard
@@ -41,10 +41,10 @@ public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDe
         TypedSelection<IAdaptable> selection = getCurrentSelection();
         IIpsProject ipsProject = null;
         if (selection.isValid()) {
-            IResource resource = (IResource)selection.getFirstElement().getAdapter(IResource.class);
+            IResource resource = selection.getFirstElement().getAdapter(IResource.class);
             if (resource != null) {
                 IProject project = resource.getProject();
-                ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                ipsProject = IIpsModel.get().getIpsProject(project);
             }
         }
 

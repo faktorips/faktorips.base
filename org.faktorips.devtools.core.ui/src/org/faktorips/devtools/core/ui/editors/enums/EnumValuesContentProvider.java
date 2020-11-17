@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
 
 /** The content provider for the table viewer. */
 public class EnumValuesContentProvider implements IStructuredContentProvider {

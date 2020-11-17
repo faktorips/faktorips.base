@@ -22,9 +22,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.dependency.SortedByDependency;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.dependency.SortedByDependency;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -70,7 +71,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
             getContainer().run(true, true, new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
+                    IIpsModel.get().runAndQueueChangeEvents(op, monitor);
                 }
             });
         } catch (InvocationTargetException e) {

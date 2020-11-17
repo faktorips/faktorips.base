@@ -15,10 +15,10 @@ import java.util.List;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.model.IIpsElement;
 
 /**
  * This is the {@link EditingSupport} for the columns of elements. It provides a {@link Combo} for

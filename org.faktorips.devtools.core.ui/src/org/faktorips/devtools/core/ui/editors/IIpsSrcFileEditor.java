@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Interface for all kinds of editors that editing an {@link IIpsSrcFile}

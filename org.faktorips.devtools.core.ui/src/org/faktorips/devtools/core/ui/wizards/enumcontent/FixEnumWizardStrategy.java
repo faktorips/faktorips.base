@@ -12,16 +12,16 @@ package org.faktorips.devtools.core.ui.wizards.enumcontent;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IPartReference;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.Messages;
+import org.faktorips.devtools.model.IPartReference;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, IEnumAttribute> {
 

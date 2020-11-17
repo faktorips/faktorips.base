@@ -19,15 +19,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Base page for <code>IEnumType</code> editors providing controls to edit its properties and
@@ -119,7 +119,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         toolbarManager.add(exportAction);
         toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
-        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        IMenuService menuService = getSite().getService(IMenuService.class);
         menuService.populateContributionManager((ContributionManager)toolbarManager,
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_ENUM_TYPE_EDITOR_PAGE.getId()));
     }

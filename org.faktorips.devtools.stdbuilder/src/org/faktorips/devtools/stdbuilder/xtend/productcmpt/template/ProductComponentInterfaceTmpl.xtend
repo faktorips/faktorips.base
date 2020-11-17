@@ -31,7 +31,7 @@ class ProductComponentInterfaceTmpl{
                 /**
                 * @generated
                 */
-                public final static «productBuilderModelNode.factoryImplClassName» NEW = new «productBuilderModelNode.factoryImplClassName»();
+                public static final «productBuilderModelNode.factoryImplClassName» NEW = new «productBuilderModelNode.factoryImplClassName»();
             «ENDIF»
 
              «FOR it : attributes»

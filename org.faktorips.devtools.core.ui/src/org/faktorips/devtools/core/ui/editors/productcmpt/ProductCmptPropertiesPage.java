@@ -13,17 +13,17 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
  * A page to display the generations.
  */
 public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "ProductCmpt"; //$NON-NLS-1$
+    static final String PAGE_ID = "ProductCmpt"; //$NON-NLS-1$
 
     public ProductCmptPropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.ProductCmptPropertiesPage_pageTitle);

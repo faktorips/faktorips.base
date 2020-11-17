@@ -17,11 +17,11 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 

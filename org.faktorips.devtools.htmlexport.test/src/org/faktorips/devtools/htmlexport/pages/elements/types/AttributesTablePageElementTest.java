@@ -13,20 +13,20 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.pages.standard.PolicyCmptTypeContentPageElement;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
 
 public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
-    private PolicyCmptType policy;
+    private IPolicyCmptType policy;
 
     @Override
     @Before
@@ -88,7 +88,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
 
     @Test
     public void testInheritedAttributeJavaDocStyle() throws Exception {
-        PolicyCmptType superPolicy = newPolicyCmptType(ipsProject, "BasisVertrag");
+        IPolicyCmptType superPolicy = newPolicyCmptType(ipsProject, "BasisVertrag");
         IAttribute attribute = superPolicy.newAttribute();
         attribute.setName("Geerbt");
         attribute.setDatatype("String");
@@ -113,7 +113,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
 
     @Test
     public void testInheritedAttributeInTable() throws Exception {
-        PolicyCmptType superPolicy = newPolicyCmptType(ipsProject, "BasisVertrag");
+        IPolicyCmptType superPolicy = newPolicyCmptType(ipsProject, "BasisVertrag");
         IAttribute attribute = superPolicy.newAttribute();
         attribute.setName("Geerbt");
         attribute.setDatatype("String");
@@ -140,7 +140,8 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
                 for (IPageElement iPageElement : wrapperPageElement.getSubElements()) {
                     if (iPageElement instanceof PolicyCmptTypeAttributesTablePageElement) {
                         PolicyCmptTypeAttributesTablePageElement policyCmptTypeAttributesTablePageElement = (PolicyCmptTypeAttributesTablePageElement)iPageElement;
-                        anzahlExtensionProperties = policyCmptTypeAttributesTablePageElement.getPropertyDefinitions().length;
+                        anzahlExtensionProperties = policyCmptTypeAttributesTablePageElement
+                                .getPropertyDefinitions().length;
                         break basis;
                     }
                 }

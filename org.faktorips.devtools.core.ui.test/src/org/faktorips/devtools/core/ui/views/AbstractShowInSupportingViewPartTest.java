@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.ShowInContext;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.junit.Before;
 import org.junit.Test;
 

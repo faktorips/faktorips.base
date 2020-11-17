@@ -62,13 +62,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
-import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.testcase.Messages;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
@@ -184,7 +186,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return null;
         }
         String tocPath = reps.get(0);
-        IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        IIpsProject[] projects = IIpsModel.get().getIpsProjects();
         for (IIpsProject project : projects) {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (IIpsPackageFragmentRoot root : roots) {

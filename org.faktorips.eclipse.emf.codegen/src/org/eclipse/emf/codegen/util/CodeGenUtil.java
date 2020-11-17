@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.common.EMFPlugin;
@@ -849,7 +848,7 @@ public class CodeGenUtil {
          * A constant that will always represent the latest language level supported by the version
          * of JDT in the installed runtime. It will determine the
          */
-        private static final int JLS = AST.JLS8;
+        private static final int JLS = AST.JLS11;
 
         /**
          * Return an ASTParser that supports the latest language level in the version of the JDT in
@@ -931,6 +930,7 @@ public class CodeGenUtil {
             return findOrCreateContainer(path, forceRefresh, projectDescription, progressMonitor);
         }
 
+        @SuppressWarnings("deprecation")
         public static IContainer findOrCreateContainer(IPath path,
                 boolean forceRefresh,
                 IProjectDescription projectDescription,
@@ -944,23 +944,25 @@ public class CodeGenUtil {
                 IProject project = workspace.getRoot().getProject(path.segment(0));
 
                 if (forceRefresh) {
-                    project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
+                    project.refreshLocal(IResource.DEPTH_INFINITE,
+                            new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
                 } else {
                     progressMonitor.worked(1);
                 }
 
                 if (!project.exists()) {
-                    project.create(projectDescription, new SubProgressMonitor(progressMonitor, 1));
-                    project.open(new SubProgressMonitor(progressMonitor, 1));
+                    project.create(projectDescription,
+                            new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
+                    project.open(new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
                 } else {
-                    project.open(new SubProgressMonitor(progressMonitor, 2));
+                    project.open(new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 2));
                 }
 
                 IContainer container = project;
                 for (int i = 1, length = path.segmentCount(); i < length; ++i) {
                     IFolder folder = container.getFolder(new Path(path.segment(i)));
                     if (!folder.exists()) {
-                        folder.create(false, true, new SubProgressMonitor(progressMonitor, 1));
+                        folder.create(false, true, new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
                     } else {
                         progressMonitor.worked(1);
                     }

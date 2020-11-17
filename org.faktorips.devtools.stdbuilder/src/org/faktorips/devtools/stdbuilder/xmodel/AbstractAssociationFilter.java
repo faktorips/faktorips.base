@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 
 public abstract class AbstractAssociationFilter {
     public AbstractAssociationFilter() {

@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * A page for presenting the properties of a {@link ITableStructure} or {@link ITableContents}. This
@@ -38,7 +38,7 @@ public class TableDescriptionPage extends DefaultModelDescriptionPage {
     protected List<DescriptionItem> createDescriptions() throws CoreException {
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
         if (getIpsObject() != null) {
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(getIpsObject());
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(getIpsObject());
             DescriptionItem structureDescription = new DescriptionItem(
                     Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
             descriptions.add(structureDescription);

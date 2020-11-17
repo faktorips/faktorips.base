@@ -14,15 +14,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * Represents a table with the associations of an {@link IType} as rows and the attributes of the
@@ -92,7 +92,8 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineDescription));
         headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineAssociationType));
         headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineAggregationKind));
-        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineTargetRoleSingular));
+        headline.add(
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineTargetRoleSingular));
         headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineTargetRolePlural));
 
         addHeadlineAndColumnLayout(headline,
@@ -108,7 +109,8 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
                 getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineSubsettedDerivedUnion),
                 Style.CENTER);
         addHeadlineAndColumnLayout(headline,
-                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineQualified), Style.CENTER);
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineQualified),
+                Style.CENTER);
 
         return headline;
     }

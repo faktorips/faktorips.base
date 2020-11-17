@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 
 public class IpsObjectPartStateListTransfer extends ByteArrayTransfer {
 

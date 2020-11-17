@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
  * Wizard to create a new product component type.

@@ -15,11 +15,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -30,14 +30,14 @@ import org.faktorips.util.ArgumentCheck;
  * <code>IEnumContent</code>.
  * <p>
  * If the control is instrumented to be used for choosing a super enumeration type then the
- * currently set <code>IEnumType</code> will not be shown in the list as well as any <code>IEnumType</code>s
- * that subclass it.
+ * currently set <code>IEnumType</code> will not be shown in the list as well as any
+ * <code>IEnumType</code>s that subclass it.
  * <p>
  * If the control however is instrumented to be used for choosing an <code>IEnumType</code> for an
- * <code>IEnumContent</code> then abstract <code>IEnumType</code>s and those that contain values are not
- * displayed.
+ * <code>IEnumContent</code> then abstract <code>IEnumType</code>s and those that contain values are
+ * not displayed.
  * 
- * @see org.faktorips.devtools.core.model.enums.IEnumType
+ * @see org.faktorips.devtools.model.enums.IEnumType
  * 
  * @author Alexander Weickmann
  * 
@@ -66,11 +66,11 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
     }
 
     /**
-     * Sets the current <code>IEnumType</code>. The current <code>IEnumType</code> and its sub types will
-     * not be shown in the contents of the control.
+     * Sets the current <code>IEnumType</code>. The current <code>IEnumType</code> and its sub types
+     * will not be shown in the contents of the control.
      * 
-     * @param currentEnumType The current <code>IEnumType</code> for that possible supertypes will be
-     *            displayed.
+     * @param currentEnumType The current <code>IEnumType</code> for that possible supertypes will
+     *            be displayed.
      * 
      * @throws NullPointerException If currentEnumType is <code>null</code>.
      */
@@ -105,7 +105,10 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
         return resultSrcFiles.toArray(new IIpsSrcFile[resultSrcFiles.size()]);
     }
 
-    /** Returns whether the given <code>IEnumType</code> is a subtype of the current <code>IEnumType</code>. */
+    /**
+     * Returns whether the given <code>IEnumType</code> is a subtype of the current
+     * <code>IEnumType</code>.
+     */
     private boolean isSubtypeOfCurrentEnumType(IEnumType enumType) {
         if (currentEnumType == null) {
             return false;

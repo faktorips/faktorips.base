@@ -10,11 +10,11 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
  import static org.junit.Assert.assertFalse;
- import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
- import org.faktorips.datatype.Datatype;
- import org.faktorips.datatype.joda.MonthDayDatatype;
- import org.junit.Test;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.joda.MonthDayDatatype;
+import org.junit.Test;
 
  public class MonthDayControlFactoryTest {
 

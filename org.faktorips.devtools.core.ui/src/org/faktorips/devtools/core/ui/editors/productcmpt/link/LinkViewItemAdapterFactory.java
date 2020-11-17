@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 
 /**
  * AdapterFactory to adapt a {@link LinkViewItem LinkViewItem} to an {@link IProductCmptLink}.
@@ -24,20 +24,19 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
  */
 public class LinkViewItemAdapterFactory implements IAdapterFactory {
 
-    @SuppressWarnings("rawtypes")
-    // IAdaptable forces raw type upon implementing classes
+    @SuppressWarnings("unchecked")
     @Override
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (!(adaptableObject instanceof LinkViewItem)) {
             return null;
         }
         IProductCmptLink link = ((LinkViewItem)adaptableObject).getLink();
         if (IIpsObjectPart.class.equals(adapterType) || IProductCmptLink.class.equals(adapterType)) {
-            return link;
+            return (T)link;
         }
         if (IIpsObject.class.equals(adapterType)) {
             try {
-                return link.findTarget(link.getIpsProject());
+                return (T)link.findTarget(link.getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
@@ -45,10 +44,8 @@ public class LinkViewItemAdapterFactory implements IAdapterFactory {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    // IAdaptable forces raw type upon implementing classes
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IIpsObjectPart.class, IProductCmptLink.class, IIpsObject.class };
     }
 

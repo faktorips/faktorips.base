@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.internal.model.bf;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 class TestContentsChangeListener implements ContentsChangeListener {
 

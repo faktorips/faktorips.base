@@ -12,12 +12,12 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 
 public class ConfigElementWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
@@ -47,7 +47,7 @@ public class ConfigElementWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter
 
     @Override
     protected String getLabel(IIpsObjectPart ipsObjectPart) {
-        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(ipsObjectPart);
+        String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(ipsObjectPart);
         Object value = ((IConfigElement)ipsObjectPart).getPropertyValue();
         if (value instanceof String) {
             ValueDatatype datatype = ((IConfigElement)ipsObjectPart).findValueDatatype(ipsObjectPart.getIpsProject());

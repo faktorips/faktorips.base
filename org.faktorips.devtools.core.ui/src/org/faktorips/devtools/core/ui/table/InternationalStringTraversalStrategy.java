@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.values.LocalizedString;
 
 public class InternationalStringTraversalStrategy extends LinkedColumnsTraversalStrategy<LocalizedString> {

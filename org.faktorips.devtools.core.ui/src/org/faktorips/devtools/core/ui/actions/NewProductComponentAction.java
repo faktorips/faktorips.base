@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 /**
  * Open the new product component wizard.

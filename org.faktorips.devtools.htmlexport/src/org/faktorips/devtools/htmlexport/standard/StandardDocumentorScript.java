@@ -18,11 +18,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -43,6 +38,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListP
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class StandardDocumentorScript implements IDocumentorScript {
 
@@ -58,6 +57,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         this.ioHandler = ioHandler;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
         List<IIpsSrcFile> srcFiles = context.getDocumentedSourceFiles();
@@ -65,24 +65,28 @@ public class StandardDocumentorScript implements IDocumentorScript {
         IpsObjectType[] documentedIpsObjectTypes = context.getDocumentedIpsObjectTypes();
 
         monitor.beginTask(
-                "Write Html Export", 5 + srcFiles.size() + relatedPackageFragments.size() + documentedIpsObjectTypes.length); //$NON-NLS-1$
+                "Write Html Export", //$NON-NLS-1$
+                5 + srcFiles.size() + relatedPackageFragments.size() + documentedIpsObjectTypes.length);
 
         // Reihenfolge fuer anlauf des balkens im exportwizard ungemein wichtig
 
         try {
-            writeBaseFrameDefinition(context, new SubProgressMonitor(monitor, 1));
-            writeClassesContentPages(context, srcFiles, new SubProgressMonitor(monitor, srcFiles.size()));
-            writeOverviewPage(context, srcFiles, new SubProgressMonitor(monitor, 1));
-            writeAllClassesPage(context, srcFiles, new SubProgressMonitor(monitor, 1));
+            writeBaseFrameDefinition(context, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+            writeClassesContentPages(context, srcFiles,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, srcFiles.size()));
+            writeOverviewPage(context, srcFiles, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+            writeAllClassesPage(context, srcFiles, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
 
-            writeProjectOverviewPage(context, new SubProgressMonitor(monitor, 1));
-            writePackagesClassesPages(context, srcFiles, relatedPackageFragments, new SubProgressMonitor(monitor,
-                    relatedPackageFragments.size()));
+            writeProjectOverviewPage(context, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+            writePackagesClassesPages(context, srcFiles, relatedPackageFragments,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor,
+                            relatedPackageFragments.size()));
 
-            writeObjectTypesClassesPages(context, documentedIpsObjectTypes, new SubProgressMonitor(monitor,
-                    documentedIpsObjectTypes.length));
+            writeObjectTypesClassesPages(context, documentedIpsObjectTypes,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor,
+                            documentedIpsObjectTypes.length));
 
-            writeResources(context, new SubProgressMonitor(monitor, 1));
+            writeResources(context, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e));
         } finally {
@@ -115,7 +119,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException,
-    CoreException {
+            CoreException {
         ICompositePageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
         if (objectContentPage == null) {
             return;
@@ -124,14 +128,16 @@ public class StandardDocumentorScript implements IDocumentorScript {
         writeFile(context, ipsSrcFile, objectContentPage);
     }
 
-    private void writeFile(DocumentationContext context, IIpsSrcFile ipsSrcFile, ICompositePageElement objectContentPage)
+    private void writeFile(DocumentationContext context,
+            IIpsSrcFile ipsSrcFile,
+            ICompositePageElement objectContentPage)
             throws IOException {
         ioHandler
-        .writeFile(
-                context,
-                STANDARD_PATH
-                + htmlUtil.getPathFromRoot(ipsSrcFile,
-                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
+                .writeFile(
+                        context,
+                        STANDARD_PATH
+                                + htmlUtil.getPathFromRoot(ipsSrcFile,
+                                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
                         getPageContent(context, objectContentPage));
     }
 
@@ -141,9 +147,10 @@ public class StandardDocumentorScript implements IDocumentorScript {
         return layouter.generate();
     }
 
+    @SuppressWarnings("deprecation")
     private void writeObjectTypesClassesPages(DocumentationContext context,
             IpsObjectType[] documentedIpsObjectTypes,
-            SubProgressMonitor monitor) throws IOException {
+            org.eclipse.core.runtime.SubProgressMonitor monitor) throws IOException {
         monitor.beginTask("Object Types Overview", 1); //$NON-NLS-1$
         for (IpsObjectType ipsObjectType : documentedIpsObjectTypes) {
             writeObjectTypesClassesPage(context, ipsObjectType);
@@ -194,9 +201,9 @@ public class StandardDocumentorScript implements IDocumentorScript {
         ioHandler.writeFile(
                 context,
                 STANDARD_PATH
-                + htmlUtil.getPathFromRoot(ipsPackageFragment,
-                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)),
-                        getPageContent(context, allClassesPage));
+                        + htmlUtil.getPathFromRoot(ipsPackageFragment,
+                                LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)),
+                getPageContent(context, allClassesPage));
     }
 
     private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsSrcFile> srcFiles) {
@@ -243,7 +250,8 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(
                 context.getMessage(HtmlExportMessages.StandardDocumentorScript_documentation)
-                + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                        + " " + context.getIpsProject().getName(), //$NON-NLS-1$
+                "20%, 80%", "30%, 70%"); //$NON-NLS-1$ //$NON-NLS-2$
         ioHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
 
         monitor.done();

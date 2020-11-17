@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller;
 
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
 
 public class FieldExtensionPropertyMapping<T> extends AbstractFieldPropertyMapping<T> {
 

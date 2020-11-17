@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend.table;
 
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public class TableRowBuilderClassNameProvider extends DefaultJavaClassNameProvider {
 

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGenerationToTypeDelta;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGenerationToTypeDelta;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**

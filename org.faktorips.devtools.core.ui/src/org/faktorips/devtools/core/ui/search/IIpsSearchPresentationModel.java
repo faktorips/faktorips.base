@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.search;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Is the interface for the base presentasion models for model and product search

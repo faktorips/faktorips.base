@@ -19,13 +19,14 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Factory to create controls for the extension properties of a type.
@@ -65,7 +66,7 @@ public class ExtensionPropertyControlFactory {
      * @param extensionClass The class for which the extension properties are registered
      */
     public ExtensionPropertyControlFactory(Class<? extends IExtensionPropertyAccess> extensionClass) {
-        Set<IExtensionPropertyDefinition> extensionProperties = IpsPlugin.getDefault().getIpsModel()
+        Set<IExtensionPropertyDefinition> extensionProperties = IIpsModel.get()
                 .getExtensionPropertyDefinitionsForClass(extensionClass, true);
         extPropData = new ExtPropControlData[extensionProperties.size()];
         int i = 0;

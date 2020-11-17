@@ -12,7 +12,7 @@ package org.faktorips.abstracttest.builder;
 
 import java.util.Map;
 
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetConfig;
 
 public class TestBuilderSetConfig extends IpsArtefactBuilderSetConfig {
 

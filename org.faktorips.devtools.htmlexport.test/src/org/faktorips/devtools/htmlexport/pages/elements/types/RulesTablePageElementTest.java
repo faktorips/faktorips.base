@@ -12,19 +12,19 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.MessageSeverity;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
 
 public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
-    private PolicyCmptType policy;
+    private IPolicyCmptType policy;
 
     @Override
     @Before
@@ -81,7 +81,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         for (IValidationRule rule : rules) {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getName() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageCode() + "']");
-            assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageSeverity().getName()
+            assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageSeverity().getId()
                     + "']");
             assertXPathFromTable(objectContentPage,
                     "//tr[" + row + "][td='" + rule.getMessageText().get(context.getDocumentationLocale()).getValue()

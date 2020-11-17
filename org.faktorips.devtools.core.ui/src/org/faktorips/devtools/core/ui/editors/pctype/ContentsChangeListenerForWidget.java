@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Widget;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -79,7 +79,7 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
 
     @Override
     public final void widgetDisposed(DisposeEvent e) {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        IIpsModel.get().removeChangeListener(this);
         disposedInternal(e);
     }
 

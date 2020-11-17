@@ -20,9 +20,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 
 /**
  * A dialog that allows the user to select one {@link IProductCmptCategory} out of all categories of
@@ -92,7 +93,7 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
 
         @Override
         public String getText(Object element) {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((IProductCmptCategory)element);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((IProductCmptCategory)element);
         }
 
     }

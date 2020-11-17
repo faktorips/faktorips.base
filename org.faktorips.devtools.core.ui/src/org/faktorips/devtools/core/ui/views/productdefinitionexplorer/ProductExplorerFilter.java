@@ -15,11 +15,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * ViewerFilter for <code>ProductExplorer<code> viewpart. It is used to
@@ -79,7 +79,7 @@ public class ProductExplorerFilter extends ViewerFilter {
         IResource resource = null;
         if (element instanceof IResource) {
             resource = (IResource)element;
-            ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
+            ipsProject = IIpsModel.get().getIpsProject(resource.getProject());
         } else if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             resource = ipsElement.getCorrespondingResource();

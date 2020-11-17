@@ -22,16 +22,17 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 
 /**
  * This is the base class for pages used with the {@link NewIpsObjectWizard}. The wizard uses the
@@ -106,8 +107,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             setIpsPackageFragmentRoot(null);
             return;
         }
-
-        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
             roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
@@ -150,8 +150,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         if (selectedResource == null) {
             return null;
         }
-
-        IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        IIpsElement el = IIpsModel.get().getIpsElement(selectedResource);
         if (el instanceof IIpsSrcFile) {
             return ((IIpsSrcFile)el).getIpsObject();
         }

@@ -17,16 +17,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -43,6 +33,15 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePag
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 
 /**
  * a page representing an {@link ITestCaseType}
@@ -112,14 +111,14 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * 
      */
     private IPageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreException {
-        if (testParameter instanceof TestValueParameter) {
-            return createTestValueParameterPageElement((TestValueParameter)testParameter);
+        if (testParameter instanceof ITestValueParameter) {
+            return createTestValueParameterPageElement((ITestValueParameter)testParameter);
         }
-        if (testParameter instanceof TestRuleParameter) {
-            return createTestRuleParameterPageElement((TestRuleParameter)testParameter);
+        if (testParameter instanceof ITestRuleParameter) {
+            return createTestRuleParameterPageElement((ITestRuleParameter)testParameter);
         }
-        if (testParameter instanceof TestPolicyCmptTypeParameter) {
-            return createTestPolicyCmptTypePageElement((TestPolicyCmptTypeParameter)testParameter);
+        if (testParameter instanceof ITestPolicyCmptTypeParameter) {
+            return createTestPolicyCmptTypePageElement((ITestPolicyCmptTypeParameter)testParameter);
         }
 
         return TextPageElement.createParagraph(getContext().getLabel(testParameter) + " " + testParameter.getClass(), //$NON-NLS-1$
@@ -188,7 +187,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         return keyValueTable;
     }
 
-    private IPageElement createTestRuleParameterPageElement(TestRuleParameter testParameter) {
+    private IPageElement createTestRuleParameterPageElement(ITestRuleParameter testParameter) {
         String name = createNodeName(testParameter);
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 
@@ -210,7 +209,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         return getContext().getLabel(testParameter) + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
     }
 
-    private IPageElement createTestValueParameterPageElement(TestValueParameter testParameter) {
+    private IPageElement createTestValueParameterPageElement(ITestValueParameter testParameter) {
         String name = createNodeName(testParameter);
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 

@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 
 public class PolicyCmptImplClassJpaAnnGenFactory implements IAnnotationGeneratorFactory {
 

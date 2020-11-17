@@ -24,11 +24,11 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * Abstract base class for pages of an IPS object editor.

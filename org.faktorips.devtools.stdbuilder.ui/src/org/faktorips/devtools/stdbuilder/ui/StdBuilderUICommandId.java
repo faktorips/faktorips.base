@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.ui;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Enumerates all command IDs and command parameter IDs provided by the Faktor-IPS Standard Builder

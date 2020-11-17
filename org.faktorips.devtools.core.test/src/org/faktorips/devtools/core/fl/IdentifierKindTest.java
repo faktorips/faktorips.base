@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.fl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.faktorips.devtools.model.fl.IdentifierKind;
 import org.junit.Test;
 
 public class IdentifierKindTest {

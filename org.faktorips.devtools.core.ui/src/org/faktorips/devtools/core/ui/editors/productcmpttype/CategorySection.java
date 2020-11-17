@@ -23,12 +23,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
@@ -37,6 +31,12 @@ import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 
 /**
  * A section allowing the user to edit an {@link IProductCmptCategory}.
@@ -108,7 +108,7 @@ public class CategorySection extends IpsSection {
 
     @Override
     protected String getSectionTitle() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(category);
     }
 
     @Override

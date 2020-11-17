@@ -14,8 +14,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.junit.Test;
 
 public class TemplatedValueFormatterTest {

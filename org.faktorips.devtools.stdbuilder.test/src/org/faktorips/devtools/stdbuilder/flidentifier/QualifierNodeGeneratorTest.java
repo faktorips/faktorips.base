@@ -19,17 +19,16 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.type.Association;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.util.TextRegion;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
@@ -55,7 +54,7 @@ public class QualifierNodeGeneratorTest {
     private CompilationResult<JavaCodeFragment> contextCompilationResult;
 
     @Mock
-    private Association association;
+    private IAssociation association;
 
     @Mock
     private IPolicyCmptType target;
@@ -121,7 +120,7 @@ public class QualifierNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult_SingleDifferentTargetDatatype() throws Exception {
-        IPolicyCmptType type = mock(PolicyCmptType.class);
+        IPolicyCmptType type = mock(IPolicyCmptType.class);
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
         XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);

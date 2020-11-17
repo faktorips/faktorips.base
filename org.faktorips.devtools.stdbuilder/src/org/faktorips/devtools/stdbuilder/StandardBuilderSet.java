@@ -31,38 +31,35 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.GenericValueDatatype;
-import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
-import org.faktorips.devtools.core.builder.GenericBuilderKindId;
-import org.faktorips.devtools.core.builder.IJavaBuilderSet;
-import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.model.builder.GenericBuilderKindId;
+import org.faktorips.devtools.model.builder.IJavaBuilderSet;
+import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.datatype.DatatypeDefinition;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
+import org.faktorips.devtools.model.productcmpt.IExpression;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
@@ -108,6 +105,8 @@ import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.runtime.model.type.PolicyCmptType;
+import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -201,15 +200,15 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     /**
      * Configuration property that defines additional annotations that are generated above all
-     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType},
-     * {@link TableStructure} and {@link TableContents}
+     * generated methods of {@link IPolicyCmptType}, {@link IProductCmptType}, {@link IEnumType},
+     * {@link ITableStructure} and {@link ITableContents}
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
     /**
      * Configuration property that defines annotations that are not removed from generated methods
-     * of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType}, {@link TableStructure}
-     * and {@link TableContents}
+     * of {@link IPolicyCmptType}, {@link IProductCmptType}, {@link IEnumType},
+     * {@link ITableStructure} and {@link ITableContents}
      */
     public static final String CONFIG_PROPERTY_RETAIN_ANNOTATIONS = "retainAnnotations"; //$NON-NLS-1$
 
@@ -536,7 +535,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                 continue;
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builderTemp;
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
+            IIpsSrcFile ipsSrcFile = ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
             try {
                 if (javaBuilder.isBuilderFor(ipsSrcFile)) {
                     javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
@@ -694,7 +693,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
          */
         private void initialize(IIpsProject ipsProject) {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
-            IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
+            IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID,
                     DATATYPE_DEFINITION_EXTENSION_POINT);
             IExtension[] extensions = point.getExtensions();
 

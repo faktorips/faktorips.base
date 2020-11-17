@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAttribute;
 
 /**
  * A page for presenting the properties of a {@link IPolicyCmptType}. This page is connected to a
@@ -38,7 +38,7 @@ public class PolicyCmtTypeDescriptionPage extends DefaultModelDescriptionPage {
     protected List<DescriptionItem> createDescriptions() throws CoreException {
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
         if (getIpsObject() != null) {
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(getIpsObject());
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(getIpsObject());
             DescriptionItem structureDescription = new DescriptionItem(
                     Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
             descriptions.add(structureDescription);

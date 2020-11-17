@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 
 /**
  * Product cmpt editor input based on file editor input. Contains product cmpt relevant information

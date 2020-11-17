@@ -26,12 +26,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
 import org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditor;
@@ -40,6 +34,13 @@ import org.faktorips.devtools.core.ui.wizards.enumcontent.EnumContentPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -181,7 +182,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                             messageList, startingPage.isImportIntoExisting());
                 }
             };
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+            IIpsModel.get().runAndQueueChangeEvents(runnable, null);
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

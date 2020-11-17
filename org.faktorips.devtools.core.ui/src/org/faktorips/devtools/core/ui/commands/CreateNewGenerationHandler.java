@@ -17,8 +17,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.CreateNewGenerationAction;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This command handler simply uses the existing {@link CreateNewGenerationAction} to execute the

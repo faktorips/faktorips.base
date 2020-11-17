@@ -21,18 +21,18 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
-import org.faktorips.devtools.core.internal.model.enums.EnumAttribute;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.devtools.core.util.TextRegion;
+import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.TextRegion;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -76,8 +76,8 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetCompilationResultForEnumDatatypeAdapter() throws Exception {
-        EnumType enumType = newEnumType(project, PACKAGE_NAME + '.' + ENUM_TYPE_NAME);
-        EnumAttribute identifierAttribute = newIdentifierAttribute(enumType, "id", Datatype.STRING);
+        IEnumType enumType = newEnumType(project, PACKAGE_NAME + '.' + ENUM_TYPE_NAME);
+        IEnumAttribute identifierAttribute = newIdentifierAttribute(enumType, "id", Datatype.STRING);
         IEnumLiteralNameAttribute literalNameAttribute = enumType.newEnumLiteralNameAttribute();
 
         IEnumValue enumValue = enumType.newEnumValue();
@@ -102,9 +102,9 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
         return new IdentifierNodeFactory(new TextRegion(name, 0, name.length()), ipsProject);
     }
 
-    private EnumAttribute newIdentifierAttribute(EnumType enumType, String name, StringDatatype string)
+    private IEnumAttribute newIdentifierAttribute(IEnumType enumType, String name, StringDatatype string)
             throws CoreException {
-        EnumAttribute identifierAttribute = (EnumAttribute)enumType.newEnumAttribute();
+        IEnumAttribute identifierAttribute = enumType.newEnumAttribute();
         identifierAttribute.setName(name);
         identifierAttribute.setIdentifier(true);
         identifierAttribute.setDatatype(string.getName());

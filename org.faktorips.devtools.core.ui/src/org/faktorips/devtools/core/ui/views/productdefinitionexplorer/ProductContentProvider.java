@@ -15,12 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.views.modelexplorer.LayoutStyle;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public class ProductContentProvider extends ModelContentProvider {
 

@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * Common base interface for all controls/composite allowing to edit a single value set of a given

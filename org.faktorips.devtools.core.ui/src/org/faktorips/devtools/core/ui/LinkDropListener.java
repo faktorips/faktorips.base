@@ -17,10 +17,10 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinkCandidateFilter;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 
 public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
 

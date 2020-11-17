@@ -12,8 +12,8 @@ package org.faktorips.devtools.htmlexport.helper.path;
 
 import java.io.File;
 
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
  * Base implementation of the {@link IHtmlPath}

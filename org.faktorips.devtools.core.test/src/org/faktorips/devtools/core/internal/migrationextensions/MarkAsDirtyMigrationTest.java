@@ -19,14 +19,14 @@ import com.google.common.collect.ImmutableSet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.enums.EnumContent;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.internal.model.testcase.TestCase;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.testcase.ITestCase;
 import org.junit.Test;
 
 public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
@@ -57,13 +57,13 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
     @Test
     public void testMigrate_SrcFilesAreDirty() throws Exception {
         setUpMigration();
-        PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy1");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy1");
         policyCmptType.getIpsSrcFile().save(true, null);
-        ProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProduct");
-        TableStructure tableStructure = newTableStructure(ipsProject, "TestStructure");
-        EnumType enumType = newEnumType(ipsProject, "TestEnum");
-        EnumContent enumContent = newEnumContent(enumType, "TestEnumContent");
-        TestCase testCase = newTestCase(ipsProject, "TestCase");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProduct");
+        ITableStructure tableStructure = newTableStructure(ipsProject, "TestStructure");
+        IEnumType enumType = newEnumType(ipsProject, "TestEnum");
+        IEnumContent enumContent = newEnumContent(enumType, "TestEnumContent");
+        ITestCase testCase = newTestCase(ipsProject, "TestCase");
 
         assertFalse(policyCmptType.getIpsSrcFile().isDirty());
         assertFalse(productCmptType.getIpsSrcFile().isDirty());

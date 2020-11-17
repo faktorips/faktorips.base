@@ -18,9 +18,9 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 public class CopyRuntimeIdHandler extends IpsAbstractHandler {
     @Override
@@ -38,7 +38,7 @@ public class CopyRuntimeIdHandler extends IpsAbstractHandler {
         boolean first = true;
         for (IAdaptable element : typedSelection.getElements()) {
             if (element.getAdapter(IProductCmpt.class) != null) {
-                IProductCmpt productComponent = (IProductCmpt)element.getAdapter(IProductCmpt.class);
+                IProductCmpt productComponent = element.getAdapter(IProductCmpt.class);
                 if (!first) {
                     runtimeIds.append(System.lineSeparator());
                 }

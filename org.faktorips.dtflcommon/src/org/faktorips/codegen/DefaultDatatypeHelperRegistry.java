@@ -25,7 +25,7 @@ public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
     /**
      * Returns a new empty registry.
      */
-    public final static DatatypeHelperRegistry newEmptyRegistry() {
+    public static final DatatypeHelperRegistry newEmptyRegistry() {
         return new DefaultDatatypeHelperRegistry();
     }
 

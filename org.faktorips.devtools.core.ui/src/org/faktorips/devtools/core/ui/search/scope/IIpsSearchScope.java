@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.search.scope;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * The IIpsSearchScope defines, which IpsSrcFile the search should consider.

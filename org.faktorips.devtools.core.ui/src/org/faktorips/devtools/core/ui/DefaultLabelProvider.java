@@ -16,10 +16,10 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.fl.FlFunction;
 
 /**
@@ -53,7 +53,7 @@ public class DefaultLabelProvider extends LabelProvider {
                 return result;
             }
             // check adaptable to IIpsSrcFile
-            IIpsSrcFile adaptedIpsSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+            IIpsSrcFile adaptedIpsSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
             if (adaptedIpsSrcFile != null) {
                 return IpsUIPlugin.getImageHandling().getImage(adaptedIpsSrcFile);
             }

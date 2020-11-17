@@ -24,11 +24,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.model.DefaultVersion;
-import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.internal.DefaultVersion;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;

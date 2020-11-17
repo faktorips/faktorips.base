@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 
 /**
  * A ISearchOperator provides the core for the search

@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 
 public class TableContentsContentProvider implements IStructuredContentProvider {
 

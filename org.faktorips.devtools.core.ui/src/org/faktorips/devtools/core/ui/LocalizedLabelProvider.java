@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 
 public class LocalizedLabelProvider extends DefaultLabelProvider {
 
@@ -19,7 +19,7 @@ public class LocalizedLabelProvider extends DefaultLabelProvider {
     public String getText(Object element) {
         if (element instanceof ILabeledElement) {
             ILabeledElement labeledElement = (ILabeledElement)element;
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(labeledElement);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(labeledElement);
         }
         return super.getText(element);
     }

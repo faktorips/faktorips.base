@@ -10,9 +10,9 @@
 
 package org.faktorips.fl.functions.date;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
 
 import java.util.Set;
 

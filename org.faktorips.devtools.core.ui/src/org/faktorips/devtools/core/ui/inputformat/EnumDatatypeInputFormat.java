@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
 
 public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
 

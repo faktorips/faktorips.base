@@ -17,12 +17,12 @@ import java.util.Set;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.pctype.MarkerEnumUtil;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.util.MarkerEnumUtil;
 
 /**
  * Presentation model object for {@link ValidationRuleMarkerUI} to activate or deactivate markers

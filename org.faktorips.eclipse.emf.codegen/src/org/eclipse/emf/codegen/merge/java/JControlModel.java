@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  * A control model that provides dictionaries and rules to drive a merge process.
  */
 public class JControlModel extends PrefixHandler {
-    protected final static Class<?>[] NO_PARAMETER_TYPES = new Class<?>[0];
+    protected static final Class<?>[] NO_PARAMETER_TYPES = new Class<?>[0];
 
     static Map<String, Class<?>> classNameToClassMap = new HashMap<String, Class<?>>();
 

@@ -14,10 +14,10 @@ import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IWorkbenchPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 
 /**
  * This tester expects an {@link IIpsObjectPart} as receiver and is able to test properties
@@ -64,8 +64,7 @@ public class IpsObjectPartTester extends PropertyTester {
             T part = (T)object;
             return part;
         } else if (object instanceof IAdaptable) {
-            @SuppressWarnings("unchecked")
-            T part = (T)Platform.getAdapterManager().getAdapter(object, partClass);
+            T part = Platform.getAdapterManager().getAdapter(object, partClass);
             return part;
         }
         return null;

@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsproject.Messages;
+import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -103,14 +103,16 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
 
     @Override
     public boolean isFolderForDerivedSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
-                .equals(type));
+        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
+                || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
+                        .equals(type));
     }
 
     @Override
     public boolean isFolderForMergableSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type) || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
-                .equals(type));
+        return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
+                || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
+                        .equals(type));
     }
 
     @Override
@@ -120,14 +122,16 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
 
     @Override
     public boolean isPackageNameForDerivedSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED
-                .equals(type)));
+        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED.equals(type)
+                || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED
+                        .equals(type)));
     }
 
     @Override
     public boolean isPackageNameForMergableSources() {
-        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type) || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE
-                .equals(type)));
+        return (IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE.equals(type)
+                || (IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE
+                        .equals(type)));
     }
 
     @Override

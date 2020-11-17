@@ -13,14 +13,14 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 
 /**
  * An editor page that allows to edit the {@link ILabel}s and {@link IDescription}s of an

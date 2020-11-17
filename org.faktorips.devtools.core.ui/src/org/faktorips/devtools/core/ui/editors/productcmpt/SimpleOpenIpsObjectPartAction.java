@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Opens an editor for an {@link IIpsObjectPartContainer}.

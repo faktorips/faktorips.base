@@ -16,11 +16,11 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRenameRefactoringWizard;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.util.ArgumentCheck;
 
 /**

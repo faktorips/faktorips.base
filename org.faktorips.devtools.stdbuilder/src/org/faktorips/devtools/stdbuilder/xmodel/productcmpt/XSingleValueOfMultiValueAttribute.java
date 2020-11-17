@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;

@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 
 /**
  * Overview page for persistence properties of an {@link IPolicyCmptType}. The page consists of
@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class PersistencePage extends IpsObjectEditorPage {
 
-    private final static String PAGE_ID = "PersistencePage"; //$NON-NLS-1$
+    private static final String PAGE_ID = "PersistencePage"; //$NON-NLS-1$
 
     public PersistencePage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, "Persistence"); //$NON-NLS-1$

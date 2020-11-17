@@ -29,18 +29,18 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -118,7 +118,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
         } else if (parentElement instanceof IResource) {
             if (parentElement instanceof IAdaptable) {
-                IWorkbenchAdapter adapter = (IWorkbenchAdapter)((IAdaptable)parentElement)
+                IWorkbenchAdapter adapter = ((IAdaptable)parentElement)
                         .getAdapter(IWorkbenchAdapter.class);
 
                 if (adapter != null) {
@@ -218,7 +218,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         try {
             if (project.hasNature(IIpsProject.NATURE_ID)) {
                 // check if one of the archive entries in the ips object path is the given file
-                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                IIpsProject ipsProject = IIpsModel.get().getIpsProject(project.getName());
                 IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
                 for (IIpsArchiveEntry archiveEntrie : archiveEntries) {
                     IPath archivePath = archiveEntrie.getArchiveLocation();
@@ -390,7 +390,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 // ".sortorder"-file
                 if (resource instanceof IFile | resource instanceof IFolder) {
                     if (resource.getName().indexOf(".") == 0) { //$NON-NLS-1$
-                        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
+                        IIpsProject project = IIpsModel.get().getIpsProject(resource.getProject());
 
                         if ((!resource.equals(project.getIpsProjectPropertiesFile()))
                                 && resource.getName().compareTo(IIpsPackageFragment.SORT_ORDER_FILE_NAME) != 0) {
@@ -446,7 +446,7 @@ public class ModelContentProvider implements ITreeContentProvider {
              * (IResource)element).getParent() alone is not sufficient.
              */
             IResource parentResource = ((IResource)element).getParent();
-            IIpsElement parentIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(parentResource);
+            IIpsElement parentIpsElement = IIpsModel.get().getIpsElement(parentResource);
             if (parentIpsElement != null) {
                 return parentIpsElement;
             } else {

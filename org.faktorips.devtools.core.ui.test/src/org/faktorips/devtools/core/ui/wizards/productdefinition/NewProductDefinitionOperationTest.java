@@ -20,24 +20,18 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
-import org.faktorips.abstracttest.TestConfigurationElement;
-import org.faktorips.abstracttest.TestExtensionRegistry;
-import org.faktorips.abstracttest.TestMockingUtils;
+import org.faktorips.devtools.core.IpsCoreExtensions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -135,41 +129,30 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
     @Test
     public void testRun_CallParticipants() throws InvocationTargetException, InterruptedException {
         IpsPlugin ipsPlugin = IpsPlugin.getDefault();
-        ipsPlugin = spy(ipsPlugin);
-        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+        IpsCoreExtensions originalIpsCoreExtensions = ipsPlugin.getIpsCoreExtensions();
+        try {
+            IpsCoreExtensions ipsCoreExtensions = spy(originalIpsCoreExtensions);
+            ipsPlugin.setIpsCoreExtensions(ipsCoreExtensions);
 
-        INewProductDefinitionOperationParticipant testParticipant1 = mock(INewProductDefinitionOperationParticipant.class);
-        INewProductDefinitionOperationParticipant testParticipant2 = mock(INewProductDefinitionOperationParticipant.class);
-        mockNewProductDefinitionParticipants(ipsPlugin, testParticipant1, testParticipant2);
+            INewProductDefinitionOperationParticipant testParticipant1 = mock(
+                    INewProductDefinitionOperationParticipant.class);
+            INewProductDefinitionOperationParticipant testParticipant2 = mock(
+                    INewProductDefinitionOperationParticipant.class);
+            doReturn(Arrays.asList(testParticipant1, testParticipant2)).when(ipsCoreExtensions)
+                    .getNewProductDefinitionOperationParticipants();
 
-        TestProductDefinitionPMO pmo = new TestProductDefinitionPMO();
-        pmo.setIpsProject(ipsProject);
-        pmo.setIpsPackage(ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment());
+            TestProductDefinitionPMO pmo = new TestProductDefinitionPMO();
+            pmo.setIpsProject(ipsProject);
+            pmo.setIpsPackage(ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment());
 
-        TestProductDefinitionOperation operation = new TestProductDefinitionOperation(pmo);
-        operation.run(monitor);
+            TestProductDefinitionOperation operation = new TestProductDefinitionOperation(pmo);
+            operation.run(monitor);
 
-        verify(testParticipant1).finishIpsSrcFile(any(IIpsSrcFile.class), any(IProgressMonitor.class));
-        verify(testParticipant2).finishIpsSrcFile(any(IIpsSrcFile.class), any(IProgressMonitor.class));
-    }
-
-    private void mockNewProductDefinitionParticipants(IpsPlugin ipsPlugin,
-            INewProductDefinitionOperationParticipant... testParticipants) {
-
-        IExtension[] extensions = new IExtension[testParticipants.length];
-        for (int i = 0; i < testParticipants.length; i++) {
-            Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
-            executableExtensionMap.put("class", testParticipants[i]);
-            IExtension extension = TestMockingUtils.mockExtension("TestParticipant", new TestConfigurationElement(
-                    INewProductDefinitionOperationParticipant.CONFIG_ELEMENT_ID_PARTICIPANT,
-                    new HashMap<String, String>(), null, new IConfigurationElement[0], executableExtensionMap));
-            extensions[i] = extension;
+            verify(testParticipant1).finishIpsSrcFile(any(IIpsSrcFile.class), any(IProgressMonitor.class));
+            verify(testParticipant2).finishIpsSrcFile(any(IIpsSrcFile.class), any(IProgressMonitor.class));
+        } finally {
+            ipsPlugin.setIpsCoreExtensions(originalIpsCoreExtensions);
         }
-        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
-                INewProductDefinitionOperationParticipant.EXTENSION_POINT_ID_NEW_PRODUCT_DEFINITION_OPERATION,
-                extensions);
-        TestExtensionRegistry extensionRegistry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
-        doReturn(extensionRegistry).when(ipsPlugin).getExtensionRegistry();
     }
 
     private static class TestProductDefinitionPMO extends NewProductDefinitionPMO {
@@ -191,7 +174,8 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     }
 
-    private static class TestProductDefinitionOperation extends NewProductDefinitionOperation<TestProductDefinitionPMO> {
+    private static class TestProductDefinitionOperation
+            extends NewProductDefinitionOperation<TestProductDefinitionPMO> {
 
         private boolean finishIpsSrcFileCalled;
 

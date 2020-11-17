@@ -20,15 +20,15 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeAssociation;
+import org.faktorips.devtools.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcase.ITestCaseTestCaseTypeDelta;
+import org.faktorips.devtools.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 
 /**
  * Content provider to represent differnces between test case and test case type.

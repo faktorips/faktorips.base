@@ -41,6 +41,8 @@ public class TestConfigurationElement
     private Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
     private IConfigurationElement[] children;
 
+    private IExtension extension;
+
     public TestConfigurationElement(String name, Map<String, String> attributes, String value,
             IConfigurationElement[] children) {
         this(name, attributes, value, children, new HashMap<String, Object>());
@@ -100,6 +102,9 @@ public class TestConfigurationElement
 
     @Override
     public IExtension getDeclaringExtension() throws InvalidRegistryObjectException {
+        if (extension != null) {
+            return extension;
+        }
         throw new RuntimeException("Not implemented.");
     }
 
@@ -153,6 +158,10 @@ public class TestConfigurationElement
     @Override
     public int getHandleId() {
         return 0;
+    }
+
+    public void setExtension(IExtension extension) {
+        this.extension = extension;
     }
 
 }

@@ -20,10 +20,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.producttemplate.DefinedValuesContentProvider;
 import org.faktorips.devtools.core.ui.views.producttemplate.SwitchTemplatedValueOperation;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
 

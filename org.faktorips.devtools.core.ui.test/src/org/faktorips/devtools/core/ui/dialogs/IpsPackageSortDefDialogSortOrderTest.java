@@ -17,21 +17,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment.DefinedOrderComparator;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog.SortOrder;
+import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +67,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         sortOrder.save();
 
         assertThat(defaultIpsPackageFragment.getChildOrderComparator(),
-                is((Comparator<IIpsElement>)(AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR)));
+                is(AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR));
     }
 
     @Test

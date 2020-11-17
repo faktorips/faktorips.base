@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChangeListener {
 
@@ -37,7 +37,7 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
 
     public OutlinePage(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+        IIpsModel.get().addIpsSrcFilesChangedListener(this);
     }
 
     @Override

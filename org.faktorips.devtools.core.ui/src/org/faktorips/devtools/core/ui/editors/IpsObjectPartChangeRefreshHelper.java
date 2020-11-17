@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.events.DisposeListener;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * Helper that refreshes a viewer if it observes changes in an IPS object.
@@ -76,7 +76,7 @@ public class IpsObjectPartChangeRefreshHelper {
      * Initializes the helper, adds a change listener to the IPS model.
      */
     public void init() {
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(changeListener);
+        IIpsModel.get().addChangeListener(changeListener);
         viewerToRefresh.getControl().addDisposeListener(disposeListener);
     }
 
@@ -92,7 +92,7 @@ public class IpsObjectPartChangeRefreshHelper {
      * Removes the change listener from the IPS model.
      */
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(changeListener);
+        IIpsModel.get().removeChangeListener(changeListener);
     }
 
 }

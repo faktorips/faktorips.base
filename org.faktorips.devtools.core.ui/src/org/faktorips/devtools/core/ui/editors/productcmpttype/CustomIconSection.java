@@ -39,20 +39,21 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * This Section lets the user select icons that are used when instances of the edited type are
@@ -243,7 +244,7 @@ public class CustomIconSection extends IpsSection {
          * part of the {@link IpsObjectPath}.
          */
         private boolean isIpsSrcFolder(IFolder folder) {
-            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(folder.getProject());
+            IIpsProject ipsProject = IIpsModel.get().getIpsProject(folder.getProject());
             IIpsPackageFragmentRoot root = ipsProject
                     .getIpsPackageFragmentRoot(folder.getProjectRelativePath().toOSString());
             if (root != null && root.exists()) {
@@ -272,7 +273,7 @@ public class CustomIconSection extends IpsSection {
                         return true;
                     }
                     // referenced ipsProjects
-                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                    IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
                     IIpsObjectPath ioPath = type.getIpsProject().getIpsObjectPath();
                     if (ioPath.containsProjectRefEntry(ipsProject)) {
                         return true;

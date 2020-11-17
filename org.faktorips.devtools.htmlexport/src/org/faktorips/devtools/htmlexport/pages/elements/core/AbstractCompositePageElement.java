@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
  * {@link AbstractCompositePageElement} provides basic functionality for implementations of the

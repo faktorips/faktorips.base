@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 import org.junit.Test;
 
 public class AbstractSearchOperatorTest extends AbstractIpsPluginTest {

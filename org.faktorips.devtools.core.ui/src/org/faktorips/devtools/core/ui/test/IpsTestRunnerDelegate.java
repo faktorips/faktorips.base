@@ -38,7 +38,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
 
     private static DateFormat DEBUG_FORMAT;
 
-    public final static boolean TRACE_IPS_TEST_RUNNER;
+    public static final boolean TRACE_IPS_TEST_RUNNER;
 
     static {
         TRACE_IPS_TEST_RUNNER = Boolean

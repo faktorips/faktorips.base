@@ -17,10 +17,10 @@ import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
-import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
 public class TemplateUsageViewItem {
 

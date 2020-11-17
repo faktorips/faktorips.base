@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.type.IAttribute;
 
 final class PolicyAttributeConditionOperandProvider implements IOperandProvider {
 

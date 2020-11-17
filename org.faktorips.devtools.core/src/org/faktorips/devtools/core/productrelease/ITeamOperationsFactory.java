@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.productrelease;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Implementations create {@link ITeamOperations} for {@link IIpsProject IIpsProjects} configured

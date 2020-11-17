@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.devtools.model.util.BeanUtil;
 
 /**
  * Abstract base class for a binding between a property of a SWT control and a property of an

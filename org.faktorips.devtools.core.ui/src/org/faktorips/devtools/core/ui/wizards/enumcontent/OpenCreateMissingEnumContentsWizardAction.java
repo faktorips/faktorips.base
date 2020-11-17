@@ -20,8 +20,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
 
 /**
  * This action opens up a wizard that enables the user to create missing <code>IEnumContent</code>s.
@@ -59,12 +59,12 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
-                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel()
+                    preselectedIpsElement = IIpsModel.get()
                             .getIpsProject(((IJavaProject)selected).getProject());
                     break;
                 } else if (selected instanceof IResource) {
                     IResource resource = (IResource)selected;
-                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsProject(resource.getProject());
+                    preselectedIpsElement = IIpsModel.get().getIpsProject(resource.getProject());
                     break;
                 }
             }

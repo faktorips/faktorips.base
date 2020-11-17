@@ -19,7 +19,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
@@ -32,13 +31,13 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
  * Base class for wizards to create a new ips object.
@@ -126,6 +125,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
         IWorkspaceRunnable op = new IWorkspaceRunnable() {
+            @SuppressWarnings("deprecation")
             @Override
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
                 IWizardPage[] pages = getPages();
@@ -138,15 +138,17 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                     if (page2 instanceof AbstractIpsObjectNewWizardPage) {
                         AbstractIpsObjectNewWizardPage page = (AbstractIpsObjectNewWizardPage)page2;
                         if (page.canCreateIpsSrcFile()) {
-                            IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
+                            IIpsSrcFile srcFile = page
+                                    .createIpsSrcFile(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 2));
                             if (srcFile == null) {
                                 IpsPlugin.logAndShowErrorDialog(new IpsStatus(
                                         Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
                             } else {
                                 Set<IIpsObject> modifiedIpsObjects = new HashSet<IIpsObject>(0);
                                 page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
-                                srcFile.save(true, new SubProgressMonitor(monitor, 1));
-                                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+                                srcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                                org.eclipse.core.runtime.SubProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
+                                        monitor, 1);
                                 for (IIpsObject modifiedIpsObject : modifiedIpsObjects) {
                                     modifiedIpsObject.getIpsSrcFile().save(true, subMonitor);
                                 }

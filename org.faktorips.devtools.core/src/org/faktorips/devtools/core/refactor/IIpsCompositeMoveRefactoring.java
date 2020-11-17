@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.refactor;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
  * Allows to batch "Move" refactor multiple {@link IIpsObject}s.

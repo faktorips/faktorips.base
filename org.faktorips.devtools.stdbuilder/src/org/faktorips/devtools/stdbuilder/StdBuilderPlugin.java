@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.runtime.internal.toc.ITocEntryFactory;
 import org.osgi.framework.BundleContext;
 

@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 
 /**
  * An implementation of {@link ISearchOperator} for String operands with a defined

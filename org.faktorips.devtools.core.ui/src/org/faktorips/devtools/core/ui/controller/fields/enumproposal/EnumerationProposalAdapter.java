@@ -21,8 +21,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * Show the proposal-popup on key type, button click and mouse click. Always shows the popup on key

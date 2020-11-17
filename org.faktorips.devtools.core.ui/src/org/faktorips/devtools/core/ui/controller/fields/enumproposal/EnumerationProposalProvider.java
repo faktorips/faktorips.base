@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * An implementation of {@link AbstractProposalProvider} for EnumerationFields. It provides

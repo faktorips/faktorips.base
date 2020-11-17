@@ -71,7 +71,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         return result;
     }
 
-    public final static Decimal sumDecimal(Object[] beans, String getterMethod) {
+    public static final Decimal sumDecimal(Object[] beans, String getterMethod) {
         if (beans == null) {
             return Decimal.NULL;
         }

@@ -12,8 +12,8 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 
 /**

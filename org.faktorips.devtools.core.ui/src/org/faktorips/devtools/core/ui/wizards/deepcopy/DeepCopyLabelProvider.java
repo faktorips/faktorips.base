@@ -23,14 +23,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.util.StringUtil;
 
 public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
@@ -86,9 +86,9 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
         } else if (element instanceof IProductCmptTypeAssociationReference) {
             IAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
             if (association.is1ToMany()) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
             } else {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
             }
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage()

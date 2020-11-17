@@ -23,8 +23,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -32,6 +30,8 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 
 /**
  * Allows creation of new {@linkplain IIpsObjectGeneration IPS Object Generations} to one or many

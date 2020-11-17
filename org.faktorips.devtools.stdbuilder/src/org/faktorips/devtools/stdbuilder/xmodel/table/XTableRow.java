@@ -14,8 +14,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xmodel.MethodParameter;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;

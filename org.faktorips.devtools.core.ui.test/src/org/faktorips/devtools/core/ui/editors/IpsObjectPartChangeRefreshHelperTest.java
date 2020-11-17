@@ -19,11 +19,10 @@ import static org.mockito.Mockito.when;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.abstracttest.SingletonMockHelper;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +37,7 @@ public class IpsObjectPartChangeRefreshHelperTest {
     private ContentChangeEvent event;
     private IpsObjectPartChangeRefreshHelper helper;
     @Mock
-    private IpsPlugin plugin;
-    @Mock
-    private IIpsModel ipsModel;
+    private IpsModel ipsModel;
     @Mock
     private IIpsObject ipsObject;
     @Mock
@@ -51,8 +48,7 @@ public class IpsObjectPartChangeRefreshHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        singletonHelper.setSingletonInstance(IpsPlugin.class, plugin);
-        when(plugin.getIpsModel()).thenReturn(ipsModel);
+        singletonHelper.setSingletonInstance(IpsModel.class, ipsModel);
         when(viewer.getControl()).thenReturn(control);
 
         helper = new IpsObjectPartChangeRefreshHelper(ipsObject, viewer);

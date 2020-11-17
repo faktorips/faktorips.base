@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
 
 /**
  * Dialog to display differences between a product component and its type.

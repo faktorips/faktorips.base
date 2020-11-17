@@ -27,21 +27,21 @@ import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeP
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAssociationProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameValidationRuleProcessor;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,7 +58,8 @@ public class IpsRefactoringFactoryTest {
     public void testCreateRenameRefactoringEnumLiteralNameAttributeValue() {
         IIpsProcessorBasedRefactoring ipsRenameRefactoring = ipsRefactoringFactory
                 .createRenameRefactoring(mock(IEnumLiteralNameAttributeValue.class));
-        assertTrue(ipsRenameRefactoring.getIpsRefactoringProcessor() instanceof RenameEnumLiteralNameAttributeValueProcessor);
+        assertTrue(ipsRenameRefactoring
+                .getIpsRefactoringProcessor() instanceof RenameEnumLiteralNameAttributeValueProcessor);
     }
 
     @Test

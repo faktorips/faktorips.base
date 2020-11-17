@@ -20,25 +20,25 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.AbstractIpsBundle;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.IJavaPackageStructure;
+import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
+import org.faktorips.devtools.model.internal.ipsproject.bundle.AbstractIpsBundle;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsStorage;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.AnnotationGeneratorBuilder;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
@@ -119,7 +119,7 @@ public class GeneratorModelContext {
     }
 
     private IpsArtefactBuilderSetConfigModel clone(IIpsArtefactBuilderSetConfigModel builderSetConfig) {
-        Element xml = builderSetConfig.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        Element xml = builderSetConfig.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument());
         IpsArtefactBuilderSetConfigModel clone = new IpsArtefactBuilderSetConfigModel();
         clone.initFromXml(xml);
         return clone;

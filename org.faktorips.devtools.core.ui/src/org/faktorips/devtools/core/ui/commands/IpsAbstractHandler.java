@@ -24,8 +24,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public abstract class IpsAbstractHandler extends AbstractHandler {
 
@@ -83,7 +83,7 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
             return null;
         }
 
-        return (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        return typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
     }
 
 }

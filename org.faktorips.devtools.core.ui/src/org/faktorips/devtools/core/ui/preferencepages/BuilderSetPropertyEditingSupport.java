@@ -18,14 +18,12 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.table.AbstractTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -96,15 +94,6 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
                         return null;
                     }
                 });
-            } else if (type.equals("enum") || type.equals("extensionPoint")) { //$NON-NLS-1$ //$NON-NLS-2$
-                DefaultEnumType propertyDefEnum = new DefaultEnumType("builderSetPropertyType", DefaultEnumValue.class); //$NON-NLS-1$
-                Object[] discreteValues = propertyDef.getDiscreteValues();
-                DefaultEnumValue[] values = new DefaultEnumValue[discreteValues.length];
-                for (int i = 0; i < discreteValues.length; i++) {
-                    values[i] = new DefaultEnumValue(propertyDefEnum, (String)discreteValues[i]);
-                }
-                Combo combo = toolkit.createCombo(viewer.getTable(), values);
-                editor = getCellEditorInternal(combo);
             }
             return editor;
         }

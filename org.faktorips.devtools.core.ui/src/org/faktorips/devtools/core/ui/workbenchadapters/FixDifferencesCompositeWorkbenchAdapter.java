@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 
 public class FixDifferencesCompositeWorkbenchAdapter implements IWorkbenchAdapter {
 
@@ -44,7 +44,7 @@ public class FixDifferencesCompositeWorkbenchAdapter implements IWorkbenchAdapte
             IFixDifferencesComposite fixDifferencesComposite = (IFixDifferencesComposite)o;
             if (fixDifferencesComposite.getCorrespondingIpsElement() instanceof ILabeledElement) {
                 ILabeledElement labeledElement = (ILabeledElement)fixDifferencesComposite.getCorrespondingIpsElement();
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(labeledElement);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(labeledElement);
             } else {
                 return fixDifferencesComposite.getCorrespondingIpsElement().getName();
             }

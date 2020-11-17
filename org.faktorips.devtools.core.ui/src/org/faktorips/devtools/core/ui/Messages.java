@@ -131,5 +131,11 @@ public class Messages extends NLS {
     public static String IpsClasspathContainerPage_title;
 
     public static String LinkDropListener_selectAssociation;
+    public static String IpsUIPlugin_titleErrorDialog;
+    public static String IpsUIPlugin_msgUnexpectedError;
+    public static String IpsUIPlugin_infoDefaultTextEditorWasOpened;
+    public static String IpsUIPlugin_dialogSaveDirtyEditorMessageMany;
+    public static String IpsUIPlugin_dialogSaveDirtyEditorMessageSimple;
+    public static String IpsUIPlugin_dialogSaveDirtyEditorTitle;
 
 }

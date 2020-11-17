@@ -32,12 +32,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsColor;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -47,6 +41,12 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.SelectionProviderIntermediate;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 
 public class TemplatePropertyUsageView {
 
@@ -146,7 +146,7 @@ public class TemplatePropertyUsageView {
         leftTreeViewer.setInput(usagePmo);
         rightTreeViewer.setInput(usagePmo);
         changeListener = event -> Display.getDefault().asyncExec(this::refresh);
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(changeListener);
+        IIpsModel.get().addIpsSrcFilesChangedListener(changeListener);
         bindingContext.updateUI();
     }
 
@@ -233,7 +233,7 @@ public class TemplatePropertyUsageView {
 
     // @PreDestroy
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(changeListener);
+        IIpsModel.get().removeIpsSrcFilesChangedListener(changeListener);
         usagePmo.dispose();
         bindingContext.dispose();
     }

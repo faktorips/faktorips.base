@@ -17,8 +17,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This handler simply used the old IpsAction {@link CleanUpTranslationsAction} and wrap it to a

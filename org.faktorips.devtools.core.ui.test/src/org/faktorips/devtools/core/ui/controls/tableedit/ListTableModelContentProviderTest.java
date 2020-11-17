@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.junit.Test;
 
 public class ListTableModelContentProviderTest {

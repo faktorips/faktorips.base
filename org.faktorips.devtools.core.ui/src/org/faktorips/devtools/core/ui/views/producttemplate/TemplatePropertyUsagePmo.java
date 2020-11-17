@@ -26,21 +26,21 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
-import org.faktorips.devtools.core.util.Histogram;
-import org.faktorips.devtools.core.util.Tree;
-import org.faktorips.devtools.core.util.Tree.Node;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.util.Tree;
+import org.faktorips.devtools.model.util.Tree.Node;
 
 public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
@@ -103,8 +103,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     /**
      * Whether or not the "actual" values of the templated values should be displayed.
      * <p>
-     * For {@link org.faktorips.devtools.core.model.productcmpt.IPropertyValue property values} the
-     * value should always be displayed. For {@link IProductCmptLink links} the value (i.e. the
+     * For {@link org.faktorips.devtools.model.productcmpt.IPropertyValue property values} the value
+     * should always be displayed. For {@link IProductCmptLink links} the value (i.e. the
      * cardinality) should only be displayed if there is a meaningful cardinality, i.e. if the link
      * is configuring a policy association.
      * <p>
@@ -143,7 +143,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     /** Returns the label for property value. */
     private String getTemplatedValueLabel() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getTemplatedValue());
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getTemplatedValue());
     }
 
     /** Returns the template whose property usage is displayed. */
@@ -320,13 +320,13 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     /**
      * Returns a function to obtain the "actual" value of a templated value.
      * <p>
-     * For an {@link org.faktorips.devtools.core.model.productcmpt.IAttributeValue} the actual value
-     * is the String/Decimal/... that is defined in the product component (or generation), for an
-     * {@link org.faktorips.devtools.core.model.productcmpt.ITableContentUsage} the actual value is
-     * the name of the table etc.
+     * For an {@link org.faktorips.devtools.model.productcmpt.IAttributeValue} the actual value is
+     * the String/Decimal/... that is defined in the product component (or generation), for an
+     * {@link org.faktorips.devtools.model.productcmpt.ITableContentUsage} the actual value is the
+     * name of the table etc.
      * <p>
-     * For an {@link org.faktorips.devtools.core.model.productcmpt.IProductCmptLink} the actual
-     * value (in this context) is its cardinality.
+     * For an {@link org.faktorips.devtools.model.productcmpt.IProductCmptLink} the actual value (in
+     * this context) is its cardinality.
      */
     @SuppressWarnings("unchecked")
     private Function<ITemplatedValue, Object> valueFunction() {

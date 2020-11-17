@@ -10,11 +10,8 @@
 
 package org.faktorips.devtools.core;
 
-import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.datatype.PrimitiveBooleanDatatype;
-import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.BooleanDatatype;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -22,7 +19,7 @@ import org.faktorips.util.ArgumentCheck;
  * IpsUIPlugin.getDatatypeFormatter() and use it instead of this class.
  * 
  */
-public class DatatypeFormatter {
+public class DatatypeFormatter implements IDatatypeFormatter {
 
     private IpsPreferences preferences;
 
@@ -31,61 +28,14 @@ public class DatatypeFormatter {
         preferences = ipsPreferences;
     }
 
-    /**
-     * Formats the given value according to the user preferences.
-     * 
-     * @param datatype The data type the value is a value of.
-     * @param value The value as string
-     */
-    public String formatValue(ValueDatatype datatype, String value) {
-        if (value == null) {
-            return preferences.getNullPresentation();
-        }
-        if (datatype == null) {
-            return value;
-        }
-        if (datatype instanceof EnumTypeDatatypeAdapter) {
-            return formatValue((EnumTypeDatatypeAdapter)datatype, value);
-        }
-        if (datatype instanceof EnumDatatype) {
-            return formatValue((EnumDatatype)datatype, value);
-        }
-        if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
-            if (Boolean.valueOf(value).booleanValue()) {
-                return Messages.DatatypeFormatter_booleanTrue;
-            }
-            return Messages.DatatypeFormatter_booleanFalse;
-        }
-        return value;
+    @Override
+    public String getNullPresentation() {
+        return preferences.getNullPresentation();
     }
 
-    /**
-     * Formats the given value according to the user preferences.
-     * 
-     * @param datatype The data type the value is a value of.
-     */
-    private String formatValue(EnumDatatype datatype, String id) {
-        if (!datatype.isSupportingNames()) {
-            return id;
-        }
-        EnumTypeDisplay enumTypeDisplay = preferences.getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
-            return id;
-        }
-        if (!datatype.isParsable(id)) {
-            return id;
-        }
-        String name = datatype.getValueName(id);
-        if (name == null) {
-            return id;
-        }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
-            return name;
-        }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)) {
-            return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return id;
+    @Override
+    public EnumTypeDisplay getEnumTypeDisplay() {
+        return preferences.getEnumTypeDisplay();
     }
 
     /**

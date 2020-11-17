@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.model.bf;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IMethod;
 
 /**
  * This class represents an action within a business function. Actions a points of execution within
@@ -31,8 +31,8 @@ import org.faktorips.devtools.core.model.type.IMethod;
  */
 public interface IMethodCallBFE extends IBFElement {
 
-    public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
-    public final static String PROPERTY_EXECUTABLE_METHOD_NAME = "executableMethodName"; //$NON-NLS-1$
+    public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public static final String PROPERTY_EXECUTABLE_METHOD_NAME = "executableMethodName"; //$NON-NLS-1$
 
     // validation message codes
     public static final String MSGCODE_PREFIX = "METHODCALLBFE-"; //$NON-NLS-1$

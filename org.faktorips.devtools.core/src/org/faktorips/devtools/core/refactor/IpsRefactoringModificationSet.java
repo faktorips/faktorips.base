@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.refactor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * A {@link IpsRefactoringModificationSet} holds a set of modifications done during a model

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.junit.Test;
 
 public class ModelSearchPresentationModelTest {

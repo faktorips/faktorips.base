@@ -735,7 +735,7 @@
 		             <or>
 			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
 			              <objectClass name="org.eclipse.core.resources.IResource"/>
-			              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
+			              <objectClass name="org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport"/>
 		             </or>
 	            </enablement> 
             </action>
@@ -743,7 +743,7 @@
 	             <or>
 		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
 		              <objectClass name="org.eclipse.core.resources.IResource"/>
-		              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
+		              <objectClass name="org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport"/>
 	             </or>
 		      </visibility> 
     	</objectContribution>
@@ -1176,7 +1176,7 @@
       <problemFilter name="Faktor-IPS Problems" id="org.faktorips.devtools.core.problemFilter"
                 enabled="true"
                 scope="ON_ANY">
-                <selectedType markerId="org.faktorips.devtools.core.problemmarker"/>
+                <selectedType markerId="org.faktorips.devtools.model.problemmarker"/>
       </problemFilter>
    </extension>  
 
@@ -1286,7 +1286,7 @@
          </description>
          <enablement>
             <objectClass
-                  name="org.faktorips.devtools.core.model.IIpsElement">
+                  name="org.faktorips.devtools.model.IIpsElement">
             </objectClass>
          </enablement>
       </decorator>
@@ -1304,7 +1304,7 @@
                      name="org.faktorips.devtools.core.ui.preferencepages.IIpsObjectPathEntryAttribute">
                </objectClass>
                <objectClass
-                     name="org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry">
+                     name="org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry">
                </objectClass></or>
          </enablement>
       </decorator>
@@ -1314,7 +1314,7 @@
       <image
             icon="icons/IpsProjectNatureOverlay.gif"
             id="org.faktorips.devtools.core.ui.IpsProjectNatureImage"
-            natureId="org.faktorips.devtools.core.ipsnature"/>
+            natureId="org.faktorips.devtools.model.ipsnature"/>
    </extension>
    <extension
          id="org.faktorips.devtools.core.productCmptMergeViewer"
@@ -1326,10 +1326,10 @@
             label="%org.faktorips.devtools.core.ui.team.compare.productcmpt.contentMergeViewer"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
-            contentTypeId="org.faktorips.devtools.core.productComponent"/>
+            contentTypeId="org.faktorips.devtools.model.productComponent"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
-            contentTypeId="org.faktorips.devtools.core.productComponentTemplate"/>
+            contentTypeId="org.faktorips.devtools.model.productComponentTemplate"/>
       <viewer
             class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareViewerCreator"
             extensions="ipstablecontents,ipstablecontentsElement"
@@ -1337,7 +1337,7 @@
             label="%org.faktorips.devtools.core.ui.team.compare.tablecontent.contentMergeViewer"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareViewer"
-            contentTypeId="org.faktorips.devtools.core.tableContents"/>
+            contentTypeId="org.faktorips.devtools.model.tableContents"/>
    </extension>
    <extension
          point="org.eclipse.compare.structureCreators">
@@ -1346,17 +1346,17 @@
             extensions="ipsproduct,ipstemplate"
             id="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.core.productComponent"
+            contentTypeId="org.faktorips.devtools.model.productComponent"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.core.productComponentTemplate"
+            contentTypeId="org.faktorips.devtools.model.productComponentTemplate"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <structureCreator
             class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator"
             extensions="ipstablecontents"
             id="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.core.tableContents"
+            contentTypeId="org.faktorips.devtools.model.tableContents"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
    </extension>
 
@@ -1594,7 +1594,7 @@
                      ifEmpty="false"
                      operator="and">
 				<adapt
-                       type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                       type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                  </adapt>
                </iterate>
             </with>
@@ -1609,7 +1609,7 @@
                   ifEmpty="false"
                   operator="and">
 				<adapt
-                       type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                       type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                     <test
                         property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditableInEditor">
                   </test>
@@ -1629,16 +1629,16 @@
                   operator="and">
        <and>
           <adapt
-                type="org.faktorips.devtools.core.model.IIpsElement">
+                type="org.faktorips.devtools.model.IIpsElement">
              <not>
                 <instanceof
-                      value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                      value="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                 </instanceof>
              </not>
           </adapt>
           <not>
              <instanceof
-                   value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference">
+                   value="org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference">
              </instanceof>
           </not>
        </and>
@@ -1651,7 +1651,7 @@
                   <iterate
                         ifEmpty="false">
                         <adapt
-                              type="org.faktorips.devtools.core.model.IIpsElement">
+                              type="org.faktorips.devtools.model.IIpsElement">
                            <test
                                  property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                            </test>
@@ -1700,7 +1700,7 @@
                      ifEmpty="false"
                      operator="or">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -1714,7 +1714,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                         </test>
@@ -1733,7 +1733,7 @@
                      ifEmpty="false"
                      operator="or">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -1747,7 +1747,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                         </test>
@@ -1766,7 +1766,7 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -1780,7 +1780,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                         </test>
@@ -1800,11 +1800,11 @@
                      operator="and">
                   <and>
 	                  <adapt
-	                        type="org.faktorips.devtools.core.model.IIpsElement">
+	                        type="org.faktorips.devtools.model.IIpsElement">
 	                  </adapt>
 	                  <not>
 		                  <adapt
-		                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+		                        type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
 		                  </adapt>
 	                  </not>
 	              </and>
@@ -1820,7 +1820,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                         </test>
@@ -1839,7 +1839,7 @@
                      ifEmpty="false"
                      operator="and">
                   <instanceof
-                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                        value="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                   </instanceof>
                </iterate>
             </with></activeWhen>
@@ -1852,7 +1852,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                         </test>
@@ -1874,16 +1874,16 @@
                      <adapt
                            type="org.eclipse.core.resources.IResource">
                         <adapt
-                              type="org.faktorips.devtools.core.model.type.IType">
+                              type="org.faktorips.devtools.model.type.IType">
                         </adapt>
                      </adapt>
                      <instanceof
-                           value="org.faktorips.devtools.core.model.type.IType">
+                           value="org.faktorips.devtools.model.type.IType">
                      </instanceof>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.type.IType">
+                              value="org.faktorips.devtools.model.type.IType">
                         </instanceof>
                      </adapt>
                   </or>
@@ -1916,9 +1916,9 @@
                      operator="and">
                   <or>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.IIpsMetaClass">
+                              value="org.faktorips.devtools.model.IIpsMetaClass">
                         </instanceof>
                      </adapt>
                   </or>
@@ -1953,9 +1953,9 @@
                      operator="and">
                   <or>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.IIpsMetaObject">
+                              value="org.faktorips.devtools.model.IIpsMetaObject">
                         </instanceof>
                      </adapt>
                   </or>
@@ -1977,13 +1977,13 @@
                      operator="and">
                   <or>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <adapt
-                              type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                              type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                         </adapt>
                      </adapt>
                      <instanceof
-                           value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                           value="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                      </instanceof>
                   </or>
                </iterate>
@@ -2022,7 +2022,7 @@
                      ifEmpty="false"
                      operator="and">
                  <adapt
-                       type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                       type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                  </adapt>
                </iterate>
                <count
@@ -2050,17 +2050,17 @@
                      operator="or">
                   <and>
                      <adapt
-                           type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+                           type="org.faktorips.devtools.model.productcmpt.IProductCmptGeneration">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditable">
                         </test>
                      </adapt>
                      <or>
                         <instanceof
-                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
+                              value="org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
                         </instanceof>
                         <instanceof
-                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference">
+                              value="org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference">
                         </instanceof>
                      </or>
                   </and>
@@ -2101,17 +2101,17 @@
                         operator="or">
                      <and>
                         <adapt
-                              type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+                              type="org.faktorips.devtools.model.productcmpt.IProductCmptGeneration">
                            <test
                                  property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditable">
                            </test>
                         </adapt>
                         <or>
                            <instanceof
-                                 value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
+                                 value="org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
                            </instanceof>
                            <instanceof
-                                 value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference">
+                                 value="org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference">
                            </instanceof>
                         </or>
                      </and>
@@ -2162,7 +2162,7 @@
                          type="org.eclipse.core.resources.IFile">
                   	</adapt>
                     <adapt 
-                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                     </adapt>
                   </or>
                </iterate>
@@ -2183,7 +2183,7 @@
                <iterate
                      ifEmpty="false">
                   <adapt 
-                        type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                        type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                   </adapt>
                </iterate>
                <count
@@ -2205,20 +2205,20 @@
                      <adapt
                            type="org.eclipse.core.resources.IResource">
                         <adapt
-                              type="org.faktorips.devtools.core.model.type.IType">
+                              type="org.faktorips.devtools.model.type.IType">
                         </adapt>
                      </adapt>
                      <instanceof
-                           value="org.faktorips.devtools.core.model.type.IType">
+                           value="org.faktorips.devtools.model.type.IType">
                      </instanceof>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.type.IType">
+                              value="org.faktorips.devtools.model.type.IType">
                         </instanceof>
                      </adapt>
                      <instanceof
-                           value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                           value="org.faktorips.devtools.model.ipsproject.IIpsProject">
                      </instanceof>
                   </or>
                </iterate>
@@ -2238,7 +2238,7 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt
-                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                        type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                      <not>
                         <test
                               property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
@@ -2262,7 +2262,7 @@
                      ifEmpty="false"
                      operator="and">
                      <adapt
-                           type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                           type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.allowGenerations">
                         </test>
@@ -2284,7 +2284,7 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt
-                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                        type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                      <not>
                         <test
                               property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
@@ -2307,7 +2307,7 @@
                <iterate
                      ifEmpty="false">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -2323,10 +2323,10 @@
                      ifEmpty="false">
                   <or>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                           type="org.faktorips.devtools.model.ipsproject.IIpsProject">
                      </adapt>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot">
+                           type="org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot">
                      </adapt>
                   </or>
                </iterate>
@@ -2342,7 +2342,7 @@
                <iterate
                      ifEmpty="false">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -2353,7 +2353,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
                         </test>
@@ -2373,7 +2373,7 @@
                <iterate
                      ifEmpty="false">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -2391,7 +2391,7 @@
                <iterate
                      ifEmpty="false">
                   <adapt
-                        type="org.faktorips.devtools.core.model.IIpsElement">
+                        type="org.faktorips.devtools.model.IIpsElement">
                   </adapt>
                </iterate>
             </with>
@@ -2402,7 +2402,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                         <test
                               property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isContainerEditable">
                         </test>
@@ -2421,7 +2421,7 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt
-                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                        type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                      <not>
                         <test
                               property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
@@ -2444,13 +2444,13 @@
                id="org.faktorips.devtools.core.ui.ModelObjectTester"
                namespace="org.faktorips.devtools.core.ui.ModelObjectTester"
                properties="isModelObject"
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </propertyTester>
       <propertyTester
      	 namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
        id="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
        properties="isPartEditableInEditor,isPartEditable"
-       type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart"
+       type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart"
        class="org.faktorips.devtools.core.ui.commands.IpsObjectPartTester">
      </propertyTester>
       <propertyTester
@@ -2465,7 +2465,7 @@
             id="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
             namespace="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
             properties="isModelIpsProject"
-            type="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+            type="org.faktorips.devtools.model.ipsproject.IIpsProject">
       </propertyTester>
       <propertyTester
             class="org.faktorips.devtools.core.ui.commands.IpsPerspectivePropertyTester"
@@ -2479,14 +2479,14 @@
             id="org.faktorips.devtools.core.ui.commands.IpsElementTester"
             namespace="org.faktorips.devtools.core.ui.commands.IpsElementTester"
             properties="isEditable,isContainerEditable"
-            type="org.faktorips.devtools.core.model.IIpsElement">
+            type="org.faktorips.devtools.model.IIpsElement">
       </propertyTester>
       <propertyTester
             class="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             id="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             namespace="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             properties="allowGenerations,isProductTemplate"
-            type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+            type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
       </propertyTester>
    </extension>
    
@@ -2585,7 +2585,7 @@
                      variable="selection">
                   <iterate>
 	                  <instanceof
-	                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+	                        value="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
 	                  </instanceof>
                   </iterate>
                </with>
@@ -2628,9 +2628,9 @@
                            variable="selection">
                         <iterate>
                            <adapt
-                                 type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                                 type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                               <instanceof
-                                    value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                                    value="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                               </instanceof>
                            </adapt>
                         </iterate>
@@ -2713,7 +2713,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <test
                               forcePluginActivation="true"
                               property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
@@ -2737,7 +2737,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <test
                               forcePluginActivation="true"
                               property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
@@ -2761,7 +2761,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <not>
                            <test
                                  forcePluginActivation="true"
@@ -2787,7 +2787,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                      </adapt>
                   </iterate>
                </with>
@@ -2807,7 +2807,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <not>
                            <test
                                  forcePluginActivation="true"
@@ -2834,7 +2834,7 @@
                         operator="or">
                      <or>
                         <adapt
-                              type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                              type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                            <test
                                  forcePluginActivation="true"
                                  property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
@@ -2912,7 +2912,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
+                           type="org.faktorips.devtools.model.productcmpt.IProductCmptLink">
                      </adapt>
                   </iterate>
                </with>
@@ -2956,9 +2956,9 @@
                      variable="selection">
                   <iterate>
                      <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                              value="org.faktorips.devtools.model.productcmpt.IProductCmpt">
                         </instanceof>
                      </adapt>
                   </iterate>
@@ -3008,7 +3008,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                      </adapt>
                   </iterate>
                </with>
@@ -3060,7 +3060,7 @@
                   <iterate
                         ifEmpty="false">
                      <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
+                           type="org.faktorips.devtools.model.IIpsElement">
                      </adapt>
                   </iterate>
                </with>
@@ -3188,7 +3188,7 @@
  <extension
        point="org.eclipse.core.runtime.adapters">
     <factory
-          adaptableType="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite"
+          adaptableType="org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite"
           class="org.faktorips.devtools.core.ui.adapterfactories.FixDifferencesCompositeAdapterFactory">
        <adapter
              type="org.eclipse.ui.model.IWorkbenchAdapter">
@@ -3198,13 +3198,13 @@
           adaptableType="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem"
           class="org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItemAdapterFactory">
        <adapter
-             type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+             type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
        </adapter>
        <adapter
-             type="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
+             type="org.faktorips.devtools.model.productcmpt.IProductCmptLink">
        </adapter>
        <adapter
-             type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+             type="org.faktorips.devtools.model.ipsobject.IIpsObject">
        </adapter>
     </factory>
  </extension>
@@ -3212,7 +3212,7 @@
        point="org.eclipse.jdt.ui.classpathContainerPage">
     <classpathContainerPage
           class="org.faktorips.devtools.core.ui.IpsClasspathContainerPage"
-          id="org.faktorips.devtools.core.ipsClasspathContainer"
+          id="org.faktorips.devtools.model.ipsClasspathContainer"
           name="Faktor-IPS Library">
     </classpathContainerPage>
  </extension>
@@ -3299,5 +3299,11 @@
             </datatype>
          </inputformat>     
                   
-   </extension> 
+   </extension>
+ <extension
+       point="org.faktorips.devtools.model.workspaceInteractions">
+    <workspaceInteractions
+          class="org.faktorips.devtools.core.ui.EclipseIpsWorkspaceInteractions">
+    </workspaceInteractions>
+ </extension> 
 </plugin>

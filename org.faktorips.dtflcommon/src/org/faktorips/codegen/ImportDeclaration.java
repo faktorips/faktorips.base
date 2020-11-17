@@ -34,14 +34,14 @@ public class ImportDeclaration {
      * Returns true if this is a package import, e.g. <code>java.util.*</code> Returns false if
      * importSpec is null.
      */
-    public final static boolean isPackageImport(String importSpec) {
+    public static final boolean isPackageImport(String importSpec) {
         if (importSpec == null) {
             return false;
         }
         return "*".equals(importSpec.substring(importSpec.length() - 1)); //$NON-NLS-1$
     }
 
-    private final static String JAVA_LANG_ASTERIX = "java.lang.*"; //$NON-NLS-1$
+    private static final String JAVA_LANG_ASTERIX = "java.lang.*"; //$NON-NLS-1$
 
     /** List that holds the class imports. */
     private List<String> classes;

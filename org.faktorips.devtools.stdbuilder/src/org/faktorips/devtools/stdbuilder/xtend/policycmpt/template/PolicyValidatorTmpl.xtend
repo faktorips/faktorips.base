@@ -9,7 +9,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.templ
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.core.builder.naming.BuilderAspect
+import org.faktorips.devtools.model.builder.naming.BuilderAspect
 
 class PolicyValidatorTmpl {
 

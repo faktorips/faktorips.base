@@ -19,9 +19,9 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 
 /**
  * A dialog to choose a tableStructure a tableContent is based on.

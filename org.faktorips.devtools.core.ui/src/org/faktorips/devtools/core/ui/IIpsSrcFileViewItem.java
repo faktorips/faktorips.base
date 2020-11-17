@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.adapter.IIpsSrcFileWrapper;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This Interface provides a simple possibility to retrieve the underling <code>IpsSrcFile</code> of

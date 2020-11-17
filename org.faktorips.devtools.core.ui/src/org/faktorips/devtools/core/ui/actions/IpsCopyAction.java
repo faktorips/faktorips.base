@@ -16,8 +16,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.commands.IpsCopyHandler;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
  * Copy of objects controlled by FaktorIps. This action activates/deactivates itself according to

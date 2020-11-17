@@ -17,18 +17,17 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 
 /**
  * Migration to version 3.1.0.ms1.
@@ -93,7 +92,7 @@ public class Migration_3_0_2_rfinal extends DefaultMigration {
      * does not make sense at all, e.g. attribute values.
      */
     private void deleteObsoleteDescriptions(IIpsObjectPartContainer container) {
-        List<IDescription> obsoleteDescriptions = ((IpsObjectPartContainer)container).getDescriptions();
+        List<IDescription> obsoleteDescriptions = ((IDescribedElement)container).getDescriptions();
         IDescription[] descriptionArray = obsoleteDescriptions.toArray(new IDescription[obsoleteDescriptions.size()]);
         for (IDescription description : descriptionArray) {
             if (description.getText().length() > 0) {
@@ -101,7 +100,8 @@ public class Migration_3_0_2_rfinal extends DefaultMigration {
                         .openInformation(Display.getDefault().getActiveShell(),
                                 "Migration Information", //$NON-NLS-1$
                                 "The description '" + description.getText() + "' of the element '" + container.getName() //$NON-NLS-1$ //$NON-NLS-2$
-                                        + "' in the file '" + container.getIpsSrcFile() + "' cannot be migrated and will be deleted."); //$NON-NLS-1$ //$NON-NLS-2$
+                                        + "' in the file '" + container.getIpsSrcFile() //$NON-NLS-1$
+                                        + "' cannot be migrated and will be deleted."); //$NON-NLS-1$
             }
             description.delete();
         }

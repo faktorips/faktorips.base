@@ -19,9 +19,9 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
  * Abstract class for ReferenceSearches in the FaktorIPS object model. Subclasses are used with the

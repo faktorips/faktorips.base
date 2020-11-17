@@ -36,11 +36,14 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.builder.AbstractBuilderSet;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -643,6 +646,11 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         public void setLineSeparatorPreference(String lineSeparator) {
             this.lineSeparator = lineSeparator;
+        }
+
+        @Override
+        protected boolean createFileIfNotThere(IFile file) throws CoreException {
+            return super.createFileIfNotThere(file);
         }
 
     }

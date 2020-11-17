@@ -18,10 +18,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
 

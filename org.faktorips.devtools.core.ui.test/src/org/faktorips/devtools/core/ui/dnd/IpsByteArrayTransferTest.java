@@ -31,7 +31,7 @@ import java.io.DataOutputStream;
 
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.TransferData;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.junit.Before;
 import org.junit.Test;
 

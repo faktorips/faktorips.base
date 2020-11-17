@@ -21,7 +21,7 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
 
-    public final static EnumDatatype INSTANCE = new TestEnumDatatype();
+    public static final EnumDatatype INSTANCE = new TestEnumDatatype();
 
     private TestEnumDatatype() {
         super();

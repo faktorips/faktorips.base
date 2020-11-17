@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.IpsElement;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.IpsElement;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory {
 
@@ -80,7 +80,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
      * Getting the workbench adapter by class.
      * 
      */
-    public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IpsElement> adaptableClass) {
+    public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IIpsElement> adaptableClass) {
         IpsElementWorkbenchAdapter result = null;
         Class<? extends IIpsElement> classOrSuperclass = adaptableClass;
         while (result == null) {
@@ -108,10 +108,8 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    // The Eclipse API uses raw type
-    public Class[] getAdapterList() {
-        return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class };
+    public Class<?>[] getAdapterList() {
+        return new Class<?>[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class };
     }
 
 }

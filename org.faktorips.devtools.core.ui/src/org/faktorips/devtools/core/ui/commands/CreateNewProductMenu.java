@@ -22,9 +22,9 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 
 /**
  * This dynamic menu builder creates commands for work with products. With these commands you could

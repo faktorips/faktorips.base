@@ -16,14 +16,14 @@ import static org.junit.Assert.assertThat;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
 
 public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
 
-    private final static String ENUM_TYPE_NAME = "TestEnumType";
+    private static final String ENUM_TYPE_NAME = "TestEnumType";
 
     private EnumXmlAdapterBuilder builder;
 

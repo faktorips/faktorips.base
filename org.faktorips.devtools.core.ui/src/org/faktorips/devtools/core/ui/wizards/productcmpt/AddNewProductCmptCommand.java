@@ -18,15 +18,15 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.commands.AbstractAddAndNewProductCmptCommand;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
 public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptCommand {
 
@@ -87,7 +87,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
         }
 
         IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
-        IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
+        IProductCmptGeneration generation = structureReference
                 .getAdapter(IProductCmptGeneration.class);
         if (generation != null) {
             String selectedAssociationParameter = event.getParameter(PARAMETER_SELECTED_ASSOCIATION);
@@ -97,7 +97,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
                         .findAssociation(selectedAssociationParameter, generation.getIpsProject());
                 initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
             } else {
-                association = (IProductCmptTypeAssociation)structureReference
+                association = structureReference
                         .getAdapter(IProductCmptTypeAssociation.class);
                 if (association != null) {
                     initWizard(generation, association, null, HandlerUtil.getActiveShell(event));

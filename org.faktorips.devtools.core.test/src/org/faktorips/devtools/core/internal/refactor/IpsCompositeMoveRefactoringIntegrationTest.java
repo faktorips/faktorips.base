@@ -16,17 +16,17 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class IpsCompositeMoveRefactoringIntegrationTest extends AbstractIpsPluginTest {
+public class IpsCompositeMoveRefactoringIntegrationTest extends AbstractCoreIpsPluginTest {
 
     private IIpsProject ipsProject;
 

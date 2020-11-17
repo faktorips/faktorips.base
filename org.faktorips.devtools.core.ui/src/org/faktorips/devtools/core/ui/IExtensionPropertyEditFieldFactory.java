@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Allows implementors to provide specific controls for extension properties.

@@ -15,11 +15,11 @@ import java.util.List;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * A completion processor for a table structure's indices.
@@ -62,7 +62,7 @@ public class IndexCompletionProcessor extends AbstractCompletionProcessor {
         String name = key.getName();
         String displayText = name;
         Image image = IpsUIPlugin.getImageHandling().getImage(key);
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(key);
+        String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(key);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);
         result.add(proposal);

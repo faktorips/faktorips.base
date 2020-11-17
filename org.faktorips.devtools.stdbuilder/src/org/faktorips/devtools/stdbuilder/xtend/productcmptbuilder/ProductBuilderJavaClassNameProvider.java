@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder;
 
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public class ProductBuilderJavaClassNameProvider implements IJavaClassNameProvider {
 

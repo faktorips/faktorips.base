@@ -17,11 +17,11 @@ package org.faktorips.datatype;
  */
 public class TestValueClass {
 
-    public final static Integer getInteger(String s) {
+    public static final Integer getInteger(String s) {
         return Integer.valueOf(s);
     }
 
-    public final static boolean isInteger(String s) {
+    public static final boolean isInteger(String s) {
         try {
             Integer.valueOf(s);
             return true;

@@ -18,11 +18,11 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * Base class for {@link ConfigElementProposalProvider} and {@link EnumerationProposalProvider}. It

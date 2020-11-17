@@ -15,15 +15,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperator;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 
 class ProductSearchQueryConditionMatcher {
 

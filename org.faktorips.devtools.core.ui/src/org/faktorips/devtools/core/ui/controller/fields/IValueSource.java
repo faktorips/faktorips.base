@@ -11,8 +11,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 
 /**
  * Provides enumeration values as a list of strings. If no values can be provided, an empty list is
@@ -21,8 +20,8 @@ import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 public interface IValueSource {
 
     /**
-     * Returns all values defined in as for example in a {@link EnumValueSet} or an {@link EnumType}
-     * . Returns an empty list if this value source cannot provide any values.
+     * Returns all values defined in as for example in an {@link EnumValueSet}. Returns an empty
+     * list if this value source cannot provide any values.
      */
     public List<String> getValues();
 

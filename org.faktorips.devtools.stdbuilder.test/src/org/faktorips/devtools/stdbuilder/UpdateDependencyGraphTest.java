@@ -13,11 +13,11 @@ package org.faktorips.devtools.stdbuilder;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.IDependencyGraph;
-import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IpsObjectDependency;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.builder.IDependencyGraph;
+import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.junit.Test;
 
 /**

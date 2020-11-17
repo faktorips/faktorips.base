@@ -20,7 +20,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class AnyDatatype implements Datatype {
 
-    public final static AnyDatatype INSTANCE = new AnyDatatype();
+    public static final AnyDatatype INSTANCE = new AnyDatatype();
 
     private AnyDatatype() {
         super();

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 
 /**
  * An Interface for factories that are capable of creating an {@link IIpsArtefactBuilder}. It is

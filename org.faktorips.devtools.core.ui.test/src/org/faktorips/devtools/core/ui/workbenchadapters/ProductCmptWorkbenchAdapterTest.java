@@ -22,15 +22,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.DefaultIconDesc;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.IconDesc;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.PathIconDesc;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,7 +67,7 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
         IProductCmpt aSuperCmpt = newProductCmpt(aSuperType, "SuperProductCmpt");
         IProductCmpt cSubCmpt = newProductCmpt(cSubType, "SubProductCmpt");
 
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)aSuperCmpt.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter adapter = aSuperCmpt.getAdapter(IWorkbenchAdapter.class);
         assertNotNull(adapter);
         assertTrue(adapter instanceof ProductCmptWorkbenchAdapter);
 
@@ -122,7 +122,7 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
         templatedProductCmpt2.setTemplate(template.getQualifiedName());
         templatedProductCmpt2.getIpsSrcFile().save(true, null);
 
-        IWorkbenchAdapter adapter = (IWorkbenchAdapter)standardProductCmpt1.getAdapter(IWorkbenchAdapter.class);
+        IWorkbenchAdapter adapter = standardProductCmpt1.getAdapter(IWorkbenchAdapter.class);
         assertNotNull(adapter);
         assertTrue(adapter instanceof ProductCmptWorkbenchAdapter);
 

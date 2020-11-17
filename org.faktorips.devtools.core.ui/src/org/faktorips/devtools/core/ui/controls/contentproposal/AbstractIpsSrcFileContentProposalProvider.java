@@ -18,7 +18,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Abstract implementation of an {@link IContentProposalProvider} for {@link IIpsSrcFile}. A source

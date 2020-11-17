@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
  * This tester is used to test {@link IProductCmpt} properties. The properties to test are defined

@@ -17,10 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -31,9 +27,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.chooser.TypeChooserPageElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
- * Lists and links the packages of the given {@link IpsObject}s in a page
+ * Lists and links the packages of the given {@link IIpsObject}s in a page
  * 
  * @author dicker
  * 
@@ -80,7 +80,8 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
         List<IPageElement> list = createPackageList();
 
         addPageElements(new TextPageElement(
-                list.size() + " " + getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_packages), TextType.BLOCK, getContext())); //$NON-NLS-1$
+                list.size() + " " + getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_packages), //$NON-NLS-1$
+                TextType.BLOCK, getContext()));
 
         if (list.size() > 0) {
             addPageElements(new ListPageElement(list, getContext()));

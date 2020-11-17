@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 
 /**
  * Represents a product component type association without holding a reference to the association or

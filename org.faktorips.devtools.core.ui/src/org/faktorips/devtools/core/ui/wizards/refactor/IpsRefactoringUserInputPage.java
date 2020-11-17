@@ -16,17 +16,17 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * Abstract base class providing common functionality for {@link UserInputWizardPage}s used by

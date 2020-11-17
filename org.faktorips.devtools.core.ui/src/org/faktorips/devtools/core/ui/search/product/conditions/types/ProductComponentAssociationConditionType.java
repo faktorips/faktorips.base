@@ -20,19 +20,19 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.IProductComponent;
 
 /**
@@ -48,7 +48,7 @@ import org.faktorips.runtime.IProductComponent;
  */
 public class ProductComponentAssociationConditionType extends AbstractConditionType {
 
-    private final static class ProductComponentAssociationOperandProvider implements IOperandProvider {
+    private static final class ProductComponentAssociationOperandProvider implements IOperandProvider {
 
         private final IProductCmptTypeAssociation productCmptTypeAssociation;
 
@@ -112,16 +112,15 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
                     .getIpsProject());
 
             for (IIpsSrcFile srcFile : elementPart.getIpsProject().findAllProductCmptSrcFiles(productCmptType, true)) {
-                IIpsObject obj = (IIpsObject)srcFile.getAdapter(IIpsObject.class);
+                IIpsObject obj = srcFile.getAdapter(IIpsObject.class);
                 allowedValues.add(obj.getQualifiedName());
             }
-
-            IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+            IIpsProject[] ipsProjects = IIpsModel.get().getIpsProjects();
 
             for (IIpsProject productIpsProject : ipsProjects) {
                 IIpsSrcFile[] srcFiles = productIpsProject.findAllProductCmptSrcFiles(productCmptType, true);
                 for (IIpsSrcFile srcFile : srcFiles) {
-                    IIpsObject obj = (IIpsObject)srcFile.getAdapter(IIpsObject.class);
+                    IIpsObject obj = srcFile.getAdapter(IIpsObject.class);
                     allowedValues.add(obj.getQualifiedName());
                 }
             }

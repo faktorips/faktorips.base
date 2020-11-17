@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 
 public class AddNewTableContentsHandler extends AbstractAddTableContentsHandler {
 

@@ -19,14 +19,14 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
 
 /**
  * Label provider for test case type deltas. This label provider makes internal use of the test case
@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
  */
 final class TestCaseDeltaLabelProvider implements ILabelProvider {
 
-    /** The test case label provider, to display objetcs in the context of the test case tree */
+    /** The test case label provider, to display objects in the context of the test case tree */
     private TestCaseLabelProvider testCaseLabelProvider;
 
     private ArrayList<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();

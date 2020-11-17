@@ -23,7 +23,7 @@ import org.faktorips.util.StringUtil;
  */
 public class UnparsableFilePage extends IpsObjectEditorPage {
 
-    public final static String PAGE_ID = "UnparsableFile"; //$NON-NLS-1$
+    public static final String PAGE_ID = "UnparsableFile"; //$NON-NLS-1$
 
     public UnparsableFilePage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, "UnparsableFileContents"); //$NON-NLS-1$

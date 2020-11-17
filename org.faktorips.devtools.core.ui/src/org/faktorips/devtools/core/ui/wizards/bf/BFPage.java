@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * The wizard page for the new business function wizard.

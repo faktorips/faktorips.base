@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import org.faktorips.devtools.core.internal.model.tablecontents.SingleTableContentsValidator;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
+import org.faktorips.devtools.model.internal.tablecontents.SingleTableContentsValidator;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 

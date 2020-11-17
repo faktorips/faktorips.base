@@ -10,18 +10,17 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
- * Filter, which checks, whether an {@link IpsObject} is within the given {@link IpsPackageFragment}
- * or the is within the {@link IpsPackageFragment} with the same name of the given
- * {@link IpsPackageFragment} (necessary for {@link IpsObject}s in referenced {@link IpsProject}s
+ * Filter, which checks, whether an {@link IIpsObject} is within the given
+ * {@link IIpsPackageFragment} or the is within the {@link IIpsPackageFragment} with the same name
+ * of the given {@link IIpsPackageFragment} (necessary for {@link IIpsObject}s in referenced
+ * {@link IIpsProject}s
  * 
  * @author dicker
  * 

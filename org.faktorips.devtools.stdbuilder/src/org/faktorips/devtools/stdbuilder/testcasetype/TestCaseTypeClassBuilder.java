@@ -30,21 +30,22 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
@@ -385,7 +386,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragment body,
             String javaDoc) {
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
-        appendOverrideAnnotation(codeBuilder, false);
+        codeBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[] { "element" },
                 new String[] { Element.class.getName() }, body, null);
     }
@@ -633,7 +634,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("// TODO " + getLocalizedText(EXECUTEBUSINESSLOGIC_TODO_0));
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
-        appendOverrideAnnotation(codeBuilder, false);
+        codeBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         codeBuilder.method(Modifier.PUBLIC, "void", getMethodNameExecuteBusinessLogic(), EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY, body, null);
     }
@@ -672,7 +673,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("\");");
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc.toString(), ANNOTATION_RESTRAINED_MODIFIABLE);
-        appendOverrideAnnotation(codeBuilder, false);
+        codeBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         codeBuilder.method(Modifier.PUBLIC, "void", getMethodNameExecuteAsserts(), new String[] { "result" },
                 new String[] { IpsTestResult.class.getName() }, body, null);
     }

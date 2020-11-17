@@ -18,12 +18,12 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
-import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IParameter;
-import org.faktorips.devtools.core.util.TextRegion;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.ParameterNode;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.method.IParameter;
+import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;

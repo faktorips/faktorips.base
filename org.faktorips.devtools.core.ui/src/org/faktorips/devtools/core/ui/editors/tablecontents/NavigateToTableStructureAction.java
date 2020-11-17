@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.action.Action;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * Action that navigates to the table structure which underlies the table contents.

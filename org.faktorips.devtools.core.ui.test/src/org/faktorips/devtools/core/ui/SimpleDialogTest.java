@@ -16,12 +16,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,30 +30,18 @@ import org.junit.Test;
  * 
  * @author Thorsten Guenther
  */
-public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener, ITestAnswerProvider {
-
-    private IpsPlugin plugin;
+public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener {
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        plugin = IpsPlugin.getDefault();
-        plugin.getLog().addLogListener(this);
-        plugin.setTestMode(true);
-        plugin.setTestAnswerProvider(this);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        plugin.setTestMode(false);
-        plugin.setTestAnswerProvider(null);
-        super.tearDown();
+        IpsLog.get().addLogListener(this);
     }
 
     @Override
     protected void tearDownExtension() throws Exception {
-        plugin.getLog().removeLogListener(this);
+        IpsLog.get().removeLogListener(this);
     }
 
     @Test
@@ -70,33 +58,13 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 
     private void openEditor(IIpsObject file) throws Exception {
         IpsUIPlugin.getDefault().openEditor((IFile)file.getCorrespondingResource());
-        plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+        IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
     }
 
     @Override
     public void logging(IStatus status, String plugin) {
         // never ever should a logentry appear...
         fail("Status: " + status.toString() + " (Plugin: " + plugin + ")");
-    }
-
-    @Override
-    public boolean getBooleanAnswer() {
-        return false;
-    }
-
-    @Override
-    public String getStringAnswer() {
-        return null;
-    }
-
-    @Override
-    public Object getAnswer() {
-        return null;
-    }
-
-    @Override
-    public int getIntAnswer() {
-        return 0;
     }
 
 }

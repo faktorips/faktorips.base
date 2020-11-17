@@ -17,12 +17,11 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageKey;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.junit.Test;
@@ -32,9 +31,9 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
     private IPolicyCmptType pcType;
     private IPolicyCmptTypeAttribute attribute;
     private IPolicyCmptTypeAssociation association;
-    private TableStructure tableStructure;
+    private ITableStructure tableStructure;
     private LabelAndDescriptionProperties labelAndDescriptionProperties;
-    private PolicyCmptType target;
+    private IPolicyCmptType target;
 
     private void createObjectsAndMessages() throws CoreException {
         IIpsProject ipsProject = newIpsProject();

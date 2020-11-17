@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.values.LocalizedString;
 
 /**
