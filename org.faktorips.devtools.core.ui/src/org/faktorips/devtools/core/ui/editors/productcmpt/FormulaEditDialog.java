@@ -11,11 +11,9 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -23,12 +21,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.StyledTextField;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.ParametersEditControl;
 import org.faktorips.util.ArgumentCheck;
@@ -47,7 +44,7 @@ public class FormulaEditDialog extends IpsPartEditDialog2 {
     private ParametersEditControl parametersControl;
 
     /** edit fields */
-    private TextField formulaField;
+    private StyledTextField formulaField;
 
     private ContentProposalAdapter contentProposalAdapter;
     private ContentProposalListener contentProposalListener;
@@ -103,23 +100,14 @@ public class FormulaEditDialog extends IpsPartEditDialog2 {
         parametersControl.setTableStyle(SWT.BORDER);
         parametersControl.initControl();
 
-        Text formulaText = getToolkit().createMultilineText(c);
-        final char[] autoActivationCharacters = new char[] { '.' };
-        KeyStroke keyStroke = null;
-        try {
-            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-        } catch (final ParseException e) {
-            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
-        }
-        contentProposalAdapter = new ContentProposalAdapter(formulaText, new TextContentAdapter(),
-                new ExpressionProposalProvider(formula), keyStroke, autoActivationCharacters);
+        StyledText formulaText = getToolkit().createStyledMultilineText(c);
 
-        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
+        contentProposalAdapter = FormulaEdit.createContentProposalAdapter(formulaText, formula);
         contentProposalListener = new ContentProposalListener(contentProposalAdapter);
         contentProposalAdapter.addContentProposalListener(contentProposalListener);
 
         // create fields
-        formulaField = new TextField(formulaText);
+        formulaField = new StyledTextField(formulaText);
         return c;
     }
 

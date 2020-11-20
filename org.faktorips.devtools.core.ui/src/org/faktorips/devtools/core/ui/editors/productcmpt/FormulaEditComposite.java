@@ -13,17 +13,14 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 import java.util.function.Function;
 
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.StyledTextButtonField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -55,24 +52,16 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         editFields.add(editField);
     }
 
-    private TextButtonField createExpressionEditField() {
+    private StyledTextButtonField createExpressionEditField() {
         FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), getPropertyValue(),
                 getShell(), getProductCmptPropertySection());
-        KeyStroke keyStroke = null;
-        try {
-            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-        } catch (final ParseException e) {
-            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
-        }
-        contentProposalAdapter = new ContentProposalAdapter(formulaEditControl.getTextControl(),
-                new TextContentAdapter(), new ExpressionProposalProvider(getPropertyValue()), keyStroke,
-                new char[] { '.' });
 
-        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_IGNORE);
+        contentProposalAdapter = FormulaEdit.createContentProposalAdapter(formulaEditControl.getTextControl(),
+                getPropertyValue());
         contentProposalListener = new ContentProposalListener(contentProposalAdapter);
         contentProposalAdapter.addContentProposalListener(contentProposalListener);
 
-        TextButtonField editField = new TextButtonField(formulaEditControl);
+        StyledTextButtonField editField = new StyledTextButtonField(formulaEditControl);
         getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
         addChangingOverTimeDecorationIfRequired(editField);
         return editField;

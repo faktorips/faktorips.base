@@ -567,6 +567,30 @@ public class UIToolkit {
         }
     }
 
+    public StyledText createStyledTextAppendStyle(Composite parent, int style) {
+        if (formToolkit != null) {
+            return createStyledText(parent, style);
+        } else {
+            return createStyledText(parent, SWT.SINGLE | SWT.BORDER | style);
+        }
+    }
+
+    public StyledText createStyledText(Composite parent, int style) {
+        StyledText newText;
+        if (formToolkit != null) {
+            newText = new StyledText(parent,
+                    formToolkit.getBorderStyle() | SWT.BORDER | style | formToolkit.getOrientation());
+            newText.setForeground(formToolkit.getColors().getForeground());
+            newText.setBackground(formToolkit.getColors().getBackground());
+        } else {
+            newText = new StyledText(parent, style);
+        }
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.widthHint = DEFAULT_WIDTH;
+        newText.setLayoutData(gridData);
+        return newText;
+    }
+
     public Text createMultilineText(Composite parent) {
         Text newText;
         if (formToolkit != null) {

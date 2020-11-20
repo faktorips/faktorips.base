@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @author Thorsten Guenther
  */
-public class FormulaEditControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
+public class FormulaEditControl extends StyledTextButtonControl implements IDataChangeableReadWriteAccess {
 
     private IFormula formula;
     private Shell shell;

@@ -11,27 +11,27 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-public abstract class TextAndSecondControlComposite extends InputAndSecondControlComposite<Text> {
+public abstract class StyledTextAndSecondControlComposite extends InputAndSecondControlComposite<StyledText> {
 
-    public TextAndSecondControlComposite(Composite parent, UIToolkit toolkit, boolean smallMargins,
+    public StyledTextAndSecondControlComposite(Composite parent, UIToolkit toolkit, boolean smallMargins,
             int buttonHeightHint, int style) {
         super(parent, toolkit, smallMargins, buttonHeightHint, style);
     }
 
     @Override
-    protected Text createTextControl(UIToolkit toolkit, int style) {
-        Text text;
+    protected StyledText createTextControl(UIToolkit toolkit, int style) {
+        StyledText styledText;
         if (toolkit.getFormToolkit() == null) {
-            text = toolkit.createTextAppendStyle(this, SWT.SINGLE | style);
+            styledText = toolkit.createStyledTextAppendStyle(this, SWT.SINGLE | style);
         } else {
-            text = toolkit.createText(getInnerComposite(), style);
+            styledText = toolkit.createStyledText(getInnerComposite(), style);
         }
-        return text;
+        return styledText;
     }
 
     @Override
@@ -41,10 +41,10 @@ public abstract class TextAndSecondControlComposite extends InputAndSecondContro
     protected abstract Control createSecondControl(UIToolkit toolkit);
 
     @Override
-    protected void setTextInternal(String newText) {
-        Text text = getTextControl();
-        text.setText(newText);
-        setTextControl(text);
+    public void setTextInternal(String newText) {
+        StyledText styledText = getTextControl();
+        styledText.setText(newText);
+        setTextControl(styledText);
     }
 
     @Override

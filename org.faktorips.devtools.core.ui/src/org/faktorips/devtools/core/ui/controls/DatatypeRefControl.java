@@ -103,10 +103,10 @@ public class DatatypeRefControl extends TextButtonControl {
                 textToSet = datatype.getQualifiedName();
             }
             try {
-                immediatelyNotifyListener = true;
+                setImmediatelyNotifyListener(true);
                 getTextControl().setText(textToSet);
             } finally {
-                immediatelyNotifyListener = false;
+                setImmediatelyNotifyListener(false);
             }
         }
     }
