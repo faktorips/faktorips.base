@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -42,8 +41,11 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.StringUtil;
@@ -84,6 +86,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     protected IResource selectedResource;
 
+    protected IIpsSrcFile selectedIpsSrcFile;
+
     private boolean validateInput;
 
     public IpsObjectExportPage(String pageName, IStructuredSelection selection) throws JavaModelException {
@@ -94,7 +98,11 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         } else if (selection.getFirstElement() instanceof IJavaElement) {
             selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
         } else if (selection.getFirstElement() instanceof IIpsElement) {
-            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
+            IIpsElement ipsElement = (IIpsElement)selection.getFirstElement();
+            if (ipsElement instanceof IIpsObject) {
+                selectedIpsSrcFile = ((IIpsObject)ipsElement).getIpsSrcFile();
+            }
+            selectedResource = ipsElement.getEnclosingResource();
         } else {
             selectedResource = null;
         }
@@ -142,7 +150,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public IIpsProject getIpsProject() {
         return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-            IIpsModel.get().getIpsProject(projectField.getText());
+                IIpsModel.get().getIpsProject(projectField.getText());
     }
 
     protected void validateFormat() {

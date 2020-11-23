@@ -33,12 +33,12 @@ import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 
 /**
- * Represents an IpsSrcFile with an immutable content. Instances of this IpsSrcFile cannot be
- * accessed via the finder Methods of the IpsProject.
+ * Represents an {@link IpsSrcFileExternal} with an immutable content. Instances of this IpsSrcFile
+ * cannot be accessed via the finder Methods of the IpsProject.
  * 
  * @author Thorsten Guenther, Peter Erzberger
  */
-public class IpsSrcFileImmutable extends IpsSrcFile {
+public class IpsSrcFileImmutable extends IpsSrcFileExternal {
 
     private IpsObject ipsObject;
 
@@ -68,12 +68,6 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
     @Override
     public boolean isHistoric() {
         return true;
-    }
-
-    @Override
-    public boolean isContainedInIpsRoot() {
-        // default implementation will also come to this result but this is faster
-        return false;
     }
 
     /**
@@ -158,11 +152,6 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
-    }
-
-    @Override
-    public boolean isMutable() {
-        return false;
     }
 
     @Override

@@ -15,11 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -37,10 +35,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartService;
-import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -55,6 +51,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.util.IpsSrcFileFromEditorInputFactory;
 import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.outline.OutlinePage;
@@ -63,7 +60,6 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileImmutable;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -138,6 +134,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /** Updates the title image if there are ips marker changes on the editor's input */
     private IpsObjectEditorErrorMarkerUpdater errorTickupdater;
 
+    /**
+     * Encapsulates the creation of an {@link IIpsSrcFile} dependent on a {@link IEditorInput}.
+     */
+    private IpsSrcFileFromEditorInputFactory ipsSrcFileFromEditorInputFactory;
+
     private IContentOutlinePage outlinePage;
 
     /**
@@ -146,6 +147,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     public IpsObjectEditor() {
         super();
         errorTickupdater = new IpsObjectEditorErrorMarkerUpdater(this);
+        ipsSrcFileFromEditorInputFactory = new IpsSrcFileFromEditorInputFactory();
     }
 
     /**
@@ -186,19 +188,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         logMethodStarted("init"); //$NON-NLS-1$
-
         super.init(site, input);
-        IIpsModel model = IIpsModel.get();
 
-        if (input instanceof IFileEditorInput) {
-            IFile file = ((IFileEditorInput)input).getFile();
-            ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
-        } else if (input instanceof IpsArchiveEditorInput) {
-            ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
-        } else if (input instanceof IStorageEditorInput) {
-            initFromStorageEditorInput((IStorageEditorInput)input);
-            setPartName(((IStorageEditorInput)input).getName());
-        }
+        ipsSrcFile = ipsSrcFileFromEditorInputFactory.createIpsSrcFile(input);
+
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
@@ -239,18 +232,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         setDataChangeable(computeDataChangeableState());
 
         logMethodFinished("init"); //$NON-NLS-1$
-    }
-
-    private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException {
-        logMethodStarted("initFromStorageEditorInput"); //$NON-NLS-1$
-        try {
-            IStorage storage = input.getStorage();
-            ipsSrcFile = new IpsSrcFileImmutable(storage.getName(), storage.getContents());
-            logMethodFinished("initFromStorageEditorInput"); //$NON-NLS-1$
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            throw new PartInitException(e.getStatus());
-        }
     }
 
     @Override

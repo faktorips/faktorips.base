@@ -14,10 +14,10 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 
 /**
- * This kind of {@link IpsSrcFile} is located within the eclipse workspace but not within a valid
- * {@link IpsPackageFragmentRoot}. That means it is external.
+ * This kind of {@link IpsSrcFileExternal} is located within the eclipse workspace but not within a
+ * valid {@link IpsPackageFragmentRoot}. That means it is external.
  */
-public class IpsSrcFileOffRoot extends IpsSrcFile {
+public class IpsSrcFileOffRoot extends IpsSrcFileExternal {
 
     private IFile file;
 
@@ -29,19 +29,8 @@ public class IpsSrcFileOffRoot extends IpsSrcFile {
     }
 
     @Override
-    public boolean isMutable() {
-        return false;
-    }
-
-    @Override
     public IFile getCorrespondingFile() {
         return file;
-    }
-
-    @Override
-    public boolean isContainedInIpsRoot() {
-        // default implementation will also come to this result but this is faster
-        return false;
     }
 
 }

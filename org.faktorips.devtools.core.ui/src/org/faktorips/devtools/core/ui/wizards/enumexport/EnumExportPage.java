@@ -25,6 +25,8 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileExternal;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.util.message.MessageList;
@@ -120,21 +122,40 @@ public class EnumExportPage extends IpsObjectExportPage {
 
     @Override
     protected void setDefaults(IResource selectedResource) {
-        if (selectedResource == null) {
+        IIpsSrcFile srcFile = getIpsSrcFile(selectedResource);
+        if (srcFile == null
+                || IIpsModel.get().findIpsElement(srcFile.getIpsProject().getCorrespondingResource()) == null) {
             setEnum(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
-        if (element == null) {
-            setEnum(null);
-            return;
+        setIpsProject(srcFile.getIpsProject());
+        IpsObjectType ipsObjectType = srcFile.getIpsObjectType();
+        setDefaultByEnumValueContainer(srcFile, ipsObjectType);
+    }
+
+    /**
+     * Gets the {@link IpsSrcFile} which contains the data required for exporting enums.
+     * 
+     * @param selectedResource The currently selected resource
+     * @return The required IIpsSrcFile or null if is does not exist
+     */
+    private IIpsSrcFile getIpsSrcFile(IResource selectedResource) {
+        IIpsElement srcElement = null;
+        if (selectedIpsSrcFile != null) {
+            srcElement = selectedIpsSrcFile;
+        } else if (selectedResource != null) {
+            srcElement = IIpsModel.get().getIpsElement(selectedResource);
+        } else {
+            return null;
         }
-        setIpsProject(element.getIpsProject());
-        if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile src = (IIpsSrcFile)element;
-            IpsObjectType ipsObjectType = src.getIpsObjectType();
-            setDefaultByEnumValueContainer(src, ipsObjectType);
+
+        if (srcElement instanceof IpsSrcFileExternal) {
+            return ((IpsSrcFileExternal)srcElement).getMutableIpsSrcFile();
+        } else if (srcElement instanceof IIpsSrcFile) {
+            return (IIpsSrcFile)srcElement;
         }
+
+        return null;
     }
 
     private void setDefaultByEnumValueContainer(IIpsSrcFile src, IpsObjectType ipsObjectType) {
