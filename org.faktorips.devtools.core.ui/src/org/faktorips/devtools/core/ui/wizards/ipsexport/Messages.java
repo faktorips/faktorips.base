@@ -25,6 +25,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String IpsObjectExportPage_msgDuplicateQualifiedName;
     public static String IpsObjectExportPage_msgFileAlreadyExists;
     public static String IpsObjectExportPage_msgFilenameIsDirectory;
     public static String IpsObjectExportPage_msgMissingFileExtension;

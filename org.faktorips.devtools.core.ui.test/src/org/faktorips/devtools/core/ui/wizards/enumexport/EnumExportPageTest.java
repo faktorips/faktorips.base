@@ -60,7 +60,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_ok() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
         when(enumContent.exists()).thenReturn(true);
         when(enumContent.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumContent.findEnumType(any(IIpsProject.class))).thenReturn(enumType);
@@ -96,7 +96,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_noEnumContentExists() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
 
         enumExportPage.validateObjectToExport();
 
@@ -107,7 +107,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumContentInvalid() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
         when(enumContent.exists()).thenReturn(true);
         when(enumContent.validate(any(IIpsProject.class))).thenReturn(new MessageList(Message.newError("foo", "bar")));
 
@@ -120,7 +120,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumInvalid() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumType);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumType);
         when(enumType.exists()).thenReturn(true);
         when(enumType.validate(any(IIpsProject.class))).thenReturn(new MessageList(Message.newError("foo", "bar")));
 
@@ -133,7 +133,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumAbstract() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumType);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumType);
         when(enumType.exists()).thenReturn(true);
         when(enumType.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumType.isAbstract()).thenReturn(true);
@@ -147,7 +147,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumTypeInvalid() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
         when(enumContent.exists()).thenReturn(true);
         when(enumContent.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumContent.findEnumType(any(IIpsProject.class))).thenReturn(enumType);
@@ -164,7 +164,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumTypeInvalidVersionFormat() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
         when(enumContent.exists()).thenReturn(true);
         when(enumContent.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumContent.findEnumType(any(IIpsProject.class))).thenReturn(enumType);
@@ -181,7 +181,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumTypeNull() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumType);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumType);
         when(enumType.exists()).thenReturn(true);
         when(enumType.validate(any(IIpsProject.class))).thenReturn(new MessageList());
 
@@ -194,7 +194,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumType_tooManyAttributes() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumType);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumType);
         when(enumType.exists()).thenReturn(true);
         when(enumType.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumType.findEnumType(any(IIpsProject.class))).thenReturn(enumType);
@@ -209,7 +209,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumContent_tooManyAttributes() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
         when(enumContent.exists()).thenReturn(true);
         when(enumContent.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumContent.findEnumType(any(IIpsProject.class))).thenReturn(enumType);
@@ -226,7 +226,7 @@ public class EnumExportPageTest {
     @Test
     public void testValidateObjectToExport_enumContent_tooManyAttributes_withInvalidEnumType() throws Exception {
         when(exportedIpsObjectControl.getText()).thenReturn("MyEnum");
-        when(exportedIpsObjectControl.findEnum(anyBoolean())).thenReturn(enumContent);
+        when(exportedIpsObjectControl.findEnum()).thenReturn(enumContent);
         when(enumContent.exists()).thenReturn(true);
         when(enumContent.validate(any(IIpsProject.class))).thenReturn(new MessageList());
         when(enumContent.findEnumType(any(IIpsProject.class))).thenReturn(enumType);
@@ -239,5 +239,4 @@ public class EnumExportPageTest {
         assertThat(enumExportPage.getErrorMessage(), is(notNullValue()));
         assertThat(enumExportPage.getMessage(), is(notNullValue()));
     }
-
 }

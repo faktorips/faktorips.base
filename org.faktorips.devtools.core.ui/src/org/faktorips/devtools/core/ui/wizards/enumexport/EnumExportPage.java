@@ -128,9 +128,7 @@ public class EnumExportPage extends IpsObjectExportPage {
             setEnum(null);
             return;
         }
-        setIpsProject(srcFile.getIpsProject());
-        IpsObjectType ipsObjectType = srcFile.getIpsObjectType();
-        setDefaultByEnumValueContainer(srcFile, ipsObjectType);
+        setDefaultByEnumValueContainer(srcFile);
     }
 
     /**
@@ -158,30 +156,48 @@ public class EnumExportPage extends IpsObjectExportPage {
         return null;
     }
 
-    private void setDefaultByEnumValueContainer(IIpsSrcFile src, IpsObjectType ipsObjectType) {
+    /**
+     * Extracts the selected enum from the provided {@link IIpsSrcFile}.
+     * 
+     * @param src The {@link IIpsSrcFile} matching with the currently selected view
+     */
+    private void setDefaultByEnumValueContainer(IIpsSrcFile src) {
+        IpsObjectType ipsObjectType = src.getIpsObjectType();
         if (ipsObjectType.equals(IpsObjectType.ENUM_TYPE)) {
             IEnumType enumType = (IEnumType)src.getIpsObject();
             if (enumType.isCapableOfContainingValues()) {
                 setEnum(enumType);
+                return;
             }
         } else if (ipsObjectType.equals(IpsObjectType.ENUM_CONTENT)) {
             IEnumContent enumContent = (IEnumContent)src.getIpsObject();
             setEnum(enumContent);
-        }
-    }
-
-    private void setEnum(IEnumValueContainer enumContainer) {
-        if (enumContainer == null) {
-            exportedIpsObjectControl.setText(""); //$NON-NLS-1$
-            setIpsProject(null);
             return;
         }
-        exportedIpsObjectControl.setText(enumContainer.getQualifiedName());
-        setIpsProject(enumContainer.getIpsProject());
+        setEnum(null);
     }
 
-    public IEnumValueContainer getEnum() throws CoreException {
-        final IEnumValueContainer enumValue = ((EnumRefControl)exportedIpsObjectControl).findEnum(true);
-        return enumValue;
+    /**
+     * Sets the selected enum for the UI control.
+     * 
+     * @param enumContainer The selected {@link IEnumValueContainer}
+     */
+    private void setEnum(IEnumValueContainer enumContainer) {
+        if (enumContainer == null) {
+            setIpsProject(null);
+            exportedIpsObjectControl.updateSelection(null);
+            return;
+        }
+        setIpsProject(enumContainer.getIpsProject());
+        exportedIpsObjectControl.updateSelection(enumContainer.getQualifiedNameType());
+    }
+
+    /**
+     * Provides the currently selected enum by getting it from the UI control.
+     * 
+     * @return The currently selected {@link IEnumValueContainer}
+     */
+    public IEnumValueContainer getEnum() {
+        return ((EnumRefControl)exportedIpsObjectControl).findEnum();
     }
 }

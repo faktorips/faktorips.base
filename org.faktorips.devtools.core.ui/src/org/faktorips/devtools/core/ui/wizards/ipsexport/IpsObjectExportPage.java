@@ -15,6 +15,7 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -43,9 +44,11 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.StringUtil;
@@ -210,6 +213,27 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     }
 
     /**
+     * Checks whether the displayed qualified name is unique. If not, a hint is shown which
+     * describes the selected {@link IpsObjectType}.
+     * <p>
+     * This check does not affect the validation process since it is only used for improving the
+     * usability.
+     */
+    protected void validateObjectToExportUniqueness() {
+        try {
+            String qualifiedName = exportedIpsObjectField.getText();
+            if (!exportedIpsObjectControl.checkIpsObjectUniqueness(qualifiedName)) {
+                IpsObjectType selectedObjectType = exportedIpsObjectControl.getSelectedObjectType();
+                String message = NLS.bind(Messages.IpsObjectExportPage_msgDuplicateQualifiedName,
+                        qualifiedName, selectedObjectType.getDisplayName());
+                setMessage(message, IMessageProvider.INFORMATION);
+            }
+        } catch (CoreException e) {
+            new CoreRuntimeException(e);
+        }
+    }
+
+    /**
      * Validates the page and generates error messages if needed. Can be overridden in subclasses to
      * add specific validation logics.
      */
@@ -234,6 +258,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (getErrorMessage() != null) {
             return;
         }
+        validateObjectToExportUniqueness();
         updatePageComplete();
     }
 

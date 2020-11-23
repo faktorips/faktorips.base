@@ -82,8 +82,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     @Override
     public IIpsObject getTargetForImport() throws CoreException {
-        final IEnumValueContainer enumValue = ((EnumRefControl)importTargetControl).findEnum(true);
-        return enumValue;
+        return ((EnumRefControl)importTargetControl).findEnum();
     }
 
     @Override
@@ -151,12 +150,12 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     private void setEnum(IEnumValueContainer enumValueContainer) {
         if (enumValueContainer == null) {
-            importTargetControl.setText(""); //$NON-NLS-1$
             setIpsProject(null);
+            importTargetControl.updateSelection(null);
             return;
         }
-        importTargetControl.setText(enumValueContainer.getQualifiedName());
         setIpsProject(enumValueContainer.getIpsProject());
+        importTargetControl.updateSelection(enumValueContainer.getQualifiedNameType());
     }
 
 }
