@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.enumexport;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -41,16 +40,7 @@ import org.faktorips.util.message.MessageList;
 public class EnumExportPage extends IpsObjectExportPage {
 
     public EnumExportPage(IStructuredSelection selection) throws JavaModelException {
-        super(Messages.EnumExportPage_title);
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        } else {
-            selectedResource = null;
-        }
+        super(Messages.EnumExportPage_title, selection);
     }
 
     @Override

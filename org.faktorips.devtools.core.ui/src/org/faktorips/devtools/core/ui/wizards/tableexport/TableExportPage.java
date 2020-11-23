@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.tableexport;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -39,25 +38,16 @@ public class TableExportPage extends IpsObjectExportPage {
     @SuppressWarnings("hiding")
     public static final String PAGE_NAME = "TableExportPage"; //$NON-NLS-1$
 
+    public TableExportPage(IStructuredSelection selection) throws JavaModelException {
+        super(Messages.TableExportPage_title, selection);
+    }
+
     @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
 
         // Override page title
         setTitle(Messages.TableExportPage_title);
-    }
-
-    public TableExportPage(IStructuredSelection selection) throws JavaModelException {
-        super(Messages.TableExportPage_title);
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        } else {
-            selectedResource = null;
-        }
     }
 
     @Override

@@ -15,8 +15,11 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,6 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -104,8 +108,17 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      */
     protected abstract void setDefaults(IResource selectedResource);
 
-    public IpsObjectExportPage(String pageName) {
+    public IpsObjectExportPage(String pageName, IStructuredSelection selection) throws JavaModelException {
         super(pageName);
+        if (selection.getFirstElement() instanceof IResource) {
+            selectedResource = (IResource)selection.getFirstElement();
+        } else if (selection.getFirstElement() instanceof IJavaElement) {
+            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
+        } else if (selection.getFirstElement() instanceof IIpsElement) {
+            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
+        } else {
+            selectedResource = null;
+        }
     }
 
     public void setFilename(String newName) {
@@ -125,7 +138,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public IIpsProject getIpsProject() {
         return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-            IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+                IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
     }
 
     protected void validateFormat() {
