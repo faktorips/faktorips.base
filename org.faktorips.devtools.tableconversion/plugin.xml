@@ -7,9 +7,15 @@
          point="org.faktorips.devtools.core.externalTableFormat">
       <externalTableFormat
             class="org.faktorips.devtools.tableconversion.excel.ExcelTableFormat"
+            defaultExtension=".xlsx"
+            id="org.faktorips.devtools.tableconversion.excel.ExcelTableFormat"
+            name="Excel (XLSX)">
+      </externalTableFormat>
+      <externalTableFormat
+            class="org.faktorips.devtools.tableconversion.excel.ExcelTableFormat"
             defaultExtension=".xls"
             id="org.faktorips.devtools.tableconversion.excel.ExcelTableFormat"
-            name="Excel">
+            name="Excel (XLS)">
       </externalTableFormat>
       <externalTableFormat
             class="org.faktorips.devtools.tableconversion.csv.CSVTableFormat"

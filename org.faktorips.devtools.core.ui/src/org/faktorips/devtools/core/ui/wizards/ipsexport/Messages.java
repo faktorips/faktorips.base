@@ -27,6 +27,7 @@ public class Messages extends NLS {
 
     public static String IpsObjectExportPage_msgFileAlreadyExists;
     public static String IpsObjectExportPage_msgFilenameIsDirectory;
+    public static String IpsObjectExportPage_msgMissingFileExtension;
     public static String IpsObjectExportPage_pageTitle;
     public static String IpsObjectExportPage_firstRowContainsHeader;
     public static String IpsObjectExportPage_labelFileFormat;

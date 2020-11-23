@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -73,7 +74,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected TextButtonField filenameField;
     protected TextButtonField projectField;
     protected CheckboxField exportWithColumnHeaderRowField;
-    private StringValueComboField fileFormatField;
+    protected StringValueComboField fileFormatField;
 
     protected ITableFormat[] formats;
 
@@ -81,7 +82,22 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected IpsObjectRefControl exportedIpsObjectControl;
 
     protected IResource selectedResource;
-    protected boolean validateInput = true;
+
+    private boolean validateInput;
+
+    public IpsObjectExportPage(String pageName, IStructuredSelection selection) throws JavaModelException {
+        super(pageName);
+        validateInput = true;
+        if (selection.getFirstElement() instanceof IResource) {
+            selectedResource = (IResource)selection.getFirstElement();
+        } else if (selection.getFirstElement() instanceof IJavaElement) {
+            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
+        } else if (selection.getFirstElement() instanceof IIpsElement) {
+            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
+        } else {
+            selectedResource = null;
+        }
+    }
 
     /**
      * Creates a label and an IPS object reference control for the <code>IIpsObject</code> to
@@ -107,19 +123,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      *            wizard was opened.
      */
     protected abstract void setDefaults(IResource selectedResource);
-
-    public IpsObjectExportPage(String pageName, IStructuredSelection selection) throws JavaModelException {
-        super(pageName);
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        } else {
-            selectedResource = null;
-        }
-    }
 
     public void setFilename(String newName) {
         filenameField.setText(newName);
@@ -164,6 +167,17 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         File file = new File(filename);
         if (file.isDirectory()) {
             setErrorMessage(Messages.IpsObjectExportPage_msgFilenameIsDirectory);
+            return;
+        }
+        ITableFormat format = getFormat();
+        if (format != null) {
+            String formatExtension = format.getDefaultExtension();
+            if (!filename.endsWith(formatExtension)) {
+                String errorMessage = NLS.bind(Messages.IpsObjectExportPage_msgMissingFileExtension,
+                        filename, formatExtension);
+                setErrorMessage(errorMessage);
+                return;
+            }
         }
         if (file.exists()) {
             setMessage(Messages.IpsObjectExportPage_msgFileAlreadyExists, IMessageProvider.WARNING);
@@ -201,11 +215,13 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (getErrorMessage() != null) {
             return;
         }
-        validateFilename();
+        // First, check the selected file format
+        validateFormat();
         if (getErrorMessage() != null) {
             return;
         }
-        validateFormat();
+        // Then, check the filename including the expected file format extension.
+        validateFilename();
         if (getErrorMessage() != null) {
             return;
         }
@@ -397,6 +413,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
         @Override
         protected void buttonClicked() {
+            initializeExtensionFilter();
+
             String previousFilename = getFilename();
 
             // if there is no previous filename use the default filename
@@ -417,6 +435,20 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
                 extension = format.getDefaultExtension();
             }
             return StringUtil.unqualifiedName(contentsName) + extension;
+        }
+
+        /**
+         * Adds a filter to the dialog for just showing the files with the required file format.
+         */
+        private void initializeExtensionFilter() {
+            ITableFormat selectedFormat = getFormat();
+            if (selectedFormat != null) {
+                String[] availableExtensions = { selectedFormat.getDefaultExtensionWildcard() };
+                String[] availableExtensionsNames = { selectedFormat.getName() };
+                setDialogFilterExtensions(availableExtensionsNames, availableExtensions);
+            } else {
+                clearDialogFilterExtensions();
+            }
         }
     }
 
