@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Fips-BasePackage: \${package}
+Fips-SourcecodeOutput: src/main/java
+Fips-ResourceOutput: src/main/resources
+Fips-ObjectDir: \${IPS-SourceFolder};toc="\${IPS-TocXML}.xml";validation-messages="\${IPS-ValidationMessageBundle}"

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<archetype-descriptor
+    xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
+    name="\${artifactId}">
+
+    <requiredProperties>
+        <requiredProperty key="JavaVersion">
+            <defaultValue>11</defaultValue>
+            <validationRegex>\d\d?(?:\.\d\d?)*</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-Language">
+            <defaultValue>en</defaultValue>
+            <validationRegex>de|DE|De|en|EN|En</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-NamingConvention">
+            <defaultValue>FIPS</defaultValue>
+            <validationRegex>FIPS|VAA|PM</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-IsModelProject">
+            <defaultValue>true</defaultValue>
+            <validationRegex>true|false</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-IsProductDefinitionProject">
+            <defaultValue>false</defaultValue>
+            <validationRegex>true|false</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-IsPersistentProject">
+            <defaultValue>false</defaultValue>
+            <validationRegex>true|false</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-SourceFolder">
+            <defaultValue>model</defaultValue>
+            <validationRegex>[a-zA-Z][?:a-zA-Z\d]*</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-TocXML">
+            <defaultValue>faktorips-repository-toc</defaultValue>
+            <validationRegex>[a-zA-Z](?:-?[a-zA-Z\d])*</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-ValidationMessageBundle">
+            <defaultValue>message-validation</defaultValue>
+            <validationRegex>[a-zA-Z](?:-?[a-zA-Z\d])*</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-IsGroovySupport">
+            <defaultValue>false</defaultValue>
+            <validationRegex>true|false</validationRegex>
+        </requiredProperty>
+        <requiredProperty key="IPS-RuntimeIdPrefix">
+            <defaultValue>${artifactId.concat(".")}</defaultValue>
+            <validationRegex>[a-zA-Z](?:\.?[a-zA-Z\d])*\.</validationRegex>
+        </requiredProperty>
+    </requiredProperties>
+
+    <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>META-INF</directory>
+            <includes>
+                <include>MANIFEST.MF</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>__IPS-SourceFolder__</directory>
+        </fileSet>
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory />
+            <includes>
+                <include>.ipsprojectDE</include>
+                <include>.ipsprojectEN</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" packaged="false" encoding="UTF-8">
+            <directory />
+            <includes>
+                <include>LICENSE.txt</include>
+                <include>agpl-3.0.txt</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</archetype-descriptor>
