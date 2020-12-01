@@ -42,7 +42,7 @@ public class MigrationPage extends WizardPage {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         IIpsProject[] projects = projectSelectionPage.getProjects();
-        StringBuffer desc = new StringBuffer();
+        StringBuilder desc = new StringBuilder();
         setPageComplete(true);
         for (IIpsProject project : projects) {
             desc.append(Messages.MigrationPage_titleProject).append(project.getName())

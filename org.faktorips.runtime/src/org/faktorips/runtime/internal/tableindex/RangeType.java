@@ -101,6 +101,7 @@ public enum RangeType {
      * @return the matching value in the given {@link TreeMap} or <code>null</code> if no matching
      *         value could be found.
      */
+    // TODO Java 8 Optional
     public abstract <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key);
 
     private static <K extends Comparable<? super K>, V> V getLowerValueIfNeccessary(TreeMap<K, V> tree,

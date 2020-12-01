@@ -273,7 +273,7 @@ public class MessageList implements Iterable<Message> {
      * separator.
      */
     public String getText() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < size(); i++) {
             if (i > 0) {
                 s.append(SystemUtils.LINE_SEPARATOR);
@@ -342,8 +342,8 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
-     * Returns a new <code>MessageList</code> containing only the <code>Message</code>s with the indicated
-     * severity.
+     * Returns a new <code>MessageList</code> containing only the <code>Message</code>s with the
+     * indicated severity.
      */
     public MessageList getMessages(int severity) {
         MessageList messageList = new MessageList();
@@ -360,7 +360,7 @@ public class MessageList implements Iterable<Message> {
      */
     @Override
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < size(); i++) {
             s.append(getMessage(i).toString() + SystemUtils.LINE_SEPARATOR);
         }

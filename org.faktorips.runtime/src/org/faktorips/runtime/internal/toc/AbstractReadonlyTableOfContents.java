@@ -199,9 +199,10 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
 
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer("TOC");
+        StringBuilder buf = new StringBuilder("TOC");
         buf.append(System.getProperty("line.separator"));
         List<ProductCmptTocEntry> entries = getProductCmptTocEntries();
+        // TODO Java 8 Stream
         for (ProductCmptTocEntry entry : entries) {
             buf.append(entry.toString());
             buf.append(System.getProperty("line.separator"));

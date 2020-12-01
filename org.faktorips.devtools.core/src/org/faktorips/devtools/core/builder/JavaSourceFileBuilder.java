@@ -654,12 +654,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
         List<String> annotations = getJavaDocTags(element, keyPrefix, builder);
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations.toArray(new String[annotations.size()]));
+        builder.javaDoc(sb.toString(), annotations.toArray(new String[annotations.size()]));
     }
 
     /**
@@ -984,7 +984,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (mergeFile.exists()) {
             return mergeFile.getLocation().toPortableString();
         }
-        StringBuffer mergeFileDefault = new StringBuffer();
+        StringBuilder mergeFileDefault = new StringBuilder();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
                 .append("/merge.java5.xml"); //$NON-NLS-1$
         Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
@@ -1024,8 +1024,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * The IPS model should be completely valid if calling this method or else the results may not
      * be exhaustive.
      * 
-     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the generated
-     *            <code>IJavaElement</code>s for.
+     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the
+     *            generated <code>IJavaElement</code>s for.
      * 
      * @throws NullPointerException If the parameter is null
      */

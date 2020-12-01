@@ -101,6 +101,7 @@ public abstract class Type extends ModelElement implements IModelType {
      */
     @Override
     public Attribute getAttribute(String name) {
+        // TODO Java 8 Optional
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
         if (finder.attribute == null) {
@@ -130,6 +131,7 @@ public abstract class Type extends ModelElement implements IModelType {
      * Returns the published interface for this type. Returns <code>null</code> if published
      * interfaces are not generated.
      */
+    // TODO Java 8 Optional?
     @Override
     public Class<?> getJavaInterface() {
         return annotatedDeclaration.getPublishedInterface();
@@ -159,6 +161,7 @@ public abstract class Type extends ModelElement implements IModelType {
      * @return the first method that is both annotated with the given annotation and has the correct
      *         annotated properties. <code>null</code> if no such method can be found.
      */
+    // TODO Java 8 Optional?
     public <T extends Annotation> Method searchDeclaredMethod(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
         List<Method> declaredMethods = getDeclaredMethods();

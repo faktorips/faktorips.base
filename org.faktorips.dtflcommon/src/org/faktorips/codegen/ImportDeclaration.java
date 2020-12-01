@@ -269,7 +269,7 @@ public class ImportDeclaration {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String separator = SystemUtils.LINE_SEPARATOR;
         for (Iterator<String> it = iterator(); it.hasNext();) {
             sb.append(("import ")); //$NON-NLS-1$

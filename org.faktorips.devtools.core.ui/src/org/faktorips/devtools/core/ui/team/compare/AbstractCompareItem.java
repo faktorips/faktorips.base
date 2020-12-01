@@ -99,7 +99,7 @@ public abstract class AbstractCompareItem
      * The concrete value is initialized in the {@link #init()} method.
      * 
      * @see #init()
-     * @see #initTreeContentString(StringBuffer, int)
+     * @see #initTreeContentString(StringBuilder, int)
      */
     private final Position range = new Position(0, 0);
 
@@ -109,8 +109,8 @@ public abstract class AbstractCompareItem
     private final DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
 
     /**
-     * If this compareitem is the root of its structure, this document contains the string
-     * representation of the <code>IIpsSrcfile</code> and the containes <code>IIpsObject</code>.
+     * If this compare item is the root of its structure, this document contains the string
+     * representation of the <code>IIpsSrcfile</code> and the contains <code>IIpsObject</code>.
      */
     private IDocument document;
 
@@ -157,8 +157,8 @@ public abstract class AbstractCompareItem
 
     /**
      * Returns a StringRepresentation of the tree (subtree respectively) this CompareItem
-     * represents. The string is appended to the given <code>StringBuffer</code>. The
-     * <code>StringBuffer</code> is the used as argument for the recursive method call.
+     * represents. The string is appended to the given <code>StringBuilder</code>. The
+     * <code>StringBuilder</code> is the used as argument for the recursive method call.
      * <p>
      * This method also calculates the length of the string-representation of this CompareItem. The
      * string representation has a length equal to the contentString of this compareItem in addition
@@ -166,7 +166,7 @@ public abstract class AbstractCompareItem
      * contents of this element relative to the string-representation of the
      * <code>IIpsSrcFile</code> and the contained <code>IIpsObject</code>.
      */
-    protected int initTreeContentString(StringBuffer sb, int offset) {
+    protected int initTreeContentString(StringBuilder sb, int offset) {
         int startIndex = sb.length();
         sb.append(getContentString());
         for (AbstractCompareItem item : getChildItems()) {
@@ -191,9 +191,9 @@ public abstract class AbstractCompareItem
 
     /**
      * Returns the contents of this CompareItem as a string. This includes the type, name and other
-     * attributes of the wrapped IpsElement. Childcontents are not included.
+     * attributes of the wrapped IpsElement. Child contents are not included.
      * <p>
-     * Only to be used at instanciation.
+     * Only to be used at instantiation.
      */
     protected abstract String initContentString();
 
@@ -201,10 +201,10 @@ public abstract class AbstractCompareItem
      * Returns the name of this CompareItem. Includes type and name of the wrapped IpsElement but
      * not its children.
      * <p>
-     * The returned string is used as text for labels in the structurecompare tree and headers of
+     * The returned string is used as text for labels in the structure compare tree and headers of
      * textviewers.
      * <p>
-     * Only to be used at instanciation.
+     * Only to be used at instantiation.
      */
     protected abstract String initName();
 
@@ -419,7 +419,7 @@ public abstract class AbstractCompareItem
     public void init() {
         if (isRoot()) {
             initStrings();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             initTreeContentString(sb, 0);
             document = new Document(sb.toString());
         }

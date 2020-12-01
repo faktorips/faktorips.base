@@ -595,8 +595,8 @@ public class CodeGenUtil {
 
     /**
      * Returns the package name for a qualified class name, i.e., a substring from the first char
-     * until the last &quot;.&quot;. If the argument is <code>null</code> or a non-qualified name, this
-     * method returns <code>null</code>.
+     * until the last &quot;.&quot;. If the argument is <code>null</code> or a non-qualified name,
+     * this method returns <code>null</code>.
      * 
      * @param qualifiedClassName
      * @return String
@@ -803,7 +803,7 @@ public class CodeGenUtil {
      * @since 2.5
      */
     public static String validPluginID(String base) {
-        StringBuffer sb = new StringBuffer(base);
+        StringBuilder sb = new StringBuilder(base);
         for (int i = sb.length() - 1; i >= 0; i--) {
             char c = sb.charAt(i);
             if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9') || c == '_' || c == '-'

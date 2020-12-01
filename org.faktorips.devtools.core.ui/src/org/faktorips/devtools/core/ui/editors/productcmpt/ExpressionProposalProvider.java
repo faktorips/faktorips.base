@@ -190,7 +190,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addFunctionToResult(FlFunction<JavaCodeFragment> function, String prefix) {
         String name = function.getName();
-        StringBuffer displayText = new StringBuffer(name);
+        StringBuilder displayText = new StringBuilder(name);
         displayText.append('(');
         Datatype[] argTypes = function.getArgTypes();
         for (int i = 0; i < argTypes.length; i++) {

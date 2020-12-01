@@ -54,7 +54,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private String formatRangeValueSet(IValueSet value) {
         IRangeValueSet range = (IRangeValueSet)value;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(RangeValueSet.RANGE_VALUESET_START);
         if (!range.isEmpty()) {
             String lowerBound = range.getLowerBound();

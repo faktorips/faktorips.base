@@ -106,12 +106,12 @@ public class LocalizedTextHelper {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(sb.toString(), annotations);
     }
 
     public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
@@ -138,12 +138,12 @@ public class LocalizedTextHelper {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacement, locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(sb.toString(), annotations);
     }
 
     public void appendLocalizedJavaDoc(String keyPrefix,
@@ -174,12 +174,12 @@ public class LocalizedTextHelper {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements, locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(sb.toString(), annotations);
     }
 
     public void appendLocalizedJavaDoc(String keyPrefix,

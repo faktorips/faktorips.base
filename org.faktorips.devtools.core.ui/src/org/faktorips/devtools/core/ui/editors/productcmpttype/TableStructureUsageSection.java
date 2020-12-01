@@ -130,7 +130,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
         @Override
         public String getText(Object element) {
-            StringBuffer sb = new StringBuffer(super.getText(element));
+            StringBuilder sb = new StringBuilder(super.getText(element));
             if (element instanceof ITableStructureUsage) {
                 String[] tableStructures = ((ITableStructureUsage)element).getTableStructures();
                 if (tableStructures.length > 0) {

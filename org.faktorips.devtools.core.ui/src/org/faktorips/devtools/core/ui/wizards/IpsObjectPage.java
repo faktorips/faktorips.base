@@ -144,14 +144,14 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * Returns qualified name of the IpsObject that is about to be created by means of this page.
      */
     public String getQualifiedIpsObjectName() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (!StringUtils.isEmpty(getPackage())) {
-            buf.append(getPackage());
-            buf.append('.');
+            sb.append(getPackage());
+            sb.append('.');
         }
-        buf.append(getIpsObjectName());
+        sb.append(getIpsObjectName());
 
-        return buf.toString();
+        return sb.toString();
     }
 
     /**
@@ -450,7 +450,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         // to avoid conflicts with java classes that have the same name
         IIpsSrcFile file = findExistingIpsSrcFile();
         if (file != null) {
-            StringBuffer msg = new StringBuffer();
+            StringBuilder msg = new StringBuilder();
             msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists1);
             msg.append(' ');
             if (file.getIpsObjectType().equals(getIpsObjectType())) {

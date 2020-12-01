@@ -15,11 +15,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
-import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 public class MethodWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
@@ -60,18 +60,13 @@ public class MethodWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     protected String getLabel(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IBaseMethod) {
             IBaseMethod method = (IBaseMethod)ipsObjectPart;
-            StringBuffer buffer = new StringBuffer(method.getName());
-            buffer.append('(');
-            IParameter[] params = method.getParameters();
-            for (int i = 0; i < params.length; i++) {
-                if (i > 0) {
-                    buffer.append(", "); //$NON-NLS-1$
-                }
-                buffer.append(QNameUtil.getUnqualifiedName(params[i].getDatatype()));
-            }
-            buffer.append(") : "); //$NON-NLS-1$
-            buffer.append(QNameUtil.getUnqualifiedName(method.getDatatype()));
-            return buffer.toString();
+            StringBuilder builder = new StringBuilder(method.getName());
+            builder.append('(');
+            StringBuilderJoiner.join(builder, method.getParameters(),
+                    p -> builder.append(QNameUtil.getUnqualifiedName(p.getDatatype())));
+            builder.append(") : "); //$NON-NLS-1$
+            builder.append(QNameUtil.getUnqualifiedName(method.getDatatype()));
+            return builder.toString();
         } else {
             return super.getLabel(ipsObjectPart);
         }

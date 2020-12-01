@@ -252,7 +252,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         layout.leftMargin = 20;
         clientGroup.setLayout(layout);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String description = item.getDescription().trim();
 
         // Set faktorips.attribute description

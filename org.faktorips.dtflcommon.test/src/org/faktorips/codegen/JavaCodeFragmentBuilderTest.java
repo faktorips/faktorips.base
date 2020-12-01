@@ -74,11 +74,11 @@ public class JavaCodeFragmentBuilderTest {
     public void testMethodBeginIntStringStringStringArrayStringArray() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.methodBegin(Modifier.PUBLIC, String[].class, "validate", new String[0], new Class[0]); //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append("public String[] validate()"); //$NON-NLS-1$
-        buf.append(SystemUtils.LINE_SEPARATOR);
-        buf.append("{"); //$NON-NLS-1$
-        assertEquals(buf.toString(), builder.toString().trim());
+        StringBuilder sb = new StringBuilder();
+        sb.append("public String[] validate()"); //$NON-NLS-1$
+        sb.append(SystemUtils.LINE_SEPARATOR);
+        sb.append("{"); //$NON-NLS-1$
+        assertEquals(sb.toString(), builder.toString().trim());
     }
 
     @Test

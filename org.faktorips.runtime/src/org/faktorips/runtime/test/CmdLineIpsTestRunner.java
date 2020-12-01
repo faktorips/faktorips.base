@@ -51,6 +51,7 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
 
     @Override
     protected List<IRuntimeRepository> createRepositories() throws ParserConfigurationException {
+        // TODO Java 8 Stream
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
         List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
         for (String repositoryName : repositoryNameList) {

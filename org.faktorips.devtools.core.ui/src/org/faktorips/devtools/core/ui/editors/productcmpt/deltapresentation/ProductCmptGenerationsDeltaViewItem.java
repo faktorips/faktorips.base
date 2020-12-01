@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGenerationToTypeDelta;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Helper class for the {@link DeltaContentProvider} and {@link DeltaLabelProvider}, to provide
@@ -53,15 +54,7 @@ class ProductCmptGenerationsDeltaViewItem {
      * Returns a comma separated list of all dates in this object.
      */
     String getDates() {
-        StringBuilder builder = new StringBuilder();
-        for (GregorianCalendar cal : validFromDates) {
-            builder.append(formatter.format(cal, true));
-            builder.append(", "); //$NON-NLS-1$
-        }
-        if (builder.length() > 0) {
-            return builder.substring(0, builder.length() - 2);
-        }
-        return ""; //$NON-NLS-1$
+        return IpsStringUtils.join(validFromDates, cal -> formatter.format(cal, true));
     }
 
     void addDate(ProductCmptGenerationToTypeDelta dateProvider) {

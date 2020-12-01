@@ -45,7 +45,7 @@ public class TableSaxHandler extends DefaultHandler {
     private List<String> columns = new ArrayList<String>(20);
 
     // buffer to store the characters inside the value node
-    private StringBuffer textBuffer = null;
+    private StringBuilder textBuilder = null;
 
     // true if the parser is inside the row node
     private boolean insideRowNode;
@@ -79,13 +79,13 @@ public class TableSaxHandler extends DefaultHandler {
         } else if (isColumnValueNode(qName)) {
             insideValueNode = false;
             columns.add(getText());
-            textBuffer = null;
+            textBuilder = null;
         }
     }
 
     private String getText() {
-        if (textBuffer != null) {
-            return textBuffer.toString();
+        if (textBuilder != null) {
+            return textBuilder.toString();
         } else {
             return nullValue ? null : IpsStringUtils.EMPTY;
         }
@@ -115,10 +115,10 @@ public class TableSaxHandler extends DefaultHandler {
             return;
         }
         String s = new String(buf, offset, len);
-        if (textBuffer == null) {
-            textBuffer = new StringBuffer(s);
+        if (textBuilder == null) {
+            textBuilder = new StringBuilder(s);
         } else {
-            textBuffer.append(s);
+            textBuilder.append(s);
         }
     }
 

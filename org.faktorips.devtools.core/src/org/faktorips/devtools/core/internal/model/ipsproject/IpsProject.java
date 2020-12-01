@@ -253,7 +253,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private String insertNewLineSeparatorsBeforeComment(String s) {
-        StringBuffer newText = new StringBuffer();
+        StringBuilder newText = new StringBuilder();
         StringTokenizer tokenizer = new StringTokenizer(s, SystemUtils.LINE_SEPARATOR);
         boolean firstComment = true;
         while (tokenizer.hasMoreTokens()) {

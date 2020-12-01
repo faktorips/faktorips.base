@@ -39,25 +39,24 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     }
 
     private String build(int level, String loggerInstanceExp, String message, Builder builder) {
-        StringBuffer buf = new StringBuffer();
-        buf.append(loggerInstanceExp);
+        StringBuilder sb = new StringBuilder();
+        sb.append(loggerInstanceExp);
 
         if (IIpsLoggingFrameworkConnector.LEVEL_TRACE == level) {
-            buf.append(builder.buildTrace(message));
+            sb.append(builder.buildTrace(message));
         } else if (IIpsLoggingFrameworkConnector.LEVEL_DEBUG == level) {
-            buf.append(builder.buildDebug(message));
+            sb.append(builder.buildDebug(message));
         } else if (IIpsLoggingFrameworkConnector.LEVEL_INFO == level) {
-            buf.append(builder.buildInfo(message));
+            sb.append(builder.buildInfo(message));
         } else if (IIpsLoggingFrameworkConnector.LEVEL_WARNING == level) {
-            buf.append(builder.buildWarning(message));
+            sb.append(builder.buildWarning(message));
         } else if (IIpsLoggingFrameworkConnector.LEVEL_ERROR == level) {
-            buf.append(builder.buildError(message));
+            sb.append(builder.buildError(message));
         } else {
             throw new IllegalArgumentException("The value of the parameter level is not valid. " + //$NON-NLS-1$
                     "Use the level constants of " + IIpsLoggingFrameworkConnector.class + "."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return buf.toString();
-
+        return sb.toString();
     }
 
     @Override
@@ -66,12 +65,18 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
     }
 
     @Override
-    public String getLogStmtForMessage(int level, String msgConstant, String loggerInstanceExp, List<String> usedClasses) {
+    public String getLogStmtForMessage(int level,
+            String msgConstant,
+            String loggerInstanceExp,
+            List<String> usedClasses) {
         return build(level, loggerInstanceExp, msgConstant, new LogStmtForMessageBuilder());
     }
 
     @Override
-    public String getLogStmtForMessageExp(int level, String msgExp, String loggerInstanceExp, List<String> usedClasses) {
+    public String getLogStmtForMessageExp(int level,
+            String msgExp,
+            String loggerInstanceExp,
+            List<String> usedClasses) {
         return build(level, loggerInstanceExp, msgExp, new LogStmtForMessageExpBuilder());
     }
 

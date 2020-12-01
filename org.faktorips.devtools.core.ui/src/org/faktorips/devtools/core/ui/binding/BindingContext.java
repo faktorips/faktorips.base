@@ -65,6 +65,8 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -104,7 +106,7 @@ public class BindingContext {
     private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
 
     /**
-     * a list of the ips objects containing at least one binded ips part container each container is
+     * a list of the IPS objects containing at least one binded IPS part container each container is
      * contained in the list only once, so it is actually used as a set, not we still use the list,
      * because once binded, we need to access all binded containers, and this is faster with a list,
      * than a hashset or treeset.
@@ -157,7 +159,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given text control to the given ips object's property.
+     * Binds the given text control to the given IPS object's property.
      * 
      * @return The edit field created to access the value in the text control.
      * 
@@ -183,7 +185,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given label to the given ips object's property.
+     * Binds the given label to the given IPS object's property.
      * 
      * @return the edit field created to access the value in the label.
      * 
@@ -198,7 +200,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given checkbox to the given ips object's property.
+     * Binds the given checkbox to the given IPS object's property.
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -217,7 +219,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the selection state of the given button to the given ips object property
+     * Binds the selection state of the given button to the given IPS object property
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -236,16 +238,16 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given text-button control to the given ips object's property.
+     * Binds the given text-button control to the given IPS object's property.
      * <p>
-     * This method setting the fields property <code>supportNull<code> to false. This is the default
-     * to prevent the fields returning null or setting the null string representation.
-     * If you want to create a field that supports null and the null string representation, use
-     * {@link #bindContent(TextButtonControl, Object, String, boolean) )}
+     * This method setting the fields property <code>supportNull</code> to false. This is the
+     * default to prevent the fields returning null or setting the null string representation. If
+     * you want to create a field that supports null and the null string representation, use
+     * {@link #bindContent(TextButtonControl, Object, String, boolean)}.
      * 
-     * return the edit field created to access the value in the text control.
+     * @return the edit field created to access the value in the text control.
      * 
-     * throws IllegalArgumentException if the property is not of type String.
+     * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public EditField<String> bindContent(TextButtonControl control, Object object, String property) {
@@ -253,7 +255,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given text-button control to the given ips object's property.
+     * Binds the given text-button control to the given IPS object's property.
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -273,7 +275,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given combo to the given ips object's property.
+     * Binds the given combo to the given IPS object's property.
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -299,7 +301,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given combo to the given ips object's property.
+     * Binds the given combo to the given IPS object's property.
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -320,7 +322,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given combo to the given ips object's property.
+     * Binds the given combo to the given IPS object's property.
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -341,7 +343,7 @@ public class BindingContext {
     }
 
     /**
-     * Binds the given edit field to the given ips object's property.
+     * Binds the given edit field to the given IPS object's property.
      * 
      * @return the newly created mapping
      * 
@@ -390,17 +392,9 @@ public class BindingContext {
     }
 
     private void throwWrongPropertyTypeException(PropertyDescriptor property, Class<?>[] expectedTypes) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < expectedTypes.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(expectedTypes[i]);
-        }
-
         throw new IllegalArgumentException(
                 "Property " + property.getName() + " is of type " + property.getPropertyType() //$NON-NLS-1$ //$NON-NLS-2$
-                        + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
+                        + ", but is expected to of one of the types " + IpsStringUtils.join(expectedTypes)); //$NON-NLS-1$
     }
 
     /**
@@ -806,16 +800,8 @@ public class BindingContext {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Ctx["); //$NON-NLS-1$
-        int i = 0;
-        for (Validatable validatable : validatables) {
-            if (i > 0) {
-                sb.append(", "); //$NON-NLS-1$
-            }
-            Validatable ipsObject = validatable;
-            sb.append(ipsObject.toString());
-            i++;
-        }
+        StringBuilder sb = new StringBuilder("Ctx["); //$NON-NLS-1$
+        StringBuilderJoiner.join(sb, validatables);
         sb.append(']');
 
         return sb.toString();

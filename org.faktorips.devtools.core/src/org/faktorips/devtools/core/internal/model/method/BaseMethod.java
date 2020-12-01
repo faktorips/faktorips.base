@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -141,13 +142,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
         StringBuilder builder = new StringBuilder();
         builder.append(getName());
         builder.append('(');
-        IParameter[] params = getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (i > 0) {
-                builder.append(", "); //$NON-NLS-1$
-            }
-            builder.append(params[i].getDatatype());
-        }
+        StringBuilderJoiner.join(builder, getParameters(), p -> builder.append(p.getDatatype()));
         builder.append(')');
         return builder.toString();
     }
@@ -269,15 +264,11 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
         buffer.append(' ');
         buffer.append(getName());
         buffer.append('(');
-        IParameter[] params = getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(params[i].getDatatype());
+        StringBuilderJoiner.join(buffer, getParameters(), p -> {
+            buffer.append(p.getDatatype());
             buffer.append(' ');
-            buffer.append(params[i].getName());
-        }
+            buffer.append(p.getName());
+        });
         buffer.append(')');
         return buffer.toString();
     }

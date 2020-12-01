@@ -40,17 +40,17 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoinSingle() {
-        assertEquals("a", IpsStringUtils.join(new Object[] { "a" }, ", "));
+        assertEquals("a", IpsStringUtils.join(new Object[] { "a" }));
     }
 
     @Test
     public void testJoinMult() {
-        assertEquals("a, 3", IpsStringUtils.join(new Object[] { "a", 3 }, ", "));
+        assertEquals("a, 3", IpsStringUtils.join(new Object[] { "a", 3 }));
     }
 
     @Test
     public void testJoinEmpty() {
-        assertEquals("", IpsStringUtils.join(new Object[] {}, ", "));
+        assertEquals("", IpsStringUtils.join(new Object[] {}));
     }
 
     @Test

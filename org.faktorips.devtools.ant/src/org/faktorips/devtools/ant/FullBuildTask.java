@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IMarker;
@@ -172,15 +173,7 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     private String getErroneousProjectsAsText(Set<IProject> projectSet) {
-        StringBuffer buf = new StringBuffer();
-        for (Iterator<IProject> it = projectSet.iterator(); it.hasNext();) {
-            IProject project = it.next();
-            buf.append(project.getName());
-            if (it.hasNext()) {
-                buf.append(", ");
-            }
-        }
-        return buf.toString();
+        return projectSet.stream().map(IProject::getName).collect(Collectors.joining(", "));
     }
 
     /**

@@ -33,6 +33,7 @@ import org.faktorips.runtime.internal.delta.ChildDeltaCreator;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.faktorips.runtime.model.type.PolicyAttribute;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * IModelObjectDelta implementation.
@@ -490,47 +491,37 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
-        toString(buffer, "");
-        return buffer.toString();
+        StringBuilder builder = new StringBuilder();
+        toString(builder, "");
+        return builder.toString();
     }
 
     // CSOFF: CyclomaticComplexity
-    public void toString(StringBuffer buffer, String indentation) {
-        buffer.append(indentation);
+    public void toString(StringBuilder builder, String indentation) {
+        builder.append(indentation);
         if (isAdded()) {
-            buffer.append("+");
-            buffer.append(referenceObject);
+            builder.append("+");
+            builder.append(referenceObject);
         } else if (isRemoved()) {
-            buffer.append("-");
-            buffer.append(original);
+            builder.append("-");
+            builder.append(original);
         } else if (isDifferentObjectAtPosition()) {
-            buffer.append("differentObject");
+            builder.append("differentObject");
         } else {
-            buffer.append(isChanged() ? "*" : "empty ");
-            buffer.append(original);
+            builder.append(isChanged() ? "*" : "empty ");
+            builder.append(original);
         }
         if (isMoved()) {
-            buffer.append(" (moved)");
+            builder.append(" (moved)");
         }
         if (changedProperties != null) {
-            boolean first = true;
-            for (String changedProperty : changedProperties) {
-                if (first) {
-                    buffer.append(" [");
-                    first = false;
-                } else {
-                    buffer.append(", ");
-                }
-                buffer.append(changedProperty);
-            }
-            if (!first) {
-                buffer.append(']');
-            }
+            builder.append(" [");
+            StringBuilderJoiner.join(builder, changedProperties);
+            builder.append(']');
         }
-        buffer.append(System.getProperty("line.separator"));
+        builder.append(System.getProperty("line.separator"));
         for (IModelObjectDelta delta : getChildDeltas()) {
-            ((ModelObjectDelta)delta).toString(buffer, indentation + "    ");
+            ((ModelObjectDelta)delta).toString(builder, indentation + "    ");
         }
     }
     // CSON: CyclomaticComplexity

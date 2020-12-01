@@ -1309,7 +1309,9 @@ public class JavaCodeFragmentBuilder {
      * @param paramName The name of the parameter
      * @param qualifiedClassName The class value for the parameter
      */
-    public JavaCodeFragmentBuilder annotationClassValueLn(String annotation, String paramName, String qualifiedClassName) {
+    public JavaCodeFragmentBuilder annotationClassValueLn(String annotation,
+            String paramName,
+            String qualifiedClassName) {
         if (annotation == null) {
             return this;
         }
@@ -1440,14 +1442,7 @@ public class JavaCodeFragmentBuilder {
 
     public JavaCodeFragmentBuilder appendParameters(JavaCodeFragment[] parameters) {
         append('(');
-        int i = 1;
-        for (JavaCodeFragment aParameter : parameters) {
-            append(aParameter);
-            if (i < parameters.length) {
-                fragment.append(", "); //$NON-NLS-1$
-            }
-            i++;
-        }
+        fragment.appendJoined(parameters);
         append(')');
         return this;
     }

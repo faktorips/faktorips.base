@@ -59,7 +59,7 @@ public class StatusPage extends WizardPage implements Observer {
         @Override
         public void run() {
             Object[] elements = contentProvider.getElements(null);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (Object msg : elements) {
                 sb.append(msg).append(SystemUtils.LINE_SEPARATOR);
             }

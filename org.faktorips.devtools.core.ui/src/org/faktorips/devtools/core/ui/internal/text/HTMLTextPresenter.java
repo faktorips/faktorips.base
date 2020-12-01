@@ -74,9 +74,9 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         }
     }
 
-    private void append(StringBuffer buffer, String string, TextPresentation presentation) {
+    private void append(StringBuilder sb, String string, TextPresentation presentation) {
         int length = string.length();
-        buffer.append(string);
+        sb.append(string);
 
         if (presentation != null) {
             adaptTextPresentation(presentation, fCounter, length);
@@ -118,7 +118,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 
         GC gc = new GC(drawable);
         try {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int maxNumberOfLines = Math.round(maxHeight / gc.getFontMetrics().getHeight());
 
             fCounter = 0;
@@ -138,16 +138,16 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 
                 if (firstLineProcessed) {
                     if (!lastLineFormatted) {
-                        append(buffer, LINE_DELIM, null);
+                        append(sb, LINE_DELIM, null);
                     } else {
-                        append(buffer, LINE_DELIM, presentation);
+                        append(sb, LINE_DELIM, presentation);
                         if (lastLineIndent != null) {
-                            append(buffer, lastLineIndent, presentation);
+                            append(sb, lastLineIndent, presentation);
                         }
                     }
                 }
 
-                append(buffer, line, null);
+                append(sb, line, null);
                 firstLineProcessed = true;
 
                 lastLineFormatted = lineFormatted;
@@ -164,11 +164,11 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
             }
 
             if (line != null) {
-                append(buffer, LINE_DELIM, lineFormatted ? presentation : null);
-                append(buffer, HTMLMessages.getString("HTMLTextPresenter.ellipse"), presentation); //$NON-NLS-1$
+                append(sb, LINE_DELIM, lineFormatted ? presentation : null);
+                append(sb, HTMLMessages.getString("HTMLTextPresenter.ellipse"), presentation); //$NON-NLS-1$
             }
 
-            return trim(buffer, presentation);
+            return trim(sb, presentation);
 
         } catch (IOException e) {
             return null;
@@ -178,11 +178,11 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         }
     }
 
-    private String trim(StringBuffer buffer, TextPresentation presentation) {
-        int length = buffer.length();
+    private String trim(StringBuilder sb, TextPresentation presentation) {
+        int length = sb.length();
 
         int end = length - 1;
-        while (end >= 0 && Character.isWhitespace(buffer.charAt(end))) {
+        while (end >= 0 && Character.isWhitespace(sb.charAt(end))) {
             --end;
         }
 
@@ -191,19 +191,19 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         }
 
         if (end < length - 1) {
-            buffer.delete(end + 1, length);
+            sb.delete(end + 1, length);
         } else {
             end = length;
         }
 
         int start = 0;
-        while (start < end && Character.isWhitespace(buffer.charAt(start))) {
+        while (start < end && Character.isWhitespace(sb.charAt(start))) {
             ++start;
         }
 
-        buffer.delete(0, start);
-        presentation.setResultWindow(new Region(start, buffer.length()));
-        return buffer.toString();
+        sb.delete(0, start);
+        presentation.setResultWindow(new Region(start, sb.length()));
+        return sb.toString();
     }
 
 }

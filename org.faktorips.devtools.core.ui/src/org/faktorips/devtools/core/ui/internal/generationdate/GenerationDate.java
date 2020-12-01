@@ -74,7 +74,7 @@ public class GenerationDate {
     }
 
     public String getText() {
-        StringBuffer result = new StringBuffer(getDateFormat().format(getValidFrom().getTime()));
+        StringBuilder result = new StringBuilder(getDateFormat().format(getValidFrom().getTime()));
         result.append(" - "); //$NON-NLS-1$
         if (getValidTo() != null) {
             result.append(getDateFormat().format(getValidTo().getTime()));

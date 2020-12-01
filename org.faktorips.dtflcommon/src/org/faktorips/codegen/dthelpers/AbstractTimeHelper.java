@@ -29,9 +29,9 @@ public abstract class AbstractTimeHelper extends AbstractDatatypeHelper {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
-        StringBuffer buf = new StringBuffer();
-        buf.append('"').append(value).append('"');
-        return valueOfExpression(buf.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append('"').append(value).append('"');
+        return valueOfExpression(sb.toString());
     }
 
 }

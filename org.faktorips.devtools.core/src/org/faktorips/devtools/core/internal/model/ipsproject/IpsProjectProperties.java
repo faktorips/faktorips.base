@@ -1530,7 +1530,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createDescriptionComment(String text, Node parent, String indentation) {
-        StringBuffer indentedText = new StringBuffer();
+        StringBuilder indentedText = new StringBuilder();
         indentedText.append(SystemUtils.LINE_SEPARATOR);
         StringTokenizer tokenizer = new StringTokenizer(text, SystemUtils.LINE_SEPARATOR);
         while (tokenizer.hasMoreTokens()) {

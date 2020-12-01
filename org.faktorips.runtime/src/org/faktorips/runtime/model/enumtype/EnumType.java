@@ -155,16 +155,9 @@ public class EnumType extends ModelElement {
             sb.append(getEnumContentQualifiedName());
             sb.append(']');
         }
-        sb.append("(");
-        boolean first = true;
-        for (String attributeName : attributeNames) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-            sb.append(attributeName);
-        }
-        sb.append(")");
+        sb.append('(');
+        sb.append(String.join(", ", attributeNames));
+        sb.append(')');
         return sb.toString();
     }
 

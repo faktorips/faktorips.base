@@ -31,6 +31,7 @@ public enum XmlUtil {
         // Utility class not to be instantiated.
     }
 
+    // TODO Java 8 Optional
     public static final Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {

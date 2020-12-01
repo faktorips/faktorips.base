@@ -639,7 +639,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 EMPTY_STRING_ARRAY, body, null);
     }
 
-    private void appendln(StringBuffer sb, String line) {
+    private void appendln(StringBuilder sb, String line) {
         sb.append(line);
         sb.append(SystemUtils.LINE_SEPARATOR);
     }
@@ -649,7 +649,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * executeAsserts(IpsTestResult result) throws Exception { } </pre>
      */
     private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder) {
-        StringBuffer javaDoc = new StringBuffer();
+        StringBuilder javaDoc = new StringBuilder();
         appendln(javaDoc, getLocalizedText(EXECUTEASSERTS_JAVADOC));
         appendln(javaDoc, " ");
         appendln(javaDoc, getLocalizedText(ASSERT_TODO_1));

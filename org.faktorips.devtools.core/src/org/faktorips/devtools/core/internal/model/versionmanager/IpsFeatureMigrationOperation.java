@@ -151,7 +151,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             String version = features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
-            } else if (Version.parseVersion(version).compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
+            } else if (Version.parseVersion(version)
+                    .compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
             }
         }
@@ -170,7 +171,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
 
     @Override
     public String getDescription() {
-        StringBuffer description = new StringBuffer();
+        StringBuilder description = new StringBuilder();
         for (int i = 0; i < operations.size(); i++) {
             AbstractIpsProjectMigrationOperation operation = operations.get(i);
             description.append("-> ").append(operation.getTargetVersion()).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$

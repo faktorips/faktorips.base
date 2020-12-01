@@ -54,13 +54,13 @@ public class JavaClassNaming {
     }
 
     private String getQualifiedName(String packageName, String className) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (packageName != null) {
-            buf.append(packageName);
-            buf.append('.');
+            sb.append(packageName);
+            sb.append('.');
         }
-        buf.append(className);
-        return buf.toString();
+        sb.append(className);
+        return sb.toString();
     }
 
     /**

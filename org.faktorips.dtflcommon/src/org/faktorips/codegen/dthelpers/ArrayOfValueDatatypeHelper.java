@@ -42,11 +42,11 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
     @Override
     public String getJavaClassName() {
-        StringBuffer buffer = new StringBuffer(elementDatatypeHelper.getJavaClassName());
+        StringBuilder sb = new StringBuilder(elementDatatypeHelper.getJavaClassName());
         for (int i = 0; i < getDatatype().getDimension(); i++) {
-            buffer.append("[]"); //$NON-NLS-1$
+            sb.append("[]"); //$NON-NLS-1$
         }
-        return buffer.toString();
+        return sb.toString();
     }
 
     /**

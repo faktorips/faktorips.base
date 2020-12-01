@@ -127,6 +127,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * validity date. Returns <code>null</code> if either no entry is found for the provided date or
      * if the found one doesn't have a successor.
      */
+    // TODO Java 8 Optional
     public GenerationTocEntry getNextGenerationEntry(Calendar validFrom) {
         SortedMap<Long, GenerationTocEntry> map = generationEntries.headMap(validFrom.getTimeInMillis());
         if (map.isEmpty()) {
@@ -141,6 +142,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * provided validity date. Returns <code>null</code> if either no entry is found for the
      * provided date or if the found one doesn't have a predecessor.
      */
+    // TODO Java 8 Optional
     public GenerationTocEntry getPreviousGenerationEntry(Calendar validFrom) {
         SortedMap<Long, GenerationTocEntry> map = generationEntries.tailMap(validFrom.getTimeInMillis() - 1);
         if (map.isEmpty()) {
@@ -166,6 +168,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * <code>null</code> if no generation is effective on the given date or the effective is
      * <code>null</code>.
      */
+    // TODO Java 8 Optional
     public GenerationTocEntry getGenerationEntry(Calendar effectiveDate) {
         if (effectiveDate == null) {
             return null;

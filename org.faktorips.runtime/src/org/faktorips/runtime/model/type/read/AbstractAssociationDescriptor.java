@@ -58,6 +58,8 @@ public abstract class AbstractAssociationDescriptor<P extends Association> exten
             // else it must be defined in a super type but overridden (with the same name and
             // target) in this type. That leads to a different implementation being generated
             // but not a new annotation.
+
+            // TODO Java 8 Optional
             Type superType = type.getSuperType();
             if (superType != null) {
                 Association association = superType.getAssociation(getName());

@@ -207,6 +207,7 @@ public enum ValueToXmlHelper {
      * @param el The xml element that is the parent of the element storing the value.
      * @param tagName The name of the child
      */
+    // TODO Java 8 Optional?
     public static String getValueFromElement(Element el, String tagName) {
         Element valueEl = XmlUtil.getFirstElement(el, tagName);
         if (valueEl == null) {
@@ -240,6 +241,7 @@ public enum ValueToXmlHelper {
      * 
      * @param valueEl The xml value element containing the value.
      */
+    // TODO Java 8 Optional?
     public static String getValueFromElement(Element valueEl) {
         if (Boolean.parseBoolean(valueEl.getAttribute(XML_ATTRIBUTE_IS_NULL))) {
             return null;

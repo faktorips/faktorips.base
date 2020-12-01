@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -78,13 +77,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             }
 
             fragment.append("(");
-            for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
-                String attr = iterator.next();
-                fragment.append(attr);
-                if (iterator.hasNext()) {
-                    fragment.append(", ");
-                }
-            }
+            fragment.appendJoined(attributesToAppend);
             fragment.append(')').appendln();
             createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo, datatype);
             createConverterAnnotation(fragment, jpaAttributeInfo);
@@ -111,10 +104,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
     }
 
     /**
-     * <code>
-     * Converter(name = "gender", converterClass = example.Gender)
-     * Convert("gender")
-     * <code>
+     * <code> Converter(name = "gender", converterClass = example.Gender) Convert("gender") <code>
      */
     private void createConverterAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
         if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {

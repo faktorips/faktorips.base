@@ -173,7 +173,7 @@ public abstract class ModelElement implements IModelElement {
 
     private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Throwable e) {
         return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
-                method.getName(), IpsStringUtils.join(args, ", "), source), e);
+                method.getName(), IpsStringUtils.join(args), source), e);
     }
 
     protected Object invokeField(Field field, Object source) {

@@ -533,7 +533,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (segments.length == 1) {
             return root;
         }
-        StringBuffer folderName = new StringBuffer();
+        StringBuilder folderName = new StringBuilder();
         for (int i = 1; i < segments.length - 1; i++) {
             if (i > 1) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);

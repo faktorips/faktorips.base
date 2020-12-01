@@ -276,7 +276,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     public String getText() {
         String lineSeparator = System.getProperty("line.separator");
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < size(); i++) {
             if (i > 0) {
                 s.append(lineSeparator);
@@ -364,7 +364,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (Message message : messages) {
             s.append(message.toString() + lineSeparator);
         }

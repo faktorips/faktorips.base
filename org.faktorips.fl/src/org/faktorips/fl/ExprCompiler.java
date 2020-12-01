@@ -524,7 +524,8 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
         }
         Object[] replacements = new Object[] { e.currentToken.next.toString(),
-                Integer.valueOf(e.currentToken.next.beginLine), Integer.valueOf(e.currentToken.next.beginColumn), expected };
+                Integer.valueOf(e.currentToken.next.beginLine), Integer.valueOf(e.currentToken.next.beginColumn),
+                expected };
         return newCompilationResultImpl(Message.newError(SYNTAX_ERROR,
                 LOCALIZED_STRINGS.getString(SYNTAX_ERROR, getLocale(), replacements)));
     }
@@ -647,14 +648,14 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     }
 
     private String argTypesToString(CompilationResult<T>[] results) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < results.length; i++) {
             if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
+                sb.append(", "); //$NON-NLS-1$
             }
-            buffer.append(results[i].getDatatype().getName());
+            sb.append(results[i].getDatatype().getName());
         }
-        return buffer.toString();
+        return sb.toString();
     }
 
     private CompilationResult<T>[] convert(FlFunction<T> flFunction, CompilationResult<T>[] argResults) {
@@ -663,8 +664,9 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         AbstractCompilationResult<T>[] convertedArgs = new AbstractCompilationResult[argResults.length];
         for (int i = 0; i < argResults.length; i++) {
 
-            Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0] : flFunction
-                    .getArgTypes()[i];
+            Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0]
+                    : flFunction
+                            .getArgTypes()[i];
             if (functionDatatype instanceof AnyDatatype) {
                 convertedArgs[i] = (AbstractCompilationResult<T>)argResults[i];
             } else {

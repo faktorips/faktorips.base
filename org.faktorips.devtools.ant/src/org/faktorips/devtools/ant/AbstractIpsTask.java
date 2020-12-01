@@ -15,6 +15,7 @@ import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Base class for all Faktor-IPS Ant tasks.
@@ -41,18 +42,15 @@ public abstract class AbstractIpsTask extends Task {
         System.out.println(getTaskName() + ": execution started");
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         System.out.print("Installed Faktor-IPS Features: ");
-        StringBuffer versionSecionBuf = new StringBuffer();
-        for (int i = 0; i < managers.length; i++) {
-            versionSecionBuf.append("[Feature: "); //$NON-NLS-1$
-            versionSecionBuf.append(managers[i].getFeatureId());
-            versionSecionBuf.append(", Version: "); //$NON-NLS-1$
-            versionSecionBuf.append(managers[i].getCurrentVersion());
-            versionSecionBuf.append("]"); //$NON-NLS-1$
-            if (i < managers.length - 1) {
-                versionSecionBuf.append(", ");
-            }
-        }
-        System.out.println(versionSecionBuf.toString());
+        StringBuilder sb = new StringBuilder();
+        StringBuilderJoiner.join(sb, managers, manager -> {
+            sb.append("[Feature: ");
+            sb.append(manager.getFeatureId());
+            sb.append(", Version: ");
+            sb.append(manager.getCurrentVersion());
+            sb.append("]");
+        });
+        System.out.println(sb.toString());
 
         try {
             executeInternal();

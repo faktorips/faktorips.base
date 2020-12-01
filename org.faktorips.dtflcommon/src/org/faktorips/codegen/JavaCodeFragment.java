@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -110,6 +111,28 @@ public class JavaCodeFragment extends CodeFragment {
     @Override
     public JavaCodeFragment append(String s) {
         return (JavaCodeFragment)super.append(s);
+    }
+
+    @Override
+    public JavaCodeFragment appendJoined(Iterable<?> iterable) {
+        return (JavaCodeFragment)super.appendJoined(iterable);
+    }
+
+    @Override
+    public JavaCodeFragment appendJoined(Object[] array) {
+        return (JavaCodeFragment)super.appendJoined(array);
+    }
+
+    public JavaCodeFragment appendJoined(JavaCodeFragment[] javaCodeFragments) {
+        boolean first = true;
+        for (JavaCodeFragment javaCodeFragment : javaCodeFragments) {
+            if (!first) {
+                append(StringBuilderJoiner.DEFAULT_SEPARATOR);
+            }
+            append(javaCodeFragment);
+            first = false;
+        }
+        return this;
     }
 
     @Override
@@ -261,7 +284,8 @@ public class JavaCodeFragment extends CodeFragment {
         // don't add two imports for the same unqualified name
         for (Iterator<String> iterator = importDecl.iterator(); iterator.hasNext();) {
             String imp = iterator.next();
-            if (imp.substring(imp.lastIndexOf('.') + 1).equals(unqualifiedClassName) && !imp.equals(qualifiedClassName)) {
+            if (imp.substring(imp.lastIndexOf('.') + 1).equals(unqualifiedClassName)
+                    && !imp.equals(qualifiedClassName)) {
                 append(qualifiedClassName);
                 return this;
             }

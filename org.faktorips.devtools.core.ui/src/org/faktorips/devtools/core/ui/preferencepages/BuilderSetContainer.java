@@ -330,14 +330,14 @@ public class BuilderSetContainer {
     }
 
     private String getEncodedSettings() {
-        StringBuffer buf = new StringBuffer();
-        buf.append(ipsProjectProperties.getBuilderSetId()).append(';');
+        StringBuilder sb = new StringBuilder();
+        sb.append(ipsProjectProperties.getBuilderSetId()).append(';');
         String[] propertyNames = builderSetConfigModel.getPropertyNames();
         for (String propertyName : propertyNames) {
-            buf.append(propertyName).append('=');
-            buf.append(builderSetConfigModel.getPropertyValue(propertyName)).append(';');
+            sb.append(propertyName).append('=');
+            sb.append(builderSetConfigModel.getPropertyValue(propertyName)).append(';');
         }
-        return buf.toString();
+        return sb.toString();
     }
 
     private List<IIpsArtefactBuilderSetInfo> getBuilderSetInfos() {

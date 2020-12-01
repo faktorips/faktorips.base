@@ -52,6 +52,8 @@ public abstract class AbstractAttributeDescriptor<T extends Attribute> extends P
             // it could be defined in a super type but overridden (with the same name and
             // datatype) in this type. That leads to a different implementation being generated
             // but not a new annotation.
+
+            // TODO Java 8 Optional
             Type superType = type.getSuperType();
             if (superType != null) {
                 Attribute attribute = superType.getAttribute(getName());

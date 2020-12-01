@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.values.ObjectUtil;
 
 /**
@@ -493,38 +494,34 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         switch (severity) {
             case ERROR:
-                buffer.append("ERROR");
+                sb.append("ERROR");
                 break;
             case WARNING:
-                buffer.append("WARNING ");
+                sb.append("WARNING ");
                 break;
             case INFO:
-                buffer.append("INFO");
+                sb.append("INFO");
                 break;
             default:
-                buffer.append("Severity ");
-                buffer.append(severity);
+                sb.append("Severity ");
+                sb.append(severity);
         }
-        buffer.append(' ');
-        buffer.append(code);
-        buffer.append('[');
+        sb.append(' ');
+        sb.append(code);
+        sb.append('[');
         String lineSeparator = System.getProperty("line.separator");
-        int max = invalidOp == null ? 0 : invalidOp.size();
-        for (int i = 0; i < max; i++) {
-            if (i > 0) {
-                buffer.append(", ");
-            }
-            buffer.append(invalidOp.get(i).getObject().toString());
-            buffer.append('.');
-            buffer.append(invalidOp.get(i).getProperty());
-        }
-        buffer.append(']');
-        buffer.append(lineSeparator);
-        buffer.append(text);
-        return buffer.toString();
+        StringBuilderJoiner.join(sb, invalidOp, op -> {
+            sb.append(op.getObject().toString());
+            sb.append('.');
+            sb.append(op.getProperty());
+        });
+        sb.append(']');
+        sb.append(lineSeparator);
+        sb.append(text);
+        return sb.toString();
     }
 
     /**
@@ -646,7 +643,8 @@ public class Message implements Serializable {
         /**
          * Set the message's severity, in exact {@link #ERROR}, {@link #WARNING} or {@link #INFO}.
          * 
-         * @param severity Severity of the message: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+         * @param severity Severity of the message: {@link #ERROR}, {@link #WARNING} or
+         *            {@link #INFO}
          * @return This builder instance to directly add further properties
          */
         public Builder severity(Severity severity) {

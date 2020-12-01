@@ -151,7 +151,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     }
 
     private String getProductAttributeAccessCode(final AttributeNode node, Datatype contextDatatype) {
-        StringBuffer contextAccessCode = new StringBuffer();
+        StringBuilder contextAccessCode = new StringBuilder();
         contextAccessCode.append(getProductCmptContextCode(node, contextDatatype));
         contextAccessCode.append(getProductAttributeGetterName((IProductCmptTypeAttribute)node.getAttribute()));
         return contextAccessCode.toString();

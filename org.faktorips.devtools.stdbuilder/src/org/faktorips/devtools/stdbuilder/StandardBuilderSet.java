@@ -276,7 +276,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle(
         // ).getHeaders().get(org
         // .osgi.framework.Constants.BUNDLE_VERSION));
-        // StringBuffer buf = new StringBuffer();
+        // StringBuilder buf = new StringBuilder();
         // buf.append(versionObj.getMajor());
         // buf.append('.');
         // buf.append(versionObj.getMinor());

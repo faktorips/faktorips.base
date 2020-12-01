@@ -37,6 +37,7 @@ public interface IModelType extends IModelElement {
     /**
      * Returns this model type's super type or <code>null</code> if it has none.
      */
+    // TODO Java 8 Optional
     public IModelType getSuperType();
 
     /**

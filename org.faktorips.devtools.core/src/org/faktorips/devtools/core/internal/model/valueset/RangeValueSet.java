@@ -429,7 +429,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     @Override
     public String getCanonicalString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(RANGE_VALUESET_START);
         if (!isEmpty()) {
             sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));

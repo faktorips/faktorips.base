@@ -240,7 +240,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     }
 
     private String testFailureToStr(IpsTestFailure failure) {
-        StringBuffer formattedFailure = new StringBuffer();
+        StringBuilder formattedFailure = new StringBuilder();
         // format:
         // qualifiedName|testObject|testedAttribute|expectedValue|actualValue|message[|actualValueAsString]
         formattedFailure.append(failure.getTestCase().getQualifiedName());

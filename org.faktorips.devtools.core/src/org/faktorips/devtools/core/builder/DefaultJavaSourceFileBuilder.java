@@ -82,7 +82,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     @Override
     protected String generate() throws CoreException {
         IImportContainer importContainer = getImportContainer();
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         String pack = getPackage();
         content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
         content.append(StringUtil.getSystemLineSeparator());
@@ -349,7 +349,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (!checkLoggingGenerationConditions()) {
             return;
         }
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         message.append("\""); //$NON-NLS-1$
         message.append("Entering method: "); //$NON-NLS-1$
         if (className != null) {
@@ -386,7 +386,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (!checkLoggingGenerationConditions()) {
             return;
         }
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         message.append("\""); //$NON-NLS-1$
         message.append("Exiting method: "); //$NON-NLS-1$
         if (className != null) {

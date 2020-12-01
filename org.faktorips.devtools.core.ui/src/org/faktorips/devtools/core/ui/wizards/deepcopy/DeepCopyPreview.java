@@ -171,7 +171,7 @@ public class DeepCopyPreview {
             String fileExtension,
             IProductCmptStructureReference modified) {
         if (isExistingIpsSrcFile(packageName, newName, fileExtension)) {
-            StringBuffer message = new StringBuffer();
+            StringBuilder message = new StringBuilder();
             message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName);
             if (!packageName.isEmpty()) {
                 message.append(QualifiedNameType.FILE_EXTENSION_SEPERATOR);
@@ -349,7 +349,7 @@ public class DeepCopyPreview {
             return;
         }
 
-        StringBuffer newMessage = new StringBuffer();
+        StringBuilder newMessage = new StringBuilder();
         String oldMessage = errorElements.get(product);
         if (oldMessage != null) {
             newMessage.append(oldMessage);
@@ -385,7 +385,7 @@ public class DeepCopyPreview {
     public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IProgressMonitor progressMonitor,
             Set<IProductCmptStructureReference> toCopy) throws CoreException {
         if (!isValid(progressMonitor)) {
-            StringBuffer message = new StringBuffer();
+            StringBuilder message = new StringBuilder();
             Collection<String> errors = getErrorElements().values();
             for (String element : errors) {
                 message.append(element);

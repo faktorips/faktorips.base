@@ -61,11 +61,11 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer("List"); //$NON-NLS-1$
-        buffer.append('<');
-        buffer.append(basicType.getName());
-        buffer.append('>');
-        return buffer.toString();
+        StringBuilder sb = new StringBuilder("List"); //$NON-NLS-1$
+        sb.append('<');
+        sb.append(basicType.getName());
+        sb.append('>');
+        return sb.toString();
     }
 
     @Override

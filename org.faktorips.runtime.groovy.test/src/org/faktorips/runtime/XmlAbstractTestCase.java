@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,6 +31,7 @@ public abstract class XmlAbstractTestCase {
      * name as the test case class and the ending "+.xml".
      */
     public final Document getTestDocument() throws Exception {
+        // TODO try-with-resources
         InputStream is = null;
         try {
             String className = getClass().getName();
@@ -40,6 +41,7 @@ public abstract class XmlAbstractTestCase {
             }
             String resourceName = className + ".xml";
             is = getClass().getResourceAsStream(resourceName);
+            // TODO Objects.requireNonNull
             if (is == null) {
                 throw new RuntimeException("Can't find resource " + resourceName);
             }

@@ -13,6 +13,7 @@ package org.faktorips.codegen;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Represents a language independent source code fragment. A source code fragment consists of the
@@ -106,6 +107,26 @@ public class CodeFragment {
     public CodeFragment append(String s) {
         indentIfBol();
         sourcecode.append(s);
+        return this;
+    }
+
+    /**
+     * Appends the given {@link Iterable}'s content converted to String and separated by ", " to the
+     * source code.
+     */
+    public CodeFragment appendJoined(Iterable<?> iterable) {
+        indentIfBol();
+        StringBuilderJoiner.join(sourcecode, iterable);
+        return this;
+    }
+
+    /**
+     * Appends the given array's content converted to String and separated by ", " to the source
+     * code.
+     */
+    public CodeFragment appendJoined(Object[] array) {
+        indentIfBol();
+        StringBuilderJoiner.join(sourcecode, array);
         return this;
     }
 

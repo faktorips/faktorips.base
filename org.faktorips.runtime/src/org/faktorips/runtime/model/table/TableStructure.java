@@ -130,14 +130,7 @@ public class TableStructure extends ModelElement {
         sb.append(": ");
         sb.append(kind);
         sb.append("(");
-        boolean first = true;
-        for (String columnName : columnNames) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-            sb.append(columnName);
-        }
+        sb.append(String.join(", ", columnNames));
         sb.append(")");
         return sb.toString();
     }

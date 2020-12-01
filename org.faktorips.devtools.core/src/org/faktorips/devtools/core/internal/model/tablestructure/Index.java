@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -46,15 +47,7 @@ public class Index extends Key implements IIndex {
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer();
-        String[] items = getKeyItemNames();
-        for (int i = 0; i < items.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(items[i]);
-        }
-        return buffer.toString();
+        return IpsStringUtils.join(getKeyItemNames());
     }
 
     private void validateItemSequence(MessageList msgList) {

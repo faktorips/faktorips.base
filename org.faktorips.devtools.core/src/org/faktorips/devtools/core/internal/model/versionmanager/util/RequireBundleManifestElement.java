@@ -75,12 +75,12 @@ public class RequireBundleManifestElement {
     }
 
     private String getChangedManifestElement() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(pluginName);
-        buffer.append(appendBundleVersion());
-        buffer.append(fillDirective(Constants.VISIBILITY_DIRECTIVE));
-        buffer.append(fillDirective(Constants.RESOLUTION_DIRECTIVE));
-        return buffer.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append(pluginName);
+        builder.append(appendBundleVersion());
+        builder.append(fillDirective(Constants.VISIBILITY_DIRECTIVE));
+        builder.append(fillDirective(Constants.RESOLUTION_DIRECTIVE));
+        return builder.toString();
     }
 
     private String getDirective(String key) {
@@ -118,13 +118,13 @@ public class RequireBundleManifestElement {
      * @return String ;bundle-version="[3.9.0,3.10.0]"
      */
     private String appendBundleVersion() {
-        final StringBuffer buffer = new StringBuffer();
-        buffer.append(SEMICOLON);
-        buffer.append(Constants.BUNDLE_VERSION_ATTRIBUTE);
-        buffer.append(EQUAL);
-        buffer.append(QUOTES);
-        buffer.append(versionRange.toString());
-        buffer.append(QUOTES);
-        return buffer.toString();
+        final StringBuilder builder = new StringBuilder();
+        builder.append(SEMICOLON);
+        builder.append(Constants.BUNDLE_VERSION_ATTRIBUTE);
+        builder.append(EQUAL);
+        builder.append(QUOTES);
+        builder.append(versionRange.toString());
+        builder.append(QUOTES);
+        return builder.toString();
     }
 }

@@ -50,11 +50,11 @@ public abstract class SingleCharReader extends Reader {
      * @exception IOException in case reading fails
      */
     public String getString() throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int ch;
         while ((ch = read()) != -1) {
-            buf.append((char)ch);
+            sb.append((char)ch);
         }
-        return buf.toString();
+        return sb.toString();
     }
 }

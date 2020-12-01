@@ -57,8 +57,8 @@ public class QNameUtil {
     }
 
     /**
-     * Concatenates package prefix and the <code>packOrUnqualifiedName</code>. If the package prefix is
-     * <code>null</code> or the empty string the <code>packOrUnqualifiedName</code> is returned.
+     * Concatenates package prefix and the <code>packOrUnqualifiedName</code>. If the package prefix
+     * is <code>null</code> or the empty string the <code>packOrUnqualifiedName</code> is returned.
      */
     public final static String concat(String packagePrefix, String packOrUnqualifiedName) {
         if (StringUtils.isEmpty(packagePrefix)) {
@@ -111,8 +111,8 @@ public class QNameUtil {
      * position of <code>qName</code> and ends at segment <code>numberOfSegments</code>.
      * <p>
      * Returns the <code>qName</code> if <code>numberOfSegments</code> is less equals 0 or exceeds
-     * the number of segments of <code>qName</code>. Returns an empty String if <code>qName</code> is
-     * empty.
+     * the number of segments of <code>qName</code>. Returns an empty String if <code>qName</code>
+     * is empty.
      * <p>
      * Example: The following call returns "org.faktorips".
      * <p>
@@ -139,20 +139,20 @@ public class QNameUtil {
         }
 
         String[] segments = getSegments(qName);
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < segmentCount; i++) {
-            buf.append(segments[i]);
+            sb.append(segments[i]);
             if (i + 1 < segmentCount) {
-                buf.append('.');
+                sb.append('.');
             }
         }
 
-        return buf.toString();
+        return sb.toString();
     }
 
     /**
-     * Transforms the given qualified name to a path. Returns <code>null</code> if <code>qName</code> is
-     * <code>null</code>.
+     * Transforms the given qualified name to a path. Returns <code>null</code> if
+     * <code>qName</code> is <code>null</code>.
      */
     public final static Path toPath(String qName) {
         if (qName == null) {

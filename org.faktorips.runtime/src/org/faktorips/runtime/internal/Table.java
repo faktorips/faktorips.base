@@ -89,11 +89,11 @@ public abstract class Table<R> implements ITable<R> {
     }
 
     /**
-     * Template method to perform additional initializations. Is called during the initialization of the
-     * table (from XML), right after {@link #initKeyMaps()}.
+     * Template method to perform additional initializations. Is called during the initialization of
+     * the table (from XML), right after {@link #initKeyMaps()}.
      * <p>
-     * Subclasses may override to provide an implementation. The default implementation is empty, so no
-     * super-call is necessary.
+     * Subclasses may override to provide an implementation. The default implementation is empty, so
+     * no super-call is necessary.
      */
     protected void performAdditionalInitializations() {
         // implementation provided by subclasses
@@ -114,7 +114,7 @@ public abstract class Table<R> implements ITable<R> {
      */
     @Override
     public String toString() {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         Iterator<R> it = rows.iterator();
         for (int i = 0; it.hasNext() && i < 10; i++) {
             if (i != 0) {

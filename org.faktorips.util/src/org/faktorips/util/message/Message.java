@@ -18,9 +18,9 @@ import org.apache.commons.lang.SystemUtils;
  * A human readable text message with an optional code that identifies the type of the message and a
  * severity that indicates if this is an error, warning or information.
  * <p>
- * Example: If the formula compiler can't resolve a symbol xyz it generates a message
- * "Can't resolve symbol xyz" (if the local is English). The message's code is UnresolvedSymbol
- * independent of the concrete symbol and locale.
+ * Example: If the formula compiler can't resolve a symbol xyz it generates a message "Can't resolve
+ * symbol xyz" (if the local is English). The message's code is UnresolvedSymbol independent of the
+ * concrete symbol and locale.
  * <p>
  * In addition a message can provide access to the invalid objects the message relates to and its
  * properties. E.g. if a message reads that "the association's minimum cardinality can't be greater
@@ -226,7 +226,10 @@ public class Message {
      * @param invalidProperties The name of the invalid properties (which are properties of the
      *            invalidObject)
      */
-    public static final Message newWarning(String code, String text, Object invalidObject, String... invalidProperties) {
+    public static final Message newWarning(String code,
+            String text,
+            Object invalidObject,
+            String... invalidProperties) {
         return new Message(code, text, WARNING, invalidObject, invalidProperties);
     }
 
@@ -323,37 +326,37 @@ public class Message {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         switch (severity) {
             case ERROR:
-                buffer.append("ERROR");
+                builder.append("ERROR");
                 break;
             case WARNING:
-                buffer.append("WARNING ");
+                builder.append("WARNING ");
                 break;
             case INFO:
-                buffer.append("INFO");
+                builder.append("INFO");
                 break;
             default:
-                buffer.append("Severity ");
-                buffer.append(severity);
+                builder.append("Severity ");
+                builder.append(severity);
         }
-        buffer.append(' ');
-        buffer.append(code);
-        buffer.append('[');
+        builder.append(' ');
+        builder.append(code);
+        builder.append('[');
         for (int i = 0; i < invalidOp.length; i++) {
             if (i > 0) {
-                buffer.append(", ");
+                builder.append(", ");
             }
-            buffer.append(invalidOp[i].getObject().toString());
-            buffer.append('.');
-            buffer.append(invalidOp[i].getProperty());
+            builder.append(invalidOp[i].getObject().toString());
+            builder.append('.');
+            builder.append(invalidOp[i].getProperty());
         }
-        buffer.append(']');
-        buffer.append(SystemUtils.LINE_SEPARATOR);
-        buffer.append(text);
+        builder.append(']');
+        builder.append(SystemUtils.LINE_SEPARATOR);
+        builder.append(text);
 
-        return buffer.toString();
+        return builder.toString();
     }
 
     @Override
@@ -392,8 +395,9 @@ public class Message {
 
             String invalidProperty = invalidOp[i].getProperty();
             String otherInvalidProperty = other.invalidOp[i].getProperty();
-            if (!((invalidProperty == null) ? otherInvalidProperty == null : invalidProperty
-                    .equals(otherInvalidProperty))) {
+            if (!((invalidProperty == null) ? otherInvalidProperty == null
+                    : invalidProperty
+                            .equals(otherInvalidProperty))) {
                 return false;
             }
         }
