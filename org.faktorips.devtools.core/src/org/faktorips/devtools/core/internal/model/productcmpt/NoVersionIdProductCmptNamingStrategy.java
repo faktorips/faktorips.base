@@ -29,7 +29,8 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
 
     public final static String EXTENSION_ID = "org.faktorips.devtools.core.NoVersionIdProductCmptNamingStrategy"; //$NON-NLS-1$
 
-    public final static String XML_TAG_NAME = "NoVersionIdProductCmptNamingStrategy"; //$NON-NLS-1$
+    @SuppressWarnings("hiding")
+    public static final String XML_TAG_NAME = "NoVersionIdProductCmptNamingStrategy"; //$NON-NLS-1$
 
     public NoVersionIdProductCmptNamingStrategy() {
         super();

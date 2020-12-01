@@ -300,7 +300,7 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         // derived
         set1.setContainsNull(true);
         set2 = owner2.changeValueSetType(ValueSetType.DERIVED);
-        assertFalse(set2.isDetailedSpecificationOf(set1));
+        assertTrue(set2.isDetailedSpecificationOf(set1));
 
         // stringLength
         set1.setContainsNull(true);

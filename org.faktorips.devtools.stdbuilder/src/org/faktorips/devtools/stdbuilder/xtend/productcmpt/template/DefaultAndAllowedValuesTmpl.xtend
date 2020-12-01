@@ -35,7 +35,7 @@ class DefaultAndAllowedValuesTmpl {
          * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          * @generated
          */
-        private «valueSetJavaClassName» «field(fieldNameValueSet)»;
+        private «valueSetJavaClassName» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
     '''
 
     def package static getterAndSetter (XPolicyAttribute it) '''
