@@ -9,7 +9,7 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-09) (Linux) (Java11)"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2020-12) (Linux) (Java11)"/>
 <booleanAttribute key="default" value="false"/>
 <setAttribute key="deselected_workspace_bundles"/>
 <booleanAttribute key="includeOptional" value="false"/>
@@ -31,6 +31,8 @@
 <setEntry value="com.jcraft.jsch@default:default"/>
 <setEntry value="com.jcraft.jzlib@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
+<setEntry value="com.sun.jna.platform@default:default"/>
+<setEntry value="com.sun.jna@default:default"/>
 <setEntry value="groovy-all@default:default"/>
 <setEntry value="javaee-api@default:default"/>
 <setEntry value="javaewah@default:default"/>
@@ -46,6 +48,7 @@
 <setEntry value="org.apache.batik.css@default:default"/>
 <setEntry value="org.apache.batik.i18n@default:default"/>
 <setEntry value="org.apache.batik.util@default:default"/>
+<setEntry value="org.apache.commons.codec*1.14.0.v20200818-1422@default:default"/>
 <setEntry value="org.apache.commons.collections@default:default"/>
 <setEntry value="org.apache.commons.compress@default:default"/>
 <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
@@ -53,8 +56,9 @@
 <setEntry value="org.apache.commons.lang3@default:default"/>
 <setEntry value="org.apache.commons.lang@default:default"/>
 <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
-<setEntry value="org.apache.felix.gogo.runtime@default:default"/>
 <setEntry value="org.apache.felix.scr@1:true"/>
+<setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
+<setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
 <setEntry value="org.apache.log4j@default:default"/>
 <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
 <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
@@ -67,6 +71,7 @@
 <setEntry value="org.apache.xmlgraphics@default:default"/>
 <setEntry value="org.apiguardian@default:default"/>
 <setEntry value="org.bouncycastle.bcpg@default:default"/>
+<setEntry value="org.bouncycastle.bcpkix@default:default"/>
 <setEntry value="org.bouncycastle.bcprov@default:default"/>
 <setEntry value="org.eclipse.ant.core@default:default"/>
 <setEntry value="org.eclipse.ant.launching@default:default"/>
@@ -106,6 +111,7 @@
 <setEntry value="org.eclipse.e4.ui.css.swt@default:default"/>
 <setEntry value="org.eclipse.e4.ui.di@default:default"/>
 <setEntry value="org.eclipse.e4.ui.dialogs@default:default"/>
+<setEntry value="org.eclipse.e4.ui.ide@default:default"/>
 <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
 <setEntry value="org.eclipse.e4.ui.services@default:default"/>
 <setEntry value="org.eclipse.e4.ui.swt.gtk@default:false"/>
@@ -175,9 +181,12 @@
 <setEntry value="org.eclipse.jdt.ui@default:default"/>
 <setEntry value="org.eclipse.jem.util@default:default"/>
 <setEntry value="org.eclipse.jface.databinding@default:default"/>
+<setEntry value="org.eclipse.jface.notifications@default:default"/>
 <setEntry value="org.eclipse.jface.text@default:default"/>
 <setEntry value="org.eclipse.jface@default:default"/>
+<setEntry value="org.eclipse.jgit.http.apache@default:default"/>
 <setEntry value="org.eclipse.jgit.ssh.apache@default:default"/>
+<setEntry value="org.eclipse.jgit.ssh.jsch@default:false"/>
 <setEntry value="org.eclipse.jgit@default:default"/>
 <setEntry value="org.eclipse.jsch.core@default:default"/>
 <setEntry value="org.eclipse.ltk.core.refactoring@default:default"/>
