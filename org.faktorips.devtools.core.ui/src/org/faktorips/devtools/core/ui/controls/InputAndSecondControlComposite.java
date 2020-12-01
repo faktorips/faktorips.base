@@ -49,14 +49,8 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
             // toolkit.getFormToolkit().adapt(this); // has to be done after the text control is
             // created!
         }
-        secondControl = createSecondControl(toolkit);
-
-        GridData d = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_VERTICAL);
-        if (buttonHeightHint > -1) {
-            d.heightHint = buttonHeightHint;
-        }
-        secondControl.setLayoutData(d);
-        T styledText = createTextControl(toolkit, style);
+        T textControl = createTextControl(toolkit, style);
+        setTextControl(textControl);
         GridData textGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL);
         /*
          * SW 26.7.2011: Workaround for several layout/resize problems with TextButtonControls (see
@@ -70,8 +64,15 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
          * in the first place.
          */
         textGridData.widthHint = 25;
-        styledText.setLayoutData(textGridData);
-        setTextControl(styledText);
+        textControl.setLayoutData(textGridData);
+
+        secondControl = createSecondControl(toolkit);
+        GridData d = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_VERTICAL);
+        if (buttonHeightHint > -1) {
+            d.heightHint = buttonHeightHint;
+        }
+        secondControl.setLayoutData(d);
+
         addListeners();
     }
 
