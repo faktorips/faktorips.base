@@ -82,7 +82,9 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public boolean containsValueSet(IValueSet subset) {
-        if (subset.isStringLength()) {
+        if (subset.isDerived()) {
+            return true;
+        } else if (subset.isStringLength()) {
             return compareTo(subset) >= 0;
         } else if (subset.isEnum()) {
             return containsAllValues((EnumValueSet)subset);
