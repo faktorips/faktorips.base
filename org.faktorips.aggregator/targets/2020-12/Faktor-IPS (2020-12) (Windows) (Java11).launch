@@ -48,7 +48,7 @@
 <setEntry value="org.apache.batik.css@default:default"/>
 <setEntry value="org.apache.batik.i18n@default:default"/>
 <setEntry value="org.apache.batik.util@default:default"/>
-<setEntry value="org.apache.commons.codec*1.13.0.v20200108-0001@default:default"/>
+<setEntry value="org.apache.commons.codec*1.14.0.v20200818-1422@default:default"/>
 <setEntry value="org.apache.commons.collections@default:default"/>
 <setEntry value="org.apache.commons.compress@default:default"/>
 <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
@@ -56,7 +56,6 @@
 <setEntry value="org.apache.commons.lang3@default:default"/>
 <setEntry value="org.apache.commons.lang@default:default"/>
 <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
-<setEntry value="org.apache.felix.gogo.runtime@default:default"/>
 <setEntry value="org.apache.felix.scr@1:true"/>
 <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
 <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
