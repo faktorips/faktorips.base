@@ -31,7 +31,7 @@ public class Round extends AbstractFlFunction {
      * Constructs a new round function with the given name and rounding mode.
      * 
      * @param name The function name.
-     * @param roundingMode One of the rounding modes defined by <code>RoundingMode</code>.
+     * @param roundingMode One of the rounding modes defined by {@link RoundingMode}.
      * 
      * @throws IllegalArgumentException if the roundingMode is null.
      */
