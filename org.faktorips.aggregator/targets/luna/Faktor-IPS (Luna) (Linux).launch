@@ -30,9 +30,12 @@
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.platform.ide"/>
 <setAttribute key="selected_target_bundles">
+<setEntry value="com.google.guava*15.0.0.v201403281430@default:default"/>
+<setEntry value="com.google.guava*18.0.0@default:default"/>
 <setEntry value="com.google.inject@default:default"/>
 <setEntry value="com.ibm.icu@default:default"/>
-<setEntry value="com.jcraft.jsch@default:default"/>
+<setEntry value="com.jcraft.jsch*0.1.50.v201403120620@default:default"/>
+<setEntry value="com.jcraft.jsch*0.1.51.v201410302000@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
 <setEntry value="groovy-all@default:default"/>
 <setEntry value="javaee-api@default:default"/>
@@ -49,15 +52,18 @@
 <setEntry value="org.antlr.runtime@default:default"/>
 <setEntry value="org.apache.ant@default:default"/>
 <setEntry value="org.apache.batik.css@default:default"/>
+<setEntry value="org.apache.batik.util.gui@default:default"/>
 <setEntry value="org.apache.batik.util@default:default"/>
-<setEntry value="org.apache.commons.codec*1.14.0.v20200818-1422@default:default"/>
-<setEntry value="org.apache.commons.codec*1.6.0@default:default"/>
+<setEntry value="org.apache.commons.cli@default:default"/>
+<setEntry value="org.apache.commons.codec@default:default"/>
 <setEntry value="org.apache.commons.collections@default:default"/>
+<setEntry value="org.apache.commons.lang*2.6.0.v201404270220@default:default"/>
+<setEntry value="org.apache.commons.lang*2.6.0@default:default"/>
 <setEntry value="org.apache.commons.lang3@default:default"/>
-<setEntry value="org.apache.commons.lang@default:default"/>
 <setEntry value="org.apache.commons.logging*1.2.0@default:default"/>
 <setEntry value="org.apache.jasper.glassfish@default:default"/>
 <setEntry value="org.apache.log4j@default:default"/>
+<setEntry value="org.apache.lucene.analysis@default:default"/>
 <setEntry value="org.apache.lucene.core@default:default"/>
 <setEntry value="org.apache.xerces@default:default"/>
 <setEntry value="org.apache.xml.resolver@default:default"/>
@@ -173,6 +179,8 @@
 <setEntry value="org.eclipse.emf.mapping.ecore@default:default"/>
 <setEntry value="org.eclipse.emf.mapping.ui@default:default"/>
 <setEntry value="org.eclipse.emf.mapping@default:default"/>
+<setEntry value="org.eclipse.emf.mwe.core@default:default"/>
+<setEntry value="org.eclipse.emf.mwe.utils@default:default"/>
 <setEntry value="org.eclipse.emf.mwe2.lib@default:default"/>
 <setEntry value="org.eclipse.emf.mwe2.runtime@default:default"/>
 <setEntry value="org.eclipse.emf@default:default"/>
@@ -260,6 +268,7 @@
 <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
 <setEntry value="org.eclipse.equinox.simpleconfigurator.nl_de@default:false"/>
 <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
+<setEntry value="org.eclipse.equinox.util@default:default"/>
 <setEntry value="org.eclipse.gef@default:default"/>
 <setEntry value="org.eclipse.help.base.nl_de@default:false"/>
 <setEntry value="org.eclipse.help.base@default:default"/>
