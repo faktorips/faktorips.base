@@ -29,7 +29,6 @@
 <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
 <setEntry value="com.ibm.icu@default:default"/>
 <setEntry value="com.jcraft.jsch@default:default"/>
-<setEntry value="com.jcraft.jzlib@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
 <setEntry value="com.sun.jna.platform@default:default"/>
 <setEntry value="com.sun.jna@default:default"/>
@@ -49,8 +48,8 @@
 <setEntry value="org.apache.batik.i18n@default:default"/>
 <setEntry value="org.apache.batik.util@default:default"/>
 <setEntry value="org.apache.commons.codec*1.14.0.v20200818-1422@default:default"/>
+<setEntry value="org.apache.commons.codec*1.6.0@default:default"/>
 <setEntry value="org.apache.commons.collections@default:default"/>
-<setEntry value="org.apache.commons.compress@default:default"/>
 <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
 <setEntry value="org.apache.commons.jxpath@default:default"/>
 <setEntry value="org.apache.commons.lang3@default:default"/>
@@ -70,9 +69,6 @@
 <setEntry value="org.apache.xml.serializer@default:default"/>
 <setEntry value="org.apache.xmlgraphics@default:default"/>
 <setEntry value="org.apiguardian@default:default"/>
-<setEntry value="org.bouncycastle.bcpg@default:default"/>
-<setEntry value="org.bouncycastle.bcpkix@default:default"/>
-<setEntry value="org.bouncycastle.bcprov@default:default"/>
 <setEntry value="org.eclipse.ant.core@default:default"/>
 <setEntry value="org.eclipse.ant.launching@default:default"/>
 <setEntry value="org.eclipse.ant.ui@default:default"/>
