@@ -10,7 +10,7 @@
 
 package org.faktorips.datatype.classtypes;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
@@ -58,7 +58,7 @@ public class DecimalDatatype extends ValueClassNameDatatype implements NumericDa
         Decimal a = Decimal.valueOf(dividend);
         Decimal b = Decimal.valueOf(divisor);
         try {
-            a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
+            a.divide(b, 0, RoundingMode.UNNECESSARY);
         } catch (ArithmeticException e) {
             return false;
         }

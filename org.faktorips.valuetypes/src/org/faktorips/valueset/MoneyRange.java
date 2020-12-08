@@ -10,10 +10,12 @@
 
 package org.faktorips.valueset;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A range implementation where the upper and lower bounds are of the type {@link Money}.
@@ -74,6 +76,7 @@ public class MoneyRange extends DefaultRange<Money> {
     }
 
     @Override
+    @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT", justification = "Only exceptions are of interest, the return value is not needed")
     protected boolean checkIfValueCompliesToStepIncrement(Money value, Money bound) {
         Decimal step = getStep().getAmount();
         Decimal zero = Decimal.valueOf(0, step.scale());
@@ -86,7 +89,7 @@ public class MoneyRange extends DefaultRange<Money> {
         try {
             // throws an ArithmeticException if rounding is necessary. If the value is contained in
             // the range no rounding is necessary since this division must return an integer value
-            diff.divide(getStep().getAmount(), 0, BigDecimal.ROUND_UNNECESSARY);
+            diff.divide(getStep().getAmount(), 0, RoundingMode.UNNECESSARY);
         } catch (ArithmeticException e) {
             return false;
         }
@@ -104,7 +107,7 @@ public class MoneyRange extends DefaultRange<Money> {
         Decimal lowerAmount = getLowerBound().getAmount();
         Decimal stepAmount = getStep().getAmount();
 
-        Decimal size = upperAmount.subtract(lowerAmount).abs().divide(stepAmount, 0, BigDecimal.ROUND_UNNECESSARY)
+        Decimal size = upperAmount.subtract(lowerAmount).abs().divide(stepAmount, 0, RoundingMode.UNNECESSARY)
                 .add(1);
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(

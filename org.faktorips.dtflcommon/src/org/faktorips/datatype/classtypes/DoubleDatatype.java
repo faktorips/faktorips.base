@@ -11,10 +11,13 @@
 package org.faktorips.datatype.classtypes;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * 
@@ -49,6 +52,7 @@ public class DoubleDatatype extends ValueClassNameDatatype implements NumericDat
     }
 
     @Override
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED")
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
@@ -58,7 +62,7 @@ public class DoubleDatatype extends ValueClassNameDatatype implements NumericDat
         BigDecimal b = new BigDecimal(divisor);
 
         try {
-            a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
+            a.divide(b, 0, RoundingMode.UNNECESSARY);
             return true;
         } catch (ArithmeticException e) {
             return false;

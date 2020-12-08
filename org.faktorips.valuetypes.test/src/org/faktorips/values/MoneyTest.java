@@ -18,11 +18,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 
 import org.junit.Test;
 
 public class MoneyTest {
+
     @Test
     public void testValueOf_DecimalCurrency() {
         assertEquals(Money.valueOf("420EUR"), Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR")));
@@ -43,6 +45,24 @@ public class MoneyTest {
 
     @Test
     public void testValueOf_DecimalCurrencyInt() {
+        assertEquals(Money.valueOf("420EUR"),
+                Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"), RoundingMode.HALF_UP));
+        assertEquals(Money.valueOf("13.42EUR"),
+                Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR"), RoundingMode.HALF_UP));
+        assertEquals(Money.valueOf("13.4EUR"),
+                Money.valueOf(Decimal.valueOf("13.4"), Currency.getInstance("EUR"), RoundingMode.HALF_UP));
+        assertEquals(Money.valueOf("13.42EUR"),
+                Money.valueOf(Decimal.valueOf("13.415"), Currency.getInstance("EUR"), RoundingMode.HALF_UP));
+
+        // null
+        assertEquals(Money.NULL, Money.valueOf(null, Currency.getInstance("EUR"), RoundingMode.HALF_UP));
+        assertEquals(Money.NULL, Money.valueOf(Decimal.NULL, Currency.getInstance("EUR"), RoundingMode.HALF_UP));
+        assertEquals(Money.NULL, Money.valueOf(Decimal.valueOf(42, 0), null, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testValueOf_DecimalCurrencyInt_RoundingModeInt() {
         assertEquals(Money.valueOf("420EUR"),
                 Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
         assertEquals(Money.valueOf("13.42EUR"),
@@ -253,6 +273,37 @@ public class MoneyTest {
     public void testMultiplyDecimal() {
         Money m = Money.euro(10, 12);
         // no rounding necessary
+        assertEquals(Money.euro(20, 24), m.multiply(Decimal.valueOf("2"), RoundingMode.HALF_UP));
+
+        // rounding necessary (value is 22.264)
+        assertEquals(Money.euro(22, 26), m.multiply(Decimal.valueOf("2.2"), RoundingMode.HALF_UP));
+
+        // null objects
+        assertTrue(Money.NULL.multiply(Decimal.valueOf("2"), RoundingMode.UNNECESSARY).isNull());
+        assertTrue(m.multiply(Decimal.NULL, RoundingMode.HALF_DOWN).isNull());
+
+        // null
+        try {
+            m.multiply(null, RoundingMode.HALF_UP);
+            fail();
+        } catch (NullPointerException e) {
+            // Expected exception.
+        }
+
+        try {
+            Money.NULL.multiply(null, RoundingMode.UP);
+            fail();
+        } catch (NullPointerException e) {
+            // Expected exception.
+        }
+
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testMultiplyDecimal_RoundingModeInt() {
+        Money m = Money.euro(10, 12);
+        // no rounding necessary
         assertEquals(Money.euro(20, 24), m.multiply(Decimal.valueOf("2"), BigDecimal.ROUND_HALF_UP));
 
         // rounding necessary (value is 22.264)
@@ -284,6 +335,22 @@ public class MoneyTest {
         Money m = Money.euro(10, 12);
         int divisor = 2;
         // no rounding necessary
+        assertEquals(Money.euro(5, 6), m.divide(divisor, RoundingMode.HALF_UP));
+
+        // rounding necessary (value is 3.373333...)
+        divisor = 3;
+        assertEquals(Money.euro(3, 37), m.divide(divisor, RoundingMode.HALF_UP));
+
+        // null
+        assertTrue(Money.NULL.divide(2, RoundingMode.UNNECESSARY).isNull());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testDivide_int_RoundingModeInt() {
+        Money m = Money.euro(10, 12);
+        int divisor = 2;
+        // no rounding necessary
         assertEquals(Money.euro(5, 6), m.divide(divisor, BigDecimal.ROUND_HALF_UP));
 
         // rounding necessary (value is 3.373333...)
@@ -299,6 +366,22 @@ public class MoneyTest {
         Money m = Money.euro(10, 12);
         long divisor = 2;
         // no rounding necessary
+        assertEquals(Money.euro(5, 6), m.divide(divisor, RoundingMode.HALF_UP));
+
+        // rounding necessary (value is 3.373333...)
+        divisor = 3;
+        assertEquals(Money.euro(3, 37), m.divide(divisor, RoundingMode.HALF_UP));
+
+        // null
+        assertTrue(Money.NULL.divide(2, RoundingMode.UNNECESSARY).isNull());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testDivide_long_RoundingModeInt() {
+        Money m = Money.euro(10, 12);
+        long divisor = 2;
+        // no rounding necessary
         assertEquals(Money.euro(5, 6), m.divide(divisor, BigDecimal.ROUND_HALF_UP));
 
         // rounding necessary (value is 3.373333...)
@@ -311,6 +394,36 @@ public class MoneyTest {
 
     @Test
     public void testDivide_Decimal() {
+        Money m = Money.euro(10, 12);
+        // no rounding necessary
+        assertEquals(Money.euro(5, 6), m.divide(Decimal.valueOf("2"), RoundingMode.HALF_UP));
+
+        // rounding necessary (value is 4.216666...)
+        assertEquals(Money.euro(4, 22), m.divide(Decimal.valueOf("2.4"), RoundingMode.HALF_UP));
+
+        // null object
+        assertTrue(Money.NULL.divide(Decimal.valueOf("2"), RoundingMode.UNNECESSARY).isNull());
+        assertTrue(m.divide(Decimal.NULL, RoundingMode.HALF_DOWN).isNull());
+
+        // null
+        try {
+            m.divide(null, RoundingMode.HALF_UP);
+            fail();
+        } catch (NullPointerException e) {
+            // Expected exception.
+        }
+
+        try {
+            Money.NULL.divide(null, RoundingMode.UP);
+            fail();
+        } catch (NullPointerException e) {
+            // Expected exception.
+        }
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testDivide_Decimal_RoundingModeInt() {
         Money m = Money.euro(10, 12);
         // no rounding necessary
         assertEquals(Money.euro(5, 6), m.divide(Decimal.valueOf("2"), BigDecimal.ROUND_HALF_UP));

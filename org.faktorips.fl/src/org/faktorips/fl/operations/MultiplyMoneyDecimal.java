@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.operations;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -38,8 +38,8 @@ public class MultiplyMoneyDecimal extends AbstractBinaryJavaOperation {
         fragment.append(".multiply("); //$NON-NLS-1$
         lhs.add(rhs);
         fragment.append(", "); //$NON-NLS-1$
-        fragment.appendClassName(BigDecimal.class);
-        fragment.append(".ROUND_HALF_UP)"); //$NON-NLS-1$
+        fragment.appendClassName(RoundingMode.class);
+        fragment.append(".HALF_UP)"); //$NON-NLS-1$
         lhs.setDatatype(Datatype.MONEY);
         return lhs;
     }

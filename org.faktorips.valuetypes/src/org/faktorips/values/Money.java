@@ -11,6 +11,7 @@
 package org.faktorips.values;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.util.Currency;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -208,8 +209,9 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
                     + " has more digits after the decimal point than the curreny " + currency + " supports!");
         }
         if (value.scale() < currency.getDefaultFractionDigits()) {
-            return new Money(value.bigDecimalValue().setScale(currency.getDefaultFractionDigits()).unscaledValue()
-                    .longValue(), currency);
+            return new Money(
+                    value.bigDecimalValue().setScale(currency.getDefaultFractionDigits()).unscaledValue().longValue(),
+                    currency);
         }
         return new Money(value.bigDecimalValue().unscaledValue().longValue(), currency);
     }
@@ -219,12 +221,31 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * than the currency's default fraction digits, the indicated rounding mode is applied to set
      * the value's scale to the currency's default fraction digits.
      * 
+     * @deprecated since 21.6. Use {@link #valueOf(Decimal, Currency, RoundingMode)} instead.
+     * 
      * @param value the money amount's value
      * @param currency the money amount's currency
-     * @param roundingMode the rouding mode according to the definition in BigDecimal to be applied
+     * @param roundingMode the rounding mode according to the definition in BigDecimal to be applied
      *            when the value's scale is greater than the currency's default fraction digits
+     * 
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
+    @Deprecated
     public static final Money valueOf(Decimal value, Currency currency, int roundingMode) {
+        return valueOf(value, currency, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Returns a money value with the indicated value and currency. If the value's scale is greater
+     * than the currency's default fraction digits, the indicated rounding mode is applied to set
+     * the value's scale to the currency's default fraction digits.
+     * 
+     * @param value the money amount's value
+     * @param currency the money amount's currency
+     * @param roundingMode the rounding mode to be applied when the value's scale is greater than
+     *            the currency's default fraction digits
+     */
+    public static final Money valueOf(Decimal value, Currency currency, RoundingMode roundingMode) {
         if (value == null || currency == null || value.isNull()) {
             return Money.NULL;
         }
@@ -280,8 +301,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
             return Money.NULL;
         }
         if (!currency.equals(value.currency)) {
-            throw new IllegalArgumentException("Can't add " + this + " and " + value
-                    + " because they have different currencies.");
+            throw new IllegalArgumentException(
+                    "Can't add " + this + " and " + value + " because they have different currencies.");
         }
         return new Money(internalAmount + value.internalAmount, currency);
     }
@@ -342,14 +363,33 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Multiplies this money amount with the given decimal value. If rounding is required to set the
      * scale to the currencie's number of fractional digits the given rounding mode is used.
      * 
+     * @deprecated since 21.6. Use {@link #multiply(Decimal, RoundingMode)} instead.
+     * 
      * @param d The decimal value this money amount is multiplied with.
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      * 
      * @return new money amount with the same currency and a value of <code>this * d</code>
      * 
      * @throws NullPointerException if d is <code>null</code>.
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
+    @Deprecated
     public Money multiply(Decimal d, int roundingMode) {
+        return multiply(d, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Multiplies this money amount with the given decimal value. If rounding is required to set the
+     * scale to the currencie's number of fractional digits the given rounding mode is used.
+     * 
+     * @param d The decimal value this money amount is multiplied with.
+     * @param roundingMode The rounding mode.
+     * 
+     * @return new money amount with the same currency and a value of <code>this * d</code>
+     * 
+     * @throws NullPointerException if d is <code>null</code>.
+     */
+    public Money multiply(Decimal d, RoundingMode roundingMode) {
         if (d.isNull()) {
             return Money.NULL;
         }
@@ -361,6 +401,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Divides this money amount by the given divisor. If rounding is required to set the scale to
      * the currencie's number of fractional digits the given rounding mode is used.
      * 
+     * @deprecated since 21.6. Use {@link #divide(int, RoundingMode)} instead.
+     * 
      * @param d The divisor.
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      * 
@@ -369,8 +411,28 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         mode.
      *         <p>
      *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     * 
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
+    @Deprecated
     public Money divide(int d, int roundingMode) {
+        return divide(d, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Divides this money amount by the given divisor. If rounding is required to set the scale to
+     * the currencie's number of fractional digits the given rounding mode is used.
+     * 
+     * @param d The divisor.
+     * @param roundingMode The rounding mode.
+     * 
+     * @return new money amount with the same currency and a value of <code>this / d</code> rounded
+     *         to the fractional digits defined by the money's currency using the given rounding
+     *         mode.
+     *         <p>
+     *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     */
+    public Money divide(int d, RoundingMode roundingMode) {
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
                 .multiply(POWER_10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
@@ -379,6 +441,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
     /**
      * Divides this money amount by the given divisor. If rounding is required to set the scale to
      * the currencie's number of fractional digits the given rounding mode is used.
+     * 
+     * @deprecated since 21.6. Use {@link #divide(long, RoundingMode)} instead.
      * 
      * @param d The divisor.
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
@@ -388,8 +452,28 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         mode.
      *         <p>
      *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     * 
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
+    @Deprecated
     public Money divide(long d, int roundingMode) {
+        return divide(d, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Divides this money amount by the given divisor. If rounding is required to set the scale to
+     * the currencie's number of fractional digits the given rounding mode is used.
+     * 
+     * @param d The divisor.
+     * @param roundingMode The rounding mode.
+     * 
+     * @return new money amount with the same currency and a value of <code>this / d</code> rounded
+     *         to the fractional digits defined by the money's currency using the given rounding
+     *         mode.
+     *         <p>
+     *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     */
+    public Money divide(long d, RoundingMode roundingMode) {
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
                 .multiply(POWER_10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
@@ -398,6 +482,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
     /**
      * Divides this money amount by the given divisor. If rounding is required to set the scale to
      * the currencie's number of fractional digits the given rounding mode is used.
+     * 
+     * @deprecated since 21.6. Use {@link #divide(Decimal, RoundingMode)} instead.
      * 
      * @param d The divisor.
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
@@ -410,8 +496,30 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         the <code>Decimal.NULL</code> object.
      * 
      * @throws NullPointerException if d is <code>null</code>.
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
+    @Deprecated
     public Money divide(Decimal d, int roundingMode) {
+        return divide(d, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Divides this money amount by the given divisor. If rounding is required to set the scale to
+     * the currencie's number of fractional digits the given rounding mode is used.
+     * 
+     * @param d The divisor.
+     * @param roundingMode The rounding mode.
+     * 
+     * @return new money amount with the same currency and a value of <code>this / d</code> rounded
+     *         to the fractional digits defined by the money's currency using the given rounding
+     *         mode.
+     *         <p>
+     *         Returns <code>Money.null</code> if this is the Money.NULL object or the divisor is
+     *         the <code>Decimal.NULL</code> object.
+     * 
+     * @throws NullPointerException if d is <code>null</code>.
+     */
+    public Money divide(Decimal d, RoundingMode roundingMode) {
         if (d.isNull()) {
             return Money.NULL;
         }

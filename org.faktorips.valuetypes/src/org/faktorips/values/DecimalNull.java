@@ -11,6 +11,7 @@
 package org.faktorips.values;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * NullObject for Decimal.
@@ -113,9 +114,21 @@ public class DecimalNull extends Decimal implements NullObject {
 
     /**
      * Returns the special case Decimal.NULL.
+     * 
+     * @deprecated since 21.6. {@link DecimalNull#multiply(Money, RoundingMode)} should be used
+     *             instead.
      */
     @Override
+    @Deprecated
     public Money multiply(Money m, int roundingMode) {
+        return Money.NULL;
+    }
+
+    /**
+     * Returns the special case Decimal.NULL.
+     */
+    @Override
+    public Money multiply(Money m, RoundingMode roundingMode) {
         return Money.NULL;
     }
 
@@ -145,8 +158,12 @@ public class DecimalNull extends Decimal implements NullObject {
 
     /**
      * Returns the special case DECIMAL.NULL.
+     * 
+     * @deprecated since 21.6. {@link DecimalNull#divide(Decimal, int, RoundingMode)} should be used
+     *             instead.
      */
     @Override
+    @Deprecated
     public Decimal divide(Decimal d, int scale, int roundingMode) {
         return NULL;
     }
@@ -155,14 +172,37 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case DECIMAL.NULL.
      */
     @Override
+    public Decimal divide(Decimal d, int scale, RoundingMode roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * Returns the special case DECIMAL.NULL.
+     * 
+     * @deprecated since 21.6. {@link DecimalNull#divide(int, int, RoundingMode)} should be used
+     *             instead.
+     */
+    @Override
+    @Deprecated
     public Decimal divide(int value, int scale, int roundingMode) {
         return NULL;
     }
 
     /**
-     * Returns the special case Decimal.NULL.
+     * Returns the special case DECIMAL.NULL.
      */
     @Override
+    public Decimal divide(int value, int scale, RoundingMode roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * Returns the special case Decimal.NULL.
+     * 
+     * @deprecated since 21.6. {@link #divide(long, int, RoundingMode)} should be used instead.
+     */
+    @Override
+    @Deprecated
     public Decimal divide(long value, int scale, int roundingMode) {
         return NULL;
     }
@@ -171,6 +211,17 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case Decimal.NULL.
      */
     @Override
+    public Decimal divide(long value, int scale, RoundingMode roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * Returns the special case Decimal.NULL.
+     * 
+     * @deprecated since 21.6. {@link #setScale(int, RoundingMode)} should be used instead.
+     */
+    @Override
+    @Deprecated
     public Decimal setScale(int scale, int roundingMode) {
         return NULL;
     }
@@ -179,7 +230,26 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case Decimal.NULL.
      */
     @Override
+    public Decimal setScale(int scale, RoundingMode roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * Returns the special case Decimal.NULL.
+     * 
+     * @deprecated since 21.6. {@link #round(int, RoundingMode)} should be used instead.
+     */
+    @Override
+    @Deprecated
     public Decimal round(int precision, int roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * Returns the special case Decimal.NULL.
+     */
+    @Override
+    public Decimal round(int precision, RoundingMode roundingMode) {
         return NULL;
     }
 

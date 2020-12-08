@@ -16,6 +16,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.junit.Test;
 
@@ -209,6 +210,23 @@ public class DecimalTest {
     @Test
     public void testMultiply_Money() {
         Decimal d = Decimal.valueOf("0.25");
+        assertEquals(Money.euro(25), d.multiply(Money.euro(100), RoundingMode.HALF_UP));
+
+        d = Decimal.valueOf("0.3333");
+        assertEquals(Money.euro(3, 33), d.multiply(Money.euro(10, 0), RoundingMode.HALF_UP));
+
+        d = Decimal.valueOf("0.3335");
+        assertEquals(Money.euro(3, 34), d.multiply(Money.euro(10, 0), RoundingMode.HALF_UP));
+
+        assertTrue(d.multiply((Money)null, RoundingMode.UNNECESSARY).isNull());
+        assertTrue(d.multiply(Money.NULL, RoundingMode.UNNECESSARY).isNull());
+        assertTrue(Decimal.NULL.multiply(Money.euro(1), RoundingMode.UNNECESSARY).isNull());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testMultiply_Money_RoundingModeInt() {
+        Decimal d = Decimal.valueOf("0.25");
         assertEquals(Money.euro(25), d.multiply(Money.euro(100), BigDecimal.ROUND_HALF_UP));
 
         d = Decimal.valueOf("0.3333");
@@ -217,9 +235,9 @@ public class DecimalTest {
         d = Decimal.valueOf("0.3335");
         assertEquals(Money.euro(3, 34), d.multiply(Money.euro(10, 0), BigDecimal.ROUND_HALF_UP));
 
-        assertTrue(d.multiply((Money)null, 2).isNull());
-        assertTrue(d.multiply(Money.NULL, 2).isNull());
-        assertTrue(Decimal.NULL.multiply(Money.euro(1), 2).isNull());
+        assertTrue(d.multiply((Money)null, BigDecimal.ROUND_UNNECESSARY).isNull());
+        assertTrue(d.multiply(Money.NULL, BigDecimal.ROUND_UNNECESSARY).isNull());
+        assertTrue(Decimal.NULL.multiply(Money.euro(1), BigDecimal.ROUND_UNNECESSARY).isNull());
     }
 
     @Test
@@ -348,6 +366,16 @@ public class DecimalTest {
     @Test
     public void testSetScale() {
         Decimal d = Decimal.valueOf(4215, 2);
+        assertEquals(Decimal.valueOf(42, 0), d.setScale(0, RoundingMode.HALF_UP));
+        assertEquals(Decimal.valueOf(422, 1), d.setScale(1, RoundingMode.HALF_UP));
+
+        assertTrue(Decimal.NULL.setScale(0, RoundingMode.HALF_UP).isNull());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testSetScale_RoundingModeInt() {
+        Decimal d = Decimal.valueOf(4215, 2);
         assertEquals(Decimal.valueOf(42, 0), d.setScale(0, BigDecimal.ROUND_HALF_UP));
         assertEquals(Decimal.valueOf(422, 1), d.setScale(1, BigDecimal.ROUND_HALF_UP));
 
@@ -357,12 +385,21 @@ public class DecimalTest {
     @Test
     public void testRound() {
         Decimal d = Decimal.valueOf(4215, 2);
+        assertEquals(Decimal.valueOf(4200, 2), d.round(0, RoundingMode.HALF_UP));
+        assertEquals(Decimal.valueOf(4220, 2), d.round(1, RoundingMode.HALF_UP));
+        assertEquals(Decimal.valueOf(4215, 2), d.round(3, RoundingMode.HALF_UP));
+
+        assertTrue(Decimal.NULL.round(0, RoundingMode.HALF_UP).isNull());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testRound_RoundingModeInt() {
+        Decimal d = Decimal.valueOf(4215, 2);
         assertEquals(Decimal.valueOf(4200, 2), d.round(0, BigDecimal.ROUND_HALF_UP));
         assertEquals(Decimal.valueOf(4220, 2), d.round(1, BigDecimal.ROUND_HALF_UP));
-
         assertEquals(Decimal.valueOf(4215, 2), d.round(3, BigDecimal.ROUND_HALF_UP));
 
-        // null object
         assertTrue(Decimal.NULL.round(0, BigDecimal.ROUND_HALF_UP).isNull());
     }
 
