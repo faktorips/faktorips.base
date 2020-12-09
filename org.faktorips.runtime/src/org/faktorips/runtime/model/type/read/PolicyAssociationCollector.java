@@ -18,9 +18,6 @@ import org.faktorips.runtime.model.type.Type;
 public class PolicyAssociationCollector
         extends AssociationCollector<PolicyAssociation, PolicyAssociationCollector.PolicyAssociationDescriptor> {
 
-    @SuppressWarnings("unchecked")
-    // Compiler does not like generics and varargs
-    // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
     public PolicyAssociationCollector() {
         super(Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(
                 new IpsAssociationProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>(),

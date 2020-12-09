@@ -20,9 +20,6 @@ import org.faktorips.runtime.model.type.ValidationRule;
 
 public class ValidationRuleCollector extends TypePartCollector<ValidationRule, ValidationRuleDescriptor> {
 
-    @SuppressWarnings("unchecked")
-    // Compiler does not like generics and varargs
-    // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
     public ValidationRuleCollector() {
         super(Arrays.<AnnotationProcessor<?, ValidationRuleDescriptor>> asList(new IpsValidationRuleProcessor()));
     }

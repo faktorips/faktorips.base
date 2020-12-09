@@ -41,6 +41,7 @@ public class OrderedValueSet<E> implements ValueSet<E> {
      *            enumeration value set
      * @throws IllegalArgumentException if the values array contains duplicate entries
      */
+    @SafeVarargs
     public OrderedValueSet(boolean containsNull, E nullValue, E... values) {
         if (values != null) {
             for (E e : values) {

@@ -54,7 +54,7 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <version>${maven-javadoc-plugin-version}</version>
                             <configuration>
-                                <source>1.6</source>
+                                <source>1.8</source>
                                 <!-- at the moment we do not check missing javadoc like missing @param or @return -->
                                 <doclint>accessibility,html,reference,syntax,-missing</doclint>
                             </configuration>
