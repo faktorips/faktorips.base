@@ -31,9 +31,9 @@ public class Migration_2_5_3_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getDescription() {
-        return "The generated method 'getLinks()' in generated product component generation classes now " //$NON-NLS-
-                + System.getProperty("line.separator") //$NON-NLS-
-                + " considers associations defined in super types by calling 'super.getLinks()'."; //$NON-NLS-
+        return "The generated method 'getLinks()' in generated product component generation classes now " //$NON-NLS-1$
+                + System.lineSeparator()
+                + " considers associations defined in super types by calling 'super.getLinks()'."; //$NON-NLS-1$
     }
 
     @Override

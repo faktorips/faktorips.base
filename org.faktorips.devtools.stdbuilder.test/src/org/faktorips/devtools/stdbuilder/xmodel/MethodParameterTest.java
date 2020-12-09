@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.jdt.core.Signature;
-import org.faktorips.devtools.stdbuilder.xmodel.MethodParameter;
 import org.junit.Test;
 
 public class MethodParameterTest {

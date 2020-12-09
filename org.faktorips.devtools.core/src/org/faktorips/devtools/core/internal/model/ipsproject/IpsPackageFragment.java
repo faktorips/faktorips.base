@@ -671,13 +671,13 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
             static String toPersistenceContent(Map<IIpsElement, Integer> sortOrder) {
                 StringBuilder sb = new StringBuilder(Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine);
-                sb.append(StringUtil.getSystemLineSeparator());
+                sb.append(System.lineSeparator());
                 for (IIpsElement element : sortOrder.keySet()) {
                     String name = element instanceof IIpsSrcFile
                             ? ((IIpsSrcFile)element).getQualifiedNameType().getFileName()
                             : QNameUtil.getUnqualifiedName(element.getName());
                     sb.append(name);
-                    sb.append(StringUtil.getSystemLineSeparator());
+                    sb.append(System.lineSeparator());
                 }
                 return sb.toString();
             }

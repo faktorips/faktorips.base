@@ -84,7 +84,7 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
                     throw failure.getThrowable();
                 } else {
                     if (sb.length() > 0) {
-                        sb.append(System.getProperty("line.separator"));
+                        sb.append(System.lineSeparator());
                     }
                     sb.append(failureToString(failure));
                 }

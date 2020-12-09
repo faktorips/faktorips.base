@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.migration;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -46,16 +45,16 @@ public class MigrationPage extends WizardPage {
         setPageComplete(true);
         for (IIpsProject project : projects) {
             desc.append(Messages.MigrationPage_titleProject).append(project.getName())
-                    .append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
+                    .append(":").append(System.lineSeparator()).append(System.lineSeparator()); //$NON-NLS-1$
             try {
                 desc.append(IpsPlugin.getDefault().getMigrationOperation(project).getDescription());
-                desc.append(SystemUtils.LINE_SEPARATOR);
-                desc.append(SystemUtils.LINE_SEPARATOR);
+                desc.append(System.lineSeparator());
+                desc.append(System.lineSeparator());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 desc.append(Messages.MigrationPage_labelError + e.getMessage());
-                desc.append(SystemUtils.LINE_SEPARATOR);
-                desc.append(SystemUtils.LINE_SEPARATOR);
+                desc.append(System.lineSeparator());
+                desc.append(System.lineSeparator());
                 setPageComplete(false);
             }
         }

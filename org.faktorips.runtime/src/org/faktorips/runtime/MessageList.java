@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.util.function.IPredicate;
 import org.faktorips.values.ObjectUtil;
 
@@ -275,16 +276,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      * separator.
      */
     public String getText() {
-        String lineSeparator = System.getProperty("line.separator");
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < size(); i++) {
-            if (i > 0) {
-                s.append(lineSeparator);
-            }
-            s.append(getMessage(i).getText());
-        }
-        return s.toString();
-
+        return IpsStringUtils.join(messages, Message::getText, System.lineSeparator());
     }
 
     /**
@@ -363,12 +355,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     @Override
     public String toString() {
-        String lineSeparator = System.getProperty("line.separator");
-        StringBuilder s = new StringBuilder();
-        for (Message message : messages) {
-            s.append(message.toString() + lineSeparator);
-        }
-        return s.toString();
+        return IpsStringUtils.join(messages, System.lineSeparator());
     }
 
     @Override

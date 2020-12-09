@@ -23,8 +23,6 @@ import java.util.Set;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
-import org.faktorips.runtime.model.type.ModelElement;
-import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.util.MessagesHelper;
 import org.junit.Test;
 

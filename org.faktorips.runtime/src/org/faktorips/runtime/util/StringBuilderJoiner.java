@@ -32,6 +32,18 @@ public class StringBuilderJoiner {
 
     /**
      * Appends the elements of the provided {@link Iterable} to the given {@link StringBuilder},
+     * separated by the given separator. No delimiter is added before or after the list.
+     * 
+     * @param sb the {@link StringBuilder} to which the values will be appended
+     * @param iterable the Collection of values to join together, may be {@code null}
+     * @param separator the separator to use, null treated as ""
+     */
+    public static final void join(StringBuilder sb, Iterable<?> iterable, String separator) {
+        join(sb, iterable, separator, t -> sb.append(Objects.toString(t)));
+    }
+
+    /**
+     * Appends the elements of the provided {@link Iterable} to the given {@link StringBuilder},
      * separated by the {@link #DEFAULT_SEPARATOR} {@value #DEFAULT_SEPARATOR}. No delimiter is
      * added before or after the list.
      * 

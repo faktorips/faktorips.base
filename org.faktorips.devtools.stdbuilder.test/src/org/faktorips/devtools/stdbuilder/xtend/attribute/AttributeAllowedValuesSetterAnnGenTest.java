@@ -45,7 +45,7 @@ public class AttributeAllowedValuesSetterAnnGenTest {
         JavaCodeFragment codeFragment = attributeAllowedValuesSetterAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsAllowedValuesSetter(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsAllowedValuesSetter(\"bar\")" + System.lineSeparator())));
     }
 
     private XProductAttribute xProductAttribute(String name) {

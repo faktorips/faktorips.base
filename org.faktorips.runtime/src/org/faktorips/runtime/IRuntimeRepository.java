@@ -371,7 +371,8 @@ public interface IRuntimeRepository {
      * Remark this runtime repository which will be used to search for the given test case can
      * differ from the runtime repository which will be used to instantiate the test case during
      * runtime.<br>
-     * Normaly the runtime repository contains all repositories which are referenced by the project.
+     * Normally the runtime repository contains all repositories which are referenced by the
+     * project.
      * 
      * @throws NullPointerException if qName is <code>null</code>.
      */
@@ -446,7 +447,7 @@ public interface IRuntimeRepository {
     public Set<String> getAllModelTypeImplementationClasses();
 
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the
+     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in the
      * given repository. If the repository references other repositories (directly or indirectly),
      * the context can also handle the classes defined in these other repositories.
      */

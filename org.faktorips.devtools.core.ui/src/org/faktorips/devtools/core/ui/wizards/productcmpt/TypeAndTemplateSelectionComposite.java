@@ -422,7 +422,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // */
     // public void appendLinePlain(String text) {
     // if (textWidget.getCharCount() > 0) {
-    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // textWidget.append(System.lineSeparator());
     // }
     // appendPlain(text);
     // }
@@ -439,7 +439,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // */
     // public void appendLineStyled(String text, int fontStyle) {
     // if (textWidget.getCharCount() > 0) {
-    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // textWidget.append(System.lineSeparator());
     // }
     // appendStyled(text, fontStyle);
     // }

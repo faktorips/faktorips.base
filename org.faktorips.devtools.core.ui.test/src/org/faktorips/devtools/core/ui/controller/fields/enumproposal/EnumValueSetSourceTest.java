@@ -21,7 +21,6 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumValueSetSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xtend.LabelAndDescriptionAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -36,6 +35,7 @@ public class LabelAndDescriptionAnnGenTest extends AbstractIpsPluginTest {
 
         assertEquals(
                 "@IpsDocumented(bundleName = \"baseBundleName\", defaultLocale = \"de\")"
-                        + System.getProperty("line.separator"), annGen.createAnnotation(modelNode).getSourcecode());
+                        + System.lineSeparator(),
+                annGen.createAnnotation(modelNode).getSourcecode());
     }
 }

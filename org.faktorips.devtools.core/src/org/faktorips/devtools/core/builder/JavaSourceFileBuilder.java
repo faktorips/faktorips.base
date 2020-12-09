@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -657,7 +656,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {
-            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
         builder.javaDoc(sb.toString(), annotations.toArray(new String[annotations.size()]));
     }
@@ -836,7 +835,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
                 .node(getIpsProject().getName());
         return preferences.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR,
-                StringUtil.getSystemLineSeparator());
+                System.lineSeparator());
     }
 
     private String format(String content, boolean newFileCreated) {

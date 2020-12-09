@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import static org.junit.Assert.assertEquals;
 
-import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
 import org.junit.Test;
 
 public class ImportStatementTest {

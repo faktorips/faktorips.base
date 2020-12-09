@@ -519,7 +519,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
             StringBuilderJoiner.join(builder, changedProperties);
             builder.append(']');
         }
-        builder.append(System.getProperty("line.separator"));
+        builder.append(System.lineSeparator());
         for (IModelObjectDelta delta : getChildDeltas()) {
             ((ModelObjectDelta)delta).toString(builder, indentation + "    ");
         }

@@ -21,7 +21,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeDefaultValueAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -48,7 +47,7 @@ public class AttributeDefaultValueAnnGenTest {
         JavaCodeFragment codeFragment = attributeDefaultValueAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsDefaultValue(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsDefaultValue(\"bar\")" + System.lineSeparator())));
     }
 
     private XProductAttribute xProductAttribute(String name) {

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.CodeFragment;
 import org.junit.Test;
 
@@ -63,7 +62,7 @@ public class CodeFragmentTest {
 
         fragment.appendln();
         fragment.append("line2"); //$NON-NLS-1$
-        String expected = "    blabla" + SystemUtils.LINE_SEPARATOR + "    line2"; //$NON-NLS-1$ //$NON-NLS-2$
+        String expected = "    blabla" + System.lineSeparator() + "    line2"; //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(expected, fragment.getSourcecode());
     }
 
@@ -90,7 +89,7 @@ public class CodeFragmentTest {
         fragment2.append('}');
 
         String result = fragment2.getSourcecode();
-        StringTokenizer tokenizer = new StringTokenizer(result, SystemUtils.LINE_SEPARATOR);
+        StringTokenizer tokenizer = new StringTokenizer(result, System.lineSeparator());
         assertEquals("{", tokenizer.nextToken()); //$NON-NLS-1$
         assertEquals("    List", tokenizer.nextToken()); //$NON-NLS-1$
         assertEquals("    {", tokenizer.nextToken()); //$NON-NLS-1$

@@ -16,7 +16,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -270,7 +269,7 @@ public class ImportDeclaration {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        String separator = SystemUtils.LINE_SEPARATOR;
+        String separator = System.lineSeparator();
         for (Iterator<String> it = iterator(); it.hasNext();) {
             sb.append(("import ")); //$NON-NLS-1$
             sb.append(it.next());

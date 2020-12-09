@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
 import org.mockito.Mock;

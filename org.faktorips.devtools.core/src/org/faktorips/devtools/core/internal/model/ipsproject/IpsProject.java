@@ -26,7 +26,6 @@ import java.util.StringTokenizer;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -254,7 +253,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private String insertNewLineSeparatorsBeforeComment(String s) {
         StringBuilder newText = new StringBuilder();
-        StringTokenizer tokenizer = new StringTokenizer(s, SystemUtils.LINE_SEPARATOR);
+        StringTokenizer tokenizer = new StringTokenizer(s, System.lineSeparator());
         boolean firstComment = true;
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
@@ -262,11 +261,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 if (firstComment) {
                     firstComment = false;
                 } else {
-                    newText.append(SystemUtils.LINE_SEPARATOR);
+                    newText.append(System.lineSeparator());
                 }
             }
             newText.append(token);
-            newText.append(SystemUtils.LINE_SEPARATOR);
+            newText.append(System.lineSeparator());
         }
 
         return newText.toString();

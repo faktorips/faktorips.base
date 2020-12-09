@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -61,7 +60,7 @@ public class StatusPage extends WizardPage implements Observer {
             Object[] elements = contentProvider.getElements(null);
             StringBuilder sb = new StringBuilder();
             for (Object msg : elements) {
-                sb.append(msg).append(SystemUtils.LINE_SEPARATOR);
+                sb.append(msg).append(System.lineSeparator());
             }
             clipboard.setContents(new String[] { sb.toString() }, new Transfer[] { TextTransfer.getInstance() });
         }

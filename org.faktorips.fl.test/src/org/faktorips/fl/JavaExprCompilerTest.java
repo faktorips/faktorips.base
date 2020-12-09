@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -194,7 +193,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         assertTrue(getCompiler().compile("1 - 1").successfull());
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile("1+-1");
         assertTrue(compile.successfull());
-        assertEquals(SystemUtils.LINE_SEPARATOR + "Integer.valueOf(1 + -1)", compile.getCodeFragment().toString());
+        assertEquals(System.lineSeparator() + "Integer.valueOf(1 + -1)", compile.getCodeFragment().toString());
         assertEquals(0, Integer.valueOf(1 + -1).intValue());
         assertTrue(getCompiler().compile("1>1").successfull());
         assertTrue(getCompiler().compile("1=1").successfull());

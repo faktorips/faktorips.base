@@ -15,8 +15,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import org.faktorips.util.IntegerUtils;
-
 /**
  * Compares two collections by sorting the content using the element comparator and then compare one
  * element after the other. If a collection contains duplicated entries these duplicates will be
@@ -53,7 +51,7 @@ public class DistinctElementComparator<T> implements Comparator<Collection<T>>, 
                 return compareValue;
             }
         }
-        return IntegerUtils.compare(sorted1.size(), sorted2.size());
+        return Integer.compare(sorted1.size(), sorted2.size());
     }
 
 }

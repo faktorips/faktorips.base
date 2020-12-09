@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -46,11 +45,11 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
      * Returns a description of the xml format.
      */
     public static final String getXmlFormatDescription() {
-        return "Archive:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "     type=\"archive\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+        return "Archive:" + System.lineSeparator() //$NON-NLS-1$
+                + "  <" + XML_ELEMENT + System.lineSeparator() //$NON-NLS-1$
+                + "     type=\"archive\"" + System.lineSeparator() //$NON-NLS-1$
+                + "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "  </" + XML_ELEMENT + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

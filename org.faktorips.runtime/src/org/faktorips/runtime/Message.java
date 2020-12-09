@@ -512,14 +512,13 @@ public class Message implements Serializable {
         sb.append(' ');
         sb.append(code);
         sb.append('[');
-        String lineSeparator = System.getProperty("line.separator");
         StringBuilderJoiner.join(sb, invalidOp, op -> {
             sb.append(op.getObject().toString());
             sb.append('.');
             sb.append(op.getProperty());
         });
         sb.append(']');
-        sb.append(lineSeparator);
+        sb.append(System.lineSeparator());
         sb.append(text);
         return sb.toString();
     }

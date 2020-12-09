@@ -11,6 +11,7 @@
 package org.faktorips.runtime.formula.groovy;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
 
@@ -55,13 +56,10 @@ public class GroovyFormulaEvaluator extends AbstractFormulaEvaluator {
     }
 
     private String getSourceCode(Map<String, String> expressionMap) {
-        // TODO Java 8 Stream
-        StringBuilder sourceCode = new StringBuilder();
-        for (String formula : expressionMap.values()) {
-            String replaceFormula = formula.replaceAll("this([\\.\\s])", THIS_CLASS_VAR + "$1");
-            sourceCode.append(replaceFormula).append('\n');
-        }
-        return sourceCode.toString();
+        return expressionMap.values()
+                .stream()
+                .map(f -> f.replaceAll("this([\\.\\s])", THIS_CLASS_VAR + "$1"))
+                .collect(Collectors.joining("\n"));
     }
 
     @Override

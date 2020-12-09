@@ -61,7 +61,7 @@ public class ExprEvaluator {
 
         StringBuilder sb = new StringBuilder();
         sb.append(fragment.getImportDeclaration().toString());
-        sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
+        sb.append(System.lineSeparator());
         sb.append(fragment.getSourcecode());
         return i.eval(sb.toString());
     }
@@ -86,7 +86,7 @@ public class ExprEvaluator {
 
         StringBuilder sb = new StringBuilder();
         sb.append(fragment.getImportDeclaration().toString());
-        sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
+        sb.append(System.lineSeparator());
         sb.append(fragment.getSourcecode());
         return i.eval(sb.toString());
     }

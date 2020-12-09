@@ -27,7 +27,6 @@ import java.util.function.Function;
 import com.google.common.collect.Lists;
 
 import org.faktorips.devtools.core.util.Histogram.BestValue;
-import org.faktorips.util.IntegerUtils;
 import org.faktorips.values.Decimal;
 import org.junit.Test;
 
@@ -244,7 +243,7 @@ public class HistogramTest {
         Comparator<String> stringLengthComparator = new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return IntegerUtils.compare(o1.length(), o2.length());
+                return Integer.compare(o1.length(), o2.length());
             }
         };
 

@@ -67,6 +67,7 @@
 										<include>**/UtilityClass.java</include>
                     <include>**/IPredicate.java</include>
                     <include>**/StringBuilderJoiner.java</include>
+                    <include>**/IpsStringUtils.java</include>
 									</includes>
 								</resource>
 							</resources>

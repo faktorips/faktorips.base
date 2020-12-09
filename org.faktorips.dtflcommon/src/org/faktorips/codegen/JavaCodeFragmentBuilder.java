@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 
 /**
  * A builder to create JavaCodeFragments with a uniform coding style.
@@ -1077,7 +1076,7 @@ public class JavaCodeFragmentBuilder {
         }
         fragment.appendln("/**"); //$NON-NLS-1$
         if (StringUtils.isNotEmpty(text)) {
-            String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
+            String[] lines = StringUtils.split(text, System.lineSeparator());
             for (String line : lines) {
                 fragment.append(" * "); //$NON-NLS-1$
                 fragment.appendln(line);

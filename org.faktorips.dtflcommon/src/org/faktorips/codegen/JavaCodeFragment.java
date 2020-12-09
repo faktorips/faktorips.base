@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.StringUtil;
 
@@ -375,6 +374,6 @@ public class JavaCodeFragment extends CodeFragment {
      */
     @Override
     public String toString() {
-        return importDecl.toString() + SystemUtils.LINE_SEPARATOR + super.toString();
+        return importDecl.toString() + System.lineSeparator() + super.toString();
     }
 }

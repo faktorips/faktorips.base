@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XTableUsage;
-import org.faktorips.devtools.stdbuilder.xtend.productcmpt.TableUsageAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -36,7 +35,7 @@ public class TableUsageAnnGenTest {
 
         JavaCodeFragment annotationCode = generator.createAnnotation(tableUsage);
 
-        assertEquals("@IpsTableUsage(name = \"TestTableName\")" + System.getProperty("line.separator"),
+        assertEquals("@IpsTableUsage(name = \"TestTableName\")" + System.lineSeparator(),
                 annotationCode.getSourcecode());
         assertThat(annotationCode.getImportDeclaration().getImports(),
                 hasItem("org.faktorips.runtime.model.annotation.IpsTableUsage"));

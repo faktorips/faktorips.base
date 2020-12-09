@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeSetterAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -42,7 +41,7 @@ public class AttributeSetterAnnGenTest {
         JavaCodeFragment codeFragment = attributeSetterAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsAttributeSetter(\"foo\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsAttributeSetter(\"foo\")" + System.lineSeparator())));
     }
 
     @Test
@@ -52,7 +51,7 @@ public class AttributeSetterAnnGenTest {
         JavaCodeFragment codeFragment = attributeSetterAnnGen.createAnnotation(xPolicyAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsAttributeSetter(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsAttributeSetter(\"bar\")" + System.lineSeparator())));
     }
 
     private XPolicyAttribute xPolicyAttribute(String name) {

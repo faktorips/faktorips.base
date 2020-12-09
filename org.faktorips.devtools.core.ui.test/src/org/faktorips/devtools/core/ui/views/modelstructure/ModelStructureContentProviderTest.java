@@ -30,10 +30,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode;
-import org.faktorips.devtools.core.ui.views.modelstructure.ComponentNode;
-import org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider;
-import org.faktorips.devtools.core.ui.views.modelstructure.SubtypeComponentNode;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
 import org.junit.Test;
 

@@ -60,7 +60,7 @@ public final class IpsStringUtils {
      * provided elements with the given separator. No delimiter is added before or after the list.
      * 
      * @param collection the Collection of values to join together, may be {@code null}
-     * @param separator the separator to use, null treated as ""
+     * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
      */
     public static final String join(Collection<?> collection, String separator) {
@@ -72,7 +72,7 @@ public final class IpsStringUtils {
      * provided elements with the given separator. No delimiter is added before or after the list.
      * 
      * @param iterable the Collection of values to join together, may be {@code null}
-     * @param separator the separator to use, null treated as ""
+     * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
      */
     public static final String join(Iterable<?> iterable, String separator) {
@@ -111,7 +111,7 @@ public final class IpsStringUtils {
      * elements with the given separator. No delimiter is added before or after the list.
      * 
      * @param objectArray the array of values to join together, may be {@code null}
-     * @param separator the separator to use, null treated as ""
+     * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
      */
     public static final String join(Object[] objectArray, String separator) {
@@ -127,12 +127,30 @@ public final class IpsStringUtils {
      * @param iterable the Collection of values to join together, may be {@code null}
      * @param toString the {@link Function} to convert an element from the {@link Iterable} to a
      *            String
-     * @return the joined String, null if the collection is null
+     * @return the joined String, {@code null} if the collection is {@code null}
      */
     public static final <T> String join(Iterable<T> iterable, Function<? super T, String> toString) {
         // 16 (default) may be too small
         StringBuilder stringBuilder = new StringBuilder(256);
         StringBuilderJoiner.join(stringBuilder, iterable, t -> stringBuilder.append(toString.apply(t)));
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Joins the elements of the provided {@link Iterable} into a single String containing the
+     * provided elements, converted to String with the given {@code toString} {@link Function}, with
+     * the given separator. No delimiter is added before or after the list.
+     * 
+     * @param iterable the Collection of values to join together, may be {@code null}
+     * @param separator the separator to use, {@code null} treated as ""
+     * @param toString the {@link Function} to convert an element from the {@link Iterable} to a
+     *            String
+     * @return the joined String, {@code null} if the collection is {@code null}
+     */
+    public static final <T> String join(Iterable<T> iterable, Function<? super T, String> toString, String separator) {
+        // 16 (default) may be too small
+        StringBuilder stringBuilder = new StringBuilder(256);
+        StringBuilderJoiner.join(stringBuilder, iterable, separator, t -> stringBuilder.append(toString.apply(t)));
         return stringBuilder.toString();
     }
 

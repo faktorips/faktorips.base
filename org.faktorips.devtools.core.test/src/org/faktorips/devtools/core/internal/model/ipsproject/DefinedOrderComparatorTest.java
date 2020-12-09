@@ -193,7 +193,7 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
         IFile file = ((IFolder)packA.getCorrespondingResource()).getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
         assertThat(file, exists());
         String[] lines = StringUtil.readFromInputStream(file.getContents(), StringUtil.CHARSET_UTF8)
-                .split(System.getProperty("line.separator"));
+                .split(System.lineSeparator());
         assertThat(lines[0], startsWith("#"));
         assertThat(lines[1], is("b"));
         assertThat(lines[2], is("c"));

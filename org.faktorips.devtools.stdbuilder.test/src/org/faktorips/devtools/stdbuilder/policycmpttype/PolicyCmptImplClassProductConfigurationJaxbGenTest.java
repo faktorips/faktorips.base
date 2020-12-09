@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,8 +32,8 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
         JavaCodeFragment codeFragment = jaxbGen.createAnnotation(null);
         assertNotNull(codeFragment);
         String testSsourcecode = "@XmlJavaTypeAdapter(value = ProductConfigurationXmlAdapter.class)"
-                + StringUtil.getSystemLineSeparator() + "@XmlAttribute(name = \"product-component.id\")"
-                + StringUtil.getSystemLineSeparator();
+                + System.lineSeparator() + "@XmlAttribute(name = \"product-component.id\")"
+                + System.lineSeparator();
         assertEquals(testSsourcecode, codeFragment.getSourcecode());
         ImportDeclaration importDeclaration = codeFragment.getImportDeclaration();
         assertTrue(importDeclaration.getImports().contains("org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter"));

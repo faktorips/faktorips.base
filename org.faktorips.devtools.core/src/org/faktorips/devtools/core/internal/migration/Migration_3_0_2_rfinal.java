@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.migration;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -141,15 +140,15 @@ public class Migration_3_0_2_rfinal extends DefaultMigration {
     public String getDescription() {
         return "For the new Faktor-IPS multi-language support feature a new XML " + //$NON-NLS-1$
                 "element called <SupportedLanguages> has been added to the .ipsproject file." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
+                + System.lineSeparator()
                 + "The language that the code generator uses at the moment of the " //$NON-NLS-1$
                 + " migration is added to the supported languages of the IPS project." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator() + System.lineSeparator()
                 + "In addition, it is now possible to attach labels to several model " //$NON-NLS-1$
                 + "elements (one for each supported language)." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR + "A new label is added to each model element that supports labels." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR + SystemUtils.LINE_SEPARATOR + "Descriptions can now be written " //$NON-NLS-1$
+                + System.lineSeparator() + "A new label is added to each model element that supports labels." //$NON-NLS-1$
+                + System.lineSeparator() + System.lineSeparator() + "Descriptions can now be written " //$NON-NLS-1$
                 + "for each supported language as well. Every existing description will be associated with the " //$NON-NLS-1$
                 + "language of the code generator during this migration."; //$NON-NLS-1$
     }

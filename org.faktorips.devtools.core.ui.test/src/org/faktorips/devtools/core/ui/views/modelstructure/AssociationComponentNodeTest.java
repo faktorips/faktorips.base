@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode;
 import org.junit.Test;
 
 public class AssociationComponentNodeTest extends AbstractIpsPluginTest {

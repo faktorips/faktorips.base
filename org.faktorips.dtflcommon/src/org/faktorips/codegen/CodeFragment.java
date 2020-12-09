@@ -12,7 +12,6 @@ package org.faktorips.codegen;
 
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
@@ -155,7 +154,7 @@ public class CodeFragment {
      * Appends a line separator to the source code.
      */
     public CodeFragment appendln() {
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -168,7 +167,7 @@ public class CodeFragment {
         }
         indentIfBol();
         sourcecode.append(s);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -177,7 +176,7 @@ public class CodeFragment {
      */
     public CodeFragment appendlnUnindented(String arg) {
         sourcecode.append(arg);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -187,7 +186,7 @@ public class CodeFragment {
     public CodeFragment appendln(char c) {
         indentIfBol();
         sourcecode.append(c);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -200,7 +199,7 @@ public class CodeFragment {
         } else {
             if (indent) {
                 String sourcecode = fragment.getSourcecode();
-                StringTokenizer tokenizer = new StringTokenizer(sourcecode, SystemUtils.LINE_SEPARATOR);
+                StringTokenizer tokenizer = new StringTokenizer(sourcecode, System.lineSeparator());
                 while (tokenizer.hasMoreTokens()) {
                     String token = tokenizer.nextToken();
                     if (tokenizer.hasMoreTokens()) {
@@ -209,7 +208,7 @@ public class CodeFragment {
                         append(token);
                     }
                 }
-                if (sourcecode.endsWith(SystemUtils.LINE_SEPARATOR)) {
+                if (sourcecode.endsWith(System.lineSeparator())) {
                     appendln(""); //$NON-NLS-1$
                 }
             }
@@ -260,17 +259,17 @@ public class CodeFragment {
         if (length == 0) {
             return true;
         }
-        if (SystemUtils.LINE_SEPARATOR.length() == 1) {
-            return sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(0);
+        if (System.lineSeparator().length() == 1) {
+            return sourcecode.charAt(length - 1) == System.lineSeparator().charAt(0);
         }
-        if (SystemUtils.LINE_SEPARATOR.length() == 2) {
+        if (System.lineSeparator().length() == 2) {
             if (length == 1) {
                 return false;
             }
-            return (sourcecode.charAt(length - 2) == SystemUtils.LINE_SEPARATOR.charAt(0))
-                    && (sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(1));
+            return (sourcecode.charAt(length - 2) == System.lineSeparator().charAt(0))
+                    && (sourcecode.charAt(length - 1) == System.lineSeparator().charAt(1));
         }
-        throw new RuntimeException("Unknown line separator [" + SystemUtils.LINE_SEPARATOR + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new RuntimeException("Unknown line separator [" + System.lineSeparator() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

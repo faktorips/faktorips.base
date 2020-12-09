@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class MessageTest extends XmlAbstractTestCase {
 
-    private final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private final String LINE_SEPARATOR = System.lineSeparator();
 
     @Test
     public void testCreateCopy() {

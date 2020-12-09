@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
 
 public class JavaCodeFragmentBuilderTest {
@@ -26,12 +25,12 @@ public class JavaCodeFragmentBuilderTest {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute"); //$NON-NLS-1$
         JavaCodeFragment code = builder.getFragment();
-        assertEquals("@XmlAttribute" + SystemUtils.LINE_SEPARATOR, code.getSourcecode()); //$NON-NLS-1$
+        assertEquals("@XmlAttribute" + System.lineSeparator(), code.getSourcecode()); //$NON-NLS-1$
 
         builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")"); //$NON-NLS-1$
         code = builder.getFragment();
-        assertEquals("@XmlAttribute(name=\"parent-id\")" + SystemUtils.LINE_SEPARATOR, code.getSourcecode()); //$NON-NLS-1$
+        assertEquals("@XmlAttribute(name=\"parent-id\")" + System.lineSeparator(), code.getSourcecode()); //$NON-NLS-1$
         ImportDeclaration imports = new ImportDeclaration();
         imports.add("javax.xml.bind.annotation.XmlAttribute"); //$NON-NLS-1$
         assertEquals(imports, code.getImportDeclaration());
@@ -42,7 +41,7 @@ public class JavaCodeFragmentBuilderTest {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name=\"parent-id\""); //$NON-NLS-1$ //$NON-NLS-2$
         JavaCodeFragment code = builder.getFragment();
-        assertEquals("@XmlAttribute(name=\"parent-id\")" + SystemUtils.LINE_SEPARATOR, code.getSourcecode()); //$NON-NLS-1$
+        assertEquals("@XmlAttribute(name=\"parent-id\")" + System.lineSeparator(), code.getSourcecode()); //$NON-NLS-1$
         ImportDeclaration imports = new ImportDeclaration();
         imports.add("javax.xml.bind.annotation.XmlAttribute"); //$NON-NLS-1$
         assertEquals(imports, code.getImportDeclaration());
@@ -53,7 +52,7 @@ public class JavaCodeFragmentBuilderTest {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", "parent-id"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         JavaCodeFragment code = builder.getFragment();
-        assertEquals("@XmlAttribute(name=\"parent-id\")" + SystemUtils.LINE_SEPARATOR, code.getSourcecode()); //$NON-NLS-1$
+        assertEquals("@XmlAttribute(name=\"parent-id\")" + System.lineSeparator(), code.getSourcecode()); //$NON-NLS-1$
         ImportDeclaration imports = new ImportDeclaration();
         imports.add("javax.xml.bind.annotation.XmlAttribute"); //$NON-NLS-1$
         assertEquals(imports, code.getImportDeclaration());
@@ -64,7 +63,7 @@ public class JavaCodeFragmentBuilderTest {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn(Override.class, "someParameters"); //$NON-NLS-1$
         JavaCodeFragment code = builder.getFragment();
-        assertEquals("@Override(someParameters)" + SystemUtils.LINE_SEPARATOR, code.getSourcecode()); //$NON-NLS-1$
+        assertEquals("@Override(someParameters)" + System.lineSeparator(), code.getSourcecode()); //$NON-NLS-1$
         ImportDeclaration imports = new ImportDeclaration();
         imports.add(Override.class);
         assertEquals(imports, code.getImportDeclaration());
@@ -76,7 +75,7 @@ public class JavaCodeFragmentBuilderTest {
         builder.methodBegin(Modifier.PUBLIC, String[].class, "validate", new String[0], new Class[0]); //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         sb.append("public String[] validate()"); //$NON-NLS-1$
-        sb.append(SystemUtils.LINE_SEPARATOR);
+        sb.append(System.lineSeparator());
         sb.append("{"); //$NON-NLS-1$
         assertEquals(sb.toString(), builder.toString().trim());
     }
@@ -85,7 +84,7 @@ public class JavaCodeFragmentBuilderTest {
     public void testAnnotationClassValueLn() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationClassValueLn("AnAnnotation", "value", List.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment() //$NON-NLS-1$
+        assertEquals("@AnAnnotation(value=List.class)" + System.lineSeparator(), builder.getFragment() //$NON-NLS-1$
                 .getSourcecode());
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
     }
@@ -103,8 +102,8 @@ public class JavaCodeFragmentBuilderTest {
         assertEquals(1, builder.getFragment().getIndentationLevel());
         builder.closeBracket();
         assertEquals(0, builder.getFragment().getIndentationLevel());
-        String expected = "{" + SystemUtils.LINE_SEPARATOR + "    {" + SystemUtils.LINE_SEPARATOR + "        blabla" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR + "    }" + SystemUtils.LINE_SEPARATOR + "}" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+        String expected = "{" + System.lineSeparator() + "    {" + System.lineSeparator() + "        blabla" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + System.lineSeparator() + "    }" + System.lineSeparator() + "}" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(expected, builder.getFragment().getSourcecode());
     }
 

@@ -23,7 +23,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modelstructure.ComponentNode;
 import org.junit.Test;
 
 public class ComponentNodeTest extends AbstractIpsPluginTest {

@@ -48,7 +48,7 @@ public class AttributeDefaultValueSetterAnnGenTest {
         JavaCodeFragment codeFragment = attributeDefaultValueSetterAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsDefaultValueSetter(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsDefaultValueSetter(\"bar\")" + System.lineSeparator())));
     }
 
     private XProductAttribute xProductAttribute(String name) {

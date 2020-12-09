@@ -1347,7 +1347,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
 
         String print = "";
-        String lineSeparator = StringUtil.getSystemLineSeparator();
+        String lineSeparator = System.lineSeparator();
 
         print = print.concat("# comment" + lineSeparator);
 

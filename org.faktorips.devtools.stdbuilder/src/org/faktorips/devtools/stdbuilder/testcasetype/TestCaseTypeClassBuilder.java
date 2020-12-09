@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
@@ -641,7 +640,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
     private void appendln(StringBuilder sb, String line) {
         sb.append(line);
-        sb.append(SystemUtils.LINE_SEPARATOR);
+        sb.append(System.lineSeparator());
     }
 
     /*

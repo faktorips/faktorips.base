@@ -32,7 +32,6 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.util.IntegerUtils;
 import org.faktorips.values.Decimal;
 
 /**
@@ -213,7 +212,7 @@ public class Histogram<V, E> {
             Comparable<?> c2 = (Comparable<?>)o2;
             return ObjectUtils.compare(c1, c2);
         } else {
-            int idCompare = IntegerUtils.compare(System.identityHashCode(o1), System.identityHashCode(o2));
+            int idCompare = Integer.compare(System.identityHashCode(o1), System.identityHashCode(o2));
             if (idCompare == 0) {
                 // Fallback for (hopefully extremely) rare cases where objects are not equal but
                 // do have the same identity hash code. Return a value != 0 to prevent different
@@ -313,7 +312,7 @@ public class Histogram<V, E> {
                 return valueComparator.compare(value1, value2);
             } else {
                 // reverse natural order
-                return IntegerUtils.compare(occurences2, occurences1);
+                return Integer.compare(occurences2, occurences1);
             }
         }
 

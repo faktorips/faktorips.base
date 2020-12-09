@@ -11,8 +11,9 @@
 package org.faktorips.util.message;
 
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * A human readable text message with an optional code that identifies the type of the message and a
@@ -326,37 +327,31 @@ public class Message {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         switch (severity) {
             case ERROR:
-                builder.append("ERROR");
+                sb.append("ERROR");
                 break;
             case WARNING:
-                builder.append("WARNING ");
+                sb.append("WARNING ");
                 break;
             case INFO:
-                builder.append("INFO");
+                sb.append("INFO");
                 break;
             default:
-                builder.append("Severity ");
-                builder.append(severity);
+                sb.append("Severity ");
+                sb.append(severity);
         }
-        builder.append(' ');
-        builder.append(code);
-        builder.append('[');
-        for (int i = 0; i < invalidOp.length; i++) {
-            if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(invalidOp[i].getObject().toString());
-            builder.append('.');
-            builder.append(invalidOp[i].getProperty());
-        }
-        builder.append(']');
-        builder.append(SystemUtils.LINE_SEPARATOR);
-        builder.append(text);
+        sb.append(' ');
+        sb.append(code);
+        sb.append('[');
+        StringBuilderJoiner.join(sb, invalidOp,
+                o -> sb.append(Objects.toString(o.getObject()) + "." + o.getProperty()));
+        sb.append(']');
+        sb.append(System.lineSeparator());
+        sb.append(text);
 
-        return builder.toString();
+        return sb.toString();
     }
 
     @Override

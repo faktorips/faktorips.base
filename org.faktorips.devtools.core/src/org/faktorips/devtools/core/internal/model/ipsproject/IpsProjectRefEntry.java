@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -62,11 +61,11 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
      * Returns a description of the xml format.
      */
     public static final String getXmlFormatDescription() {
-        return "Project Reference:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "     type=\"project\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+        return "Project Reference:" + System.lineSeparator() //$NON-NLS-1$
+                + "  <" + XML_ELEMENT + System.lineSeparator() //$NON-NLS-1$
+                + "     type=\"project\"" + System.lineSeparator() //$NON-NLS-1$
+                + "     referencedIpsProject=\"base\">      The other project used by this project." + System.lineSeparator() //$NON-NLS-1$
+                + "  </" + XML_ELEMENT + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

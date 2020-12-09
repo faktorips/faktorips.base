@@ -13,7 +13,6 @@ package org.faktorips.codegen.conversion.joda;
 import static org.junit.Assert.assertEquals;
 
 import org.faktorips.codegen.conversion.AbstractSingleConversionCgTest;
-import org.faktorips.codegen.conversion.joda.LocalDateToGregorianCalendarCg;
 import org.junit.Before;
 import org.junit.Test;
 

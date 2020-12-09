@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumAttribute;
-import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumAttributeAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -35,7 +34,7 @@ public class EnumAttributeAnnGenTest {
         JavaCodeFragment annotation = new EnumAttributeAnnGen().createAnnotation(attribute);
 
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsEnumAttribute(name = \"foo\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsEnumAttribute(name = \"foo\")" + System.lineSeparator())));
     }
 
     @Test
@@ -46,7 +45,7 @@ public class EnumAttributeAnnGenTest {
         JavaCodeFragment annotation = new EnumAttributeAnnGen().createAnnotation(attribute);
 
         assertThat(annotation.getSourcecode(), is(equalTo("@IpsEnumAttribute(name = \"bar\", identifier = true)"
-                + System.getProperty("line.separator"))));
+                + System.lineSeparator())));
     }
 
     @Test
@@ -57,7 +56,7 @@ public class EnumAttributeAnnGenTest {
         JavaCodeFragment annotation = new EnumAttributeAnnGen().createAnnotation(attribute);
 
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsEnumAttribute(name = \"baz\", unique = true)" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsEnumAttribute(name = \"baz\", unique = true)" + System.lineSeparator())));
     }
 
     @Test
@@ -68,7 +67,7 @@ public class EnumAttributeAnnGenTest {
         JavaCodeFragment annotation = new EnumAttributeAnnGen().createAnnotation(attribute);
 
         assertThat(annotation.getSourcecode(), is(equalTo("@IpsEnumAttribute(name = \"bat\", displayName = true)"
-                + System.getProperty("line.separator"))));
+                + System.lineSeparator())));
     }
 
     @Test
@@ -82,7 +81,7 @@ public class EnumAttributeAnnGenTest {
 
         assertThat(annotation.getSourcecode(),
                 is(equalTo("@IpsEnumAttribute(name = \"foobar\", identifier = true, unique = true, displayName = true)"
-                        + System.getProperty("line.separator"))));
+                        + System.lineSeparator())));
     }
 
 }

@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
-import org.faktorips.devtools.stdbuilder.xtend.PublishedInterfaceAnnGen;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +37,8 @@ public class PublishedInterfaceAnnGenTest {
 
         assertEquals(
                 "@IpsPublishedInterface(implementation = ProductCmptClass.class)"
-                        + System.getProperty("line.separator"), gen.createAnnotation(prod).getSourcecode());
+                        + System.lineSeparator(),
+                gen.createAnnotation(prod).getSourcecode());
     }
 
     @Test
@@ -49,7 +49,8 @@ public class PublishedInterfaceAnnGenTest {
 
         assertEquals(
                 "@IpsPublishedInterface(implementation = ProductCmptGenClass.class)"
-                        + System.getProperty("line.separator"), gen.createAnnotation(prodGen).getSourcecode());
+                        + System.lineSeparator(),
+                gen.createAnnotation(prodGen).getSourcecode());
     }
 
     @Test
@@ -59,7 +60,7 @@ public class PublishedInterfaceAnnGenTest {
         when(policy.addImport(IpsPublishedInterface.class)).thenReturn("IpsPublishedInterface");
 
         assertEquals(
-                "@IpsPublishedInterface(implementation = PolicyCmptClass.class)" + System.getProperty("line.separator"),
+                "@IpsPublishedInterface(implementation = PolicyCmptClass.class)" + System.lineSeparator(),
                 gen.createAnnotation(policy).getSourcecode());
     }
 

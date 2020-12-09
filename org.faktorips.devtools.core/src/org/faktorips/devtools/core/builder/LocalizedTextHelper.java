@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -109,7 +108,7 @@ public class LocalizedTextHelper {
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {
-            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
         builder.javaDoc(sb.toString(), annotations);
     }
@@ -141,7 +140,7 @@ public class LocalizedTextHelper {
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {
-            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
         builder.javaDoc(sb.toString(), annotations);
     }
@@ -177,7 +176,7 @@ public class LocalizedTextHelper {
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {
-            sb.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
         builder.javaDoc(sb.toString(), annotations);
     }

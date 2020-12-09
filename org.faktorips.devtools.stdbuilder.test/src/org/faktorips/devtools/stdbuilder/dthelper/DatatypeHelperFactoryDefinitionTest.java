@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
 import org.junit.Test;
 
 public class DatatypeHelperFactoryDefinitionTest {

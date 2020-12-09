@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A set of <code>Message</code>s.
@@ -273,15 +273,7 @@ public class MessageList implements Iterable<Message> {
      * separator.
      */
     public String getText() {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < size(); i++) {
-            if (i > 0) {
-                s.append(SystemUtils.LINE_SEPARATOR);
-            }
-            s.append(getMessage(i).getText());
-        }
-        return s.toString();
-
+        return IpsStringUtils.join(messages, Message::getText, System.lineSeparator());
     }
 
     /**
@@ -360,11 +352,7 @@ public class MessageList implements Iterable<Message> {
      */
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < size(); i++) {
-            s.append(getMessage(i).toString() + SystemUtils.LINE_SEPARATOR);
-        }
-        return s.toString();
+        return IpsStringUtils.join(messages, System.lineSeparator());
     }
 
     @Override

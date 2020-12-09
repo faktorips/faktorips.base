@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -133,35 +132,35 @@ public class IpsObjectPathXmlPersister {
     public String getXmlFormatDescription() {
         return IpsObjectPathXmlPersister.XML_TAG_NAME
                 + " : " //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "The IpsObjectPath defines where Faktor-IPS searches for model and product definition files/objects for this project." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "Basically it is the same concept as the Java classpath." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "<" + XML_TAG_NAME + " " //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_USE_MANIFEST + "                             Boolean flag that indicates whether the IpsObjectPath is managed within the manifest.mf. If this optional attribute is set to \"true\", then no other Attribute oder Child is allowed." //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER + "               Boolean flag that indicates if there are separate output folders for each source folder" //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES + "             The output folder for the generated artefacts that will not be deleted during a " + //$NON-NLS-1$ //$NON-NLS-2$
                 "clean build cycle but may be merged with the generated content during a build cycle" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE + "                     The base package for generated and merable java files" //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES + "              The output folder for the generated artefacts that will be deleted during a clean build " + //$NON-NLS-1$ //$NON-NLS-2$
                 "cycle and newly generated during each build cycle" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED + "                      The base package for generated derived java files" //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "The IpsObjectPath is defined through one or more entries." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "Currently the following entry types are supported:" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + IpsSrcFolderEntry.getXmlFormatDescription() + SystemUtils.LINE_SEPARATOR
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + IpsProjectRefEntry.getXmlFormatDescription() + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + IpsSrcFolderEntry.getXmlFormatDescription() + System.lineSeparator()
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + IpsProjectRefEntry.getXmlFormatDescription() + " " + System.lineSeparator() //$NON-NLS-1$
                 + IpsArchiveEntry.getXmlFormatDescription();
     }
 }

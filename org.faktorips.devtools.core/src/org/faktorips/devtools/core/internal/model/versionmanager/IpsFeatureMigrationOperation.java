@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -174,8 +173,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         StringBuilder description = new StringBuilder();
         for (int i = 0; i < operations.size(); i++) {
             AbstractIpsProjectMigrationOperation operation = operations.get(i);
-            description.append("-> ").append(operation.getTargetVersion()).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
-            description.append(operation.getDescription()).append(SystemUtils.LINE_SEPARATOR);
+            description.append("-> ").append(operation.getTargetVersion()).append(System.lineSeparator()); //$NON-NLS-1$
+            description.append(operation.getDescription()).append(System.lineSeparator());
         }
         return description.toString();
     }

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
 
 /**
@@ -163,7 +162,7 @@ public class JavaCodeFragmentTest {
         assertTrue(fragment2.getImportDeclaration().isCovered(List.class.getName()));
 
         String result = fragment2.getSourcecode();
-        StringTokenizer tokenizer = new StringTokenizer(result, SystemUtils.LINE_SEPARATOR);
+        StringTokenizer tokenizer = new StringTokenizer(result, System.lineSeparator());
         assertEquals("{", tokenizer.nextToken()); //$NON-NLS-1$
         assertEquals("    List", tokenizer.nextToken()); //$NON-NLS-1$
         assertEquals("    {", tokenizer.nextToken()); //$NON-NLS-1$

@@ -20,7 +20,6 @@ import java.util.LinkedHashSet;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
-import org.faktorips.devtools.stdbuilder.xtend.AbstractTypeDeclClassAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -44,13 +43,13 @@ public class AbstractTypeDeclClassAnnGenTest {
 
     // expected outcomes
     private String annAttribute_single = "@IpsAttributes({\"" + ATTRIBUTE1 + "\"})"
-            + System.getProperty("line.separator");
+            + System.lineSeparator();
     private String annAttribute_mult = "@IpsAttributes({\"" + ATTRIBUTE1 + "\", \"" + ATTRIBUTE2 + "\"})"
-            + System.getProperty("line.separator");
+            + System.lineSeparator();
     private String annAssociation_single = "@IpsAssociations({\"" + ASSOCIATION1 + "\"})"
-            + System.getProperty("line.separator");
+            + System.lineSeparator();
     private String annAssociation_mult = "@IpsAssociations({\"" + ASSOCIATION1 + "\", \"" + ASSOCIATION2 + "\"})"
-            + System.getProperty("line.separator");
+            + System.lineSeparator();
 
     @Test
     public void testCreateAnnAttributesNone() {
@@ -76,7 +75,7 @@ public class AbstractTypeDeclClassAnnGenTest {
         XAttribute attribute2 = mock(XAttribute.class);
         when(attribute2.getName()).thenReturn(ATTRIBUTE2);
         doReturn(new LinkedHashSet<XAttribute>(Arrays.asList(attribute1, attribute2))).when(type)
-        .getAllDeclaredAttributes();
+                .getAllDeclaredAttributes();
 
         assertEquals(annAttribute_mult, annGen.createAnnAttributes(type).getSourcecode());
     }

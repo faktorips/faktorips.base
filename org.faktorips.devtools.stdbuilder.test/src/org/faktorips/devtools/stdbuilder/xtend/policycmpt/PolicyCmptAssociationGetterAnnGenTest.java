@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
-import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptAssociationGetterAnnGen;
 import org.junit.Test;
 
 public class PolicyCmptAssociationGetterAnnGenTest {
@@ -25,7 +24,7 @@ public class PolicyCmptAssociationGetterAnnGenTest {
     private static final String INVERSE_ASSOCIATION = "inverseAssociation";
 
     private String annInverseAssociation = "@IpsInverseAssociation(\"" + INVERSE_ASSOCIATION + "\")"
-            + System.getProperty("line.separator");
+            + System.lineSeparator();
 
     private PolicyCmptAssociationGetterAnnGen annGen = new PolicyCmptAssociationGetterAnnGen();
 

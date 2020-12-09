@@ -28,7 +28,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * A JavaSourceFileBuilder that keeps existing imports exactly as found in the source file and adds
@@ -85,8 +84,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         StringBuilder content = new StringBuilder();
         String pack = getPackage();
         content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
+        content.append(System.lineSeparator());
+        content.append(System.lineSeparator());
         JavaCodeFragment code = new JavaCodeFragment();
         try {
             loggerInstanceGenerated = false;
@@ -104,14 +103,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             content.append(importContainer.getSource());
             ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
             if (newImports.getNoOfImports() > 0) {
-                content.append(StringUtil.getSystemLineSeparator());
+                content.append(System.lineSeparator());
                 content.append(newImports);
             }
         } else {
             content.append(code.getImportDeclaration(pack));
         }
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
+        content.append(System.lineSeparator());
+        content.append(System.lineSeparator());
         content.append(code.getSourcecode());
         return content.toString();
     }

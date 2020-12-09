@@ -13,8 +13,8 @@ package org.faktorips.runtime.internal;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -114,15 +114,10 @@ public abstract class Table<R> implements ITable<R> {
      */
     @Override
     public String toString() {
-        StringBuilder output = new StringBuilder();
-        Iterator<R> it = rows.iterator();
-        for (int i = 0; it.hasNext() && i < 10; i++) {
-            if (i != 0) {
-                output.append("\n");
-            }
-            output.append(it.next().toString());
-        }
-        return output.toString();
+        return rows.stream()
+                .limit(10)
+                .map(R::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     @Override
