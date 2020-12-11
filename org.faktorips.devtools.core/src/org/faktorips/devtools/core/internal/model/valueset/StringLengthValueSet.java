@@ -184,7 +184,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
         super.initPropertiesFromXml(element, id);
         Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
         maximumLength = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_MAXIMUMLENGTH));
-        containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
+        containsNull = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_CONTAINS_NULL);
     }
 
     @Override

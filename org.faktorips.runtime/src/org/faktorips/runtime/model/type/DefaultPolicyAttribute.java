@@ -96,12 +96,9 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Method findDefaultValueGetter(Type type) {
-        Method method = type.searchDeclaredMethod(IpsDefaultValue.class, a -> a.value().equals(getName()));
-        if (method == null) {
-            throw new IllegalStateException(
-                    "No method found for retrieving the default value of attribute: " + getName());
-        }
-        return method;
+        return type.findDeclaredMethod(IpsDefaultValue.class, a -> a.value().equals(getName()))
+                .orElseThrow(() -> new IllegalStateException(
+                        "No method found for retrieving the default value of attribute: " + getName()));
     }
 
     @Override

@@ -12,6 +12,7 @@ package org.faktorips.runtime.model.type;
 
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
@@ -227,7 +228,7 @@ public abstract class Association extends TypePart {
      * @see #getSuperAssociation()
      */
     public boolean isOverriding() {
-        return getType().isSuperTypePresent() && getType().getSuperType().isAssociationPresent(getName());
+        return getType().findSuperType().map(s -> s.isAssociationPresent(getName())).orElse(false);
     }
 
     /**
@@ -238,7 +239,18 @@ public abstract class Association extends TypePart {
      * @see #isOverriding()
      */
     public Association getSuperAssociation() {
-        return isOverriding() ? getType().getSuperType().getAssociation(getName()) : null;
+        return findSuperAssociation().orElse(null);
+    }
+
+    /**
+     * Returns the association that is overridden by this association if this association overrides
+     * another one. Otherwise returns an {@link Optional#empty() empty Optional}.
+     * 
+     * @return The association that is overridden by this attribute.
+     * @see #isOverriding()
+     */
+    public Optional<Association> findSuperAssociation() {
+        return isOverriding() ? getType().findSuperType().map(s -> s.getAssociation(getName())) : Optional.empty();
     }
 
     protected Method getGetterMethod() {

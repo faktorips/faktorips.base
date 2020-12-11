@@ -186,6 +186,29 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(new Locale("as")));
         assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(new Locale("hy")));
         assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(new Locale("ko")));
+    }
 
+    @Test
+    public void testIsAttributeTrue_False() {
+        Element allValuesElement = (Element)getTestDocument().getDocumentElement().getElementsByTagName("AllValues")
+                .item(0);
+
+        assertFalse(ValueToXmlHelper.isAttributeTrue(allValuesElement, "containsNull"));
+    }
+
+    @Test
+    public void testIsAttributeTrue_True() {
+        Element valueNodeElement = (Element)getTestDocument().getDocumentElement().getElementsByTagName("ValueNode")
+                .item(2);
+
+        assertTrue(ValueToXmlHelper.isAttributeTrue(valueNodeElement, "isNull"));
+    }
+
+    @Test
+    public void testIsAttributeTrue_NotSet() {
+        Element testElement = (Element)getTestDocument().getDocumentElement().getElementsByTagName("TestElement")
+                .item(0);
+
+        assertFalse(ValueToXmlHelper.isAttributeTrue(testElement, "foobar"));
     }
 }

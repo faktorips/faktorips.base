@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -95,7 +96,6 @@ public abstract class Type extends ModelElement {
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
     public Attribute getAttribute(String name) {
-        // TODO Java 8 Optional
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
         if (finder.attribute == null) {
@@ -123,10 +123,19 @@ public abstract class Type extends ModelElement {
     /**
      * Returns the published interface for this type. Returns <code>null</code> if published
      * interfaces are not generated.
+     *
+     * @see #findJavaInterface() findJavaInterface() for null-safe processing
      */
-    // TODO Java 8 Optional?
     public Class<?> getJavaInterface() {
         return annotatedDeclaration.getPublishedInterface();
+    }
+
+    /**
+     * Returns the published interface for this type. if published interfaces are generated,
+     * otherwise an {@link Optional#empty() empty Optional}.
+     */
+    public Optional<Class<?>> findJavaInterface() {
+        return Optional.ofNullable(getJavaInterface());
     }
 
     public Class<?> getDeclarationClass() {
@@ -136,10 +145,10 @@ public abstract class Type extends ModelElement {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());
-        if (getSuperType() != null) {
+        findSuperType().ifPresent(s -> {
             sb.append(" extends ");
-            sb.append(getSuperType().getName());
-        }
+            sb.append(s.getName());
+        });
         return sb.toString();
     }
 
@@ -152,17 +161,31 @@ public abstract class Type extends ModelElement {
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first method that is both annotated with the given annotation and has the correct
      *         annotated properties. <code>null</code> if no such method can be found.
+     * 
+     * @see #findDeclaredMethod(Class, AnnotatedElementMatcher) findDeclaredMethod for null-safe
+     *      processing
      */
-    // TODO Java 8 Optional?
     public <T extends Annotation> Method searchDeclaredMethod(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
-        List<Method> declaredMethods = getDeclaredMethods();
-        for (Method method : declaredMethods) {
-            if (method.isAnnotationPresent(annotationClass) && matcher.matches(method.getAnnotation(annotationClass))) {
-                return method;
-            }
-        }
-        return null;
+        return findDeclaredMethod(annotationClass, matcher).orElse(null);
+    }
+
+    /**
+     * Searches for a method with the given annotation that matches the condition defined by a
+     * {@link AnnotatedElementMatcher matcher}. Only methods in this type's declaration class are
+     * considered, thus no methods from super classes are found.
+     * 
+     * @param annotationClass the class of the annotation the method must be annotated with
+     * @param matcher matcher to determine if the annotation has the correct properties
+     * @return the first method that is both annotated with the given annotation and has the correct
+     *         annotated properties. {@link Optional#empty()} if no such method can be found.
+     */
+    public <T extends Annotation> Optional<Method> findDeclaredMethod(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher) {
+        return getDeclaredMethods().stream()
+                .filter(method -> method.isAnnotationPresent(annotationClass)
+                        && matcher.matches(method.getAnnotation(annotationClass)))
+                .findFirst();
     }
 
     protected List<Method> getDeclaredMethods() {
@@ -290,8 +313,18 @@ public abstract class Type extends ModelElement {
 
     /**
      * Returns this type's super type or <code>null</code> if it has none.
+     * 
+     * @see #findSuperType() findSuperType for null-safe processing
      */
     public abstract Type getSuperType();
+
+    /**
+     * Returns this type's super type if {@link #isSuperTypePresent() present}, otherwise an
+     * {@link Optional#empty() empty Optional}.
+     */
+    public Optional<? extends Type> findSuperType() {
+        return Optional.ofNullable(getSuperType());
+    }
 
     /**
      * Matcher for methods or fields based on annotation properties.

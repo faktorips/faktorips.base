@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -118,7 +119,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME)).booleanValue();
+            changingOverTime = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CHANGING_OVER_TIME);
         }
     }
 

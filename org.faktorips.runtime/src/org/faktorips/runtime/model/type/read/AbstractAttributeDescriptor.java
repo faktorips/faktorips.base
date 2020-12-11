@@ -12,6 +12,7 @@ package org.faktorips.runtime.model.type.read;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.type.Attribute;
 import org.faktorips.runtime.model.type.ModelElement;
@@ -53,18 +54,16 @@ public abstract class AbstractAttributeDescriptor<T extends Attribute> extends P
             // datatype) in this type. That leads to a different implementation being generated
             // but not a new annotation.
 
-            // TODO Java 8 Optional
-            Type superType = type.getSuperType();
-            if (superType != null) {
-                Attribute attribute = superType.getAttribute(getName());
-                if (attribute != null) {
-                    @SuppressWarnings("unchecked")
-                    T overwritingAttribute = (T)attribute.createOverwritingAttributeFor(type);
-                    return overwritingAttribute;
-                }
-            }
-            throw new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
-                    + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found.");
+            Type superType = type.findSuperType()
+                    .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
+                            + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found."));
+            Attribute attribute = Optional.ofNullable(superType.getAttribute(getName()))
+                    .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
+                            + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found."));
+
+            @SuppressWarnings("unchecked")
+            T overwritingAttribute = (T)attribute.createOverwritingAttributeFor(type);
+            return overwritingAttribute;
         }
     }
 

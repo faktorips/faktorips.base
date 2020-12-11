@@ -11,6 +11,7 @@
 package org.faktorips.runtime;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,25 +32,15 @@ public abstract class XmlAbstractTestCase {
      * name as the test case class and the ending "+.xml".
      */
     public final Document getTestDocument() throws Exception {
-        // TODO try-with-resources
-        InputStream is = null;
-        try {
-            String className = getClass().getName();
-            int index = className.lastIndexOf('.');
-            if (index > -1) {
-                className = className.substring(index + 1);
-            }
-            String resourceName = className + ".xml";
-            is = getClass().getResourceAsStream(resourceName);
-            // TODO Objects.requireNonNull
-            if (is == null) {
-                throw new RuntimeException("Can't find resource " + resourceName);
-            }
-            return getDocumentBuilder().parse(is);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
+        String className = getClass().getName();
+        int index = className.lastIndexOf('.');
+        if (index > -1) {
+            className = className.substring(index + 1);
+        }
+        String resourceName = className + ".xml";
+
+        try (InputStream is = getClass().getResourceAsStream(resourceName)) {
+            return getDocumentBuilder().parse(Objects.requireNonNull(is, "Can't find resource " + resourceName));
         }
     }
 

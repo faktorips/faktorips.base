@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.IModelObject;
@@ -105,10 +106,15 @@ public class PolicyCmptType extends Type {
 
     @Override
     public PolicyCmptType getSuperType() {
+        return findSuperType().orElse(null);
+    }
+
+    @Override
+    public Optional<PolicyCmptType> findSuperType() {
         Class<?> superclass = getJavaClass().getSuperclass();
         return IpsModel.isPolicyCmptType(superclass)
-                ? IpsModel.getPolicyCmptType(superclass.asSubclass(IModelObject.class))
-                : null;
+                ? Optional.of(IpsModel.getPolicyCmptType(superclass.asSubclass(IModelObject.class)))
+                : Optional.empty();
     }
 
     @Override

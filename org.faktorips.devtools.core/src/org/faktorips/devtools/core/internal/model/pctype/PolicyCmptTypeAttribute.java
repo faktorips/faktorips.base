@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -420,7 +421,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        boolean productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+        boolean productRelevant = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_PRODUCT_RELEVANT);
         valueSetConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT))
                 .booleanValue() || productRelevant;
         relevanceConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT))

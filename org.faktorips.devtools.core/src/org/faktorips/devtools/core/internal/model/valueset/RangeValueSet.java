@@ -472,8 +472,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             upperBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_UPPERBOUND));
             step = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_STEP));
         }
-        containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
-        empty = Boolean.valueOf(el.getAttribute(PROPERTY_EMPTY)).booleanValue();
+        containsNull = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_CONTAINS_NULL);
+        empty = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_EMPTY);
     }
 
     @Override

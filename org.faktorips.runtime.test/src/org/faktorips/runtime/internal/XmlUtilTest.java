@@ -11,10 +11,13 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.junit.Test;
@@ -33,6 +36,17 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNotNull(testElement);
         assertEquals("öäüÖÄÜß", testElement.getAttribute("value"));
         assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement"));
+    }
+
+    @Test
+    public void testFindFirstElement() {
+        Document doc = getTestDocument();
+        Optional<Element> docElement = XmlUtil.findFirstElement(doc, "DocElement");
+        assertTrue(docElement.isPresent());
+        Optional<Element> testElement = XmlUtil.findFirstElement(docElement.get(), "TestElement");
+        assertTrue(testElement.isPresent());
+        assertEquals("öäüÖÄÜß", testElement.get().getAttribute("value"));
+        assertFalse(XmlUtil.findFirstElement(docElement.get(), "UnknownElement").isPresent());
     }
 
     @Test

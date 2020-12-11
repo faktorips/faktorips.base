@@ -132,7 +132,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
         List<ITestValue> values = Arrays.asList(testCase.getTestValues());
         for (ITestValueParameter param : params) {
             boolean found = false;
-            int idxInTestCase = 0;
             for (ITestValue value : values) {
                 if (value.getTestValueParameter().equals(param.getName())) {
                     found = true;
@@ -140,7 +139,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
                     checkSortOrder(param, value);
                     break;
                 }
-                idxInTestCase++;
             }
             if (!found) {
                 missing.add(param);
@@ -165,7 +163,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
         }
 
         for (ITestRuleParameter param : params) {
-            int idxInTestCase = 0;
             for (ITestRule rule : rules) {
                 if (rule.getTestRuleParameter().equals(param.getName())) {
                     // check if the order is equal
@@ -173,7 +170,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
                     break;
                 }
             }
-            idxInTestCase++;
             if (differentTestParameterOrder) {
                 // abort because at least on difference found
                 break;

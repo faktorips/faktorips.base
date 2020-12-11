@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -106,17 +108,21 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     protected abstract IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry);
 
+    private IProductComponentGeneration getProductComponentGenerationAtValidFromOrNull(String productCmptId,
+            Optional<GenerationTocEntry> generationTocEntry) {
+        return generationTocEntry
+                .map(GenerationTocEntry::getValidFrom)
+                .map(v -> getProductComponentGenerationInternal(productCmptId, v))
+                .orElse(null);
+    }
+
     @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String id, Calendar effectiveDate) {
         ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
         if (tocEntry == null) {
             return null;
         }
-        GenerationTocEntry generationTocEntry = tocEntry.getGenerationEntry(effectiveDate);
-        if (generationTocEntry == null) {
-            return null;
-        }
-        return getProductComponentGenerationInternal(id, generationTocEntry.getValidFrom());
+        return getProductComponentGenerationAtValidFromOrNull(id, tocEntry.findGenerationEntry(effectiveDate));
     }
 
     @Override
@@ -127,11 +133,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         Date validFromAsDate = generation.getValidFrom(TimeZone.getDefault());
         Calendar validFromAsCalendar = Calendar.getInstance();
         validFromAsCalendar.setTime(validFromAsDate);
-        GenerationTocEntry generationTocEntry = tocEntry.getNextGenerationEntry(validFromAsCalendar);
-        if (generationTocEntry == null) {
-            return null;
-        }
-        return getProductComponentGenerationInternal(id, generationTocEntry.getValidFrom());
+        return getProductComponentGenerationAtValidFromOrNull(id,
+                tocEntry.findNextGenerationEntry(validFromAsCalendar));
     }
 
     @Override
@@ -142,21 +145,16 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         Date validFromAsDate = generation.getValidFrom(TimeZone.getDefault());
         Calendar validFromAsCalendar = Calendar.getInstance();
         validFromAsCalendar.setTime(validFromAsDate);
-        GenerationTocEntry generationTocEntry = tocEntry.getPreviousGenerationEntry(validFromAsCalendar);
-        if (generationTocEntry == null) {
-            return null;
-        }
-        return getProductComponentGenerationInternal(id, generationTocEntry.getValidFrom());
+        return getProductComponentGenerationAtValidFromOrNull(id,
+                tocEntry.findPreviousGenerationEntry(validFromAsCalendar));
     }
 
     @Override
     protected IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
-        if (productCmpt == null) {
-            throw new NullPointerException("The parameter productCmpt must not be null.");
-        }
+        Objects.requireNonNull(productCmpt, "The parameter productCmpt must not be null.");
         ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(productCmpt.getId());
-        GenerationTocEntry entryGeneration = tocEntry.getLatestGenerationEntry();
-        return getProductComponentGenerationInternal(productCmpt.getId(), entryGeneration.getValidFrom());
+        return getProductComponentGenerationAtValidFromOrNull(productCmpt.getId(),
+                tocEntry.findLatestGenerationEntry());
     }
 
     @Override
@@ -186,11 +184,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         if (tocEntry == null) {
             return null;
         }
-        GenerationTocEntry generationTocEntry = tocEntry.getGenerationEntry(generationId.getValidFrom());
-        if (generationTocEntry == null) {
-            return null;
-        }
-        return createProductCmptGeneration(generationTocEntry);
+        return tocEntry.findGenerationEntry(generationId.getValidFrom()).map(this::createProductCmptGeneration)
+                .orElse(null);
     }
 
     protected abstract IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry generationTocEntry);

@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
 import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
@@ -769,7 +770,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
-        persistentProject = Boolean.valueOf(element.getAttribute(ATTRIBUTE_PERSISTENT_PROJECT)).booleanValue();
+        persistentProject = ValueToXmlHelper.isAttributeTrue(element, ATTRIBUTE_PERSISTENT_PROJECT);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         changesInTimeConventionIdForGeneratedCode = element.getAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
         changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)

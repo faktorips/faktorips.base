@@ -11,17 +11,11 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.jar.JarFile;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -162,8 +156,7 @@ public class ClassLoaderProvider {
             }
             if (event.getType() == IResourceChangeEvent.PRE_DELETE) {
                 try {
-                    // TODO JAVA8: remove this hack and just use URLClassLoader#close()
-                    ClassLoaderCloser.close(classLoader);
+                    classLoader.close();
                 } catch (IOException e) {
                     IpsPlugin.log(e);
                 }
@@ -179,83 +172,4 @@ public class ClassLoaderProvider {
             }
         }
     }
-
-    private static class ClassLoaderCloser {
-
-        /* adapted from http://planet.jboss.org/post/classloaders_keeping_jar_files_open */
-        static void close(URLClassLoader classLoader) throws IOException {
-            // on Java 7+, use the close()-Method
-            boolean closedViaMethodCall = invokeMethod(URLClassLoader.class, "close", classLoader); //$NON-NLS-1$
-            if (!closedViaMethodCall) {
-                Object urlClassPath = getFieldValue(URLClassLoader.class, classLoader, "ucp"); //$NON-NLS-1$
-                Collection<?> loaders = getFieldValue(urlClassPath, "loaders"); //$NON-NLS-1$
-                if (loaders != null) {
-                    List<IOException> errors = new LinkedList<IOException>();
-                    for (Object jarLoader : loaders) {
-                        JarFile jarFile = getFieldValue(jarLoader, "jar"); //$NON-NLS-1$
-                        if (jarFile != null) {
-                            try {
-                                jarFile.close();
-                            } catch (IOException e) {
-                                errors.add(e);
-                            }
-                        }
-                    }
-                    if (!errors.isEmpty()) {
-                        // Can't add other exceptions as suppressed in Java 6...
-                        throw errors.get(0);
-                    }
-                }
-            }
-        }
-
-        static boolean invokeMethod(Class<URLClassLoader> clazz, String methodName, URLClassLoader object) {
-            Method method = null;
-            try {
-                method = clazz.getMethod(methodName);
-            } catch (SecurityException e) {
-                return false;
-            } catch (NoSuchMethodException e) {
-                return false;
-            }
-            if (method != null) {
-                try {
-                    method.invoke(object);
-                    return true;
-                } catch (IllegalArgumentException e) {
-                    return false;
-                } catch (IllegalAccessException e) {
-                    return false;
-                } catch (InvocationTargetException e) {
-                    return false;
-                }
-            }
-            return false;
-        }
-
-        private static <V> V getFieldValue(Object o, String fieldName) {
-            return getFieldValue(o.getClass(), o, fieldName);
-        }
-
-        @SuppressWarnings("unchecked")
-        private static <V> V getFieldValue(Class<?> c, Object o, String fieldName) {
-            if (o == null) {
-                return null;
-            }
-            try {
-                Field field = c.getDeclaredField(fieldName);
-                field.setAccessible(true);
-                return (V)field.get(o);
-            } catch (SecurityException e) {
-                return null;
-            } catch (NoSuchFieldException e) {
-                return null;
-            } catch (IllegalArgumentException e) {
-                return null;
-            } catch (IllegalAccessException e) {
-                return null;
-            }
-        }
-    }
-
 }

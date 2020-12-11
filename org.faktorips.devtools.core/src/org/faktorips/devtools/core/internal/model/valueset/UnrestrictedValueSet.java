@@ -118,7 +118,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super.initPropertiesFromXml(element, id);
         Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
         if (el.hasAttribute(PROPERTY_CONTAINS_NULL)) {
-            containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
+            containsNull = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_CONTAINS_NULL);
         }
     }
 

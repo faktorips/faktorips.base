@@ -46,6 +46,12 @@ public class ProductCmptTypeTest {
     }
 
     @Test
+    public void testFindSuperType() throws Exception {
+        assertThat(productCmptType.findSuperType().map(Type::getName).get(), is(superProductModel.getName()));
+        assertThat(superProductModel.findSuperType().isPresent(), is(false));
+    }
+
+    @Test
     public void testIsConfiguredByProductCmptType() throws Exception {
         assertThat(productCmptType.isConfigurationForPolicyCmptType(), is(true));
         assertThat(superProductModel.isConfigurationForPolicyCmptType(), is(false));

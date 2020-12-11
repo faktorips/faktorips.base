@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -726,7 +727,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        qualified = Boolean.valueOf(element.getAttribute(PROPERTY_QUALIFIED)).booleanValue();
+        qualified = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_QUALIFIED);
         inverseAssociation = element.getAttribute(PROPERTY_INVERSE_ASSOCIATION);
         sharedAssociation = Boolean.parseBoolean(element.getAttribute(PROPERTY_SHARED_ASSOCIATION));
         matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);

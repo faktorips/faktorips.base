@@ -11,6 +11,7 @@
 package org.faktorips.runtime.model.type;
 
 import java.util.Calendar;
+import java.util.Optional;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
@@ -90,7 +91,7 @@ public abstract class Attribute extends TypePart {
      * @see #getSuperAttribute()
      */
     public boolean isOverriding() {
-        return getType().isSuperTypePresent() && getType().getSuperType().isAttributePresent(getName());
+        return getType().findSuperType().map(s -> s.isAttributePresent(getName())).orElse(false);
     }
 
     /**
@@ -101,7 +102,18 @@ public abstract class Attribute extends TypePart {
      * @see #isOverriding()
      */
     public Attribute getSuperAttribute() {
-        return isOverriding() ? getType().getSuperType().getAttribute(getName()) : null;
+        return findSuperAttribute().orElse(null);
+    }
+
+    /**
+     * Returns the attribute that is overridden by this attribute if this attribute overrides
+     * another one. Otherwise returns <code>null</code>.
+     * 
+     * @return The attribute that is overridden by this attribute.
+     * @see #isOverriding()
+     */
+    public Optional<Attribute> findSuperAttribute() {
+        return isOverriding() ? getType().findSuperType().map(s -> s.getAttribute(getName())) : Optional.empty();
     }
 
     @Override

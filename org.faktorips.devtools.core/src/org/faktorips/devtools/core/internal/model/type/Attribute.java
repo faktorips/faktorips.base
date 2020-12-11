@@ -124,7 +124,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
-        overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
+        overwrites = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_OVERWRITES);
     }
 
     protected abstract void initPropertyDefaultChangingOverTime();

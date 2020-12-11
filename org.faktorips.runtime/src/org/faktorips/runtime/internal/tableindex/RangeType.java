@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.TreeMap;
 
 /**
@@ -40,9 +41,14 @@ public enum RangeType {
     LOWER_BOUND {
         @Override
         public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
+            return findValue(tree, key).orElse(null);
+        }
+
+        @Override
+        public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> floorEntry = tree.floorEntry(key);
             if (floorEntry == null) {
-                return null;
+                return Optional.empty();
             }
             return getLowerValueIfNeccessary(tree, key, floorEntry);
         }
@@ -52,11 +58,15 @@ public enum RangeType {
      * Indicates that the keys are meant to be the lower bound of a range including the lower bound.
      */
     LOWER_BOUND_EQUAL {
-
         @Override
         public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
+            return findValue(tree, key).orElse(null);
+        }
+
+        @Override
+        public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> floorEntry = tree.floorEntry(key);
-            return getValueOrNull(floorEntry);
+            return getOptionalValue(floorEntry);
         }
     },
 
@@ -71,12 +81,16 @@ public enum RangeType {
      */
     @Deprecated
     UPPER_BOUND {
-
         @Override
         public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
+            return findValue(tree, key).orElse(null);
+        }
+
+        @Override
+        public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
             if (ceilingEntry == null) {
-                return null;
+                return Optional.empty();
             }
             return getHigherValueIfNeccessary(tree, key, ceilingEntry);
         }
@@ -88,8 +102,13 @@ public enum RangeType {
     UPPER_BOUND_EQUAL {
         @Override
         public <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key) {
+            return findValue(tree, key).orElse(null);
+        }
+
+        @Override
+        public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
-            return getValueOrNull(ceilingEntry);
+            return getOptionalValue(ceilingEntry);
         }
     };
 
@@ -100,37 +119,49 @@ public enum RangeType {
      * 
      * @return the matching value in the given {@link TreeMap} or <code>null</code> if no matching
      *         value could be found.
+     * 
      */
-    // TODO Java 8 Optional
+    // @see #findValue(TreeMap&lt;K,V&gt;,K) findValue(TreeMap&lt;K,V&gt;,K) for null-safe
+    // processing
+
     public abstract <K extends Comparable<? super K>, V> V getValue(TreeMap<K, V> tree, K key);
 
-    private static <K extends Comparable<? super K>, V> V getLowerValueIfNeccessary(TreeMap<K, V> tree,
+    /**
+     * Retrieves the matching value from the given map using the given key. The strategy used to
+     * retrieve the value depends on the type of key. It differs in how the bounds of ranges are
+     * processed.
+     * 
+     * @return the matching value in the given {@link TreeMap} or an {@link Optional#empty() empty
+     *         Optional} if no matching value could be found.
+     */
+    public abstract <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key);
+
+    private static <K extends Comparable<? super K>, V> Optional<V> getLowerValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> floorEntry) {
         if (floorEntry.getKey().compareTo(key) < 0) {
-            return floorEntry.getValue();
+            return Optional.ofNullable(floorEntry.getValue());
         } else {
             Entry<K, V> lowerEntry = tree.lowerEntry(floorEntry.getKey());
-            return getValueOrNull(lowerEntry);
+            return getOptionalValue(lowerEntry);
         }
     }
 
-    private static <K extends Comparable<? super K>, V> V getHigherValueIfNeccessary(TreeMap<K, V> tree,
+    private static <K extends Comparable<? super K>, V> Optional<V> getHigherValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> ceilingEntry) {
         if (ceilingEntry.getKey().compareTo(key) > 0) {
-            return ceilingEntry.getValue();
+            return Optional.ofNullable(ceilingEntry.getValue());
         } else {
             Entry<K, V> higherEntry = tree.higherEntry(ceilingEntry.getKey());
-            return getValueOrNull(higherEntry);
+            return getOptionalValue(higherEntry);
         }
     }
 
-    private static <K, V> V getValueOrNull(Entry<K, V> entry) {
-        if (entry != null) {
-            return entry.getValue();
-        } else {
-            return null;
+    private static <K, V> Optional<V> getOptionalValue(Entry<K, V> entry) {
+        if (entry == null) {
+            return Optional.empty();
         }
+        return Optional.ofNullable(entry.getValue());
     }
 }
