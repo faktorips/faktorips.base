@@ -102,7 +102,8 @@ class UniqueIdentifierValidator {
         return violatingString;
     }
 
-    private synchronized AttributeValues getAttributeValues(ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
+    private synchronized AttributeValues getAttributeValues(
+            ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
             int index) {
         AttributeValues attributeValues = columnAttributeValuesCopy.get(index);
         if (attributeValues == null) {
@@ -144,12 +145,7 @@ class UniqueIdentifierValidator {
                 0.75f, 1);
 
         public void addIdentifier(LocalizedString identifier) {
-            Integer count = identifierCounts.get(identifier);
-            if (count == null) {
-                identifierCounts.put(identifier, 1);
-            } else {
-                identifierCounts.put(identifier, count + 1);
-            }
+            identifierCounts.put(identifier, identifierCounts.getOrDefault(identifier, 0) + 1);
         }
 
         public boolean isDuplicated(LocalizedString identifier) {

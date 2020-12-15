@@ -72,21 +72,13 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
     }
 
     protected int getInitialSize(Class<?> typeClass) {
-        // TODO Java 8 getOrDefault
-        Integer initSize = initialSizeMap.get(typeClass);
-        if (initSize == null) {
-            initSize = defaultInitialSize;
-        }
+        Integer initSize = initialSizeMap.getOrDefault(typeClass, defaultInitialSize);
         return initSize;
     }
 
     @Override
     public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
-        // TODO Java 8 getOrDefault
-        Integer initSize = initialSizeMap.get(computable.getValueClass());
-        if (initSize == null) {
-            initSize = defaultInitialSize;
-        }
+        Integer initSize = initialSizeMap.getOrDefault(computable.getValueClass(), defaultInitialSize);
         return new Memoizer<K, V>(computable, initSize, laodFactor, concurrencyLevel);
     }
 
