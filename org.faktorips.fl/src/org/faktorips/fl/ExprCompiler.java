@@ -253,11 +253,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * Registers the binary operation.
      */
     public void register(BinaryOperation<T> op) {
-        List<BinaryOperation<T>> operatorOperations = binaryOperations.get(op.getOperator());
-        if (operatorOperations == null) {
-            operatorOperations = new ArrayList<BinaryOperation<T>>(20);
-            binaryOperations.put(op.getOperator(), operatorOperations);
-        }
+        List<BinaryOperation<T>> operatorOperations = binaryOperations.computeIfAbsent(op.getOperator(), $ -> new ArrayList<BinaryOperation<T>>(20));
         operatorOperations.add(op);
         op.setCompiler(this);
     }
@@ -266,11 +262,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * Registers the unary operation.
      */
     public void register(UnaryOperation<T> op) {
-        List<UnaryOperation<T>> operatorOperations = unaryOperations.get(op.getOperator());
-        if (operatorOperations == null) {
-            operatorOperations = new ArrayList<UnaryOperation<T>>(20);
-            unaryOperations.put(op.getOperator(), operatorOperations);
-        }
+        List<UnaryOperation<T>> operatorOperations = unaryOperations.computeIfAbsent(op.getOperator(), $ -> new ArrayList<UnaryOperation<T>>(20));
         operatorOperations.add(op);
     }
 

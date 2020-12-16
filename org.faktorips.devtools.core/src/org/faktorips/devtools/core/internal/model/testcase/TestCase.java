@@ -70,7 +70,7 @@ import org.w3c.dom.Element;
 public class TestCase extends IpsObject implements ITestCase {
 
     /** Name of corresponding test case type */
-    private String testCaseType = ""; //$NON-NLS-1$
+    private String testCaseTypeName = ""; //$NON-NLS-1$
 
     /** Children */
     private List<IIpsObjectPart> testObjects = new ArrayList<IIpsObjectPart>();
@@ -137,22 +137,22 @@ public class TestCase extends IpsObject implements ITestCase {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        testCaseType = element.getAttribute(PROPERTY_TEST_CASE_TYPE);
+        testCaseTypeName = element.getAttribute(PROPERTY_TEST_CASE_TYPE);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TEST_CASE_TYPE, testCaseType);
+        element.setAttribute(PROPERTY_TEST_CASE_TYPE, testCaseTypeName);
     }
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
         // the test case depends on the test case type
-        if (StringUtils.isNotEmpty(testCaseType)) {
+        if (StringUtils.isNotEmpty(testCaseTypeName)) {
             IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                    new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE));
+                    new QualifiedNameType(testCaseTypeName, IpsObjectType.TEST_CASE_TYPE));
             dependencies.add(dependency);
             addDetails(details, dependency, this, PROPERTY_TEST_CASE_TYPE);
 
@@ -242,22 +242,22 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public String getTestCaseType() {
-        return testCaseType;
+        return testCaseTypeName;
     }
 
     @Override
     public void setTestCaseType(String testCaseType) {
-        String oldTestCaseType = this.testCaseType;
-        this.testCaseType = testCaseType;
+        String oldTestCaseType = this.testCaseTypeName;
+        this.testCaseTypeName = testCaseType;
         valueChanged(oldTestCaseType, testCaseType);
     }
 
     @Override
     public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(testCaseType) || ipsProject == null) {
+        if (StringUtils.isEmpty(testCaseTypeName) || ipsProject == null) {
             return null;
         }
-        return (ITestCaseType)ipsProject.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
+        return (ITestCaseType)ipsProject.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName);
     }
 
     @Override
@@ -456,14 +456,9 @@ public class TestCase extends IpsObject implements ITestCase {
                         new IpsStatus(NLS.bind(Messages.TestCase_Error_TestParameterNotFound, testParameterName)));
             }
 
-            List<ITestObject> oldObjectsToTestParam = oldTestObject.get(testParameter);
-            if (oldObjectsToTestParam == null) {
-                oldObjectsToTestParam = new ArrayList<ITestObject>(1);
-                oldObjectsToTestParam.add(testObject);
-            } else {
-                oldObjectsToTestParam.add(testObject);
-            }
-            oldTestObject.put(testParameter, oldObjectsToTestParam);
+            List<ITestObject> oldObjectsToTestParam = oldTestObject.computeIfAbsent(testParameter,
+                    $ -> new ArrayList<ITestObject>(1));
+            oldObjectsToTestParam.add(testObject);
         }
 
         ITestCaseType testCaseType = findTestCaseType(ipsProject);
@@ -1002,7 +997,7 @@ public class TestCase extends IpsObject implements ITestCase {
         super.validateThis(messageList, ipsProject);
         ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound == null) {
-            String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, testCaseType);
+            String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, testCaseTypeName);
             Message msg = new Message(MSGCODE_TEST_CASE_TYPE_NOT_FOUND, text, Message.ERROR, this,
                     ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
             messageList.add(msg);

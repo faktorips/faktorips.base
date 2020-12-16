@@ -41,7 +41,8 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         super(builderSet);
     }
 
-    public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+    public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet,
+            LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
     }
 
@@ -125,12 +126,8 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
     /* protected */public AbstractPropertiesGenerator getMessagesGenerator(IIpsPackageFragmentRoot root,
             ISupportedLanguage supportedLanguage) {
         IFile propertyFile = getPropertyFile(root, supportedLanguage);
-        AbstractPropertiesGenerator messagesGenerator = propertiesGeneratorMap.get(propertyFile);
-        if (messagesGenerator == null) {
-            messagesGenerator = createNewMessageGenerator(propertyFile, supportedLanguage);
-            propertiesGeneratorMap.put(propertyFile, messagesGenerator);
-        }
-        return messagesGenerator;
+        return propertiesGeneratorMap.computeIfAbsent(propertyFile,
+                f -> createNewMessageGenerator(f, supportedLanguage));
     }
 
     @Override

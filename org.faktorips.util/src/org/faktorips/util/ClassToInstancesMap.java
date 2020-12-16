@@ -247,29 +247,9 @@ public class ClassToInstancesMap<T> {
      * @type K a sub class of the key
      */
     private <K extends T> List<K> getInstanceList(Class<K> key) {
-        List<? extends T> list = internalMap.get(key);
-        if (list == null) {
-            list = putNewListIfAbsent(key);
-        }
         @SuppressWarnings("unchecked")
-        List<K> castedList = (List<K>)list;
+        List<K> castedList = (List<K>)internalMap.computeIfAbsent(key, $ -> new ArrayList<K>());
         return castedList;
-    }
-
-    /**
-     * Returns the list instance that is mapped to by the given key in the internal map. Even if
-     * multiple threads create new lists concurrently, the one list instance in the map is returned.
-     * 
-     * @param key the key that should map to the new set instance
-     */
-    private <K extends T> List<? extends T> putNewListIfAbsent(Class<K> key) {
-        List<? extends T> newlyCreatedList = new ArrayList<T>();
-        List<? extends T> existentList = internalMap.putIfAbsent(key, newlyCreatedList);
-        if (existentList != null) {
-            return existentList;
-        } else {
-            return newlyCreatedList;
-        }
     }
 
 }

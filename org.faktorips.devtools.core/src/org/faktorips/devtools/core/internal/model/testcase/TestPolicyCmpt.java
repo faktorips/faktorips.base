@@ -438,7 +438,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
                             ITestPolicyCmpt newTestPolicyCmpt = result.newTargetTestPolicyCmptChild();
                             newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
-                            newTestPolicyCmpt.setPolicyCmptType(StringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
+                            newTestPolicyCmpt
+                                    .setPolicyCmptType(StringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
                             newTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt);
 
                             // add all test attribute values as specified in the test parameter type
@@ -633,12 +634,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 oldLinks.size());
         for (ITestPolicyCmptLink testPolicyCmptLink : oldLinks) {
             ITestPolicyCmptTypeParameter paramOfLink = testPolicyCmptLink.findTestPolicyCmptTypeParameter(ipsProject);
-            List<ITestPolicyCmptLink> linkList = param2Links.get(paramOfLink);
-            if (linkList == null) {
-                linkList = new ArrayList<ITestPolicyCmptLink>();
-            }
+            List<ITestPolicyCmptLink> linkList = param2Links.computeIfAbsent(paramOfLink,
+                    $ -> new ArrayList<ITestPolicyCmptLink>());
             linkList.add(testPolicyCmptLink);
-            param2Links.put(paramOfLink, linkList);
         }
 
         // sort the list of links for each parameter in order of their parameter
@@ -878,7 +876,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         if (policyCmptType != null && !policyCmptType.equals(policyCmptTypeOfCandidate)) {
             // maybe the policy cmpt type of the product cmpt candidate is a subtype of the
             // specified type in the test case type param
-            if (policyCmptTypeOfCandidate == null || !policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType, ipsProject)) {
+            if (policyCmptTypeOfCandidate == null
+                    || !policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType, ipsProject)) {
                 String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot,
                         productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,

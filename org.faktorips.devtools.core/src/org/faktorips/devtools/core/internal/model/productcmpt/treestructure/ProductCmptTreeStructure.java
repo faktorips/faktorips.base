@@ -375,12 +375,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                     // ignore it.
                     continue;
                 }
-                List<IProductCmptLink> linksForAssociation = mapping.get(association.getName());
-                if (linksForAssociation == null) {
-                    linksForAssociation = new ArrayList<IProductCmptLink>();
-                    mapping.put(association.getName(), linksForAssociation);
-                    // associations.add(association);
-                }
+                List<IProductCmptLink> linksForAssociation = mapping.computeIfAbsent(association.getName(),
+                        $ -> new ArrayList<IProductCmptLink>());
                 linksForAssociation.add(link);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -444,7 +440,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     @Override
     public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
-            IProductCmptStructureReference parent, boolean includeEmptyAssociations) {
+            IProductCmptStructureReference parent,
+            boolean includeEmptyAssociations) {
 
         if (parent instanceof IProductCmptReference) {
             List<IProductCmptTypeAssociationReference> associationReferences = new ArrayList<IProductCmptTypeAssociationReference>();

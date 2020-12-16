@@ -156,12 +156,8 @@ public class ExpressionDependencyCollector {
     }
 
     private ExpressionDependencyDetail getDependencyDetail(IpsObjectDependency dependency) {
-        ExpressionDependencyDetail detail = getResult().get(dependency);
-        if (detail == null) {
-            detail = new ExpressionDependencyDetail(expression);
-            getResult().put(dependency, detail);
-        }
-        return detail;
+        return getResult().computeIfAbsent(dependency,
+                $ -> new ExpressionDependencyDetail(expression));
     }
 
 }

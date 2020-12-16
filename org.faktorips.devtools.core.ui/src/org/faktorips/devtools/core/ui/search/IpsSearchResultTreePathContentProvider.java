@@ -78,18 +78,13 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     }
 
     private void addMatchedElement(IIpsElement element, IIpsElement child) {
-
-        IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.get(element);
-        if (ipsElementSearchTreeNode == null) {
-
-            IIpsElement parent = getParentOfIpsElement(element);
+        IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.computeIfAbsent(element, e -> {
+            IIpsElement parent = getParentOfIpsElement(e);
             if (parent != null) {
-                addMatchedElement(parent, element);
+                addMatchedElement(parent, e);
             }
-
-            ipsElementSearchTreeNode = new IpsElementSearchTreeNode();
-            ipsElementTree.put(element, ipsElementSearchTreeNode);
-        }
+            return new IpsElementSearchTreeNode();
+        });
 
         if (child != null) {
             ipsElementSearchTreeNode.addChild(child);
@@ -238,9 +233,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             add(viewer, parent);
         }
 
-        if (!ipsElementTree.containsKey(element)) {
-            ipsElementTree.put(element, new IpsElementSearchTreeNode());
-        }
+        ipsElementTree.computeIfAbsent(element, $ -> new IpsElementSearchTreeNode());
 
         if (parent != null) {
             ipsElementTree.get(parent).addChild(element);

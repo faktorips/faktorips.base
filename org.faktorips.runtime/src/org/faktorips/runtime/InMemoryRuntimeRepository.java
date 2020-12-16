@@ -272,13 +272,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
-        SortedSet<IProductComponentGeneration> genSortedSet = productCmptGenLists.get(productCmptId);
-        if (genSortedSet == null) {
-            genSortedSet = new TreeSet<IProductComponentGeneration>(
-                    new ProductCmptGenerationComparator(TimeZone.getDefault()));
-            productCmptGenLists.put(productCmptId, genSortedSet);
-        }
-        return genSortedSet;
+        return productCmptGenLists.computeIfAbsent(productCmptId,
+                $ -> new TreeSet<IProductComponentGeneration>(
+                        new ProductCmptGenerationComparator(TimeZone.getDefault())));
     }
 
     @Override
@@ -390,11 +386,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     public <T extends IRuntimeObject> void putCustomRuntimeObject(Class<T> type,
             String ipsObjectQualifiedName,
             T runtimeObject) {
-        Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.get(type);
-        if (customRuntimeObjects == null) {
-            customRuntimeObjects = new HashMap<String, IRuntimeObject>();
-            customRuntimeObjectsByType.put(type, customRuntimeObjects);
-        }
+        Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.computeIfAbsent(type, $ -> new HashMap<String, IRuntimeObject>());
         customRuntimeObjects.put(ipsObjectQualifiedName, runtimeObject);
     }
 

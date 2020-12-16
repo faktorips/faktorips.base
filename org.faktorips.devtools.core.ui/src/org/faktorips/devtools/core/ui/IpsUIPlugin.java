@@ -820,11 +820,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.get(propertyId);
-        if (factory == null) {
-            factory = new DefaultExtensionPropertyEditFieldFactory();
-            extensionPropertyEditFieldFactoryMap.put(propertyId, factory);
-        }
+        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.computeIfAbsent(propertyId, $ -> new DefaultExtensionPropertyEditFieldFactory());
         return factory;
     }
 

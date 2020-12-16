@@ -278,11 +278,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             pathsTmp.put(path, props);
             if (QualifiedNameType.representsQualifiedNameType(path.toString())) {
                 QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(path.toString());
-                Set<QualifiedNameType> content = packs.get(qualifedNameType.getPackageName());
-                if (content == null) {
-                    content = new HashSet<QualifiedNameType>();
-                    packs.put(qualifedNameType.getPackageName(), content);
-                }
+                Set<QualifiedNameType> content = packs.computeIfAbsent(qualifedNameType.getPackageName(),
+                        $ -> new HashSet<QualifiedNameType>());
                 content.add(qualifedNameType);
             }
         }

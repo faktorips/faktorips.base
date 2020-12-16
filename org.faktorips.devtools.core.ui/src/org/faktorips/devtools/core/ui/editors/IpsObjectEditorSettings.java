@@ -51,11 +51,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
             remove(file, key);
             return;
         }
-        Map<String, String> keyValues = settings.get(getKey(file));
-        if (keyValues == null) {
-            keyValues = new HashMap<String, String>();
-            settings.put(getKey(file), keyValues);
-        }
+        Map<String, String> keyValues = settings.computeIfAbsent(getKey(file), $ -> new HashMap<String, String>());
         keyValues.put(key, value);
     }
 

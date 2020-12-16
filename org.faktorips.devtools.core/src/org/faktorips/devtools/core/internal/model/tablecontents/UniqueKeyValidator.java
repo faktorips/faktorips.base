@@ -176,14 +176,8 @@ public class UniqueKeyValidator {
      * column range keys.
      */
     private void updateUniqueKeysCacheColumn(Row row, int operation, IIndex uniqueKey) {
-        Map<AbstractKeyValue, Set<Row>> keyValueMap = uniqueKeyMapColumn.get(uniqueKey);
-
-        // if not exist, create a new cache (map) for the given unique key first
-        if (keyValueMap == null) {
-            keyValueMap = new HashMap<AbstractKeyValue, Set<Row>>();
-            uniqueKeyMapColumn.put(uniqueKey, keyValueMap);
-        }
-
+        Map<AbstractKeyValue, Set<Row>> keyValueMap = uniqueKeyMapColumn.computeIfAbsent(uniqueKey,
+                $ -> new HashMap<AbstractKeyValue, Set<Row>>());
         updateKeyValueInMap(keyValueMap, KeyValue.createKeyValue(cachedTableStructure, uniqueKey, row), row, operation);
     }
 
@@ -207,15 +201,7 @@ public class UniqueKeyValidator {
             AbstractKeyValue keyValue,
             Row row,
             int operation) {
-
-        Set<Row> rowsForKeyValue = keyValueMap.get(keyValue);
-
-        // key value dosn't exists in cache
-        if (rowsForKeyValue == null) {
-            rowsForKeyValue = new HashSet<Row>(2);
-            keyValueMap.put(keyValue, rowsForKeyValue);
-        }
-        // key value exists, update the cache
+        Set<Row> rowsForKeyValue = keyValueMap.computeIfAbsent(keyValue, $ -> new HashSet<Row>(2));
         if (operation == HANDLE_UNIQUEKEY_ROW_CHANGED) {
             if (!rowsForKeyValue.contains(row)) {
                 // new row
@@ -366,8 +352,9 @@ public class UniqueKeyValidator {
                     cachedTableStructure, tableContentsGeneration.getIpsProject());
         } catch (CoreRuntimeException e) {
             IpsPlugin
-            .log(new IpsStatus(
-                    "Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
+                    .log(new IpsStatus(
+                            "Error searching value datatypes: " //$NON-NLS-1$
+                                    + tableContentsGeneration.getTableContents().getTableStructure()));
             return;
         }
     }
@@ -378,8 +365,9 @@ public class UniqueKeyValidator {
                     tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin
-            .log(new IpsStatus(
-                    "Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
+                    .log(new IpsStatus(
+                            "Error searching TableStructure: " //$NON-NLS-1$
+                                    + tableContentsGeneration.getTableContents().getTableStructure()));
             return;
         }
     }

@@ -64,29 +64,8 @@ public class CustomValidationsMap {
      * @type K a sub class of {@link IIpsObjectPartContainer}.
      */
     private <K extends IIpsObjectPartContainer> Set<ICustomValidation<?>> getInternal(Class<K> key) {
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> set = internalMap.get(key);
-        if (set == null) {
-            return putNewSetIfAbsent(key);
-        } else {
-            return set;
-        }
-    }
-
-    /**
-     * Returns the set instance in the internal map. Even if multiple threads create new sets
-     * concurrently, the one set instance in the map is returned.
-     * 
-     * @param key the key that should map to the new set instance
-     */
-    private <K extends IIpsObjectPartContainer> Set<ICustomValidation<? extends IIpsObjectPartContainer>> putNewSetIfAbsent(Class<K> key) {
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> newlyCreatedSet = new HashSet<ICustomValidation<? extends IIpsObjectPartContainer>>();
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> existentSet = internalMap.putIfAbsent(key,
-                newlyCreatedSet);
-        if (existentSet != null) {
-            return existentSet;
-        } else {
-            return newlyCreatedSet;
-        }
+        return internalMap.computeIfAbsent(key,
+                $ -> new HashSet<ICustomValidation<? extends IIpsObjectPartContainer>>());
     }
 
     /**

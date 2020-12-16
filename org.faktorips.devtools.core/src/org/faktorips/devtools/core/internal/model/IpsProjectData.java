@@ -82,12 +82,8 @@ public class IpsProjectData {
         ArgumentCheck.notNull(containerTypeId);
         ArgumentCheck.notNull(optionalPath);
         ContainerTypeAndPath typeAndPath = new ContainerTypeAndPath(containerTypeId, optionalPath);
-        IIpsObjectPathContainer container = containers.get(typeAndPath);
-        if (container == null) {
-            container = containerFactory.newContainer(ipsProject, containerTypeId, optionalPath);
-            containers.put(typeAndPath, container);
-        }
-        return container;
+        return containers.computeIfAbsent(typeAndPath,
+                $ -> containerFactory.newContainer(ipsProject, containerTypeId, optionalPath));
     }
 
     @Override

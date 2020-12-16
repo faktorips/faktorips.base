@@ -67,19 +67,11 @@ public class UniqueKeyValidatorRange {
     public void updateUniqueKeysCache(Row row, int operation) {
         // update the key value (non two-column-key-item-value)
         KeyValue keyValue = KeyValue.createKeyValue(uniqueKeyValidator.getCachedTableStructure(), uniqueKey, row);
-        Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> listOfRangeMaps = keyValueRanges.get(keyValue);
-        if (listOfRangeMaps == null) {
-            listOfRangeMaps = new HashMap<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>();
-            keyValueRanges.put(keyValue, listOfRangeMaps);
-        }
+        Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> listOfRangeMaps = keyValueRanges.computeIfAbsent(keyValue, $ -> new HashMap<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>());
 
         // update the sorted maps for each two-column-range key item
         for (ColumnRange columnRange : twoColumnRanges) {
-            SortedMap<AbstractKeyValue, Set<Row>> sortedMap = listOfRangeMaps.get(columnRange);
-            if (sortedMap == null) {
-                sortedMap = new TreeMap<AbstractKeyValue, Set<Row>>();
-                listOfRangeMaps.put(columnRange, sortedMap);
-            }
+            SortedMap<AbstractKeyValue, Set<Row>> sortedMap = listOfRangeMaps.computeIfAbsent(columnRange, $ -> new TreeMap<AbstractKeyValue, Set<Row>>());
 
             updateUniqueKeysColumnRange(uniqueKeyValidator.getCachedTableStructure(), row, operation, columnRange,
                     sortedMap);
@@ -273,11 +265,7 @@ public class UniqueKeyValidatorRange {
             List<Row> validRows = updateValidRows(keyValue, keyValueFrom, keyValueObject);
 
             if (validRows.size() > 1) {
-                Set<Row> rowsSameFrom = mapRowsSameFrom.get(keyValueFrom);
-                if (rowsSameFrom == null) {
-                    rowsSameFrom = new HashSet<Row>(2);
-                    mapRowsSameFrom.put(keyValueFrom, rowsSameFrom);
-                }
+                Set<Row> rowsSameFrom = mapRowsSameFrom.computeIfAbsent(keyValueFrom, $ -> new HashSet<Row>(2));
                 rowsSameFrom.addAll(validRows);
             } else if (validRows.size() == 0) {
                 invalidkeyValues.add(keyValueFrom);

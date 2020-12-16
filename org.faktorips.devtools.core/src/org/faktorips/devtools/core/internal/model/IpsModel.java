@@ -279,12 +279,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the data for the given IPS project.
      */
     private IpsProjectData getIpsProjectData(IIpsProject ipsProject) {
-        IpsProjectData data = ipsProjectDatas.get(ipsProject);
-        if (data == null) {
-            data = new IpsProjectData(ipsProject, ipsObjectPathContainerFactory);
-            ipsProjectDatas.put(ipsProject, data);
-        }
-        return data;
+        return ipsProjectDatas.computeIfAbsent(ipsProject, p -> new IpsProjectData(p, ipsObjectPathContainerFactory));
     }
 
     public void startListeningToResourceChanges() {
@@ -484,12 +479,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IIpsProject getIpsProject(String name) {
-        IpsProject ipsProject = projectMap.get(name);
-        if (ipsProject == null) {
-            ipsProject = new IpsProject(this, name);
-            projectMap.put(name, ipsProject);
-        }
-        return ipsProject;
+        return projectMap.computeIfAbsent(name, n -> new IpsProject(this, n));
     }
 
     @Override

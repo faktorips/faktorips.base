@@ -94,11 +94,8 @@ public class PropertyVisibleController implements IPropertyVisibleController {
         }
 
         // Get the mappings for the outer control
-        Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings.get(containerControl);
-        if (propertyMappings == null) {
-            propertyMappings = new HashMap<IProductCmptProperty, Set<Control>>();
-            propertyControlMappings.put(containerControl, propertyMappings);
-        }
+        Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings
+                .computeIfAbsent(containerControl, $ -> new HashMap<IProductCmptProperty, Set<Control>>());
 
         // Build a set from the provided controls
         Set<Control> controlSet = new HashSet<Control>();

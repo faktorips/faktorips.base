@@ -680,11 +680,7 @@ public class BindingContext {
                 for (Message message : messageList) {
                     ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
                     for (ObjectProperty objectProperty : invalidObjectProperties) {
-                        MessageList propertyList = validationMap.get(objectProperty);
-                        if (propertyList == null) {
-                            propertyList = new MessageList();
-                            validationMap.put(objectProperty, propertyList);
-                        }
+                        MessageList propertyList = validationMap.computeIfAbsent(objectProperty, $ -> new MessageList());
                         propertyList.add(message);
                     }
                 }
@@ -704,11 +700,7 @@ public class BindingContext {
             }
             ObjectProperty objectProperty = new ObjectProperty(mapping.getObject(), mapping.getPropertyName());
             MessageList messageList = validationMap.get(objectProperty);
-            MessageList listForField = fieldMessages.get(mapping.getField());
-            if (listForField == null) {
-                listForField = new MessageList();
-                fieldMessages.put(mapping.getField(), listForField);
-            }
+            MessageList listForField = fieldMessages.computeIfAbsent(mapping.getField(), $ -> new MessageList());
             listForField.add(messageList);
         }
         for (Entry<EditField<?>, MessageList> entry : fieldMessages.entrySet()) {

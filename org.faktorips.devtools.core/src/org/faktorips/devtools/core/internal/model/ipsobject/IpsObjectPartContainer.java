@@ -549,8 +549,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract boolean addPartThis(IIpsObjectPart part);
 
     /**
-     * Removes the given part from the container. Returns <code>true</code> if removed, <code>false</code>
-     * otherwise.
+     * Removes the given part from the container. Returns <code>true</code> if removed,
+     * <code>false</code> otherwise.
      * <p>
      * Subclasses may extend this method by using the method
      * {@link #removePartThis(IIpsObjectPart)}.
@@ -897,11 +897,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (details == null) {
             return;
         }
-        List<IDependencyDetail> detailList = details.get(dependency);
-        if (detailList == null) {
-            detailList = new ArrayList<IDependencyDetail>();
-            details.put(dependency, detailList);
-        }
+        List<IDependencyDetail> detailList = details.computeIfAbsent(dependency,
+                $ -> new ArrayList<IDependencyDetail>());
         detailList.add(newDependencyDetail);
     }
 

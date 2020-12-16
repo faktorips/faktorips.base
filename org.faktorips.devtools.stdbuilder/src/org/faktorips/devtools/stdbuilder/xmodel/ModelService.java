@@ -55,11 +55,7 @@ public class ModelService {
             GeneratorModelContext modelContext) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         ArgumentCheck.notNull(nodeClass);
-        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
-        if (nodes == null) {
-            nodes = new LinkedHashSet<AbstractGeneratorModelNode>();
-            generatorModelNodes.put(ipsObjectPartContainer, nodes);
-        }
+        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.computeIfAbsent(ipsObjectPartContainer, $ -> new LinkedHashSet<AbstractGeneratorModelNode>());
         for (AbstractGeneratorModelNode generatorModelNode : nodes) {
             if (nodeClass.equals(generatorModelNode.getClass())) {
                 @SuppressWarnings("unchecked")

@@ -386,12 +386,9 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
 
         // if there are missing test attributes, store the corresponding test policy cmpt
         for (ITestAttribute testAttr : testAttributes) {
-            List<ITestPolicyCmpt> cmptWithMissingTestAttrList = testAttributes2TestPolicyCmpt.get(testAttr);
-            if (cmptWithMissingTestAttrList == null) {
-                cmptWithMissingTestAttrList = new ArrayList<ITestPolicyCmpt>(1);
-            }
+            List<ITestPolicyCmpt> cmptWithMissingTestAttrList = testAttributes2TestPolicyCmpt.computeIfAbsent(testAttr,
+                    $ -> new ArrayList<ITestPolicyCmpt>(1));
             cmptWithMissingTestAttrList.add(cmpt);
-            testAttributes2TestPolicyCmpt.put(testAttr, cmptWithMissingTestAttrList);
             // furthermore indicate a different sort oder of the test attributes
             addDifferentTestAttributeSortOrder(cmpt);
         }
@@ -517,7 +514,8 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     /**
      * Computes all missing test case type side objects, starting with given test policy cmpt link.
      */
-    private List<ITestPolicyCmptLink> computeTestPolicyCmptLinkStructWithMissingTestParameter(ITestPolicyCmptLink[] testPolicyCmptLinks,
+    private List<ITestPolicyCmptLink> computeTestPolicyCmptLinkStructWithMissingTestParameter(
+            ITestPolicyCmptLink[] testPolicyCmptLinks,
             List<ITestPolicyCmpt> missingTestPolicyCmpt,
             List<ITestPolicyCmptLink> missingTestPolicyCmptLink,
             List<ITestAttributeValue> missingTestAttributeValue,

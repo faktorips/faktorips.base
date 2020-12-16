@@ -105,11 +105,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         for (ITocEntryBuilderFactory tocEntryBuilderFactory : tocEntryBuilderFactories) {
             ITocEntryBuilder builder = tocEntryBuilderFactory.createTocEntryBuilder(this);
             IpsObjectType ipsObjectType = builder.getIpsObjectType();
-            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(ipsObjectType);
-            if (builderList == null) {
-                builderList = new ArrayList<ITocEntryBuilder>();
-                ipsObjectTypeToTocEntryBuilderMap.put(ipsObjectType, builderList);
-            }
+            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.computeIfAbsent(ipsObjectType, $ -> new ArrayList<ITocEntryBuilder>());
             builderList.add(builder);
         }
     }
