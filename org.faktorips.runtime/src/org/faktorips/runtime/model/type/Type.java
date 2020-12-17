@@ -21,7 +21,6 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -29,8 +28,7 @@ import org.faktorips.runtime.util.MessagesHelper;
  * type as well as for properties like {@linkplain Attribute attributes} or {@linkplain Association
  * associations}.
  */
-@SuppressWarnings("deprecation")
-public abstract class Type extends ModelElement implements IModelType {
+public abstract class Type extends ModelElement {
 
     private final AnnotatedDeclaration annotatedDeclaration;
 
@@ -61,7 +59,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
-    @Override
     public Association getDeclaredAssociation(int index) {
         return getDeclaredAssociations().get(index);
     }
@@ -71,7 +68,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IndexOutOfBoundsException if no attribute exists for the given <code>index</code>.
      */
-    @Override
     public Attribute getDeclaredAttribute(int index) {
         return getDeclaredAttributes().get(index);
     }
@@ -82,7 +78,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
-    @Override
     public Association getAssociation(String name) {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);
@@ -99,7 +94,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
-    @Override
     public Attribute getAttribute(String name) {
         // TODO Java 8 Optional
         AttributeFinder finder = new AttributeFinder(name);
@@ -122,7 +116,6 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns the Java class for this type.
      */
-    @Override
     public Class<?> getJavaClass() {
         return annotatedDeclaration.getImplementationClass();
     }
@@ -132,7 +125,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * interfaces are not generated.
      */
     // TODO Java 8 Optional?
-    @Override
     public Class<?> getJavaInterface() {
         return annotatedDeclaration.getPublishedInterface();
     }
@@ -183,7 +175,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of associations declared in this type
      */
-    @Override
     public abstract List<? extends Association> getDeclaredAssociations();
 
     /**
@@ -191,7 +182,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of all associations declared in this type or in any super type
      */
-    @Override
     public abstract List<? extends Association> getAssociations();
 
     /**
@@ -206,7 +196,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @see #isAssociationDeclared(String)
      */
-    @Override
     public abstract Association getDeclaredAssociation(String name);
 
     /**
@@ -243,7 +232,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of attributes declared in this type
      */
-    @Override
     public abstract List<? extends Attribute> getDeclaredAttributes();
 
     /**
@@ -276,7 +264,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of all attributes declared in this type or in any supertype
      */
-    @Override
     public abstract List<? extends Attribute> getAttributes();
 
     /**
@@ -290,7 +277,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @see #isAttributeDeclared(String)
      */
-    @Override
     public abstract Attribute getDeclaredAttribute(String name);
 
     /**
@@ -305,7 +291,6 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns this type's super type or <code>null</code> if it has none.
      */
-    @Override
     public abstract Type getSuperType();
 
     /**

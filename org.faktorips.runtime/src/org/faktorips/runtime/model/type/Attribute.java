@@ -15,13 +15,11 @@ import java.util.Calendar;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
 /**
  * A {@link Attribute} represents an attribute from a PolicyCmptType or a ProductCmptType.
  */
-@SuppressWarnings("deprecation")
-public abstract class Attribute extends TypePart implements IModelTypeAttribute {
+public abstract class Attribute extends TypePart {
 
     private final IpsAttribute attributeAnnotation;
 
@@ -44,7 +42,6 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * 
      * @return <code>true</code> if the attribute is changing over time, <code>false</code> if not
      */
-    @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
     }
@@ -56,7 +53,6 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * @return <code>true</code> if this attribute is configured by the product, <code>false</code>
      *         if not
      */
-    @Override
     public abstract boolean isProductRelevant();
 
     /**
@@ -64,7 +60,6 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * 
      * @return the attribute's datatype <code>Class</code>
      */
-    @Override
     public Class<?> getDatatype() {
         return datatype;
     }
@@ -79,34 +74,12 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @deprecated Use {@link #getAttributeKind()}
-     */
-    @Deprecated
-    @Override
-    public AttributeType getAttributeType() {
-        return AttributeType.forName(getAttributeKind().name());
-    }
-
-    /**
      * Returns the <code>ValueSetKind</code> of this attribute.
      * 
      * @return the kind of value set restricting this attribute
      */
     public ValueSetKind getValueSetKind() {
         return attributeAnnotation.valueSetKind();
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @deprecated Use {@link #getValueSetKind()}
-     */
-    @Deprecated
-    @Override
-    public ValueSetType getValueSetType() {
-        return ValueSetType.valueOf(getValueSetKind().name());
     }
 
     /**

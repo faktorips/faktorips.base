@@ -20,13 +20,11 @@ import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
 import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
 /**
  * An association between two {@link Type Types}.
  */
-@SuppressWarnings("deprecation")
-public abstract class Association extends TypePart implements IModelTypeAssociation {
+public abstract class Association extends TypePart {
 
     private final IpsAssociation annotation;
 
@@ -52,7 +50,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * @return the label for the given locale or the element's name if no label exists for the given
      *         locale nor in the default locale
      */
-    @Override
     public String getLabelForPlural(Locale locale) {
         return getDocumentation(locale, DocumentationKind.PLURAL_LABEL, getNamePlural());
     }
@@ -65,20 +62,8 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
     }
 
     /**
-     * Returns what kind of association this is.
-     * 
-     * @deprecated Use {@link #getAssociationKind()}
-     */
-    @Deprecated
-    @Override
-    public AssociationType getAssociationType() {
-        return AssociationType.valueOf(getAssociationKind().name());
-    }
-
-    /**
      * Returns the minimum cardinality for this association. <code>0</code> if no minimum is set.
      */
-    @Override
     public int getMinCardinality() {
         return annotation.min();
     }
@@ -87,7 +72,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * Returns the maximum cardinality for this association. <code>Integer.MAX_VALUE</code> if no
      * maximum is set.
      */
-    @Override
     public int getMaxCardinality() {
         return annotation.max();
     }
@@ -96,7 +80,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * Returns the plural form of this model type's name or the empty String if no plural for the
      * name is set.
      */
-    @Override
     public String getNamePlural() {
         return annotation.pluralName();
     }
@@ -104,7 +87,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
     /**
      * Returns the target {@link Type} of this association.
      */
-    @Override
     public Type getTarget() {
         return IpsModel.getType(annotation.targetClass());
     }
@@ -113,7 +95,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * Returns the singular or plural form of this association's name as used in code generation
      * depending on cardinality.
      */
-    @Override
     public String getUsedName() {
         return isTargetRolePluralRequired() ? getNamePlural() : getName();
     }
@@ -125,7 +106,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
     /**
      * Returns if this association is a derived union.
      */
-    @Override
     public boolean isDerivedUnion() {
         return getter.isAnnotationPresent(IpsDerivedUnion.class);
     }
@@ -133,7 +113,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
     /**
      * Returns if this association is a subset of a derived union.
      */
-    @Override
     public boolean isSubsetOfADerivedUnion() {
         return getter.isAnnotationPresent(IpsSubsetOfDerivedUnion.class);
     }
@@ -144,24 +123,12 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * @return The name of the inverse association or {@code null} if there is no inverse
      *         association or it is a product component associations
      */
-    @Override
     public String getInverseAssociation() {
         if (getter.isAnnotationPresent(IpsInverseAssociation.class)) {
             return getter.getAnnotation(IpsInverseAssociation.class).value();
         } else {
             return null;
         }
-    }
-
-    /**
-     * Returns if this association is product relevant.
-     * 
-     * @deprecated Since 3.18, use isMatchingAssociationPresent
-     */
-    @Deprecated
-    @Override
-    public boolean isProductRelevant() {
-        return isMatchingAssociationPresent();
     }
 
     /**
@@ -173,7 +140,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * 
      * @return <code>true</code> if this association has a matching association.
      */
-    @Override
     public boolean isMatchingAssociationPresent() {
         return getter.isAnnotationPresent(IpsMatchingAssociation.class);
     }
@@ -191,7 +157,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * 
      * @return The name of the matching association
      */
-    @Override
     public String getMatchingAssociationName() {
         if (getter.isAnnotationPresent(IpsMatchingAssociation.class)) {
             return getter.getAnnotation(IpsMatchingAssociation.class).name();
@@ -230,7 +195,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * 
      * @return The qualified name of the matching association source
      */
-    @Override
     public String getMatchingAssociationSource() {
         Type matchingAssociationSource = getMatchingAssociationSourceType();
         if (matchingAssociationSource != null) {
@@ -247,7 +211,6 @@ public abstract class Association extends TypePart implements IModelTypeAssociat
      * 
      * @return The {@link Type} of the matching association source
      */
-    @Override
     public Type getMatchingAssociationSourceType() {
         if (getter.isAnnotationPresent(IpsMatchingAssociation.class)) {
             return IpsModel.getType(getter.getAnnotation(IpsMatchingAssociation.class).source());
