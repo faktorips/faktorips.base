@@ -25,7 +25,6 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.model.type.Type.AnnotatedElementMatcher;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
@@ -97,15 +96,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Method findDefaultValueGetter(Type type) {
-        // TODO FIPS-6802 Java8 refactor
-        AnnotatedElementMatcher<IpsDefaultValue> filter = new AnnotatedElementMatcher<IpsDefaultValue>() {
-            @Override
-            public boolean matches(IpsDefaultValue ann) {
-                return ann.value().equals(getName());
-            }
-        };
-
-        Method method = type.searchDeclaredMethod(IpsDefaultValue.class, filter);
+        Method method = type.searchDeclaredMethod(IpsDefaultValue.class, a -> a.value().equals(getName()));
         if (method == null) {
             throw new IllegalStateException(
                     "No method found for retrieving the default value of attribute: " + getName());
@@ -138,15 +129,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Method findDefaultValueSetter(Type type) {
-        // TODO Java8 refactor
-        AnnotatedElementMatcher<IpsDefaultValueSetter> filter = new AnnotatedElementMatcher<IpsDefaultValueSetter>() {
-            @Override
-            public boolean matches(IpsDefaultValueSetter ann) {
-                return ann.value().equals(getName());
-            }
-        };
-
-        Method method = type.searchDeclaredMethod(IpsDefaultValueSetter.class, filter);
+        Method method = type.searchDeclaredMethod(IpsDefaultValueSetter.class, a -> a.value().equals(getName()));
         if (method == null) {
             throw new IllegalStateException(
                     "No method found for setting the default value of attribute: " + getName());
@@ -196,14 +179,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Method findValueSetMethod(Type type) {
-        AnnotatedElementMatcher<IpsAllowedValues> filter = new AnnotatedElementMatcher<IpsAllowedValues>() {
-            @Override
-            public boolean matches(IpsAllowedValues ann) {
-                return ann.value().equals(getName());
-            }
-        };
-
-        return type.searchDeclaredMethod(IpsAllowedValues.class, filter);
+        return type.searchDeclaredMethod(IpsAllowedValues.class, a -> a.value().equals(getName()));
     }
 
     @Override
@@ -230,15 +206,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Method findAllowedValuesSetter(Type type) {
-        // TODO FIPS-6802 Java8 refactor
-        AnnotatedElementMatcher<IpsAllowedValuesSetter> filter = new AnnotatedElementMatcher<IpsAllowedValuesSetter>() {
-            @Override
-            public boolean matches(IpsAllowedValuesSetter ann) {
-                return ann.value().equals(getName());
-            }
-        };
-
-        Method method = type.searchDeclaredMethod(IpsAllowedValuesSetter.class, filter);
+        Method method = type.searchDeclaredMethod(IpsAllowedValuesSetter.class, a -> a.value().equals(getName()));
         if (method == null) {
             throw new IllegalStateException(
                     "No method found for setting the allowed values of attribute: " + getName());

@@ -17,6 +17,7 @@ package org.faktorips.devtools.core.ui;
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface IDataChangeableStateChangeListener {
 
     /**

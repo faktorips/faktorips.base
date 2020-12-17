@@ -17,7 +17,13 @@ package org.faktorips.runtime;
  * 
  * @author dirmeier
  */
+@FunctionalInterface
 public interface IVersionChecker {
+
+    /**
+     * A strict version checker that requires an exact match of the full version strings.
+     */
+    public static final IVersionChecker STRICT = String::equals;
 
     /**
      * Returns true if the new version is compatible to the old version or both versions are equal

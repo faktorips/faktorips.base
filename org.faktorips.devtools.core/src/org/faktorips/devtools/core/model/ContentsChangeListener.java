@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.model;
 
-
 /**
  * A listener that listens to changes in source files.
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface ContentsChangeListener {
 
     /**

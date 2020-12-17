@@ -11,7 +11,6 @@ package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -45,21 +44,8 @@ public class IpsObjectPartChangeRefreshHelper {
         Assert.isNotNull(viewerToRefresh);
         this.viewerToRefresh = viewerToRefresh;
         this.ipsObject = ipsObject;
-        changeListener = new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                handleEvent(event);
-            }
-
-        };
-        disposeListener = new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                dispose();
-            }
-        };
+        changeListener = this::handleEvent;
+        disposeListener = $ -> dispose();
     }
 
     /**

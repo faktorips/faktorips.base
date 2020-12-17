@@ -49,14 +49,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     public ClassLoaderProductDataProvider(ClassLoaderDataSource dataSource, String tocResourcePath,
             boolean checkTocModifications) {
-        super(new IVersionChecker() {
-
-            @Override
-            public boolean isCompatibleVersion(String oldVersion, String newVersion) {
-                return oldVersion.equals(newVersion);
-            }
-
-        });
+        super(IVersionChecker.STRICT);
 
         this.dataSource = dataSource;
         this.tocResourcePath = tocResourcePath;

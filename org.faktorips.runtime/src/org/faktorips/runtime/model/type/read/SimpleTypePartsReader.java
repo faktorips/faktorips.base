@@ -19,9 +19,9 @@ import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.ModelElement;
 
 /**
- * A simpler {@link TypePartsReader} that creates it's own {@link TypePartCollector} for the
- * case that a {@link ModelElement} is defined with annotations on a single getter method and all
- * child elements are listed in an annotation on their parent element.
+ * A simpler {@link TypePartsReader} that creates it's own {@link TypePartCollector} for the case
+ * that a {@link ModelElement} is defined with annotations on a single getter method and all child
+ * elements are listed in an annotation on their parent element.
  */
 public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation, C extends Annotation> {
     private SimpleGetterMethodCollector<E, P, C> collector;
@@ -78,10 +78,12 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
     private void readMethodsFromAnnotatedParentInterfaces(Class<?> classWithGetterMethods) {
         if (classWithGetterMethods.isInterface()) {
             Deque<Class<?>> superInterfaces = new LinkedList<Class<?>>();
-            Class<?> superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(classWithGetterMethods);
+            Class<?> superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(
+                    classWithGetterMethods);
             while (superInterfaceWithParentAnnotation != null) {
                 superInterfaces.push(superInterfaceWithParentAnnotation);
-                superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(superInterfaceWithParentAnnotation);
+                superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(
+                        superInterfaceWithParentAnnotation);
             }
             while (!superInterfaces.isEmpty()) {
                 typePartsReader.read(AnnotatedDeclaration.from(superInterfaces.pop()));
@@ -105,7 +107,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
     /**
      * Gets the list of names from the parent class annotated with the {@link Annotation} {@code A}
      */
-    // @FunctionalInterface
+    @FunctionalInterface
     public static interface NamesAccessor<A extends Annotation> {
 
         /**
@@ -119,7 +121,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * Gets the name of the child element from a method annotated with the {@link Annotation}
      * {@code C}
      */
-    // @FunctionalInterface
+    @FunctionalInterface
     public static interface NameAccessor<C extends Annotation> {
 
         /**
@@ -133,7 +135,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * Creates a new {@link ModelElement} under the given parent element with the given name and
      * getter method.
      */
-    // @FunctionalInterface
+    @FunctionalInterface
     public static interface ModelElementCreator<T extends ModelElement> {
         /**
          * Creates a new {@link ModelElement} under the given parent element with the given name and

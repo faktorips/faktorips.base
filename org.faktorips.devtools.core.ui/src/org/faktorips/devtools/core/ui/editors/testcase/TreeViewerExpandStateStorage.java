@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -38,24 +39,6 @@ public class TreeViewerExpandStateStorage {
     private String selectedItemPath;
 
     private TreeItem selectedTreeItem;
-
-    private interface TreeItemActionStrategy {
-        public void execute(TreeItem treeItem);
-    }
-
-    private class SelectStrategy implements TreeItemActionStrategy {
-        @Override
-        public void execute(TreeItem treeItem) {
-            treeViewer.setSelection(new StructuredSelection(treeItem.getData()));
-        }
-    }
-
-    private class ExpandStrategy implements TreeItemActionStrategy {
-        @Override
-        public void execute(TreeItem treeItem) {
-            treeViewer.setExpandedState(treeItem.getData(), true);
-        }
-    }
 
     public TreeViewerExpandStateStorage(TreeViewer treeViewer) {
         this.treeViewer = treeViewer;
@@ -89,11 +72,13 @@ public class TreeViewerExpandStateStorage {
     }
 
     private void searchAndSelectInTree(String itemPath, TreeItem[] items, String parent) {
-        searchAndProcessInTree(itemPath, items, parent, new SelectStrategy());
+        searchAndProcessInTree(itemPath, items, parent,
+                treeItem -> treeViewer.setSelection(new StructuredSelection(treeItem.getData())));
     }
 
     private void searchAndExpandInTree(String itemPath, TreeItem[] items, String parent) {
-        searchAndProcessInTree(itemPath, items, parent, new ExpandStrategy());
+        searchAndProcessInTree(itemPath, items, parent,
+                treeItem -> treeViewer.setExpandedState(treeItem.getData(), true));
     }
 
     private void storeCheckedElements() {
@@ -128,9 +113,9 @@ public class TreeViewerExpandStateStorage {
     }
 
     private boolean searchAndProcessInTree(String itemPath,
-            TreeItem childs[],
+            TreeItem[] childs,
             String parent,
-            TreeItemActionStrategy strategy) {
+            Consumer<TreeItem> strategy) {
 
         for (TreeItem child : childs) {
             if (child.isDisposed()) {
@@ -142,10 +127,10 @@ public class TreeViewerExpandStateStorage {
             }
 
             if (itemPath.equals(pathOfChild)) {
-                strategy.execute(child);
+                strategy.accept(child);
                 return true;
             }
-            TreeItem subChilds[] = child.getItems();
+            TreeItem[] subChilds = child.getItems();
             if (searchAndProcessInTree(itemPath, subChilds, pathOfChild, strategy)) {
                 return true;
             }
@@ -153,7 +138,7 @@ public class TreeViewerExpandStateStorage {
         return false;
     }
 
-    private void checkExpandedStatus(ArrayList<String> expandedItems, TreeItem childs[], String parent) {
+    private void checkExpandedStatus(ArrayList<String> expandedItems, TreeItem[] childs, String parent) {
         for (TreeItem item : childs) {
             String itemPath = getItemPath(parent, item);
             if (item.isDisposed() || itemPath == null) {

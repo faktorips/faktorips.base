@@ -17,25 +17,14 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.faktorips.runtime.util.function.IPredicate;
+import java.util.function.Predicate;
+
 import org.junit.Test;
 
 public class MessageListTest {
 
-    private final IPredicate<IMarker> requiredInformationMarker = new IPredicate<IMarker>() {
-
-        @Override
-        public boolean test(IMarker t) {
-            return t.isRequiredInformationMissing();
-        }
-    };
-    private final IPredicate<IMarker> technicalConstraintViolatedInstance = new IPredicate<IMarker>() {
-
-        @Override
-        public boolean test(IMarker t) {
-            return t instanceof TechnicalConstraintViolated;
-        }
-    };
+    private final Predicate<IMarker> requiredInformationMarker = IMarker::isRequiredInformationMissing;
+    private final Predicate<IMarker> technicalConstraintViolatedInstance = TechnicalConstraintViolated.class::isInstance;
 
     @Test
     public void testAddMessage() {
@@ -301,12 +290,7 @@ public class MessageListTest {
         list.add(msg1);
         list.add(msg2);
 
-        MessageList messagesWithAnyMarker = list.getMessagesByMarker(new IPredicate<IMarker>() {
-            @Override
-            public boolean test(IMarker t) {
-                return true;
-            }
-        });
+        MessageList messagesWithAnyMarker = list.getMessagesByMarker(t -> true);
         assertEquals(2, messagesWithAnyMarker.size());
         assertSame(msg1, messagesWithAnyMarker.getMessage(0));
         assertSame(msg2, messagesWithAnyMarker.getMessage(1));
@@ -315,7 +299,7 @@ public class MessageListTest {
     @Test(expected = NullPointerException.class)
     public void testGetMessagesByMarker_withPredicate_null() {
         MessageList list = new MessageList();
-        list.getMessagesByMarker((IPredicate<IMarker>)null);
+        list.getMessagesByMarker((Predicate<IMarker>)null);
     }
 
     @Test

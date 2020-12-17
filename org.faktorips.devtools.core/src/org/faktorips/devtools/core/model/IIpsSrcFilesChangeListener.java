@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * 
  * @author dirmeier
  */
+@FunctionalInterface
 public interface IIpsSrcFilesChangeListener {
 
     /**

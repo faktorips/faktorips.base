@@ -76,18 +76,13 @@ public abstract class JavaExprCompilerAbstractTest {
         for (int i = 0; i < parameterNames.length; i++) {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }
-        IdentifierResolver<JavaCodeFragment> resolver = new IdentifierResolver<JavaCodeFragment>() {
-            @Override
-            public CompilationResult<JavaCodeFragment> compile(String identifier,
-                    ExprCompiler<JavaCodeFragment> exprCompiler,
-                    Locale locale) {
-                Object paramDatatype = parameterMap.get(identifier);
-                if (paramDatatype != null) {
-                    return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
-                }
-                return new CompilationResultImpl(new Message("",
-                        "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
+        IdentifierResolver<JavaCodeFragment> resolver = (identifier, exprCompiler, locale) -> {
+            Object paramDatatype = parameterMap.get(identifier);
+            if (paramDatatype != null) {
+                return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
             }
+            return new CompilationResultImpl(new Message("",
+                    "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
         };
         getCompiler().setIdentifierResolver(resolver);
         CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);

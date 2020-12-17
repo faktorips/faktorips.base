@@ -31,6 +31,7 @@ import org.faktorips.datatype.Datatype;
  * 
  * @param <T> a {@link CodeFragment} implementation for a specific target language
  */
+@FunctionalInterface
 public interface IdentifierResolver<T extends CodeFragment> {
 
     /**

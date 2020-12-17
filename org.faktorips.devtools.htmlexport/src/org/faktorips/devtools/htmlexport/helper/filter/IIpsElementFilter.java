@@ -14,15 +14,16 @@ import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
- * Filter for {@link IpsElement}s
+ * Filter for {@link IpsElement IpsElements}
  * 
  * @author dicker
  * 
  */
+@FunctionalInterface
 public interface IIpsElementFilter {
     /**
      * @param element filtered {@link IIpsElement}
-     * @return true, if the given IIpsElement fullfills the conditions of the filter
+     * @return true, if the given {@link IIpsElement} fulfills the conditions of the filter
      */
     public boolean accept(IIpsElement element);
 

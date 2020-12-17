@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.runtime.caching.AbstractComputable;
 import org.faktorips.runtime.caching.Memoizer;
 
 /**
@@ -29,13 +28,8 @@ import org.faktorips.runtime.caching.Memoizer;
  */
 public class AnnotatedDeclaration {
 
-    private static final Memoizer<Class<?>, AnnotatedDeclaration> ANNOTATED_TYPE_CACHE = new Memoizer<Class<?>, AnnotatedDeclaration>(
-            new AbstractComputable<Class<?>, AnnotatedDeclaration>(AnnotatedDeclaration.class) {
-                @Override
-                public AnnotatedDeclaration compute(Class<?> productComponentClass) {
-                    return new AnnotatedDeclaration(productComponentClass);
-                }
-            });
+    private static final Memoizer<Class<?>, AnnotatedDeclaration> ANNOTATED_TYPE_CACHE = Memoizer
+            .of(AnnotatedDeclaration.class, AnnotatedDeclaration::new);
 
     private final List<Class<?>> annotatedClasses = new ArrayList<Class<?>>();
 

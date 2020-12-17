@@ -15,6 +15,7 @@ package org.faktorips.runtime;
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface IModelObjectVisitor {
 
     /**

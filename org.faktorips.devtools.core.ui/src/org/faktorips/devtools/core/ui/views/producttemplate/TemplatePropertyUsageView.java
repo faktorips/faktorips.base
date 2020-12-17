@@ -13,8 +13,6 @@ import java.util.Optional;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -36,7 +34,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
@@ -148,19 +145,7 @@ public class TemplatePropertyUsageView {
         bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DEFINED_VALUES_LABEL_TEXT);
         leftTreeViewer.setInput(usagePmo);
         rightTreeViewer.setInput(usagePmo);
-        changeListener = new IIpsSrcFilesChangeListener() {
-
-            @Override
-            public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-                Display.getDefault().asyncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        refresh();
-                    }
-                });
-            }
-        };
+        changeListener = event -> Display.getDefault().asyncExec(this::refresh);
         IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(changeListener);
         bindingContext.updateUI();
     }
@@ -225,13 +210,9 @@ public class TemplatePropertyUsageView {
     private void buildTreeContextMenu(String menuId, TreeViewer treeViewer) {
         final MenuManager menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener() {
-
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
-                IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
-            }
+        menuManager.addMenuListener($ -> {
+            menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
+            IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
         });
 
         site.registerContextMenu(menuId, menuManager, treeViewer);

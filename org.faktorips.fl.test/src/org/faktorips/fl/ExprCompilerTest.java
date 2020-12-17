@@ -281,32 +281,19 @@ public class ExprCompilerTest {
     }
 
     private void setFailingIdentifierResolver() {
-        compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
-
-            @Override
-            public CompilationResult<CodeFragment> compile(String identifier,
-                    ExprCompiler<CodeFragment> exprCompiler,
-                    Locale locale) {
-                String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
-                        identifier);
-                DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(
-                        Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
-                return compilationResult;
-            }
+        compiler.setIdentifierResolver((identifier, exprCompiler, locale) -> {
+            String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
+                    identifier);
+            DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(
+                    Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            return compilationResult;
         });
     }
 
     @Test
     public void testIdentifierResolvingSuccessfull() {
-        compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
-
-            @Override
-            public CompilationResult<CodeFragment> compile(String identifier,
-                    ExprCompiler<CodeFragment> exprCompiler,
-                    Locale locale) {
-                return new DummyCompilationResultImpl(new CodeFragment("IDENTIFIER " + identifier), Datatype.STRING);
-            }
-        });
+        compiler.setIdentifierResolver((identifier, exprCompiler, locale) -> new DummyCompilationResultImpl(
+                new CodeFragment("IDENTIFIER " + identifier), Datatype.STRING));
         CompilationResult<CodeFragment> result = compiler.compile("a");
         assertTrue(result.successfull());
         assertTrue(result.getCodeFragment().getSourcecode().startsWith("IDENTIFIER a"));

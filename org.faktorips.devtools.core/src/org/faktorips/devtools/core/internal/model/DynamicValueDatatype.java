@@ -73,7 +73,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             try {
                 classLoaderProvider = ((IpsProject)ipsProject).getClassLoaderProviderForJavaProject();
                 adaptedClass = classLoaderProvider.getClassLoader().loadClass(className);
-                listener = new Listener();
+                listener = this::clearCacheAndRemoveListener;
                 classLoaderProvider.addClasspathChangeListener(listener);
             } catch (Throwable t) {
                 IpsPlugin.log(t);
@@ -85,6 +85,14 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             }
         }
         return adaptedClass;
+    }
+
+    private void clearCacheAndRemoveListener(IJavaProject project) {
+        clearCache();
+        ((IpsProject)IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getProject()))
+                .getClassLoaderProviderForJavaProject()
+                .removeClasspathChangeListener(listener);
+        listener = null;
     }
 
     public void writeToXml(Element element) {
@@ -118,8 +126,9 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
             enumDatatype.setGetNameMethodName(element.getAttribute("getNameMethod")); //$NON-NLS-1$
             String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
-            enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false : Boolean.valueOf(isSupporting)
-                    .booleanValue());
+            enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
+                    : Boolean.valueOf(isSupporting)
+                            .booleanValue());
             datatype = enumDatatype;
         }
         // note: up to version 2.1 it was valueClass, since then it is javaClass
@@ -153,19 +162,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
             datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId")); //$NON-NLS-1$
         }
         return datatype;
-    }
-
-    class Listener implements IClasspathContentsChangeListener {
-
-        @Override
-        public void classpathContentsChanges(IJavaProject project) {
-            clearCache();
-            IpsProject ipsProject = (IpsProject)IpsPlugin.getDefault().getIpsModel()
-                    .getIpsProject(project.getProject());
-            ipsProject.getClassLoaderProviderForJavaProject().removeClasspathChangeListener(listener);
-            listener = null;
-        }
-
     }
 
 }

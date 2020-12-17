@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.devtools.core.internal.model.value.ValueUtil;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -50,19 +49,15 @@ class UniqueIdentifierValidator {
     }
 
     private void registerChangeListener() {
-        container.getIpsModel().addChangeListener(new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (isRelevantChangeEvent(event)) {
-                    IIpsObjectPartContainer part = event.getPart();
-                    if (part instanceof IEnumAttributeValue) {
-                        IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
-                        int index = getEnumAttributeIndex(enumAttributeValue);
-                        columnAttributeValues.remove(index);
-                    } else {
-                        columnAttributeValues.clear();
-                    }
+        container.getIpsModel().addChangeListener(event -> {
+            if (isRelevantChangeEvent(event)) {
+                IIpsObjectPartContainer part = event.getPart();
+                if (part instanceof IEnumAttributeValue) {
+                    IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
+                    int index = getEnumAttributeIndex(enumAttributeValue);
+                    columnAttributeValues.remove(index);
+                } else {
+                    columnAttributeValues.clear();
                 }
             }
         });

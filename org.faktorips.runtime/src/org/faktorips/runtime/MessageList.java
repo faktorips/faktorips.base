@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.util.function.IPredicate;
 import org.faktorips.values.ObjectUtil;
 
 /**
@@ -229,19 +229,16 @@ public class MessageList implements Serializable, Iterable<Message> {
 
     /**
      * Returns a new message list containing all the message in this list with a {@link IMarker} the
-     * specified {@link IPredicate} matches. Returns an empty list if this list does not contain any
+     * specified {@link Predicate} matches. Returns an empty list if this list does not contain any
      * such message.
      * <p>
      * Sample usage:
-     * <code>messages.getMessagesByMarker(new IPredicate&lt;IMarker&gt;(){public boolean test(IMarker t){return t.isRequiredInformationMissing();}});</code>
-     * <p>
-     * Sample usage (Java8):
      * <code>messages.getMessagesByMarker(IMarker::isRequiredInformationMissing);</code>
      * 
-     * @param markerPredicate to match a {@link IMarker} with. Must not be <code>null</code>
+     * @param markerPredicate to match an {@link IMarker}. Must not be <code>null</code>
      * @throws NullPointerException if markerPredicate is <code>null</code>
      */
-    public MessageList getMessagesByMarker(IPredicate<IMarker> markerPredicate) {
+    public MessageList getMessagesByMarker(Predicate<IMarker> markerPredicate) {
         if (markerPredicate == null) {
             throw new NullPointerException("markerPredicate must not be null");
         }

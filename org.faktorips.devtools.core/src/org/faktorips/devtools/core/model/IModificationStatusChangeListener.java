@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model;
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface IModificationStatusChangeListener {
 
     /**

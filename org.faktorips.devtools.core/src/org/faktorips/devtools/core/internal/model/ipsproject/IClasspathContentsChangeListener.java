@@ -18,10 +18,12 @@ import org.eclipse.jdt.core.IJavaProject;
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface IClasspathContentsChangeListener {
 
     /**
      * Is called when the contents of the indicated Java project's classpath has changed.
      */
     public void classpathContentsChanges(IJavaProject project);
+
 }

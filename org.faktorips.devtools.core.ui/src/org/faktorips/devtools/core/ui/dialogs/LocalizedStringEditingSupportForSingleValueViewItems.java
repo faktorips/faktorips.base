@@ -11,13 +11,10 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -86,22 +83,13 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
      */
     private void bindTableRefresh(final SingleValueHolder singleValueHolder) {
         final IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
-        final ContentsChangeListener contentChangeListener = new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.isAffected(singleValueHolder.getParent())) {
-                    multiValueTableViewer.refresh();
-                }
+        final ContentsChangeListener contentChangeListener = event -> {
+            if (event.isAffected(singleValueHolder.getParent())) {
+                multiValueTableViewer.refresh();
             }
         };
         ipsModel.addChangeListener(contentChangeListener);
-        multiValueTableViewer.getTable().addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent arg0) {
-                ipsModel.removeChangeListener(contentChangeListener);
-            }
-        });
+        multiValueTableViewer.getTable().addDisposeListener($ -> ipsModel.removeChangeListener(contentChangeListener));
     }
 
     @Override
@@ -132,7 +120,8 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
                 return internationalString;
             } else {
                 throw new IllegalArgumentException(
-                        "The value provided to the InternationalStringDialog is not supported: The type was " + (value.getContent() == null ? "<null>" : value.getContent().getClass())); //$NON-NLS-1$ //$NON-NLS-2$
+                        "The value provided to the InternationalStringDialog is not supported: The type was " //$NON-NLS-1$
+                                + (value.getContent() == null ? "<null>" : value.getContent().getClass())); //$NON-NLS-1$
             }
         }
     }

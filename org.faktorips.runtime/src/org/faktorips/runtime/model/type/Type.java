@@ -298,14 +298,15 @@ public abstract class Type extends ModelElement {
      * 
      * @param <T> is the type of annotation that is expected.
      */
-    public abstract static class AnnotatedElementMatcher<T extends Annotation> {
+    @FunctionalInterface
+    public static interface AnnotatedElementMatcher<T extends Annotation> {
         /**
          * 
          * @param annotation the annotation found.
          * @return <code>true</code> if the annotation matches the condition, <code>false</code>
          *         else.
          */
-        public abstract boolean matches(T annotation);
+        boolean matches(T annotation);
     }
 
     static class AttributeCollector<T extends Attribute> extends TypeHierarchyVisitor {

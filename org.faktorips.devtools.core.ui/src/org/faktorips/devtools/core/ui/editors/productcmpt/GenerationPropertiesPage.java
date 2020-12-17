@@ -689,16 +689,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             return true;
         }
 
-        @Override
-        public void setPropertyVisibleController(IPropertyVisibleController controller) {
-            // deprecated
-        }
-
-        @Override
-        public void notifyController() {
-            // deprecated
-        }
-
     }
 
 }

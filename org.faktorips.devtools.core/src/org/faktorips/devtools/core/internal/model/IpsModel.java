@@ -314,21 +314,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
         final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents = new HashMap<IIpsSrcFile, ContentChangeEvent>();
-        ContentsChangeListener batchListener = new ContentsChangeListenerImplementation(changedSrcFileEvents);
+        ContentsChangeListener batchListener = event -> collect(changedSrcFileEvents, event);
         changeListeners.clear();
         addChangeListener(batchListener);
 
         HashSet<IModificationStatusChangeListener> copyOfCurrentModifyListeners = new HashSet<IModificationStatusChangeListener>(
                 modificationStatusChangeListeners);
         final Set<IIpsSrcFile> modifiedSrcFiles = new LinkedHashSet<IIpsSrcFile>(0);
-        IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener() {
-
-            @Override
-            public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
-                modifiedSrcFiles.add(event.getIpsSrcFile());
-            }
-
-        };
+        IModificationStatusChangeListener batchModifiyListener = event -> modifiedSrcFiles.add(event.getIpsSrcFile());
         modificationStatusChangeListeners.clear();
         addModifcationStatusChangeListener(batchModifiyListener);
 
@@ -352,6 +345,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
 
+    }
+
+    private void collect(final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents, ContentChangeEvent event) {
+        ContentChangeEvent newEvent = null;
+        ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
+        if (previousEvent == null) {
+            newEvent = event;
+        } else {
+            newEvent = ContentChangeEvent.mergeChangeEvents(event, previousEvent);
+        }
+        changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
     }
 
     protected void runSafe(IWorkspaceRunnable action,
@@ -1677,27 +1681,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 // CSON: IllegalCatch
             }
         }
-    }
-
-    private final class ContentsChangeListenerImplementation implements ContentsChangeListener {
-        private final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents;
-
-        private ContentsChangeListenerImplementation(Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents) {
-            this.changedSrcFileEvents = changedSrcFileEvents;
-        }
-
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            ContentChangeEvent newEvent = null;
-            ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
-            if (previousEvent == null) {
-                newEvent = event;
-            } else {
-                newEvent = ContentChangeEvent.mergeChangeEvents(event, previousEvent);
-            }
-            changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
-        }
-
     }
 
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {

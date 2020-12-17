@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.matcher;
 
-
+@FunctionalInterface
 public interface IMatcher<T> {
 
     /**

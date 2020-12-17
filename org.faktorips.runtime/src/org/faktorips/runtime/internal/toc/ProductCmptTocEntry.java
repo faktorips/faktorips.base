@@ -212,7 +212,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
     }
 
     private static TreeMap<Long, GenerationTocEntry> createNewTreeMap() {
-        return new TreeMap<Long, GenerationTocEntry>(new InverseLongComparator());
+        return new TreeMap<Long, GenerationTocEntry>(Comparator.reverseOrder());
     }
 
     @Override
@@ -258,15 +258,6 @@ public class ProductCmptTocEntry extends TocEntryObject {
             return false;
         }
         return super.equals(obj);
-    }
-
-    static class InverseLongComparator implements Comparator<Long> {
-
-        @Override
-        public int compare(Long first, Long second) {
-            return -1 * first.compareTo(second);
-        }
-
     }
 
 }
