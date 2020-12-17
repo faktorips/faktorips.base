@@ -11,31 +11,26 @@
 package org.faktorips.runtime;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.values.ObjectUtil;
+import org.faktorips.runtime.util.AbstractMessageList;
 
 /**
- * A list of <code>Message</code>s.
+ * A list of {@link Message Messages}.
  * 
  * @see Message
  */
-public class MessageList implements Serializable, Iterable<Message> {
+public class MessageList extends AbstractMessageList<Message, MessageList> implements Serializable {
 
     private static final long serialVersionUID = 5518835977871253111L;
-
-    private List<Message> messages = new ArrayList<Message>(0);
 
     /**
      * Creates an empty message list.
      */
     public MessageList() {
-        // Provides default constructor.
+        super();
     }
 
     /**
@@ -44,7 +39,12 @@ public class MessageList implements Serializable, Iterable<Message> {
      * @throws NullPointerException if message is null.
      */
     public MessageList(Message message) {
-        add(message);
+        super(message);
+    }
+
+    @Override
+    protected MessageList createEmptyMessageList() {
+        return new MessageList();
     }
 
     /**
@@ -61,29 +61,6 @@ public class MessageList implements Serializable, Iterable<Message> {
             newList.add(Message.createCopy(message, oldObject, newObject));
         }
         return newList;
-    }
-
-    /**
-     * Adds the message to the list.
-     * 
-     * @param message the {@link Message} to add. Ignored if <code>null</code>.
-     */
-    public void add(Message message) {
-        if (message != null) {
-            messages.add(message);
-        }
-    }
-
-    /**
-     * Adds the messages in the given list to this list.
-     */
-    public void add(MessageList messageList) {
-        if (messageList == null) {
-            return;
-        }
-        for (Message message : messageList) {
-            add(message);
-        }
     }
 
     /**
@@ -110,45 +87,10 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns true if the list is empty.
-     */
-    public boolean isEmpty() {
-        return messages.isEmpty();
-    }
-
-    /**
-     * Returns the number of messages in the list.
-     * 
-     * @deprecated Use #size() instead
-     */
-    @Deprecated
-    public int getNoOfMessages() {
-        return size();
-    }
-
-    /**
-     * Returns the number of messages in the list.
-     * 
-     * @return The size of the message list
-     */
-    public int size() {
-        return messages.size();
-    }
-
-    /**
-     * Returns the message at the indicated index (indexing starts with 0).
-     * 
-     * @throws IndexOutOfBoundsException if the index is out of range.
-     */
-    public Message getMessage(int index) {
-        return messages.get(index);
-    }
-
-    /**
      * Returns the first message with the given severity or null if none is found.
      */
     public Message getFirstMessage(Severity severity) {
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             if (message.getSeverity() == severity) {
                 return message;
             }
@@ -156,13 +98,10 @@ public class MessageList implements Serializable, Iterable<Message> {
         return null;
     }
 
-    /**
-     * Returns the message with the highest severity. If there are multiple such messages, the first
-     * one is returned. If this list {@link #isEmpty()}, <code>null</code> is returned.
-     */
+    @Override
     public Message getMessageWithHighestSeverity() {
         Message result = null;
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             if (result == null) {
                 result = message;
             } else {
@@ -175,40 +114,6 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns the first message in the list that has the specified message code. Returns
-     * <code>null</code> if the list does not contain such a message.
-     * 
-     * @param code the code to look for. May be <code>null</code>, as messages may have
-     *            <code>null</code> as their message code.
-     */
-    public Message getMessageByCode(String code) {
-        for (Message message : messages) {
-            if (ObjectUtil.equals(message.getCode(), code)) {
-                return message;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns a new message list containing all the message in this list that have the specified
-     * message code. Returns an empty list if this list does not contain any message with the given
-     * code.
-     * 
-     * @param code the code to look for. May be <code>null</code>, as messages may have
-     *            <code>null</code> as their message code.
-     */
-    public MessageList getMessagesByCode(String code) {
-        MessageList sublist = new MessageList();
-        for (Message message : messages) {
-            if (ObjectUtil.equals(message.getCode(), code)) {
-                sublist.add(message);
-            }
-        }
-        return sublist;
-    }
-
-    /**
      * Returns a new message list containing all the message in this list that have the specified
      * {@link IMarker}. Returns an empty list if this list does not contain any message with the
      * given {@link IMarker}.
@@ -218,7 +123,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     public MessageList getMessagesByMarker(IMarker marker) {
         MessageList sublist = new MessageList();
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             Set<? extends IMarker> markers = message.getMarkers();
             if (marker == null && markers.isEmpty() || markers.contains(marker)) {
                 sublist.add(message);
@@ -243,7 +148,7 @@ public class MessageList implements Serializable, Iterable<Message> {
             throw new NullPointerException("markerPredicate must not be null");
         }
         MessageList sublist = new MessageList();
-        messages: for (Message message : messages) {
+        messages: for (Message message : getMessages()) {
             for (IMarker marker : message.getMarkers()) {
                 if (markerPredicate.test(marker)) {
                     sublist.add(message);
@@ -260,7 +165,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     public Severity getSeverity() {
         Severity severity = Severity.NONE;
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             if (message.getSeverity().compareTo(severity) > 0) {
                 severity = message.getSeverity();
             }
@@ -268,19 +173,9 @@ public class MessageList implements Serializable, Iterable<Message> {
         return severity;
     }
 
-    /**
-     * Returns the text of all messages in the list, separated by the system's default line
-     * separator.
-     */
-    public String getText() {
-        return IpsStringUtils.join(messages, Message::getText, System.lineSeparator());
-    }
-
-    /**
-     * Returns true if one the messages in the list is an error message, otherwise false.
-     */
+    @Override
     public boolean containsErrorMsg() {
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             if (message.getSeverity() == Severity.ERROR) {
                 return true;
             }
@@ -288,22 +183,10 @@ public class MessageList implements Serializable, Iterable<Message> {
         return false;
     }
 
-    /**
-     * Returns a new list with the messages in this list that belong to the given object (any
-     * property). Returns an empty list if no such message is found.
-     */
-    public MessageList getMessagesFor(Object object) {
-        return getMessagesFor(object, null);
-    }
-
-    /**
-     * Returns a new list with the messages in this list that belong to the given object and
-     * property and the property is of the given index. Returns an empty list if no such message is
-     * found.
-     */
+    @Override
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             List<ObjectProperty> op = message.getInvalidObjectProperties();
             for (ObjectProperty objectProperty : op) {
                 if (objectProperty.getObject().equals(object)) {
@@ -321,68 +204,5 @@ public class MessageList implements Serializable, Iterable<Message> {
             }
         }
         return result;
-
     }
-
-    /**
-     * Returns a new list with the messages in this list that belong to the given object and
-     * property. Returns an empty list if no such message is found.
-     */
-    public MessageList getMessagesFor(Object object, String property) {
-        return getMessagesFor(object, property, -1);
-    }
-
-    /**
-     * Returns an iterator over the messages in this list.
-     */
-    @Override
-    public Iterator<Message> iterator() {
-        return messages.iterator();
-    }
-
-    /**
-     * Removes all of the messages from this list. This list will be empty after this call returns.
-     */
-    public void clear() {
-        messages.clear();
-    }
-
-    /**
-     * Returns all messages in the list separated by a line separator. Overridden method.
-     */
-    @Override
-    public String toString() {
-        return IpsStringUtils.join(messages, System.lineSeparator());
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((messages == null) ? 0 : messages.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        MessageList other = (MessageList)obj;
-        if (messages == null) {
-            if (other.messages != null) {
-                return false;
-            }
-        } else if (!messages.equals(other.messages)) {
-            return false;
-        }
-        return true;
-    }
-
 }

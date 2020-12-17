@@ -17,10 +17,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import org.faktorips.runtime.util.IMessage;
 import org.faktorips.runtime.util.StringBuilderJoiner;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * A human readable text message with an optional code that identifies the type of the message and a
@@ -44,7 +45,7 @@ import org.faktorips.values.ObjectUtil;
  * 
  * @see MsgReplacementParameter
  */
-public class Message implements Serializable {
+public class Message implements Serializable, IMessage {
 
     /**
      * Severity none.
@@ -377,16 +378,12 @@ public class Message implements Serializable {
         return severity;
     }
 
-    /**
-     * Returns the humand readable message text.
-     */
+    @Override
     public String getText() {
         return text;
     }
 
-    /**
-     * Returns the message code.
-     */
+    @Override
     public String getCode() {
         return code;
     }
@@ -404,7 +401,7 @@ public class Message implements Serializable {
     /**
      * Returns the list of object properties the message refers to. E.g. if a message reads "The
      * driver's age must be greater than 18.", this method would probably return the driver object
-     * and the property name age. Returns an empty array if this message does not refer to any
+     * and the property name age. Returns an empty list if this message does not refer to any
      * objects / properties.
      */
     public List<ObjectProperty> getInvalidObjectProperties() {
@@ -534,22 +531,22 @@ public class Message implements Serializable {
             return false;
         }
         Message other = (Message)o;
-        if (!ObjectUtil.equals(code, other.code)) {
+        if (!Objects.equals(code, other.code)) {
             return false;
         }
-        if (!ObjectUtil.equals(text, other.text)) {
+        if (!Objects.equals(text, other.text)) {
             return false;
         }
         if (severity != other.severity) {
             return false;
         }
-        if (!ObjectUtil.equals(invalidOp, other.invalidOp)) {
+        if (!Objects.equals(invalidOp, other.invalidOp)) {
             return false;
         }
-        if (!ObjectUtil.equals(replacementParameters, other.replacementParameters)) {
+        if (!Objects.equals(replacementParameters, other.replacementParameters)) {
             return false;
         }
-        if (!ObjectUtil.equals(markers, other.markers)) {
+        if (!Objects.equals(markers, other.markers)) {
             return false;
         }
         return true;

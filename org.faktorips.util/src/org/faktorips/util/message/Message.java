@@ -13,6 +13,7 @@ package org.faktorips.util.message;
 import java.util.Map;
 import java.util.Objects;
 
+import org.faktorips.runtime.util.IMessage;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
@@ -33,7 +34,7 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
  * 
  * @author Jan Ortmann
  */
-public class Message {
+public class Message implements IMessage {
 
     /** The XML tag name for messages. */
     public static final String TAG_NAME = "Message";
@@ -299,16 +300,12 @@ public class Message {
         return severity;
     }
 
-    /**
-     * Returns the human readable message text.
-     */
+    @Override
     public String getText() {
         return text;
     }
 
-    /**
-     * Returns a string representing the identification code of this message.
-     */
+    @Override
     public String getCode() {
         return code;
     }

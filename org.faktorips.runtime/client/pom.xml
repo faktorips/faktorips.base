@@ -57,7 +57,7 @@
 									<directory>../src</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>**/Message*.java</include>
+                    <include>**/Message*.java</include>
 										<include>**/Severity.java</include>
 										<include>**/IMarker.java</include>
 										<include>**/IPropertyQualifier.java</include>
@@ -68,6 +68,8 @@
                     <include>**/IPredicate.java</include>
                     <include>**/StringBuilderJoiner.java</include>
                     <include>**/IpsStringUtils.java</include>
+                    <include>**/AbstractMessageList.java</include>
+                    <include>**/IMessage.java</include>
 									</includes>
 								</resource>
 							</resources>

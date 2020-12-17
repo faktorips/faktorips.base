@@ -10,11 +10,12 @@
 
 package org.faktorips.fl;
 
+import java.util.Objects;
+
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * Default implementation of FunctionSignature.
@@ -124,7 +125,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * type.
      */
     private boolean matchDatatype(Datatype functionDataType, Datatype expressionDataType) {
-        if (ObjectUtil.equals(functionDataType, expressionDataType)) {
+        if (Objects.equals(functionDataType, expressionDataType)) {
             return true;
         }
         if (expressionDataType instanceof AbstractDatatype) {

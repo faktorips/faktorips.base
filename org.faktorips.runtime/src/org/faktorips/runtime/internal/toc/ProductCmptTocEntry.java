@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.faktorips.runtime.internal.DateTime;
-import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -294,19 +294,19 @@ public class ProductCmptTocEntry extends TocEntryObject {
             return false;
         }
         ProductCmptTocEntry other = (ProductCmptTocEntry)obj;
-        if (!ObjectUtil.equals(generationEntries, other.generationEntries)) {
+        if (!Objects.equals(generationEntries, other.generationEntries)) {
             return false;
         }
-        if (!ObjectUtil.equals(generationImplClassName, other.generationImplClassName)) {
+        if (!Objects.equals(generationImplClassName, other.generationImplClassName)) {
             return false;
         }
-        if (!ObjectUtil.equals(kindId, other.kindId)) {
+        if (!Objects.equals(kindId, other.kindId)) {
             return false;
         }
-        if (!ObjectUtil.equals(validTo, other.validTo)) {
+        if (!Objects.equals(validTo, other.validTo)) {
             return false;
         }
-        if (!ObjectUtil.equals(versionId, other.versionId)) {
+        if (!Objects.equals(versionId, other.versionId)) {
             return false;
         }
         return super.equals(obj);

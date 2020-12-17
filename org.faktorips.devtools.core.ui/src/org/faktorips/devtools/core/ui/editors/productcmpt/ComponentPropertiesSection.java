@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -50,7 +51,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.message.ObjectProperty;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * Section to display and edit the product attributes
@@ -247,7 +247,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
             @Override
             protected void propertyChanged(String oldValue, String newValue) {
-                if (!ObjectUtil.equals(oldValue, newValue)) {
+                if (!Objects.equals(oldValue, newValue)) {
                     editor.refreshIncludingStructuralChanges();
                 }
                 editor.checkForInconsistenciesToModel();

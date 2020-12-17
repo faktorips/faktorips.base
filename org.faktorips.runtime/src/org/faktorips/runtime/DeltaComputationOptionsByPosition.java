@@ -10,7 +10,7 @@
 
 package org.faktorips.runtime;
 
-import org.faktorips.values.ObjectUtil;
+import java.util.Objects;
 
 /**
  * Delta computation options that create child deltas per position and don't ignore any property.
@@ -49,7 +49,7 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
 
     @Override
     public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
-        return ObjectUtil.equals(value1, value2);
+        return Objects.equals(value1, value2);
     }
 
     @Override

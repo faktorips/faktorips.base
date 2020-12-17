@@ -10,7 +10,8 @@
 
 package org.faktorips.runtime.internal.toc;
 
-import org.faktorips.values.ObjectUtil;
+import java.util.Objects;
+
 import org.w3c.dom.Element;
 
 /**
@@ -91,10 +92,10 @@ public abstract class TocEntryObject extends TocEntry {
             return false;
         }
         TocEntryObject other = (TocEntryObject)obj;
-        if (!ObjectUtil.equals(ipsObjectId, other.ipsObjectId)) {
+        if (!Objects.equals(ipsObjectId, other.ipsObjectId)) {
             return false;
         }
-        if (!ObjectUtil.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)) {
+        if (!Objects.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)) {
             return false;
         }
         return super.equals(obj);

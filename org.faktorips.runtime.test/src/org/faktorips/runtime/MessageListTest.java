@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -440,6 +442,18 @@ public class MessageListTest {
         list.add(error2);
 
         assertSame(error1, list.getMessageWithHighestSeverity());
+    }
+
+    @Test
+    public void testStream() {
+        MessageList list = new MessageList();
+        Message error1 = Message.newError(null, "e1");
+        Message error2 = Message.newError(null, "e2");
+        list.add(error1);
+        list.add(error2);
+
+        assertThat(list.stream().findFirst().get(), is(error1));
+        assertThat(list.stream().filter(m -> "e2".equals(m.getText())).findFirst().get(), is(error2));
     }
 
     private static final class RequiredInformationMissing implements IMarker {
