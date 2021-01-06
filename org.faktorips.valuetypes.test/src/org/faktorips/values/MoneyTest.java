@@ -20,6 +20,8 @@ import static org.junit.Assert.fail;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -217,6 +219,65 @@ public class MoneyTest {
         } catch (NullPointerException e) {
             // Expected exception.
         }
+    }
+
+    @Test
+    public void testSum() {
+        Money sum = Stream.of(Money.euro(10, 0), Money.euro(12, 43), Money.euro(4))
+                .collect(Money.sum(Money.EUR));
+        assertEquals(Money.euro(26, 43), sum);
+    }
+
+    @Test
+    public void testSum_EmptyStream() {
+        Money sum = Stream.<Money> empty().collect(Money.sum(Money.USD));
+        assertEquals(Money.usd(0), sum);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSum_WrongCurrency() {
+        Stream.of(Money.euro(10, 0), Money.usd(12, 43), Money.euro(4))
+                .collect(Money.sum(Money.EUR));
+    }
+
+    @Test
+    public void testSumOptional() {
+        Optional<Money> sum = Stream.of(Money.euro(10, 0), Money.euro(12, 43), Money.euro(4))
+                .collect(Money.sum());
+        assertTrue(sum.isPresent());
+        assertEquals(Money.euro(26, 43), sum.get());
+    }
+
+    @Test
+    public void testSumOptional_EmptyStream() {
+        Optional<Money> sum = Stream.<Money> empty().collect(Money.sum());
+        assertFalse(sum.isPresent());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSumOptional_WrongCurrency() {
+        Stream.of(Money.euro(10, 0), Money.usd(12, 43), Money.euro(4))
+                .collect(Money.sum());
+    }
+
+    @Test
+    public void testSumEuro() {
+        Money sum = Stream.of(Money.euro(10, 0), Money.euro(12, 43), Money.euro(4))
+                .collect(Money.sumEuro());
+        assertEquals(Money.euro(26, 43), sum);
+    }
+
+    @Test
+    public void testSumEuro_EmptyStream() {
+        Money sum = Stream.<Money> empty().collect(Money.sumEuro());
+        assertEquals(Money.euro(0), sum);
+    }
+
+    @Test
+    public void testSumUSD() {
+        Money sum = Stream.of(Money.usd(10, 0), Money.usd(12, 43), Money.usd(4))
+                .collect(Money.sumUsd());
+        assertEquals(Money.usd(26, 43), sum);
     }
 
     @Test

@@ -13,6 +13,10 @@ package org.faktorips.values;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -108,6 +112,39 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      */
     public static final Money usd(long usdollars) {
         return Money.valueOf(usdollars, 0, USD);
+    }
+
+    /**
+     * Returns a {@link Collector} that sums a {@link Stream} of money objects.
+     */
+    public static final Collector<Money, ?, Optional<Money>> sum() {
+        return Collectors.reducing(Money::add);
+    }
+
+    /**
+     * Returns a {@link Collector} that sums a {@link Stream} of money objects.
+     *
+     * @param currency {@link Currency} of the money objects. This parameter is needed to return a
+     *            money object with the correct currency even if the Stream is empty.
+     */
+    public static final Collector<Money, ?, Money> sum(Currency currency) {
+        return Collectors.reducing(new Money(0, currency), Money::add);
+    }
+
+    /**
+     * Returns a {@link Collector} that sums a {@link Stream} of money objects with the currency
+     * euro.
+     */
+    public static final Collector<Money, ?, Money> sumEuro() {
+        return sum(EUR);
+    }
+
+    /**
+     * Returns a {@link Collector} that sums a {@link Stream} of money objects with the currency
+     * usdollars.
+     */
+    public static final Collector<Money, ?, Money> sumUsd() {
+        return sum(USD);
     }
 
     /**

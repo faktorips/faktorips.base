@@ -11,6 +11,9 @@ package org.faktorips.values;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -47,10 +50,17 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     private final BigDecimal value;
 
     /**
+     * Returns a {@link Collector} that sums a {@link Stream} of Decimals.
+     */
+    public static final Collector<Decimal, ?, Decimal> sum() {
+        return Collectors.reducing(Decimal.ZERO, Decimal::add);
+    }
+
+    /**
      * Returns the sum of the values. If either the values array or one of the values is
      * <code>null</code> the method returns {@link Decimal#NULL}.
      */
-    public static final Decimal sum(Decimal[] values) {
+    public static final Decimal sum(Decimal... values) {
         if (values == null) {
             return Decimal.NULL;
         }

@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -172,6 +173,19 @@ public class DecimalTest {
         assertTrue(d1.add((Decimal)null).isNull());
         assertTrue(d1.add(Decimal.NULL).isNull());
         assertTrue(Decimal.NULL.add(d1).isNull());
+    }
+
+    @Test
+    public void testSumCollector() {
+        Decimal sum = Stream.of(Decimal.valueOf(1.340), Decimal.valueOf(8.66), Decimal.valueOf("4"))
+                .collect(Decimal.sum());
+        assertEquals(Decimal.valueOf("14.000"), sum);
+    }
+
+    @Test
+    public void testSumCollector_EmptyStream() {
+        Decimal sum = Stream.<Decimal> empty().collect(Decimal.sum());
+        assertEquals(Decimal.valueOf(0), sum);
     }
 
     @Test
@@ -357,10 +371,11 @@ public class DecimalTest {
 
     @Test
     public void testSum() throws Exception {
-        assertTrue(Decimal.sum(null).isNull());
-        assertEquals(Decimal.valueOf(0, 0), Decimal.sum(new Decimal[0]));
         Decimal[] values = new Decimal[] { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) };
         assertEquals(Decimal.valueOf(42, 0), Decimal.sum(values));
+        assertTrue(Decimal.sum((Decimal[])null).isNull());
+        assertEquals(Decimal.valueOf(0, 0), Decimal.sum(new Decimal[0]));
+        assertEquals(Decimal.valueOf(42, 0), Decimal.sum(Decimal.valueOf(10, 0), Decimal.valueOf(32, 0)));
     }
 
     @Test
