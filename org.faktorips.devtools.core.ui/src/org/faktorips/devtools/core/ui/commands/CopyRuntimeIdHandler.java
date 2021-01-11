@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -40,7 +40,7 @@ public class CopyRuntimeIdHandler extends IpsAbstractHandler {
             if (element.getAdapter(IProductCmpt.class) != null) {
                 IProductCmpt productComponent = (IProductCmpt)element.getAdapter(IProductCmpt.class);
                 if (!first) {
-                    runtimeIds.append(System.getProperty("line.separator")); //$NON-NLS-1$
+                    runtimeIds.append(System.lineSeparator());
                 }
                 first = false;
                 runtimeIds.append(productComponent.getRuntimeId());

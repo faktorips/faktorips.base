@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,8 +12,6 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import static org.junit.Assert.assertEquals;
 
-import org.faktorips.devtools.stdbuilder.xmodel.MethodDefinition;
-import org.faktorips.devtools.stdbuilder.xmodel.MethodParameter;
 import org.junit.Test;
 
 public class MethodDefinitionTest {

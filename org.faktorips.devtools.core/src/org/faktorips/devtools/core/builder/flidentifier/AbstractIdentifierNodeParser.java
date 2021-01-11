@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -201,7 +201,7 @@ public abstract class AbstractIdentifierNodeParser {
     }
 
     protected String getNameAndDescription(String name, String description) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append(name);
         if (StringUtils.isNotBlank(description)) {
             result.append(NAME_DESCRIPTION_SEPERATOR).append(description);

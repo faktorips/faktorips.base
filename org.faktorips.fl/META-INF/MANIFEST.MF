@@ -12,4 +12,5 @@ Export-Package: org.faktorips.fl,org.faktorips.fl.functions,org.faktor
 Bundle-ClassPath: .,
  lib/bsh-2.0b4.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.apache.commons.lang;version="[2.6,2.6]"
+Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
+ org.faktorips.runtime.util

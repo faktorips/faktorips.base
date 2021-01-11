@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -279,12 +279,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the data for the given IPS project.
      */
     private IpsProjectData getIpsProjectData(IIpsProject ipsProject) {
-        IpsProjectData data = ipsProjectDatas.get(ipsProject);
-        if (data == null) {
-            data = new IpsProjectData(ipsProject, ipsObjectPathContainerFactory);
-            ipsProjectDatas.put(ipsProject, data);
-        }
-        return data;
+        return ipsProjectDatas.computeIfAbsent(ipsProject, p -> new IpsProjectData(p, ipsObjectPathContainerFactory));
     }
 
     public void startListeningToResourceChanges() {
@@ -319,21 +314,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
         final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents = new HashMap<IIpsSrcFile, ContentChangeEvent>();
-        ContentsChangeListener batchListener = new ContentsChangeListenerImplementation(changedSrcFileEvents);
+        ContentsChangeListener batchListener = event -> collect(changedSrcFileEvents, event);
         changeListeners.clear();
         addChangeListener(batchListener);
 
         HashSet<IModificationStatusChangeListener> copyOfCurrentModifyListeners = new HashSet<IModificationStatusChangeListener>(
                 modificationStatusChangeListeners);
         final Set<IIpsSrcFile> modifiedSrcFiles = new LinkedHashSet<IIpsSrcFile>(0);
-        IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener() {
-
-            @Override
-            public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
-                modifiedSrcFiles.add(event.getIpsSrcFile());
-            }
-
-        };
+        IModificationStatusChangeListener batchModifiyListener = event -> modifiedSrcFiles.add(event.getIpsSrcFile());
         modificationStatusChangeListeners.clear();
         addModifcationStatusChangeListener(batchModifiyListener);
 
@@ -357,6 +345,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
 
+    }
+
+    private void collect(final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents, ContentChangeEvent event) {
+        ContentChangeEvent newEvent = null;
+        ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
+        if (previousEvent == null) {
+            newEvent = event;
+        } else {
+            newEvent = ContentChangeEvent.mergeChangeEvents(event, previousEvent);
+        }
+        changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
     }
 
     protected void runSafe(IWorkspaceRunnable action,
@@ -484,12 +483,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IIpsProject getIpsProject(String name) {
-        IpsProject ipsProject = projectMap.get(name);
-        if (ipsProject == null) {
-            ipsProject = new IpsProject(this, name);
-            projectMap.put(name, ipsProject);
-        }
-        return ipsProject;
+        return projectMap.computeIfAbsent(name, n -> new IpsProject(this, n));
     }
 
     @Override
@@ -533,7 +527,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (segments.length == 1) {
             return root;
         }
-        StringBuffer folderName = new StringBuffer();
+        StringBuilder folderName = new StringBuilder();
         for (int i = 1; i < segments.length - 1; i++) {
             if (i > 1) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);
@@ -1687,27 +1681,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 // CSON: IllegalCatch
             }
         }
-    }
-
-    private final class ContentsChangeListenerImplementation implements ContentsChangeListener {
-        private final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents;
-
-        private ContentsChangeListenerImplementation(Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents) {
-            this.changedSrcFileEvents = changedSrcFileEvents;
-        }
-
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            ContentChangeEvent newEvent = null;
-            ContentChangeEvent previousEvent = changedSrcFileEvents.get(event.getIpsSrcFile());
-            if (previousEvent == null) {
-                newEvent = event;
-            } else {
-                newEvent = ContentChangeEvent.mergeChangeEvents(event, previousEvent);
-            }
-            changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
-        }
-
     }
 
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {

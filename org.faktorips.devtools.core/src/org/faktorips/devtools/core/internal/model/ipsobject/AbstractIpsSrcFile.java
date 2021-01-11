@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -93,15 +93,15 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
          * QNameTypes are equal.
          */
         if (qualifiedNameType == null) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             String packageFragmentName = getIpsPackageFragment().getName();
             if (!StringUtils.isEmpty(packageFragmentName)) {
-                buf.append(getIpsPackageFragment().getName());
-                buf.append('.');
+                sb.append(getIpsPackageFragment().getName());
+                sb.append('.');
             }
 
-            buf.append(StringUtil.getFilenameWithoutExtension(getName()));
-            qualifiedNameType = new QualifiedNameType(buf.toString(), getIpsObjectType());
+            sb.append(StringUtil.getFilenameWithoutExtension(getName()));
+            qualifiedNameType = new QualifiedNameType(sb.toString(), getIpsObjectType());
         }
         return qualifiedNameType;
     }

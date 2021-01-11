@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -165,12 +165,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     private Map<IIpsObjectPart, LinkStatus> getStatusMap(IProductCmpt parent) {
-        Map<IIpsObjectPart, LinkStatus> statusMap = treeStatus.get(parent);
-        if (statusMap == null) {
-            statusMap = new HashMap<IIpsObjectPart, LinkStatus>();
-            treeStatus.put(parent, statusMap);
-        }
-        return statusMap;
+        return treeStatus.computeIfAbsent(parent, $ -> new HashMap<IIpsObjectPart, LinkStatus>());
     }
 
     /**

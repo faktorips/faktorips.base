@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
-import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 
 /**
@@ -226,14 +225,7 @@ public abstract class IpsAction extends Action {
 
     public void setControlWithDataChangeableSupport(IDataChangeableReadAccessWithListenerSupport ctrl) {
         this.ctrl = ctrl;
-        ctrl.addDataChangeableStateChangeListener(new IDataChangeableStateChangeListener() {
-
-            @Override
-            public void dataChangeableStateHasChanged(IDataChangeableReadAccess object) {
-                updateEnabledProperty();
-            }
-
-        });
+        ctrl.addDataChangeableStateChangeListener($ -> updateEnabledProperty());
     }
 
     /**

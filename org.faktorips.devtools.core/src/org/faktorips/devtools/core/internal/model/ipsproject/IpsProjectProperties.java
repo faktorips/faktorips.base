@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,7 +27,6 @@ import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -58,6 +57,7 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
 import org.faktorips.devtools.core.util.DesignTimeSeverity;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
@@ -770,7 +770,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
-        persistentProject = Boolean.valueOf(element.getAttribute(ATTRIBUTE_PERSISTENT_PROJECT)).booleanValue();
+        persistentProject = ValueToXmlHelper.isAttributeTrue(element, ATTRIBUTE_PERSISTENT_PROJECT);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         changesInTimeConventionIdForGeneratedCode = element.getAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
         changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)
@@ -1214,145 +1214,145 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     // @formatter:off
     private void createIpsProjectDescriptionComment(Node parentEl) {
-        String s = "This XML file contains the properties of the enclosing IPS project. It contains the following " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " information:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The generator used to transform the model to Java sourcecode and the product definition into the runtime format." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The path where to search for model and product definition files. This is basically the same concept as the  Java " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "classpath. A strategy that defines how to name product components and what names are valid." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The datatypes that can be used in the model. Datatypes used in the model fall into two categeories:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " * Predefined datatype" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   Predefined datatypes are defined by the datatype definition extension. Faktor-IPS predefines datatypes for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   the standard Java classes like Boolean, String, Integer, etc. and some additional types, for example Money." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   You can add you own datatype be providing an extension and then use it from every IPS project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " * User defined datatype (or dynamic datatype)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an extension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   it, you can register this class as datatype in this file. See the details in the description of the datatype " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   section below how to register the class. Naturally, the class must be available via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   It is strongly recommended to provide the class via a JAR file or in a separate Java project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<IpsProject>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    " + ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION + "                      Specifies the naming conventions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "                                                       are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <IpsObjectPath/>                                   The object path to search for model and product definition" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                       objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Datatypes/>                                       The datatypes used in the model. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <SupportedLanguages/>                              List of supported natural languages. Details below." + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
-                + "</IpsProject>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        String s = "This XML file contains the properties of the enclosing IPS project. It contains the following " + System.lineSeparator() //$NON-NLS-1$
+                + " information:" + System.lineSeparator() //$NON-NLS-1$
+                + "The generator used to transform the model to Java sourcecode and the product definition into the runtime format." + System.lineSeparator() //$NON-NLS-1$
+                + "The path where to search for model and product definition files. This is basically the same concept as the  Java " + System.lineSeparator() //$NON-NLS-1$
+                + "classpath. A strategy that defines how to name product components and what names are valid." + System.lineSeparator() //$NON-NLS-1$
+                + "The datatypes that can be used in the model. Datatypes used in the model fall into two categeories:" + System.lineSeparator() //$NON-NLS-1$
+                + " * Predefined datatype" + System.lineSeparator() //$NON-NLS-1$
+                + "   Predefined datatypes are defined by the datatype definition extension. Faktor-IPS predefines datatypes for" + System.lineSeparator() //$NON-NLS-1$
+                + "   the standard Java classes like Boolean, String, Integer, etc. and some additional types, for example Money." + System.lineSeparator() //$NON-NLS-1$
+                + "   You can add you own datatype be providing an extension and then use it from every IPS project." + System.lineSeparator() //$NON-NLS-1$
+                + " * User defined datatype (or dynamic datatype)" + System.lineSeparator() //$NON-NLS-1$
+                + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an extension for" + System.lineSeparator() //$NON-NLS-1$
+                + "   it, you can register this class as datatype in this file. See the details in the description of the datatype " + System.lineSeparator() //$NON-NLS-1$
+                + "   section below how to register the class. Naturally, the class must be available via the project's Java classpath." + System.lineSeparator() //$NON-NLS-1$
+                + "   It is strongly recommended to provide the class via a JAR file or in a separate Java project." + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<IpsProject>" + System.lineSeparator() //$NON-NLS-1$
+                + "    productDefinitionProject                           True if this project contains elements of the product definition." + System.lineSeparator() //$NON-NLS-1$
+                + "    modelProject                                       True if this project contains the model or part of it." + System.lineSeparator() //$NON-NLS-1$
+                + "    runtimeIdPrefix                                    " + System.lineSeparator() //$NON-NLS-1$
+                + "    " + ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION + "                      Specifies the naming conventions for changes in time that " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "                                                       are used throughout the system. Possible values are VAA and PM" + System.lineSeparator() //$NON-NLS-1$
+                + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + System.lineSeparator() //$NON-NLS-1$
+                + "    <IpsObjectPath/>                                   The object path to search for model and product definition" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                       objects. Details below." + System.lineSeparator() //$NON-NLS-1$
+                + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + System.lineSeparator() //$NON-NLS-1$
+                + "    <Datatypes/>                                       The datatypes used in the model. Details below." + System.lineSeparator() //$NON-NLS-1$
+                + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + System.lineSeparator() //$NON-NLS-1$
+                + "    <SupportedLanguages/>                              List of supported natural languages. Details below." + System.lineSeparator()  //$NON-NLS-1$
+                + "</IpsProject>" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl, "    "); //$NON-NLS-1$
     }
     // @formatter:on
 
     // @formatter:off
     private void createProductCmptNamingStrategyDescriptionComment(Element parentEl) {
-        String s = "Product Component Naming Strategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The naming strategy defines the structure of product component names and how characters that are not allowed" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "in Java identifiers are replaced by the code generator. In order to deal with different versions of " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "a product you need a strategy to derive the version from the product component name. " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "Currently Faktor-IPS includes the following strategy:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " * DateBasedProductCmptNamingStrategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   The product component name is made up of a \"unversioned\" name and a date format for the version id." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "   <ProductCmptNamingStrategy id=\"org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "       <DateBasedProductCmptNamingStrategy " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "           dateFormatPattern=\"yyyy-MM\"                           Format of the version id according to" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                                   java.text.DateFormat" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "           postfixAllowed=\"true\"                                 True if the date format can be followed by" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                                   an optional postfix." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "           versionIdSeparator=\" \">                               The separator between \"unversioned name\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                                   and version id." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "           <JavaIdentifierCharReplacements>                        Definition replacements for charcacters invalid " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                                   in Java identifiers." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "               <Replacement replacedChar=\" \" replacement=\"___\"/> Example: Replace Blank with three underscores" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "               <Replacement replacedChar=\"-\" replacement=\"__\"/>  Example: Replace Hyphen with two underscores" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "           </JavaIdentifierCharReplacements>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "       </DateBasedProductCmptNamingStrategy>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    </ProductCmptNamingStrategy>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        String s = "Product Component Naming Strategy" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "The naming strategy defines the structure of product component names and how characters that are not allowed" + System.lineSeparator() //$NON-NLS-1$
+                + "in Java identifiers are replaced by the code generator. In order to deal with different versions of " + System.lineSeparator() //$NON-NLS-1$
+                + "a product you need a strategy to derive the version from the product component name. " + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "Currently Faktor-IPS includes the following strategy:" + System.lineSeparator() //$NON-NLS-1$
+                + " * DateBasedProductCmptNamingStrategy" + System.lineSeparator() //$NON-NLS-1$
+                + "   The product component name is made up of a \"unversioned\" name and a date format for the version id." + System.lineSeparator() //$NON-NLS-1$
+                + "   <ProductCmptNamingStrategy id=\"org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy\">" + System.lineSeparator() //$NON-NLS-1$
+                + "       <DateBasedProductCmptNamingStrategy " + System.lineSeparator() //$NON-NLS-1$
+                + "           dateFormatPattern=\"yyyy-MM\"                           Format of the version id according to" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                                   java.text.DateFormat" + System.lineSeparator() //$NON-NLS-1$
+                + "           postfixAllowed=\"true\"                                 True if the date format can be followed by" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                                   an optional postfix." + System.lineSeparator() //$NON-NLS-1$
+                + "           versionIdSeparator=\" \">                               The separator between \"unversioned name\"" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                                   and version id." + System.lineSeparator() //$NON-NLS-1$
+                + "           <JavaIdentifierCharReplacements>                        Definition replacements for charcacters invalid " + System.lineSeparator() //$NON-NLS-1$
+                + "                                                                   in Java identifiers." + System.lineSeparator() //$NON-NLS-1$
+                + "               <Replacement replacedChar=\" \" replacement=\"___\"/> Example: Replace Blank with three underscores" + System.lineSeparator() //$NON-NLS-1$
+                + "               <Replacement replacedChar=\"-\" replacement=\"__\"/>  Example: Replace Hyphen with two underscores" + System.lineSeparator() //$NON-NLS-1$
+                + "           </JavaIdentifierCharReplacements>" + System.lineSeparator() //$NON-NLS-1$
+                + "       </DateBasedProductCmptNamingStrategy>" + System.lineSeparator() //$NON-NLS-1$
+                + "    </ProductCmptNamingStrategy>" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
 
     // @formatter:off
     private void createDatatypeDescriptionComment(Node parentEl) {
-        String s = "Datatypes" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "In the datatypes section the value datatypes allowed in the model are defined." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "See also the discussion at the top this file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<UsedPredefinedDatatypes>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Datatype id=\"Money\"\\>                                 The id of the datatype that should be used." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "</UsedPredefinedDatatypes>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<DatatypeDefinitions>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Datatype id=\"PaymentMode\"                             The datatype's id used in the model to refer to it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        javaClass=\"org.faktorips.sample.PaymentMode\"       The Java class the datatype represents" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        valueObject=\"true|false\"                           True indicates this is a value object (according to the value object pattern.) " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        --- the following attributes are only needed for value objects ---" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        isEnumType=\"true|false\"                            True if this is an enumeration of values." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String and returns an" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             object instance/value." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        isParsableMethod=\"isPaymentMode\"                   Name of the method that evaluates if a given string" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             can be parsed to an instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        valueToStringMethod=\"toString\"                     Name of the method that transforms an object instance" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                              to a String (that can be parsed via the valueOfMethod)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        getAllValuesMethod=\"getAllPaymentModes\"            For enums only: The name of the method that returns all values" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        isSupportingNames=\"true\"                           For enums only: True indicates that a string" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             representation for the user other than the one defined by the valueToStringMethod exists." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        getNameMethod=\"getName\">                           For enums only: The name of the method that returns" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             the string representation for the user, if" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             isSupportingNames=true" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        <NullObjectId isNull=\"false\">n</NullObjectId>      Marks a value as a NullObject. This has to be used," + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             if the Java class implements the null object pattern," + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$"
-                + "                                                             otherwise omitt this element. The element's text" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             defines the null object's id. Calling the valueOfMethod" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             with this name must return the null object instance. If" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             the null object's id is null, leave the text empty" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                                             and set the isNull attribute to true." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    </Datatype>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "</DatatypeDefinitions>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        String s = "Datatypes" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "In the datatypes section the value datatypes allowed in the model are defined." + System.lineSeparator() //$NON-NLS-1$
+                + "See also the discussion at the top this file." + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<UsedPredefinedDatatypes>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <Datatype id=\"Money\"\\>                                 The id of the datatype that should be used." + System.lineSeparator() //$NON-NLS-1$
+                + "</UsedPredefinedDatatypes>" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<DatatypeDefinitions>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <Datatype id=\"PaymentMode\"                             The datatype's id used in the model to refer to it." + System.lineSeparator() //$NON-NLS-1$
+                + "        javaClass=\"org.faktorips.sample.PaymentMode\"       The Java class the datatype represents" + System.lineSeparator() //$NON-NLS-1$
+                + "        valueObject=\"true|false\"                           True indicates this is a value object (according to the value object pattern.) " + System.lineSeparator() //$NON-NLS-1$
+                + "        --- the following attributes are only needed for value objects ---" + System.lineSeparator() //$NON-NLS-1$
+                + "        isEnumType=\"true|false\"                            True if this is an enumeration of values." + System.lineSeparator() //$NON-NLS-1$
+                + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String and returns an" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             object instance/value." + System.lineSeparator() //$NON-NLS-1$
+                + "        isParsableMethod=\"isPaymentMode\"                   Name of the method that evaluates if a given string" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             can be parsed to an instance." + System.lineSeparator() //$NON-NLS-1$
+                + "        valueToStringMethod=\"toString\"                     Name of the method that transforms an object instance" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              to a String (that can be parsed via the valueOfMethod)" + System.lineSeparator() //$NON-NLS-1$
+                + "        getAllValuesMethod=\"getAllPaymentModes\"            For enums only: The name of the method that returns all values" + System.lineSeparator() //$NON-NLS-1$
+                + "        isSupportingNames=\"true\"                           For enums only: True indicates that a string" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             representation for the user other than the one defined by the valueToStringMethod exists." + System.lineSeparator() //$NON-NLS-1$
+                + "        getNameMethod=\"getName\">                           For enums only: The name of the method that returns" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             the string representation for the user, if" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             isSupportingNames=true" + System.lineSeparator() //$NON-NLS-1$
+                + "        <NullObjectId isNull=\"false\">n</NullObjectId>      Marks a value as a NullObject. This has to be used," + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             if the Java class implements the null object pattern," + System.lineSeparator() //$NON-NLS-1$"
+                + "                                                             otherwise omitt this element. The element's text" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             defines the null object's id. Calling the valueOfMethod" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             with this name must return the null object instance. If" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             the null object's id is null, leave the text empty" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                             and set the isNull attribute to true." + System.lineSeparator() //$NON-NLS-1$
+                + "    </Datatype>" + System.lineSeparator() //$NON-NLS-1$
+                + "</DatatypeDefinitions>" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
 
     // @formatter:off
     private void createIpsArtefactBuilderSetDescriptionComment(Node parentEl) {
-        String s = "Artefact builder set" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "In this section the artefact builder set (code generator) is defined. Faktor-IPS comes with a standard builder set." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "However the build and generation mechanism is completly decoupled from the modeling and product definition capabilities" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "and you can write your own builders and generators. A different builder set is defined by providing an extension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "the extension point \"org.faktorips.devtools.core.artefactbuilderset\" defined by Faktor-IPS plugin" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "A builder set is activated for an IPS project by defining the IpsArtefactBuilderSet tag. The attribute \"id\" specifies" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "the builder set implementation that is registered as an extension. Note: The unique identifier of the extension is to specify." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\"/> A builder set can be configured by specifing a " + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-                + "nested tag <IpsArtefactBuilderSetConfig/>. A configuration contains a set of properties which are specified by nested" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-                + "<Property name=\"\" value=\"\"/> tags. The possible properties and their values is specific to the selected builder set." + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-                + "The initially generated .ipsproject file contains the set of possible configuration properties for the selected builder set" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-                + "including their descriptions." + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        String s = "Artefact builder set" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "In this section the artefact builder set (code generator) is defined. Faktor-IPS comes with a standard builder set." + System.lineSeparator() //$NON-NLS-1$
+                + "However the build and generation mechanism is completly decoupled from the modeling and product definition capabilities" + System.lineSeparator() //$NON-NLS-1$
+                + "and you can write your own builders and generators. A different builder set is defined by providing an extension for" + System.lineSeparator() //$NON-NLS-1$
+                + "the extension point \"org.faktorips.devtools.core.artefactbuilderset\" defined by Faktor-IPS plugin" + System.lineSeparator() //$NON-NLS-1$
+                + "A builder set is activated for an IPS project by defining the IpsArtefactBuilderSet tag. The attribute \"id\" specifies" + System.lineSeparator() //$NON-NLS-1$
+                + "the builder set implementation that is registered as an extension. Note: The unique identifier of the extension is to specify." + System.lineSeparator() //$NON-NLS-1$
+                + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\"/> A builder set can be configured by specifing a " + System.lineSeparator()//$NON-NLS-1$
+                + "nested tag <IpsArtefactBuilderSetConfig/>. A configuration contains a set of properties which are specified by nested" + System.lineSeparator()//$NON-NLS-1$
+                + "<Property name=\"\" value=\"\"/> tags. The possible properties and their values is specific to the selected builder set." + System.lineSeparator()//$NON-NLS-1$
+                + "The initially generated .ipsproject file contains the set of possible configuration properties for the selected builder set" + System.lineSeparator()//$NON-NLS-1$
+                + "including their descriptions." + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
 
     // @formatter:off
     private void createRequiredIpsFeaturesComment(Node parentEl) {
-        String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "In this section, all required features are listed with the minimum version for these features." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "By default, the feature with id \"org.faktorips.feature\" is always required (because this is the core " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "feature of Faktor-IPS. Other features can be required if plugins providing extensions for any extension points" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "defined by Faktor-IPS are used." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "If a required feature is missing or a required feature has a version less than the minimum version number " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "this project will not be build (an error is created)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<RequiredIpsFeatures>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <RequiredIpsFeature id=\"org.faktorips.feature\"    The id of the required feature." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        minVersion=\"0.9.38\"                           The minimum version number of this feature" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "</RequiredIpsFeatures>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = "Required Ips-Features" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "In this section, all required features are listed with the minimum version for these features." + System.lineSeparator() //$NON-NLS-1$
+                + "By default, the feature with id \"org.faktorips.feature\" is always required (because this is the core " + System.lineSeparator() //$NON-NLS-1$
+                + "feature of Faktor-IPS. Other features can be required if plugins providing extensions for any extension points" + System.lineSeparator() //$NON-NLS-1$
+                + "defined by Faktor-IPS are used." + System.lineSeparator() //$NON-NLS-1$
+                + "If a required feature is missing or a required feature has a version less than the minimum version number " + System.lineSeparator() //$NON-NLS-1$
+                + "this project will not be build (an error is created)." + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<RequiredIpsFeatures>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <RequiredIpsFeature id=\"org.faktorips.feature\"    The id of the required feature." + System.lineSeparator() //$NON-NLS-1$
+                + "        minVersion=\"0.9.38\"                           The minimum version number of this feature" + System.lineSeparator() //$NON-NLS-1$
+                + "</RequiredIpsFeatures>" + System.lineSeparator() //$NON-NLS-1$
                 + ""; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
@@ -1360,113 +1360,113 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     // @formatter:off
     private void createResourcesExcludedFromProductDefinitionComment(Node parentEl) {
-        String s = "Resources excluded from the product definition" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "In this section, all resources which will be excluded (hidden) in the product definition are listed." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The resource must be identified by its full path, relative to the project the resource belongs to." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "<ResourcesExcludedFromProductDefinition>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Resource path=\"src\"/>" + "              Example: The 1st excluded resource, identified by its path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "    <Resource path=\"build/build.xml\"/>" + "  Example: The 2nd excluded resource, identified by its path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "</ResourcesExcludedFromProductDefinition>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = "Resources excluded from the product definition" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "In this section, all resources which will be excluded (hidden) in the product definition are listed." + System.lineSeparator() //$NON-NLS-1$
+                + "The resource must be identified by its full path, relative to the project the resource belongs to." + System.lineSeparator() //$NON-NLS-1$
+                + "" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "<ResourcesExcludedFromProductDefinition>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <Resource path=\"src\"/>" + "              Example: The 1st excluded resource, identified by its path." + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <Resource path=\"build/build.xml\"/>" + "  Example: The 2nd excluded resource, identified by its path." + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "</ResourcesExcludedFromProductDefinition>" + System.lineSeparator() //$NON-NLS-1$
                 + ""; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
 
     private void createProductReleaseComment(Element parentEl) {
-        String s = "Product Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
+        String s = "Product Release" + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "The version for the latest release is configured in a separate element below." //$NON-NLS-1$
                 + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$
+                + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$
                 "<" //$NON-NLS-1$
                 + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR;
+                + System.lineSeparator();
         createDescriptionComment(s, parentEl);
     }
 
     // @formatter:off
     private void createVersionComment(Element parentEl) {
-        String s = "Version" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
+        String s = "Version" + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "it is possible to configure a version provider." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "Examples:" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+                + System.lineSeparator()
+                + "Examples:" + System.lineSeparator()//$NON-NLS-1$
                 + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "or" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "or" + System.lineSeparator() //$NON-NLS-1$
                 + "<" + VERSION_TAG_NAME + " " + VERSION_PROVIDER_ATTRIBUTE + "=\"org.faktorips.devtools.core.bundleVersionProvider\"/>" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR;
+                + System.lineSeparator();
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
 
     private void createAdditionalSettingsDescriptionComment(Node parentEl) {
         // @formatter:off
-        String s = ADDITIONAL_SETTINGS_TAG_NAME + SystemUtils.LINE_SEPARATOR
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "Some of the settings defined in the Faktor-IPS metamodel are optional." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "In this section you can enable or disable these additional settings." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = ADDITIONAL_SETTINGS_TAG_NAME + System.lineSeparator()
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "Some of the settings defined in the Faktor-IPS metamodel are optional." + System.lineSeparator() //$NON-NLS-1$
+                + "In this section you can enable or disable these additional settings." + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + System.lineSeparator() //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\"/>" + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + System.lineSeparator() //$NON-NLS-1$
+                + "        of the referencing product component generation. -->" + System.lineSeparator() //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\"/>" + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "    <!-- True to allow rules without references -->" + System.lineSeparator() //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\"/>" + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" + System.lineSeparator() //$NON-NLS-1$
+                + "        by multiple master-to-detail associations-->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- True to allow navigation via associations in formulas. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        Only English (en) and German (de) are supported at the moment. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + System.lineSeparator() //$NON-NLS-1$
+                + "        Only English (en) and German (de) are supported at the moment. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_FORMULA_LANGUAGE_LOCALE + "\" value=\"en\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        True to allow usage of marker enums. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + System.lineSeparator() //$NON-NLS-1$
+                + "        True to allow usage of marker enums. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- True to allow business functions for validation rules. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- True to allow business functions for validation rules. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- False to set the default state of changing over time flag on product component types to disabled. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- False to set the default state of changing over time flag on product component types to disabled. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"false\"" + " name=\"" + SETTING_CHANGING_OVER_TIME_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- When inferring a template from multiple product components, Faktor-IPS checks whether a link is used in all or at least many of those product components." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        This setting determines, which ratio is considered 'many'. The default value of 1.0 only considers links used by all selected product components.-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- When inferring a template from multiple product components, Faktor-IPS checks whether a link is used in all or at least many of those product components." + System.lineSeparator() //$NON-NLS-1$
+                + "        This setting determines, which ratio is considered 'many'. The default value of 1.0 only considers links used by all selected product components.-->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD + "\" value=\"1.0\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- When inferring a template from multiple product components, Faktor-IPS checks whether a property value is used in all or at least many of those product components." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        This setting determines, which ratio is considered 'many'. The default value of 0.8 only considers values used in at least 80% of all selected product components.-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- When inferring a template from multiple product components, Faktor-IPS checks whether a property value is used in all or at least many of those product components." + System.lineSeparator() //$NON-NLS-1$
+                + "        This setting determines, which ratio is considered 'many'. The default value of 0.8 only considers values used in at least 80% of all selected product components.-->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD + "\" value=\"0.8\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Severity for validation messages when two product components have the same kindId and versionId." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- Severity for validation messages when two product components have the same kindId and versionId." + System.lineSeparator() //$NON-NLS-1$
+                + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Severity for validation messages when model and persistence constraints don't match." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- Severity for validation messages when model and persistence constraints don't match." + System.lineSeparator() //$NON-NLS-1$
+                + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Format for table content data." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        Possible values are XML and CSV, where XML is the Faktor-IPS standard and CSV is a more compact form optimised for large tables." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        Changing this setting will only affect tables when they are saved the next time. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- Format for table content data." + System.lineSeparator() //$NON-NLS-1$
+                + "        Possible values are XML and CSV, where XML is the Faktor-IPS standard and CSV is a more compact form optimised for large tables." + System.lineSeparator() //$NON-NLS-1$
+                + "        Changing this setting will only affect tables when they are saved the next time. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_TABLE_CONTENT_FORMAT + "\" value=\"XML\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Default value for 'generate validation class' property on new PolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    <!-- Default value for 'generate validation class' property on new PolicyCmptTypes." + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1474,53 +1474,53 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 // associations are allowed. Otherwise if this property is true you have to create a concrete
                 // inverse association for every subset of a derived union with an inverse association.
 
-                + "</" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+                + "</" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
         createDescriptionComment(s, parentEl);
         // @formatter:on
     }
 
     // @formatter:off
     private void createPersistenceOptionsDescriptionComment(Node parentEl) {
-        String s = "PersistenceOptions" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "In this section you can adjust parameters relating the persistence of IPolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "The table and column naming strategies define how identifier names are transformed into" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = "PersistenceOptions" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "In this section you can adjust parameters relating the persistence of IPolicyCmptTypes." + System.lineSeparator() //$NON-NLS-1$
+                + "The table and column naming strategies define how identifier names are transformed into" + System.lineSeparator() //$NON-NLS-1$
+                + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + System.lineSeparator() //$NON-NLS-1$
+                + "constrain the maximum possible length of a table or column name." + System.lineSeparator() //$NON-NLS-1$
                 + "The attribute " //$NON-NLS-1$
                 + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS
-                + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "on the association side which holds a single value (to-one relationship side)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "</PersistenceOptions>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "Currently Faktor-IPS includes the strategies CamelCaseToUpperUnderscoreTableNamingStrategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, examples:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    IdentifierName1 -> IDENTIFIER_NAME1" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+                + " defines if is is allowed to use lazy fetching " + System.lineSeparator() //$NON-NLS-1$
+                + "on the association side which holds a single value (to-one relationship side)." + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + System.lineSeparator() //$NON-NLS-1$
+                + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + System.lineSeparator() //$NON-NLS-1$
+                + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy\">" + System.lineSeparator() //$NON-NLS-1$
+                + "</PersistenceOptions>" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "Currently Faktor-IPS includes the strategies CamelCaseToUpperUnderscoreTableNamingStrategy" + System.lineSeparator() //$NON-NLS-1$
+                + "for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, examples:" + System.lineSeparator() //$NON-NLS-1$
+                + "    IdentifierName1 -> IDENTIFIER_NAME1" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
 
     // @formatter:off
     private void createSupportedLanguagesDescriptionComment(Node parentEl) {
-        String s = "Supported Languages" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = "Supported Languages" + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
                 + "This section lists all natural languages that are supported by this IPS project." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "Each language is identified by it's locale which is the ISO 639 language code, " //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
+                + System.lineSeparator()
                 + "e.g. 'en' for English." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "Exactly one supported language must be marked as default language. The default language " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "will be used if a language is requested that is not supported by this IPS project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<SupportedLanguages>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <SupportedLanguage locale=\"en\" defaultLanguage=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <SupportedLanguage locale=\"de\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "</SupportedLanguages>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+                + System.lineSeparator()
+                + "Exactly one supported language must be marked as default language. The default language " + System.lineSeparator() //$NON-NLS-1$
+                + "will be used if a language is requested that is not supported by this IPS project." + System.lineSeparator() //$NON-NLS-1$
+                + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<SupportedLanguages>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <SupportedLanguage locale=\"en\" defaultLanguage=\"true\"/>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <SupportedLanguage locale=\"de\"/>" + System.lineSeparator() //$NON-NLS-1$
+                + "</SupportedLanguages>" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     // @formatter:on
@@ -1530,14 +1530,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createDescriptionComment(String text, Node parent, String indentation) {
-        StringBuffer indentedText = new StringBuffer();
-        indentedText.append(SystemUtils.LINE_SEPARATOR);
-        StringTokenizer tokenizer = new StringTokenizer(text, SystemUtils.LINE_SEPARATOR);
+        StringBuilder indentedText = new StringBuilder();
+        indentedText.append(System.lineSeparator());
+        StringTokenizer tokenizer = new StringTokenizer(text, System.lineSeparator());
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             indentedText.append(indentation);
             indentedText.append(token);
-            indentedText.append(SystemUtils.LINE_SEPARATOR);
+            indentedText.append(System.lineSeparator());
         }
         indentedText.append(indentation.substring(4));
         Document doc = parent.getOwnerDocument();

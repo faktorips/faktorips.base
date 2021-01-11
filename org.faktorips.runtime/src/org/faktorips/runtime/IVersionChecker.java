@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,7 +17,13 @@ package org.faktorips.runtime;
  * 
  * @author dirmeier
  */
+@FunctionalInterface
 public interface IVersionChecker {
+
+    /**
+     * A strict version checker that requires an exact match of the full version strings.
+     */
+    public static final IVersionChecker STRICT = String::equals;
 
     /**
      * Returns true if the new version is compatible to the old version or both versions are equal

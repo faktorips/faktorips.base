@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -124,11 +124,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
             Map<IDependency, ExpressionDependencyDetail> formulaDependencies) {
         for (Entry<IDependency, ExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
-            List<IDependencyDetail> dependenciesDetailsList = details.get(entry.getKey());
-            if (dependenciesDetailsList == null) {
-                dependenciesDetailsList = new ArrayList<IDependencyDetail>();
-                details.put(entry.getKey(), dependenciesDetailsList);
-            }
+            List<IDependencyDetail> dependenciesDetailsList = details.computeIfAbsent(entry.getKey(),
+                    $ -> new ArrayList<IDependencyDetail>());
             dependenciesDetailsList.add(entry.getValue());
         }
     }

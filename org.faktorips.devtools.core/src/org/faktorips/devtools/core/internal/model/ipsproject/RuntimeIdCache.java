@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,11 +24,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
  */
 public class RuntimeIdCache extends ProductCmptCache {
 
-    private final RuntimeIdChangeUpdater changeListener;
+    private final ContentsChangeListener changeListener;
 
     public RuntimeIdCache(IpsProject ipsProject) {
         super(ipsProject);
-        changeListener = new RuntimeIdChangeUpdater(this);
+        changeListener = this::update;
         ipsProject.getIpsModel().addChangeListener(changeListener);
     }
 
@@ -47,45 +47,34 @@ public class RuntimeIdCache extends ProductCmptCache {
         return productCmpt.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID);
     }
 
-    private static final class RuntimeIdChangeUpdater implements ContentsChangeListener {
-
-        private RuntimeIdCache cache;
-
-        public RuntimeIdChangeUpdater(RuntimeIdCache cache) {
-            this.cache = cache;
-        }
-
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            IIpsSrcFile file = event.getIpsSrcFile();
-            if (isRelevantIpsSrcFile(file)) {
-                if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                    // this is necessary as the product component may be directly changed in the
-                    // text editor
-                    synchronized (cache) {
-                        cache.removeProductCmpt(file);
-                        cache.addProductCmpt(file);
-                    }
-                } else {
-                    event.getPropertyChangeEvents().stream()
-                            .filter(e -> IProductCmpt.PROPERTY_RUNTIME_ID.equals(e.getPropertyName()))
-                            .forEach(e -> {
-                                synchronized (cache) {
-                                    cache.removeProductCmpt((String)e.getOldValue(), event.getIpsSrcFile());
-                                    cache.addProductCmpt(event.getIpsSrcFile());
-                                }
-                            });
+    private void update(ContentChangeEvent event) {
+        IIpsSrcFile file = event.getIpsSrcFile();
+        if (isRelevantIpsSrcFile(file)) {
+            if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+                // this is necessary as the product component may be directly changed in the
+                // text editor
+                synchronized (this) {
+                    removeProductCmpt(file);
+                    addProductCmpt(file);
                 }
+            } else {
+                event.getPropertyChangeEvents().stream()
+                        .filter(e -> IProductCmpt.PROPERTY_RUNTIME_ID.equals(e.getPropertyName()))
+                        .forEach(e -> {
+                            synchronized (this) {
+                                removeProductCmpt((String)e.getOldValue(), event.getIpsSrcFile());
+                                addProductCmpt(event.getIpsSrcFile());
+                            }
+                        });
             }
         }
+    }
 
-        private boolean isRelevantIpsSrcFile(IIpsSrcFile ipsSrcFile) {
-            return isProductCmptSrcFile(ipsSrcFile) && ipsSrcFile.getIpsProject().equals(cache.getIpsProject());
-        }
+    private boolean isRelevantIpsSrcFile(IIpsSrcFile ipsSrcFile) {
+        return isProductCmptSrcFile(ipsSrcFile) && ipsSrcFile.getIpsProject().equals(getIpsProject());
+    }
 
-        private boolean isProductCmptSrcFile(IIpsSrcFile ipsSrcFile) {
-            return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
-        }
-
+    private boolean isProductCmptSrcFile(IIpsSrcFile ipsSrcFile) {
+        return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 }

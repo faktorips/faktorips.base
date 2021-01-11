@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -305,18 +305,18 @@ public class ImportHandler {
 
         @Override
         public String getClassName(ImportHandler importHandler) {
-            StringBuffer resultBuffer = new StringBuffer();
-            resultBuffer.append(super.getClassName(importHandler));
-            resultBuffer.append(GENERIC_START);
+            StringBuilder resultBuilder = new StringBuilder();
+            resultBuilder.append(super.getClassName(importHandler));
+            resultBuilder.append(GENERIC_START);
             for (Iterator<TypeDeclaration> iterator = genericDeclarations.iterator(); iterator.hasNext();) {
                 TypeDeclaration typeDeclaration = iterator.next();
-                resultBuffer.append(typeDeclaration.getClassName(importHandler));
+                resultBuilder.append(typeDeclaration.getClassName(importHandler));
                 if (iterator.hasNext()) {
-                    resultBuffer.append(GENERIC_SEPERATOR);
+                    resultBuilder.append(GENERIC_SEPERATOR);
                 }
             }
-            resultBuffer.append(GENERIC_END);
-            return resultBuffer.toString();
+            resultBuilder.append(GENERIC_END);
+            return resultBuilder.toString();
         }
 
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -75,6 +75,7 @@ import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.util.IElementMover;
 import org.faktorips.devtools.core.util.SubListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -402,7 +403,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
         configurationForPolicyCmptType = Boolean
                 .valueOf(element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
-        layerSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_LAYER_SUPERTYPE)).booleanValue();
+        layerSupertype = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_LAYER_SUPERTYPE);
         instancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_INSTANCES);
         String changingOverTimeValue = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
         changingOverTime = StringUtils.isEmpty(changingOverTimeValue) ? true

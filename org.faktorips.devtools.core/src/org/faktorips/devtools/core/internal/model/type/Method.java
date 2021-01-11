@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -182,7 +182,8 @@ public abstract class Method extends TypePart implements IMethod {
         result.add(method.validate(ipsProject));
         if (isAbstract() && !getType().isAbstract()) {
             result.add(new Message(
-                    "", NLS.bind(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
+                    "", NLS.bind(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, this, //$NON-NLS-1$
+                    PROPERTY_ABSTRACT));
         }
         if (validateDuplicateMethodInSameType(result)) {
             validateOverriddenMethod(result, ipsProject);
@@ -240,11 +241,11 @@ public abstract class Method extends TypePart implements IMethod {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(getType().getQualifiedName());
-        buffer.append(": "); //$NON-NLS-1$
-        buffer.append(method.toString());
-        return buffer.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append(getType().getQualifiedName());
+        builder.append(": "); //$NON-NLS-1$
+        builder.append(method.toString());
+        return builder.toString();
     }
 
     public void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {

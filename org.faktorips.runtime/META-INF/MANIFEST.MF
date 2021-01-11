@@ -17,13 +17,12 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.model.enumtype,
  org.faktorips.runtime.model.table,
  org.faktorips.runtime.model.type,
- org.faktorips.runtime.modeltype,
  org.faktorips.runtime.productdataprovider,
  org.faktorips.runtime.test,
  org.faktorips.runtime.util,
  org.faktorips.runtime.util.function
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.opencsv;version="3.3.0";resolution:=optional,
  edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
  javax.xml.bind;resolution:=optional,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -130,7 +130,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
         @Override
         public String getText(Object element) {
-            StringBuffer sb = new StringBuffer(super.getText(element));
+            StringBuilder sb = new StringBuilder(super.getText(element));
             if (element instanceof ITableStructureUsage) {
                 String[] tableStructures = ((ITableStructureUsage)element).getTableStructures();
                 if (tableStructures.length > 0) {

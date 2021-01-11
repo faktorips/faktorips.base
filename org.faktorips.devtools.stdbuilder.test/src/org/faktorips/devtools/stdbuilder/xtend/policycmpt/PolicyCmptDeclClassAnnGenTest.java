@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
-import org.faktorips.devtools.stdbuilder.xtend.policycmpt.PolicyCmptDeclClassAnnGen;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class PolicyCmptDeclClassAnnGenTest {
     public void test() {
         XPolicyCmptClass policy = mockPolicyCmptClass();
 
-        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator"), generator
+        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.lineSeparator(), generator
                 .createAnnotation(policy).getSourcecode());
     }
 
@@ -37,9 +36,10 @@ public class PolicyCmptDeclClassAnnGenTest {
         when(policy.isConfigured()).thenReturn(true);
         when(policy.getProductCmptClassName()).thenReturn("ProductCmptImplClass");
 
-        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.getProperty("line.separator")
-                + "@IpsConfiguredBy(ProductCmptImplClass.class)" + System.getProperty("line.separator"), generator
-                .createAnnotation(policy).getSourcecode());
+        assertEquals("@IpsPolicyCmptType(name = \"test.PolicyCmpt\")" + System.lineSeparator()
+                + "@IpsConfiguredBy(ProductCmptImplClass.class)" + System.lineSeparator(),
+                generator
+                        .createAnnotation(policy).getSourcecode());
     }
 
     private XPolicyCmptClass mockPolicyCmptClass() {

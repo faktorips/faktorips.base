@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,6 @@ import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumDeclClassAnnGen;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +48,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
         assertThat(
                 annotation.getSourcecode(),
                 is(equalTo("@IpsEnumType(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
-                        + System.getProperty("line.separator"))));
+                        + System.lineSeparator())));
     }
 
     @Test
@@ -63,7 +62,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
         assertThat(
                 annotation.getSourcecode(),
                 is(equalTo("@IpsEnumType(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
-                        + System.getProperty("line.separator"))));
+                        + System.lineSeparator())));
     }
 
     @Test
@@ -79,8 +78,8 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
         assertThat(
                 annotation.getSourcecode(),
                 is(equalTo("@IpsEnumType(name = \"test.EnumType\", attributeNames = {\"A2\", \"A1\", \"A3\"})"
-                        + System.getProperty("line.separator") + "@IpsExtensibleEnum(enumContentName=\"foo.EnumName\")"
-                        + System.getProperty("line.separator"))));
+                        + System.lineSeparator() + "@IpsExtensibleEnum(enumContentName=\"foo.EnumName\")"
+                        + System.lineSeparator())));
     }
 
     @Test
@@ -100,8 +99,9 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
 
         assertThat(
                 annotation.getSourcecode(),
-                is(equalTo("@IpsEnumType(name = \"test.EnumType\", attributeNames = {\"superAttr1\", \"superAttr2\", \"A2\", \"A1\", \"A3\"})"
-                        + System.getProperty("line.separator"))));
+                is(equalTo(
+                        "@IpsEnumType(name = \"test.EnumType\", attributeNames = {\"superAttr1\", \"superAttr2\", \"A2\", \"A1\", \"A3\"})"
+                                + System.lineSeparator())));
     }
 
     private EnumType setUpEnumtype() throws CoreException {

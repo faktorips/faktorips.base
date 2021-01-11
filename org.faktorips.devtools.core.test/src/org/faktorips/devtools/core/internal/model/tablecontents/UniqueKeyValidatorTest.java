@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -713,7 +713,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     }
 
     public void _testPerformance() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         int noOfRunsBefore = 0;
         int noOfTests = 0;
@@ -885,7 +885,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
-    private void testPerformanceInternal(StringBuffer sb,
+    private void testPerformanceInternal(StringBuilder sb,
             int noOfRunsBefore,
             int noOfTests,
             int noOfRows,

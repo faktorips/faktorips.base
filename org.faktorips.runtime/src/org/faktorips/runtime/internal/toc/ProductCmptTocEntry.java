@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.faktorips.runtime.internal.DateTime;
-import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -99,7 +100,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
     }
 
     /**
-     * Returns the number of genertion entries.
+     * Returns the number of generation entries.
      */
     public int getNumberOfGenerationEntries() {
         return generationEntries == null ? 0 : generationEntries.size();
@@ -126,65 +127,119 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * Returns the {@link GenerationTocEntry} successor of the one that is found for the provided
      * validity date. Returns <code>null</code> if either no entry is found for the provided date or
      * if the found one doesn't have a successor.
+     * 
+     * @see #findNextGenerationEntry(Calendar) findNextGenerationEntry(Calendar) for null-safe
+     *      processing
      */
     public GenerationTocEntry getNextGenerationEntry(Calendar validFrom) {
+        return findNextGenerationEntry(validFrom).orElse(null);
+    }
+
+    /**
+     * Returns an Optional containing the {@link GenerationTocEntry} successor of the one that is
+     * found for the provided validity date. Returns an {@link Optional#empty() empty Optional} if
+     * either no entry is found for the provided date or if the found one doesn't have a successor.
+     */
+    public Optional<GenerationTocEntry> findNextGenerationEntry(Calendar validFrom) {
         SortedMap<Long, GenerationTocEntry> map = generationEntries.headMap(validFrom.getTimeInMillis());
         if (map.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        Long key = map.lastKey();
-        return generationEntries.get(key);
+        return map.isEmpty() ? Optional.empty() : Optional.ofNullable(generationEntries.get(map.lastKey()));
     }
 
     /**
      * Returns the {@link GenerationTocEntry} that is prior to the one that is found for the
      * provided validity date. Returns <code>null</code> if either no entry is found for the
      * provided date or if the found one doesn't have a predecessor.
+     * 
+     * @see #findPreviousGenerationEntry(Calendar) findPreviousGenerationEntry(Calendar) for
+     *      null-safe processing
      */
     public GenerationTocEntry getPreviousGenerationEntry(Calendar validFrom) {
+        return findPreviousGenerationEntry(validFrom).orElse(null);
+    }
+
+    /**
+     * Returns an Optional containing the {@link GenerationTocEntry} that is prior to the one that
+     * is found for the provided validity date. Returns an {@link Optional#empty() empty Optional}
+     * if either no entry is found for the provided date or if the found one doesn't have a
+     * predecessor.
+     */
+    public Optional<GenerationTocEntry> findPreviousGenerationEntry(Calendar validFrom) {
         SortedMap<Long, GenerationTocEntry> map = generationEntries.tailMap(validFrom.getTimeInMillis() - 1);
         if (map.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         Long key = map.firstKey();
-        return generationEntries.get(key);
+        return Optional.ofNullable(generationEntries.get(key));
 
     }
 
     /**
      * Returns the latest {@link GenerationTocEntry} with repect to the generations validity date.
+     * 
+     * @see #findLatestGenerationEntry() findLatestGenerationEntry() for null-safe processing
      */
     public GenerationTocEntry getLatestGenerationEntry() {
+        return findLatestGenerationEntry().orElse(null);
+    }
+
+    /**
+     * Returns an Optional containing the latest {@link GenerationTocEntry} with respect to the
+     * generations validity date.
+     */
+    public Optional<GenerationTocEntry> findLatestGenerationEntry() {
         if (generationEntries.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return generationEntries.get(generationEntries.firstKey());
+        return Optional.ofNullable(generationEntries.get(generationEntries.firstKey()));
     }
 
     /**
      * Returns the toc entry for the generation valid on the given effective date, or
      * <code>null</code> if no generation is effective on the given date or the effective is
      * <code>null</code>.
+     * 
+     * @see #findGenerationEntry(Calendar) findGenerationEntry(Calendar) for null-safe processing
      */
     public GenerationTocEntry getGenerationEntry(Calendar effectiveDate) {
+        return findGenerationEntry(effectiveDate).orElse(null);
+    }
+
+    /**
+     * Returns an Optional containing the toc entry for the generation valid on the given effective
+     * date, or an {@link Optional#empty() empty Optional} if no generation is effective on the
+     * given date or the effective is <code>null</code>.
+     */
+    public Optional<GenerationTocEntry> findGenerationEntry(Calendar effectiveDate) {
         if (effectiveDate == null) {
-            return null;
+            return Optional.empty();
         }
         SortedMap<Long, GenerationTocEntry> map = generationEntries.tailMap(effectiveDate.getTimeInMillis() + 1);
         if (map.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         Long key = map.firstKey();
-        return generationEntries.get(key);
+        return Optional.ofNullable(generationEntries.get(key));
     }
 
     /**
      * Return the Generation Toc Entry for the exact valid at {@link DateTime}. This is the most
      * effective way to get a generation toc entry
      * 
+     * @see #findGenerationEntry(DateTime) findGenerationEntry(DateTime) for null-safe processing
      */
     public GenerationTocEntry getGenerationEntry(DateTime validAt) {
-        return generationEntries.get(validAt.toTimeInMillisecs(TimeZone.getDefault()));
+        return findGenerationEntry(validAt).orElse(null);
+    }
+
+    /**
+     * Return an Optional containing the Generation Toc Entry for the exact valid at
+     * {@link DateTime}. This is the most effective way to get a generation toc entry.
+     */
+    public Optional<GenerationTocEntry> findGenerationEntry(DateTime validAt) {
+        return Optional.ofNullable(generationEntries.get(validAt.toTimeInMillisecs(TimeZone.getDefault())));
     }
 
     @Override
@@ -209,7 +264,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
     }
 
     private static TreeMap<Long, GenerationTocEntry> createNewTreeMap() {
-        return new TreeMap<Long, GenerationTocEntry>(new InverseLongComparator());
+        return new TreeMap<Long, GenerationTocEntry>(Comparator.reverseOrder());
     }
 
     @Override
@@ -239,31 +294,22 @@ public class ProductCmptTocEntry extends TocEntryObject {
             return false;
         }
         ProductCmptTocEntry other = (ProductCmptTocEntry)obj;
-        if (!ObjectUtil.equals(generationEntries, other.generationEntries)) {
+        if (!Objects.equals(generationEntries, other.generationEntries)) {
             return false;
         }
-        if (!ObjectUtil.equals(generationImplClassName, other.generationImplClassName)) {
+        if (!Objects.equals(generationImplClassName, other.generationImplClassName)) {
             return false;
         }
-        if (!ObjectUtil.equals(kindId, other.kindId)) {
+        if (!Objects.equals(kindId, other.kindId)) {
             return false;
         }
-        if (!ObjectUtil.equals(validTo, other.validTo)) {
+        if (!Objects.equals(validTo, other.validTo)) {
             return false;
         }
-        if (!ObjectUtil.equals(versionId, other.versionId)) {
+        if (!Objects.equals(versionId, other.versionId)) {
             return false;
         }
         return super.equals(obj);
-    }
-
-    static class InverseLongComparator implements Comparator<Long> {
-
-        @Override
-        public int compare(Long first, Long second) {
-            return -1 * first.compareTo(second);
-        }
-
     }
 
 }

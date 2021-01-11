@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -254,12 +254,8 @@ public abstract class RefactoringParticipantHelper {
         for (IJavaElement originalJavaElement : originalJavaElements) {
             if (originalJavaElement instanceof IField || originalJavaElement instanceof IMethod) {
                 IType type = (IType)originalJavaElement.getParent();
-                List<IMember> members = originalJavaMembersByType.get(type);
-                if (members == null) {
-                    members = new ArrayList<IMember>();
-                }
+                List<IMember> members = originalJavaMembersByType.computeIfAbsent(type, $ -> new ArrayList<IMember>());
                 members.add((IMember)originalJavaElement);
-                originalJavaMembersByType.put(type, members);
             }
         }
     }

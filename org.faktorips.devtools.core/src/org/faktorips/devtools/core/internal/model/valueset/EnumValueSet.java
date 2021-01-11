@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -235,11 +235,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     private void setValueWithoutTriggeringChangeEvent(String newValue, Integer newIndex) {
-        List<Integer> indexList = valuesToIndexMap.get(newValue);
-        if (indexList == null) {
-            indexList = new ArrayList<Integer>(1);
-            valuesToIndexMap.put(newValue, indexList);
-        }
+        List<Integer> indexList = valuesToIndexMap.computeIfAbsent(newValue, $ -> new ArrayList<Integer>(1));
         indexList.add(newIndex);
     }
 

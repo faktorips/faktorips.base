@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -108,20 +108,20 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer(datatype.getName());
+        StringBuilder sb = new StringBuilder(datatype.getName());
         for (int i = 0; i < dimension; i++) {
-            buffer.append("[]"); //$NON-NLS-1$
+            sb.append("[]"); //$NON-NLS-1$
         }
-        return buffer.toString();
+        return sb.toString();
     }
 
     @Override
     public String getQualifiedName() {
-        StringBuffer buffer = new StringBuffer(datatype.getQualifiedName());
+        StringBuilder sb = new StringBuilder(datatype.getQualifiedName());
         for (int i = 0; i < dimension; i++) {
-            buffer.append("[]"); //$NON-NLS-1$
+            sb.append("[]"); //$NON-NLS-1$
         }
-        return buffer.toString();
+        return sb.toString();
     }
 
     @Override

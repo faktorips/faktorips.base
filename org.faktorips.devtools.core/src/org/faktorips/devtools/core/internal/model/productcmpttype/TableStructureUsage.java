@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -118,9 +119,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_ROLENAME);
-        mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
+        mandatoryTableContent = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_MANDATORY_TABLE_CONTENT);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME)).booleanValue();
+            changingOverTime = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CHANGING_OVER_TIME);
         }
     }
 

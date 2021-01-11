@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -73,27 +73,33 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
     }
 
     @Override
-    public String getLogStmtForMessage(int level, String msgConstant, String loggerInstanceExp, List<String> usedClasses) {
-        StringBuffer buf = new StringBuffer();
-        buf.append(loggerInstanceExp);
-        buf.append("."); //$NON-NLS-1$
-        buf.append(getLevelMethodName(level));
-        buf.append("(\""); //$NON-NLS-1$
-        buf.append(msgConstant);
-        buf.append("\")"); //$NON-NLS-1$
-        return buf.toString();
+    public String getLogStmtForMessage(int level,
+            String msgConstant,
+            String loggerInstanceExp,
+            List<String> usedClasses) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(loggerInstanceExp);
+        sb.append("."); //$NON-NLS-1$
+        sb.append(getLevelMethodName(level));
+        sb.append("(\""); //$NON-NLS-1$
+        sb.append(msgConstant);
+        sb.append("\")"); //$NON-NLS-1$
+        return sb.toString();
     }
 
     @Override
-    public String getLogStmtForMessageExp(int level, String msgExp, String loggerInstanceExp, List<String> usedClasses) {
-        StringBuffer buf = new StringBuffer();
-        buf.append(loggerInstanceExp);
-        buf.append("."); //$NON-NLS-1$
-        buf.append(getLevelMethodName(level));
-        buf.append("("); //$NON-NLS-1$
-        buf.append(msgExp);
-        buf.append(")"); //$NON-NLS-1$
-        return buf.toString();
+    public String getLogStmtForMessageExp(int level,
+            String msgExp,
+            String loggerInstanceExp,
+            List<String> usedClasses) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(loggerInstanceExp);
+        sb.append("."); //$NON-NLS-1$
+        sb.append(getLevelMethodName(level));
+        sb.append("("); //$NON-NLS-1$
+        sb.append(msgExp);
+        sb.append(")"); //$NON-NLS-1$
+        return sb.toString();
     }
 
     @Override
@@ -102,18 +108,17 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
             String throwableExp,
             String loggerInstanceExp,
             List<String> usedClasses) {
-
         usedClasses.add(Level.class.getName());
-        StringBuffer buf = new StringBuffer();
-        buf.append(loggerInstanceExp);
-        buf.append(".log("); //$NON-NLS-1$
-        buf.append(getLevelExp(level));
-        buf.append(", "); //$NON-NLS-1$
-        buf.append(msgExp);
-        buf.append(", "); //$NON-NLS-1$
-        buf.append(throwableExp);
-        buf.append(")"); //$NON-NLS-1$
-        return buf.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(loggerInstanceExp);
+        sb.append(".log("); //$NON-NLS-1$
+        sb.append(getLevelExp(level));
+        sb.append(", "); //$NON-NLS-1$
+        sb.append(msgExp);
+        sb.append(", "); //$NON-NLS-1$
+        sb.append(throwableExp);
+        sb.append(")"); //$NON-NLS-1$
+        return sb.toString();
     }
 
     @Override
@@ -124,11 +129,11 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
     @Override
     public String getLoggerInstanceStmt(String scopeExp, List<String> usedClasses) {
         usedClasses.add(Logger.class.getName());
-        StringBuffer buf = new StringBuffer();
-        buf.append("Logger.getLogger("); //$NON-NLS-1$
-        buf.append(scopeExp);
-        buf.append(")"); //$NON-NLS-1$
-        return buf.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Logger.getLogger("); //$NON-NLS-1$
+        sb.append(scopeExp);
+        sb.append(")"); //$NON-NLS-1$
+        return sb.toString();
     }
 
     @Override

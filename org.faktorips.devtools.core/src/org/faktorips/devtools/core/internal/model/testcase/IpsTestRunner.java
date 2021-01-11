@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -338,7 +338,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Create the string containing the additional repository packages
      */
     private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) throws CoreException {
-        StringBuffer argument = new StringBuffer();
+        StringBuilder argument = new StringBuilder();
         for (String repositoryPackages : getAllRepositoryPackagesAsString(currentIpsProject)) {
             argument.append(BRACELEFT + repositoryPackages + BRACERIGHT);
         }
@@ -720,11 +720,11 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void trace(String line) {
         if (TRACE_IPS_TEST_RUNNER) {
-            StringBuffer msgBuf = new StringBuffer(line.length() + 40);
-            msgBuf.append("IpsTestRunner "); //$NON-NLS-1$
-            msgBuf.append(new Date());
-            msgBuf.append(line);
-            System.out.println(msgBuf.toString());
+            StringBuilder msg = new StringBuilder(line.length() + 40);
+            msg.append("IpsTestRunner "); //$NON-NLS-1$
+            msg.append(new Date());
+            msg.append(line);
+            System.out.println(msg.toString());
         }
     }
 

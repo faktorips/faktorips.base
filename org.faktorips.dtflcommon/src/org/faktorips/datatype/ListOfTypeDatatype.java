@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -61,11 +61,11 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer("List"); //$NON-NLS-1$
-        buffer.append('<');
-        buffer.append(basicType.getName());
-        buffer.append('>');
-        return buffer.toString();
+        StringBuilder sb = new StringBuilder("List"); //$NON-NLS-1$
+        sb.append('<');
+        sb.append(basicType.getName());
+        sb.append('>');
+        return sb.toString();
     }
 
     @Override

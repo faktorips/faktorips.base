@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -327,9 +328,9 @@ public abstract class Association extends TypePart implements IAssociation {
                 maxCardinality = 0;
             }
         }
-        derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
+        derivedUnion = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_DERIVED_UNION);
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
-        constrain = Boolean.valueOf(element.getAttribute(PROPERTY_CONSTRAIN)).booleanValue();
+        constrain = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CONSTRAIN);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -9,6 +9,8 @@
  *******************************************************************************/
 
 package org.faktorips.runtime.caching;
+
+import java.util.function.Function;
 
 /**
  * Interface to compute objects of type V identified by a key of type K
@@ -30,5 +32,25 @@ public interface IComputable<K, V> {
      * Getting the {@link Class} of the value this computable produces.
      */
     public Class<? super V> getValueClass();
+
+    /**
+     * Creates a new {@link IComputable} for the given value class using the given {@link Function}
+     * to compute the values from keys.
+     *
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param valueClass the class of the values
+     * @param function the function to compute a value from a key
+     * @return a new {@link IComputable}
+     */
+    static <K, V> IComputable<K, V> of(Class<? super V> valueClass, Function<K, V> function) {
+        return new AbstractComputable<K, V>(valueClass) {
+
+            @Override
+            public V compute(K key) throws InterruptedException {
+                return function.apply(key);
+            }
+        };
+    }
 
 }

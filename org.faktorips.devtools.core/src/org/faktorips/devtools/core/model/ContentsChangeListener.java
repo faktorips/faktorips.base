@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.model;
 
-
 /**
  * A listener that listens to changes in source files.
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface ContentsChangeListener {
 
     /**

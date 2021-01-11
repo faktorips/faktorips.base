@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -271,12 +271,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         List<Object> resultList = new ArrayList<Object>();
         HashMap<String, List<ITestObject>> name2elements = new HashMap<String, List<ITestObject>>();
         for (ITestObject element : elements) {
-            List<ITestObject> existingElements = name2elements.get(element.getTestParameterName());
-            if (existingElements == null) {
-                existingElements = new ArrayList<ITestObject>(1);
-            }
+            List<ITestObject> existingElements = name2elements.computeIfAbsent(element.getTestParameterName(),
+                    $ -> new ArrayList<ITestObject>(1));
             existingElements.add(element);
-            name2elements.put(element.getTestParameterName(), existingElements);
         }
 
         // sort and add dummy nodes for root policy cmpt type params and rules

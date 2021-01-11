@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
-import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumDeclClassJaxbAnnGen;
 import org.junit.Test;
 
 public class EnumDeclClassJaxbAnnGenTest extends AbstractStdBuilderTest {
@@ -51,7 +50,7 @@ public class EnumDeclClassJaxbAnnGenTest extends AbstractStdBuilderTest {
         XEnumType xEnumType = builderSet.getModelNode(enumType, XEnumType.class);
 
         assertThat(enumDeclClassJaxbAnnGen.createAnnotation(xEnumType).getSourcecode(),
-                is(equalTo("@XmlJavaTypeAdapter(EnumXmlAdapter.class)" + System.getProperty("line.separator"))));
+                is(equalTo("@XmlJavaTypeAdapter(EnumXmlAdapter.class)" + System.lineSeparator())));
     }
 
 }

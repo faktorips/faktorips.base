@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -252,7 +252,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         layout.leftMargin = 20;
         clientGroup.setLayout(layout);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String description = item.getDescription().trim();
 
         // Set faktorips.attribute description

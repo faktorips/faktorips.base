@@ -7,6 +7,7 @@ Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.apache.ant,
  org.eclipse.ant.core,
  org.faktorips.devtools.core,
- org.faktorips.devtools.htmlexport
+ org.faktorips.devtools.htmlexport,
+ org.faktorips.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: ant_tasks/ant-tasks.jar

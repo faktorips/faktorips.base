@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.util.IntegerUtils;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -138,7 +137,7 @@ public class Cardinality implements Comparable<Cardinality> {
         } else if (defaultCard > max || min > defaultCard || defaultCard == Integer.MAX_VALUE) {
             String text = NLS.bind(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange, Integer.toString(min),
                     isToMany() ? "*" : Integer.toString(max) //$NON-NLS-1$
-                    );
+            );
             result.add(new Message(MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE, text, Message.ERROR, link,
                     IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY));
         }
@@ -196,14 +195,14 @@ public class Cardinality implements Comparable<Cardinality> {
         }
 
         if (this.min != o.min) {
-            return IntegerUtils.compare(min, o.min);
+            return Integer.compare(min, o.min);
         }
 
         if (max != o.max) {
-            return IntegerUtils.compare(max, o.max);
+            return Integer.compare(max, o.max);
         }
 
-        return IntegerUtils.compare(defaultCard, o.defaultCard);
+        return Integer.compare(defaultCard, o.defaultCard);
     }
 
     /**

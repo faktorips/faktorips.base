@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class MessageTest extends XmlAbstractTestCase {
 
-    private final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private final String LINE_SEPARATOR = System.lineSeparator();
 
     @Test
     public void testCreateCopy() {

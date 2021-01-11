@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,7 +19,6 @@ import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -78,13 +77,13 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         Element element = doc.createElement("el");
         doc.appendChild(element);
-        CDATASection cdataSection = doc.createCDATASection("a" + SystemUtils.LINE_SEPARATOR + "b");
+        CDATASection cdataSection = doc.createCDATASection("a" + System.lineSeparator() + "b");
         element.appendChild(cdataSection);
 
         String string = XmlUtil.nodeToString(doc, "Cp1252");
         String expected = "<?xml version=\"1.0\" encoding=\"WINDOWS-1252\" standalone=\"no\"?>"
-                + SystemUtils.LINE_SEPARATOR + "<el><![CDATA[a" + SystemUtils.LINE_SEPARATOR + "b]]></el>"
-                + SystemUtils.LINE_SEPARATOR;
+                + System.lineSeparator() + "<el><![CDATA[a" + System.lineSeparator() + "b]]></el>"
+                + System.lineSeparator();
         assertEquals(expected, string);
     }
 
@@ -97,8 +96,8 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         doc.appendChild(element);
 
         String string = XmlUtil.nodeToString(doc, "UTF-8");
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SystemUtils.LINE_SEPARATOR + "<el/>"
-                + SystemUtils.LINE_SEPARATOR;
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator() + "<el/>"
+                + System.lineSeparator();
         assertEquals(expected, string);
     }
 
@@ -114,9 +113,9 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         doc.appendChild(root);
 
         String string = XmlUtil.nodeToString(root, "UTF-8");
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SystemUtils.LINE_SEPARATOR
-                + "<root xml:space=\"preserve\">" + SystemUtils.LINE_SEPARATOR + " <el/>" + SystemUtils.LINE_SEPARATOR
-                + "</root>" + SystemUtils.LINE_SEPARATOR;
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator()
+                + "<root xml:space=\"preserve\">" + System.lineSeparator() + " <el/>" + System.lineSeparator()
+                + "</root>" + System.lineSeparator();
         assertEquals(expected, string);
     }
 

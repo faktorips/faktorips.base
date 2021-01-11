@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -190,7 +190,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addFunctionToResult(FlFunction<JavaCodeFragment> function, String prefix) {
         String name = function.getName();
-        StringBuffer displayText = new StringBuffer(name);
+        StringBuilder displayText = new StringBuilder(name);
         displayText.append('(');
         Datatype[] argTypes = function.getArgTypes();
         for (int i = 0; i < argTypes.length; i++) {

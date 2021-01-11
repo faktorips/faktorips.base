@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
 /**
  * Aggregates a set of radio buttons into an SWT {@link Group} which is created automatically.
@@ -153,16 +151,13 @@ public class RadioButtonGroup<T> {
     public final Radiobutton addRadiobutton(String text) {
         Radiobutton radiobutton = toolkit.createRadiobutton(composite, text);
         CheckboxField checkboxField = new CheckboxField(radiobutton);
-        checkboxField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                if (e.field instanceof CheckboxField) {
-                    CheckboxField changedField = (CheckboxField)e.field;
-                    if (changedField.getCheckbox().isChecked()) {
-                        for (CheckboxField checkboxField : oldCheckboxFields) {
-                            if (!checkboxField.equals(changedField)) {
-                                checkboxField.getCheckbox().setChecked(false);
-                            }
+        checkboxField.addChangeListener(e -> {
+            if (e.field instanceof CheckboxField) {
+                CheckboxField changedField = (CheckboxField)e.field;
+                if (changedField.getCheckbox().isChecked()) {
+                    for (CheckboxField checkboxField1 : oldCheckboxFields) {
+                        if (!checkboxField1.equals(changedField)) {
+                            checkboxField1.getCheckbox().setChecked(false);
                         }
                     }
                 }

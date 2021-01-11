@@ -51,6 +51,12 @@ public class PolicyCmptTypeTest {
     }
 
     @Test
+    public void testFindSuperType() throws Exception {
+        assertThat(policyCmptType.findSuperType().map(Type::getName).get(), is(superPolicyCmptType.getName()));
+        assertThat(superPolicyCmptType.findSuperType().isPresent(), is(false));
+    }
+
+    @Test
     public void testIsConfiguredByPolicyCmptType() throws Exception {
         assertThat(policyCmptType.isConfiguredByProductCmptType(), is(true));
         assertThat(superPolicyCmptType.isConfiguredByProductCmptType(), is(false));

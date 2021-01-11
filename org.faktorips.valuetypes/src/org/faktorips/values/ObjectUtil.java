@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -44,7 +44,10 @@ public class ObjectUtil {
      * @param object1 the first object
      * @param object2 the second object
      * @return <code>true</code> if the values of both objects are the same
+     * 
+     * @deprecated since 21.6. Use {@link java.util.Objects#equals} instead
      */
+    @Deprecated
     public static final boolean equals(Object object1, Object object2) {
         if (object1 == object2) {
             return true;

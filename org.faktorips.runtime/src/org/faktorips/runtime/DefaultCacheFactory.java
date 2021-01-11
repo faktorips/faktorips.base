@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -72,19 +72,13 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
     }
 
     protected int getInitialSize(Class<?> typeClass) {
-        Integer initSize = initialSizeMap.get(typeClass);
-        if (initSize == null) {
-            initSize = defaultInitialSize;
-        }
+        Integer initSize = initialSizeMap.getOrDefault(typeClass, defaultInitialSize);
         return initSize;
     }
 
     @Override
     public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
-        Integer initSize = initialSizeMap.get(computable.getValueClass());
-        if (initSize == null) {
-            initSize = defaultInitialSize;
-        }
+        Integer initSize = initialSizeMap.getOrDefault(computable.getValueClass(), defaultInitialSize);
         return new Memoizer<K, V>(computable, initSize, laodFactor, concurrencyLevel);
     }
 

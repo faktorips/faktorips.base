@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
-
-import org.faktorips.util.IntegerUtils;
 
 /**
  * Compares two collections by sorting the content using the element comparator and then compare one
@@ -53,7 +51,7 @@ public class DistinctElementComparator<T> implements Comparator<Collection<T>>, 
                 return compareValue;
             }
         }
-        return IntegerUtils.compare(sorted1.size(), sorted2.size());
+        return Integer.compare(sorted1.size(), sorted2.size());
     }
 
 }

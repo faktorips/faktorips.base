@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 
@@ -57,7 +56,7 @@ public class StyledTextUtil {
     public static void appendLinePlain(StyledText targetWidget, String text) {
         Objects.requireNonNull(targetWidget, WIDGET_NULL_WARNING);
         if (targetWidget.getCharCount() > 0) {
-            targetWidget.append(SystemUtils.LINE_SEPARATOR);
+            targetWidget.append(System.lineSeparator());
         }
         appendPlain(targetWidget, text);
     }
@@ -76,7 +75,7 @@ public class StyledTextUtil {
     public static void appendLineStyled(StyledText targetWidget, String text, int fontStyle) {
         Objects.requireNonNull(targetWidget, WIDGET_NULL_WARNING);
         if (targetWidget.getCharCount() > 0) {
-            targetWidget.append(SystemUtils.LINE_SEPARATOR);
+            targetWidget.append(System.lineSeparator());
         }
         appendStyled(targetWidget, text, fontStyle);
     }

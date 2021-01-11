@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -206,12 +206,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         }
 
         private Map<Datatype, SingleConversionCg<T>> getMapValueOfFromDatatype(Datatype from) {
-            Map<Datatype, SingleConversionCg<T>> fromMap = internalMap.get(from);
-            if (fromMap == null) {
-                fromMap = new ConcurrentHashMap<Datatype, SingleConversionCg<T>>();
-                internalMap.put(from, fromMap);
-            }
-            return fromMap;
+            return internalMap.computeIfAbsent(from, $ -> new ConcurrentHashMap<Datatype, SingleConversionCg<T>>());
         }
 
         private boolean nullCheck(Datatype from, Datatype to) {

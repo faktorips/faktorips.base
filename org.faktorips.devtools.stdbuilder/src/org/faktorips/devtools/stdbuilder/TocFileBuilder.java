@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -105,11 +105,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         for (ITocEntryBuilderFactory tocEntryBuilderFactory : tocEntryBuilderFactories) {
             ITocEntryBuilder builder = tocEntryBuilderFactory.createTocEntryBuilder(this);
             IpsObjectType ipsObjectType = builder.getIpsObjectType();
-            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(ipsObjectType);
-            if (builderList == null) {
-                builderList = new ArrayList<ITocEntryBuilder>();
-                ipsObjectTypeToTocEntryBuilderMap.put(ipsObjectType, builderList);
-            }
+            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.computeIfAbsent(ipsObjectType, $ -> new ArrayList<ITocEntryBuilder>());
             builderList.add(builder);
         }
     }

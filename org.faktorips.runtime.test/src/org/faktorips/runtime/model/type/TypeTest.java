@@ -23,7 +23,6 @@ import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
-import org.faktorips.runtime.model.type.Type.AnnotatedElementMatcher;
 import org.junit.Test;
 
 public class TypeTest {
@@ -84,30 +83,17 @@ public class TypeTest {
 
     @Test
     public void testSearchDeclaredMethod_exists() {
-        AnnotatedElementMatcher<IpsAttribute> matcher = new AnnotatedElementMatcher<IpsAttribute>() {
-
-            @Override
-            public boolean matches(IpsAttribute annotation) {
-                return annotation.name().equals("Attribute");
-            }
-        };
         Type type = IpsModel.getType(ISource.class);
 
-        assertNotNull(type.searchDeclaredMethod(IpsAttribute.class, matcher));
+        assertNotNull(type.searchDeclaredMethod(IpsAttribute.class, a -> a.name().equals("Attribute")));
     }
 
     @Test
     public void testSearchDeclaredMethod_missing() {
-        AnnotatedElementMatcher<IpsAttribute> matcherWrongProperties = new AnnotatedElementMatcher<IpsAttribute>() {
-
-            @Override
-            public boolean matches(IpsAttribute annotation) {
-                return annotation.name().equals("Attribute") && annotation.kind() == AttributeKind.CONSTANT;
-            }
-        };
         Type type = IpsModel.getType(ISource.class);
 
-        assertNull(type.searchDeclaredMethod(IpsAttribute.class, matcherWrongProperties));
+        assertNull(type.searchDeclaredMethod(IpsAttribute.class,
+                a -> a.name().equals("Attribute") && AttributeKind.CONSTANT == a.kind()));
     }
 
     @IpsPublishedInterface(implementation = SuperSource.class)

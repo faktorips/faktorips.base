@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -322,11 +322,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     private List<IBFElement> getValue(Map<String, List<IBFElement>> elements, String key) {
-        List<IBFElement> list = elements.get(key);
-        if (list == null) {
-            list = new ArrayList<IBFElement>();
-            elements.put(key, list);
-        }
+        List<IBFElement> list = elements.computeIfAbsent(key, $ -> new ArrayList<IBFElement>());
         return list;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,6 +23,7 @@ import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Description of an enum's attributes and extensibility.
@@ -96,26 +97,14 @@ public class EnumType extends ModelElement {
      * The model for the attribute used to uniquely identify an instance of this enum.
      */
     public EnumAttribute getIdAttribute() {
-        return findMarkedAttribute("Identifier", new AttributeMatcher() {
-
-            @Override
-            public boolean matches(EnumAttribute attributeModel) {
-                return attributeModel.isIdentifier();
-            }
-        });
+        return findMarkedAttribute("Identifier", EnumAttribute::isIdentifier);
     }
 
     /**
      * The model for the attribute used to display an instance of this enum in human readable form.
      */
     public EnumAttribute getDisplayNameAttribute() {
-        return findMarkedAttribute("DisplayName", new AttributeMatcher() {
-
-            @Override
-            public boolean matches(EnumAttribute attributeModel) {
-                return attributeModel.isDisplayName();
-            }
-        });
+        return findMarkedAttribute("DisplayName", EnumAttribute::isDisplayName);
     }
 
     /**
@@ -155,20 +144,13 @@ public class EnumType extends ModelElement {
             sb.append(getEnumContentQualifiedName());
             sb.append(']');
         }
-        sb.append("(");
-        boolean first = true;
-        for (String attributeName : attributeNames) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-            sb.append(attributeName);
-        }
-        sb.append(")");
+        sb.append('(');
+        StringBuilderJoiner.join(sb, attributeNames);
+        sb.append(')');
         return sb.toString();
     }
 
-    // @FunctionalInterface
+    @FunctionalInterface
     private static interface AttributeMatcher {
         boolean matches(EnumAttribute attributeModel);
     }

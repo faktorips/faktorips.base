@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -55,11 +55,7 @@ public class ModelService {
             GeneratorModelContext modelContext) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         ArgumentCheck.notNull(nodeClass);
-        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
-        if (nodes == null) {
-            nodes = new LinkedHashSet<AbstractGeneratorModelNode>();
-            generatorModelNodes.put(ipsObjectPartContainer, nodes);
-        }
+        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.computeIfAbsent(ipsObjectPartContainer, $ -> new LinkedHashSet<AbstractGeneratorModelNode>());
         for (AbstractGeneratorModelNode generatorModelNode : nodes) {
             if (nodeClass.equals(generatorModelNode.getClass())) {
                 @SuppressWarnings("unchecked")

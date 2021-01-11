@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -503,7 +503,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
         List<IpsTest2> testCases = getIpsTestCasesStartingWith(qNamePrefix, runtimeRepository);
         // sort list of test cases
-        Collections.sort(testCases, new IpsTestComparator());
+        Collections.sort(testCases, Comparator.comparing(IpsTest2::getQualifiedName));
 
         for (IpsTest2 testCase : testCases) {
             addTest(suites, testCase);
@@ -981,16 +981,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     @Override
     public void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup) {
         this.runtimeRepositoryLookup = repositoryLookup;
-    }
-
-    /*
-     * Comparator for IpsTest2 objects
-     */
-    private class IpsTestComparator implements Comparator<IpsTest2> {
-        @Override
-        public int compare(IpsTest2 o1, IpsTest2 o2) {
-            return (o1).getQualifiedName().compareTo((o2).getQualifiedName());
-        }
     }
 
 }

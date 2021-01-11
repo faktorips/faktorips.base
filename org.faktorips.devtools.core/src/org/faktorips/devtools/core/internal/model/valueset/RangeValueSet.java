@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -429,7 +429,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     @Override
     public String getCanonicalString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(RANGE_VALUESET_START);
         if (!isEmpty()) {
             sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));
@@ -472,8 +472,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             upperBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_UPPERBOUND));
             step = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_STEP));
         }
-        containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
-        empty = Boolean.valueOf(el.getAttribute(PROPERTY_EMPTY)).booleanValue();
+        containsNull = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_CONTAINS_NULL);
+        empty = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_EMPTY);
     }
 
     @Override

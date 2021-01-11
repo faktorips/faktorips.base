@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -7,12 +7,21 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
-package org.faktorips.devtools.core.ui.table;
+package org.faktorips.runtime.util;
 
 /**
- * A listener that informs that the value in a column has changed.
+ * A human readable text message with an optional code that identifies the type of the message.
  */
-public interface ColumnChangeListener {
-    public void valueChanged(ColumnIdentifier columnIdentifier, Object value);
+public interface IMessage {
+
+    /**
+     * Returns the human-readable message text.
+     */
+    String getText();
+
+    /**
+     * Returns the message code.
+     */
+    String getCode();
+
 }

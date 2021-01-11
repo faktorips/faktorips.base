@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -130,7 +130,7 @@ public class XTable extends XTableStructure {
     public String buildMethodNameSuffix(XIndex xIndex) {
         Set<IIndex> keysWithSameDatatypeSequence = getIndicesForKeysWithSameDatatypeSequence();
         if (keysWithSameDatatypeSequence.contains(xIndex.getIndex())) {
-            StringBuffer keyName = new StringBuffer();
+            StringBuilder keyName = new StringBuilder();
             String[] keyItems = xIndex.getIndex().getKeyItemNames();
             keyName.append("By");
             for (String keyItem : keyItems) {

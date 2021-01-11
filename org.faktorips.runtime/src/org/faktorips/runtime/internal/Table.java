@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,8 +13,8 @@ package org.faktorips.runtime.internal;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -89,11 +89,11 @@ public abstract class Table<R> implements ITable<R> {
     }
 
     /**
-     * Template method to perform additional initializations. Is called during the initialization of the
-     * table (from XML), right after {@link #initKeyMaps()}.
+     * Template method to perform additional initializations. Is called during the initialization of
+     * the table (from XML), right after {@link #initKeyMaps()}.
      * <p>
-     * Subclasses may override to provide an implementation. The default implementation is empty, so no
-     * super-call is necessary.
+     * Subclasses may override to provide an implementation. The default implementation is empty, so
+     * no super-call is necessary.
      */
     protected void performAdditionalInitializations() {
         // implementation provided by subclasses
@@ -114,15 +114,10 @@ public abstract class Table<R> implements ITable<R> {
      */
     @Override
     public String toString() {
-        StringBuffer output = new StringBuffer();
-        Iterator<R> it = rows.iterator();
-        for (int i = 0; it.hasNext() && i < 10; i++) {
-            if (i != 0) {
-                output.append("\n");
-            }
-            output.append(it.next().toString());
-        }
-        return output.toString();
+        return rows.stream()
+                .limit(10)
+                .map(R::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     @Override

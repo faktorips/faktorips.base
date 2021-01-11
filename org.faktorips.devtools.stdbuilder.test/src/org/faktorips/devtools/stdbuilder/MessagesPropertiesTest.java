@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -130,7 +130,7 @@ public class MessagesPropertiesTest {
         OutputStream outputStream = mock(OutputStream.class);
         validationMessages.store(outputStream);
 
-        verify(outputStream, times(9 + System.getProperty("line.separator").length())).write(anyInt());
+        verify(outputStream, times(9 + System.lineSeparator().length())).write(anyInt());
         verify(outputStream).flush();
         verify(outputStream).close();
         verifyNoMoreInteractions(outputStream);

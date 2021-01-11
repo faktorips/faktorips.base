@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -40,12 +40,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
     /**
      * {@link IIpsElementFilter}, which accepts all {@link IIpsElement}s
      */
-    protected static final IIpsElementFilter ALL_FILTER = new IIpsElementFilter() {
-        @Override
-        public boolean accept(IIpsElement object) {
-            return true;
-        }
-    };
+    protected static final IIpsElementFilter ALL_FILTER = $ -> true;
 
     /**
      * {@link Comparator}, which is used for sorting the {@link IIpsObject}s according to their

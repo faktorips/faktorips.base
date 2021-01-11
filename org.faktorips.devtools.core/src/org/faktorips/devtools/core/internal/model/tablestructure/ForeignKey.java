@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,8 +18,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -45,11 +45,11 @@ public class ForeignKey extends Key implements IForeignKey {
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer(refTableStructure);
-        buffer.append('(');
-        buffer.append(refUniqueKey);
-        buffer.append(')');
-        return buffer.toString();
+        StringBuilder builder = new StringBuilder(refTableStructure);
+        builder.append('(');
+        builder.append(refUniqueKey);
+        builder.append(')');
+        return builder.toString();
     }
 
     @Override

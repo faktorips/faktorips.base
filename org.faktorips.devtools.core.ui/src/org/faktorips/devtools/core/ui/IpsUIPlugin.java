@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -820,11 +820,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.get(propertyId);
-        if (factory == null) {
-            factory = new DefaultExtensionPropertyEditFieldFactory();
-            extensionPropertyEditFieldFactoryMap.put(propertyId, factory);
-        }
+        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.computeIfAbsent(propertyId, $ -> new DefaultExtensionPropertyEditFieldFactory());
         return factory;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -77,17 +77,14 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
          * there is a dependency from attributes that are displayed in the GeneralInfoSection and
          * the attributes respectively IpsPart that are displayed in the other sections.
          */
-        final ContentsChangeListener changeListener = new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (getIpsObject() == null) {
-                    return;
-                }
-                if (getPartControl().isVisible()
-                        && event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED
-                        && event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())) {
-                    refresh();
-                }
+        final ContentsChangeListener changeListener = event -> {
+            if (getIpsObject() == null) {
+                return;
+            }
+            if (getPartControl().isVisible()
+                    && event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED
+                    && event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())) {
+                refresh();
             }
         };
         getIpsObject().getIpsModel().addChangeListener(changeListener);

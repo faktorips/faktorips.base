@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * An abstract implementation of {@link IFormulaEvaluator} holding the product component generation
@@ -58,14 +59,9 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch
-            StringBuffer parameterValues = new StringBuffer();
+            StringBuilder parameterValues = new StringBuilder();
             parameterValues.append("Parameters: ");
-            for (Object param : parameters) {
-                parameterValues.append("" + param);
-                if (param != parameters[parameters.length - 1]) {
-                    parameterValues.append(", ");
-                }
-            }
+            StringBuilderJoiner.join(parameterValues, parameters);
             throw new FormulaExecutionException(object.toString(), formularName, parameterValues.toString(), e);
         }
 

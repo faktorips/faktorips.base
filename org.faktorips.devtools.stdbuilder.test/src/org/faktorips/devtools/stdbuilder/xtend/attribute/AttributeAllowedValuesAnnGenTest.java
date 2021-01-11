@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,7 +22,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeAllowedValuesAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -50,7 +49,7 @@ public class AttributeAllowedValuesAnnGenTest {
         JavaCodeFragment codeFragment = attributeAllowedValuesAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsAllowedValues(\"foo\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsAllowedValues(\"foo\")" + System.lineSeparator())));
     }
 
     @Test
@@ -60,7 +59,7 @@ public class AttributeAllowedValuesAnnGenTest {
         JavaCodeFragment codeFragment = attributeAllowedValuesAnnGen.createAnnotation(xPolicyAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsAllowedValues(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsAllowedValues(\"bar\")" + System.lineSeparator())));
     }
 
     private XPolicyAttribute xPolicyAttribute(String name) {

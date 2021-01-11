@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version 3
  * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
@@ -54,7 +54,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private String formatRangeValueSet(IValueSet value) {
         IRangeValueSet range = (IRangeValueSet)value;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(RangeValueSet.RANGE_VALUESET_START);
         if (!range.isEmpty()) {
             String lowerBound = range.getLowerBound();

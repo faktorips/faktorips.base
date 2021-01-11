@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -167,7 +167,7 @@ public class MessagesProperties {
 
         private static class StripFirstLineStream extends FilterOutputStream {
 
-            private static final String LINE_SEP = System.getProperty("line.separator");
+            private static final String LINE_SEP = System.lineSeparator();
             private static final char LAST_CHAR_LINE_SEP = LINE_SEP.charAt(LINE_SEP.length() - 1);
 
             private boolean firstlineSeen = false;

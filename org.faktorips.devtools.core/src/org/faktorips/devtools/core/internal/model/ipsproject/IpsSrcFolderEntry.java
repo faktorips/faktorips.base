@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -110,30 +109,30 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * Returns a description of the xml format.
      */
     public static final String getXmlFormatDescription() {
-        return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        return "Sourcefolder:" + System.lineSeparator() //$NON-NLS-1$
+                + "  <" + XML_ELEMENT + System.lineSeparator() //$NON-NLS-1$
+                + "    type=\"src\"" + System.lineSeparator() //$NON-NLS-1$
+                + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + System.lineSeparator() //$NON-NLS-1$
                 + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
                 "the newly generated content during each build cycle." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    validationMessagesBundle=\"motor.validation-messages\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The partial name of the resource bundle containing the validation messages." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The full resource bundle name is derived from basePackageDerived adding this parial name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + System.lineSeparator()
+                + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + System.lineSeparator() //$NON-NLS-1$
+                + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + System.lineSeparator() //$NON-NLS-1$
+                + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + System.lineSeparator() //$NON-NLS-1$
+                + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + System.lineSeparator() //$NON-NLS-1$
+                + "                                      The file is not part of the published interface so it is places in the internal package." + System.lineSeparator() //$NON-NLS-1$
+                + "    validationMessagesBundle=\"motor.validation-messages\" " + System.lineSeparator() //$NON-NLS-1$
+                + "                                      The partial name of the resource bundle containing the validation messages." + System.lineSeparator() //$NON-NLS-1$
+                + "                                      The full resource bundle name is derived from basePackageDerived adding this parial name." + System.lineSeparator() //$NON-NLS-1$
+                + "                                      For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name." + System.lineSeparator() //$NON-NLS-1$
                 + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
                 "regenerated during a clean build cycle." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    basePackageDerived=\"\"          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    uniqueQualifier=\"\">            Optional argument if the basePackage names are not unique for all referencing source folders." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+                + System.lineSeparator()
+                + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + System.lineSeparator() //$NON-NLS-1$
+                + "                                      If you use the standard builder, leave the atribute empty." + System.lineSeparator() //$NON-NLS-1$
+                + "    basePackageDerived=\"\"          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + System.lineSeparator() //$NON-NLS-1$
+                + "    uniqueQualifier=\"\">            Optional argument if the basePackage names are not unique for all referencing source folders." + System.lineSeparator() //$NON-NLS-1$
+                + " </" + XML_ELEMENT + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void setSourceFolder(IFolder newFolder) {

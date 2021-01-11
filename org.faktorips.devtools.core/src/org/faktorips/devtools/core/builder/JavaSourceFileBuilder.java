@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -654,12 +653,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
         List<String> annotations = getJavaDocTags(element, keyPrefix, builder);
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations.toArray(new String[annotations.size()]));
+        builder.javaDoc(sb.toString(), annotations.toArray(new String[annotations.size()]));
     }
 
     /**
@@ -836,7 +835,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
                 .node(getIpsProject().getName());
         return preferences.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR,
-                StringUtil.getSystemLineSeparator());
+                System.lineSeparator());
     }
 
     private String format(String content, boolean newFileCreated) {
@@ -984,7 +983,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (mergeFile.exists()) {
             return mergeFile.getLocation().toPortableString();
         }
-        StringBuffer mergeFileDefault = new StringBuffer();
+        StringBuilder mergeFileDefault = new StringBuilder();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
                 .append("/merge.java5.xml"); //$NON-NLS-1$
         Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
@@ -1024,8 +1023,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * The IPS model should be completely valid if calling this method or else the results may not
      * be exhaustive.
      * 
-     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the generated
-     *            <code>IJavaElement</code>s for.
+     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the
+     *            generated <code>IJavaElement</code>s for.
      * 
      * @throws NullPointerException If the parameter is null
      */

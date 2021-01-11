@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,6 +23,7 @@ import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Description of a runtime {@linkplain ITable table's} name, {@linkplain TableStructureKind kind}
@@ -130,14 +131,7 @@ public class TableStructure extends ModelElement {
         sb.append(": ");
         sb.append(kind);
         sb.append("(");
-        boolean first = true;
-        for (String columnName : columnNames) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-            sb.append(columnName);
-        }
+        StringBuilderJoiner.join(sb, columnNames);
         sb.append(")");
         return sb.toString();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,6 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -34,15 +36,15 @@ public class ObjectUtilTest {
 
     @Test
     public void testEqualsObject() {
-        assertTrue(ObjectUtil.equals(null, null));
+        assertTrue(Objects.equals(null, null));
 
         Object o1 = new Object();
-        assertTrue(ObjectUtil.equals(o1, o1));
-        assertFalse(ObjectUtil.equals(null, o1));
-        assertFalse(ObjectUtil.equals(o1, null));
+        assertTrue(Objects.equals(o1, o1));
+        assertFalse(Objects.equals(null, o1));
+        assertFalse(Objects.equals(o1, null));
 
         Object o2 = new Object();
-        assertFalse(ObjectUtil.equals(o1, o2));
+        assertFalse(Objects.equals(o1, o2));
     }
 
     @Test(expected = ClassCastException.class)
@@ -61,7 +63,6 @@ public class ObjectUtilTest {
         ObjectUtil.checkInstanceOf(12, Integer.class);
         ObjectUtil.checkInstanceOf(Long.valueOf(12), Number.class);
     }
-
 
     @Test
     public void testDefaultIfNull() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -43,8 +42,8 @@ public class DescriptionHelperTest extends XmlAbstractTestCase {
         DescriptionHelper.setDescription(el, "<>;");
         assertEquals("<>;", DescriptionHelper.getDescription(el));
 
-        DescriptionHelper.setDescription(el, "l1" + SystemUtils.LINE_SEPARATOR + "l2");
-        assertEquals("l1" + SystemUtils.LINE_SEPARATOR + "l2", DescriptionHelper.getDescription(el));
+        DescriptionHelper.setDescription(el, "l1" + System.lineSeparator() + "l2");
+        assertEquals("l1" + System.lineSeparator() + "l2", DescriptionHelper.getDescription(el));
     }
 
     @Test

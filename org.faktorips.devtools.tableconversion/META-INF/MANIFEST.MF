@@ -21,4 +21,5 @@ Bundle-ClassPath: .,
  lib/xmlbeans-2.3.0.jar,
  lib/dom4j-1.6.1.jar
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
- org.apache.commons.lang.time;version="[2.6,2.6]"
+ org.apache.commons.lang.time;version="[2.6,2.6]",
+ org.faktorips.runtime.util

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -113,7 +113,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         }
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttribute.findDatatype(getIpsProject()));
 
-        StringBuffer superClassName = new StringBuffer();
+        StringBuilder superClassName = new StringBuilder();
         superClassName.append("javax.xml.bind.annotation.adapters.XmlAdapter"); //$NON-NLS-1$
         superClassName.append("<"); //$NON-NLS-1$
         superClassName.append(datatypeHelper.getJavaClassName());

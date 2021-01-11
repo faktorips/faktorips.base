@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -74,12 +74,12 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * <p>
      * A CompareItem representing a product component or one of its generations is processed
      * separately in
-     * {@link #initPropertyValueContainerContentString(IProductPartsContainer, StringBuffer, int)}.
+     * {@link #initPropertyValueContainerContentString(IProductPartsContainer, StringBuilder, int)}.
      * 
      * @see #getContentString()
      */
     @Override
-    protected int initTreeContentString(StringBuffer sb, int offset) {
+    protected int initTreeContentString(StringBuilder sb, int offset) {
         int startIndex = sb.length();
         sb.append(getContentString());
         for (AbstractCompareItem compareItem : getChildItems()) {
@@ -112,7 +112,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * relations and config-elements) are ordered and displayed in separate groups.
      */
     private int initPropertyValueContainerContentString(IProductPartsContainer partContainer,
-            StringBuffer sb,
+            StringBuilder sb,
             int offset) {
 
         int startIndex = sb.length();
@@ -139,7 +139,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     }
 
-    private void initAttributes(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+    private void initAttributes(IProductPartsContainer partContainer, StringBuilder sb, int offset, int startIndex) {
         List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(getChildItems(), IAttributeValue.class);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
@@ -152,7 +152,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private void initConfigElementComposites(IProductPartsContainer partContainer,
-            StringBuffer sb,
+            StringBuilder sb,
             int offset,
             int startIndex) {
         List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(getChildItems(), IConfigElement.class);
@@ -166,7 +166,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
     }
 
-    private void initFormulas(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+    private void initFormulas(IProductPartsContainer partContainer, StringBuilder sb, int offset, int startIndex) {
         List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(getChildItems(), IFormula.class);
         if (!formulas.isEmpty()) {
             sb.append(NEWLINE);
@@ -178,7 +178,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
     }
 
-    private void initLinks(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+    private void initLinks(IProductPartsContainer partContainer, StringBuilder sb, int offset, int startIndex) {
         List<ProductCmptCompareItem> links = getCompareItemsOfClass(getChildItems(), IProductCmptLink.class);
         if (!links.isEmpty()) {
             sb.append(NEWLINE);
@@ -199,7 +199,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
     }
 
-    private void initTableUsages(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+    private void initTableUsages(IProductPartsContainer partContainer, StringBuilder sb, int offset, int startIndex) {
         List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(getChildItems(), ITableContentUsage.class);
         if (!tableUsages.isEmpty()) {
             sb.append(NEWLINE);
@@ -211,7 +211,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
     }
 
-    private void initRules(IProductPartsContainer partContainer, StringBuffer sb, int offset, int startIndex) {
+    private void initRules(IProductPartsContainer partContainer, StringBuilder sb, int offset, int startIndex) {
         List<ProductCmptCompareItem> rules = getCompareItemsOfClass(getChildItems(), IValidationRuleConfig.class);
         if (!rules.isEmpty()) {
             sb.append(NEWLINE);
@@ -223,14 +223,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
     }
 
-    protected void conditionalAppendGenerationDateAndTab(IProductPartsContainer valueContainer, StringBuffer sb) {
+    protected void conditionalAppendGenerationDateAndTab(IProductPartsContainer valueContainer, StringBuilder sb) {
         if (valueContainer instanceof IIpsObjectGeneration) {
             sb.append(getGenerationDateText((IIpsObjectGeneration)valueContainer)).append(TAB);
         }
     }
 
     private String getRuleListHeader(IProductPartsContainer valueContainer) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String ruleHeaderName = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(ruleHeaderName).append(COLON_BLANK);
@@ -238,7 +238,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private Object getTableUsageListHeader(IProductPartsContainer valueContainer) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String headerName = Messages.ProductCmptCompareItem_TableUsagesHeader;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(headerName).append(COLON_BLANK);
@@ -250,7 +250,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * representation of this CompareItem.
      */
     private String getAttributeListHeader(IProductPartsContainer valueContainer) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationPropertiesPage_pageTitle;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(attrString).append(COLON_BLANK);
@@ -258,14 +258,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     private Object getConfigElementListHeader(IProductPartsContainer valueContainer) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(Messages.ProductCmptCompareItem_DefaultsAndValueSets).append(COLON_BLANK);
         return sb.toString();
     }
 
     private Object getFormulaListHeader(IProductPartsContainer valueContainer) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(Messages.ProductCmptCompareItem_FormulaHeader).append(COLON_BLANK);
         return sb.toString();
@@ -276,7 +276,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * this CompareItem.
      */
     private String getLinkListHeader(IProductPartsContainer valueContainer) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String relString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(relString).append(COLON_BLANK);
@@ -288,7 +288,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * String).
      */
     private String getRelationTypeHeader(IProductPartsContainer partContainer, String relationType) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(NEWLINE);
         conditionalAppendGenerationDateAndTab(partContainer, sb);
         sb.append(TAB).append(TAB).append(TAB).append(relationType);
@@ -354,7 +354,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      */
     @Override
     protected String initContentString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (getIpsElement() == null) {
             return sb.toString();
         }
@@ -383,20 +383,20 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         return sb.toString();
     }
 
-    private void initContentStringForValidationRuleConfig(StringBuffer sb, IValidationRuleConfig rule) {
+    private void initContentStringForValidationRuleConfig(StringBuilder sb, IValidationRuleConfig rule) {
         conditionalAppendGenerationDateAndTab(rule.getPropertyValueContainer(), sb);
         sb.append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
         sb.append(rule.isActive() ? Messages.ProductCmptCompareItem_VRule_active
                 : Messages.ProductCmptCompareItem_VRule_inactive);
     }
 
-    private void initContentStringForPropertyValue(StringBuffer sb, IPropertyValue value) {
+    private void initContentStringForPropertyValue(StringBuilder sb, IPropertyValue value) {
         conditionalAppendGenerationDateAndTab(value.getPropertyValueContainer(), sb);
         sb.append(TAB).append(TAB).append(value.getPropertyName()).append(COLON_BLANK);
         sb.append(value.getPropertyValue());
     }
 
-    private void initContentStringForGeneration(StringBuffer sb, IIpsObjectGeneration gen) {
+    private void initContentStringForGeneration(StringBuilder sb, IIpsObjectGeneration gen) {
         sb.append(getGenerationDateText(gen));
         sb.append(TAB).append(getChangingNamingConventionGenerationString()).append(COLON_BLANK);
         sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
@@ -407,7 +407,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(getDateFormat().format(gen.getValidFrom().getTime()));
     }
 
-    private void initContentStringForProductCmpt(StringBuffer sb, IProductCmpt product) {
+    private void initContentStringForProductCmpt(StringBuilder sb, IProductCmpt product) {
         sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
         sb.append(QUOTE).append(product.getName()).append(QUOTE).append(NEWLINE);
         sb.append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_type)
@@ -419,7 +419,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);
     }
 
-    private void initContentStringForProductCmptLink(StringBuffer sb, IProductCmptLink rel) {
+    private void initContentStringForProductCmptLink(StringBuilder sb, IProductCmptLink rel) {
         conditionalAppendGenerationDateAndTab(rel.getProductCmptLinkContainer(), sb);
         sb.append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
         sb.append(BLANK).append(BLANK);
@@ -428,8 +428,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(getMandatoryOrOptional(rel));
     }
 
-    private StringBuffer getMandatoryOrOptional(IProductCmptLink rel) {
-        StringBuffer sb = new StringBuffer();
+    private StringBuilder getMandatoryOrOptional(IProductCmptLink rel) {
+        StringBuilder sb = new StringBuilder();
         if (rel.isMandatory()) {
             sb.append('(')
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory)
@@ -442,7 +442,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         return sb;
     }
 
-    private void initContentString(StringBuffer sb, IConfiguredValueSet configValueSet) {
+    private void initContentString(StringBuilder sb, IConfiguredValueSet configValueSet) {
         conditionalAppendGenerationDateAndTab(configValueSet.getPropertyValueContainer(), sb);
         sb.append(TAB).append(TAB);
         sb.append(configValueSet.getName()).append(NEWLINE);
@@ -452,7 +452,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 .append(BLANK).append(configValueSet.getValueSet().getCanonicalString());
     }
 
-    private void initContentString(StringBuffer sb, IConfiguredDefault configuredDefault) {
+    private void initContentString(StringBuilder sb, IConfiguredDefault configuredDefault) {
         conditionalAppendGenerationDateAndTab(configuredDefault.getPropertyValueContainer(), sb);
         sb.append(TAB).append(TAB).append(TAB);
         sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ConfigElementEditComposite_defaultValue)
@@ -465,7 +465,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      */
     @Override
     protected String initName() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (getIpsElement() != null) {
             initNameIntenal(sb);
         }
@@ -473,7 +473,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     // CSOFF: CyclomaticComplexityCheck
-    private void initNameIntenal(StringBuffer sb) {
+    private void initNameIntenal(StringBuilder sb) {
         if (getIpsElement() instanceof IProductCmptLink) {
             IProductCmptLink link = (IProductCmptLink)getIpsElement();
             sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
@@ -516,8 +516,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     // CSON: CyclomaticComplexityCheck
-    private StringBuffer getFileName(IIpsSrcFile srcFile) {
-        StringBuffer sb = new StringBuffer();
+    private StringBuilder getFileName(IIpsSrcFile srcFile) {
+        StringBuilder sb = new StringBuilder();
         IFile file = srcFile.getCorrespondingFile();
         if (file != null) {
             sb.append(Messages.ProductCmptCompareItem_SourceFile).append(COLON_BLANK);

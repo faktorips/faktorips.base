@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -203,14 +203,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private void addAttributeRow(IAttribute attribute) {
         addRow((IProductCmptTypeAttribute)attribute,
-                new CellCreator<IPropertyValueContainer, IProductCmptTypeAttribute>() {
-
-                    @Override
-                    public IPageElement createCell(IPropertyValueContainer container,
-                            IProductCmptTypeAttribute attribute) {
-                        return createProductAttributeCell(container, attribute);
-                    }
-                });
+                (c, a) -> createProductAttributeCell((IPropertyValueContainer)c, a));
     }
 
     private IPageElement createProductAttributeCell(IPropertyValueContainer container,
@@ -245,13 +238,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
-        addRow(formulaSignature, new CellCreator<IPropertyValueContainer, IProductCmptTypeMethod>() {
-
-            @Override
-            public IPageElement createCell(IPropertyValueContainer container, IProductCmptTypeMethod property) {
-                return createFormulaCell(container, property);
-            }
-        });
+        addRow(formulaSignature, (c, f) -> createFormulaCell((IPropertyValueContainer)c, f));
     }
 
     private IPageElement createFormulaCell(IPropertyValueContainer container, IProductCmptTypeMethod property) {
@@ -302,15 +289,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addPolicyCmptTypeAttributesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-        addRow(policyCmptTypeAttribute, new CellCreator<IPropertyValueContainer, IPolicyCmptTypeAttribute>() {
-
-            @Override
-            public IPageElement createCell(IPropertyValueContainer container,
-                    IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-                return createPolicyCmptTypeAttributeCell(container, policyCmptTypeAttribute);
-            }
-
-        });
+        addRow(policyCmptTypeAttribute, (c, a) -> createPolicyCmptTypeAttributeCell((IPropertyValueContainer)c, a));
     }
 
     private IPageElement createPolicyCmptTypeAttributeCell(IPropertyValueContainer container,
@@ -410,16 +389,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private void addTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
         final String roleName = tableStructureUsage.getRoleName();
-        createRow(tableStructureUsage, roleName, new CellCreator<IPropertyValueContainer, ITableStructureUsage>() {
-
-            @Override
-            public IPageElement createCell(IPropertyValueContainer container, ITableStructureUsage property) {
-                return createTableStructureUsageCell(roleName, container);
-            }
-        });
+        createRow(tableStructureUsage, roleName,
+                (c, $) -> createTableStructureUsageCell((IPropertyValueContainer)c, roleName));
     }
 
-    private IPageElement createTableStructureUsageCell(final String roleName, IPropertyValueContainer container) {
+    private IPageElement createTableStructureUsageCell(IPropertyValueContainer container, final String roleName) {
         ITableContentUsage usage = container instanceof IProductCmpt
                 ? ((IProductCmpt)container).getTableContentUsage(roleName)
                 : ((IProductCmptGeneration)container).getTableContentUsage(roleName);
@@ -472,19 +446,12 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
             final String associationName = association.getName();
             TableRowPageElement pageElement = addRow(productAssociation,
-                    new CellCreator<IProductCmptLinkContainer, IProductCmptTypeAssociation>() {
-
-                        @Override
-                        public IPageElement createCell(IProductCmptLinkContainer container,
-                                IProductCmptTypeAssociation property) {
-                            return createAssociationCell(associationName, container);
-                        }
-                    });
+                    (c, $) -> createAssociationCell((IProductCmptLinkContainer)c, associationName));
             pageElement.setId(associationName);
         }
     }
 
-    private IPageElement createAssociationCell(final String associationName, IProductCmptLinkContainer container) {
+    private IPageElement createAssociationCell(IProductCmptLinkContainer container, final String associationName) {
         AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK, getContext());
         List<IProductCmptLink> links = container.getLinksAsList(associationName);
         addProductCmptLinksToPageElements(cellContent, links);
@@ -569,14 +536,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addValidationRulesRow(IValidationRule validationRule) {
-        addRow(validationRule, new CellCreator<IValidationRuleConfigContainer, IValidationRule>() {
-
-            @Override
-            public IPageElement createCell(IValidationRuleConfigContainer validationRuleConfigContainer,
-                    IValidationRule validationRule) {
-                return createValidationRuleCell(validationRuleConfigContainer, validationRule);
-            }
-        });
+        addRow(validationRule, (c, r) -> createValidationRuleCell((IValidationRuleConfigContainer)c, r));
     }
 
     private IPageElement createValidationRuleCell(IValidationRuleConfigContainer validationRuleConfigContainer,
@@ -604,6 +564,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         setId(productCmpt.getName() + "_ProductGenerationAttributeTable"); //$NON-NLS-1$
     }
 
+    @FunctionalInterface
     private static interface CellCreator<C, P extends IChangingOverTimeProperty> {
         public IPageElement createCell(C container, P property);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -38,9 +38,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
@@ -92,12 +90,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
         rangeTypeField = new EnumValueField(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.getEnumType()),
                 ColumnRangeType.getEnumType());
-        rangeTypeField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue());
-            }
-        });
+        rangeTypeField.addChangeListener(e -> adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue()));
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
         Text parameterNameText = getToolkit().createText(rangeTypeArea);
         parameterNameField = new TextField(parameterNameText);

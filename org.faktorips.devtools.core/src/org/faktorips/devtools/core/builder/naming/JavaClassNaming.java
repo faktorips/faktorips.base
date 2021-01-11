@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -54,13 +54,13 @@ public class JavaClassNaming {
     }
 
     private String getQualifiedName(String packageName, String className) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (packageName != null) {
-            buf.append(packageName);
-            buf.append('.');
+            sb.append(packageName);
+            sb.append('.');
         }
-        buf.append(className);
-        return buf.toString();
+        sb.append(className);
+        return sb.toString();
     }
 
     /**

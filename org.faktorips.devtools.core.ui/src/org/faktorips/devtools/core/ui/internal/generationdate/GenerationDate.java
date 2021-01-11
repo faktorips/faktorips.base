@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -74,7 +74,7 @@ public class GenerationDate {
     }
 
     public String getText() {
-        StringBuffer result = new StringBuffer(getDateFormat().format(getValidFrom().getTime()));
+        StringBuilder result = new StringBuilder(getDateFormat().format(getValidFrom().getTime()));
         result.append(" - "); //$NON-NLS-1$
         if (getValidTo() != null) {
             result.append(getDateFormat().format(getValidTo().getTime()));

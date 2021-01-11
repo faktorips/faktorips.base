@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -793,7 +793,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         ((GridData)treeViewer.getTree().getLayoutData()).exclude = true;
         String msg = Messages.ProductStructureExplorer_labelCircleRelation;
         IIpsElement[] cyclePath = e.getCyclePath();
-        StringBuffer path = new StringBuffer();
+        StringBuilder path = new StringBuilder();
 
         // don't show first element if the first element is no product relevant node (e.g. effective
         // date info node)

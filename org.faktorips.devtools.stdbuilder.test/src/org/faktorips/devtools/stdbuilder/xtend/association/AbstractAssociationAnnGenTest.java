@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
-import org.faktorips.devtools.stdbuilder.xtend.association.AbstractAssociationAnnGen;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,12 +45,12 @@ public class AbstractAssociationAnnGenTest {
     // expected outcomes
     private String annAssociation = "@IpsAssociation(name = \"" + ASSOCIATION + "\", pluralName = \""
             + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = " + ASSOCIATION_TARGET
-            + ".class, min = " + MIN_CARD + ", max = " + MAX_CARD + ")" + System.getProperty("line.separator");
-    private String annDerivedUnion = "@IpsDerivedUnion" + System.getProperty("line.separator");
+            + ".class, min = " + MIN_CARD + ", max = " + MAX_CARD + ")" + System.lineSeparator();
+    private String annDerivedUnion = "@IpsDerivedUnion" + System.lineSeparator();
     private String annSubsetOfDerivedUnion = "@IpsSubsetOfDerivedUnion(\"" + DERIVED_UNION + "\")"
-            + System.getProperty("line.separator");
+            + System.lineSeparator();
     private String annMatchingAssociation = "@IpsMatchingAssociation(source = " + MATCHING_SOURCE_TYPE
-            + ".class, name = \"" + MATCHING_ASSOCIATION + "\")" + System.getProperty("line.separator");
+            + ".class, name = \"" + MATCHING_ASSOCIATION + "\")" + System.lineSeparator();
 
     @Test
     public void testCreateAnnAssociation() {

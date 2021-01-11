@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,7 +27,6 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
-import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -36,8 +35,7 @@ import org.faktorips.runtime.util.MessagesHelper;
  * {@linkplain #getLabel(Locale) label}, {@linkplain #getDescription(Locale) description} and
  * {@linkplain #getExtensionPropertyValue(String) extension properties}.
  */
-@SuppressWarnings("deprecation")
-public abstract class ModelElement implements IModelElement {
+public abstract class ModelElement {
 
     private final String name;
 
@@ -71,7 +69,6 @@ public abstract class ModelElement implements IModelElement {
     /**
      * @return the qualified IPS object name
      */
-    @Override
     public String getName() {
         return name;
     }
@@ -84,7 +81,6 @@ public abstract class ModelElement implements IModelElement {
      * @return the label for the given locale or the element's name if no label exists for the given
      *         locale nor in the default locale
      */
-    @Override
     public String getLabel(Locale locale) {
         return getDocumentation(locale, DocumentationKind.LABEL, getName());
     }
@@ -97,7 +93,6 @@ public abstract class ModelElement implements IModelElement {
      * @return the description for the given locale or an empty string if no description exists for
      *         the given locale
      */
-    @Override
     public String getDescription(Locale locale) {
         return getDocumentation(locale, DocumentationKind.DESCRIPTION, IpsStringUtils.EMPTY);
     }
@@ -136,7 +131,6 @@ public abstract class ModelElement implements IModelElement {
      *         <code>true</code>
      * @throws IllegalArgumentException if no such property exists
      */
-    @Override
     public Object getExtensionPropertyValue(String propertyId) {
         if (extPropertyValues == null) {
             return null;
@@ -147,7 +141,6 @@ public abstract class ModelElement implements IModelElement {
     /**
      * @return a set of the extension property ids defined for this element
      */
-    @Override
     public Set<String> getExtensionPropertyIds() {
         if (extPropertyValues == null) {
             return new HashSet<String>(0);
@@ -173,7 +166,7 @@ public abstract class ModelElement implements IModelElement {
 
     private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Throwable e) {
         return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
-                method.getName(), IpsStringUtils.join(args, ", "), source), e);
+                method.getName(), IpsStringUtils.join(args), source), e);
     }
 
     protected Object invokeField(Field field, Object source) {

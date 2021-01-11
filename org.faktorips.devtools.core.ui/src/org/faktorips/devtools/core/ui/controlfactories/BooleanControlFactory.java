@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,8 +15,6 @@ import java.util.LinkedHashMap;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -28,7 +26,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -86,23 +83,14 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     private void registerUpdateListener(final IValueSetOwner valueSetOwner,
             final ValueDatatype datatype,
             final RadioButtonGroup<String> radioButtonGroup) {
-        final ContentsChangeListener contentChangeListener = new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.isAffected(valueSetOwner)) {
-                    updateButtonEnablement(valueSetOwner.getValueSet(), datatype, radioButtonGroup);
-                }
+        final ContentsChangeListener contentChangeListener = event -> {
+            if (event.isAffected(valueSetOwner)) {
+                updateButtonEnablement(valueSetOwner.getValueSet(), datatype, radioButtonGroup);
             }
         };
         valueSetOwner.getIpsModel().addChangeListener(contentChangeListener);
-        radioButtonGroup.getComposite().addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                valueSetOwner.getIpsModel().removeChangeListener(contentChangeListener);
-            }
-        });
+        radioButtonGroup.getComposite()
+                .addDisposeListener(e -> valueSetOwner.getIpsModel().removeChangeListener(contentChangeListener));
     }
 
     protected LinkedHashMap<String, String> initOptions(IValueSet valueSet, ValueDatatype datatype) {

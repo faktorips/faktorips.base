@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,22 +12,20 @@ package org.faktorips.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.faktorips.util.IntegerUtils;
 import org.junit.Test;
 
 public class IntegerUtilsTest {
 
     @Test
     public void testCompare() {
-        assertThat(IntegerUtils.compare(0, 0), is(0));
-        assertThat(IntegerUtils.compare(10, 10), is(0));
-        assertThat(IntegerUtils.compare(-10, -10), is(0));
+        assertThat(Integer.compare(0, 0), is(0));
+        assertThat(Integer.compare(10, 10), is(0));
+        assertThat(Integer.compare(-10, -10), is(0));
 
-        assertThat(IntegerUtils.compare(1, 0), is(1));
-        assertThat(IntegerUtils.compare(0, 1), is(-1));
-        assertThat(IntegerUtils.compare(10, 11), is(-1));
-        assertThat(IntegerUtils.compare(-10, -11), is(1));
-
+        assertThat(Integer.compare(1, 0), is(1));
+        assertThat(Integer.compare(0, 1), is(-1));
+        assertThat(Integer.compare(10, 11), is(-1));
+        assertThat(Integer.compare(-10, -11), is(1));
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -202,16 +202,16 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
 
     @Override
     public String getJavaClassIdentifier(String name) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
             if (isSpecialChar(c)) {
-                buffer.append(getReplacement(c));
+                sb.append(getReplacement(c));
             } else {
-                buffer.append(c);
+                sb.append(c);
             }
         }
-        String identifier = buffer.toString();
+        String identifier = sb.toString();
         IStatus status = ValidationUtils.validateJavaTypeName(identifier, ipsProject);
         if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
             return identifier;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.devtools.core.internal.model.value.ValueUtil;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -50,19 +49,15 @@ class UniqueIdentifierValidator {
     }
 
     private void registerChangeListener() {
-        container.getIpsModel().addChangeListener(new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (isRelevantChangeEvent(event)) {
-                    IIpsObjectPartContainer part = event.getPart();
-                    if (part instanceof IEnumAttributeValue) {
-                        IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
-                        int index = getEnumAttributeIndex(enumAttributeValue);
-                        columnAttributeValues.remove(index);
-                    } else {
-                        columnAttributeValues.clear();
-                    }
+        container.getIpsModel().addChangeListener(event -> {
+            if (isRelevantChangeEvent(event)) {
+                IIpsObjectPartContainer part = event.getPart();
+                if (part instanceof IEnumAttributeValue) {
+                    IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
+                    int index = getEnumAttributeIndex(enumAttributeValue);
+                    columnAttributeValues.remove(index);
+                } else {
+                    columnAttributeValues.clear();
                 }
             }
         });
@@ -102,7 +97,8 @@ class UniqueIdentifierValidator {
         return violatingString;
     }
 
-    private synchronized AttributeValues getAttributeValues(ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
+    private synchronized AttributeValues getAttributeValues(
+            ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy,
             int index) {
         AttributeValues attributeValues = columnAttributeValuesCopy.get(index);
         if (attributeValues == null) {
@@ -144,12 +140,7 @@ class UniqueIdentifierValidator {
                 0.75f, 1);
 
         public void addIdentifier(LocalizedString identifier) {
-            Integer count = identifierCounts.get(identifier);
-            if (count == null) {
-                identifierCounts.put(identifier, 1);
-            } else {
-                identifierCounts.put(identifier, count + 1);
-            }
+            identifierCounts.put(identifier, identifierCounts.getOrDefault(identifier, 0) + 1);
         }
 
         public boolean isDuplicated(LocalizedString identifier) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,13 +27,13 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 public class MethodEditDialog extends IpsPartEditDialog2 {
 
@@ -173,24 +173,20 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected String buildTitle() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(method.getParent().getName());
-        buffer.append('.');
-        buffer.append(method.getDatatype());
-        buffer.append(' ');
-        buffer.append(method.getName());
-        buffer.append('(');
-        IParameter[] params = method.getParameters();
-        for (int i = 0; i < params.length; i++) {
-            if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-            buffer.append(params[i].getDatatype());
-            buffer.append(' ');
-            buffer.append(params[i].getName());
-        }
-        buffer.append(')');
-        return buffer.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(method.getParent().getName());
+        sb.append('.');
+        sb.append(method.getDatatype());
+        sb.append(' ');
+        sb.append(method.getName());
+        sb.append('(');
+        StringBuilderJoiner.join(sb, method.getParameters(), p -> {
+            sb.append(p.getDatatype());
+            sb.append(' ');
+            sb.append(p.getName());
+        });
+        sb.append(')');
+        return sb.toString();
 
     }
 

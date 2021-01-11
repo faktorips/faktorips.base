@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -54,7 +54,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -145,12 +144,9 @@ class CategoryComposite extends ViewerButtonComposite {
      * event accordingly by refreshing itself.
      */
     private ContentsChangeListener createPolicySideChangedListener(final IProductCmptType contextType) {
-        return new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.isAffected(contextType.findPolicyCmptType(contextType.getIpsProject()))) {
-                    refresh();
-                }
+        return event -> {
+            if (event.isAffected(contextType.findPolicyCmptType(contextType.getIpsProject()))) {
+                refresh();
             }
         };
     }

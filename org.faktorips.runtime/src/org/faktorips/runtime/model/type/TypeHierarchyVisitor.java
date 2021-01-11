@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -45,11 +45,12 @@ public abstract class TypeHierarchyVisitor {
             return;
         }
         visitedTypes.add(type);
-        Type superType = type.getSuperType();
-        if (visitedTypes.contains(superType)) {
-            throw new RuntimeException("TypeHierarchy of type " + superType + " contains a cycle.");
-        }
-        visitTypeInternal(superType);
+        type.findSuperType().ifPresent(superType -> {
+            if (visitedTypes.contains(superType)) {
+                throw new RuntimeException("TypeHierarchy of type " + superType + " contains a cycle.");
+            }
+            visitTypeInternal(superType);
+        });
     }
 
     /**

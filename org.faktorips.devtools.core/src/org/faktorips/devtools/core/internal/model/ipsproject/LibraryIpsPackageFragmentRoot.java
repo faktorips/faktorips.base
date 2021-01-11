@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -29,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * {@link IIpsPackageFragmentRoot} for Libraries.
@@ -186,7 +186,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
             return false;
         }
         LibraryIpsPackageFragmentRoot other = (LibraryIpsPackageFragmentRoot)obj;
-        return ObjectUtil.equals(storage.getLocation(), other.storage.getLocation());
+        return Objects.equals(storage.getLocation(), other.storage.getLocation());
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,6 @@
 
 package org.faktorips.fl;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
@@ -215,7 +214,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     @Override
     public String toString() {
         return "Datatype: " + (datatype == null ? "null" : datatype.toString()) //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR + messages.toString() + codeFragment.toString();
+                + System.lineSeparator() + messages.toString() + codeFragment.toString();
     }
 
     /**

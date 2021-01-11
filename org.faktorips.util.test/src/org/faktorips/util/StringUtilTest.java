@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
 
 /**
@@ -24,60 +23,10 @@ import org.junit.Test;
 public class StringUtilTest {
 
     @Test
-    public void testQuote() {
-        assertEquals("\"hello\"", StringUtil.quote("hello"));
-        assertNull(StringUtil.quote(null));
-    }
-
-    @Test
     public void testUnqualifiedClassName() {
         assertEquals("Test", StringUtil.unqualifiedName("com.Test"));
         assertEquals("Test", StringUtil.unqualifiedName("com.ips.Test"));
         assertEquals("Test", StringUtil.unqualifiedName("Test"));
-    }
-
-    @Test
-    public void testGetLine() {
-        String lineSeparator = SystemUtils.LINE_SEPARATOR;
-        String text = "blabla";
-        assertEquals("blabla", StringUtil.getLine(text, 0, lineSeparator));
-
-        text = "blabla" + lineSeparator + "2.line";
-
-        assertEquals("blabla", StringUtil.getLine(text, 0, lineSeparator));
-        assertEquals("2.line",
-                StringUtil.getLine(text, 6 + SystemUtils.LINE_SEPARATOR.getBytes().length, lineSeparator));
-    }
-
-    @Test
-    public void testGetLines() {
-        String[] result;
-
-        result = StringUtil.getLines("blabla", SystemUtils.LINE_SEPARATOR);
-        assertEquals(1, result.length);
-        assertEquals("blabla", result[0]);
-
-        result = StringUtil.getLines("blabla" + SystemUtils.LINE_SEPARATOR, SystemUtils.LINE_SEPARATOR);
-        assertEquals(2, result.length);
-        assertEquals("blabla", result[0]);
-        assertEquals("", result[1]);
-
-        result = StringUtil.getLines("blabla" + SystemUtils.LINE_SEPARATOR + "2.line", SystemUtils.LINE_SEPARATOR);
-        assertEquals(2, result.length);
-        assertEquals("blabla", result[0]);
-        assertEquals("2.line", result[1]);
-
-        result = StringUtil.getLines("blabla" + SystemUtils.LINE_SEPARATOR + "2.line" + SystemUtils.LINE_SEPARATOR,
-                SystemUtils.LINE_SEPARATOR);
-        assertEquals(3, result.length);
-        assertEquals("blabla", result[0]);
-        assertEquals("2.line", result[1]);
-        assertEquals("", result[2]);
-    }
-
-    @Test
-    public void testGetSystemLineseparator() {
-        assertEquals(System.getProperty("line.separator"), StringUtil.getSystemLineSeparator());
     }
 
     @Test
@@ -90,7 +39,7 @@ public class StringUtilTest {
     }
 
     @Test
-    public void testToCamlCase() {
+    public void testToCamelCase() {
         String testString = null;
         assertEquals("", StringUtil.toCamelCase(testString, true));
         assertEquals("", StringUtil.toCamelCase(testString, false));

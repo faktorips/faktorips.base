@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -132,7 +132,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
         List<ITestValue> values = Arrays.asList(testCase.getTestValues());
         for (ITestValueParameter param : params) {
             boolean found = false;
-            int idxInTestCase = 0;
             for (ITestValue value : values) {
                 if (value.getTestValueParameter().equals(param.getName())) {
                     found = true;
@@ -140,7 +139,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
                     checkSortOrder(param, value);
                     break;
                 }
-                idxInTestCase++;
             }
             if (!found) {
                 missing.add(param);
@@ -165,7 +163,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
         }
 
         for (ITestRuleParameter param : params) {
-            int idxInTestCase = 0;
             for (ITestRule rule : rules) {
                 if (rule.getTestRuleParameter().equals(param.getName())) {
                     // check if the order is equal
@@ -173,7 +170,6 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
                     break;
                 }
             }
-            idxInTestCase++;
             if (differentTestParameterOrder) {
                 // abort because at least on difference found
                 break;
@@ -386,12 +382,9 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
 
         // if there are missing test attributes, store the corresponding test policy cmpt
         for (ITestAttribute testAttr : testAttributes) {
-            List<ITestPolicyCmpt> cmptWithMissingTestAttrList = testAttributes2TestPolicyCmpt.get(testAttr);
-            if (cmptWithMissingTestAttrList == null) {
-                cmptWithMissingTestAttrList = new ArrayList<ITestPolicyCmpt>(1);
-            }
+            List<ITestPolicyCmpt> cmptWithMissingTestAttrList = testAttributes2TestPolicyCmpt.computeIfAbsent(testAttr,
+                    $ -> new ArrayList<ITestPolicyCmpt>(1));
             cmptWithMissingTestAttrList.add(cmpt);
-            testAttributes2TestPolicyCmpt.put(testAttr, cmptWithMissingTestAttrList);
             // furthermore indicate a different sort oder of the test attributes
             addDifferentTestAttributeSortOrder(cmpt);
         }
@@ -517,7 +510,8 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     /**
      * Computes all missing test case type side objects, starting with given test policy cmpt link.
      */
-    private List<ITestPolicyCmptLink> computeTestPolicyCmptLinkStructWithMissingTestParameter(ITestPolicyCmptLink[] testPolicyCmptLinks,
+    private List<ITestPolicyCmptLink> computeTestPolicyCmptLinkStructWithMissingTestParameter(
+            ITestPolicyCmptLink[] testPolicyCmptLinks,
             List<ITestPolicyCmpt> missingTestPolicyCmpt,
             List<ITestPolicyCmptLink> missingTestPolicyCmptLink,
             List<ITestAttributeValue> missingTestAttributeValue,

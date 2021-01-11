@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -59,9 +58,9 @@ public class StatusPage extends WizardPage implements Observer {
         @Override
         public void run() {
             Object[] elements = contentProvider.getElements(null);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (Object msg : elements) {
-                sb.append(msg).append(SystemUtils.LINE_SEPARATOR);
+                sb.append(msg).append(System.lineSeparator());
             }
             clipboard.setContents(new String[] { sb.toString() }, new Transfer[] { TextTransfer.getInstance() });
         }

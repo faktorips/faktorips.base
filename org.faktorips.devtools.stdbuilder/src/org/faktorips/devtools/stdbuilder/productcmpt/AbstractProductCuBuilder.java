@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -208,8 +208,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus));
             builder.appendln(";"); //$NON-NLS-1$
             builder.append("} catch (Exception e) {"); //$NON-NLS-1$
-            builder.appendClassName(StringBuffer.class);
-            builder.append(" parameterValues=new StringBuffer();"); //$NON-NLS-1$
+            builder.appendClassName(StringBuilder.class);
+            builder.append(" parameterValues=new StringBuilder();"); //$NON-NLS-1$
             // in formula tests the input will not printed in case of an exception
             // because the input is stored in the formula test
             IParameter[] parameters = method.getParameters();

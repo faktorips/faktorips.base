@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -46,7 +45,8 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
     /**
-     * The <code>IEnumType</code> the <code>EnumTypeEditor</code> this page belongs to is currently editing.
+     * The <code>IEnumType</code> the <code>EnumTypeEditor</code> this page belongs to is currently
+     * editing.
      */
     private IEnumType enumType;
 
@@ -57,14 +57,14 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     private EnumValuesSection enumValuesSection;
 
     /**
-     * Action to import <code>IEnumValue</code>s into the opened <code>IEnumType</code> from an external
-     * file.
+     * Action to import <code>IEnumValue</code>s into the opened <code>IEnumType</code> from an
+     * external file.
      */
     private EnumImportExportActionInEditor importAction;
 
     /**
-     * Action to export the <code>IEnumValue</code>s of the opened <code>IEnumType</code> to an external
-     * file.
+     * Action to export the <code>IEnumValue</code>s of the opened <code>IEnumType</code> to an
+     * external file.
      */
     private EnumImportExportActionInEditor exportAction;
 
@@ -80,13 +80,10 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
                 + Messages.EnumTypeValuesPage_title);
 
         enumType = editor.getEnumType();
-        changeListener = new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
-                    updateToolbarActionEnabledStates();
-                    enumAttributesSection.refresh();
-                }
+        changeListener = event -> {
+            if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
+                updateToolbarActionEnabledStates();
+                enumAttributesSection.refresh();
             }
         };
         enumType.getIpsModel().addChangeListener(changeListener);
@@ -128,8 +125,8 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     }
 
     /**
-     * Enable the import and export operation if the <code>IEnumType</code> contains values and is not
-     * abstract.
+     * Enable the import and export operation if the <code>IEnumType</code> contains values and is
+     * not abstract.
      */
     protected void updateToolbarActionEnabledStates() {
         boolean enableImportExportActions;
@@ -143,8 +140,8 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
     }
 
     /**
-     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update the
-     * view after the operation is completed.
+     * Extend <code>EnumImportExportAction</code> in order to react to import operations and update
+     * the view after the operation is completed.
      */
     class EnumImportExportActionInEditor extends EnumImportExportAction {
 

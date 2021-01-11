@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,8 +20,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.fl.AbstractProjectRelatedFunctionResolverFactory;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.SortorderSet;
 import org.faktorips.fl.FunctionResolver;
@@ -67,12 +65,7 @@ public class ExtensionFunctionResolversCache {
     }
 
     private void registerListenerWithIpsModel() {
-        getIpsProject().getIpsModel().addChangeListener(new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                clearCache();
-            }
-        });
+        getIpsProject().getIpsModel().addChangeListener($ -> clearCache());
     }
 
     /**
@@ -108,7 +101,8 @@ public class ExtensionFunctionResolversCache {
         }
     }
 
-    private FunctionResolver<JavaCodeFragment> createFuntionResolver(IFunctionResolverFactory<JavaCodeFragment> factory) {
+    private FunctionResolver<JavaCodeFragment> createFuntionResolver(
+            IFunctionResolverFactory<JavaCodeFragment> factory) {
         try {
             FunctionResolver<JavaCodeFragment> resolver = createFunctionResolver(factory);
             return resolver;
@@ -125,7 +119,8 @@ public class ExtensionFunctionResolversCache {
         return getIpsProject().getReadOnlyProperties().isActive(factory);
     }
 
-    private FunctionResolver<JavaCodeFragment> createFunctionResolver(IFunctionResolverFactory<JavaCodeFragment> factory) {
+    private FunctionResolver<JavaCodeFragment> createFunctionResolver(
+            IFunctionResolverFactory<JavaCodeFragment> factory) {
         Locale formulaLanguageLocale = getIpsProject().getFormulaLanguageLocale();
         if (factory instanceof AbstractProjectRelatedFunctionResolverFactory) {
             return ((AbstractProjectRelatedFunctionResolverFactory<JavaCodeFragment>)factory).newFunctionResolver(

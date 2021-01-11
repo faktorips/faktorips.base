@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
@@ -31,30 +32,46 @@ public enum XmlUtil {
         // Utility class not to be instantiated.
     }
 
+    /**
+     * @see #findFirstElement(Node, String) findFirstElement(Node, String) for null-safe processing
+     */
     public static final Element getFirstElement(Node parent, String tagName) {
+        return findFirstElement(parent, tagName).orElse(null);
+    }
+
+    public static final Optional<Element> findFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element element = (Element)nl.item(i);
                 if (element.getNodeName().equals(tagName)) {
-                    return (Element)nl.item(i);
+                    return Optional.of((Element)nl.item(i));
                 }
             }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    /**
+     * Returns the first Element node
+     *
+     * @see #findFirstElement(Node) findFirstElement(Node) for null-safe processing
+     */
+    public static final Element getFirstElement(Node parent) {
+        return findFirstElement(parent).orElse(null);
     }
 
     /**
      * Returns the first Element node
      */
-    public static final Element getFirstElement(Node parent) {
+    public static final Optional<Element> findFirstElement(Node parent) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
-                return (Element)nl.item(i);
+                return Optional.of((Element)nl.item(i));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -155,13 +172,10 @@ public enum XmlUtil {
      * @param nodeName The name searching for
      */
     public static final String getValueFromNode(Element elem, String nodeName) {
-        String value = null;
-        Node el = getFirstElement(elem, nodeName);
-        if (el != null) {
-            Node child = el.getFirstChild();
-            value = child != null ? child.getNodeValue() : null;
-        }
-        return value;
+        return findFirstElement(elem, nodeName).map(e -> {
+            Node child = e.getFirstChild();
+            return child != null ? child.getNodeValue() : null;
+        }).orElse(null);
     }
 
     /**

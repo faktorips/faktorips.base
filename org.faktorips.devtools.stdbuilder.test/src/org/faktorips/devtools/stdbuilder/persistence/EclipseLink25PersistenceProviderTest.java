@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +57,7 @@ public class EclipseLink25PersistenceProviderTest {
         JavaCodeFragment indexAnnotations = provider.getIndexAnnotations(persistentAttributeInfo);
 
         assertNotNull(indexAnnotations);
-        assertEquals("@Index(name=\"INDEX_NAME\")" + StringUtil.getSystemLineSeparator(),
+        assertEquals("@Index(name=\"INDEX_NAME\")" + System.lineSeparator(),
                 indexAnnotations.getSourcecode());
     }
 }

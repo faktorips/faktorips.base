@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,7 +28,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * A JavaSourceFileBuilder that keeps existing imports exactly as found in the source file and adds
@@ -82,11 +81,11 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     @Override
     protected String generate() throws CoreException {
         IImportContainer importContainer = getImportContainer();
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         String pack = getPackage();
         content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
+        content.append(System.lineSeparator());
+        content.append(System.lineSeparator());
         JavaCodeFragment code = new JavaCodeFragment();
         try {
             loggerInstanceGenerated = false;
@@ -104,14 +103,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             content.append(importContainer.getSource());
             ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
             if (newImports.getNoOfImports() > 0) {
-                content.append(StringUtil.getSystemLineSeparator());
+                content.append(System.lineSeparator());
                 content.append(newImports);
             }
         } else {
             content.append(code.getImportDeclaration(pack));
         }
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
+        content.append(System.lineSeparator());
+        content.append(System.lineSeparator());
         content.append(code.getSourcecode());
         return content.toString();
     }
@@ -349,7 +348,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (!checkLoggingGenerationConditions()) {
             return;
         }
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         message.append("\""); //$NON-NLS-1$
         message.append("Entering method: "); //$NON-NLS-1$
         if (className != null) {
@@ -386,7 +385,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (!checkLoggingGenerationConditions()) {
             return;
         }
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         message.append("\""); //$NON-NLS-1$
         message.append("Exiting method: "); //$NON-NLS-1$
         if (className != null) {

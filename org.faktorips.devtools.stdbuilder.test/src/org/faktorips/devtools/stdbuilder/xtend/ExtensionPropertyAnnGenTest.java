@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xtend.ExtensionPropertyAnnGen;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -34,7 +33,7 @@ import org.w3c.dom.Element;
 
 public class ExtensionPropertyAnnGenTest {
 
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private ExtensionPropertyAnnGen extensionPropertyAnnotationGenerator = new ExtensionPropertyAnnGen();
 
@@ -166,8 +165,9 @@ public class ExtensionPropertyAnnGenTest {
         assertThat(annotation, is(notNullValue()));
         assertThat(
                 annotation.getSourcecode(),
-                is(equalTo("@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", value = \"<foo><bar baz=\\\"!\\u00FC \\\"/></foo>\")"
-                        + LINE_SEPARATOR + ")" + LINE_SEPARATOR)));
+                is(equalTo(
+                        "@IpsExtensionProperties(@IpsExtensionProperty(id = \"foo\", value = \"<foo><bar baz=\\\"!\\u00FC \\\"/></foo>\")"
+                                + LINE_SEPARATOR + ")" + LINE_SEPARATOR)));
     }
 
     private WithExtension withExtension(String id, Object value) {

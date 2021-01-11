@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,9 +17,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import org.faktorips.values.ObjectUtil;
+import org.faktorips.runtime.util.IMessage;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * A human readable text message with an optional code that identifies the type of the message and a
@@ -43,7 +45,7 @@ import org.faktorips.values.ObjectUtil;
  * 
  * @see MsgReplacementParameter
  */
-public class Message implements Serializable {
+public class Message implements Serializable, IMessage {
 
     /**
      * Severity none.
@@ -376,16 +378,12 @@ public class Message implements Serializable {
         return severity;
     }
 
-    /**
-     * Returns the humand readable message text.
-     */
+    @Override
     public String getText() {
         return text;
     }
 
-    /**
-     * Returns the message code.
-     */
+    @Override
     public String getCode() {
         return code;
     }
@@ -403,7 +401,7 @@ public class Message implements Serializable {
     /**
      * Returns the list of object properties the message refers to. E.g. if a message reads "The
      * driver's age must be greater than 18.", this method would probably return the driver object
-     * and the property name age. Returns an empty array if this message does not refer to any
+     * and the property name age. Returns an empty list if this message does not refer to any
      * objects / properties.
      */
     public List<ObjectProperty> getInvalidObjectProperties() {
@@ -493,38 +491,33 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         switch (severity) {
             case ERROR:
-                buffer.append("ERROR");
+                sb.append("ERROR");
                 break;
             case WARNING:
-                buffer.append("WARNING ");
+                sb.append("WARNING ");
                 break;
             case INFO:
-                buffer.append("INFO");
+                sb.append("INFO");
                 break;
             default:
-                buffer.append("Severity ");
-                buffer.append(severity);
+                sb.append("Severity ");
+                sb.append(severity);
         }
-        buffer.append(' ');
-        buffer.append(code);
-        buffer.append('[');
-        String lineSeparator = System.getProperty("line.separator");
-        int max = invalidOp == null ? 0 : invalidOp.size();
-        for (int i = 0; i < max; i++) {
-            if (i > 0) {
-                buffer.append(", ");
-            }
-            buffer.append(invalidOp.get(i).getObject().toString());
-            buffer.append('.');
-            buffer.append(invalidOp.get(i).getProperty());
-        }
-        buffer.append(']');
-        buffer.append(lineSeparator);
-        buffer.append(text);
-        return buffer.toString();
+        sb.append(' ');
+        sb.append(code);
+        sb.append('[');
+        StringBuilderJoiner.join(sb, invalidOp, op -> {
+            sb.append(op.getObject().toString());
+            sb.append('.');
+            sb.append(op.getProperty());
+        });
+        sb.append(']');
+        sb.append(System.lineSeparator());
+        sb.append(text);
+        return sb.toString();
     }
 
     /**
@@ -538,22 +531,22 @@ public class Message implements Serializable {
             return false;
         }
         Message other = (Message)o;
-        if (!ObjectUtil.equals(code, other.code)) {
+        if (!Objects.equals(code, other.code)) {
             return false;
         }
-        if (!ObjectUtil.equals(text, other.text)) {
+        if (!Objects.equals(text, other.text)) {
             return false;
         }
         if (severity != other.severity) {
             return false;
         }
-        if (!ObjectUtil.equals(invalidOp, other.invalidOp)) {
+        if (!Objects.equals(invalidOp, other.invalidOp)) {
             return false;
         }
-        if (!ObjectUtil.equals(replacementParameters, other.replacementParameters)) {
+        if (!Objects.equals(replacementParameters, other.replacementParameters)) {
             return false;
         }
-        if (!ObjectUtil.equals(markers, other.markers)) {
+        if (!Objects.equals(markers, other.markers)) {
             return false;
         }
         return true;
@@ -646,7 +639,8 @@ public class Message implements Serializable {
         /**
          * Set the message's severity, in exact {@link #ERROR}, {@link #WARNING} or {@link #INFO}.
          * 
-         * @param severity Severity of the message: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+         * @param severity Severity of the message: {@link #ERROR}, {@link #WARNING} or
+         *            {@link #INFO}
          * @return This builder instance to directly add further properties
          */
         public Builder severity(Severity severity) {

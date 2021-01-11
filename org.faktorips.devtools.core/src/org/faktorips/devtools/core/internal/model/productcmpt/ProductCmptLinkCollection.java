@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -295,11 +295,8 @@ public class ProductCmptLinkCollection {
             qaTypes.add(dependency);
 
             if (details != null) {
-                List<IDependencyDetail> detailList = details.get(dependency);
-                if (detailList == null) {
-                    detailList = new ArrayList<IDependencyDetail>();
-                    details.put(dependency, detailList);
-                }
+                List<IDependencyDetail> detailList = details.computeIfAbsent(dependency,
+                        $ -> new ArrayList<IDependencyDetail>());
                 detailList.add(new DependencyDetail(link, IProductCmptLink.PROPERTY_TARGET));
             }
         }

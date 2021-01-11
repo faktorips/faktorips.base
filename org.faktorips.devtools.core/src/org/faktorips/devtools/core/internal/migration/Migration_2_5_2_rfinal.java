@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,7 +31,7 @@ public class Migration_2_5_2_rfinal extends AbstractIpsProjectMigrationOperation
 
     @Override
     public String getDescription() {
-        return "Generated copyProperties() method: Added call to super.copyProperties().";
+        return "Generated copyProperties() method: Added call to super.copyProperties()."; //$NON-NLS-1$
     }
 
     @Override

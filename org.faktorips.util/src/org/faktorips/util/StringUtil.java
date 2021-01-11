@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,10 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.annotation.UtilityClass;
 
 /**
@@ -46,7 +43,9 @@ public class StringUtil {
 
     /**
      * Reads the available bytes from the input stream and returns them as a string using the given
-     * {@link java.nio.charset.Charset charset}. The method does not close the stream.
+     * {@link java.nio.charset.Charset charset}.
+     * <p>
+     * This method closes the input stream before returning!
      */
     public static final String readFromInputStream(InputStream is, Charset charset) throws IOException {
         return readFromInputStream(is, charset.name());
@@ -68,27 +67,6 @@ public class StringUtil {
     }
 
     /**
-     * Returns the passed String enclosed in double quotes.
-     */
-    public static String quote(String s) {
-        if (s == null) {
-            return null;
-        }
-        return "\"" + s + "\"";
-    }
-
-    /**
-     * Returns the passed List of String enclosing every entry in double quotes
-     */
-    public static List<String> quoteAll(List<String> strings) {
-        List<String> result = new ArrayList<String>(strings.size());
-        for (String aString : strings) {
-            result.add(quote(aString));
-        }
-        return result;
-    }
-
-    /**
      * Takes a name like a class name and removes the package information from the beginning.
      */
     public static final String unqualifiedName(String qualifiedName) {
@@ -97,32 +75,6 @@ public class StringUtil {
             return qualifiedName;
         }
         return qualifiedName.substring(index + 1);
-    }
-
-    /**
-     * Takes a name like a class name and removes the package information from the beginning,
-     * leaving the last two parts and the '.' between.
-     */
-    public static final String unqualifiedRelationName(String qualifiedName) {
-        int index = qualifiedName.lastIndexOf(".");
-        if (index == -1) {
-            return qualifiedName;
-        }
-        return qualifiedName.substring(qualifiedName.lastIndexOf('.', qualifiedName.lastIndexOf('.') - 1) + 1);
-    }
-
-    /**
-     * Returns the qualified name for the given package name and unqualified name. If packageName is
-     * <code>null</code> or the empty String the unqualified name is returned.
-     * 
-     * @throws NullPointerException if unqualifiedName is <code>null</code>.
-     */
-    public static final String qualifiedName(String packageName, String unqualifiedName) {
-        ArgumentCheck.notNull(unqualifiedName);
-        if (packageName == null || StringUtils.isEmpty(packageName)) {
-            return unqualifiedName;
-        }
-        return packageName + '.' + unqualifiedName;
     }
 
     /**
@@ -157,42 +109,6 @@ public class StringUtil {
         }
         return fileName.substring(index + 1, fileName.length());
 
-    }
-
-    /**
-     * Returns the lines of the given text as array. Each array item represents one line. The lines
-     * don't contains the line separator.
-     */
-    public static final String[] getLines(String text, String lineSeparator) {
-        List<String> lines = new ArrayList<String>();
-        int start = 0;
-        int end = text.indexOf(lineSeparator);
-        while (end > 0) {
-            lines.add(text.substring(start, end));
-            start = end + lineSeparator.length();
-            end = text.indexOf(lineSeparator, start);
-        }
-        lines.add(text.substring(start));
-        return lines.toArray(new String[lines.size()]);
-    }
-
-    /**
-     * Returns the line in the text that starts at the given position and ends at the next line
-     * separator. The line separator itself is not returned as part of the line.
-     */
-    public static final String getLine(String text, int startPos, String lineSeparator) {
-        int pos = text.indexOf(lineSeparator, startPos);
-        if (pos == -1) {
-            return text.substring(startPos);
-        }
-        return text.substring(startPos, pos);
-    }
-
-    /**
-     * Returns the line separator provided by System.getProperty("line.separator").
-     */
-    public static String getSystemLineSeparator() {
-        return System.getProperty("line.separator");
     }
 
     /**

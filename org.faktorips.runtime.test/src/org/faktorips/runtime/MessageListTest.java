@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -17,25 +19,14 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.faktorips.runtime.util.function.IPredicate;
+import java.util.function.Predicate;
+
 import org.junit.Test;
 
 public class MessageListTest {
 
-    private final IPredicate<IMarker> requiredInformationMarker = new IPredicate<IMarker>() {
-
-        @Override
-        public boolean test(IMarker t) {
-            return t.isRequiredInformationMissing();
-        }
-    };
-    private final IPredicate<IMarker> technicalConstraintViolatedInstance = new IPredicate<IMarker>() {
-
-        @Override
-        public boolean test(IMarker t) {
-            return t instanceof TechnicalConstraintViolated;
-        }
-    };
+    private final Predicate<IMarker> requiredInformationMarker = IMarker::isRequiredInformationMissing;
+    private final Predicate<IMarker> technicalConstraintViolatedInstance = TechnicalConstraintViolated.class::isInstance;
 
     @Test
     public void testAddMessage() {
@@ -301,12 +292,7 @@ public class MessageListTest {
         list.add(msg1);
         list.add(msg2);
 
-        MessageList messagesWithAnyMarker = list.getMessagesByMarker(new IPredicate<IMarker>() {
-            @Override
-            public boolean test(IMarker t) {
-                return true;
-            }
-        });
+        MessageList messagesWithAnyMarker = list.getMessagesByMarker(t -> true);
         assertEquals(2, messagesWithAnyMarker.size());
         assertSame(msg1, messagesWithAnyMarker.getMessage(0));
         assertSame(msg2, messagesWithAnyMarker.getMessage(1));
@@ -315,7 +301,7 @@ public class MessageListTest {
     @Test(expected = NullPointerException.class)
     public void testGetMessagesByMarker_withPredicate_null() {
         MessageList list = new MessageList();
-        list.getMessagesByMarker((IPredicate<IMarker>)null);
+        list.getMessagesByMarker((Predicate<IMarker>)null);
     }
 
     @Test
@@ -456,6 +442,18 @@ public class MessageListTest {
         list.add(error2);
 
         assertSame(error1, list.getMessageWithHighestSeverity());
+    }
+
+    @Test
+    public void testStream() {
+        MessageList list = new MessageList();
+        Message error1 = Message.newError(null, "e1");
+        Message error2 = Message.newError(null, "e2");
+        list.add(error1);
+        list.add(error2);
+
+        assertThat(list.stream().findFirst().get(), is(error1));
+        assertThat(list.stream().filter(m -> "e2".equals(m.getText())).findFirst().get(), is(error2));
     }
 
     private static final class RequiredInformationMissing implements IMarker {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -151,7 +150,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             String version = features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
-            } else if (Version.parseVersion(version).compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
+            } else if (Version.parseVersion(version)
+                    .compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
             }
         }
@@ -170,11 +170,11 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
 
     @Override
     public String getDescription() {
-        StringBuffer description = new StringBuffer();
+        StringBuilder description = new StringBuilder();
         for (int i = 0; i < operations.size(); i++) {
             AbstractIpsProjectMigrationOperation operation = operations.get(i);
-            description.append("-> ").append(operation.getTargetVersion()).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
-            description.append(operation.getDescription()).append(SystemUtils.LINE_SEPARATOR);
+            description.append("-> ").append(operation.getTargetVersion()).append(System.lineSeparator()); //$NON-NLS-1$
+            description.append(operation.getDescription()).append(System.lineSeparator());
         }
         return description.toString();
     }

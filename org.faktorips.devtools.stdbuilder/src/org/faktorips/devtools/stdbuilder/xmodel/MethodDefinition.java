@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.Signature;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -104,12 +105,7 @@ public class MethodDefinition implements IGeneratedJavaElement {
     public String getDefinition() {
         StringBuilder result = new StringBuilder(name);
         result.append("(");
-        for (MethodParameter parameter : parameters) {
-            result.append(parameter.getDefinition());
-            if (parameter != parameters[parameters.length - 1]) {
-                result.append(", ");
-            }
-        }
+        StringBuilderJoiner.join(result, parameters, p -> result.append(p.getDefinition()));
         result.append(")");
         return result.toString();
     }

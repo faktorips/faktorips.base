@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -35,15 +35,15 @@ public class StringUtils {
             return text;
         }
         String[] lines = text.split(lineSeparator);
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < lines.length; i++) {
             String lineText = lines[i];
             while (lineText.length() > length) {
                 int index = lineText.indexOf(' ', length);
                 if (index != -1) {
-                    buf.append(lineText.substring(0, index));
+                    sb.append(lineText.substring(0, index));
                     if (lineText.length() > index + 1) {
-                        buf.append(lineSeparator);
+                        sb.append(lineSeparator);
                         lineText = lineText.substring(index + 1, lineText.length());
                     } else {
                         lineText = ""; //$NON-NLS-1$
@@ -53,12 +53,12 @@ public class StringUtils {
                     break;
                 }
             }
-            buf.append(lineText);
+            sb.append(lineText);
             if (i + 1 < lines.length && !"".equals(lines[i + 1])) { //$NON-NLS-1$
-                buf.append(lineSeparator);
+                sb.append(lineSeparator);
             }
         }
-        return buf.toString();
+        return sb.toString();
     }
 
     /**
@@ -107,7 +107,7 @@ public class StringUtils {
      * @param text the text to surround with quotes (").
      */
     public static String quote(String text) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (text == null || !text.startsWith(QUOTE)) {
             sb.append(QUOTE);
         }

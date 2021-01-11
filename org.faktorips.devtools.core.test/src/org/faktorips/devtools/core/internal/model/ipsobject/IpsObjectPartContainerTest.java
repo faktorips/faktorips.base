@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -386,12 +386,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         model.addIpsObjectExtensionProperty(extProp0);
 
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         ILogListener listener = new ILogListener() {
 
             @Override
             public void logging(IStatus status, String plugin) {
-                buf.append(status.getMessage());
+                sb.append(status.getMessage());
             }
 
         };
@@ -400,9 +400,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container.initFromXml(docEl);
         IpsPlugin.getDefault().getLog().removeLogListener(listener);
 
-        assertTrue(buf.indexOf("Extension property") != -1);
-        assertTrue(buf.indexOf("org.foo.prop1") != -1);
-        assertTrue(buf.indexOf("is unknown") != -1);
+        assertTrue(sb.indexOf("Extension property") != -1);
+        assertTrue(sb.indexOf("org.foo.prop1") != -1);
+        assertTrue(sb.indexOf("is unknown") != -1);
         assertEquals("value0", container.getExtPropertyValue("org.foo.prop0"));
 
         // exception if no value (not even null) is available

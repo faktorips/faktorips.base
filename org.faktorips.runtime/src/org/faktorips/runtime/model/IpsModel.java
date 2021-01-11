@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,7 +13,6 @@ import org.faktorips.annotation.UtilityClass;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.caching.AbstractComputable;
 import org.faktorips.runtime.caching.Memoizer;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
@@ -35,59 +34,45 @@ import org.faktorips.runtime.model.type.Type;
 public enum IpsModel {
     /* no instances */;
 
-    private static final Memoizer<Class<? extends ITable<?>>, TableStructure> TABLE_MODEL_CACHE = new Memoizer<Class<? extends ITable<?>>, TableStructure>(
-            new AbstractComputable<Class<? extends ITable<?>>, TableStructure>(TableStructure.class) {
-
-                @Override
-                public TableStructure compute(Class<? extends ITable<?>> tableObjectClass) {
-                    if (tableObjectClass.isAnnotationPresent(IpsTableStructure.class)) {
-                        return new TableStructure(tableObjectClass);
-                    } else {
-                        throw new IllegalArgumentException(
-                                "The class " + tableObjectClass.getName() + "is not annotated as IpsTableStructure.");
-                    }
+    private static final Memoizer<Class<? extends ITable<?>>, TableStructure> TABLE_MODEL_CACHE = Memoizer
+            .of(TableStructure.class, tableObjectClass -> {
+                if (tableObjectClass.isAnnotationPresent(IpsTableStructure.class)) {
+                    return new TableStructure(tableObjectClass);
+                } else {
+                    throw new IllegalArgumentException(
+                            "The class " + tableObjectClass.getName() + "is not annotated as IpsTableStructure.");
                 }
             });
 
-    private static final Memoizer<Class<?>, EnumType> ENUM_MODEL_CACHE = new Memoizer<Class<?>, EnumType>(
-            new AbstractComputable<Class<?>, EnumType>(EnumType.class) {
-
-                @Override
-                public EnumType compute(Class<?> enumObjectClass) {
-                    if (enumObjectClass.isAnnotationPresent(IpsEnumType.class)) {
-                        return new EnumType(enumObjectClass);
-                    } else {
-                        throw new IllegalArgumentException(
-                                "The class " + enumObjectClass.getName() + " is not annotated as IpsEnumType.");
-                    }
+    private static final Memoizer<Class<?>, EnumType> ENUM_MODEL_CACHE = Memoizer.of(EnumType.class,
+            enumObjectClass -> {
+                if (enumObjectClass.isAnnotationPresent(IpsEnumType.class)) {
+                    return new EnumType(enumObjectClass);
+                } else {
+                    throw new IllegalArgumentException(
+                            "The class " + enumObjectClass.getName() + " is not annotated as IpsEnumType.");
                 }
             });
 
-    private static final Memoizer<AnnotatedDeclaration, ProductCmptType> PRODUCT_MODEL_CACHE = new Memoizer<AnnotatedDeclaration, ProductCmptType>(
-            new AbstractComputable<AnnotatedDeclaration, ProductCmptType>(ProductCmptType.class) {
-                @Override
-                public ProductCmptType compute(AnnotatedDeclaration annotatedDeclaration) {
-                    if (annotatedDeclaration.is(IpsProductCmptType.class)) {
-                        String name = annotatedDeclaration.get(IpsProductCmptType.class).name();
-                        return new ProductCmptType(name, annotatedDeclaration);
-                    } else {
-                        throw new IllegalArgumentException("The class " + annotatedDeclaration.getDeclarationClassName()
-                                + " is not annotated as product component type.");
-                    }
+    private static final Memoizer<AnnotatedDeclaration, ProductCmptType> PRODUCT_MODEL_CACHE = Memoizer
+            .of(ProductCmptType.class, annotatedDeclaration -> {
+                if (annotatedDeclaration.is(IpsProductCmptType.class)) {
+                    String name = annotatedDeclaration.get(IpsProductCmptType.class).name();
+                    return new ProductCmptType(name, annotatedDeclaration);
+                } else {
+                    throw new IllegalArgumentException("The class " + annotatedDeclaration.getDeclarationClassName()
+                            + " is not annotated as product component type.");
                 }
             });
 
-    private static final Memoizer<AnnotatedDeclaration, PolicyCmptType> POLICY_MODEL_CACHE = new Memoizer<AnnotatedDeclaration, PolicyCmptType>(
-            new AbstractComputable<AnnotatedDeclaration, PolicyCmptType>(PolicyCmptType.class) {
-                @Override
-                public PolicyCmptType compute(AnnotatedDeclaration annotatedModelType) {
-                    if (annotatedModelType.is(IpsPolicyCmptType.class)) {
-                        String name = annotatedModelType.get(IpsPolicyCmptType.class).name();
-                        return new PolicyCmptType(name, annotatedModelType);
-                    } else {
-                        throw new IllegalArgumentException("The class " + annotatedModelType.getDeclarationClassName()
-                                + " is not annotated as policy component type.");
-                    }
+    private static final Memoizer<AnnotatedDeclaration, PolicyCmptType> POLICY_MODEL_CACHE = Memoizer
+            .of(PolicyCmptType.class, annotatedModelType -> {
+                if (annotatedModelType.is(IpsPolicyCmptType.class)) {
+                    String name = annotatedModelType.get(IpsPolicyCmptType.class).name();
+                    return new PolicyCmptType(name, annotatedModelType);
+                } else {
+                    throw new IllegalArgumentException("The class " + annotatedModelType.getDeclarationClassName()
+                            + " is not annotated as policy component type.");
                 }
             });
 

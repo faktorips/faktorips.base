@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,10 +30,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modelstructure.AssociationComponentNode;
-import org.faktorips.devtools.core.ui.views.modelstructure.ComponentNode;
-import org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider;
-import org.faktorips.devtools.core.ui.views.modelstructure.SubtypeComponentNode;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
 import org.junit.Test;
 

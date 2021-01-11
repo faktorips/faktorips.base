@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -68,12 +68,12 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */
     @Override
     protected String initContentString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (getIpsElement() instanceof IRow) {
             IRow row = (IRow)getIpsElement();
             ITableContents table = (ITableContents)row.getIpsObject();
             int[] columnWidths = getColumnWidths();
-            StringBuffer sbColSep = new StringBuffer();
+            StringBuilder sbColSep = new StringBuilder();
 
             /*
              * Do not display Rownumber at the start of the line since textcompare/RangeDifferencing
@@ -96,7 +96,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
             sb.append(QUOTE).append(table.getName()).append(QUOTE).append(NEWLINE);
             sb.append(TAB).append(Messages.TableContentsCompareItem_TableStructure).append(COLON_BLANK).append(QUOTE)
-            .append(table.getTableStructure()).append(QUOTE);
+                    .append(table.getTableStructure()).append(QUOTE);
         } else if (getIpsElement() instanceof IIpsSrcFile) {
             sb.append(Messages.TableContentsCompareItem_SrcFile);
         }
@@ -119,8 +119,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * @param value The value of this table cell. Must not be null.
      * @return the number of tabs needed to reach the next column.
      */
-    private StringBuffer getNeededTabs(int widthInTabs, String value) {
-        StringBuffer sb = new StringBuffer();
+    private StringBuilder getNeededTabs(int widthInTabs, String value) {
+        StringBuilder sb = new StringBuilder();
         int neededTabs = widthInTabs - (value.length() + 2) / TableContentsCompareViewer.TAB_WIDTH;
         for (int tabCounter = 0; tabCounter < neededTabs; tabCounter++) {
             sb.append(TAB);
@@ -133,7 +133,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */
     @Override
     protected String initName() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (getIpsElement() instanceof IRow) {
             IRow row = (IRow)getIpsElement();
             // translate 0 based index to 1 based row number

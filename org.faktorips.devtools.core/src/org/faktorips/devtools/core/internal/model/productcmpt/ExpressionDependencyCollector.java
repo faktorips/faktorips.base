@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -156,12 +156,8 @@ public class ExpressionDependencyCollector {
     }
 
     private ExpressionDependencyDetail getDependencyDetail(IpsObjectDependency dependency) {
-        ExpressionDependencyDetail detail = getResult().get(dependency);
-        if (detail == null) {
-            detail = new ExpressionDependencyDetail(expression);
-            getResult().put(dependency, detail);
-        }
-        return detail;
+        return getResult().computeIfAbsent(dependency,
+                $ -> new ExpressionDependencyDetail(expression));
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.ImportDeclaration;
 import org.junit.Test;
 
@@ -90,8 +89,8 @@ public class ImportDeclarationTest {
         id.add("java.util.List"); //$NON-NLS-1$
         id.add("java.util.Iterator"); //$NON-NLS-1$
 
-        String expected = "import java.util.List;" + SystemUtils.LINE_SEPARATOR + "import java.util.Iterator;" //$NON-NLS-1$ //$NON-NLS-2$
-                + SystemUtils.LINE_SEPARATOR;
+        String expected = "import java.util.List;" + System.lineSeparator() + "import java.util.Iterator;" //$NON-NLS-1$ //$NON-NLS-2$
+                + System.lineSeparator();
 
         assertEquals(expected, id.toString());
     }

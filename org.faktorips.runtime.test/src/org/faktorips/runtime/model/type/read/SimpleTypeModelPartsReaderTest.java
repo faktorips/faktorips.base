@@ -33,29 +33,11 @@ public class SimpleTypeModelPartsReaderTest {
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    private final ModelElementCreator<DummyElement> modelElementCreator = new ModelElementCreator<DummyElement>() {
+    private final ModelElementCreator<DummyElement> modelElementCreator = DummyElement::new;
 
-        @Override
-        public DummyElement create(ModelElement parentElement, String name, Method getterMethod) {
-            return new DummyElement(parentElement, name, getterMethod);
-        }
-    };
+    private final NameAccessor<ChildAnnotation> nameAccessor = ChildAnnotation::value;
 
-    private final NameAccessor<ChildAnnotation> nameAccessor = new NameAccessor<ChildAnnotation>() {
-
-        @Override
-        public String getName(ChildAnnotation annotation) {
-            return annotation.value();
-        }
-    };
-
-    private final NamesAccessor<ParentAnnotation> namesAccessor = new NamesAccessor<ParentAnnotation>() {
-
-        @Override
-        public String[] getNames(ParentAnnotation annotation) {
-            return annotation.kids();
-        }
-    };
+    private final NamesAccessor<ParentAnnotation> namesAccessor = ParentAnnotation::kids;
 
     @Test
     public void testCreateParts() throws Exception {

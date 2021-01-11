@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
@@ -318,7 +317,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (StringUtils.isBlank(headerMessage)) {
             return generationName;
         }
-        return generationName + SystemUtils.LINE_SEPARATOR + headerMessage;
+        return generationName + System.lineSeparator() + headerMessage;
     }
 
     @Override

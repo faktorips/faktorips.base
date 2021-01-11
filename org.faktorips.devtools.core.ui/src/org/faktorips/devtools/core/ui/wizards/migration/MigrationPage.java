@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.migration;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -42,20 +41,20 @@ public class MigrationPage extends WizardPage {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         IIpsProject[] projects = projectSelectionPage.getProjects();
-        StringBuffer desc = new StringBuffer();
+        StringBuilder desc = new StringBuilder();
         setPageComplete(true);
         for (IIpsProject project : projects) {
             desc.append(Messages.MigrationPage_titleProject).append(project.getName())
-                    .append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
+                    .append(":").append(System.lineSeparator()).append(System.lineSeparator()); //$NON-NLS-1$
             try {
                 desc.append(IpsPlugin.getDefault().getMigrationOperation(project).getDescription());
-                desc.append(SystemUtils.LINE_SEPARATOR);
-                desc.append(SystemUtils.LINE_SEPARATOR);
+                desc.append(System.lineSeparator());
+                desc.append(System.lineSeparator());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 desc.append(Messages.MigrationPage_labelError + e.getMessage());
-                desc.append(SystemUtils.LINE_SEPARATOR);
-                desc.append(SystemUtils.LINE_SEPARATOR);
+                desc.append(System.lineSeparator());
+                desc.append(System.lineSeparator());
                 setPageComplete(false);
             }
         }

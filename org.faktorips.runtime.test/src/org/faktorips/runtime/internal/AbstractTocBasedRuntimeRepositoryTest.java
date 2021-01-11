@@ -25,7 +25,6 @@ import org.junit.Test;
 
 public class AbstractTocBasedRuntimeRepositoryTest {
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetAllEnumClasses() throws Exception {
         ClassLoader cl = getClass().getClassLoader();

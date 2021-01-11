@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -122,11 +122,8 @@ public class CustomModelExtensions implements ICustomModelExtensions {
      * extension properties are discovered by extension point lookup.
      */
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
-        List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
-        if (props == null) {
-            props = new ArrayList<IExtensionPropertyDefinition>();
-            typeExtensionPropertiesMap.put(property.getExtendedType(), props);
-        }
+        List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap
+                .computeIfAbsent(property.getExtendedType(), $ -> new ArrayList<IExtensionPropertyDefinition>());
         props.add(property);
         Collections.sort(props);
     }
@@ -159,11 +156,8 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         for (IExtension extension : extensions) {
             IExtensionPropertyDefinition property = createExtensionProperty(extension);
             if (property != null) {
-                List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
-                if (props == null) {
-                    props = new ArrayList<IExtensionPropertyDefinition>();
-                    typeExtensionPropertiesMap.put(property.getExtendedType(), props);
-                }
+                List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.computeIfAbsent(
+                        property.getExtendedType(), $ -> new ArrayList<IExtensionPropertyDefinition>());
                 props.add(property);
             }
         }

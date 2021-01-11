@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -35,11 +35,7 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
 
     @Override
     public void putObject(Object id, Object object) {
-        List<Object> list = objects.get(id);
-        if (list == null) {
-            list = new ArrayList<Object>(1);
-            objects.put(id, list);
-        }
+        List<Object> list = objects.computeIfAbsent(id, $ -> new ArrayList<Object>(1));
         if (!list.contains(object)) {
             /*
              * Assumption here is that there won't be too many objects with same id of different

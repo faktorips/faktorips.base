@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -106,12 +105,12 @@ public class LocalizedTextHelper {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(sb.toString(), annotations);
     }
 
     public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
@@ -138,12 +137,12 @@ public class LocalizedTextHelper {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacement, locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(sb.toString(), annotations);
     }
 
     public void appendLocalizedJavaDoc(String keyPrefix,
@@ -174,12 +173,12 @@ public class LocalizedTextHelper {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements, locale); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations);
+        builder.javaDoc(sb.toString(), annotations);
     }
 
     public void appendLocalizedJavaDoc(String keyPrefix,

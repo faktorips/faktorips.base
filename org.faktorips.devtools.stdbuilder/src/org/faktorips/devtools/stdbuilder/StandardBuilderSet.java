@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -276,7 +276,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle(
         // ).getHeaders().get(org
         // .osgi.framework.Constants.BUNDLE_VERSION));
-        // StringBuffer buf = new StringBuffer();
+        // StringBuilder buf = new StringBuilder();
         // buf.append(versionObj.getMajor());
         // buf.append('.');
         // buf.append(versionObj.getMinor());

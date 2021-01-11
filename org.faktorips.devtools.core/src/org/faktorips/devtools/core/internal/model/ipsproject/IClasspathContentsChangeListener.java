@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,10 +18,12 @@ import org.eclipse.jdt.core.IJavaProject;
  * 
  * @author Jan Ortmann
  */
+@FunctionalInterface
 public interface IClasspathContentsChangeListener {
 
     /**
      * Is called when the contents of the indicated Java project's classpath has changed.
      */
     public void classpathContentsChanges(IJavaProject project);
+
 }

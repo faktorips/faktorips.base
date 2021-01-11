@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,8 @@
 
 package org.faktorips.runtime.internal.toc;
 
-import org.faktorips.values.ObjectUtil;
+import java.util.Objects;
+
 import org.w3c.dom.Element;
 
 /**
@@ -66,7 +67,7 @@ public abstract class TocEntryObject extends TocEntry {
 
     @Override
     public String toString() {
-        return new StringBuffer().append("TocEntry(").append(getXmlElementTag()).append(':').append(ipsObjectId)
+        return new StringBuilder().append("TocEntry(").append(getXmlElementTag()).append(':').append(ipsObjectId)
                 .append(')').toString();
     }
 
@@ -91,10 +92,10 @@ public abstract class TocEntryObject extends TocEntry {
             return false;
         }
         TocEntryObject other = (TocEntryObject)obj;
-        if (!ObjectUtil.equals(ipsObjectId, other.ipsObjectId)) {
+        if (!Objects.equals(ipsObjectId, other.ipsObjectId)) {
             return false;
         }
-        if (!ObjectUtil.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)) {
+        if (!Objects.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)) {
             return false;
         }
         return super.equals(obj);

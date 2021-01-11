@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -76,14 +76,14 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
 
     @Override
     public String getContentAsString() {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         for (LocalizedString localizedString : getContent().values()) {
-            if (!StringUtils.isEmpty(stringBuffer.toString())) {
-                stringBuffer.append(CONTENT_STRING_SEPERATOR);
+            if (!StringUtils.isEmpty(stringBuilder.toString())) {
+                stringBuilder.append(CONTENT_STRING_SEPERATOR);
             }
-            stringBuffer.append(localizedString.getLocale()).append("=").append(localizedString.getValue()); //$NON-NLS-1$
+            stringBuilder.append(localizedString.getLocale()).append("=").append(localizedString.getValue()); //$NON-NLS-1$
         }
-        return stringBuffer.toString();
+        return stringBuilder.toString();
     }
 
     @Override
@@ -132,7 +132,8 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     public void validate(ValueDatatype datatype,
             String datatypeName,
             IIpsProject ipsproject,
-            MessageList list, ObjectProperty... objectProperty) {
+            MessageList list,
+            ObjectProperty... objectProperty) {
         if (getContent() != null) {
             MessageList newList = new MessageList();
             Set<ISupportedLanguage> supportedLanguages = ipsproject.getReadOnlyProperties().getSupportedLanguages();
@@ -142,7 +143,8 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
                 if (StringUtils.isEmpty(iLocalizedString.getValue())) {
                     newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
-                                    .getDisplayLanguage()), Message.WARNING, objectProperty));
+                                    .getDisplayLanguage()),
+                            Message.WARNING, objectProperty));
                 }
             }
             if (languagesCount > newList.size()) {

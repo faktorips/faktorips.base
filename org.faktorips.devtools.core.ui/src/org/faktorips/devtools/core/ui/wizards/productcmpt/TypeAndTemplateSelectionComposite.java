@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -422,7 +422,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // */
     // public void appendLinePlain(String text) {
     // if (textWidget.getCharCount() > 0) {
-    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // textWidget.append(System.lineSeparator());
     // }
     // appendPlain(text);
     // }
@@ -439,7 +439,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // */
     // public void appendLineStyled(String text, int fontStyle) {
     // if (textWidget.getCharCount() > 0) {
-    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // textWidget.append(System.lineSeparator());
     // }
     // appendStyled(text, fontStyle);
     // }

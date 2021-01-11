@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,7 +17,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * Base interface for properties stored in product component generations like formulas, table
@@ -132,7 +131,7 @@ public interface IPropertyValue extends ITemplatedValue {
                 return false;
             }
             PropertyValueIdentifier other = (PropertyValueIdentifier)obj;
-            if (!ObjectUtil.equals(propertyName, other.propertyName)) {
+            if (!Objects.equals(propertyName, other.propertyName)) {
                 return false;
             }
             return type == other.type;

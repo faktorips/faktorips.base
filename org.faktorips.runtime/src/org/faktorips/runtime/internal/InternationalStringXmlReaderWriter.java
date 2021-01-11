@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -187,11 +187,7 @@ public class InternationalStringXmlReaderWriter {
      * contain an element representing an international string.
      */
     private static Element getInternationalStringElement(Element element, String tagName) {
-        Element valueEl = XmlUtil.getFirstElement(element, tagName);
-        if (valueEl == null) {
-            return null;
-        }
-        return XmlUtil.getFirstElement(valueEl, XML_TAG);
+        return XmlUtil.findFirstElement(element, tagName).map(e -> XmlUtil.getFirstElement(e, XML_TAG)).orElse(null);
     }
 
     public static void setDefaultLocaleInXml(Node node, Locale defaultLocale) {

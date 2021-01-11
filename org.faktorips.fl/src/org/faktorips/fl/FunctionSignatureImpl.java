@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,11 +10,12 @@
 
 package org.faktorips.fl;
 
+import java.util.Objects;
+
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * Default implementation of FunctionSignature.
@@ -118,12 +119,13 @@ public class FunctionSignatureImpl implements FunctionSignature {
     }
 
     /**
-     * Check whether the two data types matches or not. The functionDataType parameter is the data type
-     * provided by the function signature. It may be of type {@link AnyDatatype}. The expressionDataType
-     * is the type parsed from the formula expression. It must be a concrete data type.
+     * Check whether the two data types matches or not. The functionDataType parameter is the data
+     * type provided by the function signature. It may be of type {@link AnyDatatype}. The
+     * expressionDataType is the type parsed from the formula expression. It must be a concrete data
+     * type.
      */
     private boolean matchDatatype(Datatype functionDataType, Datatype expressionDataType) {
-        if (ObjectUtil.equals(functionDataType, expressionDataType)) {
+        if (Objects.equals(functionDataType, expressionDataType)) {
             return true;
         }
         if (expressionDataType instanceof AbstractDatatype) {
@@ -178,19 +180,19 @@ public class FunctionSignatureImpl implements FunctionSignature {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(type.getName());
-        buffer.append(' ');
-        buffer.append(name);
-        buffer.append('(');
+        StringBuilder builder = new StringBuilder();
+        builder.append(type.getName());
+        builder.append(' ');
+        builder.append(name);
+        builder.append('(');
         for (int i = 0; i < argTypes.length; i++) {
             if (i > 0) {
-                buffer.append(", "); //$NON-NLS-1$
+                builder.append(", "); //$NON-NLS-1$
             }
-            buffer.append(argTypes[i].getName());
+            builder.append(argTypes[i].getName());
         }
-        buffer.append(')');
-        return buffer.toString();
+        builder.append(')');
+        return builder.toString();
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,7 +25,6 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -95,7 +94,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
             annotationArg.append(annotations.get(0));
         } else {
             annotationArg.append("{").appendln().append("\t");
-            annotationArg.appendJoin(annotations, "," + SystemUtils.LINE_SEPARATOR + "\t");
+            annotationArg.appendJoin(annotations, "," + System.lineSeparator() + "\t");
             annotationArg.append("}");
         }
 
