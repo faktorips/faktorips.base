@@ -22,12 +22,17 @@ import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
  */
 public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
+    private final String featureId;
     private int compareToCurrentVersion = 0;
     private boolean compatible = true;
     private boolean requiredForAllProjects = true;
 
     public TestIpsFeatureVersionManager() {
+        this("org.faktorips.feature"); //$NON-NLS-1$
+    }
 
+    public TestIpsFeatureVersionManager(String featureId) {
+        this.featureId = featureId;
     }
 
     @Override
@@ -46,7 +51,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public String getFeatureId() {
-        return "org.faktorips.feature"; //$NON-NLS-1$
+        return featureId;
     }
 
     @Override
