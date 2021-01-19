@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -53,10 +54,19 @@ public class IpsElementImagePageElement extends ImagePageElement {
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
-        CompletableFuture<ImageData> futureImageData = new CompletableFuture<>();
-        Display.getDefault().syncExec(
-                () -> futureImageData.complete(IpsUIPlugin.getImageHandling().getImage(element, true).getImageData()));
-        return futureImageData.join();
+        if (Display.getCurrent() == null && !PlatformUI.isWorkbenchRunning()) {
+            return IpsUIPlugin.getImageHandling()
+                    .getImage(element, true)
+                    .getImageData();
+        } else {
+            CompletableFuture<ImageData> futureImageData = new CompletableFuture<>();
+            Display.getDefault()
+                    .syncExec(() -> futureImageData
+                            .complete(IpsUIPlugin.getImageHandling()
+                                    .getImage(element, true)
+                                    .getImageData()));
+            return futureImageData.join();
+        }
     }
 
     private static String getIpsElementImageName(IIpsElement element) throws CoreException {

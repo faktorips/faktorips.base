@@ -68,7 +68,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
@@ -823,7 +822,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.computeIfAbsent(propertyId, $ -> new DefaultExtensionPropertyEditFieldFactory());
+        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.computeIfAbsent(propertyId,
+                $ -> new DefaultExtensionPropertyEditFieldFactory());
         return factory;
     }
 
@@ -1451,9 +1451,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 return new LocalResourceManager(JFaceResources.getResources(PlatformUI.getWorkbench().getDisplay()));
             }
 
-            // Invalid thread access if it is not the UI Thread
-            // and the workbench is not created.
-            throw new SWTError(SWT.ERROR_THREAD_INVALID_ACCESS);
+            // Use the default display if it is not the UI Thread and the workbench is not created.
+            return new LocalResourceManager(JFaceResources.getResources(Display.getDefault()));
         }
 
         /**
