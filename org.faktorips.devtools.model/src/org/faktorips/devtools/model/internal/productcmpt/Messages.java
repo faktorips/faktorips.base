@@ -62,16 +62,9 @@ public class Messages extends NLS {
     public static String ProductCmptGeneration_msgTooManyRelations;
     public static String ProductCmptGeneration_msgDuplicateTarget;
 
-    public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
-    public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;
-
     public static String ProductCmptRelation_msgNoRelationDefined;
-    public static String ProductCmptRelation_msgMinCardinalityIsLessThan0;
-    public static String ProductCmptRelation_msgMaxCardinalityIsLessThan1;
-    public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
     public static String ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent;
     public static String ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration;
-    public static String ProductCmptLink_msgDefaultCardinalityOutOfRange;
     public static String ProductCmptLink_msgMaxCardinalityExceedsModelMax;
     public static String ProductCmptLink_msgMinCardinalityExceedsModelMin;
     public static String ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified;

@@ -33,10 +33,5 @@ public class Messages extends NLS {
     public static String ProductCmptPropertyType_productAttribute;
     public static String ProductCmptPropertyType_tableUsage;
     public static String ProductCmptPropertyType_ValidationRule;
-    public static String Type_msgOtherTypeWithSameQNameInSameProject;
-    public static String Type_msgOtherTypeWithSameQNameInDependentProject;
-    public static String Type_msg_supertypeNotFound;
-    public static String Type_msg_TypeHierarchyInconsistent;
-    public static String Type_msg_cycleInTypeHierarchy;
 
 }
