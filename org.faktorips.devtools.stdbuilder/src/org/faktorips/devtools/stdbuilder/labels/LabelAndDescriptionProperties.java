@@ -11,8 +11,8 @@
 package org.faktorips.devtools.stdbuilder.labels;
 
 import java.util.Collection;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -120,7 +120,7 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
                 return false;
             }
             MessageKey other = (MessageKey)obj;
-            return ObjectUtils.equals(this.key, other.key);
+            return Objects.equals(this.key, other.key);
         }
 
         @Override

@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.type;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -112,7 +113,7 @@ public enum ProductCmptPropertyType {
 
     public boolean isMatchingPropertyValue(String propertyName, IPropertyValue propertyValue) {
         return this == propertyValue.getProductCmptPropertyType()
-                && ObjectUtils.equals(propertyName, propertyValue.getPropertyName());
+                && Objects.equals(propertyName, propertyValue.getPropertyName());
     }
 
 }

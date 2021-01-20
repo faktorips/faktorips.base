@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.internal.value;
 
 import java.util.Locale;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
 
@@ -57,7 +57,7 @@ public abstract class AbstractValue<T> implements IValue<T> {
             return false;
         }
         AbstractValue<?> value = (AbstractValue<?>)obj;
-        return ObjectUtils.equals(getContentAsString(), value.getContentAsString());
+        return Objects.equals(getContentAsString(), value.getContentAsString());
     }
 
     @Override

@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
@@ -79,7 +79,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         EnumDatatype enumType = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumType.getAllValueIds(true);
         for (String enumValueId : valueIds) {
-            if (ObjectUtils.equals(enumValueId, getIdentifierPart())) {
+            if (Objects.equals(enumValueId, getIdentifierPart())) {
                 return nodeFactory().createEnumValueNode(enumValueId, enumType);
             }
         }

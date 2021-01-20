@@ -13,6 +13,8 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNonNull;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
+import java.util.Objects;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -222,7 +224,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
         ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
-        if (!ObjectUtils.equals(datatype, subDatatype)) {
+        if (!Objects.equals(datatype, subDatatype)) {
             return false;
         }
         if (!checkValidRanges(subset, contextProject)) {

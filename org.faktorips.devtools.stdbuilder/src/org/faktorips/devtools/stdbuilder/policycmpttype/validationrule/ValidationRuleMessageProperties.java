@@ -11,8 +11,8 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import java.util.Collection;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -97,8 +97,9 @@ public class ValidationRuleMessageProperties extends AbstractLocalizedProperties
                 return false;
             }
             RuleKeyParts other = (RuleKeyParts)obj;
-            return ObjectUtils.equals(key, other.key) && ObjectUtils.equals(pcTypeName, other.pcTypeName)
-                    && ObjectUtils.equals(ruleName, other.ruleName);
+            return Objects.equals(key, other.key)
+                    && Objects.equals(pcTypeName, other.pcTypeName)
+                    && Objects.equals(ruleName, other.ruleName);
         }
 
         @Override

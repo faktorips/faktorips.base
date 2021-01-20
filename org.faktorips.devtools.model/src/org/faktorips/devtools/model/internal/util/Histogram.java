@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -354,7 +355,7 @@ public class Histogram<V, E> {
 
         @Override
         public int compare(U o1, U o2) {
-            if (ObjectUtils.equals(o1, o2)) {
+            if (Objects.equals(o1, o2)) {
                 return 0;
             } else {
                 return compareAnyObjects(o1, o2);

@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -140,14 +140,14 @@ public class ContentChangeEvent {
     }
 
     public static final ContentChangeEvent mergeChangeEvents(ContentChangeEvent ce1, ContentChangeEvent ce2) {
-        if (!ObjectUtils.equals(ce1.getIpsSrcFile(), ce2.getIpsSrcFile())) {
+        if (!Objects.equals(ce1.getIpsSrcFile(), ce2.getIpsSrcFile())) {
             throw new IllegalArgumentException("Can only merge change events from same source file. Was " //$NON-NLS-1$
                     + ce1.getIpsSrcFile() + " and " + ce2.getIpsSrcFile()); //$NON-NLS-1$
         }
         Set<PropertyChangeEvent> propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(
                 ce1.getPropertyChangeEvents());
         propertyChangeEvents.addAll(ce2.getPropertyChangeEvents());
-        if (ce1.getEventType() == ce2.getEventType() && ObjectUtils.equals(ce1.getPart(), ce2.getPart())) {
+        if (ce1.getEventType() == ce2.getEventType() && Objects.equals(ce1.getPart(), ce2.getPart())) {
             return new ContentChangeEvent(ce1.getIpsSrcFile(), ce1.getPart(), ce1.getEventType(), propertyChangeEvents);
         } else {
             return new ContentChangeEvent(ce1.getIpsSrcFile(), propertyChangeEvents);

@@ -10,7 +10,7 @@
 
 package org.faktorips.datatype;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
 
 /**
  * The datatype void representing <code>java.lang.Void</code>.
@@ -97,7 +97,7 @@ public class Void extends AbstractDatatype implements ValueDatatype {
 
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
-        return ObjectUtils.equals(valueA, valueB);
+        return Objects.equals(valueA, valueB);
     }
 
     @Override

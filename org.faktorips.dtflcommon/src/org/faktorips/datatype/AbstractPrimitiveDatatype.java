@@ -10,7 +10,8 @@
 
 package org.faktorips.datatype;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -72,7 +73,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
 
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
-        return ObjectUtils.equals(getValue(valueA), getValue(valueB));
+        return Objects.equals(getValue(valueA), getValue(valueB));
     }
 
     @SuppressWarnings("unchecked")

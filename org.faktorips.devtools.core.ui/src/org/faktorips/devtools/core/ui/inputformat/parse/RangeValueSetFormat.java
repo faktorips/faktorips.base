@@ -11,7 +11,8 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -133,9 +134,9 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private boolean isEqualContentRange(String lowerBound, String upperBound, String step, boolean containsNull) {
         if (getValueSet().isRange()) {
             IRangeValueSet range = (IRangeValueSet)getValueSet();
-            return ObjectUtils.equals(range.getLowerBound(), lowerBound)
-                    && ObjectUtils.equals(range.getUpperBound(), upperBound)
-                    && ObjectUtils.equals(step, range.getStep()) && (containsNull == getValueSet().isContainsNull());
+            return Objects.equals(range.getLowerBound(), lowerBound)
+                    && Objects.equals(range.getUpperBound(), upperBound)
+                    && Objects.equals(step, range.getStep()) && (containsNull == getValueSet().isContainsNull());
         }
         return false;
     }

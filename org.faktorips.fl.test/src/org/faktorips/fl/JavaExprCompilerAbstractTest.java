@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -58,7 +58,7 @@ public abstract class JavaExprCompilerAbstractTest {
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression);
-        if (!ObjectUtils.equals(value, expectedValue)) {
+        if (!Objects.equals(value, expectedValue)) {
             System.out.println(result);
         }
         assertEquals(expectedValue, value);
@@ -93,7 +93,7 @@ public abstract class JavaExprCompilerAbstractTest {
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression, parameterNames, parameterValues);
-        if (!ObjectUtils.equals(value, expectedValue)) {
+        if (!Objects.equals(value, expectedValue)) {
             System.out.println(result);
         }
         assertEquals(expectedValue, value);

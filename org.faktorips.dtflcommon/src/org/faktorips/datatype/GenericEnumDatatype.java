@@ -14,8 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
 
 /**
  * Generic enum datatype. See the superclass for more Details.
@@ -149,7 +148,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             if (valueIds[i] == null) {
                 return i;
             }
-            if (hasNullObject() && ObjectUtils.equals(valueIds[i], getNullObjectId())) {
+            if (hasNullObject() && Objects.equals(valueIds[i], getNullObjectId())) {
                 return i;
             }
         }
@@ -210,7 +209,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         String[] ids = getAllValueIdsFromCache();
         if (ids != null) {
             for (int i = 0; i < ids.length; i++) {
-                if (ObjectUtils.equals(id, ids[i])) {
+                if (Objects.equals(id, ids[i])) {
                     String[] names = getAllValueNamesFromCache();
                     return names[i];
                 }

@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -234,7 +235,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
             return false;
         }
         SingleValueHolder other = (SingleValueHolder)obj;
-        return ObjectUtils.equals(value, other.value);
+        return Objects.equals(value, other.value);
     }
 
     /**

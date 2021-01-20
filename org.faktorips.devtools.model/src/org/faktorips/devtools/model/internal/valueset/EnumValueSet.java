@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.Lists;
 
@@ -159,7 +160,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private boolean isValueInEnum(String value, ValueDatatype datatype) {
         for (String each : values) {
             try {
-                if ((ObjectUtils.equals(each, value) || datatype.areValuesEqual(each, value))) {
+                if ((Objects.equals(each, value) || datatype.areValuesEqual(each, value))) {
                     return true;
                 }
             } catch (IllegalArgumentException e) {
@@ -196,7 +197,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype, IIpsProject contextProject) {
         ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
-        return ObjectUtils.equals(datatype, subDatatype);
+        return Objects.equals(datatype, subDatatype);
     }
 
     private boolean containsAllValues(IEnumValueSet subset, IIpsProject contextProject) {
@@ -271,7 +272,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         for (Iterator<String> it = values.iterator(); it.hasNext();) {
             String each = it.next();
-            if (ObjectUtils.equals(each, value)) {
+            if (Objects.equals(each, value)) {
                 it.remove();
             }
         }
@@ -351,7 +352,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         } else {
             final ValueDatatype type = findValueDatatype(getIpsProject());
 
-            IDatatypeFormatter datatypeFormatter = IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter();
+            IDatatypeFormatter datatypeFormatter = IIpsModelExtensions.get().getModelPreferences()
+                    .getDatatypeFormatter();
             List<String> formattedValues = Lists.transform(values, value -> datatypeFormatter.formatValue(type, value));
 
             return ENUM_VALUESET_START + StringUtils.join(formattedValues, ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE)
@@ -372,9 +374,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private String toStringAbstractEnumValueSet() {
         String nullText;
         if (isContainsNull()) {
-            nullText = NLS.bind(Messages.ValueSet_includingNull, IIpsModelExtensions.get().getModelPreferences().getNullPresentation());
+            nullText = NLS.bind(Messages.ValueSet_includingNull,
+                    IIpsModelExtensions.get().getModelPreferences().getNullPresentation());
         } else {
-            nullText = NLS.bind(Messages.ValueSet_excludingNull, IIpsModelExtensions.get().getModelPreferences().getNullPresentation());
+            nullText = NLS.bind(Messages.ValueSet_excludingNull,
+                    IIpsModelExtensions.get().getModelPreferences().getNullPresentation());
         }
         return NLS.bind(Messages.EnumValueSet_abstract, nullText);
     }

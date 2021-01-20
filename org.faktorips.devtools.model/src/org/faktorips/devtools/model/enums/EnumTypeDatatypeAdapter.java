@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.enums;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -183,7 +183,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      */
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
-        if (ObjectUtils.equals(valueA, valueB)) {
+        if (Objects.equals(valueA, valueB)) {
             if (isParsable(valueA)) {
                 return true;
             } else {

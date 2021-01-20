@@ -9,7 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 
@@ -53,7 +54,7 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
         if (!getField().isTextContentParsable()) {
             return;
         }
-        if (ObjectUtils.equals(getPropertyValue(), getField().getValue())) {
+        if (Objects.equals(getPropertyValue(), getField().getValue())) {
             // value hasn't changed
             return;
         }
@@ -76,7 +77,7 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
             T propertyValue = getPropertyValue();
 
             if (!force && getField().isTextContentParsable()
-                    && ObjectUtils.equals(propertyValue, getField().getValue())) {
+                    && Objects.equals(propertyValue, getField().getValue())) {
                 if (getField() instanceof StringValueComboField) {
                     /*
                      * special case: if the field is a combo field the getValue method returns null

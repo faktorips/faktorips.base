@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.AbstractFixDifferencesComposite;
@@ -127,7 +127,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     private boolean matchingLinkIsMissing(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
         return !container.getLinksAsList(linkToFind.getAssociation()).stream()
-                .anyMatch(link -> link != null && ObjectUtils.equals(linkToFind.getTarget(), link.getTarget()));
+                .anyMatch(link -> link != null && Objects.equals(linkToFind.getTarget(), link.getTarget()));
     }
 
     protected IProductCmptLinkContainer getLinkContainer() {

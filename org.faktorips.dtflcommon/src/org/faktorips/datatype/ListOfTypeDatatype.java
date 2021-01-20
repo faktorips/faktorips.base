@@ -10,7 +10,8 @@
 
 package org.faktorips.datatype;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.util.ArgumentCheck;
 
@@ -164,7 +165,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         if (basicType.isValueDatatype()) {
             return ((ValueDatatype)basicType).areValuesEqual(valueA, valueB);
         }
-        return ObjectUtils.equals(valueA, valueB);
+        return Objects.equals(valueA, valueB);
     }
 
 }

@@ -20,9 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -228,7 +228,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      *         not if the old value and new value are considered to be equal).
      */
     protected final boolean valueChanged(Object oldValue, Object newValue) {
-        boolean changed = !ObjectUtils.equals(oldValue, newValue);
+        boolean changed = !Objects.equals(oldValue, newValue);
         if (changed) {
             objectHasChanged();
         }
@@ -247,7 +247,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      *         not if the old value and new value are considered to be equal).
      */
     protected final boolean valueChanged(Object oldValue, Object newValue, String propertyName) {
-        boolean changed = !ObjectUtils.equals(oldValue, newValue);
+        boolean changed = !Objects.equals(oldValue, newValue);
         if (changed) {
             objectHasChanged(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
         }

@@ -278,7 +278,7 @@ class ProductAssociationTmpl {
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target")» {
                 «IF constrain»
-                    «ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+                    «ObjectUtil».«checkInstanceOf("target", targetInterfaceName)»;
                     super.«methodNameSetOrAdd»(target);
                 «ELSE»
                     «checkRepositoryModifyable»
@@ -299,7 +299,7 @@ class ProductAssociationTmpl {
              «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "target", CardinalityRange, "cardinality")» {
                 «IF constrain»
-                    «ObjectUtil()».«checkInstanceOf("target", targetInterfaceName)»;
+                    «ObjectUtil».«checkInstanceOf("target", targetInterfaceName)»;
                     super.«methodNameSetOrAdd»(target, cardinality);
                 «ELSE»
                     «checkRepositoryModifyable»

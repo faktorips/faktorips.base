@@ -35,6 +35,5 @@ public class Messages extends NLS {
     public static String IpsPlugin_languagePackLanguage;
     public static String IpsPlugin_languagePackCountry;
     public static String IpsPlugin_languagePackVariant;
-    public static String IpsPlugin_errorNoDatatypeControlFactoryFound;
 
 }

@@ -15,10 +15,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -115,7 +115,7 @@ public class ExtensionPropertyHandler {
             return;
         }
         initMissingExtProperties();
-        if (!ObjectUtils.equals(value, getExtPropertyValue(propertyId))) {
+        if (!Objects.equals(value, getExtPropertyValue(propertyId))) {
             ExtensionPropertyValue propertyValue = extPropertiyValuesMap.get(propertyId);
             propertyValue.setValue(value);
             ipsObjectPartContainer.objectHasChanged();

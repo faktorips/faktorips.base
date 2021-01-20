@@ -10,7 +10,8 @@
 
 package org.faktorips.datatype;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -210,7 +211,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         if (datatype.isValueDatatype()) {
             return ((ValueDatatype)datatype).areValuesEqual(valueA, valueB);
         }
-        return ObjectUtils.equals(valueA, valueB);
+        return Objects.equals(valueA, valueB);
     }
 
 }
