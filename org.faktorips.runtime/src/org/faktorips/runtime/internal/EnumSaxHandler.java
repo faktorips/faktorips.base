@@ -29,6 +29,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class EnumSaxHandler extends DefaultHandler {
 
+    private static final String XML_ATTR_IS_NULL = "isNull";
+
     private static final String ENUM_VALUE_NAME = "EnumValue";
 
     private static final String ENUM_ATTRIBUTE_VALUE_NAME = "EnumAttributeValue";
@@ -45,12 +47,15 @@ public class EnumSaxHandler extends DefaultHandler {
 
     private Locale defaultLocale;
 
+    private boolean isNull;
+
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ENUM_VALUE_NAME.equals(qName)) {
             enumValue = new ArrayList<Object>();
         } else if (ENUM_ATTRIBUTE_VALUE_NAME.equals(qName)) {
             stringBuilder = new StringBuilder();
+            isNull = Boolean.valueOf(attributes.getValue(XML_ATTR_IS_NULL)).booleanValue();
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
             localizedStrings = new ArrayList<LocalizedString>();
             String language = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_DEFAULT_LOCALE);
@@ -76,8 +81,9 @@ public class EnumSaxHandler extends DefaultHandler {
                     enumValue.add(internationalString);
                     internationalString = null;
                 } else {
-                    enumValue.add(stringBuilder.toString());
+                    enumValue.add(isNull ? null : stringBuilder.toString());
                     stringBuilder = null;
+                    isNull = false;
                 }
             }
         } else if (ENUM_VALUE_NAME.equals(qName)) {
