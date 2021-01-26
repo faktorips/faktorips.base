@@ -9,14 +9,11 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2020-12) (Linux) (Java11)"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2021-03) (Windows) (Java11)"/>
 <booleanAttribute key="default" value="false"/>
 <setAttribute key="deselected_workspace_bundles"/>
 <booleanAttribute key="includeOptional" value="false"/>
-<stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest.Java11"/>
-<mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="SWT_GTK3" value="0"/>
-</mapAttribute>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest"/>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
@@ -82,11 +79,12 @@
 <setEntry value="org.eclipse.core.expressions@default:default"/>
 <setEntry value="org.eclipse.core.externaltools@default:default"/>
 <setEntry value="org.eclipse.core.filebuffers@default:default"/>
-<setEntry value="org.eclipse.core.filesystem.linux.x86_64@default:false"/>
+<setEntry value="org.eclipse.core.filesystem.win32.x86_64@default:false"/>
 <setEntry value="org.eclipse.core.filesystem@default:default"/>
 <setEntry value="org.eclipse.core.jobs@default:default"/>
-<setEntry value="org.eclipse.core.net.linux.x86_64@default:false"/>
+<setEntry value="org.eclipse.core.net.win32.x86_64@default:false"/>
 <setEntry value="org.eclipse.core.net@default:default"/>
+<setEntry value="org.eclipse.core.resources.win32.x86_64@default:false"/>
 <setEntry value="org.eclipse.core.resources@default:default"/>
 <setEntry value="org.eclipse.core.runtime@default:true"/>
 <setEntry value="org.eclipse.core.variables@default:default"/>
@@ -110,7 +108,6 @@
 <setEntry value="org.eclipse.e4.ui.ide@default:default"/>
 <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
 <setEntry value="org.eclipse.e4.ui.services@default:default"/>
-<setEntry value="org.eclipse.e4.ui.swt.gtk@default:false"/>
 <setEntry value="org.eclipse.e4.ui.widgets@default:default"/>
 <setEntry value="org.eclipse.e4.ui.workbench.addons.swt@default:default"/>
 <setEntry value="org.eclipse.e4.ui.workbench.renderers.swt@default:default"/>
@@ -164,8 +161,8 @@
 <setEntry value="org.eclipse.equinox.p2.updatesite@default:default"/>
 <setEntry value="org.eclipse.equinox.preferences@default:default"/>
 <setEntry value="org.eclipse.equinox.registry@default:default"/>
-<setEntry value="org.eclipse.equinox.security.linux.x86_64@default:false"/>
 <setEntry value="org.eclipse.equinox.security.ui@default:default"/>
+<setEntry value="org.eclipse.equinox.security.win32.x86_64@default:false"/>
 <setEntry value="org.eclipse.equinox.security@default:default"/>
 <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
 <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
@@ -222,7 +219,7 @@
 <setEntry value="org.eclipse.pde@default:default"/>
 <setEntry value="org.eclipse.platform@default:default"/>
 <setEntry value="org.eclipse.search@default:default"/>
-<setEntry value="org.eclipse.swt.gtk.linux.x86_64@default:false"/>
+<setEntry value="org.eclipse.swt.win32.win32.x86_64@default:false"/>
 <setEntry value="org.eclipse.swt@default:default"/>
 <setEntry value="org.eclipse.team.core@default:default"/>
 <setEntry value="org.eclipse.team.ui@default:default"/>
@@ -243,6 +240,7 @@
 <setEntry value="org.eclipse.ui.views.log@default:default"/>
 <setEntry value="org.eclipse.ui.views.properties.tabbed@default:default"/>
 <setEntry value="org.eclipse.ui.views@default:default"/>
+<setEntry value="org.eclipse.ui.win32@default:false"/>
 <setEntry value="org.eclipse.ui.workbench.texteditor@default:default"/>
 <setEntry value="org.eclipse.ui.workbench@default:default"/>
 <setEntry value="org.eclipse.ui@default:default"/>
