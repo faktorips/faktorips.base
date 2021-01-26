@@ -30,10 +30,12 @@
 <setEntry value="com.jcraft.jsch@default:default"/>
 <setEntry value="com.jcraft.jzlib@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
+<setEntry value="com.sun.activation.javax.activation@default:default"/>
 <setEntry value="groovy@default:default"/>
 <setEntry value="javaee-api@default:default"/>
 <setEntry value="javaewah@default:default"/>
 <setEntry value="javax.annotation@default:default"/>
+<setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
 <setEntry value="javax.inject@default:default"/>
 <setEntry value="javax.servlet@default:default"/>
 <setEntry value="javax.xml@default:default"/>

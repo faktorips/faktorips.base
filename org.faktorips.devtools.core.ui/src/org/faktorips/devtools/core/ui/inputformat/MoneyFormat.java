@@ -33,6 +33,8 @@ import org.faktorips.values.Money;
  */
 public class MoneyFormat extends AbstractInputFormat<String> implements ICurrencyHolder {
 
+    private static final String CURRENCY_SYMBOL_EURO = "EUR"; //$NON-NLS-1$
+
     private static final String CURRENCY_SEPARATOR = " "; //$NON-NLS-1$
 
     private static final String VALID_AMOUNT_CHARS = "[-,.\\d]"; //$NON-NLS-1$
@@ -74,12 +76,27 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
             setCurrentCurrency(money.getCurrency());
             String formattedAmount = amountFormat.getNumberFormat().format(money.getAmount());
             if (addCurrencySymbol && currentCurrency != null) {
-                formattedAmount += CURRENCY_SEPARATOR + currentCurrency.getSymbol(locale);
+                formattedAmount += CURRENCY_SEPARATOR + getCurrencySymbol();
             }
             return formattedAmount;
         } else {
             return null;
         }
+    }
+
+    /**
+     * JAVA9 updated some localization settings. In this particular case, replaced the correct
+     * {@code EUR} symbol with the wrong &#8364; symbol. According to ISO the &#8364; symbol is only
+     * allowed in graphical representations.
+     * 
+     * @return the currency symbol configured in the {@link Locale}, or the {@code EUR} sign if the
+     *         used {@link Currency} is Euro and the {@link Locale} has no country configured.
+     */
+    private String getCurrencySymbol() {
+        if (Money.EUR.equals(currentCurrency) && locale.getCountry().isBlank()) {
+            return CURRENCY_SYMBOL_EURO;
+        }
+        return currentCurrency.getSymbol(locale);
     }
 
     private void updateCurrencySumbols() {

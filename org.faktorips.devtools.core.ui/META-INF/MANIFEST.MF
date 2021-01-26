@@ -30,7 +30,7 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.help;bundle-version="3.4.0",
  com.google.guava;bundle-version="18.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
  org.faktorips.devtools.core.ui.bf.commands,

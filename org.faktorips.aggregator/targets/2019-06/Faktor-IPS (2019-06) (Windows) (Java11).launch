@@ -25,13 +25,15 @@
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.guava*21.0.0@default:default"/>
+        <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.jcraft.jzlib@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
-        <setEntry value="groovy"/>
-        <setEntry value="javaee-api@default:default"/>
+        <setEntry value="com.sun.activation.javax.activation@default:default"/>
+        <setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
+        <setEntry value="groovy@default:default"/>
         <setEntry value="javaewah@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.inject@default:default"/>

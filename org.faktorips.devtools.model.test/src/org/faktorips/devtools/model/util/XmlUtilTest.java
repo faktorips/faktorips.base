@@ -10,13 +10,18 @@
 
 package org.faktorips.devtools.model.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.GregorianCalendar;
 
@@ -31,6 +36,8 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 public class XmlUtilTest extends XmlAbstractTestCase {
+
+    private static final String UTF8 = "UTF-8";
 
     @Test
     public void testGregorianCalendarToXmlDateString() {
@@ -82,7 +89,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         Element element = doc.createElement("el");
         doc.appendChild(element);
 
-        String string = XmlUtil.nodeToString(doc, "UTF-8");
+        String string = XmlUtil.nodeToString(doc, UTF8);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator() + "<el/>"
                 + System.lineSeparator();
         assertEquals(expected, string);
@@ -99,7 +106,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         root.appendChild(element);
         doc.appendChild(root);
 
-        String string = XmlUtil.nodeToString(root, "UTF-8");
+        String string = XmlUtil.nodeToString(root, UTF8);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator()
                 + "<root xml:space=\"preserve\">" + System.lineSeparator() + " <el/>" + System.lineSeparator()
                 + "</root>" + System.lineSeparator();
@@ -168,6 +175,56 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     public void testGetDocumentBuilder() throws UnsupportedEncodingException, SAXException, IOException {
         DocumentBuilder docBuilder = XmlUtil.getDefaultDocumentBuilder();
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>";
-        docBuilder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
+        docBuilder.parse(new ByteArrayInputStream(xml.getBytes(UTF8)));
     }
+
+    @Test
+    public void testJava9NoIndentationToXmlDataContent() throws Exception {
+        File xmlFile = ceateXmlFileAndSaveWithIdent();
+        Document doc = XmlUtil.parseDocument(new FileInputStream(xmlFile));
+        Element rootElement = XmlUtil.getFirstElement(doc, "root"); //$NON-NLS-1$
+
+        // java9 transformer has empty lines
+        assertThat(internalNodeToString(rootElement),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root>\n   \n <element>SOME_DATA</element>\n \n</root>\n")); //$NON-NLS-1$
+        // java9 fix with regex, removes empty lines
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root>\n <element>SOME_DATA</element>\n</root>\n")); //$NON-NLS-1$
+
+        if (!xmlFile.delete()) {
+            xmlFile.deleteOnExit();
+        }
+    }
+
+    @Test
+    public void testJava9NoIndentationToXmlDataContentWithTabs() throws Exception {
+        Document doc = getTestDocument();
+        Element root = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
+
+        // TestDocument has Tabs on single empty lines
+        assertThat(internalNodeToString(root),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DocElement>\n \t\n <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>\n \t\n <DifferentElement/>\n \t\n <TestElement value=\"2\"/>\n \n</DocElement>\n"));
+        // TestDocument has no Tabs and no empty lines
+        assertThat(XmlUtil.nodeToString(root, UTF8),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DocElement>\n <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>\n <DifferentElement/>\n <TestElement value=\"2\"/>\n</DocElement>\n"));
+    }
+
+    private String internalNodeToString(Element rootElement) throws TransformerException {
+        StringWriter writer = new StringWriter();
+        XmlUtil.nodeToWriter(rootElement, writer, UTF8);
+        return writer.toString();
+    }
+
+    private File ceateXmlFileAndSaveWithIdent() throws IOException, TransformerException {
+        Document inputDoc = newDocument();
+        Element root = inputDoc.createElement("root"); //$NON-NLS-1$
+        Element element = inputDoc.createElement("element"); //$NON-NLS-1$
+        element.appendChild(inputDoc.createTextNode("SOME_DATA")); //$NON-NLS-1$
+        root.appendChild(element);
+        inputDoc.appendChild(root);
+        File file = File.createTempFile("xmltest", ".xml"); //$NON-NLS-1$//$NON-NLS-2$
+        XmlUtil.writeXMLtoFile(file, inputDoc, null, 2, UTF8);
+        return file;
+    }
+
 }
