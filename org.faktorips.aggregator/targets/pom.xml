@@ -16,11 +16,6 @@
 
     <modules>
         <!-- p2 Repository and product -->
-        <module>luna</module>
-        <module>mars</module>
-        <module>neon</module>
-        <module>oxygen</module>
-        <module>2018-09</module>
         <module>2019-03</module>
         <module>2019-06</module>
         <module>2019-09</module>
