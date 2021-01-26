@@ -13,7 +13,7 @@
 <booleanAttribute key="default" value="false"/>
 <setAttribute key="deselected_workspace_bundles"/>
 <booleanAttribute key="includeOptional" value="false"/>
-<stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest.Java11"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest"/>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="SWT_GTK3" value="0"/>
 </mapAttribute>
@@ -31,7 +31,7 @@
 <setEntry value="com.jcraft.jsch@default:default"/>
 <setEntry value="com.jcraft.jzlib@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
-<setEntry value="groovy-all@default:default"/>
+<setEntry value="groovy@default:default"/>
 <setEntry value="javaee-api@default:default"/>
 <setEntry value="javaewah@default:default"/>
 <setEntry value="javax.annotation@default:default"/>
@@ -120,6 +120,12 @@
 <setEntry value="org.eclipse.e4.ui.workbench.swt@default:default"/>
 <setEntry value="org.eclipse.e4.ui.workbench3@default:default"/>
 <setEntry value="org.eclipse.e4.ui.workbench@default:default"/>
+<setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
+<setEntry value="org.eclipse.ecf.identity@default:default"/>
+<setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
+<setEntry value="org.eclipse.ecf.provider@default:default"/>
+<setEntry value="org.eclipse.ecf.sharedobject@default:default"/>
+<setEntry value="org.eclipse.ecf@default:default"/>
 <setEntry value="org.eclipse.egit.core@default:default"/>
 <setEntry value="org.eclipse.egit.doc@default:default"/>
 <setEntry value="org.eclipse.egit.ui@default:default"/>
@@ -134,6 +140,7 @@
 <setEntry value="org.eclipse.equinox.app@default:default"/>
 <setEntry value="org.eclipse.equinox.bidi@default:default"/>
 <setEntry value="org.eclipse.equinox.common@2:true"/>
+<setEntry value="org.eclipse.equinox.concurrent@default:default"/>
 <setEntry value="org.eclipse.equinox.event@default:default"/>
 <setEntry value="org.eclipse.equinox.frameworkadmin.equinox@default:default"/>
 <setEntry value="org.eclipse.equinox.frameworkadmin@default:default"/>
@@ -141,6 +148,8 @@
 <setEntry value="org.eclipse.equinox.p2.core@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.director.app@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.director@default:default"/>
+<setEntry value="org.eclipse.equinox.p2.discovery.compatibility@default:default"/>
+<setEntry value="org.eclipse.equinox.p2.discovery@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.engine@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.garbagecollector@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.jarprocessor@default:default"/>
@@ -152,6 +161,8 @@
 <setEntry value="org.eclipse.equinox.p2.repository.tools@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.repository@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.touchpoint.eclipse@default:default"/>
+<setEntry value="org.eclipse.equinox.p2.transport.ecf@default:default"/>
+<setEntry value="org.eclipse.equinox.p2.ui.discovery@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.ui@default:default"/>
 <setEntry value="org.eclipse.equinox.p2.updatesite@default:default"/>
 <setEntry value="org.eclipse.equinox.preferences@default:default"/>
@@ -192,6 +203,9 @@
 <setEntry value="org.eclipse.m2e.archetype.common@default:default"/>
 <setEntry value="org.eclipse.m2e.core.ui@default:default"/>
 <setEntry value="org.eclipse.m2e.core@default:default"/>
+<setEntry value="org.eclipse.m2e.discovery@default:default"/>
+<setEntry value="org.eclipse.m2e.editor.xml@default:default"/>
+<setEntry value="org.eclipse.m2e.editor@default:default"/>
 <setEntry value="org.eclipse.m2e.maven.indexer@default:default"/>
 <setEntry value="org.eclipse.m2e.maven.runtime.slf4j.simple@default:default"/>
 <setEntry value="org.eclipse.m2e.maven.runtime@default:default"/>
@@ -215,6 +229,7 @@
 <setEntry value="org.eclipse.team.core@default:default"/>
 <setEntry value="org.eclipse.team.ui@default:default"/>
 <setEntry value="org.eclipse.text@default:default"/>
+<setEntry value="org.eclipse.ui.browser@default:default"/>
 <setEntry value="org.eclipse.ui.cheatsheets@default:default"/>
 <setEntry value="org.eclipse.ui.console@default:default"/>
 <setEntry value="org.eclipse.ui.editors@default:default"/>
@@ -238,12 +253,17 @@
 <setEntry value="org.eclipse.wst.common.core@default:default"/>
 <setEntry value="org.eclipse.wst.common.emf@default:default"/>
 <setEntry value="org.eclipse.wst.common.environment@default:default"/>
+<setEntry value="org.eclipse.wst.common.frameworks.ui@default:default"/>
 <setEntry value="org.eclipse.wst.common.frameworks@default:default"/>
 <setEntry value="org.eclipse.wst.common.project.facet.core@default:default"/>
+<setEntry value="org.eclipse.wst.common.ui@default:default"/>
 <setEntry value="org.eclipse.wst.common.uriresolver@default:default"/>
 <setEntry value="org.eclipse.wst.sse.core@default:default"/>
+<setEntry value="org.eclipse.wst.sse.ui@default:default"/>
+<setEntry value="org.eclipse.wst.validation.ui@default:default"/>
 <setEntry value="org.eclipse.wst.validation@default:default"/>
 <setEntry value="org.eclipse.wst.xml.core@default:default"/>
+<setEntry value="org.eclipse.wst.xml.ui@default:default"/>
 <setEntry value="org.eclipse.wst.xsd.core@default:default"/>
 <setEntry value="org.eclipse.xsd@default:default"/>
 <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
@@ -280,6 +300,7 @@
 <setEntry value="org.faktorips.devtools.core@default:default"/>
 <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
+<setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
 <setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
