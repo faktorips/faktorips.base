@@ -38,9 +38,9 @@ public abstract class AbstractAnnotationGenerator implements IAnnotationGenerato
      * current position. The key is the literal "name", the value is an arbitrary unquoted String
      * which will be quoted.
      * <p/>
-     * Example:<br/>
-     * appendName(f, "tableName") <br/>
-     * yields<br/>
+     * Example:<br>
+     * appendName(f, "tableName") <br>
+     * yields<br>
      * name = "tableName"
      * 
      * @param fragment A <code>JavaCodeFragment</code> instance.

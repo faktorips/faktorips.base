@@ -89,10 +89,10 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
      * 
      * <strong>Scenario:</strong><br>
      * An {@link IType} can have multiple subtypes. Therefore we have to consider all of them in the
-     * computation of the derived root nodes. <br/>
-     * <strong>Example:</strong><br/>
+     * computation of the derived root nodes. <br>
+     * <strong>Example:</strong><br>
      * Consider two projects {@code p} and {@code q}, and we want to compute the root nodes for
-     * project {@code q}<br/>
+     * project {@code q}<br>
      * If Type {@code p.A} has subtypes {@code q.AA} and {@code q.AB}, both subtypes will be in the
      * set of derived root nodes.
      * <p>
@@ -130,10 +130,10 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
      * 
      * <strong>Scenario:</strong><br>
      * An {@link IType} can have multiple subtypes. Therefore we have to consider all of them in the
-     * computation of the derived root nodes. <br/>
-     * <strong>Example:</strong><br/>
+     * computation of the derived root nodes. <br>
+     * <strong>Example:</strong><br>
      * Consider two projects {@code p} and {@code q}, and we want to compute the root nodes for
-     * project {@code q}<br/>
+     * project {@code q}<br>
      * If Type {@code p.A} has subtypes {@code p.AA} and {@code p.AB}, and {@code p.AA} has subtype
      * {@code q.AAA} and {@code p.AB} has subtype {@code q.ABA}, the subtypes {@code q.AAA} and
      * {@code q.ABA} will be in the set of derived root nodes.

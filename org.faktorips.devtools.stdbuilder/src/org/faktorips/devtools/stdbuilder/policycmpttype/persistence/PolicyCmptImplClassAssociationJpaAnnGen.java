@@ -200,7 +200,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
     /**
      * Appends a String with the following structure to the given fragment:
      * <p/>
-     * XX=@JoinColumn(name = "columnName") <br/>
+     * XX=@JoinColumn(name = "columnName") <br>
      * with XX=(joinColumns|inverseJoinColumns) depending on inverse parameter
      */
     private boolean appendJoinColumns(JavaCodeFragment fragment, String columnName, boolean inverse) {

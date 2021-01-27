@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -525,7 +526,11 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         model.runAndQueueChangeEvents(action, null);
 
-        assertEquals(2, listener.changedFiles.size());
+        // Randomly failing test. Excessive message to try and understand it.
+        assertEquals("Expected 2 changed files (" + typeA.getIpsSrcFile() + ", " + typeB.getIpsSrcFile()
+                + "), but found " + listener.changedFiles.size()
+                + listener.changedFiles.stream().map(IIpsSrcFile::toString).collect(Collectors.joining(", ", ")", ")")),
+                2, listener.changedFiles.size());
         assertChangedFileIn(typeA.getIpsSrcFile(), listener.changedFiles);
         assertChangedFileIn(typeB.getIpsSrcFile(), listener.changedFiles);
 

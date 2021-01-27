@@ -32,21 +32,21 @@ import org.faktorips.fl.functions.SumBeanArrayPropertyFct;
  */
 public enum FunctionSignatures {
     /**
-     * Returns the absolute value of the argument.<br/>
+     * Returns the absolute value of the argument.<br>
      * {@code Decimal=Abs(Decimal)}
      * 
      * @see Datatype#DECIMAL
      */
     Abs(DECIMAL, new Datatype[] { DECIMAL }),
     /**
-     * Returns whether all arguments are {@code true}.<br/>
+     * Returns whether all arguments are {@code true}.<br>
      * {@code boolean=And(boolean...)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
      */
     And(PRIMITIVE_BOOLEAN, PRIMITIVE_BOOLEAN),
     /**
-     * Returns whether the argument is not {@code null} or a Null-Object.<br/>
+     * Returns whether the argument is not {@code null} or a Null-Object.<br>
      * {@code boolean=Exists(Object)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
@@ -55,7 +55,7 @@ public enum FunctionSignatures {
     Exists(PRIMITIVE_BOOLEAN, new Datatype[] { AnyDatatype.INSTANCE }),
     /**
      * Returns the second argument if the first argument is {@code true}, the third argument if
-     * not.<br/>
+     * not.<br>
      * {@code Object=If(boolean, Object, Object)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
@@ -64,7 +64,7 @@ public enum FunctionSignatures {
     If(AnyDatatype.INSTANCE, new Datatype[] { PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
     /**
      * Returns the second argument if the first argument is {@code true}, the third argument if not.
-     * {@code null} is treated as {@code false}.<br/>
+     * {@code null} is treated as {@code false}.<br>
      * {@code Object=If(Boolean, Object, Object)}
      * 
      * @see Datatype#BOOLEAN
@@ -72,7 +72,7 @@ public enum FunctionSignatures {
      */
     IfBoolean(AnyDatatype.INSTANCE, new Datatype[] { BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
     /**
-     * Returns whether the argument is an empty array, {@code null} or a Null-Object.<br/>
+     * Returns whether the argument is an empty array, {@code null} or a Null-Object.<br>
      * {@code boolean=IsEmpty(Object)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
@@ -87,35 +87,35 @@ public enum FunctionSignatures {
      */
     MaxList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
-     * Returns the maximum of the two arguments.<br/>
+     * Returns the maximum of the two arguments.<br>
      * {@code Decimal=Max(Decimal,Decimal)}
      * 
      * @see Datatype#DECIMAL
      */
     MaxDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
     /**
-     * Returns the maximum of the two arguments.<br/>
+     * Returns the maximum of the two arguments.<br>
      * {@code double=Max(double,double)}
      * 
      * @see Datatype#DOUBLE
      */
     MaxDouble(DOUBLE, new Datatype[] { DOUBLE, DOUBLE }),
     /**
-     * Returns the maximum of the two arguments.<br/>
+     * Returns the maximum of the two arguments.<br>
      * {@code int=Max(int,int)}
      * 
      * @see Datatype#PRIMITIVE_INT
      */
     MaxInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
     /**
-     * Returns the maximum of the two arguments.<br/>
+     * Returns the maximum of the two arguments.<br>
      * {@code long=Max(long,long)}
      * 
      * @see Datatype#PRIMITIVE_LONG
      */
     MaxLong(PRIMITIVE_LONG, new Datatype[] { PRIMITIVE_LONG, PRIMITIVE_LONG }),
     /**
-     * Returns the maximum of the two arguments.<br/>
+     * Returns the maximum of the two arguments.<br>
      * {@code Money=Max(Money,Money)}
      * 
      * @see Datatype#MONEY
@@ -129,77 +129,77 @@ public enum FunctionSignatures {
      */
     MinList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
-     * Returns the minimum of the two arguments.<br/>
+     * Returns the minimum of the two arguments.<br>
      * {@code Decimal=Min(Decimal,Decimal)}
      * 
      * @see Datatype#DECIMAL
      */
     MinDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
     /**
-     * Returns the minimum of the two arguments.<br/>
+     * Returns the minimum of the two arguments.<br>
      * {@code double=Min(double,double)}
      * 
      * @see Datatype#DOUBLE
      */
     MinDouble(DOUBLE, new Datatype[] { DOUBLE, DOUBLE }),
     /**
-     * Returns the minimum of the two arguments.<br/>
+     * Returns the minimum of the two arguments.<br>
      * {@code int=Min(int,int)}
      * 
      * @see Datatype#PRIMITIVE_INT
      */
     MinInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
     /**
-     * Returns the minimum of the two arguments.<br/>
+     * Returns the minimum of the two arguments.<br>
      * {@code long=Min(long,long)}
      * 
      * @see Datatype#PRIMITIVE_LONG
      */
     MinLong(PRIMITIVE_LONG, new Datatype[] { PRIMITIVE_LONG, PRIMITIVE_LONG }),
     /**
-     * Returns the minimum of the two arguments.<br/>
+     * Returns the minimum of the two arguments.<br>
      * {@code Decimal=Min(Money,Money)}
      * 
      * @see Datatype#MONEY
      */
     MinMoney(MONEY, new Datatype[] { MONEY, MONEY }),
     /**
-     * Returns the inverted argument.<br/>
+     * Returns the inverted argument.<br>
      * {@code boolean=Not(boolean)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
      */
     Not(PRIMITIVE_BOOLEAN, new Datatype[] { PRIMITIVE_BOOLEAN }),
     /**
-     * Returns the inverted argument.<br/>
+     * Returns the inverted argument.<br>
      * {@code Boolean=Not(Boolean)}
      * 
      * @see Datatype#BOOLEAN
      */
     NotBoolean(BOOLEAN, new Datatype[] { BOOLEAN }),
     /**
-     * Returns whether one of the arguments is {@code true}.<br/>
+     * Returns whether one of the arguments is {@code true}.<br>
      * {@code boolean=Or(boolean...)}
      * 
      * @see Datatype#PRIMITIVE_BOOLEAN
      */
     Or(PRIMITIVE_BOOLEAN, PRIMITIVE_BOOLEAN),
     /**
-     * Returns the first argument, rounded to the scale given by the second argument.<br/>
+     * Returns the first argument, rounded to the scale given by the second argument.<br>
      * {@code Decimal=Round(Decimal, int)}
      * 
      * @see Datatype#DECIMAL
      */
     Round(DECIMAL, new Datatype[] { DECIMAL, PRIMITIVE_INT }),
     /**
-     * Returns the first argument, rounded down to the scale given by the second argument.<br/>
+     * Returns the first argument, rounded down to the scale given by the second argument.<br>
      * {@code Decimal=RoundDown(Decimal, int)}
      * 
      * @see Datatype#DECIMAL
      */
     RoundDown(DECIMAL, new Datatype[] { DECIMAL, PRIMITIVE_INT }),
     /**
-     * Returns the first argument, rounded up to the scale given by the second argument.<br/>
+     * Returns the first argument, rounded up to the scale given by the second argument.<br>
      * {@code Decimal=RoundUp(Decimal, int)}
      * 
      * @see Datatype#DECIMAL
@@ -207,7 +207,7 @@ public enum FunctionSignatures {
     RoundUp(DECIMAL, new Datatype[] { DECIMAL, PRIMITIVE_INT }),
     /**
      * Given an array of objects as the first argument returns the sum of the properties identified
-     * by the second argument.<br/>
+     * by the second argument.<br>
      * {@code Object=Sum(Object[], Property)}
      * 
      * @see SumBeanArrayPropertyFct
@@ -215,7 +215,7 @@ public enum FunctionSignatures {
      */
     SumBeanArrayPropertyFct(AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE, AnyDatatype.INSTANCE }),
     /**
-     * Returns the sum of the values in the argument array.<br/>
+     * Returns the sum of the values in the argument array.<br>
      * {@code Decimal=Sum(Decimal[])}
      * 
      * @see Datatype#DECIMAL
@@ -226,7 +226,7 @@ public enum FunctionSignatures {
      */
     SumList(AnyDatatype.INSTANCE, new Datatype[] { new ListOfTypeDatatype(AnyDatatype.INSTANCE) }),
     /**
-     * Returns the argument, rounded down to an Integer.<br/>
+     * Returns the argument, rounded down to an Integer.<br>
      * {@code Integer=WholeNumber(Decimal)}
      * 
      * @see Datatype#INTEGER
@@ -234,21 +234,21 @@ public enum FunctionSignatures {
      */
     WholeNumber(INTEGER, new Datatype[] { DECIMAL }),
     /**
-     * Returns the Decimal argument, to the power of the Integer value.<br/>
+     * Returns the Decimal argument, to the power of the Integer value.<br>
      * {@code Decimal=ValueOf(Math.pow(Decimal.doubleValue(), Decimal.doubleValue()))}
      * 
      * @see Datatype#DECIMAL
      */
     PowerDecimal(DECIMAL, new Datatype[] { DECIMAL, DECIMAL }),
     /**
-     * Returns the int argument, to the power of the int value.<br/>
+     * Returns the int argument, to the power of the int value.<br>
      * {@code int = Math.pow(double, double).intValue()}
      * 
      * @see Datatype#PRIMITIVE_INT
      */
     PowerInt(PRIMITIVE_INT, new Datatype[] { PRIMITIVE_INT, PRIMITIVE_INT }),
     /**
-     * Returns the square root of the Decimal argument.<br/>
+     * Returns the square root of the Decimal argument.<br>
      * {@code Decimal=ValueOf(Math.sqrt(Decimal.doubleValue()))}
      * 
      * @see Datatype#DECIMAL
@@ -256,7 +256,7 @@ public enum FunctionSignatures {
     SqrtDecimal(DECIMAL, new Datatype[] { DECIMAL }),
 
     /**
-     * Returns the count of instances the object path references.<br/>
+     * Returns the count of instances the object path references.<br>
      * {@code int=Count(ListOfTypeDatatype<Object>)}
      * 
      * @see Datatype#PRIMITIVE_INT

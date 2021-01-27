@@ -22,7 +22,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
  */
 public interface IDocumentorScript {
     /**
-     * executes the script using the given {@link DocumentationContext} and the ProgressMonitor<br/>
+     * executes the script using the given {@link DocumentationContext} and the ProgressMonitor<br>
      * 
      * should only called by the {@link HtmlExportOperation}
      * 

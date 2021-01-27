@@ -17,7 +17,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
- * A IPageElement representing a text<br/>
+ * A IPageElement representing a text<br>
  * 
  * The {@link TextPageElement} contains a {@link TextType}, which marks the text e.g. as a complete
  * block or as a heading

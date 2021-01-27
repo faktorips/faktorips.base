@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 /**
  * AbstractTextGenerator generates Text without using an {@link ILayouter}
  * 
- * <br/>
+ * <br>
  * Useful for structuring data like e.g. frame definitions
  * 
  * @author dicker
