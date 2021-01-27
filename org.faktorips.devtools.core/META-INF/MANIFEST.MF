@@ -17,10 +17,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gef;bundle-version="3.4.0",
  org.faktorips.devtools.model;visibility:=reexport,
  com.google.guava;bundle-version="21.0.0",
- com.opencsv;bundle-version="3.3.0"
+ com.opencsv;bundle-version="3.3.0",
+ org.faktorips.devtools.model.builder;bundle-version="21.6.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
- org.faktorips.devtools.core.builder,
  org.faktorips.devtools.core.exception,
  org.faktorips.devtools.core.fl,
  org.faktorips.devtools.core.internal.migration;x-friends:="org.faktorips.devtools.stdbuilder.test,org.faktorips.devtools.stdbuilder,org.faktorips.productvariant.core",

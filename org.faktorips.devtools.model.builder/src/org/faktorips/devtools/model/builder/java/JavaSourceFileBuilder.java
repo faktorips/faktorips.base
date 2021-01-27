@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.model.builder.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,7 +50,6 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
@@ -96,7 +95,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public static final String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
+    public static final String ANNOTATION_GENERATED = "generated"; //$NON-NLS-1$
 
     /**
      * This constant is supposed to be used as a Javadoc annotation. It becomes relevant if the
@@ -104,7 +103,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * the parts that are outside the braces defined by the markers <code>//begin-user-code</code>
      * and <code>//end-user-code</code> are regenerated with the next generation.
      */
-    public static final String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[] { "restrainedmodifiable" }; //$NON-NLS-1$
+    public static final String ANNOTATION_RESTRAINED_MODIFIABLE = "restrainedmodifiable"; //$NON-NLS-1$
 
     /**
      * This constant is supposed to be used as a Java 5 <code>Override</code> annotation.
@@ -128,6 +127,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * The default java doc comment for overridden methods.
      */
     public static final String INHERIT_DOC = "{@inheritDoc}"; //$NON-NLS-1$
+
+    public static final String PLUGIN_ID = "org.faktorips.devtools.model.builder"; //$NON-NLS-1$
 
     private boolean mergeEnabled;
 
@@ -949,7 +950,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         StringBuilder mergeFileDefault = new StringBuilder();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
                 .append("/merge.java5.xml"); //$NON-NLS-1$
-        Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
+        Bundle bundle = Platform.getBundle(PLUGIN_ID);
         return getFileNameFromBundle(bundle, mergeFileDefault.toString());
     }
 

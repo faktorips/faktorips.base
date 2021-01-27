@@ -301,6 +301,7 @@
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
         <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+<!--
+  Extension points
+-->
+   
+<!-- 
+    Extensions to the Java perspective
+  -->
+  
+  
+
+<!-- 
+    Nature and Builders
+  -->
+   
+    
+<!-- 
+    Default Datatypes
+-->
+
+<!-- 
+  Markers
+-->
+
+
+<!--
+    Problem View Filter (available since Eclipse 3.2)
+-->
+
+<!-- 
+  Product-Definition-Extensions
+-->
+   
+
+
+
+<!-- Extensions for running and debugging ips tests -->
+   
+   
+   
+   
+   
+</plugin>

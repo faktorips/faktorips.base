@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.model.builder.java;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
