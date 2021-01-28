@@ -14,4 +14,11 @@
             versionMustChange="false">
       </releaseExtension>
    </extension>
+   <extension
+         id="org.faktorips.devtools.TestDummyBuilderSet"
+         point="org.faktorips.devtools.model.artefactbuilderset">
+      <builderSet
+            class="org.faktorips.devtools.core.builder.TestDummyBuilderSet">
+      </builderSet>
+   </extension>
 </fragment>

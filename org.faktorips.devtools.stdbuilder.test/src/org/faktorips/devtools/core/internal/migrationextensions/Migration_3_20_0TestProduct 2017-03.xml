@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><ProductCmpt productCmptType="my.PcType" runtimeId="Product 2017-03" template="" validFrom="2012-07-18" xml:space="preserve">
- <validTo isNull="true"/>
- <Description id="a0c41342-aa57-48df-96a3-2a62306f684b" locale="de"/>
- <Description id="68da6977-cf85-4d71-bc59-476cc0977b23" locale="en"/>
- <Generation id="7ccb7513-72d6-4939-8efa-e3eaec0ba03b" validFrom="2012-07-18"/>
- <Generation id="40ba4af8-d86a-47b3-8a76-b726a074f13f" validFrom="2017-03-01"/>
-</ProductCmpt>

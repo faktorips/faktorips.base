@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Test data for table enum type migration -->
-<EnumType abstract="false" containingValues="false"
-	enumContentName="enums.content.EnumContent" superEnumType="">
-	<EnumAttribute datatype="Integer" id="3" identifier="false"
-		inherited="false" multilingual="false" name="var2" unique="false"
-		usedAsNameInFaktorIpsUi="false">
-	</EnumAttribute>
-</EnumType>

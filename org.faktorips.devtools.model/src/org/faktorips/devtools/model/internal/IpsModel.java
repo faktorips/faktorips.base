@@ -124,8 +124,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Described in FIPS-5745
      */
     private static final int INVALID_MOD_STAMP = -42;
+    private static final String OLD_NATURE_ID = "org.faktorips.devtools.core.ipsnature"; //$NON-NLS-1$
 
-    private static IpsModel INSTANCE = new IpsModel();
+    private static IpsModel theInstance = new IpsModel();
 
     static {
         TRACE_MODEL_MANAGEMENT = Boolean
@@ -214,9 +215,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     @Deprecated
     public static void reInit() {
-        INSTANCE.stopListeningToResourceChanges();
-        INSTANCE = new IpsModel();
-        INSTANCE.startListeningToResourceChanges();
+        theInstance.stopListeningToResourceChanges();
+        theInstance = new IpsModel();
+        theInstance.startListeningToResourceChanges();
     }
 
     /**
@@ -228,7 +229,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     @Deprecated
     public static final IpsModel get() {
-        return INSTANCE;
+        return theInstance;
     }
 
     /**
@@ -459,7 +460,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private boolean hasIpsNature(IProject project) {
         try {
-            return project.hasNature(IIpsProject.NATURE_ID);
+            return project.hasNature(IIpsProject.NATURE_ID) || project.hasNature(OLD_NATURE_ID);
         } catch (CoreException e) {
             return false;
         }
