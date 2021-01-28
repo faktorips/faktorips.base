@@ -397,6 +397,7 @@
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
+        <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
