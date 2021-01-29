@@ -6,7 +6,7 @@ Bundle-Version: 21.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
 Require-Bundle: 
- org.faktorips.devtools.model;bundle-version="21.6.0",
+ org.faktorips.devtools.model;bundle-version="21.6.0";visibility:=reexport,
  org.eclipse.text,
  org.faktorips.eclipse.emf.codegen
 Bundle-ActivationPolicy: lazy
