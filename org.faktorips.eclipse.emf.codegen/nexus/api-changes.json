@@ -1,0 +1,42 @@
+{
+  "all-versions" : {
+    "revapi" : {
+      "ignore" : [ {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|interface) org.osgi..*",
+        "justification" : "Reexported OSGI API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.eclipse.core.*",
+        "justification" : "Reexported Eclipse Core API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.eclipse.emf.common.*",
+        "justification" : "Reexported Eclipse EMF Common API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.eclipse.jdt.*",
+        "justification" : "Reexported Eclipse JDT API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.nonPublicPartOfAPI",
+        "new" : "(class|enum|interface) org.eclipse.jdt.*",
+        "justification" : "Reexported Eclipse JDT API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.eclipse.jface.text.*",
+        "justification" : "Reexported Eclipse jface text API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.eclipse.text.*",
+        "justification" : "Reexported Eclipse text API"
+      } ]
+    }
+  }
+}
