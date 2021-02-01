@@ -12,14 +12,14 @@ package org.faktorips.devtools.bf.ui.model.commands;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.bf.commands.ChangeConstraintCommand;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,27 +40,27 @@ public class ChangeConstraintCommandTest extends AbstractIpsPluginTest {
 
     @Test
     public void testExecute() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE action = bf.newOpaqueAction(new Location(10, 10));
         command = new ChangeConstraintCommand(action, new Rectangle(100, 50, 200, 250));
         command.execute();
-        assertEquals(new Point(100, 50), action.getLocation());
-        assertEquals(new Dimension(200, 250), action.getSize());
+        assertEquals(new Location(100, 50), action.getLocation());
+        assertEquals(new Size(200, 250), action.getSize());
     }
 
     @Test
     public void testUndoRedo() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
-        Point location = action.getLocation();
-        Dimension size = action.getSize();
+        IActionBFE action = bf.newOpaqueAction(new Location(10, 10));
+        Location location = action.getLocation();
+        Size size = action.getSize();
         command = new ChangeConstraintCommand(action, new Rectangle(100, 50, 200, 250));
         command.execute();
-        assertEquals(new Point(100, 50), action.getLocation());
-        assertEquals(new Dimension(200, 250), action.getSize());
+        assertEquals(new Location(100, 50), action.getLocation());
+        assertEquals(new Size(200, 250), action.getSize());
         command.undo();
         assertEquals(location, action.getLocation());
         assertEquals(size, action.getSize());
         command.redo();
-        assertEquals(new Point(100, 50), action.getLocation());
-        assertEquals(new Dimension(200, 250), action.getSize());
+        assertEquals(new Location(100, 50), action.getLocation());
+        assertEquals(new Size(200, 250), action.getSize());
     }
 }

@@ -8,12 +8,10 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.bf;
+package org.faktorips.devtools.model.bf;
 
 import java.util.List;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
@@ -59,11 +57,11 @@ public interface IBusinessFunction extends IIpsObject {
      */
     public IControlFlow getControlFlow(String id);
 
-    public IBFElement newStart(Point location);
+    public IBFElement newStart(Location location);
 
-    public IBFElement newEnd(Point location);
+    public IBFElement newEnd(Location location);
 
-    public IBFElement newMerge(Point location);
+    public IBFElement newMerge(Location location);
 
     /**
      * Creates and returns a in line action and adds it to the set of actions that belong to this
@@ -71,7 +69,7 @@ public interface IBusinessFunction extends IIpsObject {
      * 
      * @param location the initial graphical location of the created action
      */
-    public IActionBFE newOpaqueAction(Point location);
+    public IActionBFE newOpaqueAction(Location location);
 
     /**
      * Creates and returns a method call action and adds it to the set of actions that belong to
@@ -79,7 +77,7 @@ public interface IBusinessFunction extends IIpsObject {
      * 
      * @param location the initial graphical location of the created action
      */
-    public IActionBFE newMethodCallAction(Point location);
+    public IActionBFE newMethodCallAction(Location location);
 
     /**
      * Creates and returns a business function call action and adds it to the set of actions that
@@ -87,7 +85,7 @@ public interface IBusinessFunction extends IIpsObject {
      * 
      * @param location the initial graphical location of the created action
      */
-    public IActionBFE newBusinessFunctionCallAction(Point location);
+    public IActionBFE newBusinessFunctionCallAction(Location location);
 
     /**
      * Creates and returns a decision element and adds it to the set of elements that belong to this
@@ -95,7 +93,7 @@ public interface IBusinessFunction extends IIpsObject {
      * 
      * @param location the initial graphical location of the created action
      */
-    public IDecisionBFE newDecision(Point location);
+    public IDecisionBFE newDecision(Location location);
 
     /**
      * Creates and returns a method call decision element and adds it to the set of elements that
@@ -103,7 +101,7 @@ public interface IBusinessFunction extends IIpsObject {
      * 
      * @param location the initial graphical location of the created action
      */
-    public IDecisionBFE newMethodCallDecision(Point location);
+    public IDecisionBFE newMethodCallDecision(Location location);
 
     /**
      * Creates and returns a parameter element and adds it to the set of elements that belong to
@@ -136,18 +134,18 @@ public interface IBusinessFunction extends IIpsObject {
      * Return the size of the graphical element representing the parameters of this business
      * function.
      */
-    public Dimension getParameterRectangleSize();
+    public Size getParameterRectangleSize();
 
     /**
      * Sets the size of the graphical element representing the parameters of this business function.
      */
-    public void setParameterRectangleSize(Dimension parameterRectangleSize);
+    public void setParameterRectangleSize(Size parameterRectangleSize);
 
     /**
      * Return the location of the graphical element representing the parameters of this business
      * function.
      */
-    public Point getParameterRectangleLocation();
+    public Location getParameterRectangleLocation();
 
     /**
      * Returns the start element.

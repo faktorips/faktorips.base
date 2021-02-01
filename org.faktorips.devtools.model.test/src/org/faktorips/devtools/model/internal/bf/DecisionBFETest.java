@@ -8,21 +8,21 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IDecisionBFE;
-import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IDecisionBFE;
+import org.faktorips.devtools.model.bf.IMethodCallBFE;
+import org.faktorips.devtools.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IMethod;
@@ -51,7 +51,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
 
     @Test
     public void testPropertiesToXml() throws Exception {
-        IDecisionBFE decision = bf.newDecision(new Point(10, 10));
+        IDecisionBFE decision = bf.newDecision(new Location(10, 10));
         decision.setDatatype(Datatype.INTEGER.getQualifiedName());
         Document doc = getDocumentBuilder().newDocument();
         Element el = decision.toXml(doc);
@@ -72,7 +72,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateThis() throws Exception {
-        IDecisionBFE decision = bf.newDecision(new Point(10, 10));
+        IDecisionBFE decision = bf.newDecision(new Location(10, 10));
         // by default the inital datatype is set to boolean. To test that it is not specified it has
         // to be set to null
         decision.setDatatype(null);
@@ -95,7 +95,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateThisMethodCallDecision() throws Exception {
-        IDecisionBFE decision = bf.newMethodCallDecision(new Point(10, 10));
+        IDecisionBFE decision = bf.newMethodCallDecision(new Location(10, 10));
         MessageList msgList = decision.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_SPECIFIED));
 
@@ -131,7 +131,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
 
         // check that is it is a method call decision the validations for the regular decisions are
         // never called
-        decision = bf.newMethodCallDecision(new Point(10, 10));
+        decision = bf.newMethodCallDecision(new Location(10, 10));
         msgList = decision.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
     }
@@ -144,14 +144,14 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
     @Test
     public void testSetDatatype() {
         listener.clear();
-        IDecisionBFE decision = bf.newDecision(new Point(10, 10));
+        IDecisionBFE decision = bf.newDecision(new Location(10, 10));
         decision.setDatatype(Datatype.STRING.getQualifiedName());
         assertTrue(listener.getIpsObjectParts().contains(decision));
     }
 
     @Test
     public void testFindDatatype() throws Exception {
-        IDecisionBFE decision = bf.newDecision(new Point(10, 10));
+        IDecisionBFE decision = bf.newDecision(new Location(10, 10));
         decision.setDatatype(Datatype.STRING.getQualifiedName());
         assertEquals(Datatype.STRING, decision.findDatatype(ipsProject));
         decision.setDatatype("abc");

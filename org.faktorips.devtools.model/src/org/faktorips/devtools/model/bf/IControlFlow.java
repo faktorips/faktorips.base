@@ -8,11 +8,10 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.bf;
+package org.faktorips.devtools.model.bf;
 
 import java.util.List;
 
-import org.eclipse.draw2d.Bendpoint;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -68,17 +67,17 @@ public interface IControlFlow extends IIpsObjectPart {
     /**
      * Sets a bend point at the indexed position.
      */
-    public void setBendpoint(int index, Bendpoint bendpoint);
+    public void setBendpoint(int index, Location bendpoint);
 
     /**
      * Returns an ordered list of the bend points of this control flow.
      */
-    public List<Bendpoint> getBendpoints();
+    public List<Location> getBendpoints();
 
     /**
      * Adds a bend point at the index position.
      */
-    public void addBendpoint(int index, Bendpoint bendpoint);
+    public void addBendpoint(int index, Location bendpoint);
 
     /**
      * Removes a bend point at the indexed position.

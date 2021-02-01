@@ -8,9 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.bf;
-
-import org.eclipse.draw2d.geometry.Point;
+package org.faktorips.devtools.model.bf;
 
 /**
  * This enumeration defines the possible type of business function elements. Each instance of a
@@ -20,65 +18,65 @@ import org.eclipse.draw2d.geometry.Point;
  */
 public enum BFElementType {
 
-    ACTION_INLINE("inlineAction", Messages.BFElementType_inlineAction) { //$NON-NLS-1$  
+    ACTION_INLINE("inlineAction", Messages.BFElementType_inlineAction) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newOpaqueAction(location);
         }
     },
 
-    ACTION_METHODCALL("methodCallAction", Messages.BFElementType_methodCallAction) { //$NON-NLS-1$ 
+    ACTION_METHODCALL("methodCallAction", Messages.BFElementType_methodCallAction) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newMethodCallAction(location);
         }
     },
 
-    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", Messages.BFElementType_bfCallAction) { //$NON-NLS-1$ 
+    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", Messages.BFElementType_bfCallAction) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newBusinessFunctionCallAction(location);
         }
     },
 
-    DECISION("decision", Messages.BFElementType_decision) { //$NON-NLS-1$  
+    DECISION("decision", Messages.BFElementType_decision) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newDecision(location);
         }
     },
 
-    DECISION_METHODCALL("methodCallDecision", Messages.BFElementType_methodCallDecision) { //$NON-NLS-1$ 
+    DECISION_METHODCALL("methodCallDecision", Messages.BFElementType_methodCallDecision) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newMethodCallDecision(location);
         }
     },
 
-    MERGE("merge", Messages.BFElementType_merge) { //$NON-NLS-1$ 
+    MERGE("merge", Messages.BFElementType_merge) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newMerge(location);
         }
     },
 
-    END("end", Messages.BFElementType_end) { //$NON-NLS-1$ 
+    END("end", Messages.BFElementType_end) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newEnd(location);
         }
     },
 
-    START("start", Messages.BFElementType_start) { //$NON-NLS-1$ 
+    START("start", Messages.BFElementType_start) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newStart(location);
         }
     },
 
     PARAMETER("parameter", Messages.BFElementType_parameter) { //$NON-NLS-1$
         @Override
-        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Location location) {
             return businessFunction.newParameter();
         }
     };
@@ -111,7 +109,7 @@ public enum BFElementType {
      * @param businessFunction the business function to which the created type belongs to
      * @param location the graphical location of the display element of this type
      */
-    public abstract IBFElement newBFElement(IBusinessFunction businessFunction, Point location);
+    public abstract IBFElement newBFElement(IBusinessFunction businessFunction, Location location);
 
     /**
      * Returns the type for the specified id. If none is found and {@link IllegalArgumentException}

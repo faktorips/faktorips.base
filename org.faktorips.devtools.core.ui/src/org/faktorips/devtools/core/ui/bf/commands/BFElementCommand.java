@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.bf.commands;
 
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 

@@ -8,12 +8,10 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.bf;
+package org.faktorips.devtools.model.bf;
 
 import java.util.List;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 
@@ -55,22 +53,22 @@ public interface IBFElement extends IIpsObjectPart {
     /**
      * Returns the location of the graphical representation of this element.
      */
-    public Point getLocation();
+    public Location getLocation();
 
     /**
      * Sets the location of the graphical representation of this element.
      */
-    public void setLocation(Point location);
+    public void setLocation(Location location);
 
     /**
      * Returns the size of the graphical representation of this element.
      */
-    public Dimension getSize();
+    public Size getSize();
 
     /**
      * Sets the location of the graphical representation of this element.
      */
-    public void setSize(Dimension size);
+    public void setSize(Size size);
 
     /**
      * Returns the type of this element.

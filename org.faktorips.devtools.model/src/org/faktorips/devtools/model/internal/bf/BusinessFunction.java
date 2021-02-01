@@ -8,26 +8,27 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
-import org.faktorips.devtools.core.model.bf.IDecisionBFE;
-import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IDecisionBFE;
+import org.faktorips.devtools.model.bf.IMethodCallBFE;
+import org.faktorips.devtools.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
@@ -49,8 +50,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     private final BFElementIpsObjectPartCollection<IDecisionBFE> decisions;
     private final BFElementIpsObjectPartCollection<IParameterBFE> parameters;
     private final IpsObjectPartCollection<IControlFlow> controlFlows;
-    private Dimension parameterRectangleSize = new Dimension(100, 100);
-    private Point parameterRectangleLocation = new Point(10, 10);
+    private Size parameterRectangleSize = new Size(100, 100);
+    private Location parameterRectangleLocation = new Location(10, 10);
 
     public BusinessFunction(IIpsSrcFile file) {
         super(file);
@@ -66,13 +67,13 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    public Dimension getParameterRectangleSize() {
+    public Size getParameterRectangleSize() {
         return parameterRectangleSize;
     }
 
     @Override
-    public void setParameterRectangleSize(Dimension parameterRectangleSize) {
-        Dimension old = this.parameterRectangleSize;
+    public void setParameterRectangleSize(Size parameterRectangleSize) {
+        Size old = this.parameterRectangleSize;
         this.parameterRectangleSize = parameterRectangleSize;
         valueChanged(old, parameterRectangleSize);
     }
@@ -100,7 +101,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    public Point getParameterRectangleLocation() {
+    public Location getParameterRectangleLocation() {
         return parameterRectangleLocation;
     }
 
@@ -163,51 +164,51 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     @Override
-    public IBFElement newEnd(Point location) {
+    public IBFElement newEnd(Location location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.END);
-        element.setSize(new Dimension(30, 30));
+        element.setSize(new Size(30, 30));
         return element;
     }
 
     @Override
-    public IBFElement newMerge(Point location) {
+    public IBFElement newMerge(Location location) {
         return simpleElements.newBFElement(location, BFElementType.MERGE);
     }
 
     @Override
-    public IBFElement newStart(Point location) {
+    public IBFElement newStart(Location location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.START);
-        element.setSize(new Dimension(30, 30));
+        element.setSize(new Size(30, 30));
         return element;
     }
 
     @Override
-    public IActionBFE newOpaqueAction(Point location) {
+    public IActionBFE newOpaqueAction(Location location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_INLINE);
         return element;
     }
 
     @Override
-    public IActionBFE newMethodCallAction(Point location) {
+    public IActionBFE newMethodCallAction(Location location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_METHODCALL);
         return element;
     }
 
     @Override
-    public IActionBFE newBusinessFunctionCallAction(Point location) {
+    public IActionBFE newBusinessFunctionCallAction(Location location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_BUSINESSFUNCTIONCALL);
         return element;
     }
 
     @Override
-    public IDecisionBFE newDecision(Point location) {
+    public IDecisionBFE newDecision(Location location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION);
         return element;
     }
 
     // TODO testing
     @Override
-    public IDecisionBFE newMethodCallDecision(Point location) {
+    public IDecisionBFE newMethodCallDecision(Location location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION_METHODCALL);
         return element;
     }
@@ -239,19 +240,19 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         super.initPropertiesFromXml(element, id);
         int width = Integer.parseInt(element.getAttribute("parameterRectangleWidth")); //$NON-NLS-1$
         int height = Integer.parseInt(element.getAttribute("parameterRectangleHeight")); //$NON-NLS-1$
-        parameterRectangleSize = new Dimension(width, height);
+        parameterRectangleSize = new Size(width, height);
         int xLocation = Integer.parseInt(element.getAttribute("parameterRectangleX")); //$NON-NLS-1$
         int yLocation = Integer.parseInt(element.getAttribute("parameterRectangleY")); //$NON-NLS-1$
-        parameterRectangleLocation = new Point(xLocation, yLocation);
+        parameterRectangleLocation = new Location(xLocation, yLocation);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("parameterRectangleWidth", String.valueOf(getParameterRectangleSize().width)); //$NON-NLS-1$
-        element.setAttribute("parameterRectangleHeight", String.valueOf(getParameterRectangleSize().height)); //$NON-NLS-1$
-        element.setAttribute("parameterRectangleX", String.valueOf(getParameterRectangleLocation().x)); //$NON-NLS-1$
-        element.setAttribute("parameterRectangleY", String.valueOf(getParameterRectangleLocation().y)); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleWidth", String.valueOf(getParameterRectangleSize().getWidth())); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleHeight", String.valueOf(getParameterRectangleSize().getHeight())); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleX", String.valueOf(getParameterRectangleLocation().getX())); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleY", String.valueOf(getParameterRectangleLocation().getY())); //$NON-NLS-1$
     }
 
     @Override
@@ -286,8 +287,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             list.add(element);
         }
 
-        for (String key : elements.keySet()) {
-            List<IBFElement> list = elements.get(key);
+        for (Entry<String, List<IBFElement>> entry : elements.entrySet()) {
+            String key = entry.getKey();
+            List<IBFElement> list = entry.getValue();
             if (list.size() > 1) {
                 for (IBFElement element : list) {
                     if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list)
@@ -520,12 +522,12 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             super(ipsObject, partsClazz, publishedInterface, xmlTag);
         }
 
-        public IBFElement newBFElement(final Point location, final BFElementType type) {
+        public IBFElement newBFElement(final Location location, final BFElementType type) {
             IpsObjectPartInitializer<T> initializer = new IpsObjectPartInitializer<T>() {
                 @Override
                 public void initialize(T part) {
-                    ((BFElement)part).location = location;
-                    ((BFElement)part).type = type;
+                    ((BFElement)part).setLocation(location);
+                    ((BFElement)part).setType(type);
                 }
             };
 

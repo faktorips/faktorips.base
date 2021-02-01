@@ -22,6 +22,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -29,11 +30,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 
 /**
  * The edit part for the parameter business function element. Since there is only one figure that
@@ -127,8 +130,10 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
 
     @Override
     protected void refreshVisuals() {
-        Dimension size = getBusinessFunction().getParameterRectangleSize();
-        Rectangle r = new Rectangle(getBusinessFunction().getParameterRectangleLocation(), size);
+        Size size = getBusinessFunction().getParameterRectangleSize();
+        Location loc = getBusinessFunction().getParameterRectangleLocation();
+        Rectangle r = new Rectangle(new Point(loc.getX(), loc.getY()),
+                new Dimension(size.getWidth(), size.getHeight()));
         // TODO consider if the foreground color is persisted by the model if not the setting of
         // of the color needs to be placed somewhere else
         getFigure().setForegroundColor(ColorConstants.lightGray);

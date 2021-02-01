@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,18 +18,18 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
-import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IMethodCallBFE;
+import org.faktorips.devtools.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
@@ -66,7 +66,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testNewPartClass() throws CoreException {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newEnd(new Point(1, 1));
+        IBFElement bfe = bf.newEnd(new Location(1, 1));
         assertEquals(bfe.getType(), BFElementType.END);
     }
 
@@ -78,8 +78,8 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         bf.initFromXml(doc.getDocumentElement());
 
-        assertEquals(new Dimension(100, 150), bf.getParameterRectangleSize());
-        assertEquals(new Point(10, 20), bf.getParameterRectangleLocation());
+        assertEquals(new Size(100, 150), bf.getParameterRectangleSize());
+        assertEquals(new Location(10, 20), bf.getParameterRectangleLocation());
 
         List<IBFElement> elements = bf.getBFElements();
         assertEquals(9, elements.size());
@@ -112,14 +112,14 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testToXml() throws Exception {
         IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(1, 1));
-        IActionBFE methodCallAction = bf.newMethodCallAction(new Point(2, 2));
-        IActionBFE opaqueAction = bf.newOpaqueAction(new Point(3, 3));
-        IBFElement decision = bf.newDecision(new Point(4, 4));
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Location(1, 1));
+        IActionBFE methodCallAction = bf.newMethodCallAction(new Location(2, 2));
+        IActionBFE opaqueAction = bf.newOpaqueAction(new Location(3, 3));
+        IBFElement decision = bf.newDecision(new Location(4, 4));
         IBFElement parameter = bf.newParameter();
-        IBFElement end = bf.newEnd(new Point(10, 10));
-        IBFElement start = bf.newStart(new Point(20, 20));
-        IBFElement merge = bf.newMerge(new Point(30, 30));
+        IBFElement end = bf.newEnd(new Location(10, 10));
+        IBFElement start = bf.newStart(new Location(20, 20));
+        IBFElement merge = bf.newMerge(new Location(30, 30));
         IControlFlow cf1 = bf.newControlFlow();
         IControlFlow cf2 = bf.newControlFlow();
         Document doc = getDocumentBuilder().newDocument();
@@ -144,9 +144,9 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testGetBFElementById() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(1, 1));
-        IActionBFE methodCallAction = bf.newMethodCallAction(new Point(2, 2));
-        IActionBFE opaqueAction = bf.newOpaqueAction(new Point(3, 3));
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Location(1, 1));
+        IActionBFE methodCallAction = bf.newMethodCallAction(new Location(2, 2));
+        IActionBFE opaqueAction = bf.newOpaqueAction(new Location(3, 3));
         assertEquals(action, bf.getBFElement(action.getId()));
         assertEquals(methodCallAction, bf.getBFElement(methodCallAction.getId()));
         assertEquals(opaqueAction, bf.getBFElement(opaqueAction.getId()));
@@ -156,9 +156,9 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testGetBFElements() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(1, 1));
-        IActionBFE methodCallAction = bf.newMethodCallAction(new Point(2, 2));
-        IActionBFE opaqueAction = bf.newOpaqueAction(new Point(3, 3));
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Location(1, 1));
+        IActionBFE methodCallAction = bf.newMethodCallAction(new Location(2, 2));
+        IActionBFE opaqueAction = bf.newOpaqueAction(new Location(3, 3));
         List<IBFElement> bfes = bf.getBFElements();
         assertTrue(bfes.contains(action));
         assertTrue(bfes.contains(methodCallAction));
@@ -222,10 +222,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateStartOnlyOnce() throws Exception {
         IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement start1 = bf.newStart(new Point(10, 10));
+        IBFElement start1 = bf.newStart(new Location(10, 10));
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_SINGLE_OCCURRENCE));
-        IBFElement start2 = bf.newStart(new Point(10, 10));
+        IBFElement start2 = bf.newStart(new Location(10, 10));
         msgList = bf.validate(ipsProject);
 
         MessageList list1 = msgList.getMessagesFor(start1);
@@ -239,10 +239,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateEndOnlyOnce() throws Exception {
         IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement end1 = bf.newEnd(new Point(10, 10));
+        IBFElement end1 = bf.newEnd(new Location(10, 10));
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
-        IBFElement end2 = bf.newEnd(new Point(10, 10));
+        IBFElement end2 = bf.newEnd(new Location(10, 10));
         msgList = bf.validate(ipsProject);
 
         MessageList list1 = msgList.getMessagesFor(end1);
@@ -256,12 +256,12 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateBFElementNameCollision() throws Exception {
         IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IActionBFE action1 = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE action1 = bf.newOpaqueAction(new Location(10, 10));
         action1.setName("action1");
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
 
-        IActionBFE action2 = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE action2 = bf.newOpaqueAction(new Location(10, 10));
         action2.setName("action1");
         msgList = bf.validate(ipsProject);
 
@@ -281,7 +281,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         parameter.setDatatype(policy.getQualifiedName());
         parameter.setName("policy");
 
-        IActionBFE action3 = bf.newMethodCallAction(new Point(10, 10));
+        IActionBFE action3 = bf.newMethodCallAction(new Location(10, 10));
         action3.setTarget("policy");
         action3.setExecutableMethodName("action1");
 
@@ -292,7 +292,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         IBusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject,
                 BusinessFunctionIpsObjectType.getInstance(), "action1");
 
-        IActionBFE action4 = bf.newBusinessFunctionCallAction(new Point(10, 10));
+        IActionBFE action4 = bf.newBusinessFunctionCallAction(new Location(10, 10));
         action4.setTarget(bfAction1.getQualifiedName());
 
         msgList = bf.validate(ipsProject);
@@ -325,7 +325,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
 
-        bf.newStart(new Point(10, 10));
+        bf.newStart(new Location(10, 10));
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
     }
@@ -337,7 +337,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
 
-        bf.newEnd(new Point(10, 10));
+        bf.newEnd(new Location(10, 10));
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
     }
@@ -346,8 +346,8 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateNotConnected1() throws Exception {
         IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement start = bf.newStart(new Point(10, 10));
-        IBFElement end = bf.newEnd(new Point(10, 10));
+        IBFElement start = bf.newStart(new Location(10, 10));
+        IBFElement end = bf.newEnd(new Location(10, 10));
 
         MessageList msgList = bf.validate(ipsProject);
 
@@ -370,12 +370,12 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateNotConnected2() throws Exception {
         IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement start = bf.newStart(new Point(10, 10));
-        IBFElement end = bf.newEnd(new Point(10, 10));
-        IBFElement action1 = bf.newOpaqueAction(new Point(10, 10));
-        IBFElement action2 = bf.newOpaqueAction(new Point(10, 10));
-        IBFElement decision = bf.newDecision(new Point(10, 10));
-        IBFElement merge = bf.newMerge(new Point(10, 10));
+        IBFElement start = bf.newStart(new Location(10, 10));
+        IBFElement end = bf.newEnd(new Location(10, 10));
+        IBFElement action1 = bf.newOpaqueAction(new Location(10, 10));
+        IBFElement action2 = bf.newOpaqueAction(new Location(10, 10));
+        IBFElement decision = bf.newDecision(new Location(10, 10));
+        IBFElement merge = bf.newMerge(new Location(10, 10));
 
         // check unconnected elements
         MessageList msgList = bf.validate(ipsProject);
@@ -463,7 +463,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         IBusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf2");
 
-        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Location(10, 10));
         action.setTarget(bf2.getQualifiedName());
 
         dependencies = bf.dependsOn();
@@ -490,7 +490,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         param.setDatatype(pcType.getQualifiedName());
         param.setName("policy");
 
-        action = bf.newMethodCallAction(new Point(10, 10));
+        action = bf.newMethodCallAction(new Location(10, 10));
         dependencies = bf.dependsOn();
         assertEquals(0, dependencies.length);
 

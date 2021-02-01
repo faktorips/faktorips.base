@@ -13,8 +13,8 @@ package org.faktorips.devtools.stdbuilder.bf;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;

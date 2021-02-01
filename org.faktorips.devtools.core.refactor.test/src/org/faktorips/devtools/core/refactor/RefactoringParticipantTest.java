@@ -17,11 +17,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -202,8 +202,8 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected IBusinessFunction createBusinessFunction(String name) throws CoreException {
         IBusinessFunction businessFunction = (IBusinessFunction)newIpsObject(ipsProject,
                 BusinessFunctionIpsObjectType.getInstance(), name);
-        businessFunction.newStart(new Point(0, 0));
-        businessFunction.newEnd(new Point(10, 10));
+        businessFunction.newStart(new Location(0, 0));
+        businessFunction.newEnd(new Location(10, 10));
         IControlFlow controlFlow = businessFunction.newControlFlow();
         controlFlow.setSource(businessFunction.getStart());
         controlFlow.setTarget(businessFunction.getEnd());

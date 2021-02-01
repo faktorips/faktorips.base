@@ -18,8 +18,8 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;

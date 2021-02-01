@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,9 +18,10 @@ import static org.junit.Assert.fail;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.internal.bf.BusinessFunction;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;

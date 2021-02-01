@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import java.util.ArrayList;
 import java.util.List;

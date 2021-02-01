@@ -8,13 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.bf;
+package org.faktorips.devtools.model.bf;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.bf.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.model.bf.messages"; //$NON-NLS-1$
 
     private Messages() {
         // Messages bundles shall not be initialized.

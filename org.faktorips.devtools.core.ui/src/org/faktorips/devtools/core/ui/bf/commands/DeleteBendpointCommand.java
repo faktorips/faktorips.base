@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.bf.commands;
 
-import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IControlFlow;
 
 /**
  * A command that deletes the bend point of a control flow at the index that is provided to it.

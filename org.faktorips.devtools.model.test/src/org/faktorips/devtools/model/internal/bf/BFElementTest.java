@@ -8,23 +8,23 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,17 +57,17 @@ public class BFElementTest extends AbstractIpsPluginTest {
         bfe.initFromXml((Element)nl.item(0));
         assertEquals("10", bfe.getId());
         assertEquals(BFElementType.START, bfe.getType());
-        assertEquals(new Dimension(30, 30), bfe.getSize());
-        assertEquals(new Point(245, 51), bfe.getLocation());
+        assertEquals(new Size(30, 30), bfe.getSize());
+        assertEquals(new Location(245, 51), bfe.getLocation());
     }
 
     @Test
     public void testtoXml() throws Exception {
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
-        bfe.setLocation(new Point(14, 14));
-        bfe.setSize(new Dimension(100, 100));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
+        bfe.setLocation(new Location(14, 14));
+        bfe.setSize(new Size(100, 100));
         Document doc = getDocumentBuilder().newDocument();
         doc.appendChild(doc.createElement(IBusinessFunction.XML_TAG));
         Element domEl = bfe.toXml(doc);
@@ -85,7 +85,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testAddIncomingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow in = bf.newControlFlow();
         bfe.addIncomingControlFlow(in);
         assertEquals(in, bfe.getIncomingControlFlow().get(0));
@@ -102,7 +102,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testAddOutgoingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow out = bf.newControlFlow();
         bfe.addOutgoingControlFlow(out);
         assertEquals(out, bfe.getOutgoingControlFlow().get(0));
@@ -119,7 +119,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testRemoveIncomingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow in = bf.newControlFlow();
         bfe.addIncomingControlFlow(in);
         assertEquals(in, bfe.getIncomingControlFlow().get(0));
@@ -140,7 +140,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testRemoveOutgoingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow out = bf.newControlFlow();
         bfe.addOutgoingControlFlow(out);
         assertEquals(out, bfe.getOutgoingControlFlow().get(0));
@@ -161,7 +161,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testGetAllControlFlows() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow out = bf.newControlFlow();
         IControlFlow in = bf.newControlFlow();
         bfe.addOutgoingControlFlow(out);
@@ -174,7 +174,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testGetBusinessFunction() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newMerge(new Point(10, 10));
+        IBFElement bfe = bf.newMerge(new Location(10, 10));
         assertEquals(bf, bfe.getBusinessFunction());
 
     }
@@ -183,16 +183,16 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testSetLocation() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         listener.clear();
-        bfe.setLocation(new Point(10, 10));
+        bfe.setLocation(new Location(10, 10));
         assertTrue(listener.getIpsObjectParts().isEmpty());
-        assertEquals(new Point(10, 10), bfe.getLocation());
+        assertEquals(new Location(10, 10), bfe.getLocation());
 
-        bfe.setLocation(new Point(20, 20));
+        bfe.setLocation(new Location(20, 20));
         assertTrue(listener.getIpsObjectParts().contains(bfe));
         assertTrue(listener.getEventTypes().contains(ContentChangeEvent.TYPE_PROPERTY_CHANGED));
-        assertEquals(new Point(20, 20), bfe.getLocation());
+        assertEquals(new Location(20, 20), bfe.getLocation());
 
         listener.clear();
         bfe.setLocation(null);
@@ -200,22 +200,22 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertNull(bfe.getLocation());
 
         listener.clear();
-        bfe.setLocation(new Point(20, 20));
+        bfe.setLocation(new Location(20, 20));
         assertTrue(listener.getIpsObjectParts().contains(bfe));
-        assertEquals(new Point(20, 20), bfe.getLocation());
+        assertEquals(new Location(20, 20), bfe.getLocation());
     }
 
     @Test
     public void testSetSize() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newOpaqueAction(new Point(10, 10));
+        IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
 
         listener.clear();
-        bfe.setSize(new Dimension(20, 20));
+        bfe.setSize(new Size(20, 20));
         assertTrue(listener.getIpsObjectParts().contains(bfe));
         assertTrue(listener.getEventTypes().contains(ContentChangeEvent.TYPE_PROPERTY_CHANGED));
-        assertEquals(new Dimension(20, 20), bfe.getSize());
+        assertEquals(new Size(20, 20), bfe.getSize());
 
         listener.clear();
         bfe.setSize(null);
@@ -223,8 +223,8 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertNull(bfe.getSize());
 
         listener.clear();
-        bfe.setSize(new Dimension(20, 20));
+        bfe.setSize(new Size(20, 20));
         assertTrue(listener.getIpsObjectParts().contains(bfe));
-        assertEquals(new Dimension(20, 20), bfe.getSize());
+        assertEquals(new Size(20, 20), bfe.getSize());
     }
 }

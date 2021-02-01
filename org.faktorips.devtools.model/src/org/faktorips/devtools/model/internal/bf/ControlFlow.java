@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,16 +16,14 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.draw2d.AbsoluteBendpoint;
-import org.eclipse.draw2d.Bendpoint;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
-import org.faktorips.devtools.core.model.bf.IDecisionBFE;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IDecisionBFE;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -43,19 +41,19 @@ public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
 
     private String sourceId;
 
-    private List<Bendpoint> bendpoints = new ArrayList<Bendpoint>();
+    private List<Location> bendpoints = new ArrayList<Location>();
 
     public ControlFlow(IIpsObject parent, String id) {
         super(parent, id);
     }
 
     @Override
-    public List<Bendpoint> getBendpoints() {
+    public List<Location> getBendpoints() {
         return Collections.unmodifiableList(bendpoints);
     }
 
     @Override
-    public void setBendpoint(int index, Bendpoint bendpoint) {
+    public void setBendpoint(int index, Location bendpoint) {
         if (bendpoint == null || bendpoints.contains(bendpoint)) {
             return;
         }
@@ -64,7 +62,7 @@ public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
     }
 
     @Override
-    public void addBendpoint(int index, Bendpoint bendpoint) {
+    public void addBendpoint(int index, Location bendpoint) {
         if (bendpoint == null || bendpoints.contains(bendpoint)) {
             return;
         }
@@ -159,7 +157,7 @@ public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
             Element bendpointEl = (Element)nl.item(i);
             int locationX = Integer.parseInt(bendpointEl.getAttribute("locationX")); //$NON-NLS-1$
             int locationY = Integer.parseInt(bendpointEl.getAttribute("locationY")); //$NON-NLS-1$
-            bendpoints.add(new AbsoluteBendpoint(locationX, locationY));
+            bendpoints.add(new Location(locationX, locationY));
         }
     }
 
@@ -172,11 +170,10 @@ public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
         // TODO test
         element.setAttribute(PROPERTY_CONDITION_VALUE, conditionValue);
         Document doc = element.getOwnerDocument();
-        for (Bendpoint bendpoint : bendpoints) {
+        for (Location bendpoint : bendpoints) {
             Element bendpointEl = doc.createElement("Bendpoint"); //$NON-NLS-1$
-            Point location = bendpoint.getLocation();
-            bendpointEl.setAttribute("locationX", String.valueOf(location.x)); //$NON-NLS-1$
-            bendpointEl.setAttribute("locationY", String.valueOf(location.y)); //$NON-NLS-1$
+            bendpointEl.setAttribute("locationX", String.valueOf(bendpoint.getX())); //$NON-NLS-1$
+            bendpointEl.setAttribute("locationY", String.valueOf(bendpoint.getY())); //$NON-NLS-1$
             element.appendChild(bendpointEl);
         }
     }

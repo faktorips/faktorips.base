@@ -18,12 +18,12 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.bf.commands.ChangeConstraintCommand;
 import org.faktorips.devtools.core.ui.bf.commands.CreateBFElementCommand;
 import org.faktorips.devtools.core.ui.bf.commands.ParameterFigureConstraintCommand;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 
 /**
  * An implementation of {@link XYLayoutEditPolicy} that provides the implementations for creation of

@@ -8,20 +8,20 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.bf;
+package org.faktorips.devtools.model.internal.bf;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -33,11 +33,11 @@ import org.w3c.dom.NodeList;
 
 public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
-    Point location;
+    private Location location;
 
-    BFElementType type;
+    private BFElementType type;
 
-    private Dimension size = new Dimension(100, 60);
+    private Size size = new Size(100, 60);
 
     private List<String> incommingControlFlows = new ArrayList<String>();
 
@@ -149,25 +149,25 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
     }
 
     @Override
-    public Point getLocation() {
+    public Location getLocation() {
         return location;
     }
 
     @Override
-    public void setLocation(Point location) {
-        Point old = this.location;
+    public void setLocation(Location location) {
+        Location old = this.location;
         this.location = location;
         valueChanged(old, location);
     }
 
     @Override
-    public Dimension getSize() {
+    public Size getSize() {
         return size;
     }
 
     @Override
-    public void setSize(Dimension size) {
-        Dimension old = this.size;
+    public void setSize(Size size) {
+        Size old = this.size;
         this.size = size;
         valueChanged(old, size);
     }
@@ -199,14 +199,14 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
             Element posElement = (Element)nl.item(i);
             String xPos = posElement.getAttribute("xlocation"); //$NON-NLS-1$
             String yPos = posElement.getAttribute("ylocation"); //$NON-NLS-1$
-            location = new Point(Integer.parseInt(xPos), Integer.parseInt(yPos));
+            location = new Location(Integer.parseInt(xPos), Integer.parseInt(yPos));
         }
         nl = element.getElementsByTagName("Size"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element posElement = (Element)nl.item(i);
             String width = posElement.getAttribute("width"); //$NON-NLS-1$
             String height = posElement.getAttribute("height"); //$NON-NLS-1$
-            size = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
+            size = new Size(Integer.parseInt(width), Integer.parseInt(height));
         }
         nl = element.getElementsByTagName("ControlFlow"); //$NON-NLS-1$
         incommingControlFlows.clear();
@@ -232,13 +232,13 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
         Document doc = element.getOwnerDocument();
 
         Element locationEl = doc.createElement("Location"); //$NON-NLS-1$
-        locationEl.setAttribute("xlocation", String.valueOf(getLocation().x)); //$NON-NLS-1$
-        locationEl.setAttribute("ylocation", String.valueOf(getLocation().y)); //$NON-NLS-1$
+        locationEl.setAttribute("xlocation", String.valueOf(getLocation().getX())); //$NON-NLS-1$
+        locationEl.setAttribute("ylocation", String.valueOf(getLocation().getY())); //$NON-NLS-1$
         element.appendChild(locationEl);
 
         Element sizeEl = doc.createElement("Size"); //$NON-NLS-1$
-        sizeEl.setAttribute("width", String.valueOf(getSize().width)); //$NON-NLS-1$
-        sizeEl.setAttribute("height", String.valueOf(getSize().height)); //$NON-NLS-1$
+        sizeEl.setAttribute("width", String.valueOf(getSize().getWidth())); //$NON-NLS-1$
+        sizeEl.setAttribute("height", String.valueOf(getSize().getHeight())); //$NON-NLS-1$
         element.appendChild(sizeEl);
 
         for (String controlFlowId : outgoingControlFlows) {

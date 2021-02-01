@@ -8,10 +8,10 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.bf;
+package org.faktorips.devtools.model.bf;
 
-import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.bf.BusinessFunction;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;

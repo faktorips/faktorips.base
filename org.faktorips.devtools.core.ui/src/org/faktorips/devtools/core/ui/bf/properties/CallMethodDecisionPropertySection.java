@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.type.IMethod;
 
 public class CallMethodDecisionPropertySection extends CallMethodPropertySection {

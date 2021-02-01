@@ -105,12 +105,6 @@
    </extension>
 
    <extension
-         point="org.faktorips.devtools.model.ipsobjecttype">
-    	<ipsobjecttype
-            class="org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType">
-		</ipsobjecttype>
-	</extension>
-   <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.faktorips.devtools.model.productcmpt.IProductCmptLink"
