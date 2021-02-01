@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,12 +17,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.util.NestedProjectFileUtil;
 
 public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdapter {
 
@@ -83,7 +83,7 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
             if (file == null) {
                 return null;
             }
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            IIpsElement element = IIpsModel.get().getIpsElement(file);
             if (element == null || !element.exists()) {
                 return null;
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,15 +18,15 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.type.MethodEditDialog;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 
 public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
@@ -105,7 +105,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
             @Override
             public String getText(Object element) {
                 IProductCmptCategory category = (IProductCmptCategory)element;
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(category);
             }
         });
 

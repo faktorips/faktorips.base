@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,10 +22,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
  * Dialog for editing base or specific package names of IPS source folder entries (or global for the

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,39 +11,36 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
-import org.faktorips.devtools.core.internal.model.productcmpt.IDeepCopyOperationFixup;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
+import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
+import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 /**
  * A wizard to create a deep copy from a given product component.
@@ -124,17 +121,8 @@ public class DeepCopyWizard extends ResizableWizard {
 
     private List<IAdditionalDeepCopyWizardPage> getAdditionalPages() {
         if (additionalPages == null) {
-            ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
-                    IpsUIPlugin.PLUGIN_ID);
-            IExtension[] extensions = extensionPoints
-                    .getExtension(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
-            additionalPages = new ArrayList<IAdditionalDeepCopyWizardPage>();
-            for (IExtension extension : extensions) {
-                additionalPages.addAll(ExtensionPoints.createExecutableExtensions(extension,
-                        IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ID_ADDITIONAL_PAGE,
-                        IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
-                        IAdditionalDeepCopyWizardPage.class));
-            }
+            ExtensionPoints extensionPoints = new ExtensionPoints(IpsUIPlugin.PLUGIN_ID);
+            additionalPages = new AdditionalDeepCopyWizardPageExtensions(extensionPoints).get();
         }
         return additionalPages;
     }
@@ -216,11 +204,12 @@ public class DeepCopyWizard extends ResizableWizard {
                     .getCorrespondingResource().getWorkspace().getRoot();
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
 
+                @SuppressWarnings("deprecation")
                 @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InterruptedException {
                     monitor.beginTask("", 2); //$NON-NLS-1$
                     final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
-                            .getHandles(new SubProgressMonitor(monitor, 1), toCopy);
+                            .getHandles(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1), toCopy);
                     DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
@@ -229,7 +218,7 @@ public class DeepCopyWizard extends ResizableWizard {
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
                     dco.setCopyExistingGenerations(presentationModel.isCopyExistingGenerations());
                     configureFixups(dco);
-                    dco.run(new SubProgressMonitor(monitor, 1));
+                    dco.run(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
                     copyResultRoot = dco.getCopiedRoot();
                 }
             };

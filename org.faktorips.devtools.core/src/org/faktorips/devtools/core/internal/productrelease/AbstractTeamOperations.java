@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.RepositoryProvider;
@@ -40,6 +39,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
         this.observableProgressMessages = observableProgressMessages;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
@@ -51,7 +51,8 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
                 return;
             }
             Subscriber subscriber = repositoryProvider.getSubscriber();
-            subscriber.refresh(resources, IResource.DEPTH_ZERO, new SubProgressMonitor(monitor, 1));
+            subscriber.refresh(resources, IResource.DEPTH_ZERO,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
             List<IResource> syncResources = new ArrayList<IResource>();
             for (IResource aResource : resources) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
@@ -78,6 +79,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
     abstract protected void commitFiles(List<IResource> syncResources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isProjectSynchronized(IProject project, IProgressMonitor monitor) {
         try {
@@ -92,9 +94,11 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
             monitor.beginTask(null, 2);
             if (subscriber != null) {
 
-                subscriber.refresh(resources, IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
-                subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet, new SubProgressMonitor(
-                        monitor, 1));
+                subscriber.refresh(resources, IResource.DEPTH_INFINITE,
+                        new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet,
+                        new org.eclipse.core.runtime.SubProgressMonitor(
+                                monitor, 1));
                 final boolean empty = syncInfoSet.isEmpty();
                 if (empty) {
                     observableProgressMessages.info(Messages.ProductReleaseProcessor_status_synchon);

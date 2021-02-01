@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,12 +12,12 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.util.StringUtil;
 
 /**

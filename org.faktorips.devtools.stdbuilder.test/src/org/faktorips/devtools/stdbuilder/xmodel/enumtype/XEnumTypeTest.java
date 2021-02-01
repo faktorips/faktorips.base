@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,12 +15,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.enums.EnumContent;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     public void testGetNewInstanceCodeFragement_extensibleEnum() throws CoreException {
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
-        EnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
+        IEnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, enumContent);
         createEnumValue();
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -71,7 +71,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         return result;
     }
 
-    public final static Decimal sumDecimal(Object[] beans, String getterMethod) {
+    public static final Decimal sumDecimal(Object[] beans, String getterMethod) {
         if (beans == null) {
             return Decimal.NULL;
         }

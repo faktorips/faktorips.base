@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -38,6 +38,7 @@ public class ListUtil {
      * Initializes a list with the given values. Uses the value's type as the list's (generic)
      * element type.
      */
+    @SafeVarargs
     public static final <T> List<T> newList(T firstValue, T... moreValues) {
         List<T> newList = new ArrayList<T>();
         newList.add(firstValue);
@@ -76,6 +77,7 @@ public class ListUtil {
      * 
      * @return A new unmodifiable list containing all values
      */
+    @SafeVarargs
     public static final <T> List<T> unmodifiableList(T... values) {
         return Collections.unmodifiableList(Arrays.asList(values));
     }

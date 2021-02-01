@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
 /**
  * Completion processor for ips packages.

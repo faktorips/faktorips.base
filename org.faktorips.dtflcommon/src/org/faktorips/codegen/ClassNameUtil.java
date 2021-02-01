@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,7 @@ public class ClassNameUtil {
     /**
      * Takes a name like a class name and removes the package information from the beginning.
      */
-    public final static String unqualifiedName(String qualifiedName) {
+    public static final String unqualifiedName(String qualifiedName) {
         int index = qualifiedName.lastIndexOf("."); //$NON-NLS-1$
         if (index == -1) {
             return qualifiedName;
@@ -35,7 +35,7 @@ public class ClassNameUtil {
      * 
      * @throws NullPointerException if unqualifiedName is <code>null</code>.
      */
-    public final static String qualifiedName(String packageName, String unqualifiedName) {
+    public static final String qualifiedName(String packageName, String unqualifiedName) {
         ArgumentCheck.notNull(unqualifiedName);
         if (packageName == null || packageName.length() == 0) {
             return unqualifiedName;
@@ -49,7 +49,7 @@ public class ClassNameUtil {
      * 
      * @throws NullPointerException if the qualifiedClassName is null.
      */
-    public final static String getPackageName(String qualifiedClassName) {
+    public static final String getPackageName(String qualifiedClassName) {
         int index = qualifiedClassName.lastIndexOf("."); //$NON-NLS-1$
         if (index == -1) {
             return ""; //$NON-NLS-1$

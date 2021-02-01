@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import java.util.Collection;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * Abstract implementation of {@link IConditionType} for searching attribute values.

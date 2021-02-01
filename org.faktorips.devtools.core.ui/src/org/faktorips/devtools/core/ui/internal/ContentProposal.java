@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,10 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
- * Default implementation of {@link IContentProposal}, since Eclipse only provides a default
- * implementation in 3.6 and we use 3.5
- * 
- * FIXME in Eclipse 3.6: use org.eclipse.jface.fieldassist.ContentProposal
+ * Prefix-aware implementation of {@link IContentProposal}.
  */
 public class ContentProposal implements IContentProposal {
 
@@ -30,13 +27,17 @@ public class ContentProposal implements IContentProposal {
     private final String prefix;
 
     /**
-     * Creates a {@link IContentProposal} with the given content, label and description and the
+     * Creates an {@link IContentProposal} with the given content, label and description and the
      * cursor position at {@code content.length()}.
      */
     public ContentProposal(final String content, final String label, final String description) {
         this(content, label, description, StringUtils.EMPTY);
     }
 
+    /**
+     * Creates an {@link IContentProposal} with the given content, label and description and the
+     * cursor position at {@code content.length()} and the given prefix.
+     */
     public ContentProposal(final String content, final String label, final String description, final String prefix) {
         this.content = content;
         this.label = label;

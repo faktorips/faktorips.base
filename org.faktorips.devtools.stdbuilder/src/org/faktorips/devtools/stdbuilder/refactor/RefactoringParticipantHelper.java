@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,15 +31,15 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.faktorips.devtools.core.builder.IJavaBuilderSet;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.IJavaBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 
@@ -254,12 +254,8 @@ public abstract class RefactoringParticipantHelper {
         for (IJavaElement originalJavaElement : originalJavaElements) {
             if (originalJavaElement instanceof IField || originalJavaElement instanceof IMethod) {
                 IType type = (IType)originalJavaElement.getParent();
-                List<IMember> members = originalJavaMembersByType.get(type);
-                if (members == null) {
-                    members = new ArrayList<IMember>();
-                }
+                List<IMember> members = originalJavaMembersByType.computeIfAbsent(type, $ -> new ArrayList<IMember>());
                 members.add((IMember)originalJavaElement);
-                originalJavaMembersByType.put(type, members);
             }
         }
     }

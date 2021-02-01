@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder;
 
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 public class ProductBuilderJavaClassNameProvider implements IJavaClassNameProvider {
 

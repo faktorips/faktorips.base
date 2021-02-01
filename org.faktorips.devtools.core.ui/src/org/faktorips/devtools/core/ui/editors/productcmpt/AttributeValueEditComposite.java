@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,16 +19,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.value.IValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.devtools.core.model.value.ValueType;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -41,6 +31,16 @@ import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
 import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
 import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.value.ValueFactory;
+import org.faktorips.devtools.model.value.ValueType;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -126,7 +126,7 @@ public class AttributeValueEditComposite
     }
 
     private EditField<?> createInternationalStringField() {
-        final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport()
+        final Locale localizationLocale = IIpsModel.get().getMultiLanguageSupport()
                 .getLocalizationLocaleOrDefault(getPropertyValue().getIpsProject());
         MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
                 localizationLocale);

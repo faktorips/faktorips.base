@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,10 +22,10 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierProposal;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierParser;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierProposal;
+import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.fl.parser.FlParserConstants;
@@ -190,7 +190,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addFunctionToResult(FlFunction<JavaCodeFragment> function, String prefix) {
         String name = function.getName();
-        StringBuffer displayText = new StringBuffer(name);
+        StringBuilder displayText = new StringBuilder(name);
         displayText.append('(');
         Datatype[] argTypes = function.getArgTypes();
         for (int i = 0; i < argTypes.length; i++) {

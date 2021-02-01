@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,13 +22,13 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewGenerationWizard;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
  * Presents a wizard to the user that allows to create a new {@linkplain IIpsObjectGeneration IPS
@@ -92,7 +92,7 @@ public class CreateNewGenerationAction extends IpsAction {
     private List<ITimedIpsObject> collectTimedIpsObjects(TypedSelection<IAdaptable> typedSelection) {
         List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
         for (IAdaptable selectedElement : typedSelection.getElements()) {
-            IIpsObject ipsObject = (IIpsObject)selectedElement.getAdapter(IIpsObject.class);
+            IIpsObject ipsObject = selectedElement.getAdapter(IIpsObject.class);
             if (ipsObject instanceof ITimedIpsObject) {
                 timedIpsObjects.add((ITimedIpsObject)ipsObject);
             }

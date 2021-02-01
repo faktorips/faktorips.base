@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,9 +18,9 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 public class CopyRuntimeIdHandler extends IpsAbstractHandler {
     @Override
@@ -38,9 +38,9 @@ public class CopyRuntimeIdHandler extends IpsAbstractHandler {
         boolean first = true;
         for (IAdaptable element : typedSelection.getElements()) {
             if (element.getAdapter(IProductCmpt.class) != null) {
-                IProductCmpt productComponent = (IProductCmpt)element.getAdapter(IProductCmpt.class);
+                IProductCmpt productComponent = element.getAdapter(IProductCmpt.class);
                 if (!first) {
-                    runtimeIds.append(System.getProperty("line.separator")); //$NON-NLS-1$
+                    runtimeIds.append(System.lineSeparator());
                 }
                 first = false;
                 runtimeIds.append(productComponent.getRuntimeId());

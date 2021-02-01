@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -28,6 +26,9 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -75,7 +76,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected String buildTitle() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getIpsPart()) + ' ' + getIpsPart().getName();
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getIpsPart()) + ' ' + getIpsPart().getName();
     }
 
     @Override

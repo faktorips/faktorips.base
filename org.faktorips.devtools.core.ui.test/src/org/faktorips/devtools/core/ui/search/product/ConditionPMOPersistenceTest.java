@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,22 +16,21 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ContainsSearchOperatorType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperatorType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationConditionType;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +56,8 @@ public class ConditionPMOPersistenceTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         policyAttribute = (IPolicyCmptTypeAttribute)policyCmptType.newAttribute();

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>org.faktorips.aggregator</artifactId>
-        <version>20.12.0-SNAPSHOT</version>
+        <version>21.6.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -16,11 +16,6 @@
 
     <modules>
         <!-- p2 Repository and product -->
-        <module>luna</module>
-        <module>mars</module>
-        <module>neon</module>
-        <module>oxygen</module>
-        <module>2018-09</module>
         <module>2019-03</module>
         <module>2019-06</module>
         <module>2019-09</module>
@@ -28,6 +23,7 @@
         <module>2020-03</module>
         <module>2020-06</module>
         <module>2020-09</module>
+        <module>2020-12</module>
     </modules>
 
 </project>

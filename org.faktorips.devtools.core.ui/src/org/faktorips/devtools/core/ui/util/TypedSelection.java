@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -123,8 +123,7 @@ public class TypedSelection<T> {
             if (type.isInstance(element)) {
                 elements.add(type.cast(element));
             } else if (element instanceof IAdaptable) {
-                @SuppressWarnings("unchecked")
-                T adapted = (T)((IAdaptable)element).getAdapter(type);
+                T adapted = ((IAdaptable)element).getAdapter(type);
                 if (adapted != null) {
                     elements.add(adapted);
                 } else {

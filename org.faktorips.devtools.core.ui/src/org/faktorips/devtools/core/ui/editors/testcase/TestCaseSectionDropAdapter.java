@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,19 +30,19 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.testcase.TestCase;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
-import org.faktorips.devtools.core.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.testcase.TestCase;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.util.NestedProjectFileUtil;
 
 /**
  * Provides drop support for {@linkplain TestCaseSection}.
@@ -55,8 +55,7 @@ import org.faktorips.devtools.core.util.NestedProjectFileUtil;
  * <p>
  * <strong>Supported operations:</strong>
  * <ul>
- * <li>
- * {@linkplain DND#DROP_MOVE}:
+ * <li>{@linkplain DND#DROP_MOVE}:
  * <ul>
  * <li>The DND operation is set to this value if the drag was initiated from within
  * {@linkplain TestCaseSection} itself.
@@ -65,8 +64,7 @@ import org.faktorips.devtools.core.util.NestedProjectFileUtil;
  * <li>The drop is not possible if no {@linkplain LocalSelectionTransfer} is used, or the selected
  * element is not a test policy component.
  * </ul>
- * <li>
- * {@linkplain DND#DROP_LINK}:
+ * <li>{@linkplain DND#DROP_LINK}:
  * <ul>
  * <li>The DND operation is set to this value if the drag was initiated from any other source than
  * the {@linkplain TestCaseSection} itself.
@@ -208,7 +206,7 @@ class DropToMoveHelper {
                     }
                 }
             };
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
+            IIpsModel.get().runAndQueueChangeEvents(moveRunnable, null);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -424,7 +422,7 @@ class DropToLinkHelper {
     private IProductCmpt getProductCmpt(ISelection selection) {
         TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selection, 1, 1);
         if (typedSelection.isValid()) {
-            return (IProductCmpt)typedSelection.getFirstElement().getAdapter(IProductCmpt.class);
+            return typedSelection.getFirstElement().getAdapter(IProductCmpt.class);
         } else {
             return null;
         }
@@ -432,7 +430,7 @@ class DropToLinkHelper {
 
     private IProductCmpt getProductCmpt(String filename) {
         IFile file = NestedProjectFileUtil.getFile(filename);
-        return (IProductCmpt)file.getAdapter(IProductCmpt.class);
+        return file.getAdapter(IProductCmpt.class);
     }
 
     private TestCaseSection getTestCaseSection() {

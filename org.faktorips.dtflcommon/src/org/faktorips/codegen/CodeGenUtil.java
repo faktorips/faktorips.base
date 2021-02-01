@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,7 @@ import org.faktorips.datatype.PrimitiveIntegerDatatype;
  */
 public class CodeGenUtil {
 
-    public final static JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
+    public static final JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
         if (type instanceof PrimitiveBooleanDatatype) {
             return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)type).toWrapper(expression);
         }

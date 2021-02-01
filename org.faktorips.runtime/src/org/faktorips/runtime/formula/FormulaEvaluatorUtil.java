@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -44,7 +44,8 @@ public enum FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, {@code null} if no such object is found
      *         in the list
      */
-    public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects, String id) {
+    public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects,
+            String id) {
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
@@ -70,7 +71,8 @@ public enum FormulaEvaluatorUtil {
      *         {@link IProductComponent} with the given ID, the list is empty if no such object is
      *         found in the list
      */
-    public static <T extends IModelObject, R extends T> List<? extends R> getListModelObjectById(List<? extends T> modelObjects,
+    public static <T extends IModelObject, R extends T> List<? extends R> getListModelObjectById(
+            List<? extends T> modelObjects,
             String id) {
         List<R> returnList = new ArrayList<R>();
         for (T modelObject : modelObjects) {
@@ -104,6 +106,19 @@ public enum FormulaEvaluatorUtil {
             return castedModelObject;
         }
         return null;
+    }
+
+    /**
+     * Returns the value of the {@code Boolean} object as a boolean primitive. If the {@link Boolean}
+     * object is {@code null}, {@code false} is returned.
+     *
+     * @return the primitive {@code boolean} value of the given {@link Boolean}.
+     */
+    public static boolean toPrimitiveBoolean(Boolean b) {
+        if (b == null) {
+            return false;
+        }
+        return b.booleanValue();
     }
 
     /**

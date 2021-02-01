@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,14 +22,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * The class gives access to the plugin's preferences.
  */
-public class IpsPreferences {
+public class IpsPreferences implements IIpsModelPreferences {
 
     /**
      * Constant identifying the refactoring mode
@@ -105,7 +109,7 @@ public class IpsPreferences {
     public static final String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies the preference for loading and validating {@link TableContents}.
+     * Constant that identifies the preference for loading and validating {@link ITableContents}.
      */
     public static final String AUTO_VALIDATE_TABLES = IpsPlugin.PLUGIN_ID + ".autoValidateTables"; //$NON-NLS-1$
 
@@ -239,14 +243,16 @@ public class IpsPreferences {
     /**
      * Returns the naming convention used in the GUI for product changes over time.
      */
+    @Override
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
         String convention = IpsPlugin.getDefault().getPreferenceStore().getString(CHANGES_OVER_TIME_NAMING_CONCEPT);
-        return IpsPlugin.getDefault().getIpsModel().getChangesOverTimeNamingConvention(convention);
+        return IIpsModel.get().getChangesOverTimeNamingConvention(convention);
     }
 
     /**
      * Returns the string to represent null values to the user.
      */
+    @Override
     public String getNullPresentation() {
         return prefStore.getString(NULL_REPRESENTATION_STRING);
     }
@@ -274,6 +280,7 @@ public class IpsPreferences {
      * 
      * @see #getDatatypeFormattingLocale()
      */
+    @Override
     public DateFormat getDateFormat() {
         return getDateFormat(getDatatypeFormattingLocale());
     }
@@ -310,7 +317,8 @@ public class IpsPreferences {
     /**
      * Returns the value of the enable generating preference.
      */
-    public boolean getEnableGenerating() {
+    @Override
+    public boolean isBuilderEnabled() {
         return prefStore.getBoolean(ENABLE_GENERATING);
     }
 
@@ -323,6 +331,7 @@ public class IpsPreferences {
      * maximum size of the memory allocation pool for the test runner. Will be used to set the Xmx
      * Java virtual machines option for the IPS test runner virtual machine.
      */
+    @Override
     public String getIpsTestRunnerMaxHeapSize() {
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
@@ -433,20 +442,21 @@ public class IpsPreferences {
     }
 
     /**
-     * Returns whether the automatic validation of {@link TableContents} is active (
+     * Returns whether the automatic validation of {@link ITableContents} is active (
      * <code>true</code>) or not. The automatic validation is set to true by default. Turning the
      * automatic table validation off results in faster refresh- and build times. As Errors in
      * tables might not be noticed, the ability to disable the automatic validation should be used
      * carefully. Turning the automatic validation off is useful for example if data in big tables
      * won't change.
      */
+    @Override
     public boolean isAutoValidateTables() {
         return prefStore.getBoolean(AUTO_VALIDATE_TABLES);
     }
 
     /**
-     * Activates (<code>true</code>) or deactivate(<code>false</code>) automatic validation of
-     * {@link TableContents}, according to the given parameter <code>enabled</code>.
+     * Activates (<code>true</code>) or deactivates(<code>false</code>) automatic validation of
+     * {@link ITableContents}, according to the given parameter <code>enabled</code>.
      */
     public void setAutoValidateTables(boolean enabled) {
         prefStore.setValue(AUTO_VALIDATE_TABLES, enabled);
@@ -497,6 +507,7 @@ public class IpsPreferences {
     /**
      * Returns the formatter for Faktor-IPS data types.
      */
+    @Override
     public DatatypeFormatter getDatatypeFormatter() {
         return datatypeFormatter;
     }

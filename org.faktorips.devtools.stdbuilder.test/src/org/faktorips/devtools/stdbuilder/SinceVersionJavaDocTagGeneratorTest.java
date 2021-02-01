@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
@@ -34,7 +33,7 @@ public class SinceVersionJavaDocTagGeneratorTest {
     public void testCreateAnnotation_withSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(true);
         when(modelNode.getSinceVersion()).thenReturn("1.2.3");
-        JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3" + SystemUtils.LINE_SEPARATOR);
+        JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3" + System.lineSeparator());
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);
 
@@ -51,7 +50,7 @@ public class SinceVersionJavaDocTagGeneratorTest {
     @Test
     public void testCreateAnnotation_noSinceVersion() throws Exception {
         when(modelNode.hasSinceVersion()).thenReturn(false);
-        JavaCodeFragment expected = new JavaCodeFragment("@since null" + SystemUtils.LINE_SEPARATOR);
+        JavaCodeFragment expected = new JavaCodeFragment("@since null" + System.lineSeparator());
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);
 

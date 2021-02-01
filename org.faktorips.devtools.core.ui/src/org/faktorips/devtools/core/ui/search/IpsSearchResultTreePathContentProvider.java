@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -26,9 +26,9 @@ import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.search.ui.text.MatchEvent;
 import org.eclipse.search.ui.text.RemoveAllEvent;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * 
@@ -78,18 +78,13 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     }
 
     private void addMatchedElement(IIpsElement element, IIpsElement child) {
-
-        IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.get(element);
-        if (ipsElementSearchTreeNode == null) {
-
-            IIpsElement parent = getParentOfIpsElement(element);
+        IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.computeIfAbsent(element, e -> {
+            IIpsElement parent = getParentOfIpsElement(e);
             if (parent != null) {
-                addMatchedElement(parent, element);
+                addMatchedElement(parent, e);
             }
-
-            ipsElementSearchTreeNode = new IpsElementSearchTreeNode();
-            ipsElementTree.put(element, ipsElementSearchTreeNode);
-        }
+            return new IpsElementSearchTreeNode();
+        });
 
         if (child != null) {
             ipsElementSearchTreeNode.addChild(child);
@@ -238,9 +233,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             add(viewer, parent);
         }
 
-        if (!ipsElementTree.containsKey(element)) {
-            ipsElementTree.put(element, new IpsElementSearchTreeNode());
-        }
+        ipsElementTree.computeIfAbsent(element, $ -> new IpsElementSearchTreeNode());
 
         if (parent != null) {
             ipsElementTree.get(parent).addChild(element);

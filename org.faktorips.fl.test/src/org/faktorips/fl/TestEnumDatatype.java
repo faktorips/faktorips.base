@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,7 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
 
-    public final static EnumDatatype INSTANCE = new TestEnumDatatype();
+    public static final EnumDatatype INSTANCE = new TestEnumDatatype();
 
     private TestEnumDatatype() {
         super();

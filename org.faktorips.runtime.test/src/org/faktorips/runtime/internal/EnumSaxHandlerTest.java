@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -83,6 +84,19 @@ public class EnumSaxHandlerTest {
         } catch (SAXException e) {
             // ignore
         }
+    }
+
+    @Test
+
+    public void testNullContent() throws Exception {
+        is = createInputStream("WithNull.xml");
+        saxParser.parse(is, handler);
+        List<List<Object>> enumValueList = handler.getEnumValueList();
+        assertEquals(1, enumValueList.size());
+        List<Object> values = enumValueList.get(0);
+        assertEquals(2, values.size());
+        assertNull(values.get(0));
+        assertEquals("", values.get(1));
     }
 
     /**

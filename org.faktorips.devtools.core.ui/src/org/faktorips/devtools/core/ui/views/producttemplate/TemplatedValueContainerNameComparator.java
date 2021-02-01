@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /**
  * Comparator that compares {@link ITemplatedValue} objects by the name of the product component of

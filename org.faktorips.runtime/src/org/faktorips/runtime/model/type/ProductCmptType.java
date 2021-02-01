@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -210,10 +211,15 @@ public class ProductCmptType extends Type {
 
     @Override
     public ProductCmptType getSuperType() {
+        return findSuperType().orElse(null);
+    }
+
+    @Override
+    public Optional<ProductCmptType> findSuperType() {
         Class<?> superclass = getJavaClass().getSuperclass();
         return IpsModel.isProductCmptType(superclass)
-                ? IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class))
-                : null;
+                ? Optional.of(IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class)))
+                : Optional.empty();
     }
 
     @Override

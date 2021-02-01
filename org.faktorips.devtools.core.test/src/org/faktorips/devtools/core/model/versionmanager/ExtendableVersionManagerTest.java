@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,8 +21,9 @@ import static org.mockito.Mockito.withSettings;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -63,7 +64,7 @@ public class ExtendableVersionManagerTest {
     public void testGetMigrationOperations() throws Exception {
         mockMigrationOperations();
 
-        IpsProject ipsProject = mock(IpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        IIpsProject ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
 
         when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber(MY_FEATURE_ID)).thenReturn(
                 currentVersion.toString());
@@ -109,7 +110,8 @@ public class ExtendableVersionManagerTest {
         registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
                 new IIpsProjectMigrationOperationFactory() {
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(
+                            IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation1;
                     }
@@ -118,7 +120,8 @@ public class ExtendableVersionManagerTest {
                 new IIpsProjectMigrationOperationFactory() {
 
                     @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(
+                            IIpsProject ipsProject,
                             String featureId) {
                         return ipsProjectMigrationOperation2;
                     }

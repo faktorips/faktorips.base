@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,16 +21,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperator;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperatorType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperator;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

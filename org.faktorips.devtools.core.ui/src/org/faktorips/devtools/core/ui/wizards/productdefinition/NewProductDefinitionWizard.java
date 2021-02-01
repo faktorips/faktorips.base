@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,16 +24,16 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.message.MessageList;
 
 public abstract class NewProductDefinitionWizard extends ResizableWizard implements INewWizard {
@@ -75,7 +75,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
             Object element = selection.getFirstElement();
             if (element instanceof IAdaptable) {
                 IAdaptable adaptableObject = (IAdaptable)element;
-                IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
+                IIpsElement ipsElement = adaptableObject.getAdapter(IIpsElement.class);
                 if (ipsElement instanceof IIpsPackageFragmentRoot) {
                     IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
                     initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
@@ -98,11 +98,11 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     }
 
     private void initFallback(IAdaptable adaptableObject) {
-        IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+        IResource resource = adaptableObject.getAdapter(IResource.class);
         if (resource != null) {
             IProject project = resource.getProject();
             if (project != null) {
-                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
                 if (ipsProject.exists()) {
                     IIpsPackageFragmentRoot root = ipsProject.getSourceIpsPackageFragmentRoots()[0];
                     initDefaults(root.getDefaultIpsPackageFragment(), null);
@@ -134,7 +134,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     @Override
     public boolean performFinish() {
         setNeedsProgressMonitor(true);
-        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+        IIpsModel.get().runAndQueueChangeEvents(new IWorkspaceRunnable() {
 
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {

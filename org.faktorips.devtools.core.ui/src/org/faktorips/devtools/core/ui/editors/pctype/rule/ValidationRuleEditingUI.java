@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -32,13 +32,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -46,12 +39,20 @@ import org.faktorips.devtools.core.ui.binding.InternationalStringPresentationObj
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.pctype.AttributeEditDialog;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.MessageSeverity;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 
 /**
  * Helper class to create the UI controls needed to define/edit an {@link IValidationRule}. An
@@ -74,7 +75,7 @@ public class ValidationRuleEditingUI {
     private CharCountPainter charCountPainter;
     private TextField nameField;
     private TextField msgCodeField;
-    private EnumValueField msgSeverityField;
+    private EnumField<MessageSeverity> msgSeverityField;
     private TextField msgTextField;
     private Checkbox changingOverTimeBox;
     private Checkbox configurableByProductBox;
@@ -116,7 +117,7 @@ public class ValidationRuleEditingUI {
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelCode);
         Text codeText = uiToolkit.createText(msgComposite);
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelSeverity);
-        Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
+        Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.class);
 
         // text group
         Group textGroup = uiToolkit.createGroup(msgComposite, Messages.RuleEditDialog_groupText);
@@ -153,7 +154,7 @@ public class ValidationRuleEditingUI {
 
         msgCodeField = new TextField(codeText);
         msgTextField = new TextField(msgText);
-        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
+        msgSeverityField = new EnumField<>(severityCombo, MessageSeverity.class);
 
         updateCharCount();
         uiInitialized = true;
@@ -200,7 +201,7 @@ public class ValidationRuleEditingUI {
             @Override
             public String getText(Object element) {
                 IProductCmptCategory category = (IProductCmptCategory)element;
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(category);
             }
         });
     }
@@ -403,7 +404,7 @@ public class ValidationRuleEditingUI {
         }
 
         private boolean isSeverityInMsgCode(String[] splittedMsgCode) {
-            return splittedMsgCode[0].equals(validationRule.getMessageSeverity().getName());
+            return splittedMsgCode[0].equals(validationRule.getMessageSeverity().getId());
         }
 
         private boolean isRuleNameInMsgCode(String[] splittedMsgCode) {
@@ -416,7 +417,7 @@ public class ValidationRuleEditingUI {
         }
 
         private void updateMessageCode() {
-            String generatedMsgCode = validationRule.getMessageSeverity().getName() + DELIMITER
+            String generatedMsgCode = validationRule.getMessageSeverity().getId() + DELIMITER
                     + validationRule.getIpsObject().getQualifiedNameType().getUnqualifiedName() + DELIMITER
                     + validationRule.getName();
             validationRule.setMessageCode(generatedMsgCode);

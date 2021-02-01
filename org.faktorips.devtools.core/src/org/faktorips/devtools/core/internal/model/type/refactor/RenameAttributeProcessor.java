@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,26 +17,26 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -182,8 +182,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <code>IAttribute</code> in <code>IAttributeValue</code>s of referencing
-     * <code>IProductCmpt</code>s.
+     * Updates all references to the <code>IAttribute</code> in <code>IAttributeValue</code>s of
+     * referencing <code>IProductCmpt</code>s.
      * <p>
      * Only applicable to <code>IProductCmptTypeAttribute</code>s.
      */
@@ -236,8 +236,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <code>IPolicyCmptTypeAttribute</code> in <code>IConfigElement</code>s
-     * of referencing <code>IProductCmpt</code>s.
+     * Updates all references to the <code>IPolicyCmptTypeAttribute</code> in
+     * <code>IConfigElement</code>s of referencing <code>IProductCmpt</code>s.
      * <p>
      * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
      */
@@ -273,7 +273,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <code>IAttribute</code> in referencing <code>ITestCaseType</code>s.
+     * Updates all references to the <code>IAttribute</code> in referencing
+     * <code>ITestCaseType</code>s.
      * <p>
      * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
      */
@@ -297,8 +298,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Changes the name of the <code>IAttribute</code> to be refactored to the new name provided by the
-     * user.
+     * Changes the name of the <code>IAttribute</code> to be refactored to the new name provided by
+     * the user.
      */
     private void updateAttributeName() {
         getAttribute().setName(getNewName());

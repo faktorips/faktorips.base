@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,10 +30,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -66,63 +64,57 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.Util;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
-import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.enums.EnumContent;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.internal.model.testcase.TestCase;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
+import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
+import org.faktorips.devtools.model.internal.enums.EnumContent;
+import org.faktorips.devtools.model.internal.enums.EnumType;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.internal.tablecontents.TableContents;
+import org.faktorips.devtools.model.internal.tablestructure.TableStructure;
+import org.faktorips.devtools.model.internal.testcase.TestCase;
+import org.faktorips.devtools.model.internal.testcasetype.TestCaseType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.util.BeanUtil;
+import org.faktorips.devtools.model.util.IpsProjectUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -150,6 +142,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected static final String DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS = "formulas";
 
     private final TestChangeListener contentsChangeListener;
+    private TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensionsViaEclipsePlugins;
 
     public AbstractIpsPluginTest() {
         super();
@@ -157,11 +150,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     @Before
+    @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
-        IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
-        ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
-        IpsPlugin.getDefault()
-                .setFeatureVersionManagers(new IIpsFeatureVersionManager[] { new TestIpsFeatureVersionManager() });
+        IpsLog.setSuppressLoggingDuringTest(false);
+        IpsModel.get().stopListeningToResourceChanges();
+        testIpsModelExtensionsViaEclipsePlugins = new TestIpsModelExtensionsViaEclipsePlugins();
+        testIpsModelExtensionsViaEclipsePlugins.setFeatureVersionManagers(new TestIpsFeatureVersionManager());
         setAutoBuild(false);
 
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
@@ -174,7 +168,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                     System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
                 }
                 // also starts the listening process
-                IpsPlugin.getDefault().reinitModel();
+                IpsModel.reInit();
             }
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -185,8 +179,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     @After
     public void tearDown() throws Exception {
-        IpsPlugin.getDefault().setFeatureVersionManagers(null);
-        IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
+        testIpsModelExtensionsViaEclipsePlugins.close();
+        IpsLog.setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {
             deleteProject(project);
@@ -219,7 +213,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected void suppressLoggingDuringExecutionOfThisTestCase() {
-        IpsPlugin.getDefault().setSuppressLoggingDuringTest(true);
+        IpsLog.setSuppressLoggingDuringTest(true);
     }
 
     protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws Exception {
@@ -295,8 +289,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Returns an {@linkplain IpsProjectBuilder} that allows easy creation of {@linkplain IpsProject
-     * IPS Projects}.
+     * Returns an {@linkplain IpsProjectBuilder} that allows easy creation of
+     * {@linkplain IIpsProject IPS Projects}.
      */
     protected IpsProjectBuilder newIpsProjectBuilder() {
         return new IpsProjectBuilder(this);
@@ -330,7 +324,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected IJavaProject addJavaCapabilities(IProject project) throws CoreException {
         IJavaProject javaProject = JavaCore.create(project);
         // add Java nature
-        Util.addNature(project, JavaCore.NATURE_ID);
+        IpsProjectUtil.addNature(project, JavaCore.NATURE_ID);
         javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
         // create bin folder and set as output folder.
         IFolder binFolder = project.getFolder("bin");
@@ -365,10 +359,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected void addIpsCapabilities(IProject project) throws CoreException {
-        Util.addNature(project, IIpsProject.NATURE_ID);
+        IpsProjectUtil.addNature(project, IIpsProject.NATURE_ID);
         IFolder rootFolder = project.getFolder("productdef");
         rootFolder.create(true, true, null);
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(project.getName());
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.setOutputDefinedPerSrcFolder(true);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(rootFolder);
@@ -392,7 +386,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.STRING.getName(),
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
-        String version = Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version");
+        String version = Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version");
         properties.setMinRequiredVersionNumber("org.faktorips.feature", version); //$NON-NLS-1$
         ipsProject.setProperties(properties);
     }
@@ -409,7 +403,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         properties.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
 
         // Add the new builder set to the builder set infos of the IPS model
-        IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+        IpsModel ipsModel = (IpsModel)IIpsModel.get();
         IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
         List<IIpsArtefactBuilderSetInfo> newBuilderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>(
                 builderSetInfos.length + 1);
@@ -1148,22 +1142,22 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * must have the following methods:
      * </p>
      * <ol>
-     * <li>public final static &lt;EnumValue &gt; getAllValues()</li>
+     * <li>public static final &lt;EnumValue &gt; getAllValues()</li>
      * <li>public String getId()</li>
      * <li>public String getName()</li>
      * <li>public boolean isValueOf(String)</li>
      * <li>public String toString(), must return the id of the enum value</li>
-     * <li>public final static &lt;EnumValue &gt; valueOf(String), the id is provided to this method
+     * <li>public static final &lt;EnumValue &gt; valueOf(String), the id is provided to this method
      * and an enum values is supposed to be returned by this method</li>
      * </ol>
      */
-    protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project, Class<?>[] adaptedClass)
+    protected IDynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project, Class<?>[] adaptedClass)
             throws CoreException, IOException {
 
-        ArrayList<DynamicValueDatatype> dataTypes = new ArrayList<DynamicValueDatatype>(adaptedClass.length);
+        ArrayList<IDynamicValueDatatype> dataTypes = new ArrayList<>(adaptedClass.length);
         IIpsProjectProperties properties = project.getProperties();
-        DynamicValueDatatype[] definedDatatypes = properties.getDefinedValueDatatypes();
-        for (DynamicValueDatatype definedDatatype : definedDatatypes) {
+        IDynamicValueDatatype[] definedDatatypes = properties.getDefinedValueDatatypes();
+        for (IDynamicValueDatatype definedDatatype : definedDatatypes) {
             dataTypes.add(definedDatatype);
         }
 
@@ -1282,8 +1276,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
     }
 
-    protected IpsModel getIpsModel() {
-        return (IpsModel)IpsPlugin.getDefault().getIpsModel();
+    protected IIpsModel getIpsModel() {
+        return IIpsModel.get();
     }
 
     protected void testPropertyAccessReadWrite(Class<?> clazz, String propertyName) {
@@ -1333,7 +1327,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Create the sort order file for {@link IpsPackageFragment}s from a List of Strings.
+     * Create the sort order file for {@link IIpsPackageFragment}s from a List of Strings.
      * 
      * @param folder Handle to the parent folder (IpsPackageFragment or IpsPackageFragmentRoot)
      * @param strings IpsPackageFragment names in sort order followed by IpsSrcFile names in order.
@@ -1347,7 +1341,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
 
         String print = "";
-        String lineSeparator = StringUtil.getSystemLineSeparator();
+        String lineSeparator = System.lineSeparator();
 
         print = print.concat("# comment" + lineSeparator);
 
@@ -1384,121 +1378,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         if (!file.exists()) {
             file.create(new ByteArrayInputStream(content.getBytes()), true, null);
         }
-    }
-
-    /**
-     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsObjectPartContainer}
-     * and provided new name.
-     */
-    protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName) throws CoreException {
-
-        return performRenameRefactoring(ipsObjectPartContainer, newName, null, false);
-    }
-
-    /**
-     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsPackageFragment} and
-     * provided new name.
-     */
-    protected final RefactoringStatus performRenameRefactoring(IIpsPackageFragment ipsPackageFragment, String newName)
-            throws CoreException {
-        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createRenameRefactoring(ipsPackageFragment, newName, null, false);
-
-        return performRefactoring(ipsRenameRefactoring);
-    }
-
-    /**
-     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IProductCmpt} and provided
-     * new name, thereby allowing to adapt the runtime id.
-     */
-    protected final RefactoringStatus performRenameRefactoring(IProductCmpt productCmpt,
-            String newName,
-            boolean adaptRuntimeId) throws CoreException {
-
-        return performRenameRefactoring(productCmpt, newName, null, adaptRuntimeId);
-    }
-
-    /**
-     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsObjectPartContainer},
-     * provided new name and provided new plural name.
-     */
-    protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName,
-            String newPluralName) throws CoreException {
-
-        return performRenameRefactoring(ipsObjectPartContainer, newName, newPluralName, false);
-    }
-
-    private RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName,
-            String newPluralName,
-            boolean adaptRuntimeId) throws CoreException {
-
-        printValidationResult(ipsObjectPartContainer);
-
-        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createRenameRefactoring(ipsObjectPartContainer, newName, newPluralName, adaptRuntimeId);
-
-        return performRefactoring(ipsRenameRefactoring);
-    }
-
-    /**
-     * Performs the Faktor-IPS 'Pull Up' refactoring for the given {@link IIpsObjectPart} and target
-     * {@link IIpsObjectPartContainer}.
-     */
-    protected final RefactoringStatus performPullUpRefactoring(IIpsObjectPart ipsObjectPart,
-            IIpsObjectPartContainer targetIpsObjectPartContainer) throws CoreException {
-
-        printValidationResult(ipsObjectPart);
-
-        IIpsRefactoring ipsPullUpRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createPullUpRefactoring(ipsObjectPart, targetIpsObjectPartContainer);
-
-        return performRefactoring(ipsPullUpRefactoring);
-    }
-
-    /**
-     * Performs the Faktor-IPS 'Move' refactoring for the given {@link IIpsObject} and provided
-     * target {@link IIpsPackageFragment}.
-     */
-    protected final RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
-            IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
-
-        printValidationResult(ipsObject);
-
-        IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
-                targetIpsPackageFragment);
-
-        return performRefactoring(ipsMoveRefactoring);
-    }
-
-    /**
-     * Performs a composite Faktor-IPS 'Move' refactoring for the given {@link IIpsObject}s and
-     * provided target {@link IIpsPackageFragment}.
-     */
-    protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
-            IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
-
-        Set<IIpsElement> ipsElemets = new LinkedHashSet<IIpsElement>();
-        for (IIpsObject ipsObject : ipsObjects) {
-            printValidationResult(ipsObject);
-            ipsObject.getIpsSrcFile().save(true, null);
-            ipsElemets.add(ipsObject);
-        }
-
-        IIpsRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createCompositeMoveRefactoring(ipsElemets, targetIpsPackageFragment);
-
-        return performRefactoring(ipsCompositeMoveRefactoring);
-    }
-
-    private RefactoringStatus performRefactoring(IIpsRefactoring ipsRefactoring) throws CoreException {
-        PerformRefactoringOperation operation = new PerformRefactoringOperation(ipsRefactoring.toLtkRefactoring(),
-                CheckConditionsOperation.ALL_CONDITIONS);
-        ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
-        RefactoringStatus conditionStatus = operation.getConditionStatus();
-        return conditionStatus;
     }
 
     /**

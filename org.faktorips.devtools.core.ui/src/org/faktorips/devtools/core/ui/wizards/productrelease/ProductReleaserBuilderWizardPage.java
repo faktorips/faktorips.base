@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -41,14 +41,15 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IVersionFormat;
 
 public class ProductReleaserBuilderWizardPage extends WizardPage {
 
@@ -162,7 +163,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
 
         IIpsProject[] projects = new IIpsProject[0];
         try {
-            projects = IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
+            projects = IIpsModel.get().getIpsProductDefinitionProjects();
             ArrayList<IIpsProject> sortedProjectList = new ArrayList<IIpsProject>(Arrays.asList(projects));
             Collections.sort(sortedProjectList, new Comparator<IIpsProject>() {
 

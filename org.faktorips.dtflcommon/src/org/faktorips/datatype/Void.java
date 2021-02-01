@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,7 @@
 
 package org.faktorips.datatype;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
 
 /**
  * The datatype void representing <code>java.lang.Void</code>.
@@ -97,7 +97,7 @@ public class Void extends AbstractDatatype implements ValueDatatype {
 
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
-        return ObjectUtils.equals(valueA, valueB);
+        return Objects.equals(valueA, valueB);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.functions;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -43,8 +43,8 @@ public class WholeNumber extends AbstractFlFunction {
         fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(argResults[0].getCodeFragment());
         fragment.append(".setScale(0, "); //$NON-NLS-1$
-        fragment.appendClassName(BigDecimal.class);
-        fragment.append(".ROUND_DOWN).intValue())"); //$NON-NLS-1$
+        fragment.appendClassName(RoundingMode.class);
+        fragment.append(".DOWN).intValue())"); //$NON-NLS-1$
         return new CompilationResultImpl(fragment, Datatype.INTEGER);
     }
 

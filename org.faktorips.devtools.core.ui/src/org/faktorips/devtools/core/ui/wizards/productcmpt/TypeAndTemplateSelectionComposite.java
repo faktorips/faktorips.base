@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -36,11 +36,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.StyledTextUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -53,6 +48,11 @@ import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.Messages;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFilter;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
  * This type selection composite contains of two columns. On the left hand you see a list of types
@@ -298,11 +298,11 @@ public class TypeAndTemplateSelectionComposite extends Composite {
             String text = null;
             if (element instanceof IDescribedElement) {
                 IDescribedElement type = (IDescribedElement)element;
-                text = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(type);
+                text = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(type);
             } else if (element instanceof ProductCmptViewItem) {
                 IProductCmpt productCmpt = ((ProductCmptViewItem)element).getProductCmpt();
                 if (productCmpt != null) {
-                    text = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(productCmpt);
+                    text = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(productCmpt);
                 }
             } else {
                 text = super.getToolTipText(element);
@@ -422,7 +422,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // */
     // public void appendLinePlain(String text) {
     // if (textWidget.getCharCount() > 0) {
-    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // textWidget.append(System.lineSeparator());
     // }
     // appendPlain(text);
     // }
@@ -439,7 +439,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // */
     // public void appendLineStyled(String text, int fontStyle) {
     // if (textWidget.getCharCount() > 0) {
-    // textWidget.append(SystemUtils.LINE_SEPARATOR);
+    // textWidget.append(System.lineSeparator());
     // }
     // appendStyled(text, fontStyle);
     // }

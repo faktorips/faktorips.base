@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,18 +16,18 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.DelegatingValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.DelegatingValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -90,23 +90,22 @@ public class AttributeValueFormatter {
         if (valueHolder instanceof MultiValueHolder) {
             MultiValueHolder multiHolder = (MultiValueHolder)valueHolder;
             List<String> stringValues = new ArrayList<String>();
-            for (SingleValueHolder holder : multiHolder.getValue()) {
+            for (ISingleValueHolder holder : multiHolder.getValue()) {
                 String formattedValue = getFormattedSingleValue(datatypeFormatter, holder);
                 stringValues.add(formattedValue);
             }
             return convertToString(stringValues);
-        } else if (valueHolder instanceof SingleValueHolder) {
-            return getFormattedSingleValue(datatypeFormatter, (SingleValueHolder)valueHolder);
+        } else if (valueHolder instanceof ISingleValueHolder) {
+            return getFormattedSingleValue(datatypeFormatter, (ISingleValueHolder)valueHolder);
         } else {
             throw new IllegalStateException("Illegal value holder " + valueHolder); //$NON-NLS-1$
         }
     }
 
-    private String getFormattedSingleValue(UIDatatypeFormatter datatypeFormatter, SingleValueHolder holder) {
+    private String getFormattedSingleValue(UIDatatypeFormatter datatypeFormatter, ISingleValueHolder holder) {
         String stringValue;
         if (holder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-            LocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IpsPlugin
-                    .getMultiLanguageSupport().getLocalizationLocaleOrDefault(holder.getIpsProject()));
+            LocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IIpsModel.get().getMultiLanguageSupport().getLocalizationLocaleOrDefault(holder.getIpsProject()));
             stringValue = locString.getValue();
         } else {
             stringValue = holder.getStringValue();

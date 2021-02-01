@@ -27,7 +27,7 @@ class PolicyCmptInterfaceTmpl {
                     /**
                     * @generated
                     */
-                    public final static «policyBuilderModelNode.factoryImplClassName» NEW = new «policyBuilderModelNode.factoryImplClassName»();
+                    public static final «policyBuilderModelNode.factoryImplClassName» NEW = new «policyBuilderModelNode.factoryImplClassName»();
                 «ENDIF»
 
                 «FOR it : associations» «constants» «ENDFOR»

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,10 +16,10 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +32,7 @@ public class StructuredSelectionHelperTest extends AbstractIpsPluginTest {
     @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         IIpsProject ipsProject = newIpsProject("TestProject");
         prodType = newProductCmptType(ipsProject, "TestProdCmptType");
         polType = newPolicyCmptType(ipsProject, "TestPolicyCmptType");

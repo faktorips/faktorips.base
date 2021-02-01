@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,11 +17,11 @@ package org.faktorips.datatype;
  */
 public class TestValueClass {
 
-    public final static Integer getInteger(String s) {
+    public static final Integer getInteger(String s) {
         return Integer.valueOf(s);
     }
 
-    public final static boolean isInteger(String s) {
+    public static final boolean isInteger(String s) {
         try {
             Integer.valueOf(s);
             return true;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.junit.Test;
 
 public class ModelSearchPresentationModelTest {

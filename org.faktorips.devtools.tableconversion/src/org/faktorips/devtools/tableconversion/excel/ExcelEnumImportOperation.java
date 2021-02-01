@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,18 +24,18 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablecontents.Messages;
-import org.faktorips.devtools.core.model.value.IValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.tablecontents.Messages;
+import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.value.ValueFactory;
+import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.LocalizedString;
@@ -159,7 +159,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             enumAttribute.setValue(ValueFactory.createStringValue(value));
         } else if (enumAttribute.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
             IValue<?> internationalStringValue = enumAttribute.getValue();
-            InternationalString content = (InternationalString)internationalStringValue.getContent();
+            IInternationalString content = (IInternationalString)internationalStringValue.getContent();
             content.add(new LocalizedString(getDefaultLanguage(enumAttribute.getIpsProject()), value));
         }
     }

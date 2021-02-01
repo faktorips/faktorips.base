@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,15 +17,15 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.LocalizedTextHelper;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -67,42 +67,7 @@ public abstract class JavaGeneratorForIpsPart {
     public void appendJavaDocAndOverrideAnnotation(JavaCodeFragmentBuilder builder, Overrides override) {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        appendOverrideAnnotation(builder, getIpsPart().getIpsProject(), override);
-    }
-
-    /**
-     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
-     * level is greater than 1.5. It takes into account the fine differences regarding the
-     * <code>Override</code> annotation for compliance level 1.5 and higher.
-     * 
-     * @param fragmentBuilder the annotation is added to this {@link JavaCodeFragmentBuilder}
-     * @param override to be able to decide if an Override annotation needs to be generated it must
-     *            be known if the the generated method is an implementation of an interface method
-     *            or an override of a super class method.
-     */
-    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
-            IIpsProject ipsProject,
-            Overrides override) {
-
-        boolean interfaceMethodImplementation = override == Overrides.INTERFACE_METHOD;
-        JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, ipsProject, interfaceMethodImplementation);
-    }
-
-    /**
-     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
-     * level is greater than 1.5. It takes into account the fine differences regarding the
-     * <code>Override</code> annotation for compliance level 1.5 and higher.
-     * 
-     * @param fragmentBuilder the annotation is added to this {@link JavaCodeFragmentBuilder}
-     * @param interfaceMethodImplementation to be able to decide if an Override annotation needs to
-     *            be generated it must be known if the the generated method is an implementation of
-     *            an interface method or an override of a super class method.
-     */
-    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
-            IIpsProject iIpsProject,
-            boolean interfaceMethodImplementation) {
-
-        JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
+        builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
     }
 
     /**
@@ -136,7 +101,7 @@ public abstract class JavaGeneratorForIpsPart {
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(describedElement);
+                description = IIpsModel.get().getMultiLanguageSupport().getDefaultDescription(describedElement);
             }
         }
         return description;
@@ -244,7 +209,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     public String getJavaDocCommentForOverriddenMethod() {
-        return JavaGeneratorHelper.getJavaDocCommentForOverriddenMethod();
+        return JavaSourceFileBuilder.INHERIT_DOC;
     }
 
     /**
@@ -291,13 +256,14 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     /**
-     * Collects all <code>IJavaElement</code>s generated for the published interface by this generator
-     * into the provided list.
+     * Collects all <code>IJavaElement</code>s generated for the published interface by this
+     * generator into the provided list.
      * <p>
      * Subclasses must add the <code>IJavaElement</code>s they generate for the given
      * <code>IIpsElement</code> to the provided list (collecting parameter pattern).
      * <p>
-     * Only <code>IJavaElement</code>s generated for the published interface shall be added to the list.
+     * Only <code>IJavaElement</code>s generated for the published interface shall be added to the
+     * list.
      * 
      * @see #getGeneratedJavaElementsForImplementation(List, IType, IIpsElement)
      * 
@@ -311,8 +277,8 @@ public abstract class JavaGeneratorForIpsPart {
             IIpsElement ipsElement);
 
     /**
-     * Collects all <code>IJavaElement</code>s generated for the implementation by this generator into
-     * the provided list.
+     * Collects all <code>IJavaElement</code>s generated for the implementation by this generator
+     * into the provided list.
      * <p>
      * Subclasses must add the <code>IJavaElement</code>s they generate for the given
      * <code>IIpsElement</code> to the provided list (collecting parameter pattern).

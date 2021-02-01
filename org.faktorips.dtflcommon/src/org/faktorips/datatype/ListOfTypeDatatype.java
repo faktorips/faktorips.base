@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,8 @@
 
 package org.faktorips.datatype;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.util.ArgumentCheck;
 
@@ -61,11 +62,11 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer("List"); //$NON-NLS-1$
-        buffer.append('<');
-        buffer.append(basicType.getName());
-        buffer.append('>');
-        return buffer.toString();
+        StringBuilder sb = new StringBuilder("List"); //$NON-NLS-1$
+        sb.append('<');
+        sb.append(basicType.getName());
+        sb.append('>');
+        return sb.toString();
     }
 
     @Override
@@ -164,7 +165,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         if (basicType.isValueDatatype()) {
             return ((ValueDatatype)basicType).areValuesEqual(valueA, valueB);
         }
-        return ObjectUtils.equals(valueA, valueB);
+        return Objects.equals(valueA, valueB);
     }
 
 }

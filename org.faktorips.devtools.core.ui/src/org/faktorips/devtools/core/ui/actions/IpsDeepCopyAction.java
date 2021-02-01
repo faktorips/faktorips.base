@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,15 +23,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
 
 /**
  * Performs a deep copy (copy of all objects and all related objects of this one and all related of
@@ -76,7 +76,8 @@ public class IpsDeepCopyAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        final TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selection, 1);
+        final TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selection,
+                1);
 
         BusyIndicator.showWhile(shell.getDisplay(), new Runnable() {
 
@@ -84,12 +85,13 @@ public class IpsDeepCopyAction extends IpsAction {
             public void run() {
                 IProductCmptGeneration generation = null;
                 if (typedSelection.getElement().getAdapter(IProductCmptGeneration.class) != null) {
-                    generation = (IProductCmptGeneration)typedSelection.getElement().getAdapter(
+                    generation = typedSelection.getElement().getAdapter(
                             IProductCmptGeneration.class);
                 } else if (typedSelection.getElement().getAdapter(IProductCmpt.class) != null) {
-                    IProductCmpt root = (IProductCmpt)typedSelection.getElement().getAdapter(IProductCmpt.class);
+                    IProductCmpt root = typedSelection.getElement().getAdapter(IProductCmpt.class);
                     IIpsObjectGeneration[] generationsOrderedByValidDate = root.getGenerationsOrderedByValidDate();
-                    generation = (IProductCmptGeneration)generationsOrderedByValidDate[generationsOrderedByValidDate.length - 1];
+                    generation = (IProductCmptGeneration)generationsOrderedByValidDate[generationsOrderedByValidDate.length
+                            - 1];
                 }
                 if (generation != null) {
                     runCopyWizard(generation);

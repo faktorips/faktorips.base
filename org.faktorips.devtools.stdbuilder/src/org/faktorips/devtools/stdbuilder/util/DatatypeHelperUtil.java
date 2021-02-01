@@ -1,7 +1,7 @@
 package org.faktorips.devtools.stdbuilder.util;
 
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.util;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.DatatypeUtil;
+import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.runtime.IRuntimeRepository;
 

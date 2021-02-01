@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,10 +25,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
-import org.faktorips.devtools.core.internal.model.DefaultVersion;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.internal.DefaultVersion;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyRuntimeObject;
 import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
 import org.faktorips.runtime.IProductComponent;

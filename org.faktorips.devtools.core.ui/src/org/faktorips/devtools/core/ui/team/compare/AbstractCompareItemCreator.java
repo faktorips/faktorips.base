@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,9 +24,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileImmutable;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Creates a structure/tree of AbstractCompareItems that is used for comparing IpsObjects.
@@ -62,9 +63,9 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
     public IStructureComparator getStructure(Object input) {
         if (input instanceof IAdaptable) {
             IAdaptable adaptableInput = (IAdaptable)input;
-            IResource resource = (IResource)adaptableInput.getAdapter(IResource.class);
+            IResource resource = adaptableInput.getAdapter(IResource.class);
             if (resource != null) {
-                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+                IIpsElement element = IIpsModel.get().getIpsElement(resource);
                 if (element instanceof IIpsSrcFile) {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
@@ -72,7 +73,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
         }
         if (input instanceof ResourceNode) {
             IResource file = ((ResourceNode)input).getResource();
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            IIpsElement element = IIpsModel.get().getIpsElement(file);
             if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }
@@ -90,14 +91,14 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
             ISynchronizeModelElement modelElement = (ISynchronizeModelElement)input;
             IResource res = modelElement.getResource();
             if (res instanceof IFile) {
-                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
+                IIpsElement element = IIpsModel.get().getIpsElement(res);
                 if (element instanceof IIpsSrcFile) {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
             }
         } else if (input instanceof HistoryItem) {
             IResource res = ((HistoryItem)input).getResource();
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
+            IIpsElement element = IIpsModel.get().getIpsElement(res);
             if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }

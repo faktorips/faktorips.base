@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
@@ -208,11 +209,7 @@ public enum ValueToXmlHelper {
      * @param tagName The name of the child
      */
     public static String getValueFromElement(Element el, String tagName) {
-        Element valueEl = XmlUtil.getFirstElement(el, tagName);
-        if (valueEl == null) {
-            return null;
-        }
-        return getValueFromElement(valueEl);
+        return XmlUtil.findFirstElement(el, tagName).map(ValueToXmlHelper::getValueFromElement).orElse(null);
     }
 
     /**
@@ -272,80 +269,66 @@ public enum ValueToXmlHelper {
     }
 
     public static Range getRangeFromElement(Element el, String tagName) {
-        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
-
-        if (valueSetEl == null) {
-            return null;
-        }
-        Element rangeEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_RANGE);
-        if (rangeEl == null) {
-            return null;
-        }
-        boolean empty = Boolean.valueOf(rangeEl.getAttribute(XML_ATTRIBUTE_EMPTY)).booleanValue();
-        if (empty) {
+        Optional<Element> valueSetEl = XmlUtil.findFirstElement(el, tagName);
+        Optional<Element> rangeEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_RANGE));
+        if (rangeEl.filter(r -> isAttributeTrue(r, XML_ATTRIBUTE_EMPTY)).isPresent()) {
             return new Range();
-        }
-        boolean containsNull = Boolean.valueOf(rangeEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
-        String lowerBound = getValueFromElement(rangeEl, XML_TAG_LOWER_BOUND);
-        String upperBound = getValueFromElement(rangeEl, XML_TAG_UPPER_BOUND);
-        String step = getValueFromElement(rangeEl, XML_TAG_STEP);
+        } else {
+            return rangeEl.map(r -> {
+                boolean containsNull = isAttributeTrue(r, XML_ATTRIBUTE_CONTAINS_NULL);
+                String lowerBound = getValueFromElement(r, XML_TAG_LOWER_BOUND);
+                String upperBound = getValueFromElement(r, XML_TAG_UPPER_BOUND);
+                String step = getValueFromElement(r, XML_TAG_STEP);
 
-        return new Range(lowerBound, upperBound, step, containsNull);
+                return new Range(lowerBound, upperBound, step, containsNull);
+            }).orElse(null);
+        }
     }
 
     public static EnumValues getEnumValueSetFromElement(Element el, String tagName) {
-        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
-        if (valueSetEl == null) {
-            return null;
-        }
-        Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ENUM);
-        if (enumEl == null) {
-            return null;
-        }
-
-        NodeList valueElements = enumEl.getElementsByTagName(XML_TAG_VALUE);
-
-        String[] values = new String[valueElements.getLength()];
-        boolean containsNull = false;
-        for (int i = 0; i < valueElements.getLength(); i++) {
-            Element valueEl = (Element)valueElements.item(i);
-            values[i] = getValueFromElement(valueEl, XML_TAG_DATA);
-            if (values[i] == null) {
-                containsNull = true;
+        Optional<Element> valueSetEl = XmlUtil.findFirstElement(el, tagName);
+        Optional<Element> enumEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_ENUM));
+        return enumEl.map(e -> {
+            NodeList valueElements = e.getElementsByTagName(XML_TAG_VALUE);
+            String[] values = new String[valueElements.getLength()];
+            boolean containsNull = false;
+            for (int i = 0; i < valueElements.getLength(); i++) {
+                Element valueEl = (Element)valueElements.item(i);
+                values[i] = getValueFromElement(valueEl, XML_TAG_DATA);
+                if (values[i] == null) {
+                    containsNull = true;
+                }
             }
-        }
-        return new EnumValues(values, containsNull);
+            return new EnumValues(values, containsNull);
+        }).orElse(null);
     }
 
     public static StringLengthValueSet getStringLengthValueSetFromElement(Element el, String tagName) {
-        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
-        if (valueSetEl == null) {
-            return null;
-        }
-        Element stringLengthEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_STRINGLENGTH);
-        if (stringLengthEl == null) {
-            return null;
-        }
-        Element maximumLengthEl = XmlUtil.getFirstElement(stringLengthEl, XML_TAG_MAXIMUM_LENGTH);
-
-        int maximumLength = Integer.parseInt(maximumLengthEl.getTextContent());
-        boolean containsNull = Boolean.valueOf(stringLengthEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
-        return new StringLengthValueSet(maximumLength, containsNull);
+        Optional<Element> valueSetEl = XmlUtil.findFirstElement(el, tagName);
+        Optional<Element> stringLengthEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_STRINGLENGTH));
+        return stringLengthEl.map(s -> {
+            Element maximumLengthEl = XmlUtil.getFirstElement(s, XML_TAG_MAXIMUM_LENGTH);
+            int maximumLength = Integer.parseInt(maximumLengthEl.getTextContent());
+            boolean containsNull = isAttributeTrue(s, XML_ATTRIBUTE_CONTAINS_NULL);
+            return new StringLengthValueSet(maximumLength, containsNull);
+        }).orElse(null);
     }
 
     public static <T> UnrestrictedValueSet<T> getUnrestrictedValueSet(Element el, String tagName) {
-        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
-        if (valueSetEl != null) {
-            Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ALL_VALUES);
-            if (enumEl != null) {
-                if (enumEl.hasAttribute(XML_ATTRIBUTE_CONTAINS_NULL)) {
-                    boolean containsNull = Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL))
-                            .booleanValue();
-                    return new UnrestrictedValueSet<T>(containsNull);
-                }
-            }
-        }
-        return new UnrestrictedValueSet<T>(true);
+        Optional<Element> valueSetEl = XmlUtil.findFirstElement(el, tagName);
+        Optional<Element> enumEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_ALL_VALUES))
+                .filter(e -> e.hasAttribute(XML_ATTRIBUTE_CONTAINS_NULL));
+        return enumEl.map(e -> {
+            boolean containsNull = isAttributeTrue(enumEl.get(), XML_ATTRIBUTE_CONTAINS_NULL);
+            return new UnrestrictedValueSet<T>(containsNull);
+        }).orElse(new UnrestrictedValueSet<T>(true));
     }
 
+    /**
+     * Returns whether the given element has an attribute by the given name that has the value
+     * {@code "true"}.
+     */
+    public static boolean isAttributeTrue(Element element, String attribute) {
+        return Boolean.valueOf(element.getAttribute(attribute)).booleanValue();
+    }
 }

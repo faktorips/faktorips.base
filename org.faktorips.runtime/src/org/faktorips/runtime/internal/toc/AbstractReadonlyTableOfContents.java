@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,13 +11,13 @@
 package org.faktorips.runtime.internal.toc;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.faktorips.runtime.IRuntimeObject;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -87,9 +87,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     @SuppressWarnings("rawtypes")
     private void loadExtendedTocEntryFactories() {
         ServiceLoader<ITocEntryFactory> serviceLoader = ServiceLoader.load(ITocEntryFactory.class, classLoader);
-        Iterator<ITocEntryFactory> tocEntryFactories = serviceLoader.iterator();
-        for (; tocEntryFactories.hasNext();) {
-            ITocEntryFactory<?> tocEntryFactory = tocEntryFactories.next();
+        for (ITocEntryFactory<?> tocEntryFactory : serviceLoader) {
             tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
         }
     }
@@ -199,27 +197,15 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
 
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer("TOC");
-        buf.append(System.getProperty("line.separator"));
-        List<ProductCmptTocEntry> entries = getProductCmptTocEntries();
-        for (ProductCmptTocEntry entry : entries) {
-            buf.append(entry.toString());
-            buf.append(System.getProperty("line.separator"));
-        }
-
-        List<TableContentTocEntry> tableEntries = getTableTocEntries();
-        for (TableContentTocEntry entry : tableEntries) {
-            buf.append(entry.toString());
-            buf.append(System.getProperty("line.separator"));
-        }
-
-        List<TestCaseTocEntry> testEntries = getTestCaseTocEntries();
-        for (TestCaseTocEntry entry : testEntries) {
-            buf.append(entry.toString());
-            buf.append(System.getProperty("line.separator"));
-        }
-
-        return buf.toString();
+        StringBuilder sb = new StringBuilder("TOC");
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getProductCmptTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getTableTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getTestCaseTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        return sb.toString();
     }
 
     public abstract <T extends IRuntimeObject> List<CustomTocEntryObject<T>> getTypedTocEntries(Class<T> type);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,9 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -44,6 +42,9 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -141,7 +142,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public IIpsProject getIpsProject() {
         return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-                IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+            IIpsModel.get().getIpsProject(projectField.getText());
     }
 
     protected void validateFormat() {
@@ -255,7 +256,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             exportedIpsObjectControl.setIpsProjects();
             return;
         }
-        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
+        IIpsProject project = IIpsModel.get().getIpsProject(projectField.getText());
         if (project.exists()) {
             exportedIpsObjectControl.setIpsProjects(project);
             return;

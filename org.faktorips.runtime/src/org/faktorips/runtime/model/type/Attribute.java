@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,17 +11,16 @@
 package org.faktorips.runtime.model.type;
 
 import java.util.Calendar;
+import java.util.Optional;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
 /**
  * A {@link Attribute} represents an attribute from a PolicyCmptType or a ProductCmptType.
  */
-@SuppressWarnings("deprecation")
-public abstract class Attribute extends TypePart implements IModelTypeAttribute {
+public abstract class Attribute extends TypePart {
 
     private final IpsAttribute attributeAnnotation;
 
@@ -44,7 +43,6 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * 
      * @return <code>true</code> if the attribute is changing over time, <code>false</code> if not
      */
-    @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
     }
@@ -56,7 +54,6 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * @return <code>true</code> if this attribute is configured by the product, <code>false</code>
      *         if not
      */
-    @Override
     public abstract boolean isProductRelevant();
 
     /**
@@ -64,7 +61,6 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * 
      * @return the attribute's datatype <code>Class</code>
      */
-    @Override
     public Class<?> getDatatype() {
         return datatype;
     }
@@ -79,34 +75,12 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
     }
 
     /**
-     * {@inheritDoc}
-     * 
-     * @deprecated Use {@link #getAttributeKind()}
-     */
-    @Deprecated
-    @Override
-    public AttributeType getAttributeType() {
-        return AttributeType.forName(getAttributeKind().name());
-    }
-
-    /**
      * Returns the <code>ValueSetKind</code> of this attribute.
      * 
      * @return the kind of value set restricting this attribute
      */
     public ValueSetKind getValueSetKind() {
         return attributeAnnotation.valueSetKind();
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @deprecated Use {@link #getValueSetKind()}
-     */
-    @Deprecated
-    @Override
-    public ValueSetType getValueSetType() {
-        return ValueSetType.valueOf(getValueSetKind().name());
     }
 
     /**
@@ -117,7 +91,7 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * @see #getSuperAttribute()
      */
     public boolean isOverriding() {
-        return getType().isSuperTypePresent() && getType().getSuperType().isAttributePresent(getName());
+        return getType().findSuperType().map(s -> s.isAttributePresent(getName())).orElse(false);
     }
 
     /**
@@ -128,7 +102,18 @@ public abstract class Attribute extends TypePart implements IModelTypeAttribute 
      * @see #isOverriding()
      */
     public Attribute getSuperAttribute() {
-        return isOverriding() ? getType().getSuperType().getAttribute(getName()) : null;
+        return findSuperAttribute().orElse(null);
+    }
+
+    /**
+     * Returns the attribute that is overridden by this attribute if this attribute overrides
+     * another one. Otherwise returns <code>null</code>.
+     * 
+     * @return The attribute that is overridden by this attribute.
+     * @see #isOverriding()
+     */
+    public Optional<Attribute> findSuperAttribute() {
+        return isOverriding() ? getType().findSuperType().map(s -> s.getAttribute(getName())) : Optional.empty();
     }
 
     @Override

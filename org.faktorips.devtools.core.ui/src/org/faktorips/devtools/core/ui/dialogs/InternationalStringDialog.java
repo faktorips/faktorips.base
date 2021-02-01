@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,11 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
@@ -41,6 +36,11 @@ import org.faktorips.devtools.core.ui.table.InternationalStringTraversalStrategy
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.LocalizedStringCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -73,7 +73,7 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
 
     @Override
     protected String buildTitle() {
-        return NLS.bind(Messages.InternationalValueDialog_descriptionText, IpsPlugin.getMultiLanguageSupport()
+        return NLS.bind(Messages.InternationalValueDialog_descriptionText, IIpsModel.get().getMultiLanguageSupport()
                 .getLocalizedCaption(ipsObjectPart));
     }
 

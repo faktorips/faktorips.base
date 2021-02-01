@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.values.LocalizedString;
 
 /**

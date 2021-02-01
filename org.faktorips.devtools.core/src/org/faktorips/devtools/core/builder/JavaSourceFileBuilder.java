@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -52,22 +51,26 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
-import org.faktorips.devtools.core.builder.organizeimports.IpsRemoveImportsOperation;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.builder.IJavaPackageStructure;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.model.builder.naming.JavaPackageStructure;
+import org.faktorips.devtools.model.builder.organizeimports.IpsRemoveImportsOperation;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -120,6 +123,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * that a user can modify and will not be overridden by the generator at the next generation.
      */
     public static final String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
+
+    /**
+     * The default java doc comment for overridden methods.
+     */
+    public static final String INHERIT_DOC = "{@inheritDoc}"; //$NON-NLS-1$
 
     private boolean mergeEnabled;
 
@@ -218,7 +226,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(describedElement);
+                description = IIpsModel.get().getMultiLanguageSupport().getDefaultDescription(describedElement);
             }
         }
         return description;
@@ -380,7 +388,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * This method has been overridden for convenience. Subclasses might need to implement this
      * method to clean up the state of the builder that was created during the generation.
      * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
+     * @see org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.model.ipsobject.IIpsSrcFile)
      */
     @Override
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -395,7 +403,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * This method has been overridden for convenience. Subclasses might need to implement this
      * method to set up a defined state before the generation starts.
      * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile,
+     * @see org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.model.ipsobject.IIpsSrcFile,
      *      org.eclipse.core.runtime.MultiStatus)
      */
     @Override
@@ -654,12 +662,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
         List<String> annotations = getJavaDocTags(element, keyPrefix, builder);
-        StringBuffer buf = new StringBuffer();
-        buf.append(text);
+        StringBuilder sb = new StringBuilder();
+        sb.append(text);
         if (modelDescription != null) {
-            buf.append(SystemUtils.LINE_SEPARATOR).append(modelDescription);
+            sb.append(System.lineSeparator()).append(modelDescription);
         }
-        builder.javaDoc(buf.toString(), annotations.toArray(new String[annotations.size()]));
+        builder.javaDoc(sb.toString(), annotations.toArray(new String[annotations.size()]));
     }
 
     /**
@@ -778,50 +786,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     public String getJavaDocCommentForOverriddenMethod() {
-        return JavaGeneratorHelper.getJavaDocCommentForOverriddenMethod();
-    }
-
-    /**
-     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
-     * level is greater than 1.5. It takes into account the fine differences regarding the
-     * <code>Override</code> annotation for compliance level 1.5 and higher.
-     * 
-     * @param fragmentBuilder the annotation is added to this {@link JavaCodeFragmentBuilder}
-     * @param interfaceMethodImplementation to be able to decide if an Override annotation needs to
-     *            be generated it must be known if the the generated method is an implementation of
-     *            an interface method or an override of a super class method.
-     */
-    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
-            boolean interfaceMethodImplementation) {
-        JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, getIpsProject(), interfaceMethodImplementation);
-    }
-
-    /**
-     * Appends the list of classNames as a list of generics to the given fragmentBuilder if
-     * compliance level is at least Java5. e.g. if your classNames is [Integer, String], the code
-     * 
-     * <pre>
-     * <Integer, String>
-     * </pre>
-     * 
-     * is added to the fragment builder.
-     */
-    public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, String... classeNames) {
-        JavaGeneratorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classeNames);
-    }
-
-    /**
-     * Appends the list of classes as a list of generics to the given fragmentBuilder if compliance
-     * level is at least Java5. e.g. if your classes are [Integer.class, String.class], the code
-     * 
-     * <pre>
-     * <Integer, String>
-     * </pre>
-     * 
-     * is added to the fragment builder.
-     */
-    public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, Class<?>... classes) {
-        JavaGeneratorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
+        return JavaSourceFileBuilder.INHERIT_DOC;
     }
 
     private String removeUnusedImports(String content) {
@@ -836,7 +801,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
                 .node(getIpsProject().getName());
         return preferences.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR,
-                StringUtil.getSystemLineSeparator());
+                System.lineSeparator());
     }
 
     private String format(String content, boolean newFileCreated) {
@@ -971,20 +936,17 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         // CSON: IllegalCatch
     }
 
-    // unchecked for Luna, warning unnecessary for newer targets
-    @SuppressWarnings("unchecked")
     private void configureDefaults(Map<String, String> javaCoreOptions, IIpsProject project) {
         IJavaProject javaProject = project.getJavaProject();
         javaCoreOptions.putAll(javaProject.getOptions(true));
     }
 
     private String getJMergeConfigLocation(IIpsProject ipsProject) {
-        IFile mergeFile = ipsProject.getJavaProject().getProject()
-                .getFile(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        IFile mergeFile = ipsProject.getJavaProject().getProject().getFile("merge.java5.xml"); //$NON-NLS-1$
         if (mergeFile.exists()) {
             return mergeFile.getLocation().toPortableString();
         }
-        StringBuffer mergeFileDefault = new StringBuffer();
+        StringBuilder mergeFileDefault = new StringBuilder();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
                 .append("/merge.java5.xml"); //$NON-NLS-1$
         Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
@@ -1024,8 +986,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * The IPS model should be completely valid if calling this method or else the results may not
      * be exhaustive.
      * 
-     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the generated
-     *            <code>IJavaElement</code>s for.
+     * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the
+     *            generated <code>IJavaElement</code>s for.
      * 
      * @throws NullPointerException If the parameter is null
      */

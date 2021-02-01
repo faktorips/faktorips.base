@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,17 +28,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,8 +82,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IpsPlugin.getDefault()
-                .getIpsModel().getIpsObjectTypes()));
+        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IIpsModel.get().getIpsObjectTypes()));
         // The tests seems to expect that product component type is not a allowed type
         allowedTypes.remove(IpsObjectType.PRODUCT_CMPT_TYPE);
         config = new ModelExplorerConfiguration(allowedTypes.toArray(new IpsObjectType[0]));
@@ -284,7 +283,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
 
         // for all other types getParent() acts like IpsElement#getParent()
         parent = hierarchyProvider.getParent(proj);
-        assertEquals(IpsPlugin.getDefault().getIpsModel(), parent);
+        assertEquals(IIpsModel.get(), parent);
         parent = hierarchyProvider.getParent(root);
         assertEquals(proj, parent);
         parent = hierarchyProvider.getParent(polCmptType);
@@ -299,7 +298,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(defaultPackage, parent);
 
         parent = flatProvider.getParent(proj);
-        assertEquals(IpsPlugin.getDefault().getIpsModel(), parent);
+        assertEquals(IIpsModel.get(), parent);
         parent = flatProvider.getParent(root);
         assertEquals(proj, parent);
         parent = flatProvider.getParent(polCmptType);
@@ -381,19 +380,17 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
-
-        Object[] children = hierarchyProvider.getElements(IpsPlugin.getDefault().getIpsModel());
+        Object[] children = hierarchyProvider.getElements(IIpsModel.get());
         assertEquals(5, children.length);
-
-        children = flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
+        children = flatProvider.getElements(IIpsModel.get());
         assertEquals(5, children.length);
 
         flatProvider.setExcludeNoIpsProjects(true);
-        children = flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
+        children = flatProvider.getElements(IIpsModel.get());
         assertEquals(3, children.length);
 
         hierarchyProvider.setExcludeNoIpsProjects(true);
-        children = flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
+        children = flatProvider.getElements(IIpsModel.get());
         assertEquals(3, children.length);
     }
 

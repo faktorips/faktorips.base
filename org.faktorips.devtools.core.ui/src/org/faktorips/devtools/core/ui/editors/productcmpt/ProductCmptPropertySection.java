@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,28 +25,29 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 
 /**
  * Provides a generic section for all kinds of property values.
@@ -203,7 +204,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
         Control label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
         // Use description of property as tooltip if available
         if (property != null) {
-            label.setToolTipText(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property));
+            label.setToolTipText(IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(property));
         }
         return label;
     }
@@ -268,7 +269,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             @Override
             public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
                 Hyperlink hyperlink = toolkit.createHyperlink(parent,
-                        IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue));
+                        IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(propertyValue));
                 addOpenEditorHyperlinkListener(propertyValue, hyperlink);
                 return hyperlink;
             }
@@ -359,7 +360,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
                     IProductCmptProperty property = propertyValue.findProperty(propertyValue.getIpsProject());
                     String label;
                     if (property != null) {
-                        label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
+                        label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(property);
                     } else {
                         label = propertyValue.getPropertyName();
                     }
@@ -423,7 +424,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
          * support hyperlinks as well.
          */
         public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
-            String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue);
+            String localizedCaption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(propertyValue);
             return toolkit.createLabel(parent, localizedCaption);
         }
 

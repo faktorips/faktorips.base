@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -29,9 +29,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * @author Thorsten Guenther
@@ -76,7 +77,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
-                    IIpsProject project = IpsPlugin.getDefault().getIpsModel()
+                    IIpsProject project = IIpsModel.get()
                             .getIpsProject(((IJavaProject)selected).getProject());
                     addPreselection(project);
                 } else if (selected instanceof IIpsProject) {

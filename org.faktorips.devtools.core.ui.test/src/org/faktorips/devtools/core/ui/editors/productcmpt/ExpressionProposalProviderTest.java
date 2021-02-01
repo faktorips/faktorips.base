@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,20 +23,20 @@ import java.util.Locale;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
-import org.faktorips.devtools.core.builder.flidentifier.IdentifierProposal;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierParser;
+import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierProposal;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
+import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -140,7 +140,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(formula, parser);
         IContentProposal[] results = proposalProvider.getProposals("WE", 2);
         IContentProposal proposal = results[0];
-        assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());
+        assertEquals("WENN(Boolean; any; any) - any", proposal.getLabel());
         assertEquals("WE", ((ContentProposal)proposal).getPrefix());
         assertEquals(2, ((ContentProposal)proposal).getPrefixLength());
 
@@ -157,7 +157,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         results = proposalProvider.getProposals("I", 1);
         proposal = results[0];
-        assertEquals("IF(boolean; any; any) - any", proposal.getLabel());
+        assertEquals("IF(Boolean; any; any) - any", proposal.getLabel());
     }
 
     @Test

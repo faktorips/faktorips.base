@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,12 +14,10 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -37,6 +35,7 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
         return copyIpsSrcFile(monitor);
     }
 
+    @SuppressWarnings("deprecation")
     private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
         String fileName = getPmo().getCopyProductCmpt().getIpsObjectType().getFileName(getPmo().getName());
@@ -45,13 +44,13 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
                 fileName,
                 getContentsOfIpsObject(getPmo().getCopyProductCmpt()),
                 true,
-                new SubProgressMonitor(monitor, 1));
+                new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         // @formatter:on
     }
 
     private String getContentsOfIpsObject(IIpsObject ipsObject) {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-        Element xml = ipsObject.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        Element xml = ipsObject.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument());
         try {
             return XmlUtil.nodeToString(xml, encoding);
         } catch (TransformerException e) {

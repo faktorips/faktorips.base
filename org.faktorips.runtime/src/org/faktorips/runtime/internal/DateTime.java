@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -60,7 +60,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
 
     /**
      * Parses the given String s to a DateTime object. The string should have the ISO date format
-     * (YYYY-MM-DD). Time information is initialized with 0. Returns <code>null</code> if s if
+     * (YYYY-MM-DD). Time information is initialized with 0. Returns <code>null</code> if s is
      * <code>null</code> or an empty String.
      * 
      * @throws IllegalArgumentException if s has a wrong format and can't be parsed.

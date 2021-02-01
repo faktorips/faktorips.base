@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -38,7 +38,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
 
     private static DateFormat DEBUG_FORMAT;
 
-    public final static boolean TRACE_IPS_TEST_RUNNER;
+    public static final boolean TRACE_IPS_TEST_RUNNER;
 
     static {
         TRACE_IPS_TEST_RUNNER = Boolean

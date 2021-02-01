@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,14 +12,13 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Operation that is intended to be used by {@link NewProductWizard} to create the new
@@ -38,6 +37,7 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
      * {@link IProductCmptLink} using the new product component as target. The link will be created
      * at the {@link IProductCmptGeneration} as configured by the {@link NewProductCmptPMO}.
      */
+    @SuppressWarnings("deprecation")
     @Override
     protected void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
         monitor.beginTask(null, 2);
@@ -59,7 +59,7 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
 
                 if (!wasDirty) {
                     try {
-                        srcFile.save(true, new SubProgressMonitor(monitor, 1));
+                        srcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);
                     }

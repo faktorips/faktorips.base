@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /**
  * Formats the value of {@link ITemplatedValue templated values}. It uses the

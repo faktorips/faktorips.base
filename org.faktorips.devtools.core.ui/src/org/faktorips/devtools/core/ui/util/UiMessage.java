@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,12 +13,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IMessage;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.ObjectProperty;
 
@@ -91,7 +91,7 @@ public final class UiMessage implements IMessage {
     private String getObjectName(Object contextObject) {
         String objectName = StringUtils.EMPTY;
         if (contextObject instanceof ILabeledElement) {
-            objectName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
+            objectName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
         } else if (contextObject instanceof IIpsObjectPartContainer) {
             objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
         }
@@ -106,7 +106,7 @@ public final class UiMessage implements IMessage {
     }
 
     String getCaptionName(IIpsObjectPartContainer contextObject) {
-        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(contextObject);
+        String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(contextObject);
         if (StringUtils.isEmpty(caption)) {
             IIpsElement parent = contextObject.getParent();
             if (parent instanceof IIpsObjectPartContainer) {

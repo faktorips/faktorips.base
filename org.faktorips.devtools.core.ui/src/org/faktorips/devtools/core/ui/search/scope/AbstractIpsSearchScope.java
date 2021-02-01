@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,12 +20,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Abstract implementation of the IIpsSearchScope
@@ -112,7 +112,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
     protected abstract String getScopeTypeLabel(boolean singular);
 
     private void addResource(Set<IIpsSrcFile> srcFiles, IResource resource) throws CoreException {
-        IIpsElement element = (IIpsElement)resource.getAdapter(IIpsElement.class);
+        IIpsElement element = resource.getAdapter(IIpsElement.class);
 
         if (element != null) {
             addSrcFilesOfElement(srcFiles, element);
@@ -163,7 +163,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
         if (object instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)object;
 
-            return (IResource)adaptable.getAdapter(IResource.class);
+            return adaptable.getAdapter(IResource.class);
         }
         return null;
     }

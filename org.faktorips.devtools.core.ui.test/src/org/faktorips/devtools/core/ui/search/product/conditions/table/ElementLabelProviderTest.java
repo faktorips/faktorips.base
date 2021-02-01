@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +28,7 @@ public class ElementLabelProviderTest extends AbstractIpsPluginTest {
     @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         elementLabelProvider = new ElementLabelProvider();
 
         IIpsProject ipsProject = newIpsProject("IpsProject");

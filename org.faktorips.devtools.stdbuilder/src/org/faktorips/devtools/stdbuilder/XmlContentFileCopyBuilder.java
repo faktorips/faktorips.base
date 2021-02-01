@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,9 +14,10 @@ import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 
 /**
  * An implementation of the IpsArtefactBuilder interface that copies the XML content files for
@@ -35,7 +36,7 @@ public abstract class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
      * Copies the xml content file of the provided IpsObject and changes the name of the extension
      * into .xml.
      * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#build(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
+     * @see IIpsArtefactBuilder#build(IIpsSrcFile)
      */
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {

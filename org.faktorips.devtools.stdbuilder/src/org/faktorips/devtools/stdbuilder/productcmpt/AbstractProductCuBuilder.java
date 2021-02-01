@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,19 +19,20 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IParameter;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.BuilderHelper;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.method.IParameter;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
@@ -196,8 +197,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             if (addOverrideAnnotationIfNecessary) {
                 // if the formula is also compiled to XML we have a standard implementation of this
                 // method
-                appendOverrideAnnotation(builder, method.getModifier().isPublished() && !GeneratorConfig
-                        .forIpsObject(formula.getIpsObject()).getFormulaCompiling().isCompileToXml());
+                builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
             }
 
             generateSignatureForModelMethod(method, builder);
@@ -208,8 +208,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus));
             builder.appendln(";"); //$NON-NLS-1$
             builder.append("} catch (Exception e) {"); //$NON-NLS-1$
-            builder.appendClassName(StringBuffer.class);
-            builder.append(" parameterValues=new StringBuffer();"); //$NON-NLS-1$
+            builder.appendClassName(StringBuilder.class);
+            builder.append(" parameterValues=new StringBuilder();"); //$NON-NLS-1$
             // in formula tests the input will not printed in case of an exception
             // because the input is stored in the formula test
             IParameter[] parameters = method.getParameters();

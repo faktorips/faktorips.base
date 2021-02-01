@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,21 +25,21 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.menus.ExtensionContributionFactory;
 import org.eclipse.ui.menus.IContributionRoot;
 import org.eclipse.ui.services.IServiceLocator;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptCommand;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 
 /**
  * This contribution factory creates menu contributions for adding new and existing product
@@ -55,7 +55,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
 
     @Override
     public void createContributionItems(IServiceLocator serviceLocator, IContributionRoot additions) {
-        ISelectionService selectionService = (ISelectionService)serviceLocator.getService(ISelectionService.class);
+        ISelectionService selectionService = serviceLocator.getService(ISelectionService.class);
         ISelection selection = selectionService.getSelection();
         createAddNewProductCmpt(serviceLocator, additions, selection);
         createAddExistingProductCmpt(serviceLocator, additions, selection);
@@ -85,7 +85,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
                 IProductCmptTypeAssociationReference associationReference = children[0];
                 IProductCmptTypeAssociation association = associationReference.getAssociation();
                 String label = NLS.bind(Messages.ProductStructureExplorerContributionFactory_addNewProductCmpt_for,
-                        IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association));
+                        IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association));
                 addNewProductCmptCommand(serviceLocator, additions, label);
             } else {
                 createMultipleAddNewItem(serviceLocator, additions, children);
@@ -105,7 +105,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
                 IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)child;
                 CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
                         StringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
-                itemParameter.label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                itemParameter.label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         associationReference.getAssociation());
                 HashMap<String, String> parameters = new HashMap<String, String>();
                 parameters.put(AddNewProductCmptCommand.PARAMETER_SELECTED_ASSOCIATION, associationReference
@@ -172,8 +172,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
 
         }
         if (association != null) {
-            return NLS.bind(Messages.ProductStructureExplorerContributionFactory_addExistingProductCmpt_for, IpsPlugin
-                    .getMultiLanguageSupport().getLocalizedLabel(association));
+            return NLS.bind(Messages.ProductStructureExplorerContributionFactory_addExistingProductCmpt_for, IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association));
         } else {
             return null;
         }
@@ -202,12 +201,10 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             } else if (tableContentUsages.length == 1) {
                 ITableContentUsage tableContentUsage = tableContentUsages[0];
                 CommandContributionItem itemNew = createAddNewTableCommand(serviceLocator, tableContentUsage, NLS.bind(
-                        Messages.ProductStructureExplorerContributionFactory_label_newTableContent_for, IpsPlugin
-                                .getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
+                        Messages.ProductStructureExplorerContributionFactory_label_newTableContent_for, IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
                 additions.addContributionItem(itemNew, null);
                 CommandContributionItem itemExisting = createAddExistingTableCommand(serviceLocator, tableContentUsage,
-                        NLS.bind(Messages.ProductStructureExplorerContributionFactory_label_selectTableFor, IpsPlugin
-                                .getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
+                        NLS.bind(Messages.ProductStructureExplorerContributionFactory_label_selectTableFor, IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
                 additions.addContributionItem(itemExisting, null);
             } else {
                 MenuManager menuManagerNew = new MenuManager(
@@ -220,11 +217,11 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
                 additions.addContributionItem(menuManagerExisting, null);
                 for (ITableContentUsage tableContentUsage : tableContentUsages) {
                     CommandContributionItem itemNew = createAddNewTableCommand(serviceLocator, tableContentUsage,
-                            IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tableContentUsage), false);
+                            IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage), false);
                     menuManagerNew.add(itemNew);
                     CommandContributionItem itemExisting = createAddExistingTableCommand(serviceLocator,
                             tableContentUsage,
-                            IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tableContentUsage), false);
+                            IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage), false);
                     menuManagerExisting.add(itemExisting);
                 }
             }

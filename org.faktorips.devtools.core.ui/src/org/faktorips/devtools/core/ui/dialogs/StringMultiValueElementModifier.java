@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,10 +11,11 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.value.ValueFactory;
 
 /**
  * Allows to access and modify {@link SingleValueHolder} instances.
@@ -29,7 +30,7 @@ public class StringMultiValueElementModifier implements IElementModifier<SingleV
      */
     @Override
     public String getValue(SingleValueViewItem element) {
-        SingleValueHolder item = element.getSingleValueHolder();
+        ISingleValueHolder item = element.getSingleValueHolder();
         if (item == null || item.getValue() == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
@@ -42,7 +43,7 @@ public class StringMultiValueElementModifier implements IElementModifier<SingleV
      */
     @Override
     public void setValue(SingleValueViewItem element, String value) {
-        SingleValueHolder singleValueHolder = element.getSingleValueHolder();
+        ISingleValueHolder singleValueHolder = element.getSingleValueHolder();
         singleValueHolder.setValue(ValueFactory.createStringValue(value));
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -7,10 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
 package org.faktorips.values;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -32,23 +35,32 @@ import org.faktorips.values.xml.DecimalXmlAdapter;
 @XmlJavaTypeAdapter(DecimalXmlAdapter.class)
 public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport {
 
-    private static final long serialVersionUID = -642726667937769164L;
-
     /**
      * Special case for the null value.
      */
-    public final static Decimal NULL = new DecimalNull();
+    public static final Decimal NULL = new DecimalNull();
 
     /**
      * Special case for zero.
      */
-    public final static Decimal ZERO = valueOf(0, 0);
+    public static final Decimal ZERO = valueOf(0, 0);
+
+    private static final long serialVersionUID = -642726667937769164L;
+
+    private final BigDecimal value;
+
+    /**
+     * Returns a {@link Collector} that sums a {@link Stream} of Decimals.
+     */
+    public static final Collector<Decimal, ?, Decimal> sum() {
+        return Collectors.reducing(Decimal.ZERO, Decimal::add);
+    }
 
     /**
      * Returns the sum of the values. If either the values array or one of the values is
-     * <code>null</code> the method returns <code>Decimal.NULL</code>.
+     * <code>null</code> the method returns {@link Decimal#NULL}.
      */
-    public final static Decimal sum(Decimal[] values) {
+    public static final Decimal sum(Decimal... values) {
         if (values == null) {
             return Decimal.NULL;
         }
@@ -59,23 +71,20 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         return sum;
     }
 
-    private final BigDecimal value;
-
     /**
-     * Returns the Decimal value defined in the String <code>s</code>. Returns
-     * <code>Decimal.NULL</code> if <code>s</code> is either <code>null</code> or an empty string or
-     * "DecimalNull".
+     * Returns the Decimal value defined in the String <code>s</code>. Returns {@link Decimal#NULL}
+     * if <code>s</code> is either <code>null</code> or an empty string or "DecimalNull".
      * 
      * @throws NumberFormatException if <code>s</code> is not a valid representation of a Decimal.
      */
-    public final static Decimal valueOf(String s) {
+    public static final Decimal valueOf(String s) {
         if (s == null || s.equals("") || s.equals(DecimalNull.STRING_REPRESENTATION)) {
             return NULL;
         }
         return new Decimal(new BigDecimal(s));
     }
 
-    public final static Decimal valueOf(BigDecimal value) {
+    public static final Decimal valueOf(BigDecimal value) {
         if (value == null) {
             return NULL;
         }
@@ -89,21 +98,21 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @return the decimal representing the double value
      * @since 3.3
      */
-    public final static Decimal valueOf(Double value) {
+    public static final Decimal valueOf(Double value) {
         if (value == null) {
             return NULL;
         }
         return Decimal.valueOf(BigDecimal.valueOf(value));
     }
 
-    public final static Decimal valueOf(Integer value) {
+    public static final Decimal valueOf(Integer value) {
         if (value == null) {
             return NULL;
         }
         return Decimal.valueOf(value.longValue(), 0);
     }
 
-    public final static Decimal valueOf(long unscaledValue, int scale) {
+    public static final Decimal valueOf(long unscaledValue, int scale) {
         return new Decimal(BigDecimal.valueOf(unscaledValue, scale));
     }
 
@@ -140,7 +149,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     }
 
     /**
-     * Returns a Decimal whose value is <code>(-this)</code>, and whose scale is <code>this.scale()</code>.
+     * Returns a Decimal whose value is <code>(-this)</code>, and whose scale is
+     * <code>this.scale()</code>.
      * 
      * @return <code>-this</code>
      */
@@ -247,8 +257,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * Returns a Decimal whose value is <code>(this * d)</code>, and whose scale is
      * <code>(this.scale() + d.scale())</code>.
      * <p>
-     * Returns <code>Decimal.NULL</code> if either this is <code>Decimal.NULL</code> or d is
-     * <code>null</code> or d is <code>Decimal.NULL</code>.
+     * Returns {@link Decimal#NULL} if either this is {@link Decimal#NULL} or d is <code>null</code>
+     * or d is {@link Decimal#NULL}.
      * 
      * @param d value to be multiplied with this Decimal.
      * 
@@ -265,8 +275,10 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * Returns a Money whose value is <code>(this * m.getAmount())</code> and that has the same
      * currency as the given currency.
      * <p>
-     * Returns <code>Money.NULL</code> if either this is <code>Decimal.NULL</code> or m is
+     * Returns <code>Money.NULL</code> if either this is {@link Decimal#NULL} or m is
      * <code>null</code> or m is <code>Money.NULL</code>.
+     * 
+     * @deprecated since 21.6. Use {@link Decimal#multiply(Money, RoundingMode)} instead.
      * 
      * @param m Money value to be multiplied with this Decimal.
      * @param roundingMode rounding mode that is applied according to the definition in BigDecimal.
@@ -275,7 +287,24 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * 
      * @see BigDecimal
      */
+    @Deprecated
     public Money multiply(Money m, int roundingMode) {
+        return multiply(m, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Returns a Money whose value is <code>(this * m.getAmount())</code> and that has the same
+     * currency as the given currency.
+     * <p>
+     * Returns <code>Money.NULL</code> if either this is {@link Decimal#NULL} or m is
+     * <code>null</code> or m is <code>Money.NULL</code>.
+     * 
+     * @param m Money value to be multiplied with this Decimal.
+     * @param roundingMode rounding mode that is applied.
+     * 
+     * @see BigDecimal
+     */
+    public Money multiply(Money m, RoundingMode roundingMode) {
         if (m == null) {
             return Money.NULL;
         }
@@ -286,7 +315,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * Returns a Decimal whose value is <code>(this * i)</code>, and whose scale is
      * <code>this.scale()</code>.
      * <p>
-     * Returns <code>Decimal.NULL</code> if either this is <code>Decimal.NULL</code> or d is
+     * Returns {@link Decimal#NULL} if either this is {@link Decimal#NULL} or d is
      * <code>null</code>.
      * 
      * @param i value to be multiplied with this Decimal.
@@ -330,19 +359,21 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * rounding mode is applied. If this decimal is the Decimal.NULL object, then Decimal.NULL is
      * returned.
      * 
+     * @deprecated since 21.6. Use {@link #divide(int, int, RoundingMode)} instead.
+     * 
      * @param value value by which this Decimal is to be divided
      * @param scale scale of the Decimal quotient to be returned
      * @param roundingMode rounding mode to apply
      * 
      * @return <code>this / d</code>
      * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
-     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is insufficient
-     *             to represent the result of the division exactly.
-     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
-     *             mode.
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is
+     *             insufficient to represent the result of the division exactly.
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
+    @Deprecated
     public Decimal divide(int value, int scale, int roundingMode) {
-        return divide(Decimal.valueOf(value, 0), scale, roundingMode);
+        return divide(Decimal.valueOf(value, 0), scale, RoundingMode.valueOf(roundingMode));
     }
 
     /**
@@ -357,13 +388,81 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * 
      * @return <code>this / d</code>
      * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
-     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is insufficient
-     *             to represent the result of the division exactly.
-     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
-     *             mode.
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is
+     *             insufficient to represent the result of the division exactly.
+     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid
+     *             rounding mode.
      */
-    public Decimal divide(long value, int scale, int roundingMode) {
+    public Decimal divide(int value, int scale, RoundingMode roundingMode) {
         return divide(Decimal.valueOf(value, 0), scale, roundingMode);
+    }
+
+    /**
+     * Returns a Decimal whose value is <code>(this / d)</code>, and whose scale is as specified. If
+     * rounding must be performed to generate a result with the specified scale, the specified
+     * rounding mode is applied. If this decimal is the Decimal.NULL object, then Decimal.NULL is
+     * returned.
+     * 
+     * @deprecated since 21.6. Use {{@link #divide(long, int, RoundingMode)} instead.
+     * 
+     * @param value value by which this Decimal is to be divided
+     * @param scale scale of the Decimal quotient to be returned
+     * @param roundingMode rounding mode to apply
+     * 
+     * @return <code>this / d</code>
+     * 
+     * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is
+     *             insufficient to represent the result of the division exactly.
+     * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
+     */
+    @Deprecated
+    public Decimal divide(long value, int scale, int roundingMode) {
+        return divide(Decimal.valueOf(value, 0), scale, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Returns a Decimal whose value is <code>(this / d)</code>, and whose scale is as specified. If
+     * rounding must be performed to generate a result with the specified scale, the specified
+     * rounding mode is applied. If this decimal is the Decimal.NULL object, then Decimal.NULL is
+     * returned.
+     * 
+     * @param value value by which this Decimal is to be divided
+     * @param scale scale of the Decimal quotient to be returned
+     * @param roundingMode rounding mode to apply
+     * 
+     * @return <code>this / d</code>
+     * 
+     * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is
+     *             insufficient to represent the result of the division exactly.
+     */
+    public Decimal divide(long value, int scale, RoundingMode roundingMode) {
+        return divide(Decimal.valueOf(value, 0), scale, roundingMode);
+    }
+
+    /**
+     * Returns a Decimal whose value is <code>(this / d)</code>, and whose scale is as specified. If
+     * rounding must be performed to generate a result with the specified scale, the specified
+     * rounding mode is applied. If either this decimal or d is the Decimal.NULL, then Decimal.NULL
+     * is returned.
+     * 
+     * @deprecated since 21.6. Use {@link #divide(Decimal, int, RoundingMode)} instead.
+     * 
+     * @param d value by which this Decimal is to be divided.
+     * @param scale scale of the Decimal quotient to be returned.
+     * @param roundingMode rounding mode to apply.
+     * 
+     * @return <code>this / d</code>
+     * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is
+     *             insufficient to represent the result of the division exactly.
+     * @throws IllegalArgumentException if <code>roundingMode</code> cannot be converted to
+     *             {@link RoundingMode}.
+     */
+    @Deprecated
+    public Decimal divide(Decimal d, int scale, int roundingMode) {
+        return divide(d, scale, RoundingMode.valueOf(roundingMode));
     }
 
     /**
@@ -377,13 +476,12 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param roundingMode rounding mode to apply.
      * 
      * @return <code>this / d</code>
+     * 
      * @throws ArithmeticException <code>value</code> is zero, <code>scale</code> is negative, or
-     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is insufficient
-     *             to represent the result of the division exactly.
-     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
-     *             mode.
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scale is
+     *             insufficient to represent the result of the division exactly.
      */
-    public Decimal divide(Decimal d, int scale, int roundingMode) {
+    public Decimal divide(Decimal d, int scale, RoundingMode roundingMode) {
         if (isNull() || d.isNull()) {
             return this;
         }
@@ -403,6 +501,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * returns an object with the proper scale; the returned object may or may not be newly
      * allocated.
      * 
+     * @deprecated since 21.6. Use {@link #setScale(int, RoundingMode)} instead.
+     * 
      * @param scale scale of the Decimal value to be returned.
      * @param roundingMode The rounding mode to apply.
      * @return a Decimal whose scale is the specified value, and whose unscaled value is determined
@@ -411,8 +511,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @throws ArithmeticException <code>scale</code> is negative, or
      *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scaling operation
      *             would require rounding.
-     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
-     *             mode.
+     * @throws IllegalArgumentException if <code>roundingMode</code> cannot be converted to
+     *             {@link RoundingMode}.
+     * 
      * @see java.math.BigDecimal#ROUND_UP
      * @see java.math.BigDecimal#ROUND_DOWN
      * @see java.math.BigDecimal#ROUND_CEILING
@@ -422,20 +523,59 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @see java.math.BigDecimal#ROUND_HALF_EVEN
      * @see java.math.BigDecimal#ROUND_UNNECESSARY
      */
+    @Deprecated
     public Decimal setScale(int scale, int roundingMode) {
+        return setScale(scale, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Returns a Decimal whose scale is the specified value, and whose unscaled value is determined
+     * by multiplying or dividing this Decimal's unscaled value by the appropriate power of ten to
+     * maintain its overall value. If the scale is reduced by the operation, the unscaled value must
+     * be divided (rather than multiplied), and the value may be changed; in this case, the
+     * specified rounding mode is applied to the division.
+     * <p>
+     * Note that since Decimal objects are immutable, calls of this method do <i>not</i> result in
+     * the original object being modified, contrary to the usual convention of having methods named
+     * <code>set<i>X</i></code> mutate field <code><i>X</i></code>. Instead, <code>setScale</code>
+     * returns an object with the proper scale; the returned object may or may not be newly
+     * allocated.
+     * 
+     * @param scale scale of the Decimal value to be returned.
+     * 
+     * @param roundingMode The rounding mode to apply.
+     * @return a Decimal whose scale is the specified value, and whose unscaled value is determined
+     *         by multiplying or dividing this Decimal's unscaled value by the appropriate power of
+     *         ten to maintain its overall value.
+     * @throws ArithmeticException <code>scale</code> is negative, or
+     *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scaling operation
+     *             would require rounding.
+     * 
+     * @see java.math.RoundingMode#UP
+     * @see java.math.RoundingMode#DOWN
+     * @see java.math.RoundingMode#CEILING
+     * @see java.math.RoundingMode#FLOOR
+     * @see java.math.RoundingMode#HALF_UP
+     * @see java.math.RoundingMode#HALF_DOWN
+     * @see java.math.RoundingMode#HALF_EVEN
+     * @see java.math.RoundingMode#UNNECESSARY
+     */
+    public Decimal setScale(int scale, RoundingMode roundingMode) {
         return new Decimal(value.setScale(scale, roundingMode));
     }
 
     /**
      * Returns a decimal that is rounded with the given rounding mode and precision and has (in
-     * contrast to the <code>setScale(int, int)</code> method) the same scale as this decimal.
+     * contrast to the {@link #setScale(int, int)} method) the same scale as this decimal.
+     * 
+     * @deprecated since 21.6. Use {@link #round(int, RoundingMode)} instead.
      * 
      * @param precision The number of digits the value is rounded to.
      * @param roundingMode The rounding mode to apply
      * 
-     * @throws ArithmeticException <code>precision</code> is negative.
-     * @throws IllegalArgumentException <code>roundingMode</code> does not represent a valid rounding
-     *             mode.
+     * @throws ArithmeticException if <code>precision</code> is negative.
+     * @throws IllegalArgumentException if <code>roundingMode</code> cannot be converted to
+     *             {@link RoundingMode}.
      * 
      * @see #setScale(int, int)
      * @see java.math.BigDecimal#ROUND_UP
@@ -447,8 +587,31 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @see java.math.BigDecimal#ROUND_HALF_EVEN
      * @see java.math.BigDecimal#ROUND_UNNECESSARY
      */
+    @Deprecated
     public Decimal round(int precision, int roundingMode) {
-        return setScale(precision, roundingMode).setScale(scale(), BigDecimal.ROUND_UNNECESSARY);
+        return round(precision, RoundingMode.valueOf(roundingMode));
+    }
+
+    /**
+     * Returns a decimal that is rounded with the given rounding mode and precision and has (in
+     * contrast to the {@link #setScale(int, RoundingMode)} method) the same scale as this decimal.
+     * 
+     * @param precision The number of digits the value is rounded to.
+     * @param roundingMode The rounding mode to apply
+     * 
+     * @throws ArithmeticException if <code>precision</code> is negative.
+     * 
+     * @see java.math.RoundingMode#UP
+     * @see java.math.RoundingMode#DOWN
+     * @see java.math.RoundingMode#CEILING
+     * @see java.math.RoundingMode#FLOOR
+     * @see java.math.RoundingMode#HALF_UP
+     * @see java.math.RoundingMode#HALF_DOWN
+     * @see java.math.RoundingMode#HALF_EVEN
+     * @see java.math.RoundingMode#UNNECESSARY
+     */
+    public Decimal round(int precision, RoundingMode roundingMode) {
+        return setScale(precision, roundingMode).setScale(scale(), RoundingMode.UNNECESSARY);
     }
 
     @Override
@@ -493,7 +656,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     /**
      * Returns true if the indicated Decimal is greater than this one. Two Decimals that are equal
      * in value but have a different scale (like 2.0 and 2.00) are considered equal by this method.
-     * If d is <code>null</code> or <code>Decimal.NULL</code> the method returns false.
+     * If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method returns false.
      */
     public boolean greaterThan(Decimal d) {
         if (d == null || d.isNull()) {
@@ -505,7 +668,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     /**
      * Returns true if the indicated Decimal is greater or equal than this one. Two Decimals that
      * are equal in value but have a different scale (like 2.0 and 2.00) are considered equal by
-     * this method. If d is <code>null</code> or <code>Decimal.NULL</code> the method returns false.
+     * this method. If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method
+     * returns false.
      */
     public boolean greaterThanOrEqual(Decimal d) {
         if (d == null || d.isNull()) {
@@ -517,7 +681,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     /**
      * Returns true if the indicated Decimal is smaller than this one. Two Decimals that are equal
      * in value but have a different scale (like 2.0 and 2.00) are considered equal by this method.
-     * If d is <code>null</code> or <code>Decimal.NULL</code> the method returns false.
+     * If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method returns false.
      */
     public boolean lessThan(Decimal d) {
         if (d == null || d.isNull()) {
@@ -529,7 +693,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     /**
      * Returns true if the indicated Decimal is smaller than or equal to this one. Two Decimals that
      * are equal in value but have a different scale (like 2.0 and 2.00) are considered equal by
-     * this method. If d is <code>null</code> or <code>Decimal.NULL</code> the method returns false.
+     * this method. If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method
+     * returns false.
      */
     public boolean lessThanOrEqual(Decimal d) {
         if (d == null || d.isNull()) {
@@ -543,9 +708,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * value but have a different scale (like 2.0 and 2.00) are considered equal by this method in
      * contrast to the <code>equals(Object o)</code> method.
      * <p>
-     * If d is <code>null</code> or <code>Decimal.NULL</code> the method returns false.
+     * If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method returns false.
      * 
-     * @deprecated equals(Object o) also ignores the scale so this method is superfluous
+     * @deprecated since 21.6. equals(Object o) also ignores the scale so this method is superfluous
      */
     @Deprecated
     public boolean equalsIgnoreScale(Decimal d) {
@@ -560,9 +725,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * in value but have a different scale (like 2.0 and 2.00) are considered equal by this method
      * in contrast to the <code>equals(Object o)</code> method.
      * <p>
-     * If d is <code>null</code> or <code>Decimal.NULL</code> the method returns false.
+     * If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method returns false.
      * 
-     * @deprecated equals(Object o) also ignores the scale so this method is superfluous
+     * @deprecated since 21.6. equals(Object o) also ignores the scale so this method is superfluous
      */
     @Deprecated
     public boolean notEqualsIgnoreScale(Decimal d) {

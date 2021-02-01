@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,7 +20,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class IpsProductDefinitionPerspectiveFactory implements IPerspectiveFactory {
 
-    public final static String PRODUCTDEFINITIONPERSPECTIVE_ID = "org.faktorips.devtools.core.productDefinitionPerspective"; //$NON-NLS-1$
+    public static final String PRODUCTDEFINITIONPERSPECTIVE_ID = "org.faktorips.devtools.core.productDefinitionPerspective"; //$NON-NLS-1$
 
     @Override
     public void createInitialLayout(IPageLayout layout) {

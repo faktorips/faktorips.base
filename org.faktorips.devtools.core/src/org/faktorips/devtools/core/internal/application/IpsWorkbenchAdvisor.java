@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -34,7 +34,6 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.osgi.framework.Bundle;
@@ -47,13 +46,19 @@ import org.osgi.framework.Bundle;
  */
 class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
     private static final String ICONS_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
-    private static final String PATH_ELOCALTOOL = ICONS_PATH + "elcl16/"; // Enabled  toolbar icons.//$NON-NLS-1$
-    private static final String PATH_DLOCALTOOL = ICONS_PATH + "dlcl16/"; // Disabled  toolbar icons.//$NON-NLS-1$
-    private static final String PATH_ETOOL = ICONS_PATH + "etool16/"; // Enabled toolbar icons.//$NON-NLS-1$
-    private static final String PATH_DTOOL = ICONS_PATH + "dtool16/"; // Disabled toolbar icons.//$NON-NLS-1$
-    private static final String PATH_OBJECT = ICONS_PATH + "obj16/"; // Model object icons//$NON-NLS-1$
+    private static final String PATH_ELOCALTOOL = ICONS_PATH + "elcl16/"; // Enabled//$NON-NLS-1$
+                                                                          // toolbar icons.
+    private static final String PATH_DLOCALTOOL = ICONS_PATH + "dlcl16/"; // Disabled//$NON-NLS-1$
+                                                                          // toolbar icons.
+    private static final String PATH_ETOOL = ICONS_PATH + "etool16/"; // Enabled//$NON-NLS-1$
+                                                                      // toolbar icons.
+    private static final String PATH_DTOOL = ICONS_PATH + "dtool16/"; // Disabled//$NON-NLS-1$
+                                                                      // toolbar icons.
+    private static final String PATH_OBJECT = ICONS_PATH + "obj16/"; // Model object//$NON-NLS-1$
+                                                                     // icons
     private static final String PATH_WIZBAN = ICONS_PATH + "wizban/"; // Wizard icons//$NON-NLS-1$
-    private static final String PATH_EVIEW = ICONS_PATH + "eview16/"; // View icons, since eclipse 3.7  //$NON-NLS-1$
+    private static final String PATH_EVIEW = ICONS_PATH + "eview16/"; // View icons, //$NON-NLS-1$
+                                                                      // since eclipse 3.7
 
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
@@ -269,7 +274,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         try {
             // yes it is internal, but you would need to copy a lot of classes to get the same
             // functionality!
-            new ProgressMonitorJobsDialog(null).run(true, false, runnable);
+            new org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog(null).run(true, false, runnable);
         } catch (InvocationTargetException e) {
             status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e.getTargetException())); //$NON-NLS-1$
         } catch (InterruptedException e) {

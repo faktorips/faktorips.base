@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools Table Im/Export
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion;singleton:=true
-Bundle-Version: 20.12.0.qualifier
+Bundle-Version: 21.6.0.qualifier
 Bundle-Activator: org.faktorips.devtools.tableconversion.TableConversionPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.devtools.core,
@@ -21,4 +21,5 @@ Bundle-ClassPath: .,
  lib/xmlbeans-2.3.0.jar,
  lib/dom4j-1.6.1.jar
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
- org.apache.commons.lang.time;version="[2.6,2.6]"
+ org.apache.commons.lang.time;version="[2.6,2.6]",
+ org.faktorips.runtime.util

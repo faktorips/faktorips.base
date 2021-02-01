@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,18 +11,17 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.IPersistenceProvider;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.util.PersistenceUtil;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
@@ -78,13 +77,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             }
 
             fragment.append("(");
-            for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
-                String attr = iterator.next();
-                fragment.append(attr);
-                if (iterator.hasNext()) {
-                    fragment.append(", ");
-                }
-            }
+            fragment.appendJoined(attributesToAppend);
             fragment.append(')').appendln();
             createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo, datatype);
             createConverterAnnotation(fragment, jpaAttributeInfo);
@@ -111,10 +104,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
     }
 
     /**
-     * <code>
-     * Converter(name = "gender", converterClass = example.Gender)
-     * Convert("gender")
-     * <code>
+     * <code> Converter(name = "gender", converterClass = example.Gender) Convert("gender") <code>
      */
     private void createConverterAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
         if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {

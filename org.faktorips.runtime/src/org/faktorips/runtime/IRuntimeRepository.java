@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,9 @@ import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.model.IpsModel;
-import org.faktorips.runtime.modeltype.IModelType;
+import org.faktorips.runtime.model.type.PolicyCmptType;
+import org.faktorips.runtime.model.type.ProductCmptType;
+import org.faktorips.runtime.model.type.Type;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
@@ -31,7 +33,6 @@ import org.faktorips.runtime.test.IpsTestSuite;
  * 
  * @author Jan Ortmann
  */
-@SuppressWarnings("deprecation")
 public interface IRuntimeRepository {
 
     /**
@@ -371,7 +372,8 @@ public interface IRuntimeRepository {
      * Remark this runtime repository which will be used to search for the given test case can
      * differ from the runtime repository which will be used to instantiate the test case during
      * runtime.<br>
-     * Normaly the runtime repository contains all repositories which are referenced by the project.
+     * Normally the runtime repository contains all repositories which are referenced by the
+     * project.
      * 
      * @throws NullPointerException if qName is <code>null</code>.
      */
@@ -412,7 +414,7 @@ public interface IRuntimeRepository {
      * @deprecated Use {@link IpsModel#getType(Class)}
      */
     @Deprecated
-    public IModelType getModelType(Class<?> modelObjectClass);
+    public Type getModelType(Class<?> modelObjectClass);
 
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given model
@@ -422,7 +424,7 @@ public interface IRuntimeRepository {
      * @deprecated Use {@link IpsModel#getPolicyCmptType(IModelObject)}
      */
     @Deprecated
-    public IModelType getModelType(IModelObject modelObject);
+    public PolicyCmptType getModelType(IModelObject modelObject);
 
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given product
@@ -432,7 +434,7 @@ public interface IRuntimeRepository {
      * @deprecated Use {@link IpsModel#getProductCmptType(IProductComponent)}
      */
     @Deprecated
-    public IModelType getModelType(IProductComponent productComponent);
+    public ProductCmptType getModelType(IProductComponent productComponent);
 
     /**
      * Returns a set containing the Java Class names of the implementation classes for all model
@@ -446,7 +448,7 @@ public interface IRuntimeRepository {
     public Set<String> getAllModelTypeImplementationClasses();
 
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the
+     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in the
      * given repository. If the repository references other repositories (directly or indirectly),
      * the context can also handle the classes defined in these other repositories.
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,15 +17,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 
 /**
  * Refactoring processor for the "Pull Up Attribute" - refactoring.
@@ -80,7 +80,8 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     @Override
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (!getType().hasSupertype()) {
-            status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgTypeHasNoSupertype, getType().getName()));
+            status.addFatalError(
+                    NLS.bind(Messages.PullUpAttributeProcessor_msgTypeHasNoSupertype, getType().getName()));
             return;
         }
 

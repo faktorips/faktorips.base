@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
@@ -45,7 +45,7 @@ public class AttributeAllowedValuesSetterAnnGenTest {
         JavaCodeFragment codeFragment = attributeAllowedValuesSetterAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsAllowedValuesSetter(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsAllowedValuesSetter(\"bar\")" + System.lineSeparator())));
     }
 
     private XProductAttribute xProductAttribute(String name) {

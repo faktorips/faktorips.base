@@ -1,7 +1,7 @@
 // CSOFF: FileLengthCheck
 // This class is a huge ugly moloch and needs to be completely rewritten scratch.
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -84,37 +84,7 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.testcase.TestCase;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.Validatable;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
-import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcase.ITestRule;
-import org.faktorips.devtools.core.model.testcase.ITestValue;
-import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
-import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.StyledCellMessageCueLabelProvider;
@@ -129,6 +99,36 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.Validatable;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.testcase.TestCase;
+import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
+import org.faktorips.devtools.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcase.ITestRule;
+import org.faktorips.devtools.model.testcase.ITestValue;
+import org.faktorips.devtools.model.testcase.TestRuleViolationType;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -229,7 +229,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private OpenInNewEditorAction openInNewEditorAction;
 
-    private WritableValue canShowPolicyComponentType = new WritableValue(Boolean.TRUE, Boolean.class);
+    private WritableValue<Boolean> canShowPolicyComponentType = new WritableValue<>(Boolean.TRUE, Boolean.class);
 
     private RemoveAction removeAction;
 
@@ -418,7 +418,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         detailAreaSection.setTextClient(toolbar);
     }
 
-    private void createStructureSectionToolbar(Section structureSection, WritableValue canShowExtension) {
+    private void createStructureSectionToolbar(Section structureSection, WritableValue<Boolean> canShowExtension) {
         // Toolbar item show without association
         actionAssociation = new Action("withoutAssociation", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
             @Override
@@ -975,7 +975,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         Runnable runnableForBusyIndicator = new Runnable() {
             @Override
             public void run() {
-                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+                IIpsModel.get().runAndQueueChangeEvents(runnable, null);
             }
         };
         BusyIndicator.showWhile(getDisplay(), runnableForBusyIndicator);
@@ -2368,7 +2368,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
             IValidationRule validationRule = (IValidationRule)element;
             String nameWithPolicyCmptType = validationRule.getName();
-            nameWithPolicyCmptType += " - " + ((PolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
+            nameWithPolicyCmptType += " - " + ((IPolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
             return nameWithPolicyCmptType;
         }
     }
@@ -2885,8 +2885,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     }
                 }
             };
-
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+            IIpsModel.get().runAndQueueChangeEvents(runnable, null);
         }
 
         /**

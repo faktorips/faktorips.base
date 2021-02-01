@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,18 +15,18 @@ import org.faktorips.values.NullObjectSupport;
 
 public class PaymentMode implements NullObjectSupport {
 
-    final static PaymentMode ANNUAL = new PaymentMode("annual", "Annual Payment"); //$NON-NLS-1$ //$NON-NLS-2$
-    final static PaymentMode MONTHLY = new PaymentMode("monthly", "Monthly Payment"); //$NON-NLS-1$ //$NON-NLS-2$
-    final static PaymentMode NULL = new PaymentModeNull();
+    static final PaymentMode ANNUAL = new PaymentMode("annual", "Annual Payment"); //$NON-NLS-1$ //$NON-NLS-2$
+    static final PaymentMode MONTHLY = new PaymentMode("monthly", "Monthly Payment"); //$NON-NLS-1$ //$NON-NLS-2$
+    static final PaymentMode NULL = new PaymentModeNull();
 
     private final String id;
     private final String name;
 
-    public final static PaymentMode[] getAllPaymentModes() {
+    public static final PaymentMode[] getAllPaymentModes() {
         return new PaymentMode[] { MONTHLY, ANNUAL };
     }
 
-    public final static boolean isParsable(String id) {
+    public static final boolean isParsable(String id) {
         try {
             PaymentMode.getPaymentMode(id);
             return true;
@@ -35,7 +35,7 @@ public class PaymentMode implements NullObjectSupport {
         }
     }
 
-    public final static PaymentMode getPaymentMode(String id) {
+    public static final PaymentMode getPaymentMode(String id) {
         if (id == null) {
             return null;
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.devtools.model.util.BeanUtil;
 
 /**
  * Abstract base class for a binding between a property of a SWT control and a property of an

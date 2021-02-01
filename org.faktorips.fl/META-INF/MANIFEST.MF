@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Formula Language
 Bundle-SymbolicName: org.faktorips.fl
-Bundle-Version: 20.12.0.qualifier
+Bundle-Version: 21.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.util,
  org.faktorips.dtflcommon,
@@ -12,4 +12,5 @@ Export-Package: org.faktorips.fl,org.faktorips.fl.functions,org.faktor
 Bundle-ClassPath: .,
  lib/bsh-2.0b4.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.apache.commons.lang;version="[2.6,2.6]"
+Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
+ org.faktorips.runtime.util

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,6 +16,8 @@ import org.faktorips.values.Money;
 import org.junit.Before;
 import org.junit.Test;
 
+import bsh.TargetError;
+
 /**
  *
  */
@@ -26,6 +28,12 @@ public class IfTest extends FunctionAbstractTest {
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new If("IF", ""));
+    }
+
+    @Test(expected = TargetError.class)
+    public void testNull() throws Exception {
+        registerFunction(new BooleanFct("NULLOBJ", null));
+        execAndTestSuccessfull("IF(NULLOBJ(); 2.1; 3.2)", Decimal.valueOf("3.2"), Datatype.DECIMAL);
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,7 @@
 
 package org.faktorips.fl;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
@@ -19,6 +19,7 @@ import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.Count;
 import org.faktorips.fl.functions.If;
+import org.faktorips.fl.functions.IfBoolean;
 import org.faktorips.fl.functions.IsEmpty;
 import org.faktorips.fl.functions.MinMaxComparableDatatypes;
 import org.faktorips.fl.functions.MinMaxDecimal;
@@ -57,13 +58,14 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
     public ExcelFunctionsResolver(Locale locale) {
         super(locale);
         add(new Abs(getFctName(ExcelFunction.ABS), getFctDescription(ExcelFunction.ABS)));
+        add(new IfBoolean(getFctName(ExcelFunction.IF), getFctDescription(ExcelFunction.IF)));
         add(new If(getFctName(ExcelFunction.IF), getFctDescription(ExcelFunction.IF)));
         add(new Or(getFctName(ExcelFunction.OR), getFctDescription(ExcelFunction.OR)));
         add(new And(getFctName(ExcelFunction.AND), getFctDescription(ExcelFunction.AND)));
-        add(new Round(getFctName(ExcelFunction.ROUND), getFctDescription(ExcelFunction.ROUND), BigDecimal.ROUND_HALF_UP));
-        add(new Round(getFctName(ExcelFunction.ROUNDUP), getFctDescription(ExcelFunction.ROUNDUP), BigDecimal.ROUND_UP));
+        add(new Round(getFctName(ExcelFunction.ROUND), getFctDescription(ExcelFunction.ROUND), RoundingMode.HALF_UP));
+        add(new Round(getFctName(ExcelFunction.ROUNDUP), getFctDescription(ExcelFunction.ROUNDUP), RoundingMode.UP));
         add(new Round(getFctName(ExcelFunction.ROUNDDOWN), getFctDescription(ExcelFunction.ROUNDDOWN),
-                BigDecimal.ROUND_DOWN));
+                RoundingMode.DOWN));
         add(new WholeNumber(getFctName(ExcelFunction.WHOLENUMBER), getFctDescription(ExcelFunction.WHOLENUMBER)));
         add(new IsEmpty(getFctName(ExcelFunction.ISEMPTY), getFctDescription(ExcelFunction.ISEMPTY)));
         add(new Not(getFctName(ExcelFunction.NOT), getFctDescription(ExcelFunction.NOT)));

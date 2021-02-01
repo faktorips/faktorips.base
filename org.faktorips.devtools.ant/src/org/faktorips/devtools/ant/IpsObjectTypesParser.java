@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Utility class for parameters of the {@link ExportHtmlTask}.
@@ -61,14 +62,7 @@ class IpsObjectTypesParser {
 
     private static void throwUnsupportedIpsObjectTypesException(Map<Parameter, ExportType> exportTypes) {
         StringBuilder message = new StringBuilder("Unknown IpsObjectType(s): ");
-        boolean first = true;
-        for (Parameter parameter : exportTypes.keySet()) {
-            if (!first) {
-                message.append(", ");
-            }
-            first = false;
-            message.append(parameter);
-        }
+        StringBuilderJoiner.join(message, exportTypes.keySet());
         throw new BuildException(message.toString());
     }
 

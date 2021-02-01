@@ -244,7 +244,7 @@ def private static generateSetter (XPolicyAssociation it) '''
             «overrideAnnotationIf(constrain)»
             public void «method(methodNameSetOrAddInternal,targetInterfaceNameBase, "newParent")» {
                 «IF constrain»
-                    «ObjectUtil()».«checkInstanceOf("newParent", targetInterfaceName)»;
+                    «ObjectUtil».«checkInstanceOf("newParent", targetInterfaceName)»;
                     super.«methodNameSetOrAddInternal»(newParent);
                 «ELSE»
                     if («methodNameGetter»() == newParent) {
@@ -300,7 +300,7 @@ def private static generateSetter (XPolicyAssociation it) '''
 
 def private static setterMethodCode(String methodName, XPolicyAssociation it) '''
     «IF constrain»
-        «ObjectUtil()».«checkInstanceOf("newObject", targetInterfaceName)»;
+        «ObjectUtil».«checkInstanceOf("newObject", targetInterfaceName)»;
         super.«methodName»(newObject);
     «ELSEIF masterToDetail»
         «IF generateCodeToSynchronizeInverseCompositionForSet»
@@ -364,7 +364,7 @@ def private static generateAdder (XPolicyAssociation it) '''
 
 def private static addMethodCode(String methodName, XPolicyAssociation it) '''
     «IF constrain»
-        «ObjectUtil()».«checkInstanceOf("objectToAdd", targetInterfaceName)»;
+        «ObjectUtil».«checkInstanceOf("objectToAdd", targetInterfaceName)»;
         super.«methodName»(objectToAdd);
     «ELSE»
         if (objectToAdd == null) {

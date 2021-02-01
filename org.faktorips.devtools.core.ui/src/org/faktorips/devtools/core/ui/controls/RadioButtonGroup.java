@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
 /**
  * Aggregates a set of radio buttons into an SWT {@link Group} which is created automatically.
@@ -66,9 +64,9 @@ public class RadioButtonGroup<T> {
      * @param text the text that is displayed as title of the SWT {@link Group}
      * 
      * @deprecated deprecated since version 3.6 due to refactoring, use the new constructor
-     *             {@link #RadioButtonGroup(Composite, String, int, Map, UIToolkit)} instead. Note
-     *             that the new constructor does not feature a 'style' parameter as it was decided
-     *             to generally use the SWT composite default style
+     *             {@link #RadioButtonGroup(Composite, String, int, LinkedHashMap, UIToolkit)}
+     *             instead. Note that the new constructor does not feature a 'style' parameter as it
+     *             was decided to generally use the SWT composite default style
      */
     @Deprecated
     public RadioButtonGroup(Composite parent, int style, String text, UIToolkit toolkit) {
@@ -143,9 +141,9 @@ public class RadioButtonGroup<T> {
 
     /**
      * @deprecated deprecated since version 3.6, use the constructor
-     *             {@link #RadioButtonGroup(Composite, String, int, Map, UIToolkit)} instead, which
-     *             automatically creates a radio button for each possible option. <strong>Do not use
-     *             this method to add further radio buttons after creating a
+     *             {@link #RadioButtonGroup(Composite, String, int, LinkedHashMap, UIToolkit)}
+     *             instead, which automatically creates a radio button for each possible option.
+     *             <strong>Do not use this method to add further radio buttons after creating a
      *             {@link RadioButtonGroup} via the new constructor as this method merely remains to
      *             support usage of the old constructor!</strong>
      */
@@ -153,16 +151,13 @@ public class RadioButtonGroup<T> {
     public final Radiobutton addRadiobutton(String text) {
         Radiobutton radiobutton = toolkit.createRadiobutton(composite, text);
         CheckboxField checkboxField = new CheckboxField(radiobutton);
-        checkboxField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                if (e.field instanceof CheckboxField) {
-                    CheckboxField changedField = (CheckboxField)e.field;
-                    if (changedField.getCheckbox().isChecked()) {
-                        for (CheckboxField checkboxField : oldCheckboxFields) {
-                            if (!checkboxField.equals(changedField)) {
-                                checkboxField.getCheckbox().setChecked(false);
-                            }
+        checkboxField.addChangeListener(e -> {
+            if (e.field instanceof CheckboxField) {
+                CheckboxField changedField = (CheckboxField)e.field;
+                if (changedField.getCheckbox().isChecked()) {
+                    for (CheckboxField checkboxField1 : oldCheckboxFields) {
+                        if (!checkboxField1.equals(changedField)) {
+                            checkboxField1.getCheckbox().setChecked(false);
                         }
                     }
                 }

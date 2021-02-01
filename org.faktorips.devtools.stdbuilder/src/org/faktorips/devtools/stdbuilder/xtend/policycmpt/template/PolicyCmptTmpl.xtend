@@ -1,6 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
-import org.faktorips.devtools.core.builder.naming.BuilderAspect
+import org.faktorips.devtools.model.builder.naming.BuilderAspect
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,11 +12,11 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * {@link FormattedCellEditingSupport} that creates its cell editors based on a specific

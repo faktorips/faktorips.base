@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,9 +13,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -23,6 +20,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.type.IAttribute;
 
 public class PolicyCmptTypeAttributesTablePageElement extends AttributesTablePageElement {
 
@@ -39,7 +39,7 @@ public class PolicyCmptTypeAttributesTablePageElement extends AttributesTablePag
     protected List<String> getAttributeData(IAttribute attribute) {
         List<String> attributeData = super.getAttributeData(attribute);
 
-        PolicyCmptTypeAttribute polAttribute = (PolicyCmptTypeAttribute)attribute;
+        IPolicyCmptTypeAttribute polAttribute = (IPolicyCmptTypeAttribute)attribute;
 
         attributeData.add(polAttribute.isProductRelevant() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         attributeData.add(polAttribute.getAttributeType().getName());
@@ -63,7 +63,7 @@ public class PolicyCmptTypeAttributesTablePageElement extends AttributesTablePag
 
     private IPageElement createPageElementForDefiningSuperType(IAttribute attribute) {
         IPageElement pageElement;
-        PolicyCmptTypeAttribute polAttribute = (PolicyCmptTypeAttribute)attribute;
+        IPolicyCmptTypeAttribute polAttribute = (IPolicyCmptTypeAttribute)attribute;
         IPolicyCmptType attributeDefiningPolicyCmptType = polAttribute.getPolicyCmptType();
 
         if (attributeDefiningPolicyCmptType.equals(getType())) {

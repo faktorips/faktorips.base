@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,8 +23,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
 public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
@@ -43,8 +43,7 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
         projectimporter.setCopy(false);
 
         projectimporter.execute();
-
-        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        IIpsProject project = IIpsModel.get().getIpsProject(projectName);
         assertTrue(project.exists());
         assertThat(getCanonicalPath(project.getProject().getLocation()), is(getCanonicalPath(newProjectPath)));
     }
@@ -63,8 +62,7 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
         projectimporter.setCopy(true);
 
         projectimporter.execute();
-
-        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        IIpsProject project = IIpsModel.get().getIpsProject(projectName);
         assertTrue(project.exists());
         IPath projectParentPath = project.getProject().getLocation().removeLastSegments(1);
         assertThat(projectParentPath, is(ResourcesPlugin.getWorkspace().getRoot().getLocation()));

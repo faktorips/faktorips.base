@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,7 @@ package org.faktorips.codegen;
 
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Represents a language independent source code fragment. A source code fragment consists of the
@@ -110,6 +110,26 @@ public class CodeFragment {
     }
 
     /**
+     * Appends the given {@link Iterable}'s content converted to String and separated by ", " to the
+     * source code.
+     */
+    public CodeFragment appendJoined(Iterable<?> iterable) {
+        indentIfBol();
+        StringBuilderJoiner.join(sourcecode, iterable);
+        return this;
+    }
+
+    /**
+     * Appends the given array's content converted to String and separated by ", " to the source
+     * code.
+     */
+    public CodeFragment appendJoined(Object[] array) {
+        indentIfBol();
+        StringBuilderJoiner.join(sourcecode, array);
+        return this;
+    }
+
+    /**
      * Encloses the given String with double quotes (") and appends it to the source code.
      */
     public CodeFragment appendQuoted(String s) {
@@ -134,7 +154,7 @@ public class CodeFragment {
      * Appends a line separator to the source code.
      */
     public CodeFragment appendln() {
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -147,7 +167,7 @@ public class CodeFragment {
         }
         indentIfBol();
         sourcecode.append(s);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -156,7 +176,7 @@ public class CodeFragment {
      */
     public CodeFragment appendlnUnindented(String arg) {
         sourcecode.append(arg);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -166,7 +186,7 @@ public class CodeFragment {
     public CodeFragment appendln(char c) {
         indentIfBol();
         sourcecode.append(c);
-        sourcecode.append(SystemUtils.LINE_SEPARATOR);
+        sourcecode.append(System.lineSeparator());
         return this;
     }
 
@@ -179,7 +199,7 @@ public class CodeFragment {
         } else {
             if (indent) {
                 String sourcecode = fragment.getSourcecode();
-                StringTokenizer tokenizer = new StringTokenizer(sourcecode, SystemUtils.LINE_SEPARATOR);
+                StringTokenizer tokenizer = new StringTokenizer(sourcecode, System.lineSeparator());
                 while (tokenizer.hasMoreTokens()) {
                     String token = tokenizer.nextToken();
                     if (tokenizer.hasMoreTokens()) {
@@ -188,7 +208,7 @@ public class CodeFragment {
                         append(token);
                     }
                 }
-                if (sourcecode.endsWith(SystemUtils.LINE_SEPARATOR)) {
+                if (sourcecode.endsWith(System.lineSeparator())) {
                     appendln(""); //$NON-NLS-1$
                 }
             }
@@ -239,17 +259,17 @@ public class CodeFragment {
         if (length == 0) {
             return true;
         }
-        if (SystemUtils.LINE_SEPARATOR.length() == 1) {
-            return sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(0);
+        if (System.lineSeparator().length() == 1) {
+            return sourcecode.charAt(length - 1) == System.lineSeparator().charAt(0);
         }
-        if (SystemUtils.LINE_SEPARATOR.length() == 2) {
+        if (System.lineSeparator().length() == 2) {
             if (length == 1) {
                 return false;
             }
-            return (sourcecode.charAt(length - 2) == SystemUtils.LINE_SEPARATOR.charAt(0))
-                    && (sourcecode.charAt(length - 1) == SystemUtils.LINE_SEPARATOR.charAt(1));
+            return (sourcecode.charAt(length - 2) == System.lineSeparator().charAt(0))
+                    && (sourcecode.charAt(length - 1) == System.lineSeparator().charAt(1));
         }
-        throw new RuntimeException("Unknown line separator [" + SystemUtils.LINE_SEPARATOR + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new RuntimeException("Unknown line separator [" + System.lineSeparator() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

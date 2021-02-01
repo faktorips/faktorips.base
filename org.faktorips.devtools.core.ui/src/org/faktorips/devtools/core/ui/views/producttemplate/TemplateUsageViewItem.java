@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,16 +10,17 @@
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
-import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
 public class TemplateUsageViewItem {
 
@@ -94,7 +95,7 @@ public class TemplateUsageViewItem {
         SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
         Integer definedDist = Optional.ofNullable(definedAbsoluteDistribution.get(value)).orElse(0);
         BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100))
-                .divide(new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
+                .divide(new BigDecimal(pmo.getCount()), 1, RoundingMode.HALF_UP);
         return distributionPercent;
     }
 

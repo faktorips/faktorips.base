@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -62,15 +62,15 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
     @Override
     public String getJavaClassName() {
-        StringBuffer buffer = new StringBuffer(List.class.getName());
-        buffer.append('<');
-        appendBasicJavaName(buffer);
-        buffer.append('>');
-        return buffer.toString();
+        StringBuilder sb = new StringBuilder(List.class.getName());
+        sb.append('<');
+        appendBasicJavaName(sb);
+        sb.append('>');
+        return sb.toString();
     }
 
-    private void appendBasicJavaName(StringBuffer buffer) {
-        buffer.append(elementDatatypeHelper.getJavaClassName());
+    private void appendBasicJavaName(StringBuilder sb) {
+        sb.append(elementDatatypeHelper.getJavaClassName());
     }
 
     /**

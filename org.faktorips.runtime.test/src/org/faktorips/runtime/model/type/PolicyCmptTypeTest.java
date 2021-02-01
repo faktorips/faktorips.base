@@ -51,6 +51,12 @@ public class PolicyCmptTypeTest {
     }
 
     @Test
+    public void testFindSuperType() throws Exception {
+        assertThat(policyCmptType.findSuperType().map(Type::getName).get(), is(superPolicyCmptType.getName()));
+        assertThat(superPolicyCmptType.findSuperType().isPresent(), is(false));
+    }
+
+    @Test
     public void testIsConfiguredByPolicyCmptType() throws Exception {
         assertThat(policyCmptType.isConfiguredByProductCmptType(), is(true));
         assertThat(superPolicyCmptType.isConfiguredByProductCmptType(), is(false));
@@ -327,7 +333,7 @@ public class PolicyCmptTypeTest {
     @IpsAssociations({ "asso", "Asso2", "overwrittenAsso" })
     @IpsValidationRules({ "someRule", "anotherRule" })
     private static abstract class Policy extends SuperPolicy {
-        public final static String MSG_CODE_RULE = "dummy message code";
+        public static final String MSG_CODE_RULE = "dummy message code";
 
         @IpsAttribute(name = "const", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public static final int CONST = 2;
@@ -369,7 +375,7 @@ public class PolicyCmptTypeTest {
     @IpsAssociations({ "supAsso", "overwrittenAsso" })
     @IpsValidationRules({ "superRule" })
     private static abstract class SuperPolicy extends AbstractModelObject {
-        public final static String MSG_CODE_SUPER_RULE = "message code";
+        public static final String MSG_CODE_SUPER_RULE = "message code";
 
         @IpsAttribute(name = "supAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public static final int supAttr = 5;

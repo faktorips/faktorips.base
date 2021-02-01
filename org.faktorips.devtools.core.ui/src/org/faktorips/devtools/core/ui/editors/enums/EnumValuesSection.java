@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -44,22 +44,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.enums.EnumValue;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IPartReference;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -74,21 +58,36 @@ import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IPartReference;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The UI section for the <code>EnumTypeEditorPage</code> and the <code>EnumContentEditorPage</code> that
- * contains the <code>enumValuesTable</code> to be edited.
+ * The UI section for the <code>EnumTypeEditorPage</code> and the <code>EnumContentEditorPage</code>
+ * that contains the <code>enumValuesTable</code> to be edited.
  * <p>
  * If the IPS object being edited is an <code>IEnumType</code> then in-place fixing of the
- * <code>enumValuesTable</code> will be done. That means, if an <code>IEnumAttribute</code> is added there
- * will be a new column in the table, if an <code>IEnumAttribute</code> is deleted the corresponding
- * table column will be deleted and so on.
+ * <code>enumValuesTable</code> will be done. That means, if an <code>IEnumAttribute</code> is added
+ * there will be a new column in the table, if an <code>IEnumAttribute</code> is deleted the
+ * corresponding table column will be deleted and so on.
  * <p>
- * Fixing the table when editing <code>IEnumContent</code> objects is done manually by the user trough a
- * separate dialog.
+ * Fixing the table when editing <code>IEnumContent</code> objects is done manually by the user
+ * trough a separate dialog.
  * 
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditorPage
  * @see org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditorPage
@@ -106,14 +105,14 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private final IEnumValueContainer enumValueContainer;
 
     /**
-     * The <code>IEnumType</code> holding the <code>IEnumValue</code>s to be edited or <code>null</code> if an
-     * <code>IEnumContent</code> is being edited.
+     * The <code>IEnumType</code> holding the <code>IEnumValue</code>s to be edited or
+     * <code>null</code> if an <code>IEnumContent</code> is being edited.
      */
     private IEnumType enumType;
 
     /**
-     * The <code>IEnumContent</code> holding the <code>IEnumValue</code>s to be edited or <code>null</code> if
-     * an <code>IEnumType</code> is being edited.
+     * The <code>IEnumContent</code> holding the <code>IEnumValue</code>s to be edited or
+     * <code>null</code> if an <code>IEnumType</code> is being edited.
      */
     private IEnumContent enumContent;
 
@@ -159,7 +158,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     /**
      * Flag indicating whether the section is used to edit the <code>IEnumValue</code>s of an
-     * <code>IEnumType</code> (<code>true</code>) or an <code>IEnumContent</code> (<code>false</code>).
+     * <code>IEnumType</code> (<code>true</code>) or an <code>IEnumContent</code>
+     * (<code>false</code>).
      */
     private boolean enumTypeEditing;
 
@@ -168,11 +168,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private SearchBar searchBar;
 
     /**
-     * Creates a new <code>EnumValuesSection</code> containing the <code>IEnumValue</code>s of the given
-     * <code>IEnumValueContainer</code>.
+     * Creates a new <code>EnumValuesSection</code> containing the <code>IEnumValue</code>s of the
+     * given <code>IEnumValueContainer</code>.
      * 
-     * @param enumValueContainer The <code>IEnumValue</code>s of this <code>IEnumValueContainer</code> will
-     *            be shown.
+     * @param enumValueContainer The <code>IEnumValue</code>s of this
+     *            <code>IEnumValueContainer</code> will be shown.
      * @param editorSite the editor site to register common providers
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
@@ -284,15 +284,15 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private List<Integer> rowsFromSelection(ISelection selection) {
         List<Integer> rowNumbers = new ArrayList<Integer>();
         if (!selection.isEmpty()) {
-            Collection<EnumValue> rows = TypedSelection.createAnyCount(EnumValue.class, selection).getElements();
-            for (EnumValue row : rows) {
+            Collection<IEnumValue> rows = TypedSelection.createAnyCount(IEnumValue.class, selection).getElements();
+            for (IEnumValue row : rows) {
                 rowNumbers.add(calculateEnumRowNr(row));
             }
         }
         return rowNumbers;
     }
 
-    private int calculateEnumRowNr(EnumValue enumValue) {
+    private int calculateEnumRowNr(IEnumValue enumValue) {
         return enumValue.getEnumValueContainer().getEnumValues().indexOf(enumValue);
     }
 
@@ -306,13 +306,13 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Creates the table columns based on the <code>IEnumAttribute</code>s of the <code>IEnumType</code> to
-     * edit.
+     * Creates the table columns based on the <code>IEnumAttribute</code>s of the
+     * <code>IEnumType</code> to edit.
      */
     private void createTableColumnsForEnumType() {
         EnumValueTraversalStrategy previousTraversalStrategy = null;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
-            String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
+            String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
             try {
                 previousTraversalStrategy = addTableColumn(columnName,
                         currentEnumAttribute.findDatatypeIgnoreEnumContents(ipsProject),
@@ -347,7 +347,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                         IEnumAttribute currentEnumAttribute = referencedEnumType
                                 .getEnumAttributesIncludeSupertypeCopies(false).get(i);
                         previousTraversalStrategy = addTableColumn(
-                                IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute),
+                                IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute),
                                 currentEnumAttribute.findDatatype(ipsProject),
                                 currentEnumAttribute.findIsUnique(ipsProject),
                                 currentEnumAttribute.isEnumLiteralNameAttribute(),
@@ -399,9 +399,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     private FormattedCellEditingSupport<IEnumValue, ?> createInternationalStringEditingSupport(
-            TableViewerColumn newColumn, int columnIndex) {
+            TableViewerColumn newColumn,
+            int columnIndex) {
         EnumInternationalStringCellModifier cellModifier = new EnumInternationalStringCellModifier(columnIndex,
-                IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(ipsProject));
+                IIpsModel.get().getMultiLanguageSupport().getLocalizationLocaleOrDefault(ipsProject));
         EditCondition editCondition = new EditCondition() {
 
             @Override
@@ -437,8 +438,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Returns the current index of the column identified by the given name. Returns <code>null</code>
-     * if no column with the given name exists.
+     * Returns the current index of the column identified by the given name. Returns
+     * <code>null</code> if no column with the given name exists.
      */
     private int getColumnIndexByName(String columnName) {
         int[] columnOrder = enumValuesTable.getColumnOrder();
@@ -497,8 +498,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Registers this section as <code>ChangeListener</code> to the <code>IEnumValueContainer</code> that is
-     * being edited.
+     * Registers this section as <code>ChangeListener</code> to the <code>IEnumValueContainer</code>
+     * that is being edited.
      */
     private void registerAsChangeListenerToEnumValueContainer() {
         enumValueContainer.getIpsModel().addChangeListener(this);
@@ -590,7 +591,9 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         enumValuesTableViewer.refresh();
     }
 
-    /** Creates the hover service for validation messages for the <code>enumValuesTableViewer</code>. */
+    /**
+     * Creates the hover service for validation messages for the <code>enumValuesTableViewer</code>.
+     */
     private void createTableValidationHoverService() {
         new TableMessageHoverService(enumValuesTableViewer) {
 
@@ -606,8 +609,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     /**
-     * Initiates in-place fixing of the <code>enumValuesTable</code> if the <code>IEnumValueContainer</code>
-     * to be edited is an <code>IEnumType</code>.
+     * Initiates in-place fixing of the <code>enumValuesTable</code> if the
+     * <code>IEnumValueContainer</code> to be edited is an <code>IEnumType</code>.
      * <p>
      * Updates the <code>originalOrderedAttributeValuesMap</code> and refreshes the <code>
      * enumValuesTableViewer</code> when <code>IEnumValue</code>s have been added, moved or removed.
@@ -755,8 +758,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         }
 
         /**
-         * Returns <code>true</code> if the validation of the given <code>IEnumValue</code> detects an error
-         * at the given column index, <code>false</code> otherwise.
+         * Returns <code>true</code> if the validation of the given <code>IEnumValue</code> detects
+         * an error at the given column index, <code>false</code> otherwise.
          */
         private int getSeverity(IEnumValue enumValue, int columnIndex) {
             // Don't validate if the indicated column does not exist.
@@ -789,7 +792,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
              */
             IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
             IIpsProject ipsProject = enumAttributeValue.getIpsProject();
-            String columnValue = IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
+            String columnValue = IIpsModel.get().getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
                     ipsProject);
             try {
                 IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
@@ -850,11 +853,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         }
 
         /**
-         * Checks whether a row (<code>IEnumValue</code>) is empty or not. Returns <code>true</code> if all
-         * the given row's values (columns) contain a whitespace string.
+         * Checks whether a row (<code>IEnumValue</code>) is empty or not. Returns <code>true</code>
+         * if all the given row's values (columns) contain a whitespace string.
          * <p>
-         * The value <code>null</code> is treated as content. Thus a row that contains <code>null</code>
-         * values is not empty.
+         * The value <code>null</code> is treated as content. Thus a row that contains
+         * <code>null</code> values is not empty.
          */
         private boolean isRowEmpty(IEnumValue enumValue) {
             for (IEnumAttributeValue attrValue : enumValue.getEnumAttributeValues()) {

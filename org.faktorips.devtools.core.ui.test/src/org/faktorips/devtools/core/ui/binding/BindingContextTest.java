@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,22 +30,22 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.Validatable;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.ui.binding.BindingContext.Listener;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.Validatable;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -93,7 +93,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding);
 
         ContentChangeEvent contentChangeEventMock = ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile);
-        ((IpsModel)IpsPlugin.getDefault().getIpsModel()).notifyChangeListeners(contentChangeEventMock);
+        ((IpsModel)IIpsModel.get()).notifyChangeListeners(contentChangeEventMock);
 
         verify(binding, times(1)).updateUI();
     }
@@ -291,7 +291,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     public void removeMappingIfControlIsDisposed() {
         @SuppressWarnings("unchecked")
         // Class
-        FieldPropertyMappingByPropertyDescriptor<Integer> mapping = mock(FieldPropertyMappingByPropertyDescriptor.class);
+        FieldPropertyMappingByPropertyDescriptor<Integer> mapping = mock(
+                FieldPropertyMappingByPropertyDescriptor.class);
         IntegerField editField = mock(IntegerField.class);
 
         when(mapping.getField()).thenReturn(editField);
@@ -314,7 +315,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
         MessageList list = new MessageList();
         MessageList msgList = new MessageList();
-        msgList.add(new Message("code", "messageText", Message.ERROR, validatableWithError, IValueHolder.PROPERTY_VALUE));
+        msgList.add(
+                new Message("code", "messageText", Message.ERROR, validatableWithError, IValueHolder.PROPERTY_VALUE));
         when(validatable.validate(any(IIpsProject.class))).thenReturn(list);
         when(validatableWithError.validate(any(IIpsProject.class))).thenReturn(msgList);
 

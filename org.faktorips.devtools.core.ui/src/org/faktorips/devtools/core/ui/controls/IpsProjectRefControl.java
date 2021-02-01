@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,8 +16,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * A control to edit a reference to a package fragment root containing source code.
@@ -39,7 +40,7 @@ public class IpsProjectRefControl extends TextButtonControl {
     }
 
     public IIpsProject getIpsProject() {
-        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(getText());
+        IIpsProject project = IIpsModel.get().getIpsProject(getText());
         if (project.exists()) {
             return project;
         }
@@ -117,9 +118,9 @@ public class IpsProjectRefControl extends TextButtonControl {
      */
     protected IIpsProject[] collectIpsProjects() throws CoreException {
         if (isOnlyProductDefinitionProjects()) {
-            return IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
+            return IIpsModel.get().getIpsProductDefinitionProjects();
         } else {
-            return IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+            return IIpsModel.get().getIpsProjects();
         }
     }
 

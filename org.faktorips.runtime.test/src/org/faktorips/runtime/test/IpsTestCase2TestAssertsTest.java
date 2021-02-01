@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -65,9 +65,9 @@ public class IpsTestCase2TestAssertsTest {
         result.addListener(listener);
     }
 
-    private final static String OBJECT = "obj";
-    private final static String ATTRIBUTE = "attr";
-    private final static String MESSAGE = "message";
+    private static final String OBJECT = "obj";
+    private static final String ATTRIBUTE = "attr";
+    private static final String MESSAGE = "message";
 
     private static void assertFailure(IpsTestFailure failure) {
         assertEquals(OBJECT, failure.getTestObject());

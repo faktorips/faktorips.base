@@ -67,6 +67,7 @@ import org.faktorips.runtime.internal.Range
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.faktorips.runtime.util.ProductComponentLinks
 import org.faktorips.valueset.StringLengthValueSet
+import java.util.Objects
 
 @SuppressFBWarnings
 class ClassNames {
@@ -258,6 +259,8 @@ class ClassNames {
     def static IllegalStateException(AbstractGeneratorModelNode it) { addImport(typeof(IllegalStateException)) }
 
     def static ObjectUtil(AbstractGeneratorModelNode it) { addImport(typeof(ObjectUtil)) }
+
+    def static Objects(AbstractGeneratorModelNode it) { addImport(typeof(Objects)) }
 
     def static IObjectReferenceStore(AbstractGeneratorModelNode it) { addImport(typeof(IObjectReferenceStore)) }
 

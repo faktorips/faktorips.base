@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -58,30 +58,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
@@ -94,6 +70,31 @@ import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateCont
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptVRuleReference;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 
 /**
  * Navigate all Products defined in the active Project.
@@ -156,8 +157,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
     private IWorkbenchAction deleteAction;
 
     public ProductStructureExplorer() {
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+        IIpsModel.get().addChangeListener(this);
+        IIpsModel.get().addIpsSrcFilesChangedListener(this);
         // add as resource listener because refactoring-actions like move or rename
         // would not cause a model-changed-event otherwise.
     }
@@ -500,7 +501,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
         menumanager.add(new Separator("edit")); //$NON-NLS-1$
 
-        IProductCmptGeneration prodCmptGenToChange = (IProductCmptGeneration)selectedRef
+        IProductCmptGeneration prodCmptGenToChange = selectedRef
                 .getAdapter(IProductCmptGeneration.class);
         boolean editable = IpsUIPlugin.getDefault().isGenerationEditable(prodCmptGenToChange);
 
@@ -777,7 +778,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
     @Override
     protected boolean show(IAdaptable adaptable) {
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
         if (ipsSrcFile == null) {
             return false;
         }
@@ -793,7 +794,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         ((GridData)treeViewer.getTree().getLayoutData()).exclude = true;
         String msg = Messages.ProductStructureExplorer_labelCircleRelation;
         IIpsElement[] cyclePath = e.getCyclePath();
-        StringBuffer path = new StringBuffer();
+        StringBuilder path = new StringBuilder();
 
         // don't show first element if the first element is no product relevant node (e.g. effective
         // date info node)
@@ -827,7 +828,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
              * refresh.
              */
             IIpsSrcFile eventFile = event.getIpsSrcFile();
-            if (eventFile != null && event.getPart() instanceof PolicyCmptTypeAssociation) {
+            if (eventFile != null && event.getPart() instanceof IPolicyCmptTypeAssociation) {
                 // However, if an association in a policy cmpt type is modified (e.g. different
                 // cardinalities are set), the tree should refresh its labels.
                 postRefresh();
@@ -894,8 +895,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
     @Override
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
+        IIpsModel.get().removeChangeListener(this);
+        IIpsModel.get().removeIpsSrcFilesChangedListener(this);
         super.dispose();
     }
 

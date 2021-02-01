@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,10 +27,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -40,12 +40,12 @@ import org.w3c.dom.Element;
 public class Migration_3_12_0Test extends AbstractIpsPluginTest {
 
     private ArgumentCaptor<IIpsProjectProperties> propertiesCaptor;
-    private IpsProject ipsProject;
+    private IIpsProject ipsProject;
 
     @Before
     public void setup() throws Exception {
         super.setUp();
-        ipsProject = (IpsProject)newIpsProject();
+        ipsProject = newIpsProject();
         ipsProject = spy(ipsProject);
 
         IFile file = mock(IFile.class);

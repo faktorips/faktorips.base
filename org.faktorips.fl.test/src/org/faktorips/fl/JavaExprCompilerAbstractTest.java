@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -58,7 +58,7 @@ public abstract class JavaExprCompilerAbstractTest {
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression);
-        if (!ObjectUtils.equals(value, expectedValue)) {
+        if (!Objects.equals(value, expectedValue)) {
             System.out.println(result);
         }
         assertEquals(expectedValue, value);
@@ -76,18 +76,13 @@ public abstract class JavaExprCompilerAbstractTest {
         for (int i = 0; i < parameterNames.length; i++) {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }
-        IdentifierResolver<JavaCodeFragment> resolver = new IdentifierResolver<JavaCodeFragment>() {
-            @Override
-            public CompilationResult<JavaCodeFragment> compile(String identifier,
-                    ExprCompiler<JavaCodeFragment> exprCompiler,
-                    Locale locale) {
-                Object paramDatatype = parameterMap.get(identifier);
-                if (paramDatatype != null) {
-                    return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
-                }
-                return new CompilationResultImpl(new Message("",
-                        "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
+        IdentifierResolver<JavaCodeFragment> resolver = (identifier, exprCompiler, locale) -> {
+            Object paramDatatype = parameterMap.get(identifier);
+            if (paramDatatype != null) {
+                return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
             }
+            return new CompilationResultImpl(new Message("",
+                    "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
         };
         getCompiler().setIdentifierResolver(resolver);
         CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
@@ -98,7 +93,7 @@ public abstract class JavaExprCompilerAbstractTest {
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression, parameterNames, parameterValues);
-        if (!ObjectUtils.equals(value, expectedValue)) {
+        if (!Objects.equals(value, expectedValue)) {
             System.out.println(result);
         }
         assertEquals(expectedValue, value);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,26 +20,26 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Test;
 
 public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
@@ -113,14 +113,14 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * Creates another attribute in the second <code>IPolicyCmptType</code> that that corresponds
      * exactly to the attribute of the already existing <code>IPolicyCmptType</code>.
      * <p>
-     * This other <code>IPolicyCmptType</code> is configured by a new <code>IProductCmptType</code>. Based
-     * on that <code>IProductCmptType</code> exists an <code>IProductCmpt</code>. The refactoring of the
-     * original <code>IPolicyCmptTypeAttribute</code> may not cause modifications to this new
-     * <code>IProductCmpt</code>'s <code>IConfigElement</code>s.
+     * This other <code>IPolicyCmptType</code> is configured by a new <code>IProductCmptType</code>.
+     * Based on that <code>IProductCmptType</code> exists an <code>IProductCmpt</code>. The
+     * refactoring of the original <code>IPolicyCmptTypeAttribute</code> may not cause modifications
+     * to this new <code>IProductCmpt</code>'s <code>IConfigElement</code>s.
      * <p>
-     * Also creates another <code>ITestCaseType</code> based on the new <code>IPolicyCmptType</code> /
-     * <code>IPolicyCmptTypeAttribute</code>. The new <code>ITestCaseType</code> may not be modified by the
-     * refactoring, too.
+     * Also creates another <code>ITestCaseType</code> based on the new <code>IPolicyCmptType</code>
+     * / <code>IPolicyCmptTypeAttribute</code>. The new <code>ITestCaseType</code> may not be
+     * modified by the refactoring, too.
      */
     @Test
     public void testRenamePolicyCmptTypeAttributeSameNames() throws CoreException {
@@ -168,8 +168,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Test to rename an <code>IPolicyCmptTypeAttribute</code> from an <code>IPolicyCmptType</code> that is
-     * a super type of another <code>IPolicyCmptType</code>.
+     * Test to rename an <code>IPolicyCmptTypeAttribute</code> from an <code>IPolicyCmptType</code>
+     * that is a super type of another <code>IPolicyCmptType</code>.
      */
     @Test
     public void testRenamePolicyCmptTypeAttributeInheritance() throws CoreException {
@@ -201,7 +201,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(superTestAttribute.getAttribute().equals(newAttributeName));
 
         // Check for product component configuration element update.
-        assertNotNull(productCmptGeneration.getPropertyValue(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, IConfiguredDefault.class));
+        assertNotNull(
+                productCmptGeneration.getPropertyValue(POLICY_CMPT_TYPE_ATTRIBUTE_NAME, IConfiguredDefault.class));
         assertNull(productCmptGeneration.getPropertyValue("superAttribute", IConfiguredDefault.class));
         assertNotNull(productCmptGeneration.getPropertyValue(newAttributeName, IConfiguredDefault.class));
         assertEquals(newAttributeName, superConfigElement.getPolicyCmptTypeAttribute());
@@ -224,9 +225,9 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Create yet another <code>IProductCmpt</code> based on another <code>IProductCmptType</code> that has
-     * an attribute with the same name as the first <code>IProductCmptType</code> (this may no be
-     * modified by the rename refactoring).
+     * Create yet another <code>IProductCmpt</code> based on another <code>IProductCmptType</code>
+     * that has an attribute with the same name as the first <code>IProductCmptType</code> (this may
+     * no be modified by the rename refactoring).
      */
     @Test
     public void testRenameProductCmptTypeAttributeSameNames() throws CoreException {
@@ -259,8 +260,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Test to rename an <code>IProductCmptTypeAttribute</code> from an <code>IProductCmptType</code> that
-     * is a super type of another <code>IProductCmptType</code>.
+     * Test to rename an <code>IProductCmptTypeAttribute</code> from an
+     * <code>IProductCmptType</code> that is a super type of another <code>IProductCmptType</code>.
      */
     @Test
     public void testRenameProductCmptTypeAttributeInheritance() throws CoreException {

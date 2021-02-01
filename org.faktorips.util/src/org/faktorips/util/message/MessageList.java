@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,26 +18,24 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.util.AbstractMessageList;
 
 /**
- * A set of <code>Message</code>s.
+ * A list of {@link Message Messages}.
  * 
  * @see Message
- * 
- * @author Jan Ortmann
  */
-public class MessageList implements Iterable<Message> {
-
-    private List<Message> messages = new ArrayList<Message>(0);
+public class MessageList extends AbstractMessageList<Message, MessageList> {
 
     /**
      * Creates an empty message list.
      */
     public MessageList() {
-        // Provide default constructor.
+        super();
     }
 
     /**
@@ -45,7 +43,12 @@ public class MessageList implements Iterable<Message> {
      * a parameter value.
      */
     public MessageList(Message msg) {
-        add(msg);
+        super(msg);
+    }
+
+    @Override
+    protected MessageList createEmptyMessageList() {
+        return new MessageList();
     }
 
     /**
@@ -60,7 +63,7 @@ public class MessageList implements Iterable<Message> {
             return this;
         }
         MessageList newList = new MessageList();
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             newList.add(message.createCopy(objectPropertyMap));
         }
         return newList;
@@ -106,29 +109,14 @@ public class MessageList implements Iterable<Message> {
         return newInfo;
     }
 
-    /**
-     * Adds the message to the list. <code>null</code> will be ignored as a parameter value.
-     */
+    @Override
     public void add(Message msg) {
-        if (msg == null) {
-            return;
-        }
-        messages.add(msg);
+        super.add(msg);
     }
 
-    /**
-     * Adds the messages in the given list to this list.
-     * <p>
-     * <code>null</code> will be ignored as a parameter value.
-     */
+    @Override
     public void add(MessageList msgList) {
-        if (msgList == null) {
-            return;
-        }
-        int max = msgList.size();
-        for (int i = 0; i < max; i++) {
-            add(msgList.getMessage(i));
-        }
+        super.add(msgList);
     }
 
     /**
@@ -146,15 +134,18 @@ public class MessageList implements Iterable<Message> {
         if (msgList == null) {
             return;
         }
-        int max = msgList.size();
-        for (int i = 0; i < max; i++) {
-            Message msg = msgList.getMessage(i);
+        for (Message msg : msgList) {
             if (override || msg.getInvalidObjectProperties().length == 0) {
                 add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), invalidObjectProperty));
             } else {
                 add(msg);
             }
         }
+    }
+
+    @Override
+    public String getText() {
+        return super.getText();
     }
 
     /**
@@ -165,41 +156,39 @@ public class MessageList implements Iterable<Message> {
      * @param message message to remove from this message list
      */
     public void remove(Message message) {
-        messages.remove(message);
+        getMessages().remove(message);
     }
 
-    /**
-     * Returns true if the list is empty.
-     */
+    @Override
     public boolean isEmpty() {
-        return messages.isEmpty();
+        return super.isEmpty();
     }
 
-    /**
-     * Returns the total number of messages in the list.
-     * 
-     */
+    @Override
     public int size() {
-        return messages.size();
+        return super.size();
     }
 
     /**
-     * Returns the total number of messages in the list.
-     * 
-     * @deprecated use {@link #size()}
+     * @deprecated Use #size() instead
      */
+    @Override
     @Deprecated
     public int getNoOfMessages() {
-        return size();
+        return super.getNoOfMessages();
+    }
+
+    @Override
+    public Message getMessage(int index) {
+        return super.getMessage(index);
     }
 
     /**
      * Returns the number of messages in this list that have the indicated severity.
      */
     public int getNoOfMessages(int severity) {
-        List<Message> msgList = new ArrayList<Message>(messages.size());
-        for (int i = 0; i < messages.size(); i++) {
-            Message msg = messages.get(i);
+        List<Message> msgList = new ArrayList<Message>(getMessages().size());
+        for (Message msg : getMessages()) {
             if (msg.getSeverity() == severity) {
                 msgList.add(msg);
             }
@@ -208,19 +197,10 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
-     * Returns the message at the indicated index (indexing starts with 0).
-     * 
-     * @throws IndexOutOfBoundsException if the index is out of range.
-     */
-    public Message getMessage(int index) {
-        return messages.get(index);
-    }
-
-    /**
      * Returns the first message with the given severity or null if none is found.
      */
     public Message getFirstMessage(int severity) {
-        for (Message msg : messages) {
+        for (Message msg : getMessages()) {
             if (msg.getSeverity() == severity) {
                 return msg;
             }
@@ -228,27 +208,20 @@ public class MessageList implements Iterable<Message> {
         return null;
     }
 
-    /**
-     * Returns the message with the highest severity or <code>null</code> if the list does not
-     * contain any message. If more than one message with the highest severity exists, the first one
-     * is returned.
-     */
+    @Override
     public Message getMessageWithHighestSeverity() {
         int highestSeverity = getSeverity();
         return getFirstMessage(highestSeverity);
     }
 
-    /**
-     * Returns the first message in the list that has the indicated message code. Returns null, if
-     * the list does not contain such a message.
-     */
+    @Override
     public Message getMessageByCode(String code) {
-        for (int i = 0; i < size(); i++) {
-            if (getMessage(i).getCode().equals(code)) {
-                return getMessage(i);
-            }
-        }
-        return null;
+        return super.getMessageByCode(code);
+    }
+
+    @Override
+    public MessageList getMessagesByCode(String code) {
+        return super.getMessagesByCode(code);
     }
 
     /**
@@ -257,9 +230,9 @@ public class MessageList implements Iterable<Message> {
      */
     public int getSeverity() {
         int severity = 0;
-        for (int i = 0; i < size(); i++) {
-            if (getMessage(i).getSeverity() > severity) {
-                severity = getMessage(i).getSeverity();
+        for (Message msg : getMessages()) {
+            if (msg.getSeverity() > severity) {
+                severity = msg.getSeverity();
                 if (severity == Message.ERROR) {
                     return severity;
                 }
@@ -268,51 +241,30 @@ public class MessageList implements Iterable<Message> {
         return severity;
     }
 
-    /**
-     * Returns the text of all messages in the list, separated by the system's default line
-     * separator.
-     */
-    public String getText() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 0; i < size(); i++) {
-            if (i > 0) {
-                s.append(SystemUtils.LINE_SEPARATOR);
-            }
-            s.append(getMessage(i).getText());
-        }
-        return s.toString();
-
-    }
-
-    /**
-     * Returns true if one the messages in the list is an error message, otherwise false.
-     */
+    @Override
     public boolean containsErrorMsg() {
-        for (int i = 0; i < size(); i++) {
-            if (getMessage(i).getSeverity() == Message.ERROR) {
+        for (Message msg : getMessages()) {
+            if (msg.getSeverity() == Message.ERROR) {
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * Returns a new list with the messages in this list that belong to the given object (any
-     * property). Returns an empty list if no such message is found.
-     */
-    public MessageList getMessagesFor(Object object) {
-        return getMessagesFor(object, null);
+    @Override
+    public MessageList getMessagesFor(Object object, String property) {
+        return super.getMessagesFor(object, property);
     }
 
-    /**
-     * Returns a new list with the messages in this list that belong to the given object and
-     * property and the property is of the given index. Returns an empty list if no such message is
-     * found.
-     */
+    @Override
+    public MessageList getMessagesFor(Object object) {
+        return super.getMessagesFor(object);
+    }
+
+    @Override
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
-        for (int i = 0; i < size(); i++) {
-            Message msg = getMessage(i);
+        for (Message msg : getMessages()) {
             ObjectProperty[] op = msg.getInvalidObjectProperties();
             for (ObjectProperty element : op) {
                 if (element.getObject().equals(object)) {
@@ -333,88 +285,38 @@ public class MessageList implements Iterable<Message> {
 
     }
 
-    /**
-     * Returns a new list with the messages in this list that belong to the given object and
-     * property. Returns an empty list if no such message is found.
-     */
-    public MessageList getMessagesFor(Object object, String property) {
-        return getMessagesFor(object, property, -1);
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+    }
+
+    @Override
+    public Iterator<Message> iterator() {
+        return super.iterator();
     }
 
     /**
-     * Returns a new <code>MessageList</code> containing only the <code>Message</code>s with the indicated
-     * severity.
+     * Returns a new <code>MessageList</code> containing only the <code>Message</code>s with the
+     * indicated severity.
      */
     public MessageList getMessages(int severity) {
         MessageList messageList = new MessageList();
-        for (Message message : messages) {
+        for (Message message : getMessages()) {
             if (message.getSeverity() == severity) {
                 messageList.add(message);
             }
         }
         return messageList;
-    }
-
-    /**
-     * Returns all messages in the list separated by a line separator.
-     */
-    @Override
-    public String toString() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 0; i < size(); i++) {
-            s.append(getMessage(i).toString() + SystemUtils.LINE_SEPARATOR);
-        }
-        return s.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-
-        if (!(o instanceof MessageList)) {
-            return false;
-        }
-
-        MessageList other = (MessageList)o;
-
-        if (this.size() != other.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < other.size(); i++) {
-            Message message = messages.get(i);
-            Message otherMessage = other.messages.get(i);
-            if (!((message == null) ? otherMessage == null : message.equals(otherMessage))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + size();
-        for (Message message : messages) {
-            int c = (message == null) ? 0 : message.hashCode();
-            result = 31 * result + c;
-        }
-        return result;
-    }
-
-    /**
-     * Deletes all messages this list contains.
-     */
-    public void clear() {
-        messages.clear();
-    }
-
-    @Override
-    public Iterator<Message> iterator() {
-        return messages.iterator();
     }
 
     /**
@@ -426,8 +328,7 @@ public class MessageList implements Iterable<Message> {
      */
     public void wrapUpMessages(String messageCode) {
         Map<String, Message> messageTextMap = new LinkedHashMap<String, Message>();
-        for (Iterator<Message> iterator = messages.iterator(); iterator.hasNext();) {
-            Message message = iterator.next();
+        for (Message message : getMessages()) {
             if (message.getCode().equals(messageCode)) {
                 Message msgByText = getMessageByText(messageTextMap, message);
                 ObjectProperty[] newInvalidObjects = concatInvalidObject(msgByText.getInvalidObjectProperties(),
@@ -437,7 +338,7 @@ public class MessageList implements Iterable<Message> {
                 messageTextMap.put(newMessage.getText(), newMessage);
             }
         }
-        messages = new ArrayList<Message>(messageTextMap.values());
+        setMessages(new ArrayList<Message>(messageTextMap.values()));
     }
 
     private Message getMessageByText(Map<String, Message> messageTextMap, Message message) {
@@ -470,10 +371,25 @@ public class MessageList implements Iterable<Message> {
      */
     public MessageList getSubList(int maxCount) {
         MessageList messageList = new MessageList();
-        ArrayList<Message> messagesCopy = new ArrayList<Message>(messages);
+        ArrayList<Message> messagesCopy = new ArrayList<Message>(getMessages());
         Collections.sort(messagesCopy, new SeverityComparator());
-        messageList.messages = messagesCopy.subList(0, Math.min(maxCount, size()));
+        messageList.setMessages(messagesCopy.subList(0, Math.min(maxCount, size())));
         return messageList;
+    }
+
+    @Override
+    public Spliterator<Message> spliterator() {
+        return super.spliterator();
+    }
+
+    @Override
+    public Stream<Message> stream() {
+        return super.stream();
+    }
+
+    @Override
+    public Stream<Message> parallelStream() {
+        return super.parallelStream();
     }
 
     public static class SeverityComparator implements Comparator<Message>, Serializable {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,8 +17,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * A completion processor that completes the parameter names of the parameters of a business
@@ -45,7 +45,8 @@ public class ParameterCompletionProcessor extends AbstractCompletionProcessor {
                 continue;
             }
             if (parameter.getName().startsWith(match)) {
-                result.add(new CompletionProposal(parameter.getName(), 0, documentOffset, parameter.getName().length()));
+                result.add(
+                        new CompletionProposal(parameter.getName(), 0, documentOffset, parameter.getName().length()));
             }
         }
     }

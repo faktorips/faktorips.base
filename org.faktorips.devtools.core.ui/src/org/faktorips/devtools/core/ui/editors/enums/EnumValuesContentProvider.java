@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
 
 /** The content provider for the table viewer. */
 public class EnumValuesContentProvider implements IStructuredContentProvider {

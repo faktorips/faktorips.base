@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,16 +23,15 @@ import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 
 class SimpleGetterMethodCollector<E extends ModelElement, P extends Annotation, C extends Annotation> extends
-TypePartCollector<E, SimpleGetterMethodModelDescriptor<E>> {
+        TypePartCollector<E, SimpleGetterMethodModelDescriptor<E>> {
     private Class<P> annotationClass;
     private NamesAccessor<P> namesAccessor;
     private ModelElementCreator<E> modelElementCreator;
 
-    @SuppressWarnings("unchecked")
     public SimpleGetterMethodCollector(Class<P> classAnnotationClass, NamesAccessor<P> namesAccessor,
             Class<C> getterAnnotationClass, NameAccessor<C> nameAccessor, ModelElementCreator<E> modelElementCreator) {
-        super(
-                Arrays.<AnnotationProcessor<?, SimpleGetterMethodModelDescriptor<E>>> asList(new SimpleGetterMethodAnnotationProcessor<C, SimpleGetterMethodModelDescriptor<E>>(
+        super(Arrays.<AnnotationProcessor<?, SimpleGetterMethodModelDescriptor<E>>> asList(
+                new SimpleGetterMethodAnnotationProcessor<C, SimpleGetterMethodModelDescriptor<E>>(
                         getterAnnotationClass, nameAccessor)));
         this.annotationClass = classAnnotationClass;
         this.namesAccessor = namesAccessor;

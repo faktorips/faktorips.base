@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,16 +11,18 @@
 package org.faktorips.util.message;
 
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.SystemUtils;
+import org.faktorips.runtime.util.IMessage;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * A human readable text message with an optional code that identifies the type of the message and a
  * severity that indicates if this is an error, warning or information.
  * <p>
- * Example: If the formula compiler can't resolve a symbol xyz it generates a message
- * "Can't resolve symbol xyz" (if the local is English). The message's code is UnresolvedSymbol
- * independent of the concrete symbol and locale.
+ * Example: If the formula compiler can't resolve a symbol xyz it generates a message "Can't resolve
+ * symbol xyz" (if the local is English). The message's code is UnresolvedSymbol independent of the
+ * concrete symbol and locale.
  * <p>
  * In addition a message can provide access to the invalid objects the message relates to and its
  * properties. E.g. if a message reads that "the association's minimum cardinality can't be greater
@@ -32,7 +34,7 @@ import org.apache.commons.lang.SystemUtils;
  * 
  * @author Jan Ortmann
  */
-public class Message {
+public class Message implements IMessage {
 
     /** The XML tag name for messages. */
     public static final String TAG_NAME = "Message";
@@ -226,7 +228,10 @@ public class Message {
      * @param invalidProperties The name of the invalid properties (which are properties of the
      *            invalidObject)
      */
-    public static final Message newWarning(String code, String text, Object invalidObject, String... invalidProperties) {
+    public static final Message newWarning(String code,
+            String text,
+            Object invalidObject,
+            String... invalidProperties) {
         return new Message(code, text, WARNING, invalidObject, invalidProperties);
     }
 
@@ -295,16 +300,12 @@ public class Message {
         return severity;
     }
 
-    /**
-     * Returns the human readable message text.
-     */
+    @Override
     public String getText() {
         return text;
     }
 
-    /**
-     * Returns a string representing the identification code of this message.
-     */
+    @Override
     public String getCode() {
         return code;
     }
@@ -323,37 +324,31 @@ public class Message {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         switch (severity) {
             case ERROR:
-                buffer.append("ERROR");
+                sb.append("ERROR");
                 break;
             case WARNING:
-                buffer.append("WARNING ");
+                sb.append("WARNING ");
                 break;
             case INFO:
-                buffer.append("INFO");
+                sb.append("INFO");
                 break;
             default:
-                buffer.append("Severity ");
-                buffer.append(severity);
+                sb.append("Severity ");
+                sb.append(severity);
         }
-        buffer.append(' ');
-        buffer.append(code);
-        buffer.append('[');
-        for (int i = 0; i < invalidOp.length; i++) {
-            if (i > 0) {
-                buffer.append(", ");
-            }
-            buffer.append(invalidOp[i].getObject().toString());
-            buffer.append('.');
-            buffer.append(invalidOp[i].getProperty());
-        }
-        buffer.append(']');
-        buffer.append(SystemUtils.LINE_SEPARATOR);
-        buffer.append(text);
+        sb.append(' ');
+        sb.append(code);
+        sb.append('[');
+        StringBuilderJoiner.join(sb, invalidOp,
+                o -> sb.append(Objects.toString(o.getObject()) + "." + o.getProperty()));
+        sb.append(']');
+        sb.append(System.lineSeparator());
+        sb.append(text);
 
-        return buffer.toString();
+        return sb.toString();
     }
 
     @Override
@@ -392,8 +387,9 @@ public class Message {
 
             String invalidProperty = invalidOp[i].getProperty();
             String otherInvalidProperty = other.invalidOp[i].getProperty();
-            if (!((invalidProperty == null) ? otherInvalidProperty == null : invalidProperty
-                    .equals(otherInvalidProperty))) {
+            if (!((invalidProperty == null) ? otherInvalidProperty == null
+                    : invalidProperty
+                            .equals(otherInvalidProperty))) {
                 return false;
             }
         }

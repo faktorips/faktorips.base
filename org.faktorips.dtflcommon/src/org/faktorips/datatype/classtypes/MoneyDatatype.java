@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,7 @@
 
 package org.faktorips.datatype.classtypes;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
@@ -58,7 +58,7 @@ public class MoneyDatatype extends ValueClassNameDatatype implements NumericData
         Money a = Money.valueOf(dividend);
         Money b = Money.valueOf(divisor);
         try {
-            a.getAmount().divide(b.getAmount(), 0, BigDecimal.ROUND_UNNECESSARY);
+            a.getAmount().divide(b.getAmount(), 0, RoundingMode.UNNECESSARY);
         } catch (ArithmeticException e) {
             return false;
         }

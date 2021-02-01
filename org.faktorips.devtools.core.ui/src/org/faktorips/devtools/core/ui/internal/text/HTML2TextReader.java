@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -238,24 +238,24 @@ public class HTML2TextReader extends SubstitutionTextReader {
      */
     private String processHTMLTag() throws IOException {
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int ch;
         do {
             ch = nextChar();
             while (ch != -1 && ch != '>') {
-                buf.append(Character.toLowerCase((char)ch));
+                sb.append(Character.toLowerCase((char)ch));
                 ch = nextChar();
                 if (ch == '"') {
-                    buf.append(Character.toLowerCase((char)ch));
+                    sb.append(Character.toLowerCase((char)ch));
                     ch = nextChar();
                     while (ch != -1 && ch != '"') {
-                        buf.append(Character.toLowerCase((char)ch));
+                        sb.append(Character.toLowerCase((char)ch));
                         ch = nextChar();
                     }
                 }
                 if (ch == '<') {
                     unread(ch);
-                    return '<' + buf.toString();
+                    return '<' + sb.toString();
                 }
             }
 
@@ -263,18 +263,18 @@ public class HTML2TextReader extends SubstitutionTextReader {
                 return null;
             }
 
-            int tagLen = buf.length();
+            int tagLen = sb.length();
             // needs special treatment for comments
-            if ((tagLen >= 3 && "!--".equals(buf.substring(0, 3))) //$NON-NLS-1$
-                    && !(tagLen >= 5 && "--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
+            if ((tagLen >= 3 && "!--".equals(sb.substring(0, 3))) //$NON-NLS-1$
+                    && !(tagLen >= 5 && "--".equals(sb.substring(tagLen - 2)))) { //$NON-NLS-1$
                 // unfinished comment
-                buf.append(ch);
+                sb.append(ch);
             } else {
                 break;
             }
         } while (true);
 
-        return html2Text(buf.toString());
+        return html2Text(sb.toString());
     }
 
     private String processPreformattedText(int c) {
@@ -314,7 +314,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
      * A '&' has been read. Process a entity
      */
     private String processEntity() throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int ch = nextChar();
         while (Character.isLetterOrDigit((char)ch) || ch == '#') {
             buf.append((char)ch);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,6 +14,8 @@ import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
@@ -36,12 +38,12 @@ public class ContentProposalListener implements IContentProposalListener {
     public void proposalAccepted(IContentProposal proposal) {
         String content = proposal.getContent();
         int pos = proposal.getCursorPosition();
-        Text control = (Text)contentProposalAdapter.getControl();
+        Control control = contentProposalAdapter.getControl();
         IControlContentAdapter controlContentAdapter = contentProposalAdapter.getControlContentAdapter();
+        int cursorPosition = controlContentAdapter.getCursorPosition(control);
 
         if (proposal instanceof ContentProposal) {
             ContentProposal contentProposal = (ContentProposal)proposal;
-            int cursorPosition = controlContentAdapter.getCursorPosition(control);
             int prefixLength = contentProposal.getPrefixLength();
             if (prefixLength > 0) {
                 int newCursorPosition = cursorPosition - prefixLength;
@@ -49,12 +51,25 @@ public class ContentProposalListener implements IContentProposalListener {
                     controlContentAdapter.setCursorPosition(contentProposalAdapter.getControl(), newCursorPosition);
                     pos = newCursorPosition;
                 }
-                String textBefore = control.getText().substring(0, newCursorPosition);
-                String textBehind = control.getText().substring(cursorPosition, control.getText().length());
-                controlContentAdapter.setControlContents(control, textBefore + textBehind, newCursorPosition);
+                if (control instanceof Text) {
+                    Text textControl = (Text)control;
+                    String textBefore = textControl.getText().substring(0, newCursorPosition);
+                    String textBehind = textControl.getText().substring(cursorPosition, textControl.getText().length());
+                    controlContentAdapter.setControlContents(textControl, textBefore + textBehind, newCursorPosition);
+                }
+                if (control instanceof StyledText) {
+                    StyledText textControl = (StyledText)control;
+                    String textBefore = textControl.getText().substring(0, newCursorPosition);
+                    String textBehind = textControl.getText().substring(cursorPosition, textControl.getText().length());
+                    controlContentAdapter.setControlContents(textControl, textBefore + textBehind, newCursorPosition);
+                }
+
             }
         }
         controlContentAdapter.insertControlContents(control, content, pos + content.length());
+        if (proposal instanceof ContentProposal && control instanceof StyledText) {
+            ((StyledText)control).setCaretOffset(cursorPosition + content.length());
+        }
     }
 
 }

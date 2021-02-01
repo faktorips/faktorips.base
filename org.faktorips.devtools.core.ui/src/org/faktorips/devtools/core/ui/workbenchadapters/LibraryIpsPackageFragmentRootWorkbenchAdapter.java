@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
 
 public class LibraryIpsPackageFragmentRootWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 

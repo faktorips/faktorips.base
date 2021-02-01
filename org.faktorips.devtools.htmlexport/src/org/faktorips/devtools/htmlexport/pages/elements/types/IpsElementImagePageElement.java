@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,26 +15,27 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestRule;
-import org.faktorips.devtools.core.model.testcase.ITestValue;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestRule;
+import org.faktorips.devtools.model.testcase.ITestValue;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 
 /**
  * A {@link IPageElement} representing an image for an {@link IIpsElement}.
@@ -53,10 +54,19 @@ public class IpsElementImagePageElement extends ImagePageElement {
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
-        CompletableFuture<ImageData> futureImageData = new CompletableFuture<>();
-        Display.getDefault().syncExec(
-                () -> futureImageData.complete(IpsUIPlugin.getImageHandling().getImage(element, true).getImageData()));
-        return futureImageData.join();
+        if (Display.getCurrent() == null && !PlatformUI.isWorkbenchRunning()) {
+            return IpsUIPlugin.getImageHandling()
+                    .getImage(element, true)
+                    .getImageData();
+        } else {
+            CompletableFuture<ImageData> futureImageData = new CompletableFuture<>();
+            Display.getDefault()
+                    .syncExec(() -> futureImageData
+                            .complete(IpsUIPlugin.getImageHandling()
+                                    .getImage(element, true)
+                                    .getImageData()));
+            return futureImageData.join();
+        }
     }
 
     private static String getIpsElementImageName(IIpsElement element) throws CoreException {

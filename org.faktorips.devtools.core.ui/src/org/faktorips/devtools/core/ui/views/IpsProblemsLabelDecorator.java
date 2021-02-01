@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,19 +24,20 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.IpsBuilder;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This decorator marks <code>IIpsObject</code>s, <code>IIpsPackageFragment</code>s,
- * <code>IIpsPackageFragmentRoot</code>s and <code>IIpsProject</code>s with warning and error icons if
- * problems are detected.
+ * <code>IIpsPackageFragmentRoot</code>s and <code>IIpsProject</code>s with warning and error icons
+ * if problems are detected.
  * <p>
- * The <code>IpsProblemsLabelDecorator</code> is configurable for flat or hierarchical layout styles in
- * <code>TreeViewer</code>s.
+ * The <code>IpsProblemsLabelDecorator</code> is configurable for flat or hierarchical layout styles
+ * in <code>TreeViewer</code>s.
  * 
  * @author Stefan Widmaier
  */
@@ -44,8 +45,8 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     /**
      * Indicates if the LabelDecorator works with a flat or hierarchical view structure where
-     * <code>true</code> means flat layout and <code>false</code> means hierarchical layout. Default is
-     * <code>false</code> for use with the hierarchical <code>ProductStructureExplorer</code>.
+     * <code>true</code> means flat layout and <code>false</code> means hierarchical layout. Default
+     * is <code>false</code> for use with the hierarchical <code>ProductStructureExplorer</code>.
      */
     private boolean isFlatLayout = false;
 
@@ -53,7 +54,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     private ArrayList<ILabelProviderListener> listeners = null;
 
-    private final static int DEFAULT_FLAG = -1;
+    private static final int DEFAULT_FLAG = -1;
 
     private ResourceManager resourceManager;
 
@@ -108,12 +109,12 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                         depth = IResource.DEPTH_ONE;
                     }
                 }
-                return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, depth);
+                return res.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, true, depth);
             }
         } else if (element instanceof IResource) {
             IResource resource = (IResource)element;
             if (resource.isAccessible()) {
-                return resource.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+                return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
             } else {
                 return DEFAULT_FLAG;
             }
@@ -123,8 +124,8 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     /**
-     * Collects the error flags of all <code>IIpsPackageFragmentRoot</code>s contained in the given ips
-     * project and returns the resulting flag. This procedure makes sure no markers of the
+     * Collects the error flags of all <code>IIpsPackageFragmentRoot</code>s contained in the given
+     * ips project and returns the resulting flag. This procedure makes sure no markers of the
      * underlying java-project are interpreted as problems of the ips project and erroneously
      * displayed by the decorator.
      */

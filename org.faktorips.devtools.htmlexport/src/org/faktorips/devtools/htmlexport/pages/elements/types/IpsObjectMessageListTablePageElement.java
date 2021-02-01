@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.Description;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -37,8 +37,8 @@ public class IpsObjectMessageListTablePageElement extends MessageListTablePageEl
 
     @Override
     protected IPageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
-        if (objectProperty.getObject() instanceof Description) {
-            IIpsElement element = ((Description)objectProperty.getObject()).getParent();
+        if (objectProperty.getObject() instanceof IDescription) {
+            IIpsElement element = ((IDescription)objectProperty.getObject()).getParent();
             return new TextPageElement(getContext().getLabel(element), getContext());
         }
         if (objectProperty.getObject() instanceof IIpsElement) {

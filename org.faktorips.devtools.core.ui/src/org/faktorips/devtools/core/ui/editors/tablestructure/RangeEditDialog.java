@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,17 +31,15 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.IColumnRange;
 
 /**
  * A dialog to edit a range.
@@ -53,7 +51,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
 
     private TextField fromField;
     private TextField toField;
-    private EnumValueField rangeTypeField;
+    private EnumField<ColumnRangeType> rangeTypeField;
     private TextField parameterNameField;
     private Button topRight;
     private Button topLeft;
@@ -90,14 +88,9 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite rangeTypeArea = getToolkit().createGridComposite(c, 2, false, true);
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
-        rangeTypeField = new EnumValueField(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.getEnumType()),
-                ColumnRangeType.getEnumType());
-        rangeTypeField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue());
-            }
-        });
+        rangeTypeField = new EnumField<ColumnRangeType>(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.class),
+                ColumnRangeType.class);
+        rangeTypeField.addChangeListener(e -> adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue()));
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
         Text parameterNameText = getToolkit().createText(rangeTypeArea);
         parameterNameField = new TextField(parameterNameText);

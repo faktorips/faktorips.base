@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.faktorips.devtools.core.model.value.ValueType;
-import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
+import org.faktorips.devtools.model.value.ValueType;
+import org.faktorips.devtools.model.value.ValueTypeMismatch;
 
 /**
  * Shows the mismatches in {@link ValueType}

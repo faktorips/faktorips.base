@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,9 +22,9 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.datatype.joda.MonthDayDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
 import org.junit.Test;
 

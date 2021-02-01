@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * A content proposal for {@link IIpsSrcFile IPS source files}. The label and image of these
@@ -45,7 +45,7 @@ class IpsSrcFileContentProposal implements IContentProposal {
 
     @Override
     public String getDescription() {
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+        String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(
                 getIpsSrcFile().getIpsObject());
         return localizedDescription.isEmpty() ? null : localizedDescription;
     }

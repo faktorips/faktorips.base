@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,10 +28,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Abstract base class for global actions that want to provide refactoring support.
@@ -95,7 +95,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
             if (!(selectedElement instanceof IAdaptable)) {
                 break;
             }
-            IIpsElement selectedIpsElement = (IIpsElement)((IAdaptable)selectedElement).getAdapter(IIpsElement.class);
+            IIpsElement selectedIpsElement = ((IAdaptable)selectedElement).getAdapter(IIpsElement.class);
             if (selectedIpsElement == null) {
                 break;
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,15 +23,15 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This class provides the ModelExplorer with labels for its tree-elements. Label names for
@@ -104,7 +104,7 @@ public class ModelLabelProvider implements ILabelProvider {
 
             IWorkbenchAdapter adapter = null;
             if (element instanceof IAdaptable) {
-                adapter = (IWorkbenchAdapter)((IAdaptable)element).getAdapter(IWorkbenchAdapter.class);
+                adapter = ((IAdaptable)element).getAdapter(IWorkbenchAdapter.class);
             }
             if (adapter == null) {
                 return null;
@@ -150,7 +150,8 @@ public class ModelLabelProvider implements ILabelProvider {
             return defaultLabelProvider.getText(element);
 
         } else if (element instanceof IProject && ((IProject)element).isOpen()) {
-            String labelAddition = productDefinitionLabelProvider ? Messages.ModelLabelProvider_noProductDefinitionProjectLabel
+            String labelAddition = productDefinitionLabelProvider
+                    ? Messages.ModelLabelProvider_noProductDefinitionProjectLabel
                     : Messages.ModelExplorer_nonIpsProjectLabel;
             return ((IProject)element).getName() + NLS.bind(" ({0})", labelAddition); //$NON-NLS-1$
 

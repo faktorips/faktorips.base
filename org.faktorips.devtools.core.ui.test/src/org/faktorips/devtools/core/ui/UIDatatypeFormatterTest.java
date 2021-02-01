@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,16 +24,16 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormatFactory;
 import org.faktorips.devtools.core.ui.inputformat.DateTimeISOStringFormatFactory;
 import org.faktorips.devtools.core.ui.inputformat.IDatatypeInputFormatFactory;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormatFactory;
 import org.faktorips.devtools.core.ui.inputformat.parse.Messages;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

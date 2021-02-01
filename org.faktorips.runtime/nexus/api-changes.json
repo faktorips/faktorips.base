@@ -1,7 +1,11 @@
 {
-  "all-versions": {
-    "revapi": {
-      "ignore": [
+  "all-versions": [
+  {
+    "extension": "revapi.differences",
+	"id": "all-versions",
+    "configuration": {
+      "ignore": true,
+      "differences": [
         {
           "code": "java.missing.oldClass",
           "old": "missing-class junit.framework.Test",
@@ -16,10 +20,14 @@
         }
       ]
     }
-  },
-  "19.12.0": {
-    "revapi": {
-      "ignore": [
+   }
+  ],
+  "19.12.0": [
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "ignore": true,
+      "differences": [
         {
           "code": "java.method.addedToInterface",
           "new": "method <T> T org.faktorips.runtime.IRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
@@ -86,13 +94,17 @@
           "code": "java.method.finalMethodAddedToNonFinalClass",
           "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newRemoveDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
           "justification": "FIPS-5998: Delta for Associations"
-        }
+       }
       ]
     }
-  },
-  "19.12.1": {
-    "revapi": {
-      "ignore": [
+   }
+  ],
+  "19.12.1": [
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "ignore": true,
+      "differences": [
         {
           "code": "java.method.added",
           "new": "method java.lang.String org.faktorips.runtime.test.IpsTestFailure::getActualValueAsString()",
@@ -105,10 +117,14 @@
         }
       ]
     }
-  },
-  "20.12.0": {
-    "revapi": {
-      "ignore": [
+  }
+  ],
+  "20.12.0": [
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "ignore": true,
+      "differences": [
         {
           "code": "java.method.added",
           "new": "method java.lang.Class<?> org.faktorips.runtime.model.enumtype.EnumType::getEnumClass()",
@@ -169,8 +185,14 @@
           "new": "class org.faktorips.runtime.jaxb..*",
           "superClass": "javax.xml.bind..*",
           "justification": "Java 11"
+        },
+        {
+          "code": "java.method.finalMethodAddedToNonFinalClass",
+          "new": "method org.faktorips.values.Money org.faktorips.values.Money::valueOf(org.faktorips.values.Decimal, java.util.Currency, java.math.RoundingMode)",
+          "justification": "FIPS-6234: Use RoundingMode enum instead of BigDecimal rounding mode int constants"
         }
       ]
     }
-  }
+   }
+  ]
 }

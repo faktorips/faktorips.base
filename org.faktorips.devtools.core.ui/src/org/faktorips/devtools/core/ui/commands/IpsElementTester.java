@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.commands;
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Tests some properties of ips elemtns for example whether the element is ediable or not. The
@@ -64,7 +64,7 @@ public class IpsElementTester extends PropertyTester {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
             return ipsSrcFile.isMutable();
         }
-        IResource resource = (IResource)ipsElement.getAdapter(IResource.class);
+        IResource resource = ipsElement.getAdapter(IResource.class);
         if (resource != null && resource.getResourceAttributes() != null) {
             return !resource.getResourceAttributes().isReadOnly();
         }

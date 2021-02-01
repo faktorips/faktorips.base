@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,6 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -51,13 +50,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -75,6 +67,14 @@ import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -480,7 +480,7 @@ public class SourcePage extends WizardPage {
     private void setMessagePleaseEnterWorkingDate() {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             String productCmptTypeName;
-            productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(getStructure().getRoot()
+            productCmptTypeName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(getStructure().getRoot()
                     .getProductCmpt().findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
             setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
         } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
@@ -781,7 +781,8 @@ public class SourcePage extends WizardPage {
                         progressMonitor = new NullProgressMonitor();
                     }
                     progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
-                    SubProgressMonitor subProgressMonitor = new SubProgressMonitor(progressMonitor, 6);
+                     @SuppressWarnings("deprecation")
+       org.eclipse.core.runtime.SubProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 6);
                     getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
                     progressMonitor.worked(1);
                     tree.refresh();

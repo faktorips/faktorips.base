@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,16 +13,16 @@ package org.faktorips.devtools.core.ui.editors.enumcontent;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.EnumsDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
 
 /**
  * The Faktor-IPS editor to edit <code>IEnumContent</code> objects with.
  * 
- * @see org.faktorips.devtools.core.model.enums.IEnumContent
+ * @see org.faktorips.devtools.model.enums.IEnumContent
  * 
  * @author Alexander Weickmann
  * 

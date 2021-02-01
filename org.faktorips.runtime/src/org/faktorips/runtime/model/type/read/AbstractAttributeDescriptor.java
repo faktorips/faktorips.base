@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,6 +12,7 @@ package org.faktorips.runtime.model.type.read;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.type.Attribute;
 import org.faktorips.runtime.model.type.ModelElement;
@@ -52,17 +53,17 @@ public abstract class AbstractAttributeDescriptor<T extends Attribute> extends P
             // it could be defined in a super type but overridden (with the same name and
             // datatype) in this type. That leads to a different implementation being generated
             // but not a new annotation.
-            Type superType = type.getSuperType();
-            if (superType != null) {
-                Attribute attribute = superType.getAttribute(getName());
-                if (attribute != null) {
-                    @SuppressWarnings("unchecked")
-                    T overwritingAttribute = (T)attribute.createOverwritingAttributeFor(type);
-                    return overwritingAttribute;
-                }
-            }
-            throw new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
-                    + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found.");
+
+            Type superType = type.findSuperType()
+                    .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
+                            + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found."));
+            Attribute attribute = Optional.ofNullable(superType.getAttribute(getName()))
+                    .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
+                            + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found."));
+
+            @SuppressWarnings("unchecked")
+            T overwritingAttribute = (T)attribute.createOverwritingAttributeFor(type);
+            return overwritingAttribute;
         }
     }
 

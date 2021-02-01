@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,13 +17,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -82,7 +82,7 @@ public class Migration_3_6_0_rfinal extends AbstractIpsProjectMigrationOperation
         }
         // CSOFF: IllegalCatch
         try {
-            doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
+                doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
             return msgResultList;

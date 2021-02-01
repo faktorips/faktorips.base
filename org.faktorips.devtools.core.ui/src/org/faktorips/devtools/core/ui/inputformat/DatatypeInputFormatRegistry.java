@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.osgi.framework.Bundle;
 
 public class DatatypeInputFormatRegistry {
@@ -43,6 +43,7 @@ public class DatatypeInputFormatRegistry {
      */
     public void initDatatypeInputFormatMap(IExtensionRegistry registry) {
         getInputFormatMap().clear();
+        // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(IpsUIPlugin.EXTENSION_POINT_INPUT_FORMAT);
         for (IExtension extension : extensions) {
@@ -68,7 +69,8 @@ public class DatatypeInputFormatRegistry {
         } catch (CoreException e) {
             throw new CoreRuntimeException(new IpsStatus(
                     "Unable to create the InputFormatFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier(), e));
+                            + extension.getUniqueIdentifier(),
+                    e));
         }
     }
 
@@ -89,7 +91,8 @@ public class DatatypeInputFormatRegistry {
         } catch (ClassNotFoundException e) {
             throw new CoreRuntimeException(new IpsStatus(
                     "Cannot load class " + classAttribute + " while loading extension " //$NON-NLS-1$ //$NON-NLS-2$
-                    + extension.getUniqueIdentifier(), e));
+                            + extension.getUniqueIdentifier(),
+                    e));
         }
     }
 
@@ -138,7 +141,8 @@ public class DatatypeInputFormatRegistry {
         return inputformatFactory;
     }
 
-    private IDatatypeInputFormatFactory getNearestSupertypeFactoryByClass(Class<? extends ValueDatatype> requiredClass) {
+    private IDatatypeInputFormatFactory getNearestSupertypeFactoryByClass(
+            Class<? extends ValueDatatype> requiredClass) {
         Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> previouslyFoundEntry = null;
         for (Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> currentEntry : getInputFormatMap()
                 .entrySet()) {
@@ -161,7 +165,8 @@ public class DatatypeInputFormatRegistry {
         return false;
     }
 
-    private boolean providesMoreSpecificFactoryThanPreviousEntry(Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> previousEntry,
+    private boolean providesMoreSpecificFactoryThanPreviousEntry(
+            Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> previousEntry,
             Entry<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> currentEntry) {
         if (previousEntry != null) {
             Class<? extends ValueDatatype> previouslyFoundSuperDatatypeClass = previousEntry.getKey();

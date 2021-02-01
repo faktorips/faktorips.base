@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,19 +30,20 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.testcase.ITestCase;
 
 /**
  * Action to run ips test depending on the selecion.
@@ -105,7 +106,7 @@ public class IpsTestAction extends IpsAction {
             IJavaProject javaProject = (IJavaProject)object;
             IProject project = javaProject.getProject();
             if (project.hasNature(IIpsProject.NATURE_ID)) {
-                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                IIpsProject ipsProject = IIpsModel.get().getIpsProject(project.getName());
                 root = ipsProjectSelected(ipsProject, pathElements);
             }
         } else if (object instanceof IProductCmpt) {
@@ -114,7 +115,7 @@ public class IpsTestAction extends IpsAction {
             String name = productCmpt.getQualifiedName();
             addElement(pathElements, root, name);
         } else if (object instanceof IResource) {
-            IIpsElement ipsElem = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)object);
+            IIpsElement ipsElem = IIpsModel.get().getIpsElement((IResource)object);
             root = addPathElementFromObject(pathElements, ipsElem);
         } else if (object instanceof IIpsSrcFile) {
             IIpsObject ipsObject = ((IIpsSrcFile)object).getIpsObject();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,10 +10,10 @@
 
 package org.faktorips.fl;
 
-import bsh.Interpreter;
-
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.util.ArgumentCheck;
+
+import bsh.Interpreter;
 
 /**
  * Evaluates a given expression and returns it's result.
@@ -59,9 +59,9 @@ public class ExprEvaluator {
             i.setClassLoader(classLoader);
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(fragment.getImportDeclaration().toString());
-        sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
+        sb.append(System.lineSeparator());
         sb.append(fragment.getSourcecode());
         return i.eval(sb.toString());
     }
@@ -84,9 +84,9 @@ public class ExprEvaluator {
         }
         JavaCodeFragment fragment = compileExpressionToJava(expression);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(fragment.getImportDeclaration().toString());
-        sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
+        sb.append(System.lineSeparator());
         sb.append(fragment.getSourcecode());
         return i.eval(sb.toString());
     }
@@ -100,7 +100,7 @@ public class ExprEvaluator {
             i.setClassLoader(classLoader);
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(javaCodeFragment);
 
         // execute the expression.

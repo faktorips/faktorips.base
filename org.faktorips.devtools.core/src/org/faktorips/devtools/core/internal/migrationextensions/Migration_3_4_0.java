@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,27 +15,25 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.model.type.PolicyCmptType;
 
 /**
  * Migration to version 3.4.0.
  * <p>
- * Changes {@link PolicyCmptType}s containing {@link ValidationRule}s. For each rule:
+ * Changes {@link PolicyCmptType}s containing {@link IValidationRule}s. For each rule:
  * <ul>
  * <li>the attributes "configuredByProductComponent" and "activatedByDefault" are created and set to
  * <code>false</code> and <code>true</code> respectively</li>
@@ -43,12 +41,12 @@ import org.faktorips.runtime.internal.ProductComponent;
  * project</li>
  * </ul>
  * <p>
- * No {@link ProductComponent}s are changed by this migration as all previously existing
- * {@link ValidationRule}s are defined as not configurable.
+ * No {@link IProductComponent}s are changed by this migration as all previously existing
+ * {@link IValidationRule}s are defined as not configurable.
  * <p>
- * Changes {@link ProductCmptType}s containing attributes. Each {@link ProductCmptTypeAttribute} is
- * set to be changing over time. Thus no product components (and generations) need to be changed in
- * that regard.
+ * Changes {@link IProductCmptType}s containing attributes. Each {@link IProductCmptTypeAttribute}
+ * is set to be changing over time. Thus no product components (and generations) need to be changed
+ * in that regard.
  * 
  * Note: This migration may be applied to the same ipsObjects again without overwriting manual
  * changes with the default values described above.

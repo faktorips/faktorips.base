@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,13 +14,12 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 
 /**
  * The structure page contain the general information section, the attributes section and the
@@ -77,24 +76,21 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
          * there is a dependency from attributes that are displayed in the GeneralInfoSection and
          * the attributes respectively IpsPart that are displayed in the other sections.
          */
-        final ContentsChangeListener changeListener = new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (getIpsObject() == null) {
-                    return;
-                }
-                if (getPartControl().isVisible()
-                        && event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED
-                        && event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())) {
-                    refresh();
-                }
+        final ContentsChangeListener changeListener = event -> {
+            if (getIpsObject() == null) {
+                return;
+            }
+            if (getPartControl().isVisible()
+                    && event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED
+                    && event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())) {
+                refresh();
             }
         };
         getIpsObject().getIpsModel().addChangeListener(changeListener);
         getPartControl().addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                IIpsModel model = IIpsModel.get();
                 if (model != null) {
                     model.removeChangeListener(changeListener);
                 }

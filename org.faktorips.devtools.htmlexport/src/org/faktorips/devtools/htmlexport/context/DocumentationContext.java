@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,24 +23,24 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IMultiLanguageSupport;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
 
 /**
  * Context for the Documentation
@@ -75,7 +75,7 @@ public class DocumentationContext {
     private Locale documentationLocale;
 
     private MessagesManager messagesManager;
-    private MultiLanguageSupport multiLanguageSupport;
+    private IMultiLanguageSupport multiLanguageSupport;
 
     /**
      * All scripts within this documentation
@@ -143,7 +143,8 @@ public class DocumentationContext {
             } catch (CoreRuntimeException e) {
                 addStatus(new IpsStatus(
                         IStatus.ERROR,
-                        "Error finding IpsSrcFiles of types " + StringUtils.join(getDocumentedIpsObjectTypes(), ';'), e.getCause())); //$NON-NLS-1$
+                        "Error finding IpsSrcFiles of types " + StringUtils.join(getDocumentedIpsObjectTypes(), ';'), //$NON-NLS-1$
+                        e.getCause()));
             }
         }
 
@@ -152,8 +153,8 @@ public class DocumentationContext {
     }
 
     /**
-     * returns all {@link IIpsSrcFile} within the {@link IpsProject}, which type is within the given
-     * array.
+     * returns all {@link IIpsSrcFile} within the {@link IIpsProject}, which type is within the
+     * given array.
      * 
      * @param ipsObjectTypes Array with all relevant {@link IpsObjectType}s
      * @return List<IIpsSrcFile>
@@ -235,7 +236,7 @@ public class DocumentationContext {
         return getMultiLanguageSupport().getLocalizedDescription(describedElement);
     }
 
-    private MultiLanguageSupport getMultiLanguageSupport() {
+    private IMultiLanguageSupport getMultiLanguageSupport() {
         return multiLanguageSupport;
     }
 

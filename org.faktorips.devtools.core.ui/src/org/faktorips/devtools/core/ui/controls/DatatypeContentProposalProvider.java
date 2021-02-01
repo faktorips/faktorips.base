@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,8 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * An <code>IContentProposalProvider</code> for <code>Datatype</code> proposal.

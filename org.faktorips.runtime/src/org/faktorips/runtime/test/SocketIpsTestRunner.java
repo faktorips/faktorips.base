@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -240,7 +240,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     }
 
     private String testFailureToStr(IpsTestFailure failure) {
-        StringBuffer formattedFailure = new StringBuffer();
+        StringBuilder formattedFailure = new StringBuilder();
         // format:
         // qualifiedName|testObject|testedAttribute|expectedValue|actualValue|message[|actualValueAsString]
         formattedFailure.append(failure.getTestCase().getQualifiedName());

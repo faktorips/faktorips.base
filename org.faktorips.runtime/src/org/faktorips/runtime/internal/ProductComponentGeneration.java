@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -227,14 +228,9 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     }
 
     private Element getValueSetElement(Element configElement) {
-        if (configElement == null) {
-            throw new NullPointerException();
-        }
-        Element valueSetElement = XmlUtil.getFirstElement(configElement, ValueToXmlHelper.XML_TAG_VALUE_SET);
-        if (valueSetElement == null) {
-            throw new NullPointerException();
-        }
-        return valueSetElement;
+        Objects.requireNonNull(configElement, "The parameter configElement must not be null.");
+        return XmlUtil.findFirstElement(configElement, ValueToXmlHelper.XML_TAG_VALUE_SET)
+                .orElseThrow(NullPointerException::new);
     }
 
     /**

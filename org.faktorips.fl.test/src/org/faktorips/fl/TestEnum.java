@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,8 +17,8 @@ package org.faktorips.fl;
  */
 public class TestEnum {
 
-    public final static TestEnum MONTH = new TestEnum("MONTH");
-    public final static TestEnum YEAR = new TestEnum("YEAR");
+    public static final TestEnum MONTH = new TestEnum("MONTH");
+    public static final TestEnum YEAR = new TestEnum("YEAR");
 
     private String value;
 

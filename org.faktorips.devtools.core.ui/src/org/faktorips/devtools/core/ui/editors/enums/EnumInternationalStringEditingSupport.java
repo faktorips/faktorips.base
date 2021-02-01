@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,13 +11,13 @@
 package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
 import org.faktorips.devtools.core.ui.controls.InternationalStringDialogHandler;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
 import org.faktorips.devtools.core.ui.table.InternationalStringCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.values.LocalizedString;
 
 public class EnumInternationalStringEditingSupport extends FormattedCellEditingSupport<IEnumValue, LocalizedString> {

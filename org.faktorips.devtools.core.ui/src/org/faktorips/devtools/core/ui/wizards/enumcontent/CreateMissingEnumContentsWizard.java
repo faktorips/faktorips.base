@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -39,17 +39,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -57,13 +46,24 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.StringUtil;
 
 /**
- * The <code>CreateMissingEnumContentsWizard</code> that searches for <code>IEnumContent</code>s that should
- * be existent in <code>IIpsProject</code>s (the information is derived from the <code>IIpsProject</code>'s
- * <code>IEnumType</code>s). The wizard enables the user to comfortably select the missing
- * <code>IEnumContent</code>s that shall be created.
+ * The <code>CreateMissingEnumContentsWizard</code> that searches for <code>IEnumContent</code>s
+ * that should be existent in <code>IIpsProject</code>s (the information is derived from the
+ * <code>IIpsProject</code>'s <code>IEnumType</code>s). The wizard enables the user to comfortably
+ * select the missing <code>IEnumContent</code>s that shall be created.
  * 
  * @author Alexander Weickmann
  * 
@@ -107,8 +107,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
     }
 
     /**
-     * The action will run in the <code>IRunnableContext</code> of the wizard dialog so that a progress
-     * monitor can be shown directly in the wizard.
+     * The action will run in the <code>IRunnableContext</code> of the wizard dialog so that a
+     * progress monitor can be shown directly in the wizard.
      */
     @Override
     public boolean performFinish() {
@@ -162,8 +162,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         }
 
         /**
-         * Creates the section on top of the wizard page containing a <code>TextButtonField</code> to
-         * select the target source folder with.
+         * Creates the section on top of the wizard page containing a <code>TextButtonField</code>
+         * to select the target source folder with.
          */
         private void createTopSection(Composite pageControl) {
             UIToolkit toolkit = new UIToolkit(null);
@@ -264,8 +264,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
         }
 
         /**
-         * Checks whether this page is complete. Returns <code>true</code> if at least one element is
-         * checked in the tree viewer widget and the page is valid, <code>false</code> otherwise.
+         * Checks whether this page is complete. Returns <code>true</code> if at least one element
+         * is checked in the tree viewer widget and the page is valid, <code>false</code> otherwise.
          */
         private boolean checkPageCompleteCondition() {
             return viewer.getCheckedElements().length > 0 && validatePage();
@@ -336,7 +336,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
         /**
          * Resolves the target IPS project from the user input in the target source folder
-         * <code>TextButtonControl</code>. If this is not possible <code>null</code> will be returned.
+         * <code>TextButtonControl</code>. If this is not possible <code>null</code> will be
+         * returned.
          */
         private IIpsProject getTargetIpsProject() {
             String targetFolder = targetSourceFolderControl.getText();
@@ -344,7 +345,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                 return null;
             }
             String targetProject = targetFolder.substring(0, targetFolder.indexOf('/'));
-            return IpsPlugin.getDefault().getIpsModel().getIpsProject(targetProject);
+            return IIpsModel.get().getIpsProject(targetProject);
         }
 
         /**
@@ -414,14 +415,10 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                         String enumContentName = currentEnumType.getEnumContentName();
                         String currentPackName = StringUtil.getPackageName(enumContentName);
                         IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(currentPackName);
-                        List<IEnumType> list = treeStructure.get(pack);
-                        if (list == null) {
-                            list = new ArrayList<IEnumType>();
-                        }
+                        List<IEnumType> list = treeStructure.computeIfAbsent(pack, $ -> new ArrayList<IEnumType>());
                         if (!list.contains(currentEnumType)) {
                             list.add(currentEnumType);
                         }
-                        treeStructure.put(pack, list);
                         if (!(elements.contains(pack))) {
                             elements.add(pack);
                         }
@@ -450,14 +447,14 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             }
 
             /**
-             * Searches for <code>IEnumType</code>s currently lacking of <code>IEnumContent</code>s while
-             * needing them. Returns all found <code>IEnumType</code>s in a list.
+             * Searches for <code>IEnumType</code>s currently lacking of <code>IEnumContent</code>s
+             * while needing them. Returns all found <code>IEnumType</code>s in a list.
              * <p>
-             * Never returns <code>null</code>; An empty list is returned if no <code>IEnumType</code>s were
-             * found.
+             * Never returns <code>null</code>; An empty list is returned if no
+             * <code>IEnumType</code>s were found.
              * 
-             * @param ipsProject The IPS project (starting point) where <code>IEnumType</code>s needing
-             *            <code>IEnumContent</code>s shall be searched.
+             * @param ipsProject The IPS project (starting point) where <code>IEnumType</code>s
+             *            needing <code>IEnumContent</code>s shall be searched.
              */
             private List<IEnumType> findEnumTypesNeedingEnumContent(IIpsProject ipsProject) {
                 List<IEnumType> enumTypesInProject = ipsProject.findEnumTypes(false, true);

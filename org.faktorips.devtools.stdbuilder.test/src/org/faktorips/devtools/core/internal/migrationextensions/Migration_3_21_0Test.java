@@ -1,7 +1,7 @@
 package org.faktorips.devtools.core.internal.migrationextensions;
 
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -26,11 +26,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -60,12 +60,12 @@ public class Migration_3_21_0Test extends AbstractIpsPluginTest {
     public void testMigrate_rewritesTableContentWithoutUUID() throws Exception {
         setUpMigration();
         String testFileName = "TableContent";
-        TableStructure tableStructure = newTableStructure(ipsProject, "my.TableStructure");
+        ITableStructure tableStructure = newTableStructure(ipsProject, "my.TableStructure");
         IColumn column = tableStructure.newColumn();
         column.setDatatype(Datatype.INTEGER.getQualifiedName());
         column.setName("i");
         tableStructure.getIpsSrcFile().save(true, null);
-        TableContents tableContents = newTableContents(tableStructure, "my." + testFileName);
+        ITableContents tableContents = newTableContents(tableStructure, "my." + testFileName);
         tableContents.getIpsSrcFile().save(true, null);
         fullBuild();
         IFile file = writeTestContents(testFileName);

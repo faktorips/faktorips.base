@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -27,13 +27,13 @@ import java.util.Properties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
+import org.faktorips.devtools.model.internal.pctype.ValidationRuleMessageText;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.IValidationRuleMessageText;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
     private static final String TEST_POLICY_TEST_RULE = "testPolicy-testRule";
 
-    private final static String TEST_FILE = "org/faktorips/devtools/core/internal/model/pctype/validationrule/validation-test-messages.properties";
+    private static final String TEST_FILE = "org/faktorips/devtools/core/internal/model/pctype/validationrule/validation-test-messages.properties";
 
     @Mock
     private IIpsPackageFragmentRoot root;

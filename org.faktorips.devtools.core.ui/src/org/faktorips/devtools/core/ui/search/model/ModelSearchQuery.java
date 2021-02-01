@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,19 +18,18 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.text.Match;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.matcher.ClassMatcher;
 import org.faktorips.devtools.core.ui.search.matcher.ExtensionPropertyMatcher;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * Contains the logic of the Faktor-IPS Model Search. It contains a
@@ -42,7 +41,7 @@ import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresentationModel> {
 
     protected ModelSearchQuery(ModelSearchPresentationModel model) {
-        this(model, IpsPlugin.getDefault().getIpsModel());
+        this(model, IIpsModel.get());
     }
 
     /**

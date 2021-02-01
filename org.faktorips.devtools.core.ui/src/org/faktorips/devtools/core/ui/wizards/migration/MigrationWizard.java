@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -23,10 +22,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -92,7 +91,8 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
             monitor.beginTask("Migration", projects.length * 10000); //$NON-NLS-1$
             try {
                 for (IIpsProject project : projects) {
-                    IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 10000);
+                    @SuppressWarnings("deprecation")
+                    IProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10000);
                     try {
                         AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
                                 .getMigrationOperation(project);

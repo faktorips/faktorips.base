@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -47,9 +47,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.method.IParameter;
-import org.faktorips.devtools.core.model.method.IParameterContainer;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -58,6 +55,9 @@ import org.faktorips.devtools.core.ui.controls.DatatypeContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.method.IParameter;
+import org.faktorips.devtools.model.method.IParameterContainer;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -100,7 +100,8 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
 
     private boolean dataChangeable;
 
-    public ParametersEditControl(Composite parent, UIToolkit uiToolkit, int style, String label, IIpsProject ipsProject) {
+    public ParametersEditControl(Composite parent, UIToolkit uiToolkit, int style, String label,
+            IIpsProject ipsProject) {
         super(parent, style);
         this.ipsProject = ipsProject;
         this.label = label;

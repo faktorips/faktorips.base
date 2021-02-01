@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,9 +28,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -72,8 +73,15 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
         runnable = new NewGenerationRunnable(pmo, timedIpsObjects);
     }
 
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        // nothing to tear down
+    }
+
     @Test
-    public void testExecute_CancelStateIsPolled() throws CoreException, InvocationTargetException, InterruptedException {
+    public void testExecute_CancelStateIsPolled()
+            throws CoreException, InvocationTargetException, InterruptedException {
         when(monitor.isCanceled()).thenReturn(false, true);
 
         runnable.execute(monitor);

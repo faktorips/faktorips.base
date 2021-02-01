@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -44,11 +44,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -59,6 +54,11 @@ import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
 
@@ -67,7 +67,7 @@ import org.faktorips.util.message.MessageList;
  * delete button.
  */
 public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProvider,
-IDataChangeableReadWriteAccess {
+        IDataChangeableReadWriteAccess {
 
     /** The object the parts belong to. */
     private final IIpsObject ipsObject;
@@ -582,7 +582,10 @@ IDataChangeableReadWriteAccess {
         });
     }
 
-    private Button createButton(Composite buttons, UIToolkit toolkit, String message, SelectionListener selectionLister) {
+    private Button createButton(Composite buttons,
+            UIToolkit toolkit,
+            String message,
+            SelectionListener selectionLister) {
         Button button = toolkit.createButton(buttons, message);
         button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         button.addSelectionListener(selectionLister);

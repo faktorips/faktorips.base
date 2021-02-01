@@ -81,7 +81,7 @@ class HashKeyClassTmpl {
                        «hashKeyClassName» other = («hashKeyClassName») o;
                        return
                        «FOR key : columnKeys.indexed»
-                           «ObjectUtil()».equals(«key.value.attributeName», other.«key.value.attributeName») «IF key.key < columnKeys.size -1»&&«ENDIF»
+                           «Objects».equals(«key.value.attributeName», other.«key.value.attributeName») «IF key.key < columnKeys.size -1»&&«ENDIF»
                        «ENDFOR»;
                    }
                    return false;

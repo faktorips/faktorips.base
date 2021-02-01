@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,10 +24,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
 public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
 

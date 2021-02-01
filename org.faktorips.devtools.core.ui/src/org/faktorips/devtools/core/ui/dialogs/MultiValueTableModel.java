@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,12 +15,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.controls.tableedit.IEditTableModel;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -58,7 +59,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
     public List<SingleValueViewItem> getElements() {
         List<SingleValueViewItem> list = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
         int index = 0;
-        for (SingleValueHolder holder : getMultiValueHolder(attributeValue).getValue()) {
+        for (ISingleValueHolder holder : getMultiValueHolder(attributeValue).getValue()) {
             list.add(new SingleValueViewItem(holder, index++));
         }
         return list;
@@ -70,7 +71,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      * 
      * @return the list of {@link SingleValueHolder single value holders} of this attribute.
      */
-    private List<SingleValueHolder> getValueHolderList() {
+    private List<ISingleValueHolder> getValueHolderList() {
         return getMultiValueHolder(attributeValue).getValue();
     }
 
@@ -94,7 +95,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      *            the model.
      */
     private void applyValueList(List<SingleValueViewItem> list) {
-        List<SingleValueHolder> result = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> result = new ArrayList<>();
         for (SingleValueViewItem item : list) {
             result.add(item.holder);
         }
@@ -159,7 +160,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      */
     @Override
     public MessageList validate(SingleValueViewItem valueToValidate) {
-        SingleValueHolder holder = valueToValidate.getSingleValueHolder();
+        ISingleValueHolder holder = valueToValidate.getSingleValueHolder();
         if (getValueHolderList().contains(holder)) {
             MessageList messageList;
             try {
@@ -187,15 +188,15 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      * @author Stefan Widmaier
      */
     public static class SingleValueViewItem {
-        private final SingleValueHolder holder;
+        private final ISingleValueHolder holder;
         private final int index;
 
-        public SingleValueViewItem(SingleValueHolder holder, int index) {
+        public SingleValueViewItem(ISingleValueHolder holder, int index) {
             this.holder = holder;
             this.index = index;
         }
 
-        public SingleValueHolder getSingleValueHolder() {
+        public ISingleValueHolder getSingleValueHolder() {
             return holder;
         }
 

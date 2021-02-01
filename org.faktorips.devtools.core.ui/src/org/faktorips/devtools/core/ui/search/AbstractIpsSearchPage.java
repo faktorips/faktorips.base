@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -26,7 +26,6 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.core.ui.search.scope.IpsSearchProjectsScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchSelectionScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchWorkingSetScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchWorkspaceScope;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * An abstract implementation of the {@link ISearchPage} for the model and product search, which

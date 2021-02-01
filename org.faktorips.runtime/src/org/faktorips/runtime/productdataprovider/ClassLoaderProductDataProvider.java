@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -49,14 +49,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
     public ClassLoaderProductDataProvider(ClassLoaderDataSource dataSource, String tocResourcePath,
             boolean checkTocModifications) {
-        super(new IVersionChecker() {
-
-            @Override
-            public boolean isCompatibleVersion(String oldVersion, String newVersion) {
-                return oldVersion.equals(newVersion);
-            }
-
-        });
+        super(IVersionChecker.STRICT);
 
         this.dataSource = dataSource;
         this.tocResourcePath = tocResourcePath;

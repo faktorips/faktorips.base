@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,8 +20,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -31,6 +29,8 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -94,7 +94,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
-    protected void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
+    protected void connectToModel(IpsObjectUIController controller,
+            @SuppressWarnings("unused") ITestParameter testParameter) {
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.model.bf;
 import java.util.List;
 
 import org.eclipse.draw2d.Bendpoint;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
  * Business function elements are connected via control flows which are represented by this
@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  */
 public interface IControlFlow extends IIpsObjectPart {
 
-    public final static String XML_TAG = "ControlFlow"; //$NON-NLS-1$
+    public static final String XML_TAG = "ControlFlow"; //$NON-NLS-1$
     public static final String PROPERTY_BENDPOINT = "bendPoint"; //$NON-NLS-1$
     public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public static final String PROPERTY_SOURCE = "source"; //$NON-NLS-1$

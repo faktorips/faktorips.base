@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -32,14 +32,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -99,7 +100,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         this.part = part;
         oldState = part.getIpsObject().newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IIpsModel.get().addChangeListener(this);
     }
 
     /**
@@ -140,8 +141,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         if (getBindingContext() != null) {
             getBindingContext().dispose();
         }
-
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        IIpsModel.get().removeChangeListener(this);
 
         return super.close();
     }
@@ -301,7 +301,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
 
         if (part instanceof IDescribedElement) {
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(
                     (IDescribedElement)part);
             if (!(StringUtils.isEmpty(localizedDescription.trim()))) {
                 setMessage(localizedDescription, IMessageProvider.INFORMATION);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IAssociation;
 
 public final class ModelStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
@@ -51,7 +51,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
             boolean overlayed = false;
             String[] overlayImages = new String[4];
             String imageName;
-            if (node.getValue() instanceof PolicyCmptType) {
+            if (node.getValue() instanceof IPolicyCmptType) {
                 imageName = POLICY_CMPT_TYPE_IMAGE;
             } else {
                 imageName = PRODUCT_CMPT_TYPE_IMAGE;
@@ -72,13 +72,13 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
                 overlayed = true;
             }
             if (node instanceof AssociationComponentNode) {
-                if (node.getValue() instanceof PolicyCmptType) {
+                if (node.getValue() instanceof IPolicyCmptType) {
                     imageName = POLICY_ASSOCIATION_IMAGE;
                 } else {
                     imageName = PRODUCT_ASSOCIATION_IMAGE;
                 }
             } else if (node instanceof SubtypeComponentNode) {
-                if (node.getValue() instanceof PolicyCmptType) {
+                if (node.getValue() instanceof IPolicyCmptType) {
                     imageName = POLICY_SUBTYPE_IMAGE;
                 } else {
                     imageName = PRODUCT_SUBTYPE_IMAGE;
@@ -128,7 +128,8 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
             if (showCardinalities) {
                 styledLabel
                         .append(new StyledString(
-                                " ["    + getCardinalityText(node.getMinCardinality()) + ".." + getCardinalityText(node.getMaxCardinality()) + "]", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                " [" + getCardinalityText(node.getMinCardinality()) + ".." //$NON-NLS-1$ //$NON-NLS-2$
+                                        + getCardinalityText(node.getMaxCardinality()) + "]", //$NON-NLS-1$
                                 StyledString.COUNTER_STYLER));
             }
         }
@@ -147,7 +148,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
     }
 
     private String getCardinalityText(int cardinality) {
-        if (cardinality == Association.CARDINALITY_MANY) {
+        if (cardinality == IAssociation.CARDINALITY_MANY) {
             return "*"; //$NON-NLS-1$
         }
         return "" + cardinality; //$NON-NLS-1$

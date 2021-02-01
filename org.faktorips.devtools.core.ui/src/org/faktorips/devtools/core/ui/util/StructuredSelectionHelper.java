@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,10 +14,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * Helper class that extracts IPS objects from a {@link IStructuredSelection}. Instances of this
@@ -44,8 +43,8 @@ public class StructuredSelectionHelper {
     /**
      * Returns the selections first element as an IpsObject of the given class. If the selected
      * element is a resource this method tries to acquire the corresponding {@link IIpsObject} from
-     * the {@link IpsModel}. Attempts to adapt the selected element to IpsObject if it is adaptable.
-     * Returns <code>null</code> if no IpsObject can be derived.
+     * the {@link IIpsModel}. Attempts to adapt the selected element to IpsObject if it is
+     * adaptable. Returns <code>null</code> if no IpsObject can be derived.
      * 
      * @param <T> Subclass of {@link IIpsObject}
      * @param clazz the expected IpsObject class
@@ -56,7 +55,7 @@ public class StructuredSelectionHelper {
         Object selectedObject = selection.getFirstElement();
         if (selectedObject instanceof IResource) {
             IResource resource = (IResource)selectedObject;
-            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement(resource);
             return adaptToIpsObjectType(ipsElement, clazz);
         } else if (selectedObject instanceof IAdaptable) {
             return adaptToIpsObjectType((IAdaptable)selectedObject, clazz);
@@ -68,7 +67,7 @@ public class StructuredSelectionHelper {
         if (adaptable == null) {
             return null;
         }
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        IIpsObject ipsObject = adaptable.getAdapter(IIpsObject.class);
         if (ipsObject != null && clazz.isAssignableFrom(ipsObject.getClass())) {
             return clazz.cast(ipsObject);
         }

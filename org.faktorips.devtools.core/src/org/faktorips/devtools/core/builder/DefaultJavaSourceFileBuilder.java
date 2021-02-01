@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,10 +25,11 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * A JavaSourceFileBuilder that keeps existing imports exactly as found in the source file and adds
@@ -51,19 +52,12 @@ import org.faktorips.util.StringUtil;
  * <p>
  * This builder also provides a set of methods that generate code fragments for logging statements.
  * These methods generate logging code for the logging framework registered with the
- * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code> extension point. Typical java
+ * <code>org.faktorips.devtools.model.loggingFrameworkConnector</code> extension point. Typical java
  * logging frameworks are log4j or the logging framework that comes with the JDK since 1.4.
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
 public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder {
-
-    /**
-     * Configuration property that is supposed to be used to read a configuration value from the
-     * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
-     * IIpsArtefactBuilderSet instance. It specifies the type of logging framework connector.
-     */
-    public static final String CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR = "loggingFrameworkConnector"; //$NON-NLS-1$
 
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
 
@@ -82,11 +76,11 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     @Override
     protected String generate() throws CoreException {
         IImportContainer importContainer = getImportContainer();
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         String pack = getPackage();
         content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
+        content.append(System.lineSeparator());
+        content.append(System.lineSeparator());
         JavaCodeFragment code = new JavaCodeFragment();
         try {
             loggerInstanceGenerated = false;
@@ -104,14 +98,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             content.append(importContainer.getSource());
             ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
             if (newImports.getNoOfImports() > 0) {
-                content.append(StringUtil.getSystemLineSeparator());
+                content.append(System.lineSeparator());
                 content.append(newImports);
             }
         } else {
             content.append(code.getImportDeclaration(pack));
         }
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
+        content.append(System.lineSeparator());
+        content.append(System.lineSeparator());
         content.append(code.getSourcecode());
         return content.toString();
     }
@@ -187,7 +181,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      */
     public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
         return (IIpsLoggingFrameworkConnector)getBuilderSet().getConfig()
-                .getPropertyValue(CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
+                .getPropertyValue(IIpsLoggingFrameworkConnector.CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
     }
 
     /**
@@ -349,7 +343,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (!checkLoggingGenerationConditions()) {
             return;
         }
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         message.append("\""); //$NON-NLS-1$
         message.append("Entering method: "); //$NON-NLS-1$
         if (className != null) {
@@ -386,7 +380,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (!checkLoggingGenerationConditions()) {
             return;
         }
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         message.append("\""); //$NON-NLS-1$
         message.append("Exiting method: "); //$NON-NLS-1$
         if (className != null) {
@@ -536,7 +530,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param element An IPS element needed to access the IPS project where the necessary
      *            configuration information is stored.
      * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
+     * @see org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention
      * @deprecated since 3.22. Access to builder settings is builder set specific. If you use the
      *             StandardBuilderSet, use
      *             GeneratorConfig#getChangesOverTimeNamingConvention()#getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode())

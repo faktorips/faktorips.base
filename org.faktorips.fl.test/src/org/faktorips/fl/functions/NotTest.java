@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,14 +10,8 @@
 
 package org.faktorips.fl.functions;
 
-import java.util.Locale;
-
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.IdentifierResolver;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,21 +28,14 @@ public class NotTest extends FunctionAbstractTest {
         getCompiler().setEnsureResultIsObject(false);
         registerFunction(new Not("NOT", ""));
         registerFunction(new NotBoolean("NOT", ""));
-        getCompiler().setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
-
-            @Override
-            public CompilationResult<JavaCodeFragment> compile(String identifier,
-                    ExprCompiler<JavaCodeFragment> exprCompiler,
-                    Locale locale) {
-                if (identifier.equals("beTrue")) {
-                    return new CompilationResultImpl("Boolean.TRUE", Datatype.BOOLEAN);
-                } else if (identifier.equals("beFalse")) {
-                    return new CompilationResultImpl("Boolean.FALSE", Datatype.BOOLEAN);
-                } else {
-                    return new CompilationResultImpl("null", Datatype.BOOLEAN);
-                }
+        getCompiler().setIdentifierResolver((identifier, exprCompiler, locale) -> {
+            if (identifier.equals("beTrue")) {
+                return new CompilationResultImpl("Boolean.TRUE", Datatype.BOOLEAN);
+            } else if (identifier.equals("beFalse")) {
+                return new CompilationResultImpl("Boolean.FALSE", Datatype.BOOLEAN);
+            } else {
+                return new CompilationResultImpl("null", Datatype.BOOLEAN);
             }
-
         });
     }
 

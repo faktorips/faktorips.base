@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -61,9 +61,9 @@ public class DateHelper extends AbstractDatatypeHelper {
         if (value == null) {
             return valueOfExpression(value);
         }
-        StringBuffer buf = new StringBuffer();
-        buf.append('"').append(value).append('"');
-        return valueOfExpression(buf.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append('"').append(value).append('"');
+        return valueOfExpression(sb.toString());
     }
 
     @Override

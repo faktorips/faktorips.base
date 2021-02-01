@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,12 +13,12 @@ package org.faktorips.devtools.core.ui.editors.type;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * A dialog that enables the user to select <code>IAttribute</code>s to overwrite.
@@ -42,8 +42,8 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
 
         /**
-         * @param cmptType The <code>cmptType</code> the <code>IAttribute</code>s available for selection
-         *            belong to.
+         * @param cmptType The <code>cmptType</code> the <code>IAttribute</code>s available for
+         *            selection belong to.
          */
         public CandidatesContentProvider(IType cmptType) {
             super(cmptType);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,9 +28,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
+import org.faktorips.devtools.model.IIpsModel;
 
 /**
  * @author Alexander Weickmann
@@ -108,10 +108,11 @@ public final class SupportedLanguagesControl extends EditTableControl {
         return new String[2];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void initModelObject(Object modelObject) {
         locales = (List<Locale>)modelObject;
-        locales.add(IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
+        locales.add(IIpsModel.get().getMultiLanguageSupport().getLocalizationLocale());
     }
 
     @Override

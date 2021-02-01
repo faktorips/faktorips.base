@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.model.productcmpt.DeltaType;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
 
 /**
  * Small helper class which provides the {@link DeltaType} and its parent, the

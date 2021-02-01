@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.core.runtime.PlatformObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This abstract class is used to wrap an <code>IpsSrcFile</code> in another object. It provides

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,12 +22,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.util.IoUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class Migration_3_15_0Test extends AbstractIpsPluginTest {
         Element documentElement = getTestDocument().getDocumentElement();
         assertFalse(documentElement.getAttribute("changingOverTime").contentEquals("true"));
 
-        ProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         IIpsSrcFile ipsSrcFile = productCmptType.getIpsSrcFile();
         IFile file = ipsSrcFile.getCorrespondingFile();
         writeTestDocument(file);

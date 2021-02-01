@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,8 +12,6 @@ package org.faktorips.util.collections;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
-
-import org.faktorips.util.IntegerUtils;
 
 /**
  * Compares two lists in their current order that means it compares the list one element after the
@@ -37,7 +35,7 @@ public class ListComparator<T> implements Comparator<List<T>>, Serializable {
 
     @Override
     public int compare(List<T> o1, List<T> o2) {
-        int compareSize = IntegerUtils.compare(o1.size(), o2.size());
+        int compareSize = Integer.compare(o1.size(), o2.size());
         if (compareSize != 0) {
             return compareSize;
         }

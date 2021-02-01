@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
@@ -31,21 +30,22 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
@@ -386,7 +386,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragment body,
             String javaDoc) {
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
-        appendOverrideAnnotation(codeBuilder, false);
+        codeBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[] { "element" },
                 new String[] { Element.class.getName() }, body, null);
     }
@@ -634,14 +634,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("// TODO " + getLocalizedText(EXECUTEBUSINESSLOGIC_TODO_0));
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
-        appendOverrideAnnotation(codeBuilder, false);
+        codeBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         codeBuilder.method(Modifier.PUBLIC, "void", getMethodNameExecuteBusinessLogic(), EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY, body, null);
     }
 
-    private void appendln(StringBuffer sb, String line) {
+    private void appendln(StringBuilder sb, String line) {
         sb.append(line);
-        sb.append(SystemUtils.LINE_SEPARATOR);
+        sb.append(System.lineSeparator());
     }
 
     /*
@@ -649,7 +649,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * executeAsserts(IpsTestResult result) throws Exception { } </pre>
      */
     private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder) {
-        StringBuffer javaDoc = new StringBuffer();
+        StringBuilder javaDoc = new StringBuilder();
         appendln(javaDoc, getLocalizedText(EXECUTEASSERTS_JAVADOC));
         appendln(javaDoc, " ");
         appendln(javaDoc, getLocalizedText(ASSERT_TODO_1));
@@ -673,7 +673,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("\");");
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc.toString(), ANNOTATION_RESTRAINED_MODIFIABLE);
-        appendOverrideAnnotation(codeBuilder, false);
+        codeBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         codeBuilder.method(Modifier.PUBLIC, "void", getMethodNameExecuteAsserts(), new String[] { "result" },
                 new String[] { IpsTestResult.class.getName() }, body, null);
     }

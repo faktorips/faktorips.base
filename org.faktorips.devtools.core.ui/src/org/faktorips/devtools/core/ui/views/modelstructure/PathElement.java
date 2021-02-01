@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ToChildAssociationType;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.ArgumentCheck;
 
 class PathElement {

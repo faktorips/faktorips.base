@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,16 +21,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Base page for <code>IEnumType</code> editors providing controls to edit its properties and
@@ -88,13 +87,10 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
                 + Messages.EnumTypeValuesPage_title);
 
         enumType = editor.getEnumType();
-        changeListener = new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
-                    updateToolbarActionEnabledStates();
-                    enumAttributesSection.refresh();
-                }
+        changeListener = event -> {
+            if (event.getIpsSrcFile().equals(enumType.getIpsSrcFile())) {
+                updateToolbarActionEnabledStates();
+                enumAttributesSection.refresh();
             }
         };
         enumType.getIpsModel().addChangeListener(changeListener);
@@ -132,7 +128,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         toolbarManager.add(exportAction);
         toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
-        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        IMenuService menuService = getSite().getService(IMenuService.class);
         menuService.populateContributionManager((ContributionManager)toolbarManager,
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_ENUM_TYPE_EDITOR_PAGE.getId()));
     }
@@ -198,7 +194,6 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
             } else {
                 initExportAction();
                 setId(EXPORT_ACTION_ID);
-
             }
         }
 

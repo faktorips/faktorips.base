@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,8 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
@@ -33,6 +31,9 @@ import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -222,7 +223,7 @@ public class ProductCmptPage extends WizardPage {
                 getPage().setTitle(
                         NLS.bind(
                                 pmo.isCopyMode() ? Messages.ProductCmptPage_copyTitle : Messages.ProductCmptPage_title,
-                                        IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
+                                        IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
             } else {
                 getPage().setTitle(StringUtils.EMPTY);
             }

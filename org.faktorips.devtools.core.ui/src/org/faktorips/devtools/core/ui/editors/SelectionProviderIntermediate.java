@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -37,9 +37,9 @@ import org.eclipse.swt.widgets.Control;
  */
 public class SelectionProviderIntermediate implements IPostSelectionProvider {
 
-    private final ListenerList selectionListeners = new ListenerList();
+    private final ListenerList<ISelectionChangedListener> selectionListeners = new ListenerList<>();
 
-    private final ListenerList postSelectionListeners = new ListenerList();
+    private final ListenerList<ISelectionChangedListener> postSelectionListeners = new ListenerList<>();
 
     private ISelectionProvider delegate;
 
@@ -98,7 +98,7 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
         fireSelectionChanged(postSelectionListeners, selection);
     }
 
-    private void fireSelectionChanged(ListenerList list, ISelection selection) {
+    private void fireSelectionChanged(ListenerList<?> list, ISelection selection) {
         SelectionChangedEvent event = new SelectionChangedEvent(delegate, selection);
         Object[] listeners = list.getListeners();
         for (int i = 0; i < listeners.length; i++) {

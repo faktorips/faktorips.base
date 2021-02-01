@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version 3
  * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
@@ -11,16 +11,17 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * Class to parse and format an {@link IRangeValueSet}.
@@ -54,7 +55,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private String formatRangeValueSet(IValueSet value) {
         IRangeValueSet range = (IRangeValueSet)value;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(RangeValueSet.RANGE_VALUESET_START);
         if (!range.isEmpty()) {
             String lowerBound = range.getLowerBound();
@@ -133,9 +134,9 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private boolean isEqualContentRange(String lowerBound, String upperBound, String step, boolean containsNull) {
         if (getValueSet().isRange()) {
             IRangeValueSet range = (IRangeValueSet)getValueSet();
-            return ObjectUtils.equals(range.getLowerBound(), lowerBound)
-                    && ObjectUtils.equals(range.getUpperBound(), upperBound)
-                    && ObjectUtils.equals(step, range.getStep()) && (containsNull == getValueSet().isContainsNull());
+            return Objects.equals(range.getLowerBound(), lowerBound)
+                    && Objects.equals(range.getUpperBound(), upperBound)
+                    && Objects.equals(step, range.getStep()) && (containsNull == getValueSet().isContainsNull());
         }
         return false;
     }

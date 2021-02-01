@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,14 +31,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractBuilderSet;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
-import org.faktorips.devtools.core.util.ProjectUtil;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.AbstractBuilderSet;
+import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.util.ProjectUtil;
 
 /**
  * An action that adds the ips nature to a project.
@@ -101,7 +102,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                         Messages.AddIpsNatureAction_msgIPSNatureAlreadySet);
                 return;
             }
-            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+            IIpsModel ipsModel = IIpsModel.get();
             IIpsProject ipsProject = ipsModel.getIpsProject(javaProject.getProject());
             if (ipsProject.getIpsProjectPropertiesFile().exists()) {
                 /*
@@ -148,7 +149,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);
             }
-            IpsObjectPath path = new IpsObjectPath(ipsProject);
+            IIpsObjectPath path = new IpsObjectPath(ipsProject);
             path.setOutputDefinedPerSrcFolder(false);
             path.setBasePackageNameForMergableJavaClasses(dialog.getBasePackageName());
             path.setOutputFolderForMergableSources(javaSrcFolder);

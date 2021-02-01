@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,9 +19,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.util.message.MessageList;
 
 /**

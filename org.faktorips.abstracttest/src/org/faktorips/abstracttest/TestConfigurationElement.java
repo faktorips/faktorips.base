@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -40,6 +40,8 @@ public class TestConfigurationElement
     private String value;
     private Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
     private IConfigurationElement[] children;
+
+    private IExtension extension;
 
     public TestConfigurationElement(String name, Map<String, String> attributes, String value,
             IConfigurationElement[] children) {
@@ -100,6 +102,9 @@ public class TestConfigurationElement
 
     @Override
     public IExtension getDeclaringExtension() throws InvalidRegistryObjectException {
+        if (extension != null) {
+            return extension;
+        }
         throw new RuntimeException("Not implemented.");
     }
 
@@ -153,6 +158,10 @@ public class TestConfigurationElement
     @Override
     public int getHandleId() {
         return 0;
+    }
+
+    public void setExtension(IExtension extension) {
+        this.extension = extension;
     }
 
 }

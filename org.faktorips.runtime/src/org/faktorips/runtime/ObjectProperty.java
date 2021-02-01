@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,9 +10,10 @@
 
 package org.faktorips.runtime;
 
-import java.io.Serializable;
+import static java.util.Objects.requireNonNull;
 
-import org.faktorips.values.ObjectUtil;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * An instance of this class identifies a property in an object, e.g. the name property of a
@@ -39,15 +40,15 @@ public class ObjectProperty implements Serializable {
     private final IPropertyQualifier qualifier;
 
     /**
-     * Creates a new ObjectProperty. If the property is a list or an array the index can specify the
-     * position within the property. An index smaller than 0 indicates that it is not an indexed
-     * property.
+     * Creates a new {@link ObjectProperty}. If the property is a list or an array the index can
+     * specify the position within the property. An index smaller than 0 indicates that it is not an
+     * indexed property.
      * <p>
      * It is possible to provide additional information using the qualifier and implementing the
      * interface {@link IPropertyQualifier}.
      */
     public ObjectProperty(Object object, String property, int index, IPropertyQualifier qualifier) {
-        this.object = object;
+        this.object = requireNonNull(object, "object must not be null");
         this.property = property;
         this.index = index;
         this.qualifier = qualifier;
@@ -55,7 +56,7 @@ public class ObjectProperty implements Serializable {
     }
 
     /**
-     * Creates a new ObjectProperty.
+     * Creates a new {@link ObjectProperty}.
      * <p>
      * It is possible to provide additional information using the qualifier and implementing the
      * interface {@link IPropertyQualifier}.
@@ -74,22 +75,22 @@ public class ObjectProperty implements Serializable {
     }
 
     /**
-     * Creates an ObjectProperty that characterizes the object and the name of the property.
+     * Creates an {@link ObjectProperty} that characterizes the object and the name of the property.
      */
     public ObjectProperty(Object object, String property) {
         this(object, property, -1);
     }
 
     /**
-     * Creates an ObjectProperty that characterizes only the object but not a specific property of
-     * it.
+     * Creates an {@link ObjectProperty} that characterizes only the object but not a specific
+     * property of it.
      */
     public ObjectProperty(Object object) {
         this(object, null, -1);
     }
 
     private int createHashCode() {
-        int hash = object.hashCode() + index;
+        int hash = Objects.hashCode(object) + index;
         hash = property == null ? hash : 31 * hash + property.hashCode();
         hash = qualifier == null ? hash : 31 * hash + qualifier.hashCode();
         return hash;
@@ -151,8 +152,8 @@ public class ObjectProperty implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof ObjectProperty) {
             ObjectProperty other = (ObjectProperty)obj;
-            return ObjectUtil.equals(object, other.object) && index == other.index
-                    && ObjectUtil.equals(property, other.property) && ObjectUtil.equals(qualifier, other.qualifier);
+            return Objects.equals(object, other.object) && index == other.index
+                    && Objects.equals(property, other.property) && Objects.equals(qualifier, other.qualifier);
         }
         return false;
     }
@@ -164,7 +165,21 @@ public class ObjectProperty implements Serializable {
 
     @Override
     public String toString() {
-        return String.valueOf(object) + "." + property;
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.valueOf(object));
+        sb.append('.');
+        sb.append(property);
+        if (hasIndex()) {
+            sb.append('[');
+            sb.append(index);
+            sb.append(']');
+        }
+        if (qualifier != null) {
+            sb.append('{');
+            sb.append(qualifier.toString());
+            sb.append('}');
+        }
+        return sb.toString();
     }
 
 }

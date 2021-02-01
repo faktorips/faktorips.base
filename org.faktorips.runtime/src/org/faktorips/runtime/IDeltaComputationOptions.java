@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -51,6 +51,7 @@ public interface IDeltaComputationOptions {
      * 1, version B:position 2 ⇒ moved c2: version A:position 2, version B:position 3 ⇒ moved cNew:
      * version A:position none, version B:position 1 ⇒ added
      * <p>
+     * &nbsp;
      * <p>
      * 2. Example for a 1-many association:<br>
      * Same scenario as above, but now c1 is removed and no coverage is added.
@@ -63,6 +64,7 @@ public interface IDeltaComputationOptions {
      * computed. c0: version A:position 0, version B:position 0 ⇒ empty delta c1: version A:position
      * 1, version B:position none ⇒ removed c2: version A:position 2, version B:position 1 ⇒ moved
      * <p>
+     * &nbsp;
      * <p>
      * Example for a 1-1 association:<br>
      * A contract version A has the insured person p0. A second contract version B has the insured

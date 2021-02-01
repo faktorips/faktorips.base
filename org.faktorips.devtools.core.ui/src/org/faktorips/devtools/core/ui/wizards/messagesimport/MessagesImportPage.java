@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -33,13 +33,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleIdentification;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
@@ -54,6 +47,13 @@ import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
 import org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportPMO.ImportFormat;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -294,13 +294,13 @@ public class MessagesImportPage extends WizardDataTransferPage {
     }
 
     private IIpsElement getIpsElement(IAdaptable adaptableObject) {
-        IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
+        IIpsElement ipsElement = adaptableObject.getAdapter(IIpsElement.class);
         if (ipsElement == null) {
-            IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+            IResource resource = adaptableObject.getAdapter(IResource.class);
             if (resource != null) {
-                ipsElement = (IIpsElement)resource.getAdapter(IIpsElement.class);
+                ipsElement = resource.getAdapter(IIpsElement.class);
                 if (ipsElement == null) {
-                    ipsElement = (IIpsElement)resource.getProject().getAdapter(IIpsElement.class);
+                    ipsElement = resource.getProject().getAdapter(IIpsElement.class);
                 }
             }
         }

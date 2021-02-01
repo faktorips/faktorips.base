@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,23 +23,21 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.internal.enums.EnumTypeValidations;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -111,12 +109,7 @@ public class EnumTypePage extends IpsObjectPage {
         toolkit.createLabel(nameComposite, StringUtils.EMPTY);
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
-        isAbstractField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                enableEnumContentControls();
-            }
-        });
+        isAbstractField.addChangeListener($ -> enableEnumContentControls());
 
         createIdAndNameGenerationFields(nameComposite, toolkit);
     }
@@ -135,12 +128,8 @@ public class EnumTypePage extends IpsObjectPage {
         createIdAttributeField.setValue(true);
         idAttributeNameField = uiToolkit.createText(createFieldsContainer);
         idAttributeNameField.setText("id"); //$NON-NLS-1$
-        createIdAttributeField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                idAttributeNameField.setEnabled(createIdAttributeField.getCheckbox().isChecked());
-            }
-        });
+        createIdAttributeField.addChangeListener(
+                $ -> idAttributeNameField.setEnabled(createIdAttributeField.getCheckbox().isChecked()));
 
         // Create name attribute.
         createNameAttributeField = new CheckboxField(uiToolkit.createCheckbox(createFieldsContainer,
@@ -148,23 +137,16 @@ public class EnumTypePage extends IpsObjectPage {
         createNameAttributeField.setValue(true);
         nameAttributeNameField = uiToolkit.createText(createFieldsContainer);
         nameAttributeNameField.setText("name"); //$NON-NLS-1$
-        createNameAttributeField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                nameAttributeNameField.setEnabled(createNameAttributeField.getCheckbox().isChecked());
-            }
-        });
+        createNameAttributeField.addChangeListener(
+                $ -> nameAttributeNameField.setEnabled(createNameAttributeField.getCheckbox().isChecked()));
 
         // Disable id and name generation fields if a supertype is specified.
-        supertypeField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                boolean enabled = StringUtils.isEmpty(supertypeField.getText());
-                createIdAttributeField.getCheckbox().setEnabled(enabled);
-                createNameAttributeField.getCheckbox().setEnabled(enabled);
-                idAttributeNameField.setEnabled(enabled);
-                nameAttributeNameField.setEnabled(enabled);
-            }
+        supertypeField.addChangeListener($ -> {
+            boolean enabled = StringUtils.isEmpty(supertypeField.getText());
+            createIdAttributeField.getCheckbox().setEnabled(enabled);
+            createNameAttributeField.getCheckbox().setEnabled(enabled);
+            idAttributeNameField.setEnabled(enabled);
+            nameAttributeNameField.setEnabled(enabled);
         });
 
     }
@@ -204,12 +186,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         extensibleField.setValue(false);
         extensibleField.addChangeListener(this);
-        extensibleField.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                enableEnumContentControls();
-            }
-        });
+        extensibleField.addChangeListener($ -> enableEnumContentControls());
 
         // Qualified name for product side enumeration content.
         toolkit.createFormLabel(additionalComposite, Messages.Fields_EnumContentQualifiedName);
@@ -230,8 +207,8 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     /**
-     * Updates the <code>enumContentQualifiedNameField</code> so that it reflects the current package
-     * and name of the <code>IEnumType</code>.
+     * Updates the <code>enumContentQualifiedNameField</code> so that it reflects the current
+     * package and name of the <code>IEnumType</code>.
      */
     private void updateEnumContentName() {
         // Do only if the check box is not active yet to not destroy any user input.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -78,18 +78,18 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
         ipsTestCase.run(ipsTestResult);
 
         if (failures.size() > 0) {
-            StringBuffer failureBuffer = new StringBuffer(failures.size() * 40);
+            StringBuilder sb = new StringBuilder(failures.size() * 40);
             for (IpsTestFailure failure : failures) {
                 if (failure.isError()) {
                     throw failure.getThrowable();
                 } else {
-                    if (failureBuffer.length() > 0) {
-                        failureBuffer.append(System.getProperty("line.separator"));
+                    if (sb.length() > 0) {
+                        sb.append(System.lineSeparator());
                     }
-                    failureBuffer.append(failureToString(failure));
+                    sb.append(failureToString(failure));
                 }
             }
-            fail(failureBuffer.toString());
+            fail(sb.toString());
         }
     }
 

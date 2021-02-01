@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,7 +12,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
@@ -25,16 +24,16 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.ColumnTablePa
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * <p>
  * Is an abstract {@link TablePageElement} for tables with fixed structure e.g. a table with the
- * methods of an {@link IpsObject}.
+ * methods of an {@link IIpsObject}.
  * </p>
  * <p>
  * The table is built internally by the methods addDataRows() and addHeadline(). The normal way with
- * addPageElements() doesn't work with this {@link TablePageElement}s.
- * </p
+ * addPageElements() doesn't work with this {@link TablePageElement}s. </p
  * 
  * @author dicker
  * 

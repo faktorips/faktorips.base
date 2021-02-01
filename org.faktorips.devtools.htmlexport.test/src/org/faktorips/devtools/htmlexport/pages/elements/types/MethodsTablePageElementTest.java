@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,18 +12,18 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IMethod;
 import org.junit.Before;
 import org.junit.Test;
 
 public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
-    private PolicyCmptType policy;
+    private IPolicyCmptType policy;
 
     @Override
     @Before
@@ -80,7 +80,8 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         for (IMethod method : methods) {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getDatatype() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getModifier().getId() + "']");
-            assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + (method.isAbstract() ? "X" : "-") + "']");
+            assertXPathFromTable(objectContentPage,
+                    "//tr[" + row + "][td='" + (method.isAbstract() ? "X" : "-") + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + context.getLabel(method) + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getSignatureString() + "']");
             row++;

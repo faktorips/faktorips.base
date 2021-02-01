@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,8 +25,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveParticipant {
 
-    final static String FILE_NAME = "ips-editor-settings.txt"; //$NON-NLS-1$
+    static final String FILE_NAME = "ips-editor-settings.txt"; //$NON-NLS-1$
 
     private HashMap<String, Map<String, String>> settings = new HashMap<String, Map<String, String>>();
 
@@ -51,11 +51,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
             remove(file, key);
             return;
         }
-        Map<String, String> keyValues = settings.get(getKey(file));
-        if (keyValues == null) {
-            keyValues = new HashMap<String, String>();
-            settings.put(getKey(file), keyValues);
-        }
+        Map<String, String> keyValues = settings.computeIfAbsent(getKey(file), $ -> new HashMap<String, String>());
         keyValues.put(key, value);
     }
 

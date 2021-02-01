@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,14 +17,13 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -45,6 +44,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         MessageList messages = new MessageList();
@@ -55,7 +55,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
             for (IIpsPackageFragmentRoot root : roots) {
                 IIpsPackageFragment[] packs = root.getIpsPackageFragments();
                 for (IIpsPackageFragment pack : packs) {
-                    migrate(pack, messages, new SubProgressMonitor(monitor, 10));
+                    migrate(pack, messages, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
                     if (monitor.isCanceled()) {
                         return messages;
                     }

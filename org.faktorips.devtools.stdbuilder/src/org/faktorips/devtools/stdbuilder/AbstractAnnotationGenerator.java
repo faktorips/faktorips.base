@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,8 +11,8 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Abstract base class for annotation generators.
@@ -38,9 +38,9 @@ public abstract class AbstractAnnotationGenerator implements IAnnotationGenerato
      * current position. The key is the literal "name", the value is an arbitrary unquoted String
      * which will be quoted.
      * <p/>
-     * Example:<br/>
-     * appendName(f, "tableName") <br/>
-     * yields<br/>
+     * Example:<br>
+     * appendName(f, "tableName") <br>
+     * yields<br>
      * name = "tableName"
      * 
      * @param fragment A <code>JavaCodeFragment</code> instance.

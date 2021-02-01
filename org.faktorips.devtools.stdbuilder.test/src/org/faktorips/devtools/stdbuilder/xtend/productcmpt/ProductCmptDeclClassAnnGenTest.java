@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,12 +19,11 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XTableUsage;
-import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptDeclClassAnnGen;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
 
@@ -36,7 +35,7 @@ public class ProductCmptDeclClassAnnGenTest {
     public void test() {
         XProductCmptClass product = mockProduct();
 
-        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.getProperty("line.separator"),
+        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.lineSeparator(),
                 generator.createAnnotation(product).getSourcecode());
     }
 
@@ -49,9 +48,10 @@ public class ProductCmptDeclClassAnnGenTest {
         when(generationClass.getInterfaceName()).thenReturn("IProductCmptGen");
         when(product.getProductCmptGenerationNode()).thenReturn(generationClass);
 
-        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.getProperty("line.separator")
-                + "@IpsChangingOverTime(IProductCmptGen.class)" + System.getProperty("line.separator"), generator
-                .createAnnotation(product).getSourcecode());
+        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.lineSeparator()
+                + "@IpsChangingOverTime(IProductCmptGen.class)" + System.lineSeparator(),
+                generator
+                        .createAnnotation(product).getSourcecode());
     }
 
     @Test
@@ -60,9 +60,10 @@ public class ProductCmptDeclClassAnnGenTest {
 
         when(product.isConfigurationForPolicyCmptType()).thenReturn(true);
         when(product.getPolicyInterfaceName()).thenReturn("PolicyInterfaceClass");
-        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.getProperty("line.separator")
-                + "@IpsConfigures(PolicyInterfaceClass.class)" + System.getProperty("line.separator"), generator
-                .createAnnotation(product).getSourcecode());
+        assertEquals("@IpsProductCmptType(name = \"test.ProductCmpt\")" + System.lineSeparator()
+                + "@IpsConfigures(PolicyInterfaceClass.class)" + System.lineSeparator(),
+                generator
+                        .createAnnotation(product).getSourcecode());
     }
 
     @Test
@@ -71,7 +72,7 @@ public class ProductCmptDeclClassAnnGenTest {
 
         JavaCodeFragment annotationCode = generator.createAnnTableUsages(productWithTableUsages);
 
-        assertEquals("@IpsTableUsages({\"table1\", \"table2\"})" + System.getProperty("line.separator"),
+        assertEquals("@IpsTableUsages({\"table1\", \"table2\"})" + System.lineSeparator(),
                 annotationCode.getSourcecode());
         assertThat(annotationCode.getImportDeclaration().getImports(),
                 hasItem("org.faktorips.runtime.model.annotation.IpsTableUsages"));

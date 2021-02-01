@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,10 +25,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
+import org.faktorips.devtools.model.builder.IpsBuilder;
 
 /**
  * Listens to resource deltas and filters for marker changes of type
- * {@link IpsPlugin#PROBLEM_MARKER} Viewers or editors showing error ticks should register as
+ * {@link IpsBuilder#PROBLEM_MARKER} Viewers or editors showing error ticks should register as
  * listener to this type.
  * 
  * @author Joerg Ortmann
@@ -132,7 +133,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
             if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
                 IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
                 for (IMarkerDelta markerDelta : markerDeltas) {
-                    if (markerDelta.isSubtypeOf(IpsPlugin.PROBLEM_MARKER)) {
+                    if (markerDelta.isSubtypeOf(IpsBuilder.PROBLEM_MARKER)) {
                         return true;
                     }
                 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,31 +21,31 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.ProductCmptLinkHistograms;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.PropertyValueHistograms;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink.LinkIdentifier;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.util.Histogram;
-import org.faktorips.devtools.core.util.Histogram.BestValue;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.template.ProductCmptLinkHistograms;
+import org.faktorips.devtools.model.internal.productcmpt.template.PropertyValueHistograms;
+import org.faktorips.devtools.model.internal.util.Histogram;
+import org.faktorips.devtools.model.internal.util.Histogram.BestValue;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink.LinkIdentifier;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
 public class InferTemplateProcessor implements IWorkspaceRunnable {
 
     private static final Function<IProductCmpt, IProductCmptGeneration> LATEST_GENERATION = productCmpt -> productCmpt == null
-            ? null : productCmpt.getLatestProductCmptGeneration();
+            ? null
+            : productCmpt.getLatestProductCmptGeneration();
 
     /**
      * Histograms for property values. The name of the property is the string key for the map of
@@ -71,7 +71,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
      * @deprecated use {@link #InferTemplateProcessor(IProductCmptGeneration, List)}
      */
     @Deprecated
-    public InferTemplateProcessor(IProductCmptGeneration templateGeneration, List<IProductCmpt> productCmpts,
+    InferTemplateProcessor(IProductCmptGeneration templateGeneration, List<IProductCmpt> productCmpts,
             PropertyValueHistograms propertyValueHistograms) {
         this.templateGeneration = templateGeneration;
         this.productCmpts = productCmpts;
@@ -143,12 +143,14 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         return templateGeneration.getProductCmpt().getQualifiedName();
     }
 
+    @SuppressWarnings("deprecation")
     private void save() {
-        SubProgressMonitor saveMonitor = new SubProgressMonitor(monitor, productCmpts.size());
+        org.eclipse.core.runtime.SubProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
+                monitor, productCmpts.size());
         saveMonitor.beginTask(Messages.InferTemplateOperation_progress_save, srcFilesToSave.size() + 1);
         try {
             for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
-                ipsSrcFile.save(false, new SubProgressMonitor(monitor, 1));
+                ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

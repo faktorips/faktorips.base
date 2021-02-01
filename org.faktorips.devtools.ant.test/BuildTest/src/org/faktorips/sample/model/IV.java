@@ -41,7 +41,7 @@ public interface IV extends ITimedConfigurableModelObject, IDeltaSupport,
 	/**
 	 * @generated
 	 */
-	public final static VBuilder.Factory BUILD = new VBuilder.Factory();
+	public static final VBuilder.Factory BUILD = new VBuilder.Factory();
 
 	/**
 	 * Diese Konstante enthaelt den Namen der Eigenschaft a.

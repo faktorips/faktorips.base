@@ -4,7 +4,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass
 
-import static org.faktorips.devtools.core.builder.naming.BuilderAspect.*
+import static org.faktorips.devtools.model.builder.naming.BuilderAspect.*
 import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.DefaultAndAllowedValuesTmpl.*

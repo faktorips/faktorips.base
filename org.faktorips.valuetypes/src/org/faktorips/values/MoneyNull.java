@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -9,6 +9,8 @@
  *******************************************************************************/
 
 package org.faktorips.values;
+
+import java.math.RoundingMode;
 
 /**
  * NullObject for Money.
@@ -89,29 +91,65 @@ public class MoneyNull extends Money implements NullObject {
     }
 
     @Override
-    public Money multiply(Decimal d, int roundingMode) {
+    public Money multiply(Decimal d, RoundingMode roundingMode) {
         if (d == null) {
             throw new NullPointerException();
         }
         return Money.NULL;
     }
 
+    /**
+     * @deprecated since 21.6.
+     */
     @Override
+    @Deprecated
+    public Money multiply(Decimal d, int roundingMode) {
+        return multiply(d, RoundingMode.valueOf(roundingMode));
+    }
+
+    @Override
+    public Money divide(int d, RoundingMode roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * @deprecated since 21.6.
+     */
+    @Override
+    @Deprecated
     public Money divide(int d, int roundingMode) {
-        return NULL;
+        return divide(d, RoundingMode.valueOf(roundingMode));
     }
 
     @Override
+    public Money divide(long d, RoundingMode roundingMode) {
+        return NULL;
+    }
+
+    /**
+     * @deprecated since 21.6.
+     */
+    @Override
+    @Deprecated
     public Money divide(long d, int roundingMode) {
-        return NULL;
+        return divide(d, RoundingMode.valueOf(roundingMode));
     }
 
     @Override
-    public Money divide(Decimal d, int roundingMode) {
+    public Money divide(Decimal d, RoundingMode roundingMode) {
         if (d == null) {
             throw new NullPointerException();
         }
         return NULL;
+    }
+
+    /**
+     * @deprecated since 21.6.
+     */
+    @Override
+    @Deprecated
+    public Money divide(Decimal d, int roundingMode) {
+        return divide(d, RoundingMode.valueOf(roundingMode));
     }
 
     @Override

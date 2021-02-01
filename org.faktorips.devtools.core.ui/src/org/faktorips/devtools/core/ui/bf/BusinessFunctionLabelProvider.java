@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
+import org.faktorips.devtools.model.IIpsElement;
 
 /**
  * Provides display text and images for business function elements. It is used by the property view.

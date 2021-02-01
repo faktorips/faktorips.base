@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -52,14 +52,16 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
     /**
      * Creates an empty {@link RangeStructure}.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> create(RangeType keyType) {
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> create(
+            RangeType keyType) {
         return new RangeStructure<K, V, R>(keyType);
     }
 
     /**
      * Creates a new {@link RangeStructure} and adds the given key-value pair.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> createWith(RangeType keyType,
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> createWith(
+            RangeType keyType,
             K key,
             V value) {
         RangeStructure<K, V, R> structure = new RangeStructure<K, V, R>(keyType);

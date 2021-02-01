@@ -9,12 +9,12 @@
         <git.user>${user.name}</git.user>
         <java.version>1.8</java.version>
 
-        <target-platform>eclipse-luna-4.4</target-platform>
+        <target-platform>eclipse-2019-03</target-platform>
     </properties>
 
     <groupId>org.faktorips</groupId>
     <artifactId>org.faktorips.aggregator</artifactId>
-    <version>20.12.0-SNAPSHOT</version>
+    <version>21.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>

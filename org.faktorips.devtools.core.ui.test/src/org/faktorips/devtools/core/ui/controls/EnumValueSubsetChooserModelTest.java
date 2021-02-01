@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,14 +30,15 @@ import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.productcmpt.ConfiguredValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.ui.controls.chooser.AbstractSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.ListChooserValue;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
 import org.junit.Test;
 
 public class EnumValueSubsetChooserModelTest {
@@ -64,7 +65,7 @@ public class EnumValueSubsetChooserModelTest {
     }
 
     private EnumValueSet getEnumValueSetMock() {
-        IpsModel ipsModelMock = mock(IpsModel.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        IIpsModel ipsModelMock = mock(IpsModel.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
         ConfiguredValueSet configElement = mock(ConfiguredValueSet.class,
                 withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
         EnumValueSet enumValueSet = new EnumValueSet(configElement, "asd");

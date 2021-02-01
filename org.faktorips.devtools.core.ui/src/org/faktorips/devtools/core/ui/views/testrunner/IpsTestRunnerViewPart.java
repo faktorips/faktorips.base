@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -58,10 +58,10 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
-import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
+import org.faktorips.devtools.model.testcase.TestRuleViolationType;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -316,13 +316,13 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
             if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$                
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
             } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$              
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
             } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$             
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
             }
             fActionOrientation = orientation;
         }
@@ -680,6 +680,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     private class TestCaseEntry {
         private String qualifiedName;
         private String fullPath;
+        @SuppressWarnings("hiding")
         private String testId;
 
         public TestCaseEntry(String testId, String qualifiedName, String fullPath) {

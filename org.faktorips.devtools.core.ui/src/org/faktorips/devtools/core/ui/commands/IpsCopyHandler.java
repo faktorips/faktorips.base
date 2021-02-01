@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 
 /**
  * Copy of objects controlled by FaktorIps.
@@ -57,10 +57,10 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
             IAdaptable adaptable = (IAdaptable)object;
 
             if (adaptable.getAdapter(IIpsObjectPart.class) != null) {
-                part = (IIpsObjectPart)adaptable.getAdapter(IIpsObjectPart.class);
+                part = adaptable.getAdapter(IIpsObjectPart.class);
                 copiedObjects.add(new IpsObjectPartState(part));
             } else if (adaptable.getAdapter(IIpsElement.class) != null) {
-                IIpsElement selected = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+                IIpsElement selected = adaptable.getAdapter(IIpsElement.class);
                 IIpsPackageFragmentRoot root = null;
                 IIpsStorage ipsStorage = null;
                 if (selected instanceof IIpsObject) {
@@ -87,7 +87,7 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
                     copiedResources.add(resource);
                 }
             } else if (adaptable.getAdapter(IResource.class) != null) {
-                copiedResources.add((IResource)adaptable.getAdapter(IResource.class));
+                copiedResources.add(adaptable.getAdapter(IResource.class));
             }
         }
 

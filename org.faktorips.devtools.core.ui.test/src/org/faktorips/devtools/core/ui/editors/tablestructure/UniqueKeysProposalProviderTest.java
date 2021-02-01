@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,11 +23,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IPartReference;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IPartReference;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 
 /**
  * The wizard page that lets the user comfortably assign {@code ContentAttribute}s of the chosen
@@ -109,7 +109,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
         List<E> contentAttributes = contentStrategy.getContentAttributesIncludeSupertypeCopies(contentType, false);
         for (int i = 0; i < numberContentAttributes; i++) {
             E currentContentAttribute = contentAttributes.get(i);
-            String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentContentAttribute);
+            String localizedLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentContentAttribute);
             labels[i] = uiToolkit.createFormLabel(contents, localizedLabel + ':');
             combos[i] = uiToolkit.createCombo(contents);
             for (int j = 0; j < availableColumns.size(); j++) {

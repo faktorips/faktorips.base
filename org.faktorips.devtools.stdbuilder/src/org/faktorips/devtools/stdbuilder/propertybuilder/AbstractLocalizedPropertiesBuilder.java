@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,15 +18,15 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.util.LocalizedStringsSet;
@@ -41,7 +41,8 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         super(builderSet);
     }
 
-    public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+    public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet,
+            LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
     }
 
@@ -125,12 +126,8 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
     /* protected */public AbstractPropertiesGenerator getMessagesGenerator(IIpsPackageFragmentRoot root,
             ISupportedLanguage supportedLanguage) {
         IFile propertyFile = getPropertyFile(root, supportedLanguage);
-        AbstractPropertiesGenerator messagesGenerator = propertiesGeneratorMap.get(propertyFile);
-        if (messagesGenerator == null) {
-            messagesGenerator = createNewMessageGenerator(propertyFile, supportedLanguage);
-            propertiesGeneratorMap.put(propertyFile, messagesGenerator);
-        }
-        return messagesGenerator;
+        return propertiesGeneratorMap.computeIfAbsent(propertyFile,
+                f -> createNewMessageGenerator(f, supportedLanguage));
     }
 
     @Override

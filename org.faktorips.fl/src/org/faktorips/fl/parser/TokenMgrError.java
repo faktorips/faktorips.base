@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -48,7 +48,7 @@ public class TokenMgrError extends Error {
      * given string
      */
     protected static final String addEscapes(String str) {
-        StringBuffer retval = new StringBuffer();
+        StringBuilder retval = new StringBuilder();
         char ch;
         for (int i = 0; i < str.length(); i++) {
             switch (str.charAt(i)) {
@@ -110,8 +110,10 @@ public class TokenMgrError extends Error {
                 + ", column "
                 + errorColumn
                 + ".  Encountered: "
-                + (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int)curChar
-                        + "), ") + "after : \"" + addEscapes(errorAfter) + "\"");
+                + (EOFSeen ? "<EOF> "
+                        : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int)curChar
+                                + "), ")
+                + "after : \"" + addEscapes(errorAfter) + "\"");
     }
 
     /**

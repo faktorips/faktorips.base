@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,9 +19,9 @@ import java.util.Set;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -94,11 +94,8 @@ public class PropertyVisibleController implements IPropertyVisibleController {
         }
 
         // Get the mappings for the outer control
-        Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings.get(containerControl);
-        if (propertyMappings == null) {
-            propertyMappings = new HashMap<IProductCmptProperty, Set<Control>>();
-            propertyControlMappings.put(containerControl, propertyMappings);
-        }
+        Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings
+                .computeIfAbsent(containerControl, $ -> new HashMap<IProductCmptProperty, Set<Control>>());
 
         // Build a set from the provided controls
         Set<Control> controlSet = new HashSet<Control>();

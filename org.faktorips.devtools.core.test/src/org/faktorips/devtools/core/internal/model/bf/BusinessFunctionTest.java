@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,10 +22,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.DependencyDetail;
-import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
@@ -34,10 +30,14 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
+import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,7 +110,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(1, 1));
         IActionBFE methodCallAction = bf.newMethodCallAction(new Point(2, 2));
@@ -125,7 +125,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         Document doc = getDocumentBuilder().newDocument();
         doc.appendChild(doc.createElement(IBusinessFunction.XML_TAG));
         Element element = bf.toXml(doc);
-        BusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf2");
         bf2.initFromXml(element);
         assertEquals(action, bf.getBFElement(action.getId()));
@@ -220,7 +220,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateStartOnlyOnce() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IBFElement start1 = bf.newStart(new Point(10, 10));
         MessageList msgList = bf.validate(ipsProject);
@@ -237,7 +237,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateEndOnlyOnce() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IBFElement end1 = bf.newEnd(new Point(10, 10));
         MessageList msgList = bf.validate(ipsProject);
@@ -254,7 +254,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateBFElementNameCollision() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IActionBFE action1 = bf.newOpaqueAction(new Point(10, 10));
         action1.setName("action1");
@@ -289,7 +289,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList list3 = msgList.getMessagesFor(action3);
         assertNotNull(list3.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
 
-        BusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject,
+        IBusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject,
                 BusinessFunctionIpsObjectType.getInstance(), "action1");
 
         IActionBFE action4 = bf.newBusinessFunctionCallAction(new Point(10, 10));
@@ -320,7 +320,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateStartNodeMissing() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
@@ -332,7 +332,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateEndNodeMissing() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
@@ -344,7 +344,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateNotConnected1() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IBFElement start = bf.newStart(new Point(10, 10));
         IBFElement end = bf.newEnd(new Point(10, 10));
@@ -368,7 +368,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateNotConnected2() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IBFElement start = bf.newStart(new Point(10, 10));
         IBFElement end = bf.newEnd(new Point(10, 10));
@@ -454,13 +454,13 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDependsOn() throws Exception {
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
 
         IDependency[] dependencies = bf.dependsOn();
         assertEquals(0, dependencies.length);
 
-        BusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        IBusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf2");
 
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -33,14 +33,15 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.adapter.IIpsSrcFileWrapper;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -157,13 +158,13 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
             IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
             addIpsElement(ipsElementToFix, ipsElementsToFix);
         } else if (selected instanceof IResource) {
-            Object objToAdd = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)selected);
+            Object objToAdd = IIpsModel.get().getIpsElement((IResource)selected);
             addElementToFix(ipsElementsToFix, objToAdd);
         }
     }
 
     private IIpsProject getIpsProject(IJavaProject jProject) {
-        return IpsPlugin.getDefault().getIpsModel().getIpsProject(jProject.getProject());
+        return IIpsModel.get().getIpsProject(jProject.getProject());
     }
 
     private void addIpsElements(IIpsProject ipsProject, Set<IFixDifferencesToModelSupport> ipsElementsToFix)

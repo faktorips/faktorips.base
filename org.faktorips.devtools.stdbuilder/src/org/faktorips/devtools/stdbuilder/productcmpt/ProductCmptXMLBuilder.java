@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,23 +21,21 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.UUIDFilterStream;
@@ -85,7 +83,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     @Override
     public void build(IIpsSrcFile ipsSrcFile) {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
+        Document document = XmlUtil.getDefaultDocumentBuilder().newDocument();
         Element root = productCmpt.toXml(document);
 
         writeValidFrom(productCmpt, root);
@@ -101,10 +99,10 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     private void updateInternationalStringDefaultLocale(Locale defaultLocale, Element root) {
-        NodeList internationalStrings = root.getElementsByTagName(InternationalString.XML_TAG);
+        NodeList internationalStrings = root.getElementsByTagName(IInternationalString.XML_TAG);
         for (int i = 0; i < internationalStrings.getLength(); i++) {
             Element internationalString = (Element)internationalStrings.item(i);
-            internationalString.setAttribute(InternationalString.XML_ATTR_DEFAULT_LOCALE, defaultLocale.getLanguage());
+            internationalString.setAttribute(IInternationalString.XML_ATTR_DEFAULT_LOCALE, defaultLocale.getLanguage());
         }
     }
 
@@ -206,7 +204,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         if (GeneratorConfig.forIpsObject(propertyValueContainer.getIpsObject()).getFormulaCompiling()
                 .isCompileToXml()) {
             List<IFormula> formulas = propertyValueContainer.getPropertyValues(IFormula.class);
-            List<Element> formulaElements = getElements(node, Formula.TAG_NAME);
+            List<Element> formulaElements = getElements(node, IFormula.TAG_NAME);
             expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements, buildStatus);
         }
     }

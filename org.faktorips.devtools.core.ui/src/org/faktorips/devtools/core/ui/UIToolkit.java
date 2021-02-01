@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -47,10 +47,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
@@ -72,6 +68,10 @@ import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.util.message.Message;
 
 /**
@@ -567,6 +567,30 @@ public class UIToolkit {
         }
     }
 
+    public StyledText createStyledTextAppendStyle(Composite parent, int style) {
+        if (formToolkit != null) {
+            return createStyledText(parent, style);
+        } else {
+            return createStyledText(parent, SWT.SINGLE | SWT.BORDER | style);
+        }
+    }
+
+    public StyledText createStyledText(Composite parent, int style) {
+        StyledText newText;
+        if (formToolkit != null) {
+            newText = new StyledText(parent,
+                    formToolkit.getBorderStyle() | SWT.BORDER | style | formToolkit.getOrientation());
+            newText.setForeground(formToolkit.getColors().getForeground());
+            newText.setBackground(formToolkit.getColors().getBackground());
+        } else {
+            newText = new StyledText(parent, style);
+        }
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.widthHint = DEFAULT_WIDTH;
+        newText.setLayoutData(gridData);
+        return newText;
+    }
+
     public Text createMultilineText(Composite parent) {
         Text newText;
         if (formToolkit != null) {
@@ -817,28 +841,6 @@ public class UIToolkit {
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.widthHint = DEFAULT_WIDTH;
         newCombo.setLayoutData(gridData);
-        return newCombo;
-    }
-
-    /**
-     * @deprecated since org.faktorips.devtools.core.enums.EnumType is deprecated
-     */
-    @Deprecated
-    public Combo createCombo(Composite parent, org.faktorips.devtools.core.enums.EnumType type) {
-        return createCombo(parent, type.getValues());
-    }
-
-    /**
-     * @deprecated since org.faktorips.devtools.core.enums.EnumType is deprecated
-     */
-    @Deprecated
-    public Combo createCombo(Composite parent, org.faktorips.devtools.core.enums.EnumValue[] values) {
-        Combo newCombo = createCombo(parent);
-        String[] names = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            names[i] = values[i].getName();
-        }
-        newCombo.setItems(names);
         return newCombo;
     }
 

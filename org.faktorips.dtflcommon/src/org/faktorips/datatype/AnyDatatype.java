@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,7 +20,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class AnyDatatype implements Datatype {
 
-    public final static AnyDatatype INSTANCE = new AnyDatatype();
+    public static final AnyDatatype INSTANCE = new AnyDatatype();
 
     private AnyDatatype() {
         super();

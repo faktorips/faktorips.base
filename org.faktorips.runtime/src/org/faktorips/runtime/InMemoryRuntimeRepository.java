@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TimeZone;
@@ -30,7 +31,6 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * A runtime repository that keeps its data in memory.
@@ -272,13 +272,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
-        SortedSet<IProductComponentGeneration> genSortedSet = productCmptGenLists.get(productCmptId);
-        if (genSortedSet == null) {
-            genSortedSet = new TreeSet<IProductComponentGeneration>(
-                    new ProductCmptGenerationComparator(TimeZone.getDefault()));
-            productCmptGenLists.put(productCmptId, genSortedSet);
-        }
-        return genSortedSet;
+        return productCmptGenLists.computeIfAbsent(productCmptId,
+                $ -> new TreeSet<IProductComponentGeneration>(
+                        new ProductCmptGenerationComparator(TimeZone.getDefault())));
     }
 
     @Override
@@ -390,11 +386,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     public <T extends IRuntimeObject> void putCustomRuntimeObject(Class<T> type,
             String ipsObjectQualifiedName,
             T runtimeObject) {
-        Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.get(type);
-        if (customRuntimeObjects == null) {
-            customRuntimeObjects = new HashMap<String, IRuntimeObject>();
-            customRuntimeObjectsByType.put(type, customRuntimeObjects);
-        }
+        Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.computeIfAbsent(type,
+                $ -> new HashMap<String, IRuntimeObject>());
         customRuntimeObjects.put(ipsObjectQualifiedName, runtimeObject);
     }
 
@@ -420,7 +413,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         @Override
         public int compare(IProductComponentGeneration gen1, IProductComponentGeneration gen2) {
 
-            if (ObjectUtil.equals(gen1, gen2)) {
+            if (Objects.equals(gen1, gen2)) {
                 return 0;
             }
 

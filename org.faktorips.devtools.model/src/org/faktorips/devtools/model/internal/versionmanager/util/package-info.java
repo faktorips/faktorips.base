@@ -1,0 +1,1 @@
+package org.faktorips.devtools.model.internal.versionmanager.util;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -40,29 +40,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.SingleEventModification;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -88,8 +65,32 @@ import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPM
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerUI;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
-import org.faktorips.devtools.core.util.PersistenceUtil;
-import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.SingleEventModification;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo.DateTimeMapping;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.util.PersistenceUtil;
+import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -361,7 +362,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public String getText(Object element) {
                 IProductCmptCategory category = (IProductCmptCategory)element;
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(category);
             }
         });
 
@@ -485,11 +486,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private void bindRefreshAllowedValueSetTypes(Checkbox checkbox) {
         getBindingContext().add(new ControlPropertyBinding(checkbox, attribute,
-                PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Boolean.TYPE) {
+                IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Boolean.TYPE) {
 
             @Override
             public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
+                if (IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
                     updateAllowedValueSetTypes();
                 }
             }
@@ -660,7 +661,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 final IPolicyCmptTypeAttribute overwrittenAttribute = (IPolicyCmptTypeAttribute)attribute
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
-                    IpsPlugin.getDefault().getIpsModel().executeModificationsWithSingleEvent(
+                    ((IpsModel)IIpsModel.get()).executeModificationsWithSingleEvent(
                             new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
                                 @Override
@@ -1057,7 +1058,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         private void addToResult(List<ICompletionProposal> result, IMethod method, int documentOffset) {
             String name = method.getSignatureString();
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(method);
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(method);
             CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(),
                     IpsUIPlugin.getImageHandling().getImage(method), name, null, localizedDescription);
             result.add(proposal);

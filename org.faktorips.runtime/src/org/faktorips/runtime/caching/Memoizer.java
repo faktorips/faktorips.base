@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.function.Function;
 
 /**
  * This Memoizer is implemented as suggested by Brian Goetz in Java Concurrency in Practice. It is a
@@ -39,10 +40,12 @@ public class Memoizer<K, V> implements IComputable<K, V> {
     private final ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
     /**
-     * The constructor to create a memoizer with default values for the internal
+     * The constructor to create a {@link Memoizer} with default values for the internal
      * {@link ConcurrentHashMap}
      * 
      * @param computable the {@link IComputable} to load new items
+     * @see #of(Class, Function) the static {@link #of(Class, Function)} factory method to avoid
+     *      creating the {@link IComputable} and instead using a {@link Function}.
      */
     public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;
@@ -62,6 +65,20 @@ public class Memoizer<K, V> implements IComputable<K, V> {
     public Memoizer(IComputable<K, V> computable, int initSize, float loadFactor, int concurrencyLevel) {
         this.computable = computable;
         cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>(initSize, loadFactor, concurrencyLevel);
+    }
+
+    /**
+     * Creates a new {@link Memoizer} for the given value class using the given {@link Function} to
+     * compute the values from keys.
+     *
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param valueClass the class of the values
+     * @param function the function to compute a value from a key
+     * @return a new {@link IComputable}
+     */
+    public static <K, V> Memoizer<K, V> of(Class<? super V> valueClass, Function<K, V> function) {
+        return new Memoizer<K, V>(IComputable.of(valueClass, function));
     }
 
     @Override

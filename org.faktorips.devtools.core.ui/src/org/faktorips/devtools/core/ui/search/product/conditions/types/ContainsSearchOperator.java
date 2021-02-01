@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IMultiValueHolder;
+import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 
 /**
  * The ContainsSearchOperator checks, if the argument is contained in the operand, which is in this
@@ -29,10 +29,10 @@ public class ContainsSearchOperator extends AbstractSearchOperator<ContainsSearc
 
     @Override
     protected boolean check(Object searchOperand, IProductPartsContainer productPartsContainer) {
-        if (searchOperand instanceof MultiValueHolder) {
-            MultiValueHolder valueHolder = (MultiValueHolder)searchOperand;
-            List<SingleValueHolder> values = valueHolder.getValue();
-            for (SingleValueHolder value : values) {
+        if (searchOperand instanceof IMultiValueHolder) {
+            IMultiValueHolder valueHolder = (IMultiValueHolder)searchOperand;
+            List<ISingleValueHolder> values = valueHolder.getValue();
+            for (ISingleValueHolder value : values) {
                 if (isArgumentEqualTo(value)) {
                     return true;
                 }
@@ -41,22 +41,22 @@ public class ContainsSearchOperator extends AbstractSearchOperator<ContainsSearc
         return false;
     }
 
-    private boolean isArgumentEqualTo(SingleValueHolder value) {
+    private boolean isArgumentEqualTo(ISingleValueHolder value) {
         if (isNullContained(value)) {
             return true;
         }
         return isValueContained(value);
     }
 
-    private boolean isNullContained(SingleValueHolder value) {
+    private boolean isNullContained(ISingleValueHolder value) {
         return getArgument() == null && value.getValue().getContent() == null;
     }
 
-    private boolean isValueContained(SingleValueHolder value) {
+    private boolean isValueContained(ISingleValueHolder value) {
         return getArgument() != null && checkEquality(value);
     }
 
-    private boolean checkEquality(SingleValueHolder value) {
+    private boolean checkEquality(ISingleValueHolder value) {
         try {
             return getValueDatatype().areValuesEqual(value.getValue().getContentAsString(), getArgument());
         } catch (IllegalArgumentException e) {

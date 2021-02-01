@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,35 +19,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredDefault;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfigContainer;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IChangingOverTimeProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -60,6 +31,35 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfigContainer;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IChangingOverTimeProperty;
+import org.faktorips.devtools.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * Represents a table with the values of the {@link IAttribute}s of an {@link IProductCmpt} as rows
@@ -203,14 +203,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private void addAttributeRow(IAttribute attribute) {
         addRow((IProductCmptTypeAttribute)attribute,
-                new CellCreator<IPropertyValueContainer, IProductCmptTypeAttribute>() {
-
-                    @Override
-                    public IPageElement createCell(IPropertyValueContainer container,
-                            IProductCmptTypeAttribute attribute) {
-                        return createProductAttributeCell(container, attribute);
-                    }
-                });
+                (c, a) -> createProductAttributeCell((IPropertyValueContainer)c, a));
     }
 
     private IPageElement createProductAttributeCell(IPropertyValueContainer container,
@@ -245,13 +238,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
-        addRow(formulaSignature, new CellCreator<IPropertyValueContainer, IProductCmptTypeMethod>() {
-
-            @Override
-            public IPageElement createCell(IPropertyValueContainer container, IProductCmptTypeMethod property) {
-                return createFormulaCell(container, property);
-            }
-        });
+        addRow(formulaSignature, (c, f) -> createFormulaCell((IPropertyValueContainer)c, f));
     }
 
     private IPageElement createFormulaCell(IPropertyValueContainer container, IProductCmptTypeMethod property) {
@@ -302,15 +289,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addPolicyCmptTypeAttributesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-        addRow(policyCmptTypeAttribute, new CellCreator<IPropertyValueContainer, IPolicyCmptTypeAttribute>() {
-
-            @Override
-            public IPageElement createCell(IPropertyValueContainer container,
-                    IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-                return createPolicyCmptTypeAttributeCell(container, policyCmptTypeAttribute);
-            }
-
-        });
+        addRow(policyCmptTypeAttribute, (c, a) -> createPolicyCmptTypeAttributeCell((IPropertyValueContainer)c, a));
     }
 
     private IPageElement createPolicyCmptTypeAttributeCell(IPropertyValueContainer container,
@@ -410,16 +389,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private void addTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
         final String roleName = tableStructureUsage.getRoleName();
-        createRow(tableStructureUsage, roleName, new CellCreator<IPropertyValueContainer, ITableStructureUsage>() {
-
-            @Override
-            public IPageElement createCell(IPropertyValueContainer container, ITableStructureUsage property) {
-                return createTableStructureUsageCell(roleName, container);
-            }
-        });
+        createRow(tableStructureUsage, roleName,
+                (c, $) -> createTableStructureUsageCell((IPropertyValueContainer)c, roleName));
     }
 
-    private IPageElement createTableStructureUsageCell(final String roleName, IPropertyValueContainer container) {
+    private IPageElement createTableStructureUsageCell(IPropertyValueContainer container, final String roleName) {
         ITableContentUsage usage = container instanceof IProductCmpt
                 ? ((IProductCmpt)container).getTableContentUsage(roleName)
                 : ((IProductCmptGeneration)container).getTableContentUsage(roleName);
@@ -472,19 +446,12 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
             final String associationName = association.getName();
             TableRowPageElement pageElement = addRow(productAssociation,
-                    new CellCreator<IProductCmptLinkContainer, IProductCmptTypeAssociation>() {
-
-                        @Override
-                        public IPageElement createCell(IProductCmptLinkContainer container,
-                                IProductCmptTypeAssociation property) {
-                            return createAssociationCell(associationName, container);
-                        }
-                    });
+                    (c, $) -> createAssociationCell((IProductCmptLinkContainer)c, associationName));
             pageElement.setId(associationName);
         }
     }
 
-    private IPageElement createAssociationCell(final String associationName, IProductCmptLinkContainer container) {
+    private IPageElement createAssociationCell(IProductCmptLinkContainer container, final String associationName) {
         AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK, getContext());
         List<IProductCmptLink> links = container.getLinksAsList(associationName);
         addProductCmptLinksToPageElements(cellContent, links);
@@ -569,14 +536,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addValidationRulesRow(IValidationRule validationRule) {
-        addRow(validationRule, new CellCreator<IValidationRuleConfigContainer, IValidationRule>() {
-
-            @Override
-            public IPageElement createCell(IValidationRuleConfigContainer validationRuleConfigContainer,
-                    IValidationRule validationRule) {
-                return createValidationRuleCell(validationRuleConfigContainer, validationRule);
-            }
-        });
+        addRow(validationRule, (c, r) -> createValidationRuleCell((IValidationRuleConfigContainer)c, r));
     }
 
     private IPageElement createValidationRuleCell(IValidationRuleConfigContainer validationRuleConfigContainer,
@@ -604,6 +564,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         setId(productCmpt.getName() + "_ProductGenerationAttributeTable"); //$NON-NLS-1$
     }
 
+    @FunctionalInterface
     private static interface CellCreator<C, P extends IChangingOverTimeProperty> {
         public IPageElement createCell(C container, P property);
     }

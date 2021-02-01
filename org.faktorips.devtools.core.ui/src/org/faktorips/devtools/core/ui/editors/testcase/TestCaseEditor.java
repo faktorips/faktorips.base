@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,13 +15,13 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TestCaseDescriptionPage;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 
 /**
  * The editor to edit test cases based on test case types.
@@ -34,7 +34,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
      * Setting key for user's decision not to choose a new test case type, because the old can't be
      * found.
      */
-    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
+    private static final String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     TestCaseEditorPage editorPage;
 
@@ -51,7 +51,6 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
         if (getTestCase().findTestCaseType(getIpsProject()) == null && couldDataBeChangedIfTestCaseTypeWasntMissing()
-                && !IpsPlugin.getDefault().isTestMode()
                 && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
             String msg = NLS
                     .bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase().getTestCaseType());

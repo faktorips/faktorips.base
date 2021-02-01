@@ -29,7 +29,7 @@ public interface IP extends IProductComponent {
 	/**
 	 * @generated
 	 */
-	public final static PBuilder.Factory BUILD = new PBuilder.Factory();
+	public static final PBuilder.Factory BUILD = new PBuilder.Factory();
 
 	/**
 	 * Gibt die Anpassungsstufe zum uebergebenen Wirksamkeitsdatum zurueck. Gibt

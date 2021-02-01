@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.devtools.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.faktorips.devtools.model" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.faktorips.devtools.core" id="newProductDefinitionOperation" name="New Product Definition Operation"/>
+         <meta.schema plugin="org.faktorips.devtools.model" id="newProductDefinitionOperation" name="New Product Definition Operation"/>
       </appInfo>
       <documentation>
          A New Product Definition Operation is used by a New Product Definition Wizard to create an IPS source file.

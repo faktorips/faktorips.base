@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
@@ -30,9 +27,12 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.chooser.TypeChooserPageElement;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
- * Lists and links given {@link IpsObject}s in a page
+ * Lists and links given {@link IIpsObject}s in a page
  * 
  * @author dicker
  * 
@@ -65,7 +65,9 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext())
                 .addPageElements(new LinkPageElement(
-                        "classes", TargetType.CLASSES, getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects), getContext()))); //$NON-NLS-1$
+                        "classes", TargetType.CLASSES, //$NON-NLS-1$
+                        getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects),
+                        getContext())));
 
         List<IPageElement> classes = createClassesList();
 

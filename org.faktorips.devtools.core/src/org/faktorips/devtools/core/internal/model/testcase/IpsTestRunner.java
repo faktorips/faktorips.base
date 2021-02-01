@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -62,13 +62,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
-import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.testcase.Messages;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
@@ -184,7 +186,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return null;
         }
         String tocPath = reps.get(0);
-        IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        IIpsProject[] projects = IIpsModel.get().getIpsProjects();
         for (IIpsProject project : projects) {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (IIpsPackageFragmentRoot root : roots) {
@@ -338,7 +340,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Create the string containing the additional repository packages
      */
     private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) throws CoreException {
-        StringBuffer argument = new StringBuffer();
+        StringBuilder argument = new StringBuilder();
         for (String repositoryPackages : getAllRepositoryPackagesAsString(currentIpsProject)) {
             argument.append(BRACELEFT + repositoryPackages + BRACERIGHT);
         }
@@ -720,11 +722,11 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void trace(String line) {
         if (TRACE_IPS_TEST_RUNNER) {
-            StringBuffer msgBuf = new StringBuffer(line.length() + 40);
-            msgBuf.append("IpsTestRunner "); //$NON-NLS-1$
-            msgBuf.append(new Date());
-            msgBuf.append(line);
-            System.out.println(msgBuf.toString());
+            StringBuilder msg = new StringBuilder(line.length() + 40);
+            msg.append("IpsTestRunner "); //$NON-NLS-1$
+            msg.append(new Date());
+            msg.append(line);
+            System.out.println(msg.toString());
         }
     }
 

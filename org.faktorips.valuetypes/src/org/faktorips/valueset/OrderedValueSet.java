@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,9 +12,9 @@ package org.faktorips.valueset;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the <code>org.faktorips.valueset.ValueSet</code> interface for ordered values.
@@ -41,6 +41,7 @@ public class OrderedValueSet<E> implements ValueSet<E> {
      *            enumeration value set
      * @throws IllegalArgumentException if the values array contains duplicate entries
      */
+    @SafeVarargs
     public OrderedValueSet(boolean containsNull, E nullValue, E... values) {
         if (values != null) {
             for (E e : values) {
@@ -139,17 +140,9 @@ public class OrderedValueSet<E> implements ValueSet<E> {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("[");
-        for (Iterator<E> it = set.iterator(); it.hasNext();) {
-            E item = it.next();
-            buf.append(item);
-            if (it.hasNext()) {
-                buf.append(", ");
-            }
-        }
-        buf.append(']');
-        return buf.toString();
+        return set.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 
     public boolean contains(E value) {

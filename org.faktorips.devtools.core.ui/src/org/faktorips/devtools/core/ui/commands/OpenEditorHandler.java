@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,14 +18,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 
 public class OpenEditorHandler extends AbstractHandler {
 
@@ -42,20 +42,20 @@ public class OpenEditorHandler extends AbstractHandler {
             return null;
         }
 
-        IProductCmptGeneration generation = (IProductCmptGeneration)typedSelection.getFirstElement().getAdapter(
+        IProductCmptGeneration generation = typedSelection.getFirstElement().getAdapter(
                 IProductCmptGeneration.class);
         if (generation != null) {
             IpsUIPlugin.getDefault().openEditor(generation);
             return null;
         }
 
-        IIpsObject ipsObject = (IIpsObject)typedSelection.getFirstElement().getAdapter(IIpsObject.class);
+        IIpsObject ipsObject = typedSelection.getFirstElement().getAdapter(IIpsObject.class);
         if (ipsObject != null) {
             IpsUIPlugin.getDefault().openEditor(ipsObject);
             return null;
         }
 
-        IFile file = (IFile)typedSelection.getFirstElement().getAdapter(IFile.class);
+        IFile file = typedSelection.getFirstElement().getAdapter(IFile.class);
         IpsUIPlugin.getDefault().openEditor(file);
         return null;
     }

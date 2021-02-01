@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,20 +12,20 @@ package org.faktorips.devtools.core.internal.migration;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.value.IValue;
 
 /**
  * Migration from version 3.0.0.ms2 to version 3.0.0.ms3. The XML structure of
- * {@link org.faktorips.devtools.core.model.enums.IEnumType} has changed a little bit if the
- * enumeration type contains values directly. In this case, literal names are stored in the
- * enumeration values. For the storage of these values, a new XML tag is used.
+ * {@link org.faktorips.devtools.model.enums.IEnumType} has changed a little bit if the enumeration
+ * type contains values directly. In this case, literal names are stored in the enumeration values.
+ * For the storage of these values, a new XML tag is used.
  * 
  * @author Alexander Weickmann
  */

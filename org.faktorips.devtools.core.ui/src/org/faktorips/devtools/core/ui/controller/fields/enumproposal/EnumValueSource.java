@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 /**
  * Provides enum values from an enum value set or enum datatype.

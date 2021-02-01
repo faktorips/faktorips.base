@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,10 +19,11 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
 
 public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -67,7 +68,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     }
 
     private void createChangesOverTimeField() {
-        IChangesOverTimeNamingConvention[] conventions = IpsPlugin.getDefault().getIpsModel()
+        IChangesOverTimeNamingConvention[] conventions = IIpsModel.get()
                 .getChangesOverTimeNamingConvention();
         String[][] nameValues = new String[conventions.length][2];
         for (int i = 0; i < conventions.length; i++) {
@@ -155,23 +156,8 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_label_twoSections,
                                 IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE },
                         { Messages.FaktorIpsPreferencePage_label_fourSections,
-                                IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE } }, getFieldEditorParent(), true);
-        addField(field);
-    }
-
-    private void createRefactoringModeField() {
-        RadioGroupFieldEditor field = new RadioGroupFieldEditor(
-                IpsPreferences.REFACTORING_MODE,
-                Messages.FaktorIpsPreferencePage_title_refactoringMode,
-                2,
-                new String[][] {
-                        { Messages.FaktorIpsPreferencePage_label_direct, IpsPreferences.REFACTORING_MODE_DIRECT },
-                        { Messages.FaktorIpsPreferencePage_label_explicit, IpsPreferences.REFACTORING_MODE_EXPLICIT } },
+                                IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE } },
                 getFieldEditorParent(), true);
-        field.getRadioBoxControl(getFieldEditorParent()).getChildren()[0]
-                .setToolTipText(Messages.FaktorIpsPreferencePage_tooltip_direct);
-        field.getRadioBoxControl(getFieldEditorParent()).getChildren()[1]
-                .setToolTipText(Messages.FaktorIpsPreferencePage_tooltip_explicit);
         addField(field);
     }
 
@@ -194,7 +180,8 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_CopyWizardModeCopy, IpsPreferences.COPY_WIZARD_MODE_COPY },
                         { Messages.FaktorIpsPreferencePage_CopyWizardModeLink, IpsPreferences.COPY_WIZARD_MODE_LINK },
                         { Messages.FaktorIpsPreferencePage_CopyWizardModeSmartMode,
-                                IpsPreferences.COPY_WIZARD_MODE_SMARTMODE }, }, getFieldEditorParent(), true);
+                                IpsPreferences.COPY_WIZARD_MODE_SMARTMODE }, },
+                getFieldEditorParent(), true);
         field.getRadioBoxControl(getFieldEditorParent()).getChildren()[2]
                 .setToolTipText(Messages.FaktorIpsPreferencePage_CopyWizardModeTooltip);
         addField(field);

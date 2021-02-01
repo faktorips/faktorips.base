@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
  * A page for presenting the properties of a {@link ITestCaseType} or {@link ITestCase}. This page
@@ -44,7 +43,7 @@ public class TestCaseDescriptionPage extends DefaultModelDescriptionPage {
             String parameterName = testPolicyCmptTypeParameter.getName();
             for (ITestAttribute testAttribute : testAttributes) {
                 String desrcItemName = parameterName + " : " + testAttribute.getAttribute(); //$NON-NLS-1$
-                String localizedDescription = IpsPlugin.getMultiLanguageSupport()
+                String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
                         .getLocalizedDescription(testAttribute);
                 descriptions.add(new DescriptionItem(desrcItemName, localizedDescription));
             }
@@ -53,7 +52,7 @@ public class TestCaseDescriptionPage extends DefaultModelDescriptionPage {
     }
 
     @Override
-    public TestCaseType getIpsObject() {
-        return (TestCaseType)super.getIpsObject();
+    public ITestCaseType getIpsObject() {
+        return (ITestCaseType)super.getIpsObject();
     }
 }

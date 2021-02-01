@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,21 +19,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.testcasetype.TestParameterType;
 
 /**
  * Wizard to copy a given test case.
@@ -118,7 +119,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
 
         IWorkspaceRunnable runnable = new CreateNewTargetTestCase(targetIpsPackageFragment);
-        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+        IIpsModel.get().runAndQueueChangeEvents(runnable, null);
 
         testCaseCopyDestinationPage.setNeedRecreateTarget(false);
     }
@@ -188,7 +189,8 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
 
         String pckFrgmtName = targetIpsPackageFragment.getName();
-        return (pckFrgmtName.length() > 0 ? pckFrgmtName + "." : "") + testCaseCopyDestinationPage.getTargetTestCaseName(); //$NON-NLS-1$ //$NON-NLS-2$
+        return (pckFrgmtName.length() > 0 ? pckFrgmtName + "." : "") //$NON-NLS-1$ //$NON-NLS-2$
+                + testCaseCopyDestinationPage.getTargetTestCaseName();
     }
 
     /**
@@ -217,7 +219,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     }
 
     private void deleteUnselectedTestObjects() {
-        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new DeleteUnselectedTestObjects(), null);
+        IIpsModel.get().runAndQueueChangeEvents(new DeleteUnselectedTestObjects(), null);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -66,6 +66,6 @@ public class Messages extends NLS {
     public static String MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage;
     public static String MoveRenamePackageHelper_errorPackageContainsInvalidObjects;
     public static String MoveRenamePackageHelper_errorTargetPackageNotValid;
-    public static String MoveRenaamePackageHelper_errorPackageAlreadyContains;
+    public static String MoveRenamePackageHelper_errorPackageAlreadyContains;
 
 }

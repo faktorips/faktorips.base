@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,12 +17,12 @@ import java.util.Arrays;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
-import org.faktorips.devtools.core.model.productcmpt.IConfiguredValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
+import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +59,7 @@ public class EnumerationProposalProviderTest {
         when(enumValueSet.getValueSetOwner()).thenReturn(owner);
         when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(enumValueSet.getValuesAsList())
-        .thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", null }));
+                .thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", null }));
 
         when(inputFormat.format("aaaaa")).thenReturn("aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("bbbbb");

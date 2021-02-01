@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,12 +16,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeDefaultValueAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -48,7 +47,7 @@ public class AttributeDefaultValueAnnGenTest {
         JavaCodeFragment codeFragment = attributeDefaultValueAnnGen.createAnnotation(xProductAttribute);
 
         assertThat(codeFragment.getSourcecode(),
-                is(equalTo("@IpsDefaultValue(\"bar\")" + System.getProperty("line.separator"))));
+                is(equalTo("@IpsDefaultValue(\"bar\")" + System.lineSeparator())));
     }
 
     private XProductAttribute xProductAttribute(String name) {

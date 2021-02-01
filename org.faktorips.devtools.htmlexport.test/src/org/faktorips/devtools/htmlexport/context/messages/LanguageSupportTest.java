@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,16 +14,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
+import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.junit.Test;
 
 public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
@@ -34,7 +34,7 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
         String deBeschreibung = "Deutsche Beschreibung";
         String enBeschreibung = "English Description";
 
-        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "VertragDesc", "VertragDescProdukt");
+        IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "VertragDesc", "VertragDescProdukt");
 
         IDescription deDescription = policy.getDescription(Locale.GERMANY);
         if (deDescription == null) {
@@ -65,8 +65,8 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
         String enLabel = "Haggis";
         String name = "Schonkost";
 
-        ProductCmptType type = newProductCmptType(ipsProject, "ProduktTyp");
-        ProductCmpt productCmpt = newProductCmpt(type, "Produkt");
+        IProductCmptType type = newProductCmptType(ipsProject, "ProduktTyp");
+        IProductCmpt productCmpt = newProductCmpt(type, "Produkt");
         IAttribute attribute = type.newAttribute();
         attribute.setName(name);
 

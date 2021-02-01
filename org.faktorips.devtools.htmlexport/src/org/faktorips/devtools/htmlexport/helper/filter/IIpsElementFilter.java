@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,11 +10,10 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
-import org.faktorips.devtools.core.internal.model.IpsElement;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsElement;
 
 /**
- * Filter for {@link IpsElement}s
+ * Filter for {@link IIpsElement IIpsElement}
  * 
  * @author dicker
  * 
@@ -22,7 +21,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 public interface IIpsElementFilter {
     /**
      * @param element filtered {@link IIpsElement}
-     * @return true, if the given IIpsElement fullfills the conditions of the filter
+     * @return true, if the given {@link IIpsElement} fulfills the conditions of the filter
      */
     public boolean accept(IIpsElement element);
 

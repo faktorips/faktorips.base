@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,8 +22,8 @@ import org.faktorips.datatype.Datatype;
  */
 public interface IParameterBFE extends IBFElement {
 
-    public final static String XML_TAG = "Parameter"; //$NON-NLS-1$
-    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    public static final String XML_TAG = "Parameter"; //$NON-NLS-1$
+    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "PARAMETERBFE-"; //$NON-NLS-1$
     public static final String MSGCODE_NAME_DUBLICATE = MSGCODE_PREFIX + "nameDuplicate"; //$NON-NLS-1$

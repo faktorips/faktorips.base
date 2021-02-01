@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,11 +11,11 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Item represents an association in the product component editor's link section. Holds a reference
@@ -37,9 +37,9 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
     @Override
     public String getText() {
         if (association.is1ToMany()) {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
         } else {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
         }
     }
 

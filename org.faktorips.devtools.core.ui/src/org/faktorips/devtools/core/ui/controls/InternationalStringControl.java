@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,9 +15,9 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.InternationalStringDialog;
+import org.faktorips.devtools.model.IIpsModel;
 
 /**
  * {@link TextButtonControl} for international value attributes. The text control can be edited to
@@ -36,7 +36,7 @@ public class InternationalStringControl extends TextButtonControl {
     private final InternationalStringDialogHandler handler;
 
     public InternationalStringControl(Composite parent, UIToolkit toolkit, InternationalStringDialogHandler handler) {
-        super(parent, toolkit, IpsPlugin.getMultiLanguageSupport()
+        super(parent, toolkit, IIpsModel.get().getMultiLanguageSupport()
                 .getLocalizationLocaleOrDefault(handler.getIpsProject()).getLanguage());
         this.handler = handler;
         getTextControl().setEditable(true);

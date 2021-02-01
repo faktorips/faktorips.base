@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,11 +18,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
-import org.faktorips.devtools.core.model.tablestructure.IIndex;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.ITable;
@@ -130,7 +130,7 @@ public class XTable extends XTableStructure {
     public String buildMethodNameSuffix(XIndex xIndex) {
         Set<IIndex> keysWithSameDatatypeSequence = getIndicesForKeysWithSameDatatypeSequence();
         if (keysWithSameDatatypeSequence.contains(xIndex.getIndex())) {
-            StringBuffer keyName = new StringBuffer();
+            StringBuilder keyName = new StringBuilder();
             String[] keyItems = xIndex.getIndex().getKeyItemNames();
             keyName.append("By");
             for (String keyItem : keyItems) {

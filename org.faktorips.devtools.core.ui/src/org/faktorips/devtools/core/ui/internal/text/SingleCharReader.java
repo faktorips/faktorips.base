@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -50,11 +50,11 @@ public abstract class SingleCharReader extends Reader {
      * @exception IOException in case reading fails
      */
     public String getString() throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int ch;
         while ((ch = read()) != -1) {
-            buf.append((char)ch);
+            sb.append((char)ch);
         }
-        return buf.toString();
+        return sb.toString();
     }
 }

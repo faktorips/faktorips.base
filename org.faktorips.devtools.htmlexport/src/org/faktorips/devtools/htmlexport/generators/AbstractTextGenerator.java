@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 /**
  * AbstractTextGenerator generates Text without using an {@link ILayouter}
  * 
- * <br/>
+ * <br>
  * Useful for structuring data like e.g. frame definitions
  * 
  * @author dicker

@@ -63,7 +63,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Debug output setting
      */
-    protected final static boolean DEBUG = JMerger.DEBUG;
+    protected static final boolean DEBUG = JMerger.DEBUG;
 
     /**
      * Converts {@link Name} to string representation.
@@ -266,8 +266,6 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @see JavaCore#getOptions()
      * @see JControlModel#getLeadingTabReplacement()
      */
-    // unchecked for Luna, warning unnecessary for newer targets
-    @SuppressWarnings("unchecked")
     private Map<String, String> getDefaultJavaCoreOptions() {
         Map<String, String> javaCoreOptions = JavaCore.getOptions();
 

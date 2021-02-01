@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -180,13 +180,9 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     private <T> void putTypedTocEntryToMap(CustomTocEntryObject<T> tocEntry) {
-        Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
-        if (otherTocEntryMap == null) {
-            otherTocEntryMap = new HashMap<String, CustomTocEntryObject<?>>();
-            otherTocEntryMaps.put(tocEntry.getRuntimeObjectClass(), otherTocEntryMap);
-        }
+        Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps
+                .computeIfAbsent(tocEntry.getRuntimeObjectClass(), $ -> new HashMap<String, CustomTocEntryObject<?>>());
         otherTocEntryMap.put(tocEntry.getIpsObjectQualifiedName(), tocEntry);
-
     }
 
     @Override
@@ -227,12 +223,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     private List<VersionIdTocEntry> getVersionList(String kindId) {
-        List<VersionIdTocEntry> versions = kindIdTocEntryListMap.get(kindId);
-        if (versions == null) {
-            versions = new ArrayList<VersionIdTocEntry>(1);
-            kindIdTocEntryListMap.put(kindId, versions);
-        }
-        return versions;
+        return kindIdTocEntryListMap.computeIfAbsent(kindId, $ -> new ArrayList<VersionIdTocEntry>(1));
     }
 
     @Override

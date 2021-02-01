@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -29,9 +29,9 @@ public abstract class AbstractTimeHelper extends AbstractDatatypeHelper {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
-        StringBuffer buf = new StringBuffer();
-        buf.append('"').append(value).append('"');
-        return valueOfExpression(buf.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append('"').append(value).append('"');
+        return valueOfExpression(sb.toString());
     }
 
 }

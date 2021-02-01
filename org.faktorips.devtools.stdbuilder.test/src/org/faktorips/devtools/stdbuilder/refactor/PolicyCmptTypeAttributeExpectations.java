@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,11 +18,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.StringUtil;
 
@@ -103,7 +103,8 @@ final class PolicyCmptTypeAttributeExpectations {
 
         assertFalse(oldPolicyInterface.getField("PROPERTY_" + oldName.toUpperCase()).exists());
         assertFalse(oldPolicyInterface.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-        assertFalse(oldPolicyInterface.getMethod("set" + oldNameCamelCase, new String[] { datatypeSignature }).exists());
+        assertFalse(
+                oldPolicyInterface.getMethod("set" + oldNameCamelCase, new String[] { datatypeSignature }).exists());
         assertFalse(oldProductGenInterface.getMethod("getDefaultValue" + oldNameCamelCase, new String[0]).exists());
         assertFalse(oldProductGenInterface.getMethod("getSetOfAllowedValuesFor" + oldNameCamelCase,
                 new String[] { unresolvedParam(IValidationContext.class) }).exists());
@@ -177,7 +178,8 @@ final class PolicyCmptTypeAttributeExpectations {
     }
 
     private IType getPolicyInterface(IPolicyCmptType policyCmptType) {
-        return getJavaType("", getPublishedInterfaceName(policyCmptType.getName(), ipsProject), true, false, ipsProject);
+        return getJavaType("", getPublishedInterfaceName(policyCmptType.getName(), ipsProject), true, false,
+                ipsProject);
     }
 
     private IType getPolicyClass(IPolicyCmptType policyCmptType) {
@@ -188,7 +190,8 @@ final class PolicyCmptTypeAttributeExpectations {
         return getJavaType(
                 "",
                 getPublishedInterfaceName(productCmptType.getName() + getGenerationConceptNameAbbreviation(ipsProject),
-                        ipsProject), true, false, ipsProject);
+                        ipsProject),
+                true, false, ipsProject);
     }
 
     private IType getProductGenClass(IProductCmptType productCmptType) {

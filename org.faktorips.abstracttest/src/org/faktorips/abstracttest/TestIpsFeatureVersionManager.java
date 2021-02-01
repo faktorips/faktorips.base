@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,10 +11,10 @@
 package org.faktorips.abstracttest;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 
 /**
  * 
@@ -22,12 +22,17 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
  */
 public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
+    private final String featureId;
     private int compareToCurrentVersion = 0;
     private boolean compatible = true;
     private boolean requiredForAllProjects = true;
 
     public TestIpsFeatureVersionManager() {
+        this("org.faktorips.feature"); //$NON-NLS-1$
+    }
 
+    public TestIpsFeatureVersionManager(String featureId) {
+        this.featureId = featureId;
     }
 
     @Override
@@ -41,12 +46,12 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public String getCurrentVersion() {
-        return IpsPlugin.getInstalledFaktorIpsVersion();
+        return IpsModelActivator.getInstalledFaktorIpsVersion();
     }
 
     @Override
     public String getFeatureId() {
-        return "org.faktorips.feature"; //$NON-NLS-1$
+        return featureId;
     }
 
     @Override

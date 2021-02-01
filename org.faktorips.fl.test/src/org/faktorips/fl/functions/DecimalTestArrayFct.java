@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,7 +24,7 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalTestArrayFct extends AbstractFlFunction {
 
-    public final static String name = "DECIMALTESTARRAY";
+    public static final String name = "DECIMALTESTARRAY";
 
     // the values that will be returned by the function.
     private Decimal[] values;

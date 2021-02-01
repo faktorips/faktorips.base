@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -43,27 +43,28 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
-import org.faktorips.devtools.core.model.testcase.ITestRule;
-import org.faktorips.devtools.core.model.testcase.ITestValue;
-import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
-import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.model.testcase.ITestObject;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
+import org.faktorips.devtools.model.testcase.ITestRule;
+import org.faktorips.devtools.model.testcase.ITestValue;
+import org.faktorips.devtools.model.testcase.TestRuleViolationType;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
  * Detail section class of the test case editor. Supports dynamic creation of detail edit controls.
@@ -352,7 +353,7 @@ public class TestCaseDetailArea {
                 StringUtils.capitalize(attributeValue.getTestAttribute()));
 
         if (testAttribute != null) {
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(testAttribute);
             label.setToolTipText(localizedDescription);
         }
 
@@ -574,7 +575,7 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
         if (param != null) {
             // use description of parameter as tooltip
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(param);
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(param);
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
@@ -639,16 +640,16 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
         if (testRuleParameter != null) {
             // use description of parameter as tooltip
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport()
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
                     .getLocalizedDescription(testRuleParameter);
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
 
         @SuppressWarnings("deprecation")
-        final EditField<?> editField = new EnumValueField(
-                toolkit.createCombo(composite, TestRuleViolationType.getEnumType()),
-                TestRuleViolationType.getEnumType());
+        final EditField<?> editField = new EnumField<>(
+                toolkit.createCombo(composite, TestRuleViolationType.class),
+                TestRuleViolationType.class);
         addSectionSelectionListeners(editField, label, rule);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
@@ -795,7 +796,6 @@ public class TestCaseDetailArea {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     private void updateValue(EditField<?> editField, String actualValue) {
         IIpsObjectPart object = editField2ModelObject.get(editField);
         String actualValueToSet = nullIfNullRepresentation(actualValue);
@@ -806,7 +806,7 @@ public class TestCaseDetailArea {
                 ((ITestAttributeValue)object).setValue(actualValueToSet);
             } else if (object instanceof ITestRule) {
                 ((ITestRule)object).setViolationType(
-                        (TestRuleViolationType)TestRuleViolationType.getEnumType().getEnumValue(actualValue));
+                        TestRuleViolationType.getTestRuleViolationType(actualValue));
             }
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -37,13 +37,14 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.type.IAssociation;
 
 /**
  * A page for presenting {@link DescriptionItem}s similar to the outline view.
@@ -77,7 +78,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
     public DefaultModelDescriptionPage() {
         defaultList = new ArrayList<DescriptionItem>();
         activeList = new ArrayList<DescriptionItem>();
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+        IIpsModel.get().addIpsSrcFilesChangedListener(this);
 
     }
 
@@ -92,7 +93,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         }
         try {
             if (getIpsObject() instanceof ILabeledElement) {
-                setTitle(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)getIpsObject()));
+                setTitle(IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)getIpsObject()));
             } else {
                 setTitle(getIpsObject().getName());
             }
@@ -117,17 +118,17 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         if (describedElement instanceof IAssociation) {
             IAssociation association = (IAssociation)describedElement;
             if (association.is1ToMany()) {
-                label = IpsPlugin.getMultiLanguageSupport()
+                label = IIpsModel.get().getMultiLanguageSupport()
                         .getLocalizedPluralLabel(((ILabeledElement)describedElement));
             } else {
-                label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
+                label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
             }
         } else if (describedElement instanceof ILabeledElement) {
-            label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
+            label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
         } else {
             label = describedElement.getName();
         }
-        String description = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(describedElement);
+        String description = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(describedElement);
         DescriptionItem item = new DescriptionItem(label, description);
         descriptions.add(item);
     }
@@ -252,7 +253,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         layout.leftMargin = 20;
         clientGroup.setLayout(layout);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String description = item.getDescription().trim();
 
         // Set faktorips.attribute description
@@ -294,7 +295,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
      */
     @Override
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
+        IIpsModel.get().removeIpsSrcFilesChangedListener(this);
         if (toolkit != null) {
             toolkit.dispose();
         }

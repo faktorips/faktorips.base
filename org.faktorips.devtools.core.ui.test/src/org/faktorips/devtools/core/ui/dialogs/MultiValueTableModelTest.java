@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
+import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject = newIpsProject();
         IProductCmpt component = newProductCmpt(ipsProject, "qName");
         attributeValue = new AttributeValue(component, "");
-        List<SingleValueHolder> list = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> list = new ArrayList<>();
         list.add(new SingleValueHolder(attributeValue, "A"));
         list.add(new SingleValueHolder(attributeValue, "B"));
         list.add(new SingleValueHolder(attributeValue, "C"));
@@ -65,7 +66,7 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         assertSame(getAttributeValueList().get(4), model.getElements().get(4).getSingleValueHolder());
     }
 
-    protected List<SingleValueHolder> getAttributeValueList() {
+    protected List<ISingleValueHolder> getAttributeValueList() {
         return ((MultiValueHolder)attributeValue.getValueHolder()).getValue();
     }
 

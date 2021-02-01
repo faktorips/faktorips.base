@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,6 +10,8 @@
 
 package org.faktorips.util.message;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -427,6 +429,18 @@ public class MessageListTest {
         assertEquals(2, subList.size());
         assertEquals(msg1, subList.getMessage(0));
         assertEquals(msg3, subList.getMessage(1));
+    }
+
+    @Test
+    public void testStream() {
+        MessageList list = new MessageList();
+        Message error1 = Message.newError(null, "e1");
+        Message error2 = Message.newError(null, "e2");
+        list.add(error1);
+        list.add(error2);
+
+        assertThat(list.stream().findFirst().get(), is(error1));
+        assertThat(list.stream().filter(m -> "e2".equals(m.getText())).findFirst().get(), is(error2));
     }
 
 }

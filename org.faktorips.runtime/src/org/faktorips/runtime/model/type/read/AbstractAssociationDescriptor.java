@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH. - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,6 +10,7 @@
 package org.faktorips.runtime.model.type.read;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.type.Association;
 import org.faktorips.runtime.model.type.ModelElement;
@@ -58,17 +59,17 @@ public abstract class AbstractAssociationDescriptor<P extends Association> exten
             // else it must be defined in a super type but overridden (with the same name and
             // target) in this type. That leads to a different implementation being generated
             // but not a new annotation.
-            Type superType = type.getSuperType();
-            if (superType != null) {
-                Association association = superType.getAssociation(getName());
-                if (association != null) {
-                    @SuppressWarnings("unchecked")
-                    P overwritingAssociationFor = (P)association.createOverwritingAssociationFor(type);
-                    return overwritingAssociationFor;
-                }
-            }
-            throw new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
-                    + "\" as one of it's @IpsAssociations but no matching @IpsAssociation could be found.");
+
+            Type superType = type.findSuperType()
+                    .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
+                            + "\" as one of it's @IpsAssociations but no matching @IpsAssociation could be found."));
+            Association association = Optional.ofNullable(superType.getAssociation(getName()))
+                    .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
+                            + "\" as one of it's @IpsAssociations but no matching @IpsAssociation could be found."));
+
+            @SuppressWarnings("unchecked")
+            P overwritingAssociationFor = (P)association.createOverwritingAssociationFor(type);
+            return overwritingAssociationFor;
         }
     }
 

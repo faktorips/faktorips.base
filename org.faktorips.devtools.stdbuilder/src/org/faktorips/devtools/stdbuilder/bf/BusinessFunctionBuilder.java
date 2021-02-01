@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -26,7 +26,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
@@ -35,14 +34,15 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
-    public final static String PACKAGE_STRUCTURE_KIND_ID = "BusinessFunctionBuilder.bf.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
+    public static final String PACKAGE_STRUCTURE_KIND_ID = "BusinessFunctionBuilder.bf.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
 
     public BusinessFunctionBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(BusinessFunctionBuilder.class));
@@ -155,7 +155,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         List<String> alreadyGenerated = new ArrayList<String>();
         for (IBFElement element : bfElements) {
-            if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL) && element.isValid(getIpsProject())) {
+            if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)
+                    && element.isValid(getIpsProject())) {
                 IActionBFE actionBFE = (IActionBFE)element;
                 if (alreadyGenerated.contains(actionBFE.getReferencedBfQualifiedName())) {
                     continue;
@@ -177,7 +178,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         List<String> alreadyGenerated = new ArrayList<String>();
         for (IBFElement element : bfElements) {
-            if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL) && element.isValid(getIpsProject())) {
+            if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)
+                    && element.isValid(getIpsProject())) {
                 IActionBFE action = (IActionBFE)element;
                 if (alreadyGenerated.contains(getMethodNameCallBusinessFunctionAction(action))) {
                     continue;
@@ -187,16 +189,16 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                 body.append('.');
                 body.append(getExecuteMethodName());
                 body.append("();");
-                StringBuffer doc = new StringBuffer();
-                doc.append("Executes the business function ");
-                doc.append(action.getReferencedBfUnqualifedName());
-                doc.append(".");
-                doc.append("\n");
-                doc.append("{@link ");
-                doc.append(action.getReferencedBfQualifiedName());
-                doc.append("}");
+                StringBuilder sb = new StringBuilder();
+                sb.append("Executes the business function ");
+                sb.append(action.getReferencedBfUnqualifedName());
+                sb.append(".");
+                sb.append("\n");
+                sb.append("{@link ");
+                sb.append(action.getReferencedBfQualifiedName());
+                sb.append("}");
                 methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameCallBusinessFunctionAction(action),
-                        new String[0], new Class[0], body, doc.toString(), ANNOTATION_GENERATED);
+                        new String[0], new Class[0], body, sb.toString(), ANNOTATION_GENERATED);
                 alreadyGenerated.add(getMethodNameCallBusinessFunctionAction(action));
             }
         }
@@ -264,11 +266,11 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         if (BFElementType.DECISION == decision.getType()) {
             return StringUtils.uncapitalize(decision.getName());
         }
-        StringBuffer buf = new StringBuffer();
-        buf.append(StringUtils.uncapitalize(decision.getExecutableMethodName()));
-        buf.append("ID");
-        buf.append(decision.getId());
-        return buf.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.uncapitalize(decision.getExecutableMethodName()));
+        sb.append("ID");
+        sb.append(decision.getId());
+        return sb.toString();
     }
 
     private String getMethodNameMerge(IBFElement merge) {
@@ -435,7 +437,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         appendMethodCall(element, body);
         if (!(element.getType().equals(BFElementType.DECISION)
                 || element.getType().equals(BFElementType.DECISION_METHODCALL) || element.getType().equals(
-                BFElementType.MERGE))) {
+                        BFElementType.MERGE))) {
             generateControlFlowMethodBody(body, element, methodBuilder);
         }
     }
@@ -475,7 +477,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
             methodBuilder.method(Modifier.PUBLIC, javaClassName, getMethodNameForGetterParameterValue(parameter),
                     new String[0], new String[0], body, "Returns the value of the parameter " + parameter.getName()
-                            + ".", ANNOTATION_GENERATED);
+                            + ".",
+                    ANNOTATION_GENERATED);
         }
     }
 
@@ -515,7 +518,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                             new String[0],
                             body,
                             "Factory method to create the business function \""
-                                    + action.getReferencedBfUnqualifedName() + "\"", ANNOTATION_GENERATED);
+                                    + action.getReferencedBfUnqualifedName() + "\"",
+                            ANNOTATION_GENERATED);
             alreadyGenerated.add(getMethodNameCreateCallBusinessFunction(action));
         }
     }
@@ -571,7 +575,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         constructorBuilder.method(Modifier.PUBLIC, null, getBusinessFunction().getName(),
                 parameterNames.toArray(new String[parameterNames.size()]),
                 parameterTypes.toArray(new String[parameterTypes.size()]), body, "Creates a new "
-                        + getBusinessFunction().getName() + ".", ANNOTATION_GENERATED);
+                        + getBusinessFunction().getName() + ".",
+                ANNOTATION_GENERATED);
     }
 
     public IBusinessFunction getBusinessFunction() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -19,24 +19,25 @@ import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptVRuleReference;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.util.StringUtil;
 
 public class ProductStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
@@ -75,14 +76,14 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         } else if (element instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
             if (association.is1ToMany()) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
             } else {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
             }
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
             if (showTableStructureUsageName) {
-                return IpsPlugin.getMultiLanguageSupport().getDefaultCaption(tcu);
+                return IIpsModel.get().getMultiLanguageSupport().getDefaultCaption(tcu);
             } else {
                 return StringUtil.unqualifiedName(tcu.getTableContentName());
             }
@@ -105,7 +106,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
      */
     private String getRuleLabel(IProductCmptVRuleReference element) {
         IValidationRuleConfig ruleConfig = element.getValidationRuleConfig();
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(ruleConfig);
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(ruleConfig);
     }
 
     public String getProductCmptLabel(IProductCmpt productCmpt) {
@@ -233,7 +234,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     }
 
     private String getRolenameLabel(IAssociation association) {
-        return " - " + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association); //$NON-NLS-1$
+        return " - " + IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association); //$NON-NLS-1$
     }
 
     private String getGenerationLabel(IProductCmpt productCmpt) {

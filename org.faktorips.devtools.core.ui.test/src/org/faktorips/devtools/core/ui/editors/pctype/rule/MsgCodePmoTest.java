@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,12 +15,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleEditingUI.MsgCodePMO;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.MessageSeverity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,7 +30,7 @@ public class MsgCodePmoTest {
 
     private static final String DELIMITER = "."; //$NON-NLS-1$
 
-    private String severity = "error";
+    private String severity = MessageSeverity.ERROR.getId();
 
     private String pcType = "pcType";
 
@@ -40,8 +40,7 @@ public class MsgCodePmoTest {
 
     private MsgCodePMO msgCodePmo;
 
-    @Mock
-    private MessageSeverity msgSeverity;
+    private MessageSeverity msgSeverity = MessageSeverity.ERROR;
 
     @Mock
     private IValidationRule rule;
@@ -53,7 +52,7 @@ public class MsgCodePmoTest {
     private QualifiedNameType qualifiedNameType;
 
     @Mock
-    private IpsModel model;
+    private IIpsModel model;
 
     @Before
     public void setUp() throws Exception {
@@ -62,7 +61,6 @@ public class MsgCodePmoTest {
 
         when(rule.getIpsModel()).thenReturn(model);
         when(rule.getMessageSeverity()).thenReturn(msgSeverity);
-        when(msgSeverity.getName()).thenReturn(severity);
 
         when(rule.getIpsObject()).thenReturn(ipsObject);
         when(ipsObject.getQualifiedNameType()).thenReturn(qualifiedNameType);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
@@ -24,16 +23,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
@@ -43,6 +32,17 @@ import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 
 /**
  * Editor to a edit a product component.
@@ -102,7 +102,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     private GenerationPropertiesPage getGenerationPropertiesPage() {
-        if (generationPropertiesPage.getPartControl() == null || generationPropertiesPage.getPartControl().isDisposed()) {
+        if (generationPropertiesPage.getPartControl() == null
+                || generationPropertiesPage.getPartControl().isDisposed()) {
             return null;
         }
         return generationPropertiesPage;
@@ -131,7 +132,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private void checkMissingType() {
         // open the select type dialog if the type is missing and the data is changeable
         if (getProductCmpt().findProductCmptType(getIpsProject()) == null && super.computeDataChangeableState()
-                && !IpsPlugin.getDefault().isTestMode()
                 && !getSettings().getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
             String msg = NLS.bind(Messages.ProductCmptEditor_msgTypeNotFound, getProductCmpt().getProductCmptType());
             SetProductCmptTypeDialog d = new SetProductCmptTypeDialog(getProductCmpt(), getSite().getShell(), msg);
@@ -150,7 +150,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             String filename = getIpsSrcFile() == null ? "null" : getIpsSrcFile().getName(); //$NON-NLS-1$
             return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
         }
-        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getProductCmpt());
+        String localizedCaption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getProductCmpt());
         String name = getProductCmpt().getName();
         if (getProductCmpt().isProductTemplate()) {
             return NLS.bind(Messages.ProductCmptEditor_templateTitle, localizedCaption, name);
@@ -176,8 +176,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     protected boolean isStructuralChangeEvent(ContentChangeEvent event) {
         return event.isAffected(getIpsObject())
-                && (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE) || event
-                        .isPropertyAffected(IProductCmpt.PROPERTY_TEMPLATE));
+                && (isGenerationAdded(event) || event.isPropertyAffected(IProductCmptTypeAttribute.PROPERTY_VISIBLE)
+                        || event.isPropertyAffected(IProductCmpt.PROPERTY_TEMPLATE));
     }
 
     private boolean isGenerationAdded(ContentChangeEvent event) {
@@ -274,7 +274,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private void logInternal(String msg) {
         String file = getIpsSrcFile() == null ? "null" : getIpsSrcFile().getName(); // $NON-NLS-1$ //$NON-NLS-1$
         System.out.println(getLogPrefix() + msg
-                + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+                + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                                                                                            // $NON-NLS-2$
     }
 
     private String getLogPrefix() {
@@ -318,7 +319,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (StringUtils.isBlank(headerMessage)) {
             return generationName;
         }
-        return generationName + SystemUtils.LINE_SEPARATOR + headerMessage;
+        return generationName + System.lineSeparator() + headerMessage;
     }
 
     @Override

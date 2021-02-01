@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -55,17 +55,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextService;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
@@ -80,6 +69,15 @@ import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * This is the main class for the model structure view.
@@ -228,7 +226,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     }
 
     private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        IContextService service = getSite().getService(IContextService.class);
         service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
@@ -300,7 +298,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
             return null;
         }
 
-        return (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        return typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
     }
 
     private TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
@@ -347,7 +345,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
      */
     public void showStructure(IType input) {
         toggleProductPolicyAction.setEnabled(true);
-        if (input instanceof PolicyCmptType) {
+        if (input instanceof IPolicyCmptType) {
             setProductCmptTypeImage();
             IPolicyCmptType policy = (IPolicyCmptType)input;
             toggledProductCmptInput = policy.findProductCmptType(policy.getIpsProject());
@@ -356,14 +354,14 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
             }
             toggledPolicyCmptInput = (IPolicyCmptType)input;
             this.provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
-        } else if (input instanceof ProductCmptType) {
+        } else if (input instanceof IProductCmptType) {
             setPolicyCmptTypeImage();
             IProductCmptType product = (IProductCmptType)input;
             toggledPolicyCmptInput = product.findPolicyCmptType(product.getIpsProject());
             if (toggledPolicyCmptInput == null) {
                 toggleProductPolicyAction.setEnabled(false);
             }
-            toggledProductCmptInput = (ProductCmptType)input;
+            toggledProductCmptInput = (IProductCmptType)input;
             this.provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
         }
         this.treeViewer.setInput(input);
@@ -671,10 +669,10 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         if (input instanceof IIpsProject) { // switch the viewShowState for project selections
             provider.toggleShowTypeState();
             treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
-        } else if (input instanceof PolicyCmptType) {
+        } else if (input instanceof IPolicyCmptType) {
             provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
             treeViewer.setInput(toggledProductCmptInput);
-        } else if (input instanceof ProductCmptType) {
+        } else if (input instanceof IProductCmptType) {
             provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
             treeViewer.setInput(toggledPolicyCmptInput);
         }
@@ -800,7 +798,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     @Override
     protected boolean show(IAdaptable adaptable) {
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        IIpsObject ipsObject = adaptable.getAdapter(IIpsObject.class);
         if (ipsObject instanceof IType) {
             IType type = (IType)ipsObject;
             showStructure(type);
@@ -809,12 +807,12 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
             // it is an ipsObject but no type
             return false;
         }
-        IIpsElement ipsElement = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+        IIpsElement ipsElement = adaptable.getAdapter(IIpsElement.class);
         if (ipsElement != null) {
             showStructure(ipsElement.getIpsProject());
             return true;
         }
-        IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+        IResource resource = adaptable.getAdapter(IResource.class);
         if (resource != null) {
             show(resource);
         }

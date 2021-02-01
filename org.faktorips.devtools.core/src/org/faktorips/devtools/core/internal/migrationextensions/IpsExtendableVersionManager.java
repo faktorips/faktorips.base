@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,9 +20,10 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.migration.CoreVersionManager;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.osgi.framework.Version;
 
 /**
@@ -41,7 +42,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
 
     public IpsExtendableVersionManager() {
         super();
-        registeredMigrations = IpsPlugin.getDefault().getRegisteredMigrationOperations(IpsPlugin.PLUGIN_ID);
+        registeredMigrations = IIpsModelExtensions.get().getRegisteredMigrationOperations(IpsPlugin.PLUGIN_ID);
     }
 
     @Override

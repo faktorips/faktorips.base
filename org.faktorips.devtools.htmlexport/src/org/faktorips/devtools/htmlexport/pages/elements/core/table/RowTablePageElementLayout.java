@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -21,7 +21,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
  */
 public class RowTablePageElementLayout extends DefaultTablePageElementLayout {
 
-    public final static RowTablePageElementLayout HEADLINE = new RowTablePageElementLayout(0, Style.TABLE_HEADLINE);
+    public static final RowTablePageElementLayout HEADLINE = new RowTablePageElementLayout(0, Style.TABLE_HEADLINE);
 
     private int[] rows;
     private Style[] styles;

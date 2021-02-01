@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,6 +11,9 @@
 package org.faktorips.valueset;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A {@link Range} implementation where the upper and lower bounds are of the type
@@ -105,6 +108,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     }
 
     @Override
+    @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "Only exceptions are of interest, the return value is not needed")
     protected boolean checkIfValueCompliesToStepIncrement(BigDecimal value, BigDecimal bound) {
         BigDecimal step = getStep();
         BigDecimal zero = BigDecimal.valueOf(0, step.scale());
@@ -116,7 +120,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
         try {
             // throws an ArithmeticException if rounding is necessary. If the value is contained in
             // the range no rounding is necessary since this division must return an integer value
-            diff.divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY);
+            diff.divide(getStep(), 0, RoundingMode.UNNECESSARY);
         } catch (ArithmeticException e) {
             return false;
         }
@@ -126,7 +130,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         BigDecimal size = getUpperBound().subtract(getLowerBound()).abs()
-                .divide(getStep(), 0, BigDecimal.ROUND_UNNECESSARY).add(BigDecimal.ONE);
+                .divide(getStep(), 0, RoundingMode.UNNECESSARY).add(BigDecimal.ONE);
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
                     "The number of values contained within this range is to huge to be supported by this operation.");

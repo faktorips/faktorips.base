@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsobject.Description;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -26,6 +22,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -61,11 +61,16 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
                 createInvalidObjectPropertiesPageElement(message),
                 new TextPageElement(message.getText(), getContext()),
                 new TextPageElement(severity == Message.ERROR ? getContext().getMessage(
-                        MESSAGE_LIST_TABLE_PAGE_ELEMENT_ERROR) : severity == Message.WARNING ? getContext().getMessage(
-                                MESSAGE_LIST_TABLE_PAGE_ELEMENT_WARNING) : severity == Message.INFO ? getContext().getMessage(
-                                        MESSAGE_LIST_TABLE_PAGE_ELEMENT_INFO) : getContext().getMessage(
+                        MESSAGE_LIST_TABLE_PAGE_ELEMENT_ERROR)
+                        : severity == Message.WARNING ? getContext().getMessage(
+                                MESSAGE_LIST_TABLE_PAGE_ELEMENT_WARNING)
+                                : severity == Message.INFO ? getContext().getMessage(
+                                        MESSAGE_LIST_TABLE_PAGE_ELEMENT_INFO)
+                                        : getContext().getMessage(
                                                 MESSAGE_LIST_TABLE_PAGE_ELEMENT_SEVERITY)
-                                                + severity, getContext()) }, getContext()));
+                                                + severity,
+                        getContext()) },
+                getContext()));
     }
 
     protected IPageElement createInvalidObjectPropertiesPageElement(Message message) {
@@ -103,8 +108,8 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
         if (object instanceof IIpsSrcFile) {
             return (IIpsSrcFile)object;
         }
-        if (object instanceof Description) {
-            return getLinkableSrcFile(((Description)object).getParent(), getContext());
+        if (object instanceof IDescription) {
+            return getLinkableSrcFile(((IDescription)object).getParent(), getContext());
         }
         if (object instanceof IIpsObjectPartContainer) {
             return ((IIpsObjectPartContainer)object).getIpsSrcFile();

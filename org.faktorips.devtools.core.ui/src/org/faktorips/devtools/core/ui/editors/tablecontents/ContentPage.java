@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -48,17 +48,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableRows;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableRows;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -73,6 +62,18 @@ import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.internal.tablecontents.TableContents;
+import org.faktorips.devtools.model.internal.tablecontents.TableRows;
+import org.faktorips.devtools.model.tablecontents.IRow;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablecontents.ITableRows;
+import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -466,7 +467,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         if (column == null) {
             return referenceName;
         } else {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(column);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(column);
         }
     }
 
@@ -568,9 +569,10 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
     /*
      * 
-     * Updates the enabled states of the tool bar. <p> The <code>OpenFixEnumContentWizardAction</code>
-     * will be enabled if the <code>ITableStructure</code> the <code>ITableContents</code> to edit is built
-     * upon is not correct
+     * Updates the enabled states of the tool bar. <p> The
+     * <code>OpenFixEnumContentWizardAction</code> will be enabled if the
+     * <code>ITableStructure</code> the <code>ITableContents</code> to edit is built upon is not
+     * correct
      */
     void updateToolbarActionsEnabledStates() {
         boolean isFixToModelRequired = tableContents.isFixToModelRequired();

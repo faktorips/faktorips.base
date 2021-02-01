@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,13 +15,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.util.MessagesHelper;
 
 /**
@@ -29,8 +29,7 @@ import org.faktorips.runtime.util.MessagesHelper;
  * type as well as for properties like {@linkplain Attribute attributes} or {@linkplain Association
  * associations}.
  */
-@SuppressWarnings("deprecation")
-public abstract class Type extends ModelElement implements IModelType {
+public abstract class Type extends ModelElement {
 
     private final AnnotatedDeclaration annotatedDeclaration;
 
@@ -61,7 +60,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
-    @Override
     public Association getDeclaredAssociation(int index) {
         return getDeclaredAssociations().get(index);
     }
@@ -71,7 +69,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IndexOutOfBoundsException if no attribute exists for the given <code>index</code>.
      */
-    @Override
     public Attribute getDeclaredAttribute(int index) {
         return getDeclaredAttributes().get(index);
     }
@@ -82,7 +79,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
-    @Override
     public Association getAssociation(String name) {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);
@@ -99,7 +95,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
-    @Override
     public Attribute getAttribute(String name) {
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
@@ -121,7 +116,6 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns the Java class for this type.
      */
-    @Override
     public Class<?> getJavaClass() {
         return annotatedDeclaration.getImplementationClass();
     }
@@ -129,10 +123,19 @@ public abstract class Type extends ModelElement implements IModelType {
     /**
      * Returns the published interface for this type. Returns <code>null</code> if published
      * interfaces are not generated.
+     *
+     * @see #findJavaInterface() findJavaInterface() for null-safe processing
      */
-    @Override
     public Class<?> getJavaInterface() {
         return annotatedDeclaration.getPublishedInterface();
+    }
+
+    /**
+     * Returns the published interface for this type. if published interfaces are generated,
+     * otherwise an {@link Optional#empty() empty Optional}.
+     */
+    public Optional<Class<?>> findJavaInterface() {
+        return Optional.ofNullable(getJavaInterface());
     }
 
     public Class<?> getDeclarationClass() {
@@ -142,10 +145,10 @@ public abstract class Type extends ModelElement implements IModelType {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());
-        if (getSuperType() != null) {
+        findSuperType().ifPresent(s -> {
             sb.append(" extends ");
-            sb.append(getSuperType().getName());
-        }
+            sb.append(s.getName());
+        });
         return sb.toString();
     }
 
@@ -158,16 +161,31 @@ public abstract class Type extends ModelElement implements IModelType {
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first method that is both annotated with the given annotation and has the correct
      *         annotated properties. <code>null</code> if no such method can be found.
+     * 
+     * @see #findDeclaredMethod(Class, AnnotatedElementMatcher) findDeclaredMethod for null-safe
+     *      processing
      */
     public <T extends Annotation> Method searchDeclaredMethod(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
-        List<Method> declaredMethods = getDeclaredMethods();
-        for (Method method : declaredMethods) {
-            if (method.isAnnotationPresent(annotationClass) && matcher.matches(method.getAnnotation(annotationClass))) {
-                return method;
-            }
-        }
-        return null;
+        return findDeclaredMethod(annotationClass, matcher).orElse(null);
+    }
+
+    /**
+     * Searches for a method with the given annotation that matches the condition defined by a
+     * {@link AnnotatedElementMatcher matcher}. Only methods in this type's declaration class are
+     * considered, thus no methods from super classes are found.
+     * 
+     * @param annotationClass the class of the annotation the method must be annotated with
+     * @param matcher matcher to determine if the annotation has the correct properties
+     * @return the first method that is both annotated with the given annotation and has the correct
+     *         annotated properties. {@link Optional#empty()} if no such method can be found.
+     */
+    public <T extends Annotation> Optional<Method> findDeclaredMethod(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher) {
+        return getDeclaredMethods().stream()
+                .filter(method -> method.isAnnotationPresent(annotationClass)
+                        && matcher.matches(method.getAnnotation(annotationClass)))
+                .findFirst();
     }
 
     protected List<Method> getDeclaredMethods() {
@@ -180,7 +198,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of associations declared in this type
      */
-    @Override
     public abstract List<? extends Association> getDeclaredAssociations();
 
     /**
@@ -188,7 +205,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of all associations declared in this type or in any super type
      */
-    @Override
     public abstract List<? extends Association> getAssociations();
 
     /**
@@ -203,7 +219,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @see #isAssociationDeclared(String)
      */
-    @Override
     public abstract Association getDeclaredAssociation(String name);
 
     /**
@@ -240,7 +255,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of attributes declared in this type
      */
-    @Override
     public abstract List<? extends Attribute> getDeclaredAttributes();
 
     /**
@@ -273,7 +287,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @return the list of all attributes declared in this type or in any supertype
      */
-    @Override
     public abstract List<? extends Attribute> getAttributes();
 
     /**
@@ -287,7 +300,6 @@ public abstract class Type extends ModelElement implements IModelType {
      * 
      * @see #isAttributeDeclared(String)
      */
-    @Override
     public abstract Attribute getDeclaredAttribute(String name);
 
     /**
@@ -301,23 +313,33 @@ public abstract class Type extends ModelElement implements IModelType {
 
     /**
      * Returns this type's super type or <code>null</code> if it has none.
+     * 
+     * @see #findSuperType() findSuperType for null-safe processing
      */
-    @Override
     public abstract Type getSuperType();
+
+    /**
+     * Returns this type's super type if {@link #isSuperTypePresent() present}, otherwise an
+     * {@link Optional#empty() empty Optional}.
+     */
+    public Optional<? extends Type> findSuperType() {
+        return Optional.ofNullable(getSuperType());
+    }
 
     /**
      * Matcher for methods or fields based on annotation properties.
      * 
      * @param <T> is the type of annotation that is expected.
      */
-    public abstract static class AnnotatedElementMatcher<T extends Annotation> {
+    @FunctionalInterface
+    public static interface AnnotatedElementMatcher<T extends Annotation> {
         /**
          * 
          * @param annotation the annotation found.
          * @return <code>true</code> if the annotation matches the condition, <code>false</code>
          *         else.
          */
-        public abstract boolean matches(T annotation);
+        boolean matches(T annotation);
     }
 
     static class AttributeCollector<T extends Attribute> extends TypeHierarchyVisitor {

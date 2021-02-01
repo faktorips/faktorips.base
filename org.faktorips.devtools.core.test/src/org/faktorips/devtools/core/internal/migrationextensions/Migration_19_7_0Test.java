@@ -15,21 +15,21 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.internal.model.testcase.TestCase;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.testcase.ITestCase;
 import org.junit.Test;
 
 public class Migration_19_7_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private MarkAsDirtyMigration migration;
-    private PolicyCmptType policyCmptType;
-    private TestCase testCase;
-    private ProductCmptType productCmptType;
-    private TableStructure tableStructure;
+    private IPolicyCmptType policyCmptType;
+    private ITestCase testCase;
+    private IProductCmptType productCmptType;
+    private ITableStructure tableStructure;
 
     private void setUpMigration() throws CoreException {
         ipsProject = newIpsProject();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,8 +12,9 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -67,7 +68,7 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
             boolean generatesInterface) throws CoreException;
 
     /**
-     * Subclasses have to implement generation of the constants (final statics) here.
+     * Subclasses have to implement generation of the constants (static finals) here.
      * 
      * @param builder The builder for the type's constants section.
      * 

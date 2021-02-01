@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
@@ -45,7 +45,8 @@ public class XDerivedUnionAssociation extends XAssociation {
      * @param context The generator model context
      * @param modelService the model service used to instantiate new generator model nodes
      */
-    public XDerivedUnionAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService) {
+    public XDerivedUnionAssociation(IAssociation association, GeneratorModelContext context,
+            ModelService modelService) {
         super(association, context, modelService, new LocalizedStringsSet(
                 association instanceof IPolicyCmptTypeAssociation ? XPolicyAssociation.class
                         : XProductAssociation.class));

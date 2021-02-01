@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.util.StringUtil;
 
 public class TableContentUsageWorkbenchAdapter extends DefaultIpsObjectPartWorkbenchAdapter {
@@ -29,7 +29,7 @@ public class TableContentUsageWorkbenchAdapter extends DefaultIpsObjectPartWorkb
         }
 
         ITableContentUsage tableContentUsage = (ITableContentUsage)ipsObjectPart;
-        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tableContentUsage);
+        String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage);
         return caption + ": " + StringUtil.unqualifiedName(tableContentUsage.getTableContentName()); //$NON-NLS-1$
     }
 

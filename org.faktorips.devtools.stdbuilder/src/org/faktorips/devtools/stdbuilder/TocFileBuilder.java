@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -31,31 +31,29 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.builder.ComplianceCheck;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IVersion;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.model.IVersion;
+import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptKind;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.testcase.ITestCase;
+import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -105,11 +103,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         for (ITocEntryBuilderFactory tocEntryBuilderFactory : tocEntryBuilderFactories) {
             ITocEntryBuilder builder = tocEntryBuilderFactory.createTocEntryBuilder(this);
             IpsObjectType ipsObjectType = builder.getIpsObjectType();
-            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(ipsObjectType);
-            if (builderList == null) {
-                builderList = new ArrayList<ITocEntryBuilder>();
-                ipsObjectTypeToTocEntryBuilderMap.put(ipsObjectType, builderList);
-            }
+            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.computeIfAbsent(ipsObjectType, $ -> new ArrayList<ITocEntryBuilder>());
             builderList.add(builder);
         }
     }
@@ -197,7 +191,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         String xml = null;
         try {
-            Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
+                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
             IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersion();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
@@ -265,7 +259,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 InputStream is = tocFile.getContents(true);
                 Document doc;
                 try {
-                    DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
+                                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
                     doc = builder.parse(is);
                 } catch (IOException ioe) {
                     // can happen if the file is deleted in the filesystem, but the workspace has
@@ -471,8 +465,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     public TocEntryObject createTocEntry(IEnumType enumType) {
-        if (!GeneratorConfig.forIpsObject(enumType).isGenerateJaxbSupport()
-                || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
+        if (!GeneratorConfig.forIpsObject(enumType).isGenerateJaxbSupport()) {
             return null;
         }
         if (enumType.isInextensibleEnum() || enumType.isAbstract()) {

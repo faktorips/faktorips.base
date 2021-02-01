@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -54,11 +54,8 @@ enum ProductComponentXmlUtil {
             if (node.getNodeType() == Node.ELEMENT_NODE && "Link".equals(node.getNodeName())) {
                 Element childElement = (Element)nl.item(i);
                 String association = childElement.getAttribute("association");
-                List<Element> associationElements = elementMap.get(association);
-                if (associationElements == null) {
-                    associationElements = new ArrayList<Element>(1);
-                    elementMap.put(association, associationElements);
-                }
+                List<Element> associationElements = elementMap.computeIfAbsent(association,
+                        $ -> new ArrayList<Element>(1));
                 associationElements.add(childElement);
             }
 

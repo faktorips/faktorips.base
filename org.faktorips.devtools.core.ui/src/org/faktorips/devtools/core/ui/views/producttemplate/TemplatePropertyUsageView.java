@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,8 +13,6 @@ import java.util.Optional;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -34,13 +32,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsColor;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -50,6 +41,12 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.SelectionProviderIntermediate;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 
 public class TemplatePropertyUsageView {
 
@@ -148,20 +145,8 @@ public class TemplatePropertyUsageView {
         bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DEFINED_VALUES_LABEL_TEXT);
         leftTreeViewer.setInput(usagePmo);
         rightTreeViewer.setInput(usagePmo);
-        changeListener = new IIpsSrcFilesChangeListener() {
-
-            @Override
-            public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-                Display.getDefault().asyncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        refresh();
-                    }
-                });
-            }
-        };
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(changeListener);
+        changeListener = event -> Display.getDefault().asyncExec(this::refresh);
+        IIpsModel.get().addIpsSrcFilesChangedListener(changeListener);
         bindingContext.updateUI();
     }
 
@@ -225,13 +210,9 @@ public class TemplatePropertyUsageView {
     private void buildTreeContextMenu(String menuId, TreeViewer treeViewer) {
         final MenuManager menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener() {
-
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
-                IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
-            }
+        menuManager.addMenuListener($ -> {
+            menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
+            IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
         });
 
         site.registerContextMenu(menuId, menuManager, treeViewer);
@@ -252,7 +233,7 @@ public class TemplatePropertyUsageView {
 
     // @PreDestroy
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(changeListener);
+        IIpsModel.get().removeIpsSrcFilesChangedListener(changeListener);
         usagePmo.dispose();
         bindingContext.dispose();
     }

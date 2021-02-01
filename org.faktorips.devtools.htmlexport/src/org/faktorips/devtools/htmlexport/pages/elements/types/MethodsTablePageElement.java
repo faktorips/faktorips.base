@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,16 +14,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.type.IType;
 
 /**
- * Represents a table with the {@link IMethod}s of an {@link IType} as rows and the attributes
- * of the method as columns
+ * Represents a table with the {@link IMethod}s of an {@link IType} as rows and the attributes of
+ * the method as columns
  * 
  * @author dicker
  * 
@@ -72,7 +72,8 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IMethod method) {
-        IPageElement[] textPageElements = new PageElementUtils(getContext()).createTextPageElements(getMethodData(method));
+        IPageElement[] textPageElements = new PageElementUtils(getContext())
+                .createTextPageElements(getMethodData(method));
         textPageElements[0].setAnchor(new PageElementUtils(getContext()).createAnchorId(method));
         return Arrays.asList(textPageElements);
     }

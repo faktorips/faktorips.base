@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,11 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class MultiValueSubsetChooserModelTest {
     }
 
     protected void setUpMultiValueHolder() {
-        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
+        List<ISingleValueHolder> holderList = new ArrayList<>();
         multiValueHolder = mock(MultiValueHolder.class);
         when(multiValueHolder.getValue()).thenReturn(holderList);
         holderA = mock(SingleValueHolder.class);
@@ -191,7 +192,7 @@ public class MultiValueSubsetChooserModelTest {
 
         verify(multiValueHolder).setValue(captor.capture());
 
-        List<SingleValueHolder> holderList = captor.getValue();
+        List<ISingleValueHolder> holderList = captor.getValue();
         assertEquals(6, holderList.size());
         assertEquals("A", holderList.get(0).getStringValue());
         assertEquals("B", holderList.get(1).getStringValue());
@@ -206,7 +207,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
 
         model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
-        SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("C"));
+        ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("C"));
         assertSame(multiValueHolder.getValue().get(2), holder);
     }
 
@@ -216,7 +217,7 @@ public class MultiValueSubsetChooserModelTest {
         multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
         model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
-        SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
+        ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
         assertSame(multiValueHolder.getValue().get(5), holder);
     }
 
@@ -226,7 +227,7 @@ public class MultiValueSubsetChooserModelTest {
         multiValueHolder.getValue().add(new SingleValueHolder(null, "X"));
 
         model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
-        SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
+        ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
         assertNull(holder);
     }
 
@@ -236,7 +237,7 @@ public class MultiValueSubsetChooserModelTest {
         multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
         model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
-        SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("X"));
+        ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("X"));
         assertNull(holder);
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,6 +11,7 @@
 package org.faktorips.abstracttest;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -82,7 +83,13 @@ public class TestExtensionRegistry implements IExtensionRegistry {
      */
     @Override
     public IConfigurationElement[] getConfigurationElementsFor(String namespace, String extensionPointName) {
-        throw new RuntimeException("Not implemented");
+        return Arrays.stream(extensionPoints)
+                .filter(e -> e.getNamespaceIdentifier().equals(namespace))
+                .map(IExtensionPoint::getExtensions)
+                .flatMap(Arrays::stream)
+                .map(IExtension::getConfigurationElements)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Not implemented"));
     }
 
     /**
@@ -92,7 +99,13 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     public IConfigurationElement[] getConfigurationElementsFor(String namespace,
             String extensionPointName,
             String extensionId) {
-        throw new RuntimeException("Not implemented");
+        return Arrays.stream(extensionPoints)
+                .filter(e -> e.getNamespaceIdentifier().equals(namespace))
+                .map(e -> e.getExtension(extensionId))
+                .filter(e -> e != null)
+                .map(IExtension::getConfigurationElements)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Not implemented"));
     }
 
     /**

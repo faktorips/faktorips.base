@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 /**
  * Layout styles for the model explorer.
@@ -51,7 +51,7 @@ public enum LayoutStyle {
      * Returns the layout style by id. Needed as before version 2.4.2, the layout style was
      * represented by int constants and is saved in the dialog settings.
      */
-    public final static LayoutStyle getById(int id) {
+    public static final LayoutStyle getById(int id) {
         if (id == HIERACHICAL.getId()) {
             return HIERACHICAL;
         }

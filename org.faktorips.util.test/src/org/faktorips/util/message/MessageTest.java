@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
-import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
 
 public class MessageTest {
@@ -116,11 +115,11 @@ public class MessageTest {
     @Test
     public void testToString() {
         Message msg = Message.newError("1", "blabla");
-        String expected = "ERROR 1[]" + SystemUtils.LINE_SEPARATOR + "blabla";
+        String expected = "ERROR 1[]" + System.lineSeparator() + "blabla";
         assertEquals(expected, msg.toString());
 
         msg = new Message("code", "blabla", Message.INFO, "ObjectA", new String[] { "p1", "p2" });
-        expected = "INFO code[ObjectA.p1, ObjectA.p2]" + SystemUtils.LINE_SEPARATOR + "blabla";
+        expected = "INFO code[ObjectA.p1, ObjectA.p2]" + System.lineSeparator() + "blabla";
         assertEquals(expected, msg.toString());
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,14 +17,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 public abstract class AbstractModelStructureContentProvider extends DeferredStructuredContentProvider implements
         ITreeContentProvider {
@@ -107,8 +107,8 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
     }
 
     /**
-     * Checks if the tree of descendants of an {@IType} element contains an element of a
-     * specific {@link IIpsProject}.
+     * Checks if the tree of descendants of an {@IType} element contains an element of a specific
+     * {@link IIpsProject}.
      * 
      * @param element the {@link IType} root element of the tree
      * @param sourceProject the {@link IIpsProject} for which the existence of an element is
@@ -294,7 +294,8 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * <p>
      * <b>Example:</b> <br>
      * <ol>
-     * <li>{@link #getShowTypeState()} returns {@link ShowTypeState ShowTypeState.SHOW_POLICIES}</li>
+     * <li>{@link #getShowTypeState()} returns {@link ShowTypeState
+     * ShowTypeState.SHOW_POLICIES}</li>
      * <li>{@link #toggleShowTypeState()}</li>
      * <li>{@link #getShowTypeState()} return {@link ShowTypeState ShowTypeState.SHOW_PRODUCTS}</li>
      * </ol>
@@ -328,6 +329,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
     static enum ShowTypeState {
         SHOW_POLICIES(1),
         SHOW_PRODUCTS(2);
+
         private final int state;
 
         private ShowTypeState(int value) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,17 +22,16 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Content provider to collect all generation dates of a product component structure. This contains
@@ -127,7 +126,8 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             smallestValidFrom = generation.getValidFrom();
         }
         List<IProductCmptLink> links = generation.getLinksIncludingProductCmpt();
-        IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        @SuppressWarnings("deprecation")
+        IProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1);
         try {
             subMonitor.beginTask(null, links.size());
             for (IProductCmptLink link : links) {
@@ -138,7 +138,8 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
                 if (linkAssociation != null && !linkAssociation.isAssoziation()) {
                     IProductCmpt target = link.findTarget(ipsProject);
                     if (target != null) {
-                        IProgressMonitor recMonitor = new SubProgressMonitor(subMonitor, 1);
+                        @SuppressWarnings("deprecation")
+                        IProgressMonitor recMonitor = new org.eclipse.core.runtime.SubProgressMonitor(subMonitor, 1);
                         List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target, generation);
                         for (IProductCmptGeneration aGeneration : relevantGenerations) {
                             if (alreadyPassed.add(aGeneration)) {

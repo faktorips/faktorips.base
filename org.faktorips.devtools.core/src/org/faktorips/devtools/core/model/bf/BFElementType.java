@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -119,7 +119,7 @@ public enum BFElementType {
      * 
      * @throws IllegalArgumentException if no type is found for the specified id
      */
-    public final static BFElementType getType(String id) {
+    public static final BFElementType getType(String id) {
         if (id.equals(ACTION_INLINE.id)) {
             return ACTION_INLINE;
         }

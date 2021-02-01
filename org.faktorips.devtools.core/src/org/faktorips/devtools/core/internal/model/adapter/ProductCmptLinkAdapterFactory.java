@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,12 +13,12 @@ package org.faktorips.devtools.core.internal.model.adapter;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 
 /**
  * This is a adapter factory to adapt from {@link IProductCmptLink} to {@link IResource} or
@@ -27,15 +27,15 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
  * {@link IpsElementAdapterFactory}) but we want to get the resource of the target.
  * <p>
  * Note: You cannot adapt to {@link IResource} directly because it is prevented in
- * {@link IpsObjectPart#getAdapter(Class)}
+ * {@link IIpsObjectPart#getAdapter(Class)}
  * 
  * @author dirmeier
  */
 public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
 
+    @SuppressWarnings("unchecked")
     @Override
-    // eclipse adapters are not type safe
-    public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (!(adaptableObject instanceof IProductCmptLink)) {
             return null;
         }
@@ -48,14 +48,14 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
                 return null;
             }
             if (IIpsObject.class.isAssignableFrom(adapterType)) {
-                return target;
+                return (T)target;
             }
             if (IIpsSrcFile.class.isAssignableFrom(adapterType)) {
-                return target.getIpsSrcFile();
+                return (T)target.getIpsSrcFile();
             }
             IResource enclosingResource = target.getEnclosingResource();
             if (adapterType.isInstance(enclosingResource)) {
-                return enclosingResource;
+                return (T)enclosingResource;
             }
         } catch (Exception e) {
             IpsPlugin.log(e);
@@ -63,10 +63,8 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    // eclipse adapters are not type safe
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IFile.class, IIpsSrcFile.class, IIpsObject.class };
     }
 

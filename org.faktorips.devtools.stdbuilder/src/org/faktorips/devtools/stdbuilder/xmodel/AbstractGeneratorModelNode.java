@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,21 +25,21 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
@@ -182,7 +182,7 @@ public abstract class AbstractGeneratorModelNode {
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(describedElement);
+                description = IIpsModel.get().getMultiLanguageSupport().getDefaultDescription(describedElement);
             }
         }
         return description;
@@ -246,7 +246,7 @@ public abstract class AbstractGeneratorModelNode {
      * Returns the qualified class name for the given datatype.
      * 
      * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
-     *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
+     *            as an {@link org.faktorips.devtools.model.type.IType IType}.
      * @param resolveGenerationNameIfApplicable In case the given datatype is an
      *            {@link IProductCmptType} this flag controls whether the generation class name
      *            instead of the product class name is returned. The generation class name however
@@ -261,14 +261,14 @@ public abstract class AbstractGeneratorModelNode {
      * Returns the qualified class name for the given datatype.
      * 
      * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
-     *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
+     *            as an {@link org.faktorips.devtools.model.type.IType IType}.
      * @param resolveGenerationNameIfApplicable In case the given datatype is an
      *            {@link IProductCmptType} this flag controls whether the generation class name
      *            instead of the product class name is returned. The generation class name however
      *            will only be returned if the {@link IProductCmptType} is changing over time.
      * @param forceImplementation Used to force the implementation class of
-     *            {@link org.faktorips.devtools.core.model.type.IType ITypes}. <code>true</code> to
-     *            force the the class name resolver to always return the implementation class name.
+     *            {@link org.faktorips.devtools.model.type.IType ITypes}. <code>true</code> to force
+     *            the the class name resolver to always return the implementation class name.
      *            <code>false</code> to get the interface if it is generated or the implementation
      *            if no interfaces are generated.
      * 

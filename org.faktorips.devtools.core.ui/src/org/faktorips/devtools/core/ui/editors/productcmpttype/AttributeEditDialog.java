@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,17 +28,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.SingleEventModification;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -54,6 +43,19 @@ import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationCo
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.SingleEventModification;
+import org.faktorips.devtools.model.ipsobject.Modifier;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * Dialog to edit a product cmpt type attribute.
@@ -67,7 +69,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private TabFolder folder;
 
-    /** Keep track of the content of the name field to be able to determine whether it has changed. */
+    /**
+     * Keep track of the content of the name field to be able to determine whether it has changed.
+     */
     private final String initialName;
 
     private IIpsProject ipsProject;
@@ -173,7 +177,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 workArea,
                 NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
-                        SWT.CHECK);
+                SWT.CHECK);
         getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
@@ -253,7 +257,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public String getText(Object element) {
                 IProductCmptCategory category = (IProductCmptCategory)element;
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(category);
             }
         });
 
@@ -298,23 +302,21 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
-                    IpsPlugin
-                    .getDefault()
-                    .getIpsModel()
-                    .executeModificationsWithSingleEvent(
-                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                    ((IpsModel)IIpsModel.get())
+                            .executeModificationsWithSingleEvent(
+                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
-                                @Override
-                                protected boolean execute() throws CoreException {
-                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                    attribute.setModifier(overwrittenAttribute.getModifier());
-                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                    attribute.setMultiValueAttribute(overwrittenAttribute
-                                            .isMultiValueAttribute());
-                                    attribute.setCategory(overwrittenAttribute.getCategory());
-                                    return true;
-                                }
-                            });
+                                        @Override
+                                        protected boolean execute() throws CoreException {
+                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                            attribute.setModifier(overwrittenAttribute.getModifier());
+                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                            attribute.setMultiValueAttribute(overwrittenAttribute
+                                                    .isMultiValueAttribute());
+                                            attribute.setCategory(overwrittenAttribute.getCategory());
+                                            return true;
+                                        }
+                                    });
                 }
             }
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);

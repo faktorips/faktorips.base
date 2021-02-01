@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -25,15 +25,15 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.bf.edit.NodeEditPart;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * A section that is displayed in the property view. The properties of a method call action can be
@@ -142,7 +142,7 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
 
     }
 
-    protected void updateFromModel(ContentChangeEvent event) {
+    protected void updateFromModel(@SuppressWarnings("unused") ContentChangeEvent event) {
         // used in subclasses
     }
 

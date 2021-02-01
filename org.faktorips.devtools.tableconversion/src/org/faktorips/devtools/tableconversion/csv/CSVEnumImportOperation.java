@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -26,16 +26,16 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.value.IValue;
-import org.faktorips.devtools.core.model.value.ValueFactory;
-import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.value.ValueFactory;
+import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -174,7 +174,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                         column.setValue(ValueFactory.createStringValue(ipsValue));
                     } else if (column.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
                         IValue<?> value = column.getValue();
-                        InternationalString content = (InternationalString)value.getContent();
+                        IInternationalString content = (IInternationalString)value.getContent();
                         content.add(new LocalizedString(getDefaultLanguage(column.getIpsProject()), ipsValue));
                     }
                 }

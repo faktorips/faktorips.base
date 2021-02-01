@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.ITypeHierarchy;
 
 /**
  * The HierarchyContentProvider is used with the Treeviewer in the class IpsHierarchyView Input

@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.internal.TestTableRow;
-import org.faktorips.runtime.model.table.TableColumn;
-import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.values.Decimal;
 import org.junit.Before;
 import org.junit.Test;

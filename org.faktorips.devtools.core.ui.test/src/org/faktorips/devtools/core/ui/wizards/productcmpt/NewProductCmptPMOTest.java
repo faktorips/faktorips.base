@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -30,24 +30,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +61,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
     private SingletonMockHelper singletonMockHelper;
 
-    private IIpsModel ipsModel;
+    private IpsModel ipsModel;
 
     private IIpsProject ipsProject;
 
@@ -70,11 +73,11 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         ipsProject = spy(newIpsProject());
         IpsPlugin ipsPlugin = mock(IpsPlugin.class);
         IpsPreferences preferences = mock(IpsPreferences.class);
-        ipsModel = mock(IIpsModel.class);
+        ipsModel = mock(IpsModel.class);
         singletonMockHelper = new SingletonMockHelper();
         singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+        singletonMockHelper.setSingletonInstance(IpsModel.class, ipsModel);
         doReturn(preferences).when(ipsPlugin).getIpsPreferences();
-        doReturn(ipsModel).when(ipsPlugin).getIpsModel();
     }
 
     @Test
@@ -285,6 +288,8 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         mockProductCmptNamingStrategy(ipsProject);
         when(ipsProject.getSourceIpsPackageFragmentRoots())
                 .thenReturn(new IIpsPackageFragmentRoot[] { ipsPackageFragmentRoot });
+        IIpsProjectProperties properties = new IpsProjectProperties(ipsProject);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
         return ipsPackageFragmentRoot;
     }
 
@@ -308,13 +313,16 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType1 = mock(IProductCmptType.class);
+        doReturn(ipsProject).when(productCmptType1).getIpsProject();
         when(productCmptType1.getName()).thenReturn("1");
         IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType2 = mock(IProductCmptType.class);
-        when(productCmptType2.getName()).thenReturn("1");
+        when(productCmptType2.getName()).thenReturn("2");
+        doReturn(ipsProject).when(productCmptType2).getIpsProject();
         IIpsSrcFile ipsSrcFile3 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType3 = mock(IProductCmptType.class);
-        when(productCmptType3.getName()).thenReturn("1");
+        when(productCmptType3.getName()).thenReturn("3");
+        doReturn(ipsProject).when(productCmptType3).getIpsProject();
         ipsSrcFiles.add(ipsSrcFile1);
         ipsSrcFiles.add(ipsSrcFile2);
         ipsSrcFiles.add(ipsSrcFile3);
@@ -336,9 +344,10 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         // refresh the list
         pmo.setIpsProject(ipsProject);
 
-        assertEquals(2, pmo.getBaseTypes().size());
-        assertTrue(pmo.getBaseTypes().contains(productCmptType2));
-        assertTrue(pmo.getBaseTypes().contains(productCmptType3));
+        Set<IProductCmptType> baseTypes = pmo.getBaseTypes();
+        assertEquals(2, baseTypes.size());
+        assertTrue(baseTypes.contains(productCmptType2));
+        assertTrue(baseTypes.contains(productCmptType3));
     }
 
     /**
@@ -369,12 +378,15 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType1 = mock(IProductCmptType.class);
         doReturn("1").when(productCmptType1).getName();
+        doReturn(ipsProject).when(productCmptType1).getIpsProject();
         IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType2 = mock(IProductCmptType.class);
         doReturn("1").when(productCmptType2).getName();
+        doReturn(ipsProject).when(productCmptType2).getIpsProject();
         IIpsSrcFile ipsSrcFile3 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType3 = mock(IProductCmptType.class);
         doReturn("1").when(productCmptType3).getName();
+        doReturn(ipsProject).when(productCmptType3).getIpsProject();
         ipsSrcFiles.add(ipsSrcFile1);
         ipsSrcFiles.add(ipsSrcFile2);
         ipsSrcFiles.add(ipsSrcFile3);
@@ -423,6 +435,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         doReturn("layerSupertype").when(layerSupertypeProductCmptType).getName();
         doReturn(layerSupertypeProductCmptType).when(layerSupertypeIpsSrcFile).getIpsObject();
         doReturn("true").when(layerSupertypeIpsSrcFile).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
+        doReturn(ipsProject).when(layerSupertypeProductCmptType).getIpsProject();
 
         IIpsSrcFile abstractIpsSrcFile = mock(IIpsSrcFile.class);
         IProductCmptType abstractProductCmptType = mock(IProductCmptType.class);
@@ -430,10 +443,12 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         doReturn("false").when(abstractIpsSrcFile).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
         doReturn("true").when(abstractIpsSrcFile).getPropertyValue(IType.PROPERTY_ABSTRACT);
         doReturn(abstractProductCmptType).when(abstractIpsSrcFile).getIpsObject();
+        doReturn(ipsProject).when(abstractProductCmptType).getIpsProject();
 
         IIpsSrcFile concreteIpsSrcFile = mock(IIpsSrcFile.class);
         IProductCmptType concreteProductCmptType = mock(IProductCmptType.class);
         doReturn("concrete").when(concreteProductCmptType).getName();
+        doReturn(ipsProject).when(concreteProductCmptType).getIpsProject();
         // Older types may not have the layer supertype property. This is handled as false.
         doReturn(null).when(concreteIpsSrcFile).getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
         doReturn(concreteProductCmptType).when(concreteIpsSrcFile).getIpsObject();

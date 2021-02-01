@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.commands;
 
- import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
  /**
   * A handler to set the template value status of property values to

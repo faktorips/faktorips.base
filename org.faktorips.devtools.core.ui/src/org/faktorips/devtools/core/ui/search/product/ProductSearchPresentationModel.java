@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -17,13 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
@@ -31,6 +24,13 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition
 import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationConditionType;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
  * The ProductSearchPresentationModel is the implementation of the {@link PresentationModelObject}
@@ -80,7 +80,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     }
 
     public void setProductCmptTypeQName(String projectName, String productCmptTypeName) {
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(projectName);
         IIpsObject ipsObject = ipsProject.findIpsObject(new QualifiedNameType(productCmptTypeName,
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         setProductCmptType((IProductCmptType)ipsObject);
@@ -155,7 +155,8 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * 
      * @return true if the list contained the specified ProductSearchConditionPresentationModel
      */
-    public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
+    public boolean removeProductSearchConditionPresentationModels(
+            ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
         boolean oldConditionDefined = isConditionDefined();
 
         boolean remove = conditionPMOs.remove(productSearchConditionPresentationModel);

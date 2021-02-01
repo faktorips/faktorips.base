@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 
 public class ValidationRuleConfigWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
@@ -33,7 +33,7 @@ public class ValidationRuleConfigWorkbenchAdapter extends IpsElementWorkbenchAda
     @Override
     protected String getLabel(IIpsElement ipsElement) {
         if (ipsElement instanceof IValidationRuleConfig) {
-            return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IValidationRuleConfig)ipsElement);
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption((IValidationRuleConfig)ipsElement);
         }
         return super.getLabel(ipsElement);
     }

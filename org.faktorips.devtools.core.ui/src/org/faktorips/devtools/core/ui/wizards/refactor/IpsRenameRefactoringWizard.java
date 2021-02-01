@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,12 +20,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS "Rename" refactoring.
@@ -54,7 +54,7 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
      * Provides a text field that allows the user to type a new name (and optionally plural name)
      * for the {@link IIpsElement} to rename.
      */
-    private final static class RenameUserInputPage extends IpsRefactoringUserInputPage {
+    private static final class RenameUserInputPage extends IpsRefactoringUserInputPage {
 
         /**
          * Text field that enables the user to provide a new name for the {@link IIpsElement} to be

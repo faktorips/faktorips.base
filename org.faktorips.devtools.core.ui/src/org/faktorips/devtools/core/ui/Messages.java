@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -131,5 +131,11 @@ public class Messages extends NLS {
     public static String IpsClasspathContainerPage_title;
 
     public static String LinkDropListener_selectAssociation;
+    public static String IpsUIPlugin_titleErrorDialog;
+    public static String IpsUIPlugin_msgUnexpectedError;
+    public static String IpsUIPlugin_infoDefaultTextEditorWasOpened;
+    public static String IpsUIPlugin_dialogSaveDirtyEditorMessageMany;
+    public static String IpsUIPlugin_dialogSaveDirtyEditorMessageSimple;
+    public static String IpsUIPlugin_dialogSaveDirtyEditorTitle;
 
 }

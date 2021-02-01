@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.filter;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.type.IProductCmptProperty;
 
 /**
  * Manages the visibility of UI elements that are based upon {@link IProductCmptProperty product

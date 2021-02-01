@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -20,29 +20,27 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
+import org.faktorips.devtools.model.internal.DefaultVersionProvider;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.util.message.MessageList;
 
 public class ProductReleaseProcessor {
 
-    public static final String VERSION_FORMAT_REGEX = "versionFormatRegex"; //$NON-NLS-1$
+    public static final String VERSION_FORMAT_REGEX = DefaultVersionProvider.ReleaseExtensionVersionFormat.VERSION_FORMAT_REGEX;
 
-    public static final String READABLE_VERSION_FORMAT = "readableVersionFormat"; //$NON-NLS-1$
-
-    private static final String RELEASE_EXTENSION_POINT_NAME = "productReleaseExtension"; //$NON-NLS-1$
+    public static final String READABLE_VERSION_FORMAT = DefaultVersionProvider.ReleaseExtensionVersionFormat.READABLE_VERSION_FORMAT;
 
     private static final String EXTENSION_OPERATION_PROPERTY = "operation"; //$NON-NLS-1$
 
@@ -88,10 +86,14 @@ public class ProductReleaseProcessor {
         observableProgressMessages.info(Messages.ProductReleaseProcessor_status_start);
 
         try {
-            String tag = buildRelease(ipsProject, newVersion, new SubProgressMonitor(monitor, 50));
+            @SuppressWarnings("deprecation")
+            String tag = buildRelease(ipsProject, newVersion,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 50));
             // start extended release
+            @SuppressWarnings("deprecation")
             boolean buildReleaseAndDeployment = getReleaseAndDeploymentOperation().buildReleaseAndDeployment(
-                    ipsProject, tag, selectedTargetSystems, new SubProgressMonitor(monitor, 50));
+                    ipsProject, tag, selectedTargetSystems,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 50));
             return buildReleaseAndDeployment;
         } finally {
             monitor.done();
@@ -103,6 +105,7 @@ public class ProductReleaseProcessor {
      * 
      * @return the tag used to tag the project in version control system
      */
+    @SuppressWarnings("deprecation")
     private String buildRelease(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws JavaModelException, InterruptedException, CoreException, TeamException {
         monitor.beginTask(null, 95);
@@ -110,17 +113,17 @@ public class ProductReleaseProcessor {
             monitor.worked(1);
 
             // check project is synchrony with filesystem
-            checkSyncWithFilesystem(ipsProject, new SubProgressMonitor(monitor, 4));
+            checkSyncWithFilesystem(ipsProject, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 4));
 
             // check project is synchrony with repository
-            checkSynchronization(ipsProject, new SubProgressMonitor(monitor, 10));
+            checkSynchronization(ipsProject, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
 
             // update version in project
             updateVersionProperty(ipsProject, newVersion);
             monitor.worked(2);
 
             // build project
-            buildProject(ipsProject, new SubProgressMonitor(monitor, 40));
+            buildProject(ipsProject, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 40));
 
             // check for fips error markers
             validateIpsProject(ipsProject);
@@ -130,15 +133,17 @@ public class ProductReleaseProcessor {
             checkProblemMarkers(ipsProject);
             monitor.worked(1);
 
-            if (!getReleaseAndDeploymentOperation().preCommit(ipsProject, new SubProgressMonitor(monitor, 5))) {
+            if (!getReleaseAndDeploymentOperation().preCommit(ipsProject,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 5))) {
                 throw new InterruptedException(Messages.ProductReleaseProcessor_error_custom_validation_failed);
             }
 
             // commit property file and toc file
-            commitFiles(ipsProject, newVersion, new SubProgressMonitor(monitor, 10));
+            commitFiles(ipsProject, newVersion, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
 
             // tag the project with the new version
-            String tagProject = tagProject(ipsProject, newVersion, new SubProgressMonitor(monitor, 20));
+            String tagProject = tagProject(ipsProject, newVersion,
+                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 20));
 
             return tagProject;
         } finally {
@@ -188,17 +193,19 @@ public class ProductReleaseProcessor {
     }
 
     private void checkProblemMarkers(IIpsProject ipsProject) throws CoreException, InterruptedException {
-        if (ipsProject.getProject().findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR) {
+        if (ipsProject.getProject().findMaxProblemSeverity(IMarker.PROBLEM, true,
+                IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR) {
             throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_errors);
         } else {
             observableProgressMessages.info(Messages.ProductReleaseProcessor_status_build_success);
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void commitFiles(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws CoreException,
             InterruptedException {
         List<IResource> resources = new ArrayList<IResource>();
-        resources.add(ipsProject.getProject().getFile(IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
+        resources.add(ipsProject.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
             IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
             if (tocFile != null) {
@@ -210,7 +217,8 @@ public class ProductReleaseProcessor {
 
         teamOperation
                 .commitFiles(ipsProject.getProject(), resources.toArray(new IResource[0]),
-                        Messages.ReleaseAndDeploymentOperation_commit_comment + newVersion, new SubProgressMonitor(
+                        Messages.ReleaseAndDeploymentOperation_commit_comment + newVersion,
+                        new org.eclipse.core.runtime.SubProgressMonitor(
                                 monitor, 10));
         if (!teamOperation.isProjectSynchronized(ipsProject.getProject(), monitor)) {
             throw new InterruptedException(NLS.bind(Messages.ReleaseAndDeploymentOperation_exception_noLongerSynchron,
@@ -231,15 +239,7 @@ public class ProductReleaseProcessor {
     }
 
     public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {
-        String releasaeExtensionId = ipsProject.getReadOnlyProperties().getReleaseExtensionId();
-        IConfigurationElement[] configElements = IpsPlugin.getDefault().getExtensionRegistry()
-                .getConfigurationElementsFor(IpsPlugin.PLUGIN_ID, RELEASE_EXTENSION_POINT_NAME);
-        for (IConfigurationElement confElement : configElements) {
-            if (confElement.getAttribute("id").equals(releasaeExtensionId)) { //$NON-NLS-1$
-                return confElement;
-            }
-        }
-        return null;
+        return ExtensionPoints.getReleaseExtensionElement(ipsProject);
     }
 
 }

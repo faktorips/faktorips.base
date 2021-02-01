@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -23,9 +23,6 @@ import org.faktorips.runtime.model.type.Type;
 
 public class TableUsageCollector extends TypePartCollector<TableUsage, TableUsageCollector.TableUsageDescriptor> {
 
-    @SuppressWarnings("unchecked")
-    // Compiler does not like generics and varargs
-    // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6227971
     public TableUsageCollector() {
         super(Arrays.<AnnotationProcessor<?, TableUsageDescriptor>> asList(new TableUsageProcessor()));
     }

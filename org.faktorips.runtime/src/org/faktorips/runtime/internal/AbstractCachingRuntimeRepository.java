@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,7 +24,6 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
-import org.faktorips.runtime.caching.AbstractComputable;
 import org.faktorips.runtime.caching.IComputable;
 
 /**
@@ -72,49 +71,21 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             @SuppressWarnings("unchecked")
             Class<IProductComponent> productCmptClass = (Class<IProductComponent>)cl
                     .loadClass(IProductComponent.class.getName());
-            IComputable<String, IProductComponent> productCmptComputer = new AbstractComputable<String, IProductComponent>(
-                    productCmptClass) {
-                @Override
-                public IProductComponent compute(String key) throws InterruptedException {
-                    return getNotCachedProductComponent(key);
-                }
-            };
+            IComputable<String, IProductComponent> productCmptComputer = IComputable.of(productCmptClass,
+                    this::getNotCachedProductComponent);
             productCmptCache = cacheFactory.createProductCmptCache(productCmptComputer);
 
             @SuppressWarnings("unchecked")
             Class<IProductComponentGeneration> productCmptGenClass = (Class<IProductComponentGeneration>)cl
                     .loadClass(IProductComponentGeneration.class.getName());
-            IComputable<GenerationId, IProductComponentGeneration> productCmptGenComputer = new AbstractComputable<GenerationId, IProductComponentGeneration>(
-                    productCmptGenClass) {
-
-                @Override
-                public IProductComponentGeneration compute(GenerationId key) throws InterruptedException {
-                    return getNotCachedProductComponentGeneration(key);
-                }
-
-            };
-            productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(productCmptGenComputer);
+            productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(IComputable
+                    .of(productCmptGenClass, this::getNotCachedProductComponentGeneration));
 
             @SuppressWarnings("unchecked")
             Class<ITable<?>> tableClass = (Class<ITable<?>>)cl.loadClass(ITable.class.getName());
-            IComputable<String, ITable<?>> tableComputer = new AbstractComputable<String, ITable<?>>(tableClass) {
+            tableCacheByQName = cacheFactory.createTableCache(IComputable.of(tableClass, this::getNotCachedTable));
 
-                @Override
-                public ITable<?> compute(String key) throws InterruptedException {
-                    return getNotCachedTable(key);
-                }
-
-            };
-            tableCacheByQName = cacheFactory.createTableCache(tableComputer);
-
-            IComputable<Class<?>, List<?>> enumValueComputer = new AbstractComputable<Class<?>, List<?>>(List.class) {
-
-                @Override
-                public List<?> compute(Class<?> key) throws InterruptedException {
-                    return getNotCachedEnumValues(key);
-                }
-            };
-            enumValuesCacheByClass = cacheFactory.createEnumCache(enumValueComputer);
+            enumValuesCacheByClass = cacheFactory.createEnumCache(IComputable.of(List.class, this::getNotCachedEnumValues));
 
             enumXmlAdapters = new ArrayList<XmlAdapter<?, ?>>();
         } catch (ClassNotFoundException e) {
@@ -202,14 +173,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     }
 
     private <T> IComputable<String, T> initCache(final Class<T> type) {
-        IComputable<String, T> computer = new AbstractComputable<String, T>(type) {
-            @Override
-            public T compute(String key) throws InterruptedException {
-                return getNotCachedCustomObject(type, key);
-            }
-        };
-        IComputable<String, T> cache = cacheFactory.createCache(computer);
-        return cache;
+        return cacheFactory.createCache(IComputable.of(type, key -> getNotCachedCustomObject(type, key)));
     }
 
     protected abstract <T> T getNotCachedCustomObject(Class<T> type, String ipsObjectQualifiedName);

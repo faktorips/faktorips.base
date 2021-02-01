@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,10 +15,9 @@ import java.util.Set;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /** Base class for operations that modify templated values. */
 public abstract class AbstractTemplatedValueOperation implements IWorkspaceRunnable {
@@ -36,10 +35,11 @@ public abstract class AbstractTemplatedValueOperation implements IWorkspaceRunna
         }
     }
 
+    @SuppressWarnings("deprecation")
     void save(IProgressMonitor monitor) {
         for (IIpsSrcFile ipsSrcFile : filesToSave) {
             try {
-                ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
+                ipsSrcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }

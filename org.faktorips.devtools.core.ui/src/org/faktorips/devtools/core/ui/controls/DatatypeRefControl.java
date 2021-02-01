@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * A control that allows to edit a reference to a datatype.
@@ -103,10 +103,10 @@ public class DatatypeRefControl extends TextButtonControl {
                 textToSet = datatype.getQualifiedName();
             }
             try {
-                immediatelyNotifyListener = true;
+                setImmediatelyNotifyListener(true);
                 getTextControl().setText(textToSet);
             } finally {
-                immediatelyNotifyListener = false;
+                setImmediatelyNotifyListener(false);
             }
         }
     }

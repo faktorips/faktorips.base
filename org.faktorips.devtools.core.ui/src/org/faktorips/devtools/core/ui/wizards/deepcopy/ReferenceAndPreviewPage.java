@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -28,12 +28,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a
@@ -138,7 +139,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
         if (visible) {
             if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
                 String productCmptTypeName;
-                productCmptTypeName = IpsPlugin.getMultiLanguageSupport()
+                productCmptTypeName = IIpsModel.get().getMultiLanguageSupport()
                         .getLocalizedLabel(getStructure().getRoot().getProductCmpt()
                                 .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
                 setDescription(

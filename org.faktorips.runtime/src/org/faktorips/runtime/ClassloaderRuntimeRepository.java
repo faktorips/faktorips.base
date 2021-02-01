@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -267,7 +267,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     @Override
     protected Element getDocumentElement(ProductCmptTocEntry tocEntry) {
-        return getDocumentElement((TocEntry)tocEntry);
+        return getDocumentElementInternal(tocEntry);
     }
 
     @Override
@@ -289,7 +289,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     @Override
     protected Element getDocumentElement(TestCaseTocEntry tocEntry) {
-        return getDocumentElement((TocEntry)tocEntry);
+        return getDocumentElementInternal(tocEntry);
     }
 
     @Override
@@ -306,7 +306,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         return is;
     }
 
-    private Element getDocumentElement(TocEntry tocEntry) {
+    private Element getDocumentElementInternal(TocEntry tocEntry) {
         String resource = tocEntry.getXmlResourceName();
         InputStream is = getClassLoader().getResourceAsStream(resource);
         if (is == null) {
@@ -378,7 +378,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     @Override
     protected <T> Element getDocumentElement(CustomTocEntryObject<T> tocEntry) {
-        return getDocumentElement((TocEntry)tocEntry);
+        return getDocumentElementInternal(tocEntry);
     }
 
     private static final class EmptyInputStream extends InputStream {

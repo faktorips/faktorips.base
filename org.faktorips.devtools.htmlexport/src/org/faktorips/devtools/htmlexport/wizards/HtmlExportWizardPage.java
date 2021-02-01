@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -46,18 +46,17 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 
 public class HtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
 ICheckStateListener {
@@ -91,7 +90,7 @@ ICheckStateListener {
     }
 
     private void initIpsProjects() {
-        ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        ipsProjects = IIpsModel.get().getIpsProjects();
     }
 
     private void updateSelectedProject() {
@@ -163,7 +162,7 @@ ICheckStateListener {
         objectTypesTreeViewer.setLabelProvider(new IpsObjectLabelProvider());
         objectTypesTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         objectTypesTreeViewer.setInput(IpsObjectTypeTreeViewBaseNodes.ROOT);
-        objectTypesTreeViewer.setCheckedElements(IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes());
+        objectTypesTreeViewer.setCheckedElements(IIpsModel.get().getIpsObjectTypes());
         // objectTypesTreeViewer.expandAll();
 
     }
@@ -298,7 +297,7 @@ ICheckStateListener {
         if (project == null) {
             return null;
         }
-        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IIpsModel ipsModel = IIpsModel.get();
         return ipsModel.getIpsProject(project.getProject());
     }
 
@@ -514,7 +513,7 @@ ICheckStateListener {
         }
 
         private void createIpsObjectTypesArrays() {
-            IpsObjectType[] ipsObjectTypes = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
+            IpsObjectType[] ipsObjectTypes = IIpsModel.get().getIpsObjectTypes();
             List<IpsObjectType> ipsObjectTypesPolicyList = new ArrayList<IpsObjectType>();
             List<IpsObjectType> ipsObjectTypesProductList = new ArrayList<IpsObjectType>();
 

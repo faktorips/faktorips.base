@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -18,10 +18,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.IpsPackageFragmentRootSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
 /**
  * A control to edit a reference to a package fragment root containing source code.
@@ -51,7 +52,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         try {
             Path path = new Path(pathString);
             IFolder folder = wpRoot.getFolder(path);
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(folder);
+            IIpsElement element = IIpsModel.get().getIpsElement(folder);
             if (element instanceof IIpsPackageFragmentRoot) {
                 return (IIpsPackageFragmentRoot)element;
             }

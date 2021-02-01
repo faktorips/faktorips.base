@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -115,6 +115,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
         PropertyChangeEvent lastEvent;
 
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             lastEvent = evt;
         }
@@ -182,6 +183,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public void notifyChangeListeners(PropertyChangeEvent event) {
             if (event instanceof AssociationChangedEvent) {
                 propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
@@ -195,6 +197,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
@@ -204,6 +207,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
             propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
         }
@@ -213,6 +217,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
         }
@@ -222,6 +227,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public boolean hasListeners(String propertyName) {
             return propertyChangeSupport.hasListeners(propertyName);
         }
@@ -231,6 +237,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(listener);
         }
@@ -240,6 +247,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * 
          */
+        @Override
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
         }

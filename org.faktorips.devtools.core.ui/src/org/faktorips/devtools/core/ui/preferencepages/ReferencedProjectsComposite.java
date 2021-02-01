@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -34,11 +34,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 
 /**
  * Composite for modifying referenced IPS projects
@@ -154,7 +155,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
                 new TableLabelProvider(), Messages.ReferencedProjectsComposite_select_projects_label);
 
         dialog.setTitle(Messages.ReferencedProjectsComposite_select_projects_title);
-        dialog.setInitialSelections(ipsObjectPath.getProjectRefEntries());
+        dialog.setInitialSelections((Object[])ipsObjectPath.getProjectRefEntries());
         if (dialog.open() == Window.OK) {
             Object[] selectedReferencedProjects = dialog.getResult();
             if (selectedReferencedProjects.length > 0) {
@@ -198,8 +199,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
         for (IIpsProjectRefEntry projectRefEntrie : projectRefEntries) {
             references.add(projectRefEntrie.getReferencedIpsProject());
         }
-
-        IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        IIpsProject[] ipsProjects = IIpsModel.get().getIpsProjects();
         IIpsProject currentIpsProject = ipsObjectPath.getIpsProject();
 
         for (IIpsProject ipsProject : ipsProjects) {

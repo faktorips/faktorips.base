@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -24,7 +24,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Property page for configuring the IPS object path.
@@ -67,7 +68,8 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
 
     private Control createForClosedProject(Composite parent) {
         Label label = new Label(parent, SWT.LEFT);
-        label.setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
+        label.setText(
+                org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
         objectPathsContainer = null;
         setValid(true);
         return label;
@@ -87,7 +89,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         IIpsProject ipsProject = null;
 
         if (project != null) {
-            ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+            ipsProject = IIpsModel.get().getIpsProject(project);
         }
         return ipsProject;
     }
@@ -99,7 +101,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         if (adaptable instanceof IProject) {
             project = (IProject)adaptable;
         } else {
-            IJavaElement elem = (IJavaElement)adaptable.getAdapter(IJavaElement.class);
+            IJavaElement elem = adaptable.getAdapter(IJavaElement.class);
             if (elem instanceof IJavaProject) {
                 project = ((IJavaProject)elem).getProject();
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,20 +15,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
-import org.faktorips.devtools.core.model.IInternationalString;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
 
 /**
- * Represents a table with the {@link ValidationRule}s of an {@link IPolicyCmptType} as rows and the
- * attributes of the {@link IPolicyCmptType} as columns
+ * Represents a table with the {@link IValidationRule}s of an {@link IPolicyCmptType} as rows and
+ * the attributes of the {@link IPolicyCmptType} as columns
  * 
  * @author dicker
  * 
@@ -50,7 +49,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
 
         ruleData.add(getContext().getLabel(rule));
         ruleData.add(rule.getMessageCode());
-        ruleData.add(rule.getMessageSeverity().getName());
+        ruleData.add(rule.getMessageSeverity().getId());
         String value = getLocalizedStringValue(rule);
         ruleData.add(value == null ? "" : value); //$NON-NLS-1$
 
@@ -79,7 +78,8 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
 
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineName));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageCode));
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity));
+        headline.add(
+                getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageText));
         headline.add(getContext().getMessage(
                 HtmlExportMessages.ValidationRuleTablePageElement_headlineBusinessFunctions));

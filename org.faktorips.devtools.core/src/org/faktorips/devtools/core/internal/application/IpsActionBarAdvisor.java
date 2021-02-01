@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -39,7 +39,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.ide.IIDEActionConstants;
-import org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 
@@ -264,7 +263,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     @SuppressWarnings("restriction")
     @Override
     protected void fillCoolBar(ICoolBarManager coolBar) {
-        IActionBarConfigurer2 actionBarConfigurer = (IActionBarConfigurer2)getActionBarConfigurer();
+        org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2 actionBarConfigurer = (org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2)getActionBarConfigurer();
         coolBar.add(new GroupMarker(IIDEActionConstants.GROUP_FILE));
         // File Group
         IToolBarManager fileToolBar = actionBarConfigurer.createToolBarManager();

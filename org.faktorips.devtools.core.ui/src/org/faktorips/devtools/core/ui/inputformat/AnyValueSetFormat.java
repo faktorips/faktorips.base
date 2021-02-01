@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version 3
  * and if and when this source code belongs to the faktorips-runtime or faktorips-valuetype
@@ -16,14 +16,14 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.parse.AbstractValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.EnumValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.RangeValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.StringLengthValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.parse.UnrestrictedValueSetFormat;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.IValueSetOwner;
 
 public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.operations;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -38,8 +38,8 @@ public class MultiplyDecimalMoney extends AbstractBinaryJavaOperation {
         fragment.append(".multiply("); //$NON-NLS-1$
         rhs.add(lhs);
         fragment.append(", "); //$NON-NLS-1$
-        fragment.appendClassName(BigDecimal.class);
-        fragment.append(".ROUND_HALF_UP)"); //$NON-NLS-1$
+        fragment.appendClassName(RoundingMode.class);
+        fragment.append(".HALF_UP)"); //$NON-NLS-1$
         rhs.setDatatype(Datatype.MONEY);
         return rhs;
     }

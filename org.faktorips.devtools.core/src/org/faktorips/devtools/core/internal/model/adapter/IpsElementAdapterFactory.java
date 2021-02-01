@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -22,9 +22,9 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This {@link IAdapterFactory} is able to adapt {@link IIpsElement}s to other objects like
@@ -34,10 +34,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class IpsElementAdapterFactory implements IAdapterFactory {
 
-    @SuppressWarnings("rawtypes")
-    // the eclipse API uses raw type
+    @SuppressWarnings("unchecked")
     @Override
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (!(adaptableObject instanceof IIpsElement)) {
             return null;
         }
@@ -50,10 +49,10 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         try {
             IResource enclosingResource = ipsElement.getEnclosingResource();
             if (adapterType.isInstance(enclosingResource)) {
-                return enclosingResource;
+                return (T)enclosingResource;
             }
             if (adapterType.equals(ResourceMapping.class)) {
-                return new IpsElementResourceMapping(ipsElement);
+                return (T)new IpsElementResourceMapping(ipsElement);
             }
         } catch (Exception e) {
             IpsPlugin.log(e);
@@ -61,10 +60,8 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    // the eclipse API uses raw type
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IResource.class, IProject.class, IFolder.class, IFile.class, ResourceMapping.class };
     }
 

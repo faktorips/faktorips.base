@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 
 /**
  * A builder to create JavaCodeFragments with a uniform coding style.
@@ -1077,7 +1076,7 @@ public class JavaCodeFragmentBuilder {
         }
         fragment.appendln("/**"); //$NON-NLS-1$
         if (StringUtils.isNotEmpty(text)) {
-            String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
+            String[] lines = StringUtils.split(text, System.lineSeparator());
             for (String line : lines) {
                 fragment.append(" * "); //$NON-NLS-1$
                 fragment.appendln(line);
@@ -1309,7 +1308,9 @@ public class JavaCodeFragmentBuilder {
      * @param paramName The name of the parameter
      * @param qualifiedClassName The class value for the parameter
      */
-    public JavaCodeFragmentBuilder annotationClassValueLn(String annotation, String paramName, String qualifiedClassName) {
+    public JavaCodeFragmentBuilder annotationClassValueLn(String annotation,
+            String paramName,
+            String qualifiedClassName) {
         if (annotation == null) {
             return this;
         }
@@ -1440,14 +1441,7 @@ public class JavaCodeFragmentBuilder {
 
     public JavaCodeFragmentBuilder appendParameters(JavaCodeFragment[] parameters) {
         append('(');
-        int i = 1;
-        for (JavaCodeFragment aParameter : parameters) {
-            append(aParameter);
-            if (i < parameters.length) {
-                fragment.append(", "); //$NON-NLS-1$
-            }
-            i++;
-        }
+        fragment.appendJoined(parameters);
         append(')');
         return this;
     }

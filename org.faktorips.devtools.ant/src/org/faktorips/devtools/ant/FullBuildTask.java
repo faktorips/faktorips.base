@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IMarker;
@@ -29,8 +30,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Implements a custom Ant task, which triggers a full build on the current workspace. Alternatively
@@ -70,7 +71,7 @@ public class FullBuildTask extends AbstractIpsTask {
                         System.out.println("The following IPS-Projects are about to be built: ");
                     }
                     for (int i = 0; i < projects.length; i++) {
-                        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel()
+                        IIpsProject ipsProject = IIpsModel.get()
                                 .getIpsProject(projects[i].getName());
                         if (ipsProject.exists()) {
                             System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
@@ -111,7 +112,7 @@ public class FullBuildTask extends AbstractIpsTask {
                 if (project.exists()) {
                     existingProjects.add(project);
                     System.out.print("start building project: " + project.getName());
-                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                    IIpsProject ipsProject = IIpsModel.get().getIpsProject(project.getName());
                     if (ipsProject.exists()) {
                         System.out.println(", Faktor-IPS builder set: " + ipsProject.getIpsArtefactBuilderSet().getId()
                                 + ", version: " + ipsProject.getIpsArtefactBuilderSet().getVersion());
@@ -172,15 +173,7 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     private String getErroneousProjectsAsText(Set<IProject> projectSet) {
-        StringBuffer buf = new StringBuffer();
-        for (Iterator<IProject> it = projectSet.iterator(); it.hasNext();) {
-            IProject project = it.next();
-            buf.append(project.getName());
-            if (it.hasNext()) {
-                buf.append(", ");
-            }
-        }
-        return buf.toString();
+        return projectSet.stream().map(IProject::getName).collect(Collectors.joining(", "));
     }
 
     /**

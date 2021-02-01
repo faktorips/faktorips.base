@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.groovy.feature"
       label="%label"
-      version="20.12.0.qualifier"
+      version="21.6.0.qualifier"
       provider-name="Faktor Zehn GmbH"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -93,7 +93,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    <requires>
       <import plugin="org.faktorips.runtime"/>
       <import plugin="org.faktorips.valuetypes"/>
-      <import plugin="groovy-all"/>
+      <import plugin="groovy" version="3.0.7" match="greaterOrEqual"/>
    </requires>
 
    <plugin

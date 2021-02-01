@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,11 +16,11 @@ import org.faktorips.datatype.ValueDatatype;
 
 public class PaymentMode extends AbstractDatatype implements EnumDatatype {
 
-    public final static String ANNUAL_ID = "1";
-    public final static String MONTHLY_ID = "12";
+    public static final String ANNUAL_ID = "1";
+    public static final String MONTHLY_ID = "12";
 
-    public final static String ANNUAL_NAME = "annual";
-    public final static String MONTHLY_NAME = "monthly";
+    public static final String ANNUAL_NAME = "annual";
+    public static final String MONTHLY_NAME = "monthly";
 
     @Override
     public String[] getAllValueIds(boolean includeNull) {

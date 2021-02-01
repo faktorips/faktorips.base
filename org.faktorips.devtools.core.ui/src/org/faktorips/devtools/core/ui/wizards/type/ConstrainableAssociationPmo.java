@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import java.beans.PropertyChangeEvent;
 
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 
 /**
  * 
@@ -54,7 +54,8 @@ public class ConstrainableAssociationPmo extends PresentationModelObject {
     public void setSelectedAssociation(IAssociation selectedAssociation) {
         IAssociation oldValue = this.selectedAssociation;
         this.selectedAssociation = selectedAssociation;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_ASSOCIATION, oldValue, this.selectedAssociation));
+        notifyListeners(
+                new PropertyChangeEvent(this, PROPERTY_SELECTED_ASSOCIATION, oldValue, this.selectedAssociation));
     }
 
     public IType getType() {

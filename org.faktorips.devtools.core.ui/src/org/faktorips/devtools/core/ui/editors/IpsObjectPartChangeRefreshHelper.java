@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -11,12 +11,11 @@ package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
  * Helper that refreshes a viewer if it observes changes in an IPS object.
@@ -45,21 +44,8 @@ public class IpsObjectPartChangeRefreshHelper {
         Assert.isNotNull(viewerToRefresh);
         this.viewerToRefresh = viewerToRefresh;
         this.ipsObject = ipsObject;
-        changeListener = new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                handleEvent(event);
-            }
-
-        };
-        disposeListener = new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                dispose();
-            }
-        };
+        changeListener = this::handleEvent;
+        disposeListener = $ -> dispose();
     }
 
     /**
@@ -90,7 +76,7 @@ public class IpsObjectPartChangeRefreshHelper {
      * Initializes the helper, adds a change listener to the IPS model.
      */
     public void init() {
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(changeListener);
+        IIpsModel.get().addChangeListener(changeListener);
         viewerToRefresh.getControl().addDisposeListener(disposeListener);
     }
 
@@ -106,7 +92,7 @@ public class IpsObjectPartChangeRefreshHelper {
      * Removes the change listener from the IPS model.
      */
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(changeListener);
+        IIpsModel.get().removeChangeListener(changeListener);
     }
 
 }

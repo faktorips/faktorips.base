@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -16,16 +16,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.model.pctype.AttributeType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xtend.attribute.AttributeGetterAnnGen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -54,8 +53,9 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)"
+                                + System.lineSeparator())));
     }
 
     @Test
@@ -66,8 +66,9 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Range)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Range)"
+                                + System.lineSeparator())));
     }
 
     @Test
@@ -78,8 +79,9 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator())));
     }
 
     @Test
@@ -90,8 +92,9 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)"
+                                + System.lineSeparator())));
     }
 
     @Test
@@ -102,20 +105,23 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)"
+                                + System.lineSeparator())));
     }
 
     @Test
     public void testCreateAnnotation_policy_changeable_unrestricted() throws Exception {
-        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE, ValueSetType.UNRESTRICTED);
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.UNRESTRICTED);
 
         JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xPolicyAttribute);
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator()))));
     }
 
     @Test
@@ -126,8 +132,9 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator())));
     }
 
     @Test
@@ -139,8 +146,9 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.DERIVED_BY_EXPLICIT_METHOD_CALL, valueSetKind = ValueSetKind.AllValues)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.DERIVED_BY_EXPLICIT_METHOD_CALL, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator())));
     }
 
     @Test
@@ -152,13 +160,15 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.AllValues)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator())));
     }
 
     @Test
     public void testCreateAnnotation_policy_notChangingOverTime() throws Exception {
-        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE, ValueSetType.UNRESTRICTED);
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.UNRESTRICTED);
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = xPolicyAttribute.getAttribute();
         when(policyCmptTypeAttribute.isProductRelevant()).thenReturn(true);
         when(policyCmptTypeAttribute.isChangingOverTime()).thenReturn(false);
@@ -167,14 +177,16 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
-                        + System.getProperty("line.separator") + "@IpsConfiguredAttribute(changingOverTime = false)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator() + "@IpsConfiguredAttribute(changingOverTime = false)"
+                                + System.lineSeparator())));
     }
 
     @Test
     public void testCreateAnnotation_policy_changingOverTime() throws Exception {
-        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE, ValueSetType.UNRESTRICTED);
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.UNRESTRICTED);
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = xPolicyAttribute.getAttribute();
         when(policyCmptTypeAttribute.isProductRelevant()).thenReturn(true);
         when(policyCmptTypeAttribute.isChangingOverTime()).thenReturn(true);
@@ -183,9 +195,10 @@ public class AttributeGetterAnnGenTest {
 
         assertThat(
                 codeFragment.getSourcecode(),
-                is(equalTo(("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
-                        + System.getProperty("line.separator") + "@IpsConfiguredAttribute(changingOverTime = true)" + System
-                        .getProperty("line.separator")))));
+                is(equalTo(
+                        "@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator() + "@IpsConfiguredAttribute(changingOverTime = true)"
+                                + System.lineSeparator())));
     }
 
     private XPolicyAttribute xPolicyAttribute(String name, AttributeType attributeType, ValueSetType valueSetType) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -9,18 +9,17 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.adapter;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 
 public class PropertyValueAdapterFactory extends AbstractIpsAdapterFactory {
 
+    @SuppressWarnings("unchecked")
     @Override
-    @SuppressWarnings("rawtypes")
-    // The Eclipse API uses raw type
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (!(adaptableObject instanceof IPropertyValue)) {
             return null;
         }
@@ -28,30 +27,28 @@ public class PropertyValueAdapterFactory extends AbstractIpsAdapterFactory {
         IPropertyValue propertyValue = (IPropertyValue)adaptableObject;
 
         if (IIpsSrcFile.class.equals(adapterType)) {
-            return propertyValue.getIpsSrcFile();
+            return (T)propertyValue.getIpsSrcFile();
         }
 
         if (IIpsObject.class.equals(adapterType)) {
-            return propertyValue.getIpsObject();
+            return (T)propertyValue.getIpsObject();
         }
 
         if (IProductCmptGeneration.class.equals(adapterType)) {
             if (propertyValue.getPropertyValueContainer() instanceof IProductCmptGeneration) {
-                return propertyValue.getPropertyValueContainer();
+                return (T)propertyValue.getPropertyValueContainer();
             }
         }
 
         if (IProductCmpt.class.equals(adapterType)) {
-            return propertyValue.getPropertyValueContainer().getProductCmpt();
+            return (T)propertyValue.getPropertyValueContainer().getProductCmpt();
         }
 
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    // eclipse adapters are not type safe
     @Override
-    public Class[] getAdapterList() {
+    public Class<?>[] getAdapterList() {
         return new Class[] { IIpsSrcFile.class, IIpsObject.class, IProductCmptGeneration.class, IProductCmpt.class };
     }
 
