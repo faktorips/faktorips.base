@@ -20,8 +20,38 @@
 
     <build>
         <sourceDirectory>../src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>11</jvmVersion>
+                            <module>
+                                <moduleInfoSource>
+                                    module org.faktorips.valuetypes {
+                                        requires static com.github.spotbugs.annotations;
+                                        requires java.xml.bind;
+                                        exports org.faktorips.annotation;
+                                        exports org.faktorips.values;
+                                        exports org.faktorips.values.xml;
+                                        exports org.faktorips.valueset;
+                                    }
+                                </moduleInfoSource>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.github.spotbugs</groupId>

@@ -30,6 +30,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>11</jvmVersion>
+                            <module>
+                                <moduleInfoSource>
+                                    module org.faktorips.runtime.groovy {
+                                        requires transitive org.faktorips.runtime;
+                                        requires transitive org.codehaus.groovy;
+                                        exports org.faktorips.runtime.formula.groovy;
+                                    }
+                                </moduleInfoSource>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

@@ -20,6 +20,50 @@
 
     <build>
         <sourceDirectory>../src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>11</jvmVersion>
+                            <module>
+                                <moduleInfoSource>
+                                    module org.faktorips.runtime {
+                                        requires transitive org.faktorips.valuetypes;
+                                        requires transitive opencsv;
+                                        requires transitive junit;
+                                        requires transitive java.desktop;
+                                        requires transitive java.xml;
+                                        requires transitive java.xml.bind;
+                                        exports org.faktorips.runtime;
+                                        exports org.faktorips.runtime.caching;
+                                        exports org.faktorips.runtime.formula;
+                                        exports org.faktorips.runtime.jaxb;
+                                        exports org.faktorips.runtime.model;
+                                        exports org.faktorips.runtime.model.annotation;
+                                        exports org.faktorips.runtime.model.enumtype;
+                                        exports org.faktorips.runtime.model.table;
+                                        exports org.faktorips.runtime.model.type;
+                                        exports org.faktorips.runtime.model.type.read;
+                                        exports org.faktorips.runtime.productdataprovider;
+                                        exports org.faktorips.runtime.test;
+                                        exports org.faktorips.runtime.util;
+                                        exports org.faktorips.runtime.util.function;
+                                    }
+                                </moduleInfoSource>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>

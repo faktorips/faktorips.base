@@ -10,6 +10,7 @@
         <maven-source-plugin-version>2.4</maven-source-plugin-version>
         <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
         <maven-surefire-plugin>2.18.1</maven-surefire-plugin>
+        <moditect.version>1.0.0.RC1</moditect.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- JUnit, Spotbugs and Checkstyle already run in tycho build -->
         <surefire.skip>true</surefire.skip>
@@ -134,6 +135,11 @@
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.moditect</groupId>
+                    <artifactId>moditect-maven-plugin</artifactId>
+                    <version>${moditect.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
