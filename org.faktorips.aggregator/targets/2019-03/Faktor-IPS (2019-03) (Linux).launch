@@ -9,7 +9,7 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2020-06) (Linux) (Java11)"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-03) (Linux)"/>
 <booleanAttribute key="default" value="false"/>
 <setAttribute key="deselected_workspace_bundles"/>
 <booleanAttribute key="includeOptional" value="false"/>
@@ -17,6 +17,10 @@
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="SWT_GTK3" value="0"/>
 </mapAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
@@ -25,17 +29,16 @@
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.platform.ide"/>
 <setAttribute key="selected_target_bundles">
-<setEntry value="com.google.guava*21.0.0@default:default"/>
-<setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
+<setEntry value="com.google.guava@default:default"/>
 <setEntry value="com.ibm.icu@default:default"/>
 <setEntry value="com.jcraft.jsch@default:default"/>
 <setEntry value="com.jcraft.jzlib@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
 <setEntry value="com.sun.activation.javax.activation@default:default"/>
+<setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
 <setEntry value="groovy@default:default"/>
 <setEntry value="javaewah@default:default"/>
 <setEntry value="javax.annotation@default:default"/>
-<setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
 <setEntry value="javax.inject@default:default"/>
 <setEntry value="javax.servlet@default:default"/>
 <setEntry value="javax.xml@default:default"/>
@@ -47,7 +50,6 @@
 <setEntry value="org.apache.batik.css@default:default"/>
 <setEntry value="org.apache.batik.i18n@default:default"/>
 <setEntry value="org.apache.batik.util@default:default"/>
-<setEntry value="org.apache.commons.codec*1.13.0.v20200108-0001@default:default"/>
 <setEntry value="org.apache.commons.collections@default:default"/>
 <setEntry value="org.apache.commons.compress@default:default"/>
 <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
@@ -57,13 +59,11 @@
 <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
 <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
 <setEntry value="org.apache.felix.scr@1:true"/>
-<setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
-<setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
 <setEntry value="org.apache.log4j@default:default"/>
 <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
 <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
 <setEntry value="org.apache.lucene.core@default:default"/>
-<setEntry value="org.apache.sshd.osgi@default:default"/>
+<setEntry value="org.apache.sshd.core@default:default"/>
 <setEntry value="org.apache.sshd.sftp@default:default"/>
 <setEntry value="org.apache.xerces@default:default"/>
 <setEntry value="org.apache.xml.resolver@default:default"/>
@@ -71,7 +71,6 @@
 <setEntry value="org.apache.xmlgraphics@default:default"/>
 <setEntry value="org.apiguardian@default:default"/>
 <setEntry value="org.bouncycastle.bcpg@default:default"/>
-<setEntry value="org.bouncycastle.bcpkix@default:default"/>
 <setEntry value="org.bouncycastle.bcprov@default:default"/>
 <setEntry value="org.eclipse.ant.core@default:default"/>
 <setEntry value="org.eclipse.ant.launching@default:default"/>
@@ -110,8 +109,6 @@
 <setEntry value="org.eclipse.e4.ui.css.swt.theme@default:default"/>
 <setEntry value="org.eclipse.e4.ui.css.swt@default:default"/>
 <setEntry value="org.eclipse.e4.ui.di@default:default"/>
-<setEntry value="org.eclipse.e4.ui.dialogs@default:default"/>
-<setEntry value="org.eclipse.e4.ui.ide@default:default"/>
 <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
 <setEntry value="org.eclipse.e4.ui.services@default:default"/>
 <setEntry value="org.eclipse.e4.ui.swt.gtk@default:false"/>
@@ -124,8 +121,6 @@
 <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
 <setEntry value="org.eclipse.ecf.identity@default:default"/>
 <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
-<setEntry value="org.eclipse.ecf.provider@default:default"/>
-<setEntry value="org.eclipse.ecf.sharedobject@default:default"/>
 <setEntry value="org.eclipse.ecf@default:default"/>
 <setEntry value="org.eclipse.egit.core@default:default"/>
 <setEntry value="org.eclipse.egit.doc@default:default"/>
@@ -194,9 +189,7 @@
 <setEntry value="org.eclipse.jface.databinding@default:default"/>
 <setEntry value="org.eclipse.jface.text@default:default"/>
 <setEntry value="org.eclipse.jface@default:default"/>
-<setEntry value="org.eclipse.jgit.http.apache@default:default"/>
 <setEntry value="org.eclipse.jgit.ssh.apache@default:default"/>
-<setEntry value="org.eclipse.jgit.ssh.jsch@default:false"/>
 <setEntry value="org.eclipse.jgit@default:default"/>
 <setEntry value="org.eclipse.jsch.core@default:default"/>
 <setEntry value="org.eclipse.ltk.core.refactoring@default:default"/>
@@ -289,6 +282,7 @@
 <setEntry value="org.sat4j.core@default:default"/>
 <setEntry value="org.sat4j.pb@default:default"/>
 <setEntry value="org.slf4j.api@default:default"/>
+<setEntry value="org.slf4j.impl.log4j12@default:false"/>
 <setEntry value="org.tukaani.xz@default:default"/>
 <setEntry value="org.w3c.css.sac@default:default"/>
 <setEntry value="org.w3c.dom.events@default:default"/>
@@ -299,20 +293,14 @@
 <setEntry value="org.faktorips.devtools.ant@default:default"/>
 <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.core@default:default"/>
-<setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
 <setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
-<setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.tableconversion@default:default"/>
 <setEntry value="org.faktorips.dtflcommon@default:default"/>
 <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
 <setEntry value="org.faktorips.fl@default:default"/>
-<setEntry value="org.faktorips.nls.devtools.core.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:false"/>
 <setEntry value="org.faktorips.runtime.groovy@default:default"/>
 <setEntry value="org.faktorips.runtime@default:default"/>
 <setEntry value="org.faktorips.util@default:default"/>

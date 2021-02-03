@@ -9,7 +9,7 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-06) (Linux) (Java11)"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-09) (Linux)"/>
 <booleanAttribute key="default" value="false"/>
 <setAttribute key="deselected_workspace_bundles"/>
 <booleanAttribute key="includeOptional" value="false"/>
@@ -25,14 +25,14 @@
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.platform.ide"/>
 <setAttribute key="selected_target_bundles">
-<setEntry value="com.google.guava@default:default"/>
+<setEntry value="com.google.guava*21.0.0@default:default"/>
+<setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
 <setEntry value="com.ibm.icu@default:default"/>
 <setEntry value="com.jcraft.jsch@default:default"/>
 <setEntry value="com.jcraft.jzlib@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
 <setEntry value="com.sun.activation.javax.activation@default:default"/>
 <setEntry value="groovy@default:default"/>
-<setEntry value="javaee-api@default:default"/>
 <setEntry value="javaewah@default:default"/>
 <setEntry value="javax.annotation@default:default"/>
 <setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
@@ -106,6 +106,7 @@
 <setEntry value="org.eclipse.e4.ui.css.swt.theme@default:default"/>
 <setEntry value="org.eclipse.e4.ui.css.swt@default:default"/>
 <setEntry value="org.eclipse.e4.ui.di@default:default"/>
+<setEntry value="org.eclipse.e4.ui.dialogs@default:default"/>
 <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
 <setEntry value="org.eclipse.e4.ui.services@default:default"/>
 <setEntry value="org.eclipse.e4.ui.swt.gtk@default:false"/>
@@ -119,7 +120,6 @@
 <setEntry value="org.eclipse.ecf.identity@default:default"/>
 <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
 <setEntry value="org.eclipse.ecf.provider@default:default"/>
-<setEntry value="org.eclipse.ecf.sharedobject@default:default"/>
 <setEntry value="org.eclipse.ecf@default:default"/>
 <setEntry value="org.eclipse.egit.core@default:default"/>
 <setEntry value="org.eclipse.egit.doc@default:default"/>
@@ -281,7 +281,6 @@
 <setEntry value="org.sat4j.core@default:default"/>
 <setEntry value="org.sat4j.pb@default:default"/>
 <setEntry value="org.slf4j.api@default:default"/>
-<setEntry value="org.slf4j.impl.log4j12@default:false"/>
 <setEntry value="org.tukaani.xz@default:default"/>
 <setEntry value="org.w3c.css.sac@default:default"/>
 <setEntry value="org.w3c.dom.events@default:default"/>
@@ -292,20 +291,14 @@
 <setEntry value="org.faktorips.devtools.ant@default:default"/>
 <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.core@default:default"/>
-<setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
 <setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
-<setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.tableconversion@default:default"/>
 <setEntry value="org.faktorips.dtflcommon@default:default"/>
 <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
 <setEntry value="org.faktorips.fl@default:default"/>
-<setEntry value="org.faktorips.nls.devtools.core.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:false"/>
 <setEntry value="org.faktorips.runtime.groovy@default:default"/>
 <setEntry value="org.faktorips.runtime@default:default"/>
 <setEntry value="org.faktorips.util@default:default"/>

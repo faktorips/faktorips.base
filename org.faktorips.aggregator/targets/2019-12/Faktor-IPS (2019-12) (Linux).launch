@@ -9,7 +9,7 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-12) (Linux) (Java11)"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2019-12) (Linux)"/>
 <booleanAttribute key="default" value="false"/>
 <setAttribute key="deselected_workspace_bundles"/>
 <booleanAttribute key="includeOptional" value="false"/>
@@ -299,20 +299,14 @@
 <setEntry value="org.faktorips.devtools.ant@default:default"/>
 <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.core@default:default"/>
-<setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
 <setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
-<setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
 <setEntry value="org.faktorips.devtools.tableconversion@default:default"/>
 <setEntry value="org.faktorips.dtflcommon@default:default"/>
 <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
 <setEntry value="org.faktorips.fl@default:default"/>
-<setEntry value="org.faktorips.nls.devtools.core.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>
-<setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:false"/>
 <setEntry value="org.faktorips.runtime.groovy@default:default"/>
 <setEntry value="org.faktorips.runtime@default:default"/>
 <setEntry value="org.faktorips.util@default:default"/>
