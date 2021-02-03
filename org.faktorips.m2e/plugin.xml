@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.m2e.core.projectConfigurators">
+      <configurator
+            class="org.faktorips.m2e.IpsProjectConfigurator"
+            id="org.faktorips.maven.projectConfigurator"
+            name="IPS"
+            runsAfter="org.eclipse.m2e.jdt.javaConfigurator">
+      </configurator>
+   </extension>
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+   </extension>
+   <extension
+         point="org.faktorips.devtools.model.versionProvider">
+      <versionProvider
+            class="org.faktorips.m2e.version.MavenVersionProviderFactory"
+            id="org.faktorips.maven.mavenVersionProvider">
+      </versionProvider>
+   </extension>
+
+</plugin>

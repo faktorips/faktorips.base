@@ -27,11 +27,12 @@
         <module>../../org.faktorips.devtools.tableconversion.test</module>
         <module>../../org.faktorips.dtflcommon.test</module>
         <module>../../org.faktorips.fl.test</module>
+        <module>../../org.faktorips.m2e.test</module>
         <module>../../org.faktorips.runtime.test</module>
+        <module>../../org.faktorips.runtime.groovy.test</module>
         <module>../../org.faktorips.util.test</module>
         <module>../../org.faktorips.valuetypes.test</module>
         <module>../../org.faktorips.valuetypes.joda.test</module>
-        <module>../../org.faktorips.runtime.groovy.test</module>
     </modules>
 
     <build>

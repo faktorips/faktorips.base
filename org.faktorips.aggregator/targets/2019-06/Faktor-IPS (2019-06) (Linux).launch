@@ -199,10 +199,17 @@
 <setEntry value="org.eclipse.m2e.discovery@default:default"/>
 <setEntry value="org.eclipse.m2e.editor.xml@default:default"/>
 <setEntry value="org.eclipse.m2e.editor@default:default"/>
+<setEntry value="org.eclipse.m2e.importer@default:default"/>
+<setEntry value="org.eclipse.m2e.jdt.ui@default:default"/>
+<setEntry value="org.eclipse.m2e.jdt@default:default"/>
+<setEntry value="org.eclipse.m2e.launching@default:default"/>
+<setEntry value="org.eclipse.m2e.lifecyclemapping.defaults@default:default"/>
 <setEntry value="org.eclipse.m2e.maven.indexer@default:default"/>
 <setEntry value="org.eclipse.m2e.maven.runtime.slf4j.simple@default:default"/>
 <setEntry value="org.eclipse.m2e.maven.runtime@default:default"/>
 <setEntry value="org.eclipse.m2e.model.edit@default:default"/>
+<setEntry value="org.eclipse.m2e.profiles.core@default:default"/>
+<setEntry value="org.eclipse.m2e.profiles.ui@default:default"/>
 <setEntry value="org.eclipse.m2e.workspace.cli@default:default"/>
 <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
 <setEntry value="org.eclipse.osgi.services@default:default"/>
