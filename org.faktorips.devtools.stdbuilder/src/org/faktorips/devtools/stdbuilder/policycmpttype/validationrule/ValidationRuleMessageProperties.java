@@ -39,8 +39,8 @@ public class ValidationRuleMessageProperties extends AbstractLocalizedProperties
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<RuleKeyParts> getKeysForPolicyCmptType(QualifiedNameType qualifiedNameType) {
-        return (Collection<RuleKeyParts>)getKeysForIpsObject(qualifiedNameType);
+    public Collection<PropertyKey> getKeysForPolicyCmptType(QualifiedNameType qualifiedNameType) {
+        return (Collection<PropertyKey>)getKeysForIpsObject(qualifiedNameType);
     }
 
     static class RuleKeyParts implements PropertyKey {
