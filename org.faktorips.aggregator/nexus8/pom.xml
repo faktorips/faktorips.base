@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <maven-javadoc-plugin-version>2.10.1</maven-javadoc-plugin-version>
+        <maven-source-plugin-version>2.4</maven-source-plugin-version>
+        <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
+        
+        <!-- Use this to override the default javadoc settings in the parent pom -->
+        <!-- <javadoc.doclint.string>accessibility,html,reference,syntax</javadoc.doclint.string> -->
+        <!-- <javadoc.failOnError>true</javadoc.failOnError> -->
+        <!-- <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink> -->
+    </properties>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-nexus</artifactId>
+        <version>1.2.2</version>
+        <relativePath></relativePath>
+    </parent>
+
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-nexus-base-8</artifactId>
+    <version>21.6.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Faktor-IPS Library for Maven Java8</name>
+
+    <scm>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
+
+    <modules>
+        <module>../../org.faktorips.runtime/client</module>
+        <module>../../org.faktorips.runtime/nexus</module>
+        <module>../../org.faktorips.valuetypes/nexus</module>
+        <module>../../org.faktorips.valuetypes.joda/nexus</module>
+        <module>../../org.faktorips.runtime.groovy/nexus</module>
+    </modules>
+
+</project>

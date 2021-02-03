@@ -1,104 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<git.user>${user.name}</git.user>
-		<java.version>11</java.version>
+    <properties>
+        <git.user>${user.name}</git.user>
+        <java.version>11</java.version>
+        <target-platform>eclipse-2019-03</target-platform>
+    </properties>
 
-		<target-platform>eclipse-2019-03</target-platform>
-	</properties>
+    <groupId>org.faktorips</groupId>
+    <artifactId>org.faktorips.aggregator</artifactId>
+    <version>21.6.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<groupId>org.faktorips</groupId>
-	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>21.6.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <parent>
+        <groupId>de.faktorzehn</groupId>
+        <artifactId>faktorzehn-tycho-build</artifactId>
+        <version>1.1.6</version>
+    </parent>
 
-	<parent>
-		<groupId>de.faktorzehn</groupId>
-		<artifactId>faktorzehn-tycho-build</artifactId>
-		<version>1.1.6</version>
-	</parent>
+    <!-- These are all modules that are included in the Faktor-IPS build -->
 
-	<!-- These are all modules that are included in the Faktor-IPS build -->
+    <modules>
+        <module>targets</module>
+        <module>features</module>
+        <module>plugins</module>
+        <module>nexus8</module>
+        <module>nexus11</module>
+        <module>tests</module>
+        <module>sites</module>
+    </modules>
 
-	<modules>
-		<module>targets</module>
-		<module>features</module>
-		<module>plugins</module>
-		<module>nexus</module>
-		<module>tests</module>
-		<module>sites</module>
-	</modules>
+    <scm>
+        <connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
 
-	<scm>
-		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
-	</scm>
+    <build>
+        <extensions>
+            <!-- Include this build artifact to every child's classpath. 
+                This is used for example by the checkstyle or SpotBugs configuration -->
+            <extension>
+                <groupId>org.faktorips</groupId>
+                <artifactId>org.faktorips.build.config</artifactId>
+                <version>1.2.1</version>
+            </extension>
+        </extensions>
 
-	<build>
-		<extensions>
-			<!-- Include this build artifact to every child's classpath. This is used 
-				for example by the checkstyle or SpotBugs configuration -->
-			<extension>
-				<groupId>org.faktorips</groupId>
-				<artifactId>org.faktorips.build.config</artifactId>
-				<version>1.2.1</version>
-			</extension>
-		</extensions>
-
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<artifacts>
-						${project.artifactId},
-						faktorips-nexus-base,
-						faktorips-runtime-groovy
-					</artifacts>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<configuration>
-					<target>
-						<artifact>
-							<groupId>org.faktorips</groupId>
-							<artifactId>${target-platform}</artifactId>
-							<version>1.0.0-SNAPSHOT</version>
-						</artifact>
-					</target>
-					<environments>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<release>${java.version}</release>
-				</configuration>
-			</plugin>
-		</plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-versions-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <artifacts>
+                        ${project.artifactId},
+                        faktorips-nexus-base-8,
+                        faktorips-nexus-base-11,
+                        faktorips-runtime-groovy
+                    </artifacts>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <configuration>
+                    <target>
+                        <artifact>
+                            <groupId>org.faktorips</groupId>
+                            <artifactId>${target-platform}</artifactId>
+                            <version>1.0.0-SNAPSHOT</version>
+                        </artifact>
+                    </target>
+                    <environments>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -109,48 +110,48 @@
             </plugins>
         </pluginManagement>
 
-		<!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY -->
-		<!-- and we have some problems with the babel dependencies because not 
-			every host is included in target -->
-	</build>
+        <!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY -->
+        <!-- and we have some problems with the babel dependencies because 
+            not every host is included in target -->
+    </build>
 
-	<profiles>
-		<profile>
-			<id>tagScm</id>
-			<activation>
-				<!-- This profile should be active by default, also if there is a next 
-					version set -->
-				<activeByDefault>true</activeByDefault>
-				<property>
-					<name>nextVersion</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-scm-plugin</artifactId>
-						<executions>
-							<execution>
-								<inherited>false</inherited>
-								<id>tag</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>tag</goal>
-								</goals>
-								<configuration>
-									<tag>v${unqualifiedVersion}_${version.kind}</tag>
-									<message>Release Version
-										${unqualifiedVersion}.${buildQualifier}</message>
-									<connectionType>connection</connectionType>
-									<pushChanges>${scm.pushChanges}</pushChanges>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>tagScm</id>
+            <activation>
+                <!-- This profile should be active by default, also if there 
+                    is a next version set -->
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>nextVersion</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <inherited>false</inherited>
+                                <id>tag</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <tag>v${unqualifiedVersion}_${version.kind}</tag>
+                                    <message>Release Version
+                                        ${unqualifiedVersion}.${buildQualifier}</message>
+                                    <connectionType>connection</connectionType>
+                                    <pushChanges>${scm.pushChanges}</pushChanges>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
