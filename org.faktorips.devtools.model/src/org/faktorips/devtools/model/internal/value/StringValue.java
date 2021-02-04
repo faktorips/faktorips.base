@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.value;
 
-import java.util.Observer;
+import java.beans.PropertyChangeListener;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -123,16 +123,6 @@ public class StringValue extends AbstractValue<String> {
     }
 
     @Override
-    public void addObserver(Observer observer) {
-        // no implementation
-    }
-
-    @Override
-    public void deleteObserver(Observer observer) {
-        // no implementation
-    }
-
-    @Override
     public int compare(IValue<?> other, ValueDatatype valueDatatype) {
         if (other instanceof StringValue) {
             if (valueDatatype.supportsCompare()) {
@@ -144,6 +134,16 @@ public class StringValue extends AbstractValue<String> {
         } else {
             return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
         }
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        // no implementation
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        // no implementation
     }
 
 }

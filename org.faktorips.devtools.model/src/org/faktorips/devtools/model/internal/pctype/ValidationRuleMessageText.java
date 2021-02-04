@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import java.beans.PropertyChangeListener;
 import java.util.LinkedHashSet;
-import java.util.Observer;
 import java.util.regex.Matcher;
 
 import org.eclipse.osgi.util.NLS;
@@ -29,8 +29,8 @@ public class ValidationRuleMessageText extends InternationalString implements IV
         super();
     }
 
-    public ValidationRuleMessageText(Observer observer) {
-        super(observer);
+    public ValidationRuleMessageText(PropertyChangeListener listener) {
+        super(listener);
     }
 
     /**
@@ -59,7 +59,8 @@ public class ValidationRuleMessageText extends InternationalString implements IV
                 if (defaultLocalParameters.add(param)) {
                     list.add(new Message(IValidationRule.MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID, NLS.bind(
                             Messages.ValidationRuleMessageText_warning_invalidParameter, param, localizedString
-                                    .getLocale().getDisplayLanguage()), Message.WARNING));
+                                    .getLocale().getDisplayLanguage()),
+                            Message.WARNING));
                 }
             }
         }

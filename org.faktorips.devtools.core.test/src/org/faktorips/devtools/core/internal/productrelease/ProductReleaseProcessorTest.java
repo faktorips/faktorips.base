@@ -23,10 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -80,14 +79,8 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
         productReleaseProcessor = spy(new ProductReleaseProcessor(ipsProject, observableMessages));
 
         messageList = new MessageList();
-        Observer observer = new Observer() {
-
-            @Override
-            public void update(Observable o, Object arg) {
-                messageList.add((Message)arg);
-            }
-        };
-        observableMessages.addObserver(observer);
+        PropertyChangeListener observer = evt -> messageList.add((Message)evt.getNewValue());
+        observableMessages.addPropertyChangeListener(observer);
 
     }
 

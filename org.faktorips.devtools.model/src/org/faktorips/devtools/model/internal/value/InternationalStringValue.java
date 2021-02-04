@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.value;
 
+import java.beans.PropertyChangeListener;
 import java.util.Locale;
-import java.util.Observer;
 import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -171,14 +171,13 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     }
 
     @Override
-    public void addObserver(Observer observer) {
-        this.content.addObserver(observer);
-
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        this.content.addPropertyChangeListener(l);
     }
 
     @Override
-    public void deleteObserver(Observer observer) {
-        this.content.deleteObserver(observer);
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        this.content.removePropertyChangeListener(l);
     }
 
     @Override

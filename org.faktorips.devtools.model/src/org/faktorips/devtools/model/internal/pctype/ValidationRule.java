@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -100,12 +98,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
      */
     public ValidationRule(IPolicyCmptType pcType, String id) {
         super(pcType, id);
-        msgText = new ValidationRuleMessageText(new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                objectHasChanged();
-            }
-        });
+        msgText = new ValidationRuleMessageText($ -> objectHasChanged());
         initDefaultChangingOverTime();
     }
 

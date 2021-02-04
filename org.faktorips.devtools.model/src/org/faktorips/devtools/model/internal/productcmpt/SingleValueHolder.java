@@ -10,11 +10,10 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -48,7 +47,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     private IValue<?> value;
 
-    private final Observer valueObserver;
+    private final PropertyChangeListener propertyChangeListener;
 
     /**
      * Create a new SingleValueHolder with an empty {@link IValue} as value
@@ -77,13 +76,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
      */
     public SingleValueHolder(IAttributeValue parent, IValue<?> value) {
         super(parent);
-        valueObserver = new Observer() {
-
-            @Override
-            public void update(Observable arg0, Object newValue) {
-                objectHasChanged(null, newValue);
-            }
-        };
+        propertyChangeListener = evt -> objectHasChanged(null, evt.getNewValue());
         setValueInternal(value);
     }
 
@@ -105,11 +98,11 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     private void setValueInternal(IValue<?> value) {
         if (this.value != null) {
-            this.value.deleteObserver(valueObserver);
+            this.value.removePropertyChangeListener(propertyChangeListener);
         }
         this.value = value;
         if (this.value != null) {
-            this.value.addObserver(valueObserver);
+            this.value.addPropertyChangeListener(propertyChangeListener);
         }
     }
 

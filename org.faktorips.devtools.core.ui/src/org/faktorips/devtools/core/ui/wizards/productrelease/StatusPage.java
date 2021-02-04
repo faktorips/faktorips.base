@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.productrelease;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-public class StatusPage extends WizardPage implements Observer {
+public class StatusPage extends WizardPage implements PropertyChangeListener {
 
     private final MessageContentProvider messageContentProvider = new MessageContentProvider();
 
@@ -104,20 +104,16 @@ public class StatusPage extends WizardPage implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof Message) {
-            final Message msg = (Message)arg;
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue() instanceof Message) {
+            final Message msg = (Message)evt.getNewValue();
             messageContentProvider.addMessage(msg);
-            getShell().getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    viewer.getControl().setEnabled(true);
-                    viewer.refresh();
-                    Table table = viewer.getTable();
-                    TableItem item = table.getItem(table.getItemCount() - 1);
-                    table.showItem(item);
-                }
+            getShell().getDisplay().syncExec(() -> {
+                viewer.getControl().setEnabled(true);
+                viewer.refresh();
+                Table table = viewer.getTable();
+                TableItem item = table.getItem(table.getItemCount() - 1);
+                table.showItem(item);
             });
         }
     }

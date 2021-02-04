@@ -16,16 +16,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
-import java.util.Observer;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
@@ -38,35 +36,26 @@ public class InternationalStringTest extends XmlAbstractTestCase {
 
     @Test
     public void testAdd() throws Exception {
-        Observer observer = mock(Observer.class);
-        InternationalString internationalString = new InternationalString(observer);
-
-        LocalizedString localizedString = mock(LocalizedString.class);
-        when(localizedString.getValue()).thenReturn("aba");
-        internationalString.add(localizedString);
-        verify(observer).update(internationalString, localizedString);
-        verifyNoMoreInteractions(observer);
-
-        assertEquals(localizedString, internationalString.get(null));
-
-        reset(observer);
+        List<PropertyChangeEvent> eventList = new ArrayList<>();
+        InternationalString internationalString = new InternationalString(eventList::add);
 
         LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, "englishValue");
         internationalString.add(localizedStringEn);
-        verify(observer).update(internationalString, localizedStringEn);
-        verifyNoMoreInteractions(observer);
+        assertEquals(eventList.get(0).getPropertyName(), "localizedString");
+        assertEquals(eventList.get(0).getNewValue(), localizedStringEn);
+        assertEquals(eventList.size(), 1);
 
         assertEquals(localizedStringEn, internationalString.get(Locale.ENGLISH));
 
-        reset(observer);
+        eventList.clear();
         internationalString.add(localizedStringEn);
-        verifyZeroInteractions(observer);
+        assertEquals(eventList.size(), 0);
     }
 
     @Test
     public void testAdd_nullValue() throws Exception {
-        Observer observer = mock(Observer.class);
-        InternationalString internationalString = new InternationalString(observer);
+        PropertyChangeListener listener = mock(PropertyChangeListener.class);
+        InternationalString internationalString = new InternationalString(listener);
         LocalizedString localizedString = new LocalizedString(Locale.GERMAN, null);
 
         internationalString.add(localizedString);

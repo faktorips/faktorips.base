@@ -10,19 +10,21 @@
 
 package org.faktorips.devtools.core.productrelease;
 
-import java.util.Observable;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import org.faktorips.util.message.Message;
 
-public class ObservableProgressMessages extends Observable {
+public class ObservableProgressMessages {
 
     private static final String INFO = "info"; //$NON-NLS-1$
     private static final String WARNING = "warning"; //$NON-NLS-1$
     private static final String ERROR = "error"; //$NON-NLS-1$
 
+    private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+
     public void addMessage(Message msg) {
-        setChanged();
-        notifyObservers(msg);
+        changes.firePropertyChange("msg", null, msg); //$NON-NLS-1$
     }
 
     public void info(String messageText) {
@@ -38,5 +40,9 @@ public class ObservableProgressMessages extends Observable {
     public void error(String messageText) {
         Message msg = new Message(ERROR, messageText, Message.ERROR);
         addMessage(msg);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        changes.addPropertyChangeListener(l);
     }
 }

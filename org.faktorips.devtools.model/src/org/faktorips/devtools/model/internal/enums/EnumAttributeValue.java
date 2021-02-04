@@ -10,10 +10,9 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
@@ -48,7 +47,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Implementation of <code>IEnumAttributeValue</code>, see the corresponding interface for more details.
+ * Implementation of <code>IEnumAttributeValue</code>, see the corresponding interface for more
+ * details.
  * 
  * @see org.faktorips.devtools.model.enums.IEnumAttributeValue
  * 
@@ -63,7 +63,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     /** The actual value that is being stored by this object. */
     private IValue<?> value;
 
-    private final Observer valueObserver;
+    private final PropertyChangeListener propertyChangeListener;
 
     /**
      * Creates a new <code>IEnumAttributeValue</code>.
@@ -75,13 +75,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public EnumAttributeValue(EnumValue parent, String id) throws CoreException {
         super(parent, id);
-        valueObserver = new Observer() {
-
-            @Override
-            public void update(Observable arg0, Object newValue) {
-                valueChanged(null, newValue);
-            }
-        };
+        propertyChangeListener = evt -> valueChanged(null, evt.getNewValue());
         setValueInternal(ValueFactory.createStringValue(null));
     }
 
@@ -119,8 +113,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             Node valueNode = getValue().toXml(element.getOwnerDocument());
             element.appendChild(valueNode);
             /*
-             * Default locale is needed only for runtime. As the XML is used for the designtime and the runtime,
-             * defaultLocale is always generated (and ignored during design time).
+             * Default locale is needed only for runtime. As the XML is used for the designtime and
+             * the runtime, defaultLocale is always generated (and ignored during design time).
              * 
              * TODO FIPS-4776 Generate default locale only for runtime XML
              */
@@ -152,9 +146,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Returns the <code>IEnumAttribute</code> this <code>IEnumAttributeValue</code> is a value for. t
+     * Returns the <code>IEnumAttribute</code> this <code>IEnumAttributeValue</code> is a value for.
+     * t
      * 
-     * @param enumType The <code>IEnumType</code> this <code>IEnumAttributeValue</code> is referring to.
+     * @param enumType The <code>IEnumType</code> this <code>IEnumAttributeValue</code> is referring
+     *            to.
      */
     private IEnumAttribute getEnumAttribute(IEnumType enumType) {
         IEnumValue enumValue = getEnumValue();
@@ -180,11 +176,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
     private void setValueInternal(IValue<?> value) {
         if (this.value != null) {
-            this.value.deleteObserver(valueObserver);
+            this.value.removePropertyChangeListener(propertyChangeListener);
         }
         this.value = value;
         if (this.value != null) {
-            this.value.addObserver(valueObserver);
+            this.value.addPropertyChangeListener(propertyChangeListener);
         }
     }
 
@@ -353,9 +349,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     /**
-     * Checks against the identifier boundary defined in the {@link IEnumType enum type}. Depending on
-     * the type of value container, enum-type or enum-content, a given id must be less than or greater
-     * than (or equal to) the identifier boundary.
+     * Checks against the identifier boundary defined in the {@link IEnumType enum type}. Depending
+     * on the type of value container, enum-type or enum-content, a given id must be less than or
+     * greater than (or equal to) the identifier boundary.
      * <p>
      * Does nothing if no boundary is defined (empty or null).
      * <p>
@@ -382,8 +378,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         /**
          * Validates if {@link #canValidate()} returns <code>true</code>. Does nothing otherwise.
          * 
-         * @return the message list containing the validation messages. Contains no messages if no problems
-         *         were detected.
+         * @return the message list containing the validation messages. Contains no messages if no
+         *         problems were detected.
          */
         public MessageList validateIfPossible() {
             MessageList messageList = new MessageList();
@@ -394,10 +390,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         }
 
         /**
-         * @return <code>true</code> if this validator has been given sufficient information to be able to
-         *         validate and if at the same time the meta-model is error free enough. Returns
-         *         <code>false</code> if the meta-model has inconsistencies that prevent this validation or
-         *         not all required information has been given.
+         * @return <code>true</code> if this validator has been given sufficient information to be
+         *         able to validate and if at the same time the meta-model is error free enough.
+         *         Returns <code>false</code> if the meta-model has inconsistencies that prevent
+         *         this validation or not all required information has been given.
          */
         public boolean canValidate() {
             return isValidateNecessary() && isIdentifierValue() && isIDValueParsable() && isBoundaryValueParsable();

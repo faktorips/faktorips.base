@@ -52,7 +52,7 @@ public class ProductReleaserBuilderWizard extends Wizard {
         observableProgressMessages = new ObservableProgressMessages();
         selectionPage = new ProductReleaserBuilderWizardPage(observableProgressMessages);
         statusPage = new StatusPage();
-        observableProgressMessages.addObserver(statusPage);
+        observableProgressMessages.addPropertyChangeListener(statusPage);
         setNeedsProgressMonitor(true);
         setWindowTitle(Messages.ReleaserBuilderWizard_title);
     }

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.value;
 
+import java.beans.PropertyChangeListener;
 import java.util.Locale;
-import java.util.Observer;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -63,18 +63,18 @@ public interface IValue<T> {
             ObjectProperty... objectProperty);
 
     /**
-     * Add an observer for the value.
+     * Add a {@link PropertyChangeListener} for the value.
      * 
-     * @param observer the observer to add
+     * @param listener the listener to add
      */
-    void addObserver(Observer observer);
+    void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * Removes an observer for the value.
+     * Removes a {@link PropertyChangeListener} for the value.
      * 
-     * @param observer the observer to delete
+     * @param listener the listener to delete
      */
-    void deleteObserver(Observer observer);
+    void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
      * Returns the content in the Locale that comes with the parameter. For non international values

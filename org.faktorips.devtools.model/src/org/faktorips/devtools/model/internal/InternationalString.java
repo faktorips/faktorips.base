@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -32,8 +32,8 @@ import org.w3c.dom.Element;
 /**
  * A {@link InternationalString} can be used for string properties that can be translated in
  * different languages. It contains a set of {@link LocalizedString}. To get notified about changes
- * to any {@link LocalizedString} in this {@link InternationalString} you can register as an
- * {@link Observer}.
+ * to any {@link LocalizedString} in this {@link InternationalString} you can register an
+ * {@link PropertyChangeListener}.
  * <p>
  * The {@link InternationalString} implements the {@link XmlSupport}. To be able to use more than
  * one {@link InternationalString} property in one object use the
@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  * 
  * @author dirmeier
  */
-public class InternationalString extends Observable implements IInternationalString {
+public class InternationalString implements IInternationalString {
 
     private static final DistinctElementComparator<LocalizedString> COMPARATOR = DistinctElementComparator
             .createComparator(new Comparator<LocalizedString>() {
@@ -60,9 +60,11 @@ public class InternationalString extends Observable implements IInternationalStr
 
     private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<Locale, LocalizedString>();
 
+    private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+
     /**
-     * The default constructor. Consider to register a {@link Observer} to get notified about
-     * changes.
+     * The default constructor. Consider to register a {@link PropertyChangeListener} to get
+     * notified about changes.
      */
     public InternationalString() {
         // default constructor
@@ -71,11 +73,12 @@ public class InternationalString extends Observable implements IInternationalStr
     /**
      * Construct the object and register the given observer.
      * 
-     * @param observer The observer you want to register to get notified about changes
+     * @param listener The {@link PropertyChangeListener} you want to register to get notified about
+     *            changes
      */
-    public InternationalString(Observer observer) {
+    public InternationalString(PropertyChangeListener listener) {
         this();
-        addObserver(observer);
+        changes.addPropertyChangeListener(listener);
     }
 
     @Override
@@ -96,10 +99,7 @@ public class InternationalString extends Observable implements IInternationalStr
             localizedStringToSet = emptyLocalizedString(localizedString.getLocale());
         }
         LocalizedString oldText = localizedStringMap.put(localizedStringToSet.getLocale(), localizedStringToSet);
-        if (!localizedStringToSet.equals(oldText)) {
-            setChanged();
-        }
-        notifyObservers(localizedStringToSet);
+        changes.firePropertyChange("localizedString", oldText, localizedStringToSet); //$NON-NLS-1$
     }
 
     /**
@@ -199,6 +199,14 @@ public class InternationalString extends Observable implements IInternationalStr
     @Override
     public int compareTo(IInternationalString o) {
         return COMPARATOR.compare(values(), o.values());
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        changes.addPropertyChangeListener(l);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        changes.removePropertyChangeListener(l);
     }
 
 }
