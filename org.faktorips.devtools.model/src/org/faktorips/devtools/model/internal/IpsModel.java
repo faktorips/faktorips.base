@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -98,6 +99,7 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
+import org.faktorips.devtools.model.plugin.extensions.CachingSupplier;
 import org.faktorips.devtools.model.util.IpsProjectUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -158,14 +160,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * A map containing the datatypes (value) by id (key). The map is initialized with null to point
      * at the lazy loading mechanism
      */
-    private Map<String, Datatype> datatypes = null;
+    private Supplier<Map<String, Datatype>> datatypes = CachingSupplier.caching(this::initDatatypesDefinedViaExtension);
 
     /**
      * A map containing the project for every name.
      */
     private Map<String, IpsProject> projectMap = new ConcurrentHashMap<String, IpsProject>();
 
-    private List<IIpsArtefactBuilderSetInfo> builderSetInfoList = null;
+    private Supplier<List<IIpsArtefactBuilderSetInfo>> builderSetInfoList = CachingSupplier
+            .caching(this::createIpsArtefactBuilderSetInfosIfNecessary);
 
     /** map containing all changes in time naming conventions by id. */
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
@@ -822,16 +825,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Intializes the datatypes and their helpers for the project.
      */
     private void initDatatypesDefinedInProjectProperties(IIpsProject project) {
-        if (datatypes == null) {
-            initDatatypesDefinedViaExtension();
-        }
         IpsProjectData ipsProjectData = getIpsProjectData(project);
         LinkedHashMap<String, Datatype> projectTypes = ipsProjectData.getProjectDatatypesMap();
 
         IIpsProjectProperties props = getIpsProjectProperties(project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
+        Map<String, Datatype> datatypeMap = datatypes.get();
         for (String datatypeId : datatypeIds) {
-            Datatype datatype = datatypes.get(datatypeId);
+            Datatype datatype = datatypeMap.get(datatypeId);
             if (datatype == null) {
                 continue;
             }
@@ -1125,7 +1126,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * according extension point.
      */
     public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos) {
-        builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
+        builderSetInfoList = () -> new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
     }
 
     @Override
@@ -1147,8 +1148,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         customModelExtensions.addIpsObjectExtensionProperty(property);
     }
 
-    private void initDatatypesDefinedViaExtension() {
-        datatypes = new HashMap<String, Datatype>();
+    private Map<String, Datatype> initDatatypesDefinedViaExtension() {
+        Map<String, Datatype> datatypesMap = new HashMap<>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
@@ -1157,42 +1158,37 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         // to get them at top of the list...
         for (IExtension extension : extensions) {
             if (extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                createDatatypeDefinition(extension);
+                createDatatypeDefinition(datatypesMap, extension);
             }
         }
 
         // and second, get the rest.
         for (int i = 0; i < extensions.length; i++) {
             if (!extensions[i].getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                createDatatypeDefinition(extensions[i]);
+                createDatatypeDefinition(datatypesMap, extensions[i]);
             }
         }
+        return datatypesMap;
     }
 
-    private void createDatatypeDefinition(IExtension extension) {
+    private void createDatatypeDefinition(Map<String, Datatype> datatypesMap, IExtension extension) {
         for (IConfigurationElement configElement : extension.getConfigurationElements()) {
             DatatypeDefinition definition = new DatatypeDefinition(extension, configElement);
             if (definition.hasDatatype()) {
-                datatypes.put(definition.getDatatype().getQualifiedName(), definition.getDatatype());
+                datatypesMap.put(definition.getDatatype().getQualifiedName(), definition.getDatatype());
             }
         }
     }
 
     @Override
     public ValueDatatype[] getPredefinedValueDatatypes() {
-        if (datatypes == null) {
-            initDatatypesDefinedViaExtension();
-        }
-        Collection<Datatype> c = datatypes.values();
+        Collection<Datatype> c = datatypes.get().values();
         return c.toArray(new ValueDatatype[c.size()]);
     }
 
     @Override
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
-        if (datatypes == null) {
-            initDatatypesDefinedViaExtension();
-        }
-        return datatypes.containsKey(valueDatatypeId);
+        return datatypes.get().containsKey(valueDatatypeId);
     }
 
     @Override
@@ -1422,13 +1418,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getValidationResultCache().clear();
     }
 
-    private void createIpsArtefactBuilderSetInfosIfNecessary() {
-        if (builderSetInfoList == null) {
-            IExtensionRegistry registry = Platform.getExtensionRegistry();
-            builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>();
-            IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsLog.get(), builderSetInfoList,
-                    this);
-        }
+    private List<IIpsArtefactBuilderSetInfo> createIpsArtefactBuilderSetInfosIfNecessary() {
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        List<IIpsArtefactBuilderSetInfo> tmpList = new ArrayList<>();
+        IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsLog.get(), tmpList,
+                this);
+        return tmpList;
     }
 
     /**
@@ -1438,14 +1433,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     @Override
     public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
-        createIpsArtefactBuilderSetInfosIfNecessary();
-        return builderSetInfoList.toArray(new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
+        List<IIpsArtefactBuilderSetInfo> list = builderSetInfoList.get();
+        return list.toArray(new IIpsArtefactBuilderSetInfo[list.size()]);
     }
 
     @Override
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id) {
-        createIpsArtefactBuilderSetInfosIfNecessary();
-        for (Object name2 : builderSetInfoList) {
+        for (Object name2 : builderSetInfoList.get()) {
             IIpsArtefactBuilderSetInfo builderSetInfo = (IIpsArtefactBuilderSetInfo)name2;
             if (builderSetInfo.getBuilderSetId().equals(id)) {
                 return builderSetInfo;
