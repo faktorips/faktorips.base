@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
+import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +90,7 @@ public class ValidationRuleMessagePropertiesTest {
         validationMessages.store(outputStream);
         validationMessages.load(new ByteArrayInputStream(outputStream.toByteArray()));
 
-        Collection<RuleKeyParts> rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME1,
+        Collection<PropertyKey> rules = validationMessages.getKeysForPolicyCmptType(new QualifiedNameType(QNAME1,
                 IpsObjectType.POLICY_CMPT_TYPE));
         assertEquals(2, rules.size());
         assertThat(rules, hasItem(new RuleKeyParts(QNAME1, RULE1, getRuleQName(QNAME1, RULE1))));

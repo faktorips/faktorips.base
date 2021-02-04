@@ -13,13 +13,13 @@ package org.faktorips.devtools.core.ui.wizards.bf;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
@@ -40,8 +40,8 @@ public class BFPage extends IpsObjectPage {
             throws CoreException {
 
         IBusinessFunction bf = (IBusinessFunction)newIpsObject;
-        bf.newStart(new Point(200, 20));
-        bf.newEnd(new Point(200, 120));
+        bf.newStart(new Location(200, 20));
+        bf.newEnd(new Location(200, 120));
         IControlFlow cf = bf.newControlFlow();
         cf.setSource(bf.getStart());
         cf.setTarget(bf.getEnd());

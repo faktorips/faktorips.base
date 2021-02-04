@@ -14,11 +14,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.bf.edit.ActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPartFactory;
@@ -27,6 +24,9 @@ import org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.EndEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.StartEditPart;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,28 +53,28 @@ public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
         editPart = factory.createEditPart(null, bf.newControlFlow());
         assertTrue(editPart instanceof ControlFlowEditPart);
 
-        editPart = factory.createEditPart(null, bf.newDecision(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newDecision(new Location(1, 1)));
         assertTrue(editPart instanceof DecisionEditPart);
 
-        editPart = factory.createEditPart(null, bf.newMethodCallAction(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newMethodCallAction(new Location(1, 1)));
         assertTrue(editPart instanceof ActionEditPart);
 
-        editPart = factory.createEditPart(null, bf.newOpaqueAction(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newOpaqueAction(new Location(1, 1)));
         assertTrue(editPart instanceof ActionEditPart);
 
-        editPart = factory.createEditPart(null, bf.newBusinessFunctionCallAction(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newBusinessFunctionCallAction(new Location(1, 1)));
         assertTrue(editPart instanceof ActionEditPart);
 
         editPart = factory.createEditPart(null, bf.newParameter());
         assertNull(editPart);
 
-        editPart = factory.createEditPart(null, bf.newStart(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newStart(new Location(1, 1)));
         assertTrue(editPart instanceof StartEditPart);
 
-        editPart = factory.createEditPart(null, bf.newEnd(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newEnd(new Location(1, 1)));
         assertTrue(editPart instanceof EndEditPart);
 
-        editPart = factory.createEditPart(null, bf.newMerge(new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newMerge(new Location(1, 1)));
         assertTrue(editPart instanceof MergeEditPart);
 
         try {

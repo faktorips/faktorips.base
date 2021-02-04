@@ -13,16 +13,16 @@ package org.faktorips.devtools.bf.ui.edit;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,19 +72,19 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
     @Test
     public void testActivate() {
         editPart.activate();
-        controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));
+        controlFlow.addBendpoint(0, new Location(1, 1));
         assertTrue(refreshChildrenCalled);
     }
 
     @Test
     public void testDeactivate() {
         editPart.activate();
-        controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));
+        controlFlow.addBendpoint(0, new Location(1, 1));
         assertTrue(refreshChildrenCalled);
 
         refreshChildrenCalled = false;
         editPart.deactivate();
-        controlFlow.addBendpoint(1, new AbsoluteBendpoint(1, 1));
+        controlFlow.addBendpoint(1, new Location(1, 1));
         assertFalse(refreshChildrenCalled);
 
     }

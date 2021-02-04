@@ -15,11 +15,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.commands.BendpointCommand;
 import org.faktorips.devtools.core.ui.bf.commands.CreateBendpointCommand;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,19 +47,19 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
         assertTrue(cf.getBendpoints().isEmpty());
         command.execute();
         assertEquals(1, cf.getBendpoints().size());
-        assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
+        assertEquals(new Location(10, 10), cf.getBendpoints().get(0));
     }
 
     @Test
     public void testRedo() {
         command.execute();
         assertEquals(1, cf.getBendpoints().size());
-        assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
+        assertEquals(new Location(10, 10), cf.getBendpoints().get(0));
         command.undo();
         assertTrue(cf.getBendpoints().isEmpty());
         command.redo();
         assertEquals(1, cf.getBendpoints().size());
-        assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
+        assertEquals(new Location(10, 10), cf.getBendpoints().get(0));
 
     }
 
@@ -66,7 +67,7 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
     public void testUndo() {
         command.execute();
         assertEquals(1, cf.getBendpoints().size());
-        assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
+        assertEquals(new Location(10, 10), cf.getBendpoints().get(0));
         command.undo();
         assertTrue(cf.getBendpoints().isEmpty());
     }

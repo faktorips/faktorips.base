@@ -27,9 +27,11 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -85,9 +87,10 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
 
     @Override
     protected void refreshVisuals() {
-        Point loc = getBFElement().getLocation();
-        Dimension size = getBFElement().getSize();
-        Rectangle r = new Rectangle(loc, size);
+        Location loc = getBFElement().getLocation();
+        Size size = getBFElement().getSize();
+        Rectangle r = new Rectangle(new Point(loc.getX(), loc.getY()),
+                new Dimension(size.getWidth(), size.getHeight()));
         // TODO consider if the foreground color is persisted by the model if not the setting of
         // of the color needs to be placed somewhere else
         getFigure().setForegroundColor(ColorConstants.lightGray);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="org.faktorips.devtools.core.refactor.RenameRefactoringParticipant"
+            id="org.faktorips.devtools.stdbuilder.renameParticipant"
+            name="StdBuilderRenameParticipant">
+         <enablement>
+            <instanceof
+                  value="org.faktorips.devtools.model.IIpsElement">
+            </instanceof></enablement>
+      </renameParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.moveParticipants">
+      <moveParticipant
+            class="org.faktorips.devtools.core.refactor.MoveRefactoringParticipant"
+            id="org.faktorips.devtools.stdbuilder.moveParticipant"
+            name="StdBuilderMoveParticipant">
+         <enablement>
+            <instanceof
+                  value="org.faktorips.devtools.model.ipsobject.IIpsObject">
+            </instanceof></enablement>
+      </moveParticipant>
+   </extension>
+      <extension
+         point="org.faktorips.devtools.core.pullUpParticipants">
+      <pullUpParticipant
+            class="org.faktorips.devtools.core.refactor.PullUpRefactoringParticipant"
+            id="org.faktorips.devtools.stdbuilder.pullUpParticipant"
+            name="StdBuilderPullUpParticipant">
+      </pullUpParticipant>
+   </extension>
+</plugin>

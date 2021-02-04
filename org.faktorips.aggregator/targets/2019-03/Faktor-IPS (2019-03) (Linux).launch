@@ -201,7 +201,7 @@
 <setEntry value="org.eclipse.m2e.editor.xml@default:default"/>
 <setEntry value="org.eclipse.m2e.editor@default:default"/>
 <setEntry value="org.eclipse.m2e.importer@default:default"/>
-<setEntry value="org.eclipse.m2e.jdt.ui@default:default"/>
+<setEntry value="org.eclipse.m2e.jdt.ui@default:false"/>
 <setEntry value="org.eclipse.m2e.jdt@default:default"/>
 <setEntry value="org.eclipse.m2e.launching@default:default"/>
 <setEntry value="org.eclipse.m2e.lifecyclemapping.defaults@default:default"/>
@@ -298,9 +298,11 @@
 </setAttribute>
 <setAttribute key="selected_workspace_bundles">
 <setEntry value="org.faktorips.devtools.ant@default:default"/>
+<setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
 <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.core@default:default"/>
 <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
+<setEntry value="org.faktorips.devtools.model.builder@default:default"/>
 <setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>

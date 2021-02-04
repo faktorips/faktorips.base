@@ -15,13 +15,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteConnectionCommand;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,8 +48,8 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
 
     @Test
     public void testExecute() {
-        IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
-        IActionBFE target = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE source = bf.newOpaqueAction(new Location(10, 10));
+        IActionBFE target = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow cf = bf.newControlFlow();
         cf.setSource(source);
         cf.setTarget(target);
@@ -64,8 +64,8 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRedoUndo() {
-        IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
-        IActionBFE target = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE source = bf.newOpaqueAction(new Location(10, 10));
+        IActionBFE target = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow cf = bf.newControlFlow();
         String cfId = cf.getId();
         cf.setSource(source);

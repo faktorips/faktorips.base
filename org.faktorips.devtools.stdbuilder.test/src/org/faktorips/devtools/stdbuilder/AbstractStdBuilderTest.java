@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -39,7 +39,7 @@ import org.junit.Before;
  * 
  * @author Alexander Weickmann
  */
-public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
+public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
 
     protected IIpsProject ipsProject;
 

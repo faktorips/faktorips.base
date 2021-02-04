@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.bf.edit;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
 
 /**
  * Creates edit parts for the business function and all of its children.

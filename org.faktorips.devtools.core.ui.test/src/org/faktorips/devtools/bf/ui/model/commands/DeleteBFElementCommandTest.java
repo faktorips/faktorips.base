@@ -13,13 +13,13 @@ package org.faktorips.devtools.bf.ui.model.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteBFElementCommand;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,13 +40,13 @@ public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
 
     @Test
     public void testExecute() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE action = bf.newOpaqueAction(new Location(10, 10));
         command = new DeleteBFElementCommand(bf, action);
         assertEquals(1, bf.getBFElements().size());
         command.execute();
         assertEquals(0, bf.getBFElements().size());
 
-        action = bf.newOpaqueAction(new Point(10, 10));
+        action = bf.newOpaqueAction(new Location(10, 10));
         IControlFlow inCf = bf.newControlFlow();
         action.addIncomingControlFlow(inCf);
         IControlFlow outCf = bf.newControlFlow();
@@ -59,7 +59,7 @@ public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
 
     @Test
     public void testUndoRedo() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE action = bf.newOpaqueAction(new Location(10, 10));
         command = new DeleteBFElementCommand(bf, action);
         assertEquals(1, bf.getBFElements().size());
         command.execute();

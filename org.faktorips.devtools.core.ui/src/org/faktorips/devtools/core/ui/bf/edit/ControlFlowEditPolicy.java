@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.bf.edit;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.GroupRequest;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteConnectionCommand;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
 
 /**
  * This policy is responsible for the deletion of a control flow.

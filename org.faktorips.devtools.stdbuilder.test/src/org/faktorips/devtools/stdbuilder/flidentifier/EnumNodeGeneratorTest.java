@@ -16,11 +16,14 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.abstracttest.TestIpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.model.IClassLoaderProvider;
+import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -30,6 +33,7 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
+import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.devtools.model.value.ValueFactory;
@@ -113,17 +117,49 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetCompilationResultForEnumDatatype() throws Exception {
-        enumDatatype = newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class })[0];
-        nodeFactory = newIdentifierNodeFactory(enumDatatype.getName());
-        enumValueNode = nodeFactory.createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
+        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+            testIpsModelExtensions.setClassLoaderProviderFactory(new TestClassLoaderProviderFactory());
+            enumDatatype = newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class })[0];
+            nodeFactory = newIdentifierNodeFactory(enumDatatype.getName());
+            enumValueNode = nodeFactory.createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
 
-        CompilationResult<JavaCodeFragment> compilationResult = enumNodeGenerator.getCompilationResultForCurrentNode(
-                enumValueNode, null);
+            CompilationResult<JavaCodeFragment> compilationResult = enumNodeGenerator
+                    .getCompilationResultForCurrentNode(enumValueNode, null);
 
-        assertFalse(compilationResult.failed());
-        assertNotNull(compilationResult);
-        assertNotNull(compilationResult.getCodeFragment());
-        assertEquals(TestEnumType.class.getSimpleName() + ".valueOf(\"" + ENUM_VALUE_NAME + "\")", compilationResult
-                .getCodeFragment().getSourcecode());
+            assertFalse(compilationResult.failed());
+            assertNotNull(compilationResult);
+            assertNotNull(compilationResult.getCodeFragment());
+            assertEquals(TestEnumType.class.getSimpleName() + ".valueOf(\"" + ENUM_VALUE_NAME + "\")", compilationResult
+                    .getCodeFragment().getSourcecode());
+        }
+    }
+
+    private static final class TestClassLoaderProviderFactory implements IClassLoaderProviderFactory {
+        @Override
+        public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject, ClassLoader parent) {
+            return getClassLoaderProvider(ipsProject);
+        }
+
+        @Override
+        public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
+            return new TestClassLoaderProvider();
+        }
+    }
+
+    private static final class TestClassLoaderProvider implements IClassLoaderProvider {
+        @Override
+        public void addClasspathChangeListener(IClasspathContentsChangeListener listener) {
+            // don't care
+        }
+
+        @Override
+        public void removeClasspathChangeListener(IClasspathContentsChangeListener listener) {
+            // don't care
+        }
+
+        @Override
+        public ClassLoader getClassLoader() {
+            return EnumNodeGeneratorTest.class.getClassLoader();
+        }
     }
 }
