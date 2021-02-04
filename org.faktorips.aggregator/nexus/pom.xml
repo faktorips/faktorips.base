@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -154,8 +156,9 @@
                             <version>${maven-javadoc-plugin-version}</version>
                             <configuration>
                                 <source>8</source>
-                                <!-- at the moment we do not check missing javadoc like missing @param or @return -->
-                                <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                                <!-- at the moment we do not check missing 
+                                    javadoc like missing @param or @return -->
+                                <doclint>none</doclint>
                             </configuration>
                         </plugin>
                     </plugins>
