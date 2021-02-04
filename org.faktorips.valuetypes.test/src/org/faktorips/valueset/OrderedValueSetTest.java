@@ -10,6 +10,9 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +23,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -30,18 +35,44 @@ public class OrderedValueSetTest {
     @Test
     public void testConstructor() {
         try {
-            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(1));
+            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
+                    Integer.valueOf(1));
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
 
         try {
-            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3), null);
+            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3),
+                    null);
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
+    }
+
+    @Test
+    public void testEmpty() {
+        OrderedValueSet<Integer> emptyValueSet = OrderedValueSet.empty();
+        List<Integer> expectedValues = new ArrayList<Integer>();
+        assertEquals(expectedValues, Arrays.asList(emptyValueSet.getValues().toArray()));
+    }
+
+    @Test
+    public void testOf_Array() {
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), null,
+                Integer.valueOf(3) };
+        OrderedValueSet<Integer> valueSet = OrderedValueSet.of(values);
+        assertArrayEquals(values, valueSet.getValues().toArray());
+        assertTrue(valueSet.containsNull());
+    }
+
+    @Test
+    public void testOf_Collection() {
+        List<Integer> values = Arrays.asList(Integer.valueOf(1), Integer.valueOf(2), null,
+                Integer.valueOf(3));
+        OrderedValueSet<Integer> valueSet = OrderedValueSet.of(values);
+        assertThat(valueSet.getValues(), hasItems(values.toArray(new Integer[0])));
     }
 
     @Test
@@ -66,6 +97,14 @@ public class OrderedValueSetTest {
         expectedValues.add(values[1]);
         expectedValues.add(values[2]);
         assertEquals(expectedValues, Arrays.asList(valueSet.getValues(true).toArray()));
+    }
+
+    @Test
+    public void testStream() {
+        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null, Integer.valueOf(3) };
+        OrderedValueSet<Integer> valueSet = OrderedValueSet.<Integer> of(values);
+        Stream<Integer> valueStream = valueSet.stream();
+        assertEquals(Arrays.asList(values), valueStream.collect(Collectors.toList()));
     }
 
     @Test
