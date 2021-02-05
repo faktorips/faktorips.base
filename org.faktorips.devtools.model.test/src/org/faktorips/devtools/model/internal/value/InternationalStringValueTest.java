@@ -100,6 +100,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         assertNotNull(internationalStringValue.toString());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         internationalStringValue.getContent().add(expectedDe);

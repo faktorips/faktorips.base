@@ -31,6 +31,8 @@ import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A JavaSourceFileBuilder that keeps existing imports exactly as found in the source file and adds
  * new imports at the end of the import section. This keeps source files from being modified by the
@@ -81,6 +83,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
         content.append(System.lineSeparator());
         content.append(System.lineSeparator());
+        @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "default value is needed in case of an exception")
         JavaCodeFragment code = new JavaCodeFragment();
         try {
             loggerInstanceGenerated = false;

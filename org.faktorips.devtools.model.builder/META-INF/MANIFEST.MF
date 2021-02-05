@@ -13,3 +13,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.model.builder.java
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional

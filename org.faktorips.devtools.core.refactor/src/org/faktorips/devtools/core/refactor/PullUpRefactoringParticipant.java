@@ -73,7 +73,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
         // nothing to do
     }
 
-    private class PullUpParticipantHelper extends RefactoringParticipantHelper {
+    private static class PullUpParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
         protected JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,

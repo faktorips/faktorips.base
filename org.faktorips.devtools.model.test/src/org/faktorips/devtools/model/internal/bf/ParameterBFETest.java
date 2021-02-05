@@ -21,7 +21,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.model.bf.IBFElement;
 import org.faktorips.devtools.model.bf.IParameterBFE;
-import org.faktorips.devtools.model.internal.bf.BusinessFunction;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;

@@ -41,7 +41,7 @@
 	<build>
 		<extensions>
 			<!-- Include this build artifact to every child's classpath. This is used 
-				for example by the checkstyle or findbugs configuration -->
+				for example by the checkstyle or SpotBugs configuration -->
 			<extension>
 				<groupId>org.faktorips</groupId>
 				<artifactId>org.faktorips.build.config</artifactId>
