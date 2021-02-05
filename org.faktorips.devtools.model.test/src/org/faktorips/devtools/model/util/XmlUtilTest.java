@@ -37,6 +37,7 @@ import org.xml.sax.SAXException;
 
 public class XmlUtilTest extends XmlAbstractTestCase {
 
+    private static final String LF = System.lineSeparator();
     private static final String UTF8 = "UTF-8";
 
     @Test
@@ -71,13 +72,13 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         Element element = doc.createElement("el");
         doc.appendChild(element);
-        CDATASection cdataSection = doc.createCDATASection("a" + System.lineSeparator() + "b");
+        CDATASection cdataSection = doc.createCDATASection("a" + LF + "b");
         element.appendChild(cdataSection);
 
         String string = XmlUtil.nodeToString(doc, "Cp1252");
         String expected = "<?xml version=\"1.0\" encoding=\"WINDOWS-1252\" standalone=\"no\"?>"
-                + System.lineSeparator() + "<el><![CDATA[a" + System.lineSeparator() + "b]]></el>"
-                + System.lineSeparator();
+                + LF + "<el><![CDATA[a" + LF + "b]]></el>"
+                + LF;
         assertEquals(expected, string);
     }
 
@@ -90,8 +91,8 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         doc.appendChild(element);
 
         String string = XmlUtil.nodeToString(doc, UTF8);
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator() + "<el/>"
-                + System.lineSeparator();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<el/>"
+                + LF;
         assertEquals(expected, string);
     }
 
@@ -107,9 +108,9 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         doc.appendChild(root);
 
         String string = XmlUtil.nodeToString(root, UTF8);
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.lineSeparator()
-                + "<root xml:space=\"preserve\">" + System.lineSeparator() + " <el/>" + System.lineSeparator()
-                + "</root>" + System.lineSeparator();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                + "<root xml:space=\"preserve\">" + LF + " <el/>" + LF
+                + "</root>" + LF;
         assertEquals(expected, string);
     }
 
@@ -186,10 +187,12 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // java9 transformer has empty lines
         assertThat(internalNodeToString(rootElement),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root>\n   \n <element>SOME_DATA</element>\n \n</root>\n")); //$NON-NLS-1$
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<root>" + LF + "   " + LF
+                        + " <element>SOME_DATA</element>" + LF + " " + LF + "</root>" + LF));
         // java9 fix with regex, removes empty lines
         assertThat(XmlUtil.nodeToString(rootElement, UTF8),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root>\n <element>SOME_DATA</element>\n</root>\n")); //$NON-NLS-1$
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<root>" + LF + " <element>SOME_DATA</element>"
+                        + LF + "</root>" + LF));
 
         if (!xmlFile.delete()) {
             xmlFile.deleteOnExit();
@@ -203,10 +206,15 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // TestDocument has Tabs on single empty lines
         assertThat(internalNodeToString(root),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DocElement>\n \t\n <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>\n \t\n <DifferentElement/>\n \t\n <TestElement value=\"2\"/>\n \n</DocElement>\n"));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<DocElement>" + LF + " \t" + LF
+                        + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + LF
+                        + " \t" + LF + " <DifferentElement/>" + LF + " \t" + LF + " <TestElement value=\"2\"/>" + LF
+                        + " " + LF + "</DocElement>" + LF));
         // TestDocument has no Tabs and no empty lines
         assertThat(XmlUtil.nodeToString(root, UTF8),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DocElement>\n <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>\n <DifferentElement/>\n <TestElement value=\"2\"/>\n</DocElement>\n"));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<DocElement>" + LF
+                        + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + LF
+                        + " <DifferentElement/>" + LF + " <TestElement value=\"2\"/>" + LF + "</DocElement>" + LF));
     }
 
     private String internalNodeToString(Element rootElement) throws TransformerException {
