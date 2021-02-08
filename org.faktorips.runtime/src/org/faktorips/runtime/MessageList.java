@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.faktorips.runtime.util.AbstractMessageList;
 
@@ -45,6 +46,41 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
     @Override
     protected MessageList createEmptyMessageList() {
         return new MessageList();
+    }
+
+    /**
+     * Returns a new {@code MessageList} that consists of the given {@code Messages}. Returns an
+     * empty {@code MessageList} if {@code null} is given.
+     * 
+     * @param messages the {@code Messages} that the new {@code MessageList} will contain. May be
+     *            {@code null}
+     * @return a new {@code MessageList} that consist of the given {@code Messages}
+     */
+    public static final MessageList of(Message... messages) {
+        if (messages == null) {
+            return new MessageList();
+        }
+        MessageList messageList = new MessageList();
+        for (Message message : messages) {
+            messageList.add(message);
+        }
+        return messageList;
+    }
+
+    /**
+     * Returns a new {@code MessageList} that contains error messages with the given texts. Returns
+     * an empty {@code MessageList} if {@code null} or an empty array is given.
+     * 
+     * @param texts the texts of the error messages in the new {@code MessageList}. May be
+     *            {@code null} or empty
+     * @return a new {@code MessageList} that contains error messages with the given texts or an
+     *         empty {@code MessageList}
+     */
+    public static final MessageList ofErrors(String... texts) {
+        if (texts == null) {
+            return new MessageList();
+        }
+        return Stream.of(texts).map(text -> new Message(text, Severity.ERROR)).collect(MessageLists.collectMessages());
     }
 
     /**

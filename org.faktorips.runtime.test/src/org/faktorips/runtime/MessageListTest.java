@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -27,6 +28,42 @@ public class MessageListTest {
 
     private final Predicate<IMarker> requiredInformationMarker = IMarker::isRequiredInformationMissing;
     private final Predicate<IMarker> technicalConstraintViolatedInstance = TechnicalConstraintViolated.class::isInstance;
+    private final MessageList emptyMessageList = new MessageList();
+
+    @Test
+    public void testOf_NullArray() {
+        assertThat(MessageList.of((Message[])null), is(emptyMessageList));
+    }
+
+    @Test
+    public void testOf_EmptyArray() {
+        assertThat(MessageList.of(), is(emptyMessageList));
+        assertThat(MessageList.of(new Message[0]), is(emptyMessageList));
+    }
+
+    @Test
+    public void testOf() {
+        Message m1 = Message.newError("error", "error");
+        Message m2 = Message.newWarning("warning", "warning");
+        assertThat(MessageList.of(m1, m2), hasItems(m1, m2));
+    }
+
+    @Test
+    public void testOfErrors_NullStringArray() {
+        assertThat(MessageList.ofErrors((String[])null), is(emptyMessageList));
+    }
+
+    @Test
+    public void testOfErrors_EmptyStringArray() {
+        assertThat(MessageList.ofErrors(), is(emptyMessageList));
+    }
+
+    @Test
+    public void testOfErrors() {
+        MessageList errorList = MessageList.ofErrors("foo", "bar");
+        assertThat(errorList.getMessage(0), is(new Message("foo", Severity.ERROR)));
+        assertThat(errorList.getMessage(1), is(new Message("bar", Severity.ERROR)));
+    }
 
     @Test
     public void testAddMessage() {
